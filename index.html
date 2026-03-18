@@ -173,7 +173,7 @@
 
     /* Body / footer */
     .screen-body { flex: 1; min-height: 0; padding: 20px 20px 8px; overflow-y: auto; }
-    .screen-footer { padding: 12px 20px 20px; background: var(--white); flex-shrink: 0; }
+    .screen-footer { padding: 12px 20px 20px; background: var(--white); flex-shrink: 0; position: relative; z-index: 10; }
     .btn-row { display: flex; gap: 10px; }
     .btn-row .btn-secondary { flex: 1; justify-content: center; }
 
@@ -242,9 +242,9 @@
     .form-input::placeholder { color: #8b91a3; font-size: 16px; letter-spacing: 0.2px; font-weight: 400; }
     .form-input:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
     .form-hint { display: flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 12px; color: var(--muted); }
-    .location-wrap { position: relative; }
+    .location-wrap { position: relative; z-index: 100; }
     .location-suggestions {
-      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 100;
       background: #fff; border: 1.5px solid var(--border); border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 4px 0; margin: 0; list-style: none;
       max-height: calc(8 * 38px); overflow-y: auto;
@@ -357,13 +357,13 @@
 
     /* Textarea */
     .form-textarea {
-      width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: 8px;
-      padding: 12px; font-size: 14px; font-family: 'soleil', 'Inter', sans-serif;
-      color: var(--text); background: var(--white); outline: none;
-      resize: none; transition: border-color 0.15s; line-height: 1.55;
+      width: 100%; min-height: 120px; border: 1px solid #e5e5ea; border-radius: 4px;
+      padding: 12px 20px; font-size: 14px; font-family: 'soleil', 'Inter', sans-serif;
+      color: #2a3539; background: var(--white); outline: none;
+      resize: none; transition: border-color 0.15s, box-shadow 0.15s; line-height: 1.55;
     }
-    .form-textarea:focus { border-color: var(--blue); }
-    .form-textarea::placeholder { color: var(--dim); }
+    .form-textarea:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .form-textarea::placeholder { color: #8b91a3; font-weight: 400; }
 
     /* Day buttons */
     .day-row { display: flex; gap: 4px; background: #fff; border: 1px solid #e5e5ea; border-radius: 4px; padding: 4px; }
