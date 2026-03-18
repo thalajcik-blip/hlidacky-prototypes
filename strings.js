@@ -106,7 +106,7 @@ const STRINGS = {
     "dateLabel": "Upřesněte datum a čas",
     "datePlaceholder": "např. každé pondělí od 16:00 do 20:00 a pátek od 14:00 do 18:00, počínaje příštím měsícem",
     "notsure": "nevím, ještě se rozhoduji",
-    "dateLabelRegular": "Upřesněte datum nebo čas",
+    "dateLabelRegular": "Upřesněte datum a čas",
     "longterm": "Hledám dlouhodobou pomoc"
   },
 
