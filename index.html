@@ -1796,6 +1796,14 @@
   // ============================================================
   // Boot
   // ============================================================
+  // Mobile: hide phone frame decoration
+  if ('ontouchstart' in window && window.innerWidth <= 1024) {
+    document.body.style.cssText += 'background:#fff;padding:0;align-items:stretch;';
+    const frame = document.querySelector('.phone-frame');
+    frame.style.cssText += 'width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none;';
+    document.querySelector('.phone-notch').style.display = 'none';
+  }
+
   applyStrings();
   // Set date placeholder to today
   const today = new Date();
