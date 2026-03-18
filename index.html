@@ -604,6 +604,31 @@
     .pm-footer .btn-secondary { flex: 0 0 auto; }
     .pm-footer .btn-primary { padding-left: 24px; padding-right: 24px; }
     .flag-icon { width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; display: block; }
+
+    /* ===== Followup screen — sitter cards ===== */
+    .followup-title { font-size: 22px; font-weight: 450; color: var(--text); line-height: 1.32; letter-spacing: -0.2px; margin-bottom: 6px; }
+    .followup-sub { font-size: 13px; color: var(--text); opacity: .8; line-height: 1.5; margin-bottom: 16px; }
+    .sitter-card { background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; box-shadow: 0 4px 16px rgba(42,53,57,0.10); overflow: hidden; margin-bottom: 10px; }
+    .sitter-card-top { display: flex; gap: 12px; padding: 14px 14px 10px; align-items: flex-start; }
+    .sitter-photo-wrap { position: relative; flex-shrink: 0; width: 80px; }
+    .sitter-avatar { width: 80px; height: 80px; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.5px; }
+    .sitter-online { position: absolute; top: 5px; left: 5px; width: 10px; height: 10px; background: #03c499; border-radius: 50%; border: 2px solid #fff; }
+    .sitter-verified { background: #03c499; border-radius: 0 0 4px 4px; display: flex; align-items: center; justify-content: center; gap: 3px; padding: 3px 6px; font-size: 11px; color: #fff; font-weight: 500; }
+    .sitter-info { flex: 1; min-width: 0; }
+    .sitter-name { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+    .sitter-meta { font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+    .sitter-stars { display: flex; align-items: center; gap: 3px; margin: 5px 0 4px; }
+    .star { font-size: 12px; line-height: 1; }
+    .star-full { color: #f4a12a; }
+    .star-empty { color: #e5e5ea; }
+    .sitter-reviews { font-size: 11px; color: var(--dim); }
+    .sitter-price { font-size: 12px; color: var(--text); font-weight: 500; }
+    .sitter-desc { font-size: 12.5px; color: var(--dim); line-height: 1.55; padding: 0 14px 10px; border-top: 1px solid #f2f4f5; padding-top: 8px; margin-top: 2px; }
+    .sitter-desc a { color: var(--pink); text-decoration: none; font-weight: 500; }
+    .followup-more { width: 100%; border: 1.5px solid #e5e5ea; background: #fff; border-radius: 8px; padding: 11px; font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; margin-bottom: 2px; }
+    .followup-cta { background: linear-gradient(135deg, #f96073 0%, #e8445a 100%); border-radius: 10px; padding: 14px 16px; margin-top: 8px; }
+    .followup-cta-text { font-size: 12px; color: rgba(255,255,255,0.9); margin-bottom: 10px; line-height: 1.4; }
+    .followup-cta-btn { background: #fff; border: none; border-radius: 6px; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #e8445a; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; }
   </style>
 </head>
 <body>
@@ -1647,12 +1672,141 @@
 
     <div class="screen-footer">
       <div class="btn-row">
-        <button class="btn-primary" onclick="restartFlow()">
+        <button class="btn-primary" onclick="goNext()">
           <span data-i18n="success.btnContinue"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
       <a class="btn-link" style="color:var(--muted)" data-i18n="success.editLink"></a>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Followup — matched sitters ===== -->
+  <div class="screen" id="s-followup">
+    <div class="screen-body">
+      <p class="followup-title">Hlídačky, které odpovídají vašim preferencím</p>
+      <p class="followup-sub">👶 Zkušené, dostupné na částečný úvazek, vhodné pro různé věkové kategorie</p>
+
+      <!-- Sitter cards -->
+      <div class="sitter-card">
+        <div class="sitter-card-top">
+          <div class="sitter-photo-wrap">
+            <div class="sitter-avatar" style="background:#f9a8b3;">AA</div>
+            <div class="sitter-online"></div>
+            <div class="sitter-verified">✓ Ověřeno</div>
+          </div>
+          <div class="sitter-info">
+            <div class="sitter-name">Adriana Antonínová</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.067 1 2.5 2.567 2.5 4.5C2.5 7 6 11 6 11C6 11 9.5 7 9.5 4.5C9.5 2.567 7.933 1 6 1ZM6 6C5.172 6 4.5 5.328 4.5 4.5C4.5 3.672 5.172 3 6 3C6.828 3 7.5 3.672 7.5 4.5C7.5 5.328 6.828 6 6 6Z" fill="#6b7176"/></svg> Ostrava</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M9.5 8.5C9.5 8.5 8.5 9.5 6 9.5C3.5 9.5 2.5 8.5 2.5 8.5L3.5 6.5C3.5 6.5 4 7 6 7C8 7 8.5 6.5 8.5 6.5L9.5 8.5Z" fill="#6b7176"/><rect x="4" y="2" width="4" height="4" rx="2" fill="#6b7176"/></svg> +420 ··· ···</div>
+            <div class="sitter-stars">
+              <span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-empty">★</span>
+              <span class="sitter-reviews">(2)</span>
+            </div>
+            <div class="sitter-price">200 Kč/h &nbsp;·&nbsp; 800 Kč/den</div>
+          </div>
+        </div>
+        <div class="sitter-desc">Jsem zkušená hlídačka s praxí přes 5 let. Mám ráda děti všech věkových kategorií... <a href="#">číst více</a></div>
+      </div>
+
+      <div class="sitter-card">
+        <div class="sitter-card-top">
+          <div class="sitter-photo-wrap">
+            <div class="sitter-avatar" style="background:#93c5fd;">BB</div>
+            <div class="sitter-online"></div>
+            <div class="sitter-verified">✓ Ověřeno</div>
+          </div>
+          <div class="sitter-info">
+            <div class="sitter-name">Bernadetta Beranová</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.067 1 2.5 2.567 2.5 4.5C2.5 7 6 11 6 11C6 11 9.5 7 9.5 4.5C9.5 2.567 7.933 1 6 1ZM6 6C5.172 6 4.5 5.328 4.5 4.5C4.5 3.672 5.172 3 6 3C6.828 3 7.5 3.672 7.5 4.5C7.5 5.328 6.828 6 6 6Z" fill="#6b7176"/></svg> Ostrava</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M9.5 8.5C9.5 8.5 8.5 9.5 6 9.5C3.5 9.5 2.5 8.5 2.5 8.5L3.5 6.5C3.5 6.5 4 7 6 7C8 7 8.5 6.5 8.5 6.5L9.5 8.5Z" fill="#6b7176"/><rect x="4" y="2" width="4" height="4" rx="2" fill="#6b7176"/></svg> +420 ··· ···</div>
+            <div class="sitter-stars">
+              <span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-empty">★</span><span class="star star-empty">★</span>
+              <span class="sitter-reviews">(2)</span>
+            </div>
+            <div class="sitter-price">180 Kč/h &nbsp;·&nbsp; 720 Kč/den</div>
+          </div>
+        </div>
+        <div class="sitter-desc">Pracuji jako hlídačka již 3 roky. Mám pedagogické vzdělání a zkušenosti s dětmi od 1 roku... <a href="#">číst více</a></div>
+      </div>
+
+      <div class="sitter-card">
+        <div class="sitter-card-top">
+          <div class="sitter-photo-wrap">
+            <div class="sitter-avatar" style="background:#6ee7b7;">CC</div>
+            <div class="sitter-online"></div>
+            <div class="sitter-verified">✓ Ověřeno</div>
+          </div>
+          <div class="sitter-info">
+            <div class="sitter-name">Cecílie Ciznová</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.067 1 2.5 2.567 2.5 4.5C2.5 7 6 11 6 11C6 11 9.5 7 9.5 4.5C9.5 2.567 7.933 1 6 1ZM6 6C5.172 6 4.5 5.328 4.5 4.5C4.5 3.672 5.172 3 6 3C6.828 3 7.5 3.672 7.5 4.5C7.5 5.328 6.828 6 6 6Z" fill="#6b7176"/></svg> Ostrava</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M9.5 8.5C9.5 8.5 8.5 9.5 6 9.5C3.5 9.5 2.5 8.5 2.5 8.5L3.5 6.5C3.5 6.5 4 7 6 7C8 7 8.5 6.5 8.5 6.5L9.5 8.5Z" fill="#6b7176"/><rect x="4" y="2" width="4" height="4" rx="2" fill="#6b7176"/></svg> +420 ··· ···</div>
+            <div class="sitter-stars">
+              <span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span>
+              <span class="sitter-reviews">(5)</span>
+            </div>
+            <div class="sitter-price">220 Kč/h &nbsp;·&nbsp; 880 Kč/den</div>
+          </div>
+        </div>
+        <div class="sitter-desc">Hlídám děti již 7 let a miluji svou práci. Jsem flexibilní a umím si poradit i s náročnějšími situacemi... <a href="#">číst více</a></div>
+      </div>
+
+      <div class="sitter-card">
+        <div class="sitter-card-top">
+          <div class="sitter-photo-wrap">
+            <div class="sitter-avatar" style="background:#fcd34d;">DD</div>
+            <div class="sitter-verified">✓ Ověřeno</div>
+          </div>
+          <div class="sitter-info">
+            <div class="sitter-name">Donatella Drásalová</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.067 1 2.5 2.567 2.5 4.5C2.5 7 6 11 6 11C6 11 9.5 7 9.5 4.5C9.5 2.567 7.933 1 6 1ZM6 6C5.172 6 4.5 5.328 4.5 4.5C4.5 3.672 5.172 3 6 3C6.828 3 7.5 3.672 7.5 4.5C7.5 5.328 6.828 6 6 6Z" fill="#6b7176"/></svg> Ostrava</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M9.5 8.5C9.5 8.5 8.5 9.5 6 9.5C3.5 9.5 2.5 8.5 2.5 8.5L3.5 6.5C3.5 6.5 4 7 6 7C8 7 8.5 6.5 8.5 6.5L9.5 8.5Z" fill="#6b7176"/><rect x="4" y="2" width="4" height="4" rx="2" fill="#6b7176"/></svg> +420 ··· ···</div>
+            <div class="sitter-stars">
+              <span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-empty">★</span>
+              <span class="sitter-reviews">(2)</span>
+            </div>
+            <div class="sitter-price">200 Kč/h &nbsp;·&nbsp; 800 Kč/den</div>
+          </div>
+        </div>
+        <div class="sitter-desc">Vystudovala jsem pedagogiku a pracuji s dětmi od útlého věku. Specializuji se na děti od 6 měsíců... <a href="#">číst více</a></div>
+      </div>
+
+      <div class="sitter-card">
+        <div class="sitter-card-top">
+          <div class="sitter-photo-wrap">
+            <div class="sitter-avatar" style="background:#c4b5fd;">EE</div>
+            <div class="sitter-online"></div>
+            <div class="sitter-verified">✓ Ověřeno</div>
+          </div>
+          <div class="sitter-info">
+            <div class="sitter-name">Emma Ernestová</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1C4.067 1 2.5 2.567 2.5 4.5C2.5 7 6 11 6 11C6 11 9.5 7 9.5 4.5C9.5 2.567 7.933 1 6 1ZM6 6C5.172 6 4.5 5.328 4.5 4.5C4.5 3.672 5.172 3 6 3C6.828 3 7.5 3.672 7.5 4.5C7.5 5.328 6.828 6 6 6Z" fill="#6b7176"/></svg> Nové Město na Moravě</div>
+            <div class="sitter-meta"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M9.5 8.5C9.5 8.5 8.5 9.5 6 9.5C3.5 9.5 2.5 8.5 2.5 8.5L3.5 6.5C3.5 6.5 4 7 6 7C8 7 8.5 6.5 8.5 6.5L9.5 8.5Z" fill="#6b7176"/><rect x="4" y="2" width="4" height="4" rx="2" fill="#6b7176"/></svg> +420 ··· ···</div>
+            <div class="sitter-stars">
+              <span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-full">★</span><span class="star star-empty">★</span>
+              <span class="sitter-reviews">(2)</span>
+            </div>
+            <div class="sitter-price">200 Kč/h &nbsp;·&nbsp; 800 Kč/den</div>
+          </div>
+        </div>
+        <div class="sitter-desc">Mám zkušenosti s dvojčaty a speciálními potřebami. Jsem trpělivá a spolehlivá... <a href="#">číst více</a></div>
+      </div>
+
+      <button class="followup-more">Zobrazit více hlídaček</button>
+
+      <div class="followup-cta">
+        <p class="followup-cta-text">Okamžitý přístup k hlídačkám — staňte se členem hned teď!</p>
+        <button class="followup-cta-btn">⭐ Zobrazit možnosti členství &nbsp;›</button>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="restartFlow()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Začít znovu
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1749,7 +1903,7 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'success');
+    flow.push('review', 'phone', 'success', 'followup');
     return flow;
   }
 
