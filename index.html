@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky.cz — Create a new job</title>
+  <script>
+    (function(d) {
+      var config = { kitId: 'ciu2vdq', scriptTimeout: 3000, async: true },
+      h = d.documentElement, t = setTimeout(function() {
+        h.className = h.className.replace(/\bwf-loading\b/g, '') + ' wf-inactive';
+      }, config.scriptTimeout), tk = d.createElement('script'), f = false,
+      s = d.getElementsByTagName('script')[0], a;
+      h.className += ' wf-loading';
+      tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+      tk.async = true;
+      tk.onload = tk.onreadystatechange = function() {
+        a = this.readyState;
+        if (f || a && a != 'complete' && a != 'loaded') return;
+        f = true; clearTimeout(t);
+        try { Typekit.load(config); } catch(e) {}
+      };
+      s.parentNode.insertBefore(tk, s);
+    })(document);
+  </script>
+  <!-- Font Awesome (same kit as hlidacky.cz) — works on hlidacky.cz domain -->
+  <script src="https://kit.fontawesome.com/75573633.js" crossorigin="anonymous"></script>
+  <!-- Inline SVG icon helpers for local preview (currentColor = inherits from CSS) -->
+  <style>
+    .ico { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; }
+    .ico svg { width:18px; height:18px; }
+  </style>
+  <!-- All UI strings live in strings.js — hand strings.json to translators -->
+  <script src="strings.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #22BF1E;
+      --green-light: #EFF9EF;
+      --pink: #F06073;
+      --pink-light: #FEE8EA;
+      --text: #2a3539;
+      --muted: #6b7176;
+      --dim: #9aa5ab;
+      --bg: #F5F6F7;
+      --border: #DDE2E5;
+      --white: #ffffff;
+      --blue: #1B88D4;
+      --blue-light: #EBF3FC;
+      --yellow: #F4C842;
+    }
+
+    body {
+      font-family: 'soleil', 'Inter', sans-serif;
+      background: #dce2e8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      max-height: calc(100vh - 48px);
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .phone-notch {
+      height: 44px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .notch-pill { width: 120px; height: 34px; background: #000; border-radius: 20px; }
+
+    /* Screens */
+    .screen {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+      will-change: transform, opacity;
+    }
+    .screen.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* Nav */
+    #shared-header { flex-shrink: 0; z-index: 10; }
+    #screens-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+    .nav-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: var(--white); flex-shrink: 0; height: 52px;
+    }
+    .nav-title {
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.051px;
+    }
+    .btn-close {
+      width: 32px; height: 32px; background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); border-radius: 6px; transition: background 0.15s;
+    }
+    .btn-close:hover { background: var(--bg); }
+
+    /* Progress */
+    .progress-track { height: 12px; background: #fff; border-top: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; flex-shrink: 0; }
+    .progress-fill { height: 100%; background: var(--pink); transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+    /* Hero */
+    .hero { background: var(--bg); padding: 20px 20px 18px; text-align: center; flex-shrink: 0; }
+    .hero-illus { width: 72px; height: 72px; margin: 0 auto 12px; }
+    .hero-title {
+      color: #212529;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'soleil', sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+    .hero-sub {
+      color: #2A3539;
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    /* Body / footer */
+    .screen-body { flex: 1; min-height: 0; padding: 20px 20px 8px; overflow-y: auto; }
+    .screen-footer { padding: 12px 20px 20px; background: var(--white); flex-shrink: 0; }
+    .btn-row { display: flex; gap: 10px; }
+    .btn-row .btn-secondary { flex: 1; justify-content: center; }
+
+    .btn-primary {
+      flex: 1; background: #0ba825; color: #fff;
+      border: none; border-radius: 4px;
+      padding: 14px 16px 16px;
+      font-size: 16px; font-weight: 400; line-height: 22px; white-space: nowrap;
+      font-family: 'soleil', 'Inter', sans-serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.16);
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-primary:hover { background: #0a8c20; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+    .btn-secondary {
+      flex: 1; background: var(--white); color: #2a3539;
+      border: 1px solid #e5e5ea; border-radius: 4px;
+      padding: 14px 16px 16px;
+      font-size: 16px; font-weight: 400; line-height: 22px; white-space: nowrap;
+      font-family: 'soleil', 'Inter', sans-serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #f7f7f7; }
+    .btn-link {
+      display: block; text-align: center; color: var(--pink);
+      font-size: 13px; font-weight: 500; margin-top: 10px; cursor: pointer; text-decoration: none;
+    }
+    .btn-link:hover { text-decoration: underline; }
+
+    /* Labels, inputs */
+    .sec-label {
+      flex: 1 0 0;
+      color: #2A3539;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .label-optional {
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 140%;
+      color: #8b91a3;
+      white-space: nowrap;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 8px; display: block; font-family: 'soleil', sans-serif; }
+    .form-input {
+      width: 100%; height: 52px; border: 1px solid #e5e5ea; border-radius: 4px;
+      padding: 0 20px; font-size: 16px; font-family: 'soleil', 'Inter', sans-serif;
+      color: #2a3539; background: var(--white); outline: none;
+      letter-spacing: 0.2px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-input::placeholder { color: #8b91a3; font-size: 16px; letter-spacing: 0.2px; font-weight: 400; }
+    .form-input:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .form-hint { display: flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 12px; color: var(--muted); }
+    .location-wrap { position: relative; }
+    .location-suggestions {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
+      background: #fff; border: 1.5px solid var(--border); border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 4px 0; margin: 0; list-style: none;
+      max-height: calc(8 * 38px); overflow-y: auto;
+      display: none;
+    }
+    .location-suggestions.open { display: block; }
+    .location-suggestions li {
+      padding: 10px 14px; font-size: 13px; color: #2A3539; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid #F7F7F7;
+    }
+    .location-suggestions li:last-child { border-bottom: none; }
+    .location-suggestions li:hover { background: #F7F7F7; }
+    .location-suggestions li svg { flex-shrink: 0; opacity: 0.5; }
+
+    /* Service cards */
+    .selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .selector {
+      --sel-color: #22BF1E;
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 8px 8px 6px; width: 100%;
+      cursor: pointer; position: relative;
+      transition: border-color 0.15s; background: var(--white);
+      min-height: 80px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .selector--pink   { --sel-color: #F96073; }
+    .selector--cyan   { --sel-color: #00B8D8; }
+    .selector--teal   { --sel-color: #00BD79; }
+    .selector--orange { --sel-color: #ED7000; }
+    .selector--violet { --sel-color: #A533FF; }
+    .selector:hover { border: 2px solid #4A5A61; background: #F7F7F7; padding: 7px 7px 5px; }
+    .selector.selected { border: 2px solid var(--sel-color); padding: 7px 7px 5px; }
+    .selector-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+    .selector-check {
+      width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 4px;
+      background: var(--white); display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .selector.selected .selector-check { background: var(--sel-color); border-color: var(--sel-color); }
+    .selector-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; transform: translate(4px, -4px); }
+    .selector-icon img { width: 28px; height: 28px; transition: filter 0.15s;
+      filter: brightness(0) saturate(100%) invert(44%) sepia(4%) saturate(500%) hue-rotate(180deg) brightness(100%);
+    }
+    .selector:hover .selector-icon img {
+      filter: brightness(0) saturate(100%) invert(32%) sepia(10%) saturate(600%) hue-rotate(172deg) brightness(95%);
+    }
+    .selector.selected            .selector-icon img { filter: brightness(0) saturate(100%) invert(55%) sepia(100%) saturate(600%) hue-rotate(88deg) brightness(95%); }
+    .selector--pink.selected      .selector-icon img { filter: brightness(0) saturate(100%) invert(58%) sepia(80%) saturate(3500%) hue-rotate(317deg) brightness(102%); }
+    .selector--cyan.selected      .selector-icon img { filter: brightness(0) saturate(100%) invert(68%) sepia(50%) saturate(1500%) hue-rotate(163deg) brightness(95%); }
+    .selector--teal.selected      .selector-icon img { filter: brightness(0) saturate(100%) invert(62%) sepia(65%) saturate(900%) hue-rotate(111deg) brightness(90%); }
+    .selector--orange.selected    .selector-icon img { filter: brightness(0) saturate(100%) invert(52%) sepia(100%) saturate(1500%) hue-rotate(13deg) brightness(100%); }
+    .selector--violet.selected    .selector-icon img { filter: brightness(0) saturate(100%) invert(36%) sepia(80%) saturate(4000%) hue-rotate(263deg) brightness(105%); }
+    .selector-icon--flag img { filter: none !important; width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; }
+    .selector-label { font-size: 12px; font-weight: 400; color: var(--text); line-height: 1.16; letter-spacing: -0.3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .selector.selected .selector-label { color: var(--sel-color); }
+
+    /* Selector cards (flat/house) — same layout as .selector */
+    .selector-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .selector-card {
+      --sel-color: #22BF1E;
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 8px 8px 6px; width: 100%;
+      cursor: pointer; position: relative;
+      transition: border-color 0.15s; background: var(--white);
+      min-height: 80px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .selector-card:hover { border: 2px solid #4A5A61; background: #F7F7F7; padding: 7px 7px 5px; }
+    .selector-card.selected { border: 2px solid var(--sel-color); padding: 7px 7px 5px; }
+    .sel-radio {
+      width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 50%;
+      background: var(--white); display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .selector-card:hover .sel-radio { border-color: #4A5A61; }
+    .selector-card.selected .sel-radio { background: var(--sel-color); border-color: var(--sel-color); }
+    .sel-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; }
+    .sel-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; transform: translate(4px, -4px); }
+    .sel-icon img { width: 28px; height: 28px; display: block; transition: filter 0.15s;
+      filter: brightness(0) saturate(100%) invert(44%) sepia(4%) saturate(500%) hue-rotate(180deg) brightness(100%);
+    }
+    .selector-card:hover .sel-icon img {
+      filter: brightness(0) saturate(100%) invert(32%) sepia(10%) saturate(600%) hue-rotate(172deg) brightness(95%);
+    }
+    .selector-card.selected .sel-icon img {
+      filter: brightness(0) saturate(100%) invert(55%) sepia(100%) saturate(600%) hue-rotate(88deg) brightness(95%);
+    }
+    .sel-label { font-size: 12px; font-weight: 400; color: var(--text); line-height: 1.16; letter-spacing: -0.3px; }
+    .selector-card.selected .sel-label { color: var(--sel-color); }
+
+    /* Radio */
+    .radio-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .radio-opt { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .radio-circle {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .radio-opt.selected .radio-circle { border-color: var(--pink); background: var(--pink); }
+    .radio-dot { width: 7px; height: 7px; background: #fff; border-radius: 50%; }
+    .radio-lbl { font-size: 14px; color: var(--text); }
+
+    /* Checkbox */
+    .check-opt { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding: 3px 0; user-select: none; }
+    .check-box {
+      width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 4px;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .check-opt.checked .check-box { background: var(--pink); border-color: var(--pink); }
+    .check-opt.green.checked .check-box { background: var(--green); border-color: var(--green); }
+    .check-lbl { font-size: 14px; color: var(--text); line-height: 1.4; }
+
+    /* Textarea */
+    .form-textarea {
+      width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 12px; font-size: 14px; font-family: 'soleil', 'Inter', sans-serif;
+      color: var(--text); background: var(--white); outline: none;
+      resize: none; transition: border-color 0.15s; line-height: 1.55;
+    }
+    .form-textarea:focus { border-color: var(--blue); }
+    .form-textarea::placeholder { color: var(--dim); }
+
+    /* Day buttons */
+    .day-row { display: flex; gap: 4px; background: #fff; border: 1px solid #e5e5ea; border-radius: 4px; padding: 4px; }
+    .day-btn {
+      flex: 1; padding: 12px 0; border-radius: 2px; border: 1px solid transparent;
+      background: #f7f7f7; font-size: 16px; font-weight: 400;
+      font-family: 'soleil', 'Inter', sans-serif; color: #4a5a61; cursor: pointer;
+      transition: all 0.15s; text-align: center; line-height: 20px;
+    }
+    .day-btn.selected { border-color: #d3f2d2; background: #eff9ef; color: #22bf1e; }
+
+    /* Select */
+    .form-select {
+      width: 100%; height: 52px; border: 1px solid #e5e5ea; border-radius: 4px;
+      padding: 0 44px 0 20px; font-size: 16px; font-family: 'soleil', 'Inter', sans-serif;
+      color: #2a3539; letter-spacing: 0.2px; background: var(--white); appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23F96073' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 20px center; cursor: pointer; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-select:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+
+    /* Sitter avatars */
+    .sitter-avatars { display: flex; justify-content: center; margin-bottom: 2px; }
+    .sitter-avatars img { height: 52px; width: auto; }
+
+    /* Privacy note */
+    .privacy-note {
+      background: var(--blue-light); border-radius: 8px; padding: 12px 14px;
+      display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+    }
+    .privacy-note-txt { font-size: 13px; color: var(--text); line-height: 1.45; }
+
+    /* Phone input */
+    .phone-wrap {
+      display: flex; border: 1px solid #e5e5ea; border-radius: 4px;
+      overflow: hidden; background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .phone-wrap:focus-within { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .phone-prefix {
+      display: flex; align-items: center; gap: 6px; padding: 0 16px;
+      border-right: 1px solid #e5e5ea; font-size: 16px; color: #2a3539;
+      background: #f7f7f7; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      font-family: 'soleil', 'Inter', sans-serif; letter-spacing: 0.2px;
+    }
+    .phone-num {
+      flex: 1; height: 52px; border: none; padding: 0 16px;
+      font-size: 16px; font-family: 'soleil', 'Inter', sans-serif; color: #2a3539;
+      outline: none; background: transparent; letter-spacing: 0.2px;
+    }
+    .phone-num::placeholder { color: #8b91a3; font-size: 16px; letter-spacing: 0.2px; }
+
+    /* Datetime row (one-time frequency) */
+    .datetime-row {
+      display: flex;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+      margin-top: 8px;
+    }
+    .dt-cell {
+      display: flex; align-items: center; gap: 8px;
+      flex: 1; min-width: 0; height: 52px;
+      padding: 0 12px;
+      border-right: 1px solid #e5e5ea;
+    }
+    .dt-cell:last-child { border-right: none; }
+    .dt-field {
+      flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+      font-size: 16px; font-family: 'soleil', 'Inter', sans-serif;
+      color: #2a3539; letter-spacing: 0.2px;
+      -webkit-appearance: none; appearance: none;
+    }
+    .dt-field::-webkit-calendar-picker-indicator { display: none; }
+    .dt-field::placeholder { color: #bec2ce; }
+    .dt-icon { flex-shrink: 0; width: 18px; height: 18px; opacity: 0.6; }
+    .dt-arrows { flex-shrink: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; opacity: 0.4; }
+    .dt-arrows svg { display: block; }
+
+    /* Misc */
+    .ai-lbl { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; font-family: 'soleil', sans-serif; }
+    .post-note { font-size: 12px; font-weight: 350; color: #2a3539; text-align: center; margin-top: 8px; line-height: 1.5; letter-spacing: -0.16px; font-family: 'soleil', sans-serif; }
+    .mt8 { margin-top: 8px; } .mt12 { margin-top: 12px; } .mt14 { margin-top: 14px; } .mt16 { margin-top: 16px; }
+
+    /* Pill hints */
+    .pill-hint { display: flex; align-items: center; gap: 6px; margin: 12px 0 8px; font-size: 12px; color: #6C757D; font-family: 'soleil', sans-serif; }
+    .pill-row { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 12px; scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color 0.2s; }
+    .pill-row:hover { scrollbar-color: #CFC2FF transparent; }
+    .pill-row::-webkit-scrollbar { height: 3px; }
+    .pill-row::-webkit-scrollbar-track { background: transparent; }
+    .pill-row::-webkit-scrollbar-thumb { background: transparent; border-radius: 99px; transition: background 0.2s; }
+    .pill-row:hover::-webkit-scrollbar-thumb { background: #CFC2FF; }
+    .detail-pill {
+      border: none; border-radius: 64px;
+      padding: 4px 10px; font-size: 14px; color: #4C24EC;
+      background: #EDEBFF; cursor: pointer; transition: background 0.15s;
+      font-family: 'soleil', sans-serif; font-weight: 400; white-space: nowrap; flex-shrink: 0;
+    }
+    .detail-pill:hover { background: #CFC2FF; }
+    .detail-pill.filled { background: #EFF9EF; color: #0BA825; }
+
+    /* Radio button options */
+    .radio-group { display: flex; flex-direction: column; gap: 12px; padding-left: 8px; }
+    .radio-opt {
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; user-select: none;
+    }
+    .radio-dot {
+      width: 16px; height: 16px; flex-shrink: 0;
+      border-radius: 50%; border: 1.5px solid #bec2ce;
+      background: #fff; display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.12s;
+    }
+    .radio-opt.selected .radio-dot {
+      border-color: #f96073; border-width: 4px;
+    }
+    .radio-lbl {
+      font-size: 16px; font-family: 'soleil', sans-serif;
+      color: #4a5a61; letter-spacing: -0.32px; line-height: 24px;
+    }
+    .radio-section-label {
+      font-size: 16px; font-weight: 450; color: #2a3539;
+      font-family: 'soleil', sans-serif; line-height: 1.4;
+      padding-top: 8px; margin-bottom: 0;
+    }
+
+    /* Exit intent modal */
+    @keyframes exitBackdropIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes exitModalIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #exit-backdrop {
+      position: absolute; inset: 0; z-index: 400;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      animation: exitBackdropIn 0.25s ease forwards;
+    }
+    #exit-backdrop.open { display: block; }
+    #exit-modal {
+      position: absolute;
+      top: 20%; left: 16px; right: 16px;
+      background: #fff; border-radius: 8px;
+      padding: 48px 20px 20px 20px;
+      display: flex; flex-direction: column; gap: 16px;
+      animation: exitModalIn 0.3s ease 0.2s both;
+    }
+    .exit-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px; border: none; background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+      opacity: 0.4; font-size: 22px; color: #2a3539; line-height: 1;
+    }
+    .exit-header { display: flex; gap: 8px; align-items: flex-start; }
+    .exit-doodle { width: 42px; height: 42px; flex-shrink: 0; }
+    .exit-title {
+      flex: 1; font-size: 24px; font-weight: 450; color: #2a3539;
+      line-height: 1.32; letter-spacing: -0.2px;
+      font-family: 'soleil', sans-serif; padding-top: 4px;
+    }
+    .exit-body {
+      font-size: 16px; font-weight: 350; color: #2a3539;
+      line-height: 1.5; letter-spacing: -0.24px;
+      font-family: 'soleil', sans-serif;
+    }
+    .exit-footer { display: flex; gap: 16px; padding-top: 8px; }
+    .exit-footer .btn-secondary { flex: 0 0 auto; }
+    .exit-footer .btn-primary {
+      flex: 1; background: #f96073;
+      box-shadow: inset 0 -3px 0 #e6213a;
+    }
+    .exit-footer .btn-primary:hover { background: #e6213a; }
+
+    /* Pill modal */
+    #pill-modal {
+      position: absolute; inset: 0; z-index: 200;
+      background: #fff; display: none; flex-direction: column;
+      border-radius: 8px;
+      padding: 48px 20px 20px 20px;
+    }
+    #pill-modal.open { display: flex; }
+    .pm-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px; border: none; background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+      opacity: 0.4; font-size: 22px; color: #2a3539; line-height: 1;
+    }
+    .pm-header { display: flex; align-items: flex-start; gap: 8px; flex-shrink: 0; width: 100%; }
+    .pm-icon-wrap { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .pm-icon-wrap img { width: 42px; height: 42px; display: block; }
+    .pm-title { flex: 1; font-size: 20px; font-weight: 450; color: #2a3539; line-height: 1.4; letter-spacing: -0.2px; font-family: 'soleil', sans-serif; padding-top: 4px; min-width: 0; }
+    .pm-body { flex: 1; overflow-y: auto; }
+    .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
+    .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 0; }
+    .pm-selector {
+      min-height: 80px;
+      border: 1px solid #bec2ce; border-radius: 4px;
+      background: #fff; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 8px 8px 6px 8px;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .pm-selector:hover { border: 2px solid #4a5a61; background: #f7f7f7; padding: 7px 7px 5px 7px; }
+    .pm-selector.selected {
+      border: 2px solid #22bf1e;
+      padding: 7px 7px 5px 7px;
+    }
+    .pm-selector:hover.selected { border-color: #22bf1e; background: #fff; }
+    .pm-selector-top { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
+    .pm-selector-check {
+      width: 20px; height: 20px; flex-shrink: 0;
+      border: 1.5px solid var(--border); border-radius: 4px; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .pm-selector.selected .pm-selector-check { background: #22bf1e; border-color: #22bf1e; }
+    .pm-selector-icon { font-size: 18px; line-height: 20px; height: 20px; display: flex; align-items: center; }
+    .needs-icon { width: 24px; height: 24px; display: block; object-fit: contain; }
+    .pm-selector-label {
+      font-size: 12px; font-family: 'soleil', sans-serif; color: #4a5a61;
+      line-height: 1.16; letter-spacing: -0.3px;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      width: 100%;
+    }
+    .pm-selector.selected .pm-selector-label { color: #22bf1e; }
+    .pm-more-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 14px; color: #f96073; cursor: pointer;
+      font-family: 'soleil', sans-serif;
+      text-decoration: underline; padding-bottom: 5px;
+    }
+    .pm-footer { display: flex; gap: 16px; flex-shrink: 0; padding-top: 8px; }
+    .pm-footer .btn-secondary { flex: 0 0 auto; }
+    .pm-footer .btn-primary { padding-left: 24px; padding-right: 24px; }
+    .flag-icon { width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; display: block; }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-notch"><div class="notch-pill"></div></div>
+
+  <!-- Shared header (static, outside animation) -->
+  <div id="shared-header">
+    <div class="nav-header">
+      <img src="hlidacky-logo_small.svg" width="32" height="32" alt="Hlídačky.cz">
+      <span class="nav-title" data-i18n="nav.title"></span>
+      <button class="btn-close" onclick="closeFlow()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="#6b7176" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="shared-progress-fill"></div></div>
+  </div>
+
+  <div id="screens-wrap">
+  <!-- ===== SCREEN 1: Service selection ===== -->
+  <div class="screen" id="s-service">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/magnifying-glass.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="service.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="service.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="service.sectionLabel"></p>
+      <div class="selector-grid">
+        <div class="selector selector--pink" onclick="toggleService('babysitting',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-babysitting.svg" width="32" height="32" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="service.babysitting"></div>
+        </div>
+        <div class="selector selector--cyan" onclick="toggleService('cleaning',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-cleaning.svg" width="32" height="32" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="service.cleaning"></div>
+        </div>
+        <div class="selector selector--teal" onclick="toggleService('pet',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-pet-care.svg" width="32" height="32" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="service.pet"></div>
+        </div>
+        <div class="selector selector--orange" onclick="toggleService('senior',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-senior-care.svg" width="32" height="32" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="service.senior"></div>
+        </div>
+        <div class="selector selector--violet" onclick="toggleService('tutoring',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-tutoring.svg" width="32" height="32" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="service.tutoring"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" id="btn-service-next" disabled onclick="goNext()">
+          <span data-i18n="nav.btnNext"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2: Location ===== -->
+  <div class="screen" id="s-location">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/map-with-pin.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" id="loc-title"></h2>
+      <p class="hero-sub" data-i18n="location.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <div class="form-group">
+        <label class="form-label" data-i18n="location.inputLabel"></label>
+        <div class="location-wrap">
+          <input type="text" class="form-input" id="location-input" data-i18n-placeholder="location.inputPlaceholder" autocomplete="off">
+          <ul class="location-suggestions" id="location-suggestions"></ul>
+        </div>
+        <div class="form-hint">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="location.hint"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.btnPrev"></span>
+        </button>
+        <button class="btn-primary" onclick="goNext()">
+          <span data-i18n="nav.btnNext"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2b: Location — tutoring only ===== -->
+  <div class="screen" id="s-location-tutoring">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/house-with-car.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="locationTutoring.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="locationTutoring.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="locationTutoring.sectionLabel"></p>
+      <div class="selector-grid">
+        <div class="selector" onclick="toggleTutoringLoc('student', this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-student-place.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="locationTutoring.studentPlace"></div>
+        </div>
+        <div class="selector" onclick="toggleTutoringLoc('tutor', this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-tutor-place.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="locationTutoring.tutorPlace"></div>
+        </div>
+        <div class="selector" onclick="toggleTutoringLoc('online', this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-online.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="locationTutoring.online"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2c: Subjects — tutoring ===== -->
+  <div class="screen" id="s-subjects">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/books.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="subjects.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="subjects.heroSub"></p>
+    </div>
+
+    <div class="screen-body" style="overflow-y:auto; padding-bottom:8px;">
+
+      <!-- Languages -->
+      <p class="sec-label" data-i18n="subjects.languagesLabel"></p>
+      <div class="selector-grid" style="padding:8px 0;">
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-cz.svg" alt="CZ"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.cs"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-en.svg" alt="EN"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.en"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-de.svg" alt="DE"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.de"></div>
+        </div>
+        <div class="selector selector--violet" id="subj-fr" style="display:none" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-fr.svg" alt="FR"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.fr"></div>
+        </div>
+        <div class="selector selector--violet" id="subj-it" style="display:none" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-it.svg" alt="IT"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.it"></div>
+        </div>
+        <div class="selector selector--violet" id="subj-es" style="display:none" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon selector-icon--flag"><img src="doodles/flag-es.svg" alt="ES"></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.es"></div>
+        </div>
+      </div>
+      <a class="pm-more-link" id="more-langs-link" onclick="showMoreLanguages()" data-i18n="subjects.moreLanguages"></a>
+
+      <!-- Science -->
+      <p class="sec-label" style="margin-top:12px;" data-i18n="subjects.scienceLabel"></p>
+      <div class="selector-grid" style="padding:8px 0;">
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-physics.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.physics"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-math.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.math"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-chemistry.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.chemistry"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-biology.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.biology"></div>
+        </div>
+      </div>
+
+      <!-- Music -->
+      <p class="sec-label" style="margin-top:12px;" data-i18n="subjects.musicLabel"></p>
+      <div class="selector-grid" style="padding:8px 0;">
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-singing.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.singing"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-piano.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.piano"></div>
+        </div>
+        <div class="selector selector--violet" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-guitar.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="subjects.guitar"></div>
+        </div>
+        <div class="selector selector--violet" id="subj-music-other" style="display:none" onclick="this.classList.toggle('selected')">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M10.5 7V18.375C10.5 19.755 9.38 20.875 8 20.875C6.62 20.875 5.5 19.755 5.5 18.375C5.5 16.995 6.62 15.875 8 15.875C8.875 15.875 9.625 16.25 10.5 16.625M10.5 7L22.75 4.375V15.75C22.75 17.13 21.63 18.25 20.25 18.25C18.87 18.25 17.75 17.13 17.75 15.75C17.75 14.37 18.87 13.25 20.25 13.25C21.125 13.25 21.875 13.625 22.75 14M10.5 7L22.75 4.375" stroke="#4A5A61" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="selector-label">Iné</div>
+        </div>
+      </div>
+      <a class="pm-more-link" id="more-music-link" onclick="showMoreMusic()" data-i18n="subjects.moreMusic"></a>
+
+      <!-- Other subject -->
+      <p class="sec-label" style="margin-top:16px;" data-i18n="subjects.otherLabel"></p>
+      <textarea class="form-textarea" style="margin-top:8px;" data-i18n-placeholder="subjects.otherPlaceholder"></textarea>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3a: Cleaning type ===== -->
+  <div class="screen" id="s-cleaning">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/iron-and-washing-machine.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="cleaning.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="cleaning.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="cleaning.sectionLabel"></p>
+      <div class="selector-row" id="cleaning-sel">
+        <div class="selector-card selected" onclick="selectOne('cleaning-sel',this,'flat')">
+          <div class="selector-top">
+            <div class="sel-radio"><div class="sel-dot"></div></div>
+            <div class="sel-icon"><img src="doodles/icon-flat.svg" alt=""></div>
+          </div>
+          <div class="sel-label" data-i18n="cleaning.flat"></div>
+        </div>
+        <div class="selector-card" onclick="selectOne('cleaning-sel',this,'house')">
+          <div class="selector-top">
+            <div class="sel-radio"></div>
+            <div class="sel-icon"><img src="doodles/icon-house.svg" alt=""></div>
+          </div>
+          <div class="sel-label" data-i18n="cleaning.house"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3b: Pet type ===== -->
+  <div class="screen" id="s-pet">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/dog-and-cat.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="pet.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="pet.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="pet.sectionLabel"></p>
+      <div class="selector-grid">
+        <div class="selector" onclick="togglePet('dogs',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-dog.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="pet.dogs"></div>
+        </div>
+        <div class="selector" onclick="togglePet('cats',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-cat.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="pet.cats"></div>
+        </div>
+        <div class="selector" onclick="togglePet('other',this)">
+          <div class="selector-top">
+            <div class="selector-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="selector-icon"><img src="doodles/icon-other-animals.svg" width="28" height="28" alt=""></div>
+          </div>
+          <div class="selector-label" data-i18n="pet.other"></div>
+        </div>
+      </div>
+      <div class="mt14" id="large-pet-wrap" style="display:none">
+        <div class="check-opt green" id="large-pet" onclick="toggleCheck('large-pet')">
+          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="check-lbl" data-i18n="pet.largePet"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4c: Senior care specifics (senior only) ===== -->
+  <div class="screen" id="s-senior-care">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/doodle-senior-care.png" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="seniorCare.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="seniorCare.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="radio-section-label" data-i18n="seniorCare.careTypeLabel"></p>
+      <div class="radio-group" style="margin-top:12px;">
+        <div class="radio-opt selected" onclick="selectRadio(this, 'senior-care-type')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="seniorCare.liveIn"></span>
+        </div>
+        <div class="radio-opt" onclick="selectRadio(this, 'senior-care-type')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="seniorCare.fullTime"></span>
+        </div>
+        <div class="radio-opt" onclick="selectRadio(this, 'senior-care-type')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="seniorCare.partTime"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4b: Frequency — pet only ===== -->
+  <div class="screen" id="s-frequency-pet">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/calendar-cursor.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="frequencyPet.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="frequencyPet.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="radio-section-label" data-i18n="frequencyPet.howOftenLabel"></p>
+      <div class="radio-group" style="margin-top:12px; margin-bottom:20px;">
+        <div class="radio-opt selected" onclick="selectRadio(this, 'pet-freq')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="frequencyPet.onetime"></span>
+        </div>
+        <div class="radio-opt" onclick="selectRadio(this, 'pet-freq')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="frequencyPet.regularly"></span>
+        </div>
+      </div>
+
+      <p class="radio-section-label" data-i18n="frequencyPet.whereLabel"></p>
+      <div class="radio-group" style="margin-top:12px;">
+        <div class="radio-opt selected" onclick="selectRadio(this, 'pet-where')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="frequencyPet.atMyHome"></span>
+        </div>
+        <div class="radio-opt" onclick="selectRadio(this, 'pet-where')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="frequencyPet.atSitterHome"></span>
+        </div>
+        <div class="radio-opt" onclick="selectRadio(this, 'pet-where')">
+          <div class="radio-dot"></div>
+          <span class="radio-lbl" data-i18n="frequencyPet.dontCare"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4: Frequency ===== -->
+  <div class="screen" id="s-frequency">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/calendar-cursor.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="frequency.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="frequency.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="frequency.sectionLabel"></p>
+      <div class="radio-group" id="freq-radios">
+        <div class="radio-opt selected" onclick="selectFreq('regularly',this)">
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+          <span class="radio-lbl" data-i18n="frequency.regularly"></span>
+        </div>
+        <div class="radio-opt" onclick="selectFreq('onetime',this)">
+          <div class="radio-circle"></div>
+          <span class="radio-lbl" data-i18n="frequency.onetime"></span>
+        </div>
+        <div class="radio-opt" onclick="selectFreq('notsure',this)">
+          <div class="radio-circle"></div>
+          <span class="radio-lbl" data-i18n="frequency.notsure"></span>
+        </div>
+      </div>
+
+      <div id="freq-regular" style="padding-top:16px;">
+        <p class="sec-label" style="display:flex;align-items:center;gap:6px;">
+          <span data-i18n="frequency.dateLabelRegular"></span>
+          <span class="label-optional" data-i18n="frequency.optional"></span>
+        </p>
+        <textarea class="form-textarea" id="freq-textarea" style="margin-top:8px;" data-i18n-placeholder="frequency.datePlaceholder"></textarea>
+      </div>
+
+      <div id="freq-onetime" style="display:none; padding-top:16px;">
+        <p class="sec-label" style="display:flex;align-items:center;gap:6px;">
+          <span data-i18n="frequency.dateLabel"></span>
+          <span class="label-optional" data-i18n="frequency.optional"></span>
+        </p>
+        <div class="datetime-row">
+          <!-- Date -->
+          <div class="dt-cell" style="flex:1.2;">
+            <svg class="dt-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 1v2M12 1v2M2.25 6.5h13.5M3.5 3h11A1.5 1.5 0 0 1 16 4.5v11A1.5 1.5 0 0 1 14.5 17h-11A1.5 1.5 0 0 1 2 15.5v-11A1.5 1.5 0 0 1 3.5 3Z" stroke="#4a5a61" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" class="dt-field" id="freq-date">
+            <div class="dt-arrows">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L5 1L9 5" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <!-- From time -->
+          <div class="dt-cell">
+            <svg class="dt-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="7.25" stroke="#4a5a61" stroke-width="1.2"/>
+              <path d="M9 5.5V9.25l2.5 2.5" stroke="#4a5a61" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" class="dt-field" id="freq-time-from" placeholder="16:00">
+          </div>
+          <!-- To time -->
+          <div class="dt-cell">
+            <svg class="dt-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="7.25" stroke="#4a5a61" stroke-width="1.2"/>
+              <path d="M9 5.5V9.25l2.5 2.5" stroke="#4a5a61" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" class="dt-field" id="freq-time-to" placeholder="19:00">
+          </div>
+        </div>
+      </div>
+
+      <div class="mt14">
+        <div class="check-opt" id="longterm" onclick="toggleCheck('longterm')">
+          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="check-lbl" data-i18n="frequency.longterm"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5: Review post ===== -->
+  <div class="screen" id="s-review">
+
+    <div class="hero" style="padding-bottom:14px">
+      <div class="sitter-avatars">
+        <img src="doodles/sitter-group.png" alt="Hlídačky">
+      </div>
+      <h2 class="hero-title mt8" data-i18n="review.heroTitle"></h2>
+      <p class="hero-sub">
+        <span data-i18n="review.heroSub1"></span><br>
+        <span style="color:var(--text);font-weight:500" data-i18n="review.heroSub2"></span>
+      </p>
+    </div>
+
+    <div class="screen-body">
+      <p class="ai-lbl" data-i18n="review.aiLabel"></p>
+      <textarea class="form-textarea" id="review-text" style="min-height:150px"></textarea>
+      <div class="pill-hint">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#6C757D" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#6C757D" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span data-i18n="review.hintLabel"></span>
+      </div>
+      <div class="pill-row">
+        <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
+        <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
+        <button class="detail-pill" id="pill-price" onclick="openPillModal('price')" data-i18n="review.pillPrice"></button>
+      </div>
+      <div class="privacy-note">
+        <span style="font-size:18px;flex-shrink:0;margin-top:1px">🤫</span>
+        <p class="privacy-note-txt" data-i18n="review.privacyNote"></p>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()">
+          <span data-i18n="review.btnPost"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="post-note" data-i18n="review.footerNote"></p>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 6: Name & Email ===== -->
+  <div class="screen active" id="s-contact">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/envelope.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="contact.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="contact.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <div class="form-group">
+        <label class="form-label" data-i18n="contact.nameLabel"></label>
+        <input type="text" class="form-input" data-i18n-placeholder="contact.namePlaceholder">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contact.emailLabel"></label>
+        <input type="email" class="form-input" id="contact-email" value="jana.novakova@email.cz" data-i18n-placeholder="contact.emailPlaceholder">
+      </div>
+      <p class="sec-label mt8" data-i18n="contact.emailPrefsLabel"></p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="check-opt checked" id="email-monthly" onclick="toggleCheck('email-monthly')">
+          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="check-lbl" data-i18n="contact.emailMonthly"></span>
+        </div>
+        <div class="check-opt checked" id="email-offers" onclick="toggleCheck('email-offers')">
+          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="check-lbl" data-i18n="contact.emailOffers"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 7: Phone ===== -->
+  <div class="screen" id="s-phone">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/phone.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="phone.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="phone.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <div class="form-group">
+        <label class="form-label" data-i18n="phone.inputLabel"></label>
+        <div class="phone-wrap">
+          <div class="phone-prefix">🇨🇿 (+420)<svg width="10" height="7" viewBox="0 0 10 7" fill="none" style="margin-left:4px"><path d="M1 1L5 6L9 1" stroke="#6b7176" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <input type="tel" class="phone-num" data-i18n-placeholder="phone.inputPlaceholder">
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <a class="btn-link" onclick="goNext()" data-i18n="phone.skipLink"></a>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 8: Success ===== -->
+  <div class="screen" id="s-success">
+
+    <div class="hero">
+      <div class="hero-illus"><img src="doodles/congratulations.svg" width="72" height="72" alt=""></div>
+      <h2 class="hero-title" data-i18n="success.heroTitle"></h2>
+      <p class="hero-sub" id="success-sub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p style="font-size:14px;color:var(--text);line-height:1.65;text-align:center;padding-top:8px" data-i18n="success.body"></p>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-primary" onclick="restartFlow()">
+          <span data-i18n="success.btnContinue"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <a class="btn-link" style="color:var(--muted)" data-i18n="success.editLink"></a>
+    </div>
+  </div>
+
+  </div><!-- /screens-wrap -->
+
+  <!-- ===== EXIT INTENT MODAL ===== -->
+  <div id="exit-backdrop">
+    <div id="exit-modal">
+      <button class="exit-close" onclick="closeExitModal()">&#x2715;</button>
+      <div class="exit-header">
+        <img class="exit-doodle" src="doodles/doodle-exit.svg" alt="">
+        <div class="exit-title" data-i18n="exitModal.title"></div>
+      </div>
+      <div class="exit-body" data-i18n="exitModal.body"></div>
+      <div class="exit-footer">
+        <button class="btn-secondary" onclick="exitFlow()" data-i18n="exitModal.leave"></button>
+        <button class="btn-primary" onclick="closeExitModal()" data-i18n="exitModal.stay"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PILL MODAL ===== -->
+  <div id="pill-modal">
+    <button class="pm-close" onclick="closePillModal()">&#x2715;</button>
+    <div class="pm-header">
+      <div class="pm-icon-wrap" id="pm-icon"></div>
+      <div class="pm-title" id="pm-title"></div>
+    </div>
+    <div class="pm-body" id="pm-body"></div>
+    <div class="pm-footer">
+      <button class="btn-secondary" onclick="closePillModal()" data-i18n="review.modalCancel"></button>
+      <button class="btn-primary" onclick="applyPill()" data-i18n="review.modalAdd"></button>
+    </div>
+  </div>
+
+</div><!-- /phone-frame -->
+
+<script>
+  // ============================================================
+  // i18n — resolve "a.b.c" key paths against STRINGS object
+  // ============================================================
+  function t(key) {
+    return key.split('.').reduce((obj, k) => obj && obj[k], STRINGS) ?? key;
+  }
+
+  function applyStrings() {
+    // textContent
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    // placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.placeholder = t(el.dataset.i18nPlaceholder);
+    });
+    // Dynamic day buttons
+    const dayRow = document.getElementById('day-row');
+    if (dayRow) {
+      const days = STRINGS.frequency.days;
+      const defaultSelected = [];
+      dayRow.innerHTML = Object.entries(days).map(([k, v]) =>
+        `<button class="day-btn${defaultSelected.includes(k) ? ' selected' : ''}" onclick="toggleDay(this)">${v}</button>`
+      ).join('');
+    }
+    // Frequency select options
+    const freqSel = document.getElementById('freq-select');
+    if (freqSel) {
+      freqSel.innerHTML = STRINGS.frequency.freqOptions.map(o => `<option>${o}</option>`).join('');
+    }
+  }
+
+  // ============================================================
+  // Flow state
+  // ============================================================
+  const selectedServices = new Set();
+  const selectedPets = new Set();
+  let currentIdx = 0;
+  let navDirection = 'forward';
+
+  function buildFlow() {
+    const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
+    const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
+    const seniorOnly = selectedServices.has('senior') && selectedServices.size === 1;
+
+    if (tutoringOnly) {
+      return ['contact', 'service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success'];
+    }
+
+    const flow = ['contact', 'service', 'location'];
+    if (selectedServices.has('cleaning')) flow.push('cleaning');
+    if (selectedServices.has('pet')) flow.push('pet');
+    if (selectedServices.has('tutoring')) flow.push('subjects');
+    if (seniorOnly) {
+      flow.push('senior-care');
+    } else {
+      flow.push(petOnly ? 'frequency-pet' : 'frequency');
+    }
+    flow.push('review', 'phone', 'success');
+    return flow;
+  }
+
+  function selectRadio(el, group) {
+    el.closest('.radio-group').querySelectorAll('.radio-opt').forEach(function(opt) {
+      opt.classList.remove('selected');
+    });
+    el.classList.add('selected');
+  }
+
+  function showScreen(id) {
+    const flow = buildFlow();
+    const newEl = document.getElementById('s-' + id);
+    const oldEl = document.querySelector('.screen.active');
+
+    // Update shared progress bar
+    const pct = Math.round(50 + (currentIdx / (flow.length - 1)) * 50);
+    const fill = document.getElementById('shared-progress-fill');
+    if (fill) fill.style.width = pct + '%';
+
+    // Callbacks before animation
+    if (id === 'location') updateLocTitle();
+    if (id === 'review') updateReviewText();
+    if (id === 'success') updateSuccessSub();
+
+    if (!oldEl || oldEl === newEl) {
+      newEl.classList.add('active');
+      return;
+    }
+
+    const forward = navDirection === 'forward';
+
+    // Position incoming screen off-screen (no transition)
+    newEl.style.transition = 'none';
+    newEl.style.transform = forward ? 'translateX(100%)' : 'translateX(-22%)';
+    newEl.style.opacity = '0';
+    newEl.offsetHeight; // force reflow
+
+    // Animate incoming in
+    newEl.style.transition = '';
+    newEl.style.transform = '';
+    newEl.style.opacity = '';
+    newEl.classList.add('active');
+
+    // Animate outgoing out
+    oldEl.classList.remove('active');
+    oldEl.style.transition = 'transform 0.36s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease';
+    oldEl.style.transform = forward ? 'translateX(-22%)' : 'translateX(100%)';
+    oldEl.style.opacity = '0';
+
+    setTimeout(() => {
+      oldEl.style.transition = '';
+      oldEl.style.transform = '';
+      oldEl.style.opacity = '';
+    }, 380);
+  }
+
+  function goNext() {
+    const flow = buildFlow();
+    if (currentIdx < flow.length - 1) { currentIdx++; navDirection = 'forward'; showScreen(flow[currentIdx]); }
+  }
+  function goPrev() {
+    const flow = buildFlow();
+    if (currentIdx > 0) { currentIdx--; navDirection = 'backward'; showScreen(flow[currentIdx]); }
+  }
+  function closeFlow() {
+    const flow = buildFlow();
+    if (flow[currentIdx] === 'success') { restartFlow(); return; }
+    openExitModal();
+  }
+  function openExitModal() {
+    applyStrings();
+    document.getElementById('exit-backdrop').classList.add('open');
+  }
+  function closeExitModal() {
+    document.getElementById('exit-backdrop').classList.remove('open');
+  }
+  function exitFlow() {
+    closeExitModal();
+    restartFlow();
+  }
+  function restartFlow() {
+    selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
+    document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
+    document.getElementById('btn-service-next').disabled = true;
+    showScreen('contact');
+  }
+
+  // ============================================================
+  // Interactions
+  // ============================================================
+  function toggleService(service, card) {
+    selectedServices[selectedServices.has(service) ? 'delete' : 'add'](service);
+    card.classList.toggle('selected', selectedServices.has(service));
+    document.getElementById('btn-service-next').disabled = selectedServices.size === 0;
+  }
+
+  function toggleTutoringLoc(loc, card) {
+    card.classList.toggle('selected');
+  }
+
+  function showMoreLanguages() {
+    ['subj-fr','subj-it','subj-es'].forEach(id => {
+      document.getElementById(id).style.display = '';
+    });
+    document.getElementById('more-langs-link').style.display = 'none';
+  }
+
+  function showMoreMusic() {
+    document.getElementById('subj-music-other').style.display = '';
+    document.getElementById('more-music-link').style.display = 'none';
+  }
+
+  function togglePet(pet, card) {
+    selectedPets[selectedPets.has(pet) ? 'delete' : 'add'](pet);
+    card.classList.toggle('selected', selectedPets.has(pet));
+    document.getElementById('large-pet-wrap').style.display = selectedPets.has('dogs') ? '' : 'none';
+  }
+
+  function selectOne(groupId, card) {
+    document.querySelectorAll('#' + groupId + ' .selector-card').forEach(c => {
+      c.classList.remove('selected');
+      const r = c.querySelector('.sel-radio');
+      if (r) r.innerHTML = '';
+    });
+    card.classList.add('selected');
+    const radio = card.querySelector('.sel-radio');
+    if (radio) radio.innerHTML = '<div class="sel-dot"></div>';
+  }
+
+  function selectFreq(val, el) {
+    document.querySelectorAll('#freq-radios .radio-opt').forEach(r => {
+      r.classList.remove('selected');
+      const d = r.querySelector('.radio-dot');
+      if (d) d.remove();
+    });
+    el.classList.add('selected');
+    const circle = el.querySelector('.radio-circle');
+    if (!circle.querySelector('.radio-dot')) {
+      const dot = document.createElement('div');
+      dot.className = 'radio-dot';
+      circle.appendChild(dot);
+    }
+    document.getElementById('freq-regular').style.display = val === 'regularly' ? '' : 'none';
+    document.getElementById('freq-onetime').style.display = val === 'onetime' ? '' : 'none';
+    document.getElementById('longterm').style.display = val === 'notsure' ? 'none' : '';
+  }
+
+  function toggleDay(btn) { btn.classList.toggle('selected'); }
+  function toggleCheck(id) { document.getElementById(id).classList.toggle('checked'); }
+
+  // ============================================================
+  // Dynamic text
+  // ============================================================
+  function updateLocTitle() {
+    const names = [...selectedServices].map(s => t('location.serviceNames.' + s));
+    let label = t('location.titleFallback');
+    const and = t('location.titleAnd');
+    if (names.length === 1) label = names[0];
+    else if (names.length === 2) label = names.join(` ${and} `);
+    else label = names.slice(0, -1).join(', ') + ` ${and} ` + names[names.length - 1];
+    document.getElementById('loc-title').textContent = `${t('location.titlePrefix')} ${label}?`;
+  }
+
+  let _typewriterTimer = null;
+
+  function updateReviewText() {
+    const firstService = [...selectedServices][0] || 'babysitting';
+    const fullText = t('review.generatedTexts.' + firstService);
+    const ta = document.getElementById('review-text');
+
+    // cancel any running typewriter
+    if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+
+    ta.value = '';
+    ta.style.opacity = '1';
+    let i = 0;
+    const speed = 12; // ms per character
+
+    function type() {
+      if (i < fullText.length) {
+        ta.value += fullText[i++];
+        ta.scrollTop = ta.scrollHeight;
+        _typewriterTimer = setTimeout(type, speed);
+      } else {
+        _typewriterTimer = null;
+      }
+    }
+
+    // short delay before starting so the screen transition settles
+    _typewriterTimer = setTimeout(type, 300);
+  }
+
+  function updateSuccessSub() {
+    const city = document.getElementById('location-input').value || 'Prague';
+    document.getElementById('success-sub').textContent = t('success.heroSub').replace('{city}', city);
+  }
+
+  // ============================================================
+  // Location suggestions
+  // ============================================================
+  const LOCATION_SUGGESTIONS = [
+    'Václavské náměstí, Praha 1',
+    'Náměstí Míru, Praha 2',
+    'Náměstí Svobody, Brno',
+    'Masarykovo náměstí, Ostrava',
+    'Náměstí Republiky, Plzeň',
+    'Karlovo náměstí, Praha 2',
+    'Náměstí T. G. Masaryka, Olomouc',
+    'Horní náměstí, Olomouc',
+    'Masarykovo náměstí, Brno',
+    'Senovážné náměstí, Praha 1',
+  ];
+
+  (function initLocationSuggestions() {
+    const input = document.getElementById('location-input');
+    const list  = document.getElementById('location-suggestions');
+    if (!input || !list) return;
+
+    function pinIcon() {
+      return '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" fill="#BEC2CE"/></svg>';
+    }
+
+    function renderSuggestions(query) {
+      const q = query.trim().toLowerCase();
+      const filtered = q
+        ? LOCATION_SUGGESTIONS.filter(s => s.toLowerCase().includes(q))
+        : LOCATION_SUGGESTIONS;
+      list.innerHTML = filtered.map(s =>
+        `<li>${pinIcon()} ${s}</li>`
+      ).join('');
+      list.classList.toggle('open', filtered.length > 0);
+      list.querySelectorAll('li').forEach((li, i) => {
+        li.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          input.value = filtered[i];
+          list.classList.remove('open');
+        });
+      });
+    }
+
+    input.addEventListener('focus', () => renderSuggestions(input.value));
+    input.addEventListener('input', () => renderSuggestions(input.value));
+    input.addEventListener('blur', () => setTimeout(() => list.classList.remove('open'), 150));
+  })();
+
+  // ============================================================
+  // Pill modals
+  // ============================================================
+  const PILL_CONFIG = {
+    language: {
+      icon: 'doodles/doodle-languages.svg',
+      items: [
+        { key: 'cs', icon: '<img src="doodles/flag-cz.svg" class="flag-icon" alt="CZ">' },
+        { key: 'sk', icon: '<img src="doodles/flag-sk.svg" class="flag-icon" alt="SK">' },
+        { key: 'en', icon: '<img src="doodles/flag-en.svg" class="flag-icon" alt="EN">' },
+        { key: 'de', icon: '<img src="doodles/flag-de.svg" class="flag-icon" alt="DE">' },
+        { key: 'es', icon: '<img src="doodles/flag-es.svg" class="flag-icon" alt="ES">' },
+        { key: 'fr', icon: '<img src="doodles/flag-fr.svg" class="flag-icon" alt="FR">' },
+        { key: 'it', icon: '<img src="doodles/flag-it.svg" class="flag-icon" alt="IT">' },
+        { key: 'uk', icon: '<img src="doodles/flag-uk.svg" class="flag-icon" alt="UA">' }
+      ],
+      preSelected: ['cs']
+    },
+    needs: {
+      icon: 'doodles/doodle-wheelchair.svg',
+      items: [
+        { key: 'autism',     icon: '<img src="doodles/needs-autism.svg"     class="needs-icon" alt="">' },
+        { key: 'diabetes',   icon: '<img src="doodles/needs-diabetes.svg"   class="needs-icon" alt="">' },
+        { key: 'asthma',     icon: '<img src="doodles/needs-asthma.svg"     class="needs-icon" alt="">' },
+        { key: 'adhd',       icon: '<img src="doodles/needs-adhd.svg"       class="needs-icon" alt="">' },
+        { key: 'allergies',  icon: '<img src="doodles/needs-allergies.svg"  class="needs-icon" alt="">' },
+        { key: 'childhood',  icon: '<img src="doodles/needs-childhood.svg"  class="needs-icon" alt="">' },
+        { key: 'sleep',      icon: '<img src="doodles/needs-sleep.svg"      class="needs-icon" alt="">' },
+        { key: 'vision',     icon: '<img src="doodles/needs-vision.svg"     class="needs-icon" alt="">' },
+        { key: 'hearing',    icon: '<img src="doodles/needs-hearing.svg"    class="needs-icon" alt="">' },
+        { key: 'epilepsy',   icon: '<img src="doodles/needs-epilepsy.svg"   class="needs-icon" alt="">' },
+        { key: 'other',      icon: '<img src="doodles/needs-other.svg"      class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
+    price: {
+      icon: 'doodles/doodle-money.svg',
+      options: ['120 Kč/hod', '140 Kč/hod', '160 Kč/hod', '180 Kč/hod', '200 Kč/hod',
+                '220 Kč/hod', '240 Kč/hod', '260 Kč/hod', '280 Kč/hod', '300 Kč/hod',
+                '320 Kč/hod', '340 Kč/hod', '360 Kč/hod']
+    }
+  };
+
+  let _currentPill = null;
+
+  function checkSvg() {
+    return '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  function renderSelectorGrid(type) {
+    const cfg = PILL_CONFIG[type];
+    const strings = STRINGS.review[type];
+    return '<div class="pm-selector-grid">' + cfg.items.map(function(item) {
+      const label = strings[item.key] || item.key;
+      const sel = cfg.preSelected.includes(item.key) ? ' selected' : '';
+      return '<div class="pm-selector' + sel + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
+        '<div class="pm-selector-top">' +
+          '<div class="pm-selector-check">' + (sel ? checkSvg() : '') + '</div>' +
+          '<div class="pm-selector-icon">' + item.icon + '</div>' +
+        '</div>' +
+        '<div class="pm-selector-label">' + label + '</div>' +
+        '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderPriceBody() {
+    const opts = PILL_CONFIG.price.options.map(function(o) {
+      return '<option value="' + o + '"' + (o === '150 Kč/hod' ? ' selected' : '') + '>' + o + '</option>';
+    }).join('');
+    return '<p class="pm-sublabel" data-i18n="review.price.label"></p>' +
+      '<select class="form-select" id="pm-price-select">' + opts + '</select>';
+  }
+
+  function openPillModal(type) {
+    _currentPill = type;
+    const cfg = PILL_CONFIG[type];
+    document.getElementById('pm-icon').innerHTML = '<img src="' + cfg.icon + '" width="42" height="42" alt="">';
+    document.getElementById('pm-title').textContent = t('review.' + type + '.modalTitle');
+
+    const body = document.getElementById('pm-body');
+    if (type === 'price') {
+      body.innerHTML = renderPriceBody();
+    } else {
+      body.innerHTML = renderSelectorGrid(type);
+      if (type === 'language') {
+        body.innerHTML += '<span class="pm-more-link" data-i18n="review.language.moreLangs"></span>';
+      }
+    }
+    applyStrings();
+    document.getElementById('pill-modal').classList.add('open');
+  }
+
+  function closePillModal() {
+    document.getElementById('pill-modal').classList.remove('open');
+    _currentPill = null;
+  }
+
+  function toggleModalItem(el) {
+    el.classList.toggle('selected');
+    const chk = el.querySelector('.pm-selector-check');
+    if (chk) chk.innerHTML = el.classList.contains('selected') ? checkSvg() : '';
+  }
+
+  function typeAppend(ta, appendText) {
+    if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+    const base = ta.value.trimEnd();
+    ta.value = base;
+    let i = 0;
+    function type() {
+      if (i < appendText.length) {
+        ta.value = base + appendText.slice(0, ++i);
+        ta.scrollTop = ta.scrollHeight;
+        _typewriterTimer = setTimeout(type, 12);
+      } else {
+        _typewriterTimer = null;
+      }
+    }
+    _typewriterTimer = setTimeout(type, 200);
+  }
+
+  function applyPill() {
+    if (!_currentPill) return;
+    const ta = document.getElementById('review-text');
+    let appendText = '';
+
+    if (_currentPill === 'language' || _currentPill === 'needs') {
+      const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
+        .map(function(el) { return el.dataset.label; });
+      if (selected.length > 0) {
+        const tpl = t('review.' + _currentPill + '.appendText');
+        const key = _currentPill === 'language' ? '{langs}' : '{needs}';
+        appendText = ' ' + tpl.replace(key, selected.join(', '));
+      }
+    } else if (_currentPill === 'price') {
+      const sel = document.getElementById('pm-price-select');
+      if (sel && sel.value) {
+        appendText = ' ' + t('review.price.appendText').replace('{price}', sel.value);
+      }
+    }
+
+    if (appendText) {
+      const pill = document.getElementById('pill-' + _currentPill);
+      typeAppend(ta, appendText);
+      pill.style.display = 'none'; // hide after use
+    }
+    closePillModal();
+  }
+
+  // ============================================================
+  // Pill row — horizontal scroll on desktop
+  // ============================================================
+  (function() {
+    var row = document.querySelector('.pill-row');
+    if (!row) return;
+    row.addEventListener('wheel', function(e) {
+      if (row.scrollWidth <= row.clientWidth) return;
+      e.preventDefault();
+      e.stopPropagation();
+      row.scrollLeft += e.deltaX || e.deltaY;
+    }, { passive: false });
+  })();
+
+  // ============================================================
+  // Boot
+  // ============================================================
+  applyStrings();
+  // Set date placeholder to today
+  const today = new Date();
+  document.getElementById('freq-date').placeholder =
+    today.getDate() + '. ' + (today.getMonth() + 1) + '.';
+  showScreen('contact');
+</script>
+
+</body>
+</html>
