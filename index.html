@@ -1670,7 +1670,7 @@
 
     <div class="screen-footer">
       <div class="btn-row">
-        <button class="btn-primary" onclick="goNext()">
+        <button class="btn-primary" onclick="goToFollowup()">
           <span data-i18n="success.btnContinue"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -1874,7 +1874,7 @@
     const seniorOnly = selectedServices.has('senior') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return ['contact', 'service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success'];
+      return ['contact', 'service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success', 'followup'];
     }
 
     const flow = ['contact', 'service', 'location'];
@@ -1954,6 +1954,11 @@
   function goNext() {
     const flow = buildFlow();
     if (currentIdx < flow.length - 1) { currentIdx++; navDirection = 'forward'; showScreen(flow[currentIdx]); }
+  }
+  function goToFollowup() {
+    const flow = buildFlow();
+    const idx = flow.indexOf('followup');
+    if (idx !== -1) { currentIdx = idx; navDirection = 'forward'; showScreen('followup'); }
   }
   function goPrev() {
     const flow = buildFlow();
