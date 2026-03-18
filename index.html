@@ -2045,7 +2045,11 @@
 
     // Callbacks before animation
     if (id === 'location') updateLocTitle();
-    if (id === 'review') updateReviewText();
+    if (id === 'review') {
+      updateReviewText();
+      const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring') || selectedServices.has('senior');
+      document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
+    }
     if (id === 'success') updateSuccessSub();
 
     if (!oldEl || oldEl === newEl) {
