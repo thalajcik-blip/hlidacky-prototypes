@@ -2145,7 +2145,7 @@
     const strokeEls = all.filter(el => { const s = el.getAttribute('stroke'); return s && s !== 'none'; });
     const fillEls = all.filter(el => {
       const f = el.getAttribute('fill');
-      return f && f !== 'none' && f.toLowerCase() !== 'white' && f !== '#fff' && f !== '#ffffff';
+      return f && f !== 'none';
     });
     return { svg, all, strokeEls, fillEls };
   }
