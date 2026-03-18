@@ -147,6 +147,7 @@
     /* Hero */
     .hero { background: var(--bg); padding: 20px 20px 18px; text-align: center; flex-shrink: 0; }
     .hero-illus { width: 72px; height: 72px; margin: 0 auto 12px; }
+    .hero-svg { opacity: 0; }
     .hero-title {
       color: #212529;
       font-feature-settings: 'liga' off, 'clig' off;
@@ -2146,13 +2147,13 @@
       const f = el.getAttribute('fill');
       return f && f !== 'none' && f.toLowerCase() !== 'white' && f !== '#fff' && f !== '#ffffff';
     });
-    return { all, strokeEls, fillEls };
+    return { svg, all, strokeEls, fillEls };
   }
 
   function prepareHeroSVG(screenEl) {
     const els = getSVGEls(screenEl);
     if (!els) return;
-    const { all, strokeEls, fillEls } = els;
+    const { all, strokeEls, fillEls, svg } = els;
     all.forEach(el => { el.style.transition = 'none'; el.style.fillOpacity = ''; });
     fillEls.forEach(el => { el.style.fillOpacity = '0'; });
     strokeEls.forEach(el => {
@@ -2160,6 +2161,7 @@
       el.style.strokeDasharray = len;
       el.style.strokeDashoffset = len;
     });
+    svg.style.opacity = '1';
   }
 
   function animateHeroSVG(screenEl) {
