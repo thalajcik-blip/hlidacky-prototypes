@@ -783,8 +783,6 @@
       </div>
     </div>
 
-    <ul class="location-suggestions" id="location-suggestions"></ul>
-
     <div class="screen-footer">
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()">
@@ -2518,6 +2516,9 @@
     today.getDate() + '. ' + (today.getMonth() + 1) + '.';
   showScreen('contact');
 </script>
+
+<!-- Location dropdown: direct child of body to escape overflow:hidden + transform stacking contexts -->
+<ul class="location-suggestions" id="location-suggestions"></ul>
 
 </body>
 </html>
