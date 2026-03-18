@@ -1957,6 +1957,9 @@
 
 </div><!-- /phone-frame -->
 
+<!-- Location dropdown: direct child of body, before script so getElementById finds it -->
+<ul class="location-suggestions" id="location-suggestions"></ul>
+
 <script>
   // ============================================================
   // i18n — resolve "a.b.c" key paths against STRINGS object
@@ -2517,8 +2520,6 @@
   showScreen('contact');
 </script>
 
-<!-- Location dropdown: direct child of body to escape overflow:hidden + transform stacking contexts -->
-<ul class="location-suggestions" id="location-suggestions"></ul>
 
 </body>
 </html>
