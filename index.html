@@ -1745,12 +1745,16 @@
     if (id === 'success') updateSuccessSub();
 
     if (!oldEl || oldEl === newEl) {
+      prepareHeroSVG(newEl);
       newEl.classList.add('active');
       animateHeroSVG(newEl);
       return;
     }
 
     const forward = navDirection === 'forward';
+
+    // Prepare SVG before slide (fills hidden, strokes at dashoffset=full)
+    prepareHeroSVG(newEl);
 
     // Position incoming screen off-screen (no transition)
     newEl.style.transition = 'none';
@@ -1764,7 +1768,7 @@
     newEl.style.opacity = '';
     newEl.classList.add('active');
     // Start SVG animation after slide settles
-    setTimeout(() => animateHeroSVG(newEl), 280);
+    setTimeout(() => animateHeroSVG(newEl), 300);
 
     // Animate outgoing out
     oldEl.classList.remove('active');
@@ -2133,45 +2137,43 @@
   // ============================================================
   // Hero SVG animation: draw strokes → fade fills
   // ============================================================
-  function animateHeroSVG(screenEl) {
+  function getSVGEls(screenEl) {
     const svg = screenEl.querySelector('.hero-illus .hero-svg');
-    if (!svg) return;
-
+    if (!svg) return null;
     const all = [...svg.querySelectorAll('path, circle, ellipse, rect, line, polyline, polygon')];
-    const strokeEls = all.filter(el => {
-      const s = el.getAttribute('stroke');
-      return s && s !== 'none';
-    });
+    const strokeEls = all.filter(el => { const s = el.getAttribute('stroke'); return s && s !== 'none'; });
     const fillEls = all.filter(el => {
       const f = el.getAttribute('fill');
       return f && f !== 'none' && f.toLowerCase() !== 'white' && f !== '#fff' && f !== '#ffffff';
     });
+    return { all, strokeEls, fillEls };
+  }
 
-    // Reset state
-    all.forEach(el => {
-      el.style.transition = 'none';
-      el.style.strokeDasharray = '';
-      el.style.strokeDashoffset = '';
-      el.style.fillOpacity = '';
-    });
-
-    // Hide fills
+  function prepareHeroSVG(screenEl) {
+    const els = getSVGEls(screenEl);
+    if (!els) return;
+    const { all, strokeEls, fillEls } = els;
+    all.forEach(el => { el.style.transition = 'none'; el.style.fillOpacity = ''; });
     fillEls.forEach(el => { el.style.fillOpacity = '0'; });
-
-    // Animate strokes
-    const staggerMs = 18;
-    const durationMs = 380;
-    strokeEls.forEach((el, i) => {
+    strokeEls.forEach(el => {
       const len = el.getTotalLength ? el.getTotalLength() : 60;
       el.style.strokeDasharray = len;
       el.style.strokeDashoffset = len;
+    });
+  }
+
+  function animateHeroSVG(screenEl) {
+    const els = getSVGEls(screenEl);
+    if (!els) return;
+    const { strokeEls, fillEls } = els;
+    const staggerMs = 18;
+    const durationMs = 380;
+    strokeEls.forEach((el, i) => {
       setTimeout(() => {
         el.style.transition = `stroke-dashoffset ${durationMs}ms cubic-bezier(0.4,0,0.2,1)`;
         el.style.strokeDashoffset = '0';
       }, i * staggerMs);
     });
-
-    // Fade fills after strokes finish
     const fillDelay = strokeEls.length * staggerMs + durationMs + 60;
     setTimeout(() => {
       fillEls.forEach(el => {
