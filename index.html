@@ -61,6 +61,23 @@
       padding: 24px;
     }
 
+    @media (max-width: 480px) {
+      body {
+        background: #fff;
+        padding: 0;
+        align-items: stretch;
+      }
+      .phone-frame {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .phone-notch { display: none; }
+    }
+
     .phone-frame {
       width: 375px;
       height: 812px;
