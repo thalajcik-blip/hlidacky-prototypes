@@ -242,12 +242,12 @@
     .form-input::placeholder { color: #8b91a3; font-size: 16px; letter-spacing: 0.2px; font-weight: 400; }
     .form-input:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
     .form-hint { display: flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 12px; color: var(--muted); }
-    .location-wrap { position: relative; z-index: 100; }
+    .location-wrap { position: relative; }
     .location-suggestions {
-      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 100;
+      position: fixed; z-index: 500;
       background: #fff; border: 1.5px solid var(--border); border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 4px 0; margin: 0; list-style: none;
-      max-height: calc(8 * 38px); overflow-y: auto;
+      max-height: calc(8 * 48px); overflow-y: auto;
       display: none;
     }
     .location-suggestions.open { display: block; }
@@ -775,7 +775,6 @@
         <label class="form-label" data-i18n="location.inputLabel"></label>
         <div class="location-wrap">
           <input type="text" class="form-input" id="location-input" data-i18n-placeholder="location.inputPlaceholder" autocomplete="off">
-          <ul class="location-suggestions" id="location-suggestions"></ul>
         </div>
         <div class="form-hint">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -783,6 +782,8 @@
         </div>
       </div>
     </div>
+
+    <ul class="location-suggestions" id="location-suggestions"></ul>
 
     <div class="screen-footer">
       <div class="btn-row">
@@ -2256,6 +2257,13 @@
       return '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" fill="#BEC2CE"/></svg>';
     }
 
+    function positionList() {
+      const r = input.getBoundingClientRect();
+      list.style.top  = (r.bottom + 4) + 'px';
+      list.style.left = r.left + 'px';
+      list.style.width = r.width + 'px';
+    }
+
     function renderSuggestions(query) {
       const q = query.trim().toLowerCase();
       const filtered = q
@@ -2264,7 +2272,8 @@
       list.innerHTML = filtered.map(s =>
         `<li>${pinIcon()} ${s}</li>`
       ).join('');
-      list.classList.toggle('open', filtered.length > 0);
+      if (filtered.length > 0) { positionList(); list.classList.add('open'); }
+      else { list.classList.remove('open'); }
       list.querySelectorAll('li').forEach((li, i) => {
         li.addEventListener('mousedown', (e) => {
           e.preventDefault();
