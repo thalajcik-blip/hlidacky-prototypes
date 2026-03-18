@@ -2016,6 +2016,9 @@
     const newEl = document.getElementById('s-' + id);
     const oldEl = document.querySelector('.screen.active');
 
+    // Hide shared header on followup screen (it has its own nav)
+    document.getElementById('shared-header').style.display = id === 'followup' ? 'none' : '';
+
     // Update shared progress bar
     const pct = Math.round(50 + (currentIdx / (flow.length - 1)) * 50);
     const fill = document.getElementById('shared-progress-fill');
