@@ -52,6 +52,22 @@ const STRINGS = {
     "house": "Dům"
   },
 
+  "cleaningExtras": {
+    "heroTitle": "Potřebujete pomoc s něčím dalším?",
+    "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
+    "sectionLabel": "Vyberte doplňkové služby",
+    "optional": "(nepovinné)",
+    "ironing": "Žehlení",
+    "laundry": "Praní",
+    "windowCleaning": "Mytí oken",
+    "airbnbCleaning": "Airbnb / úklid apartmánů",
+    "carCleaning": "Čištění auta",
+    "moveCleaning": "Úklid při stěhování",
+    "upholsteryCleaning": "Čištění čalounění",
+    "lightMaintenance": "Drobná údržba domácnosti",
+    "gardenHelp": "Pomoc se zahradou"
+  },
+
   "pet": {
     "heroTitle": "Váš mazlíček",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
