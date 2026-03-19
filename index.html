@@ -606,9 +606,14 @@
     .flag-icon { width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; display: block; }
 
     /* ===== Followup screen — sitter cards ===== */
+    @keyframes cardSlideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .followup-title { font-size: 22px; font-weight: 450; color: var(--text); line-height: 1.32; letter-spacing: -0.2px; margin-bottom: 6px; text-align: center; }
     .followup-sub { font-size: 13px; color: var(--text); opacity: .8; line-height: 1.5; margin-bottom: 16px; text-align: center; }
-    .sitter-card { background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; box-shadow: 0 4px 16px rgba(42,53,57,0.10); overflow: hidden; margin-bottom: 10px; }
+    .sitter-card { background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; box-shadow: 0 4px 16px rgba(42,53,57,0.10); overflow: hidden; margin-bottom: 10px; opacity: 0; }
+    .sitter-card.card-visible { animation: cardSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
     .sitter-card-top { display: flex; gap: 12px; padding: 14px 14px 10px; align-items: flex-start; }
     .sitter-photo-wrap { position: relative; flex-shrink: 0; width: 80px; }
     .sitter-avatar { width: 80px; height: 80px; border-radius: 4px 4px 0 0; display: block; object-fit: cover; }
@@ -2038,6 +2043,15 @@
 
     // Hide shared header on followup screen (it has its own nav)
     document.getElementById('shared-header').style.display = id === 'followup' ? 'none' : '';
+
+    // Animate sitter cards on followup screen
+    if (id === 'followup') {
+      const cards = document.querySelectorAll('#s-followup .sitter-card');
+      cards.forEach(c => c.classList.remove('card-visible'));
+      cards.forEach((c, i) => {
+        setTimeout(() => c.classList.add('card-visible'), 420 + i * 120);
+      });
+    }
 
     // Update shared progress bar
     const pct = Math.round(50 + (currentIdx / (flow.length - 1)) * 50);
