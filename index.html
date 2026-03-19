@@ -240,6 +240,8 @@
     }
     .form-input::placeholder { color: #8b91a3; font-size: 16px; letter-spacing: 0.2px; font-weight: 400; }
     .form-input:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .form-input.input-error { border-color: #ea2323; box-shadow: 0 0 0 2px rgba(234,35,35,0.25); }
+    .form-input.input-error:focus { border-color: #ea2323; box-shadow: 0 0 0 2px rgba(234,35,35,0.25); }
     .form-hint { display: flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 12px; color: var(--muted); }
     .location-wrap { position: relative; }
     .location-suggestions {
@@ -2082,8 +2084,10 @@
     if (oldEl && oldEl.id === 's-location' && id !== 'location') {
       const a = document.getElementById('location-alert');
       const l = document.getElementById('location-label');
+      const inp = document.getElementById('location-input');
       if (a) { a.style.opacity = '0'; a.style.display = 'none'; }
       if (l) l.style.color = '';
+      if (inp) inp.classList.remove('input-error');
     }
 
     // Hide shared header on followup screen (it has its own nav)
@@ -2230,18 +2234,22 @@
   function showLocationAlert() {
     const alert = document.getElementById('location-alert');
     const label = document.getElementById('location-label');
+    const input = document.getElementById('location-input');
     alert.style.display = 'flex';
     requestAnimationFrame(() => { alert.style.opacity = '1'; });
     label.style.color = '#f96073';
+    input.classList.add('input-error');
   }
 
   function hideLocationAlert() {
     const alert = document.getElementById('location-alert');
     const label = document.getElementById('location-label');
-    if (document.getElementById('location-input').value.trim()) {
+    const input = document.getElementById('location-input');
+    if (input.value.trim()) {
       alert.style.opacity = '0';
       setTimeout(() => { alert.style.display = 'none'; }, 250);
       label.style.color = '#8b91a3';
+      input.classList.remove('input-error');
     }
   }
 
