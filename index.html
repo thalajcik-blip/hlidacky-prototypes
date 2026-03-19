@@ -188,7 +188,6 @@
       transition: background 0.15s, opacity 0.15s;
     }
     .btn-primary:hover { background: #0a8c20; }
-    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
     .btn-secondary {
       flex: 1; background: var(--white); color: #2a3539;
       border: 1px solid #e5e5ea; border-radius: 4px;
@@ -733,7 +732,7 @@
     <div class="screen-footer">
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
-        <button class="btn-primary" id="btn-service-next" disabled onclick="goNext()">
+        <button class="btn-primary" id="btn-service-next" onclick="goNext()">
           <span data-i18n="nav.btnNext"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -2166,7 +2165,6 @@
   function restartFlow() {
     selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
-    document.getElementById('btn-service-next').disabled = true;
     showScreen('contact');
   }
 
@@ -2176,7 +2174,6 @@
   function toggleService(service, card) {
     selectedServices[selectedServices.has(service) ? 'delete' : 'add'](service);
     card.classList.toggle('selected', selectedServices.has(service));
-    document.getElementById('btn-service-next').disabled = selectedServices.size === 0;
   }
 
   function toggleTutoringLoc(loc, card) {
