@@ -689,7 +689,7 @@
     </div>
 
     <div class="screen-body">
-      <p class="sec-label" data-i18n="service.sectionLabel"></p>
+      <p class="sec-label" id="service-label" data-i18n="service.sectionLabel"></p>
       <div class="selector-grid">
         <div class="selector selector--pink" onclick="toggleService('babysitting',this)">
           <div class="selector-top">
@@ -729,10 +729,14 @@
       </div>
     </div>
 
+    <div id="service-alert" style="display:none; opacity:0; margin: 0 20px 4px; background:#fff0f1; border:1px solid #f96073; border-radius:6px; padding:10px 14px; display:none; align-items:center; gap:8px; transition:opacity 0.25s;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" flex-shrink="0"><circle cx="8" cy="8" r="7" stroke="#f96073" stroke-width="1.4"/><path d="M8 5v4M8 10.5v.5" stroke="#f96073" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span style="font-size:13px; color:#f96073; font-family:'soleil','Inter',sans-serif;" data-i18n="service.validationAlert"></span>
+    </div>
     <div class="screen-footer">
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
-        <button class="btn-primary" id="btn-service-next" onclick="goNext()">
+        <button class="btn-primary" id="btn-service-next" onclick="goNextService()">
           <span data-i18n="nav.btnNext"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -2174,6 +2178,31 @@
   function toggleService(service, card) {
     selectedServices[selectedServices.has(service) ? 'delete' : 'add'](service);
     card.classList.toggle('selected', selectedServices.has(service));
+    if (selectedServices.size > 0) hideServiceAlert();
+  }
+
+  function goNextService() {
+    if (selectedServices.size === 0) {
+      showServiceAlert();
+    } else {
+      goNext();
+    }
+  }
+
+  function showServiceAlert() {
+    const alert = document.getElementById('service-alert');
+    const label = document.getElementById('service-label');
+    alert.style.display = 'flex';
+    requestAnimationFrame(() => { alert.style.opacity = '1'; });
+    label.style.color = '#f96073';
+  }
+
+  function hideServiceAlert() {
+    const alert = document.getElementById('service-alert');
+    const label = document.getElementById('service-label');
+    alert.style.opacity = '0';
+    setTimeout(() => { alert.style.display = 'none'; }, 250);
+    label.style.color = '';
   }
 
   function toggleTutoringLoc(loc, card) {

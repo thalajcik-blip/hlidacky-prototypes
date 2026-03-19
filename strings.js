@@ -20,6 +20,7 @@ const STRINGS = {
     "heroTitle": "Koho hledáte?",
     "heroSub": "Vyberte, s čím potřebujete od hlídačky pomoci.",
     "sectionLabel": "Vyberte jednu nebo více oblastí pomoci",
+    "validationAlert": "Prosím vyberte alespoň jednu službu",
     "babysitting": "Hlídání dětí",
     "cleaning": "Úklid domácnosti",
     "pet": "Opatrování mazlíčků",
