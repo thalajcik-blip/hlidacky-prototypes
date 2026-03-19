@@ -2005,6 +2005,7 @@
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
     const seniorOnly = selectedServices.has('senior') && selectedServices.size === 1;
+    const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
       return ['contact', 'service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success', 'followup'];
@@ -2014,8 +2015,8 @@
     if (selectedServices.has('cleaning')) flow.push('cleaning', 'cleaning-extras');
     if (selectedServices.has('pet')) flow.push('pet');
     if (selectedServices.has('tutoring')) flow.push('subjects');
-    if (seniorOnly) {
-      flow.push('senior-care');
+    if (seniorOnly || cleaningOnly) {
+      // skip frequency screen
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
