@@ -441,6 +441,7 @@
     }
     .dt-field::-webkit-calendar-picker-indicator { display: none; }
     .dt-field::placeholder { color: #bec2ce; }
+    .dt-select { appearance: auto; cursor: pointer; }
     .dt-icon { flex-shrink: 0; width: 18px; height: 18px; opacity: 0.6; }
     .dt-arrows { flex-shrink: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; opacity: 0.4; }
     .dt-arrows svg { display: block; }
@@ -1571,11 +1572,7 @@
           <div class="datetime-row">
             <div class="dt-cell" style="flex:1.2;">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <input type="text" class="dt-field" id="freq-date" placeholder="">
-              <div class="dt-arrows">
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L5 1L9 5" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <select class="dt-field dt-select" id="freq-date"></select>
             </div>
             <div class="dt-cell">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg>
@@ -1596,11 +1593,7 @@
             </div>
             <div class="dt-cell" style="flex:1.2;">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <input type="text" class="dt-field" id="overnight-date-from" placeholder="">
-              <div class="dt-arrows">
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L5 1L9 5" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <select class="dt-field dt-select" id="overnight-date-from"></select>
             </div>
             <div class="dt-cell">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg>
@@ -1613,11 +1606,7 @@
             </div>
             <div class="dt-cell" style="flex:1.2;">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <input type="text" class="dt-field" id="overnight-date-to" placeholder="">
-              <div class="dt-arrows">
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L5 1L9 5" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#4a5a61" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <select class="dt-field dt-select" id="overnight-date-to"></select>
             </div>
             <div class="dt-cell">
               <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM10.5625 5.1875V10.25C10.5625 10.5664 10.3164 10.8125 10 10.8125H6.0625C5.74609 10.8125 5.5 10.5664 5.5 10.25C5.5 9.93359 5.74609 9.6875 6.0625 9.6875H9.4375V5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875Z" fill="#8B91A3"/></svg>
@@ -2569,14 +2558,21 @@
   }
 
   applyStrings();
-  // Set date placeholder to today
-  const today = new Date();
-  const todayStr = today.getDate() + '. ' + (today.getMonth() + 1) + '.';
-  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
-  const tomorrowStr = tomorrow.getDate() + '. ' + (tomorrow.getMonth() + 1) + '.';
-  document.getElementById('freq-date').placeholder = todayStr;
-  document.getElementById('overnight-date-from').placeholder = todayStr;
-  document.getElementById('overnight-date-to').placeholder = tomorrowStr;
+  // Populate date selects with next 14 days
+  const DAY_NAMES = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+  function buildDateOptions(selectedOffset) {
+    const opts = [];
+    for (let i = 0; i < 14; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const label = DAY_NAMES[d.getDay()] + ' ' + d.getDate() + '. ' + (d.getMonth() + 1) + '.';
+      opts.push(`<option value="${i}"${i === selectedOffset ? ' selected' : ''}>${label}</option>`);
+    }
+    return opts.join('');
+  }
+  document.getElementById('freq-date').innerHTML = buildDateOptions(0);
+  document.getElementById('overnight-date-from').innerHTML = buildDateOptions(0);
+  document.getElementById('overnight-date-to').innerHTML = buildDateOptions(1);
   showScreen('contact');
 
   function toggleOvernight() {
