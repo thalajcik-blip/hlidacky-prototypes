@@ -77,7 +77,8 @@ const STRINGS = {
     "dogs": "Psi",
     "cats": "Kočky",
     "other": "Jiná",
-    "largePet": "Mám velkého psa"
+    "largePet": "Mám velkého psa",
+    "validationAlert": "Prosím vyberte alespoň jedno zvíře"
   },
 
   "seniorCare": {
@@ -179,7 +180,8 @@ const STRINGS = {
     "sectionLabel": "Vyberte jedno nebo více míst",
     "studentPlace": "U žáka doma",
     "tutorPlace": "U doučovatele",
-    "online": "Online (video výuka)"
+    "online": "Online (video výuka)",
+    "validationAlert": "Prosím vyberte alespoň jedno místo"
   },
 
   "subjects": {

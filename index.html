@@ -861,7 +861,7 @@
     </div>
 
     <div class="screen-body">
-      <p class="sec-label" data-i18n="locationTutoring.sectionLabel"></p>
+      <p class="sec-label" id="tutor-loc-label" data-i18n="locationTutoring.sectionLabel"></p>
       <div class="selector-grid">
         <div class="selector" onclick="toggleTutoringLoc('student', this)">
           <div class="selector-top">
@@ -885,12 +885,17 @@
           <div class="selector-label" data-i18n="locationTutoring.online"></div>
         </div>
       </div>
+
+      <div id="tutor-loc-alert" style="display:none; opacity:0; margin-top:12px; background:#fff0f1; border:1px solid #f96073; border-radius:6px; padding:10px 14px; align-items:center; gap:8px; transition:opacity 0.25s;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#f96073" stroke-width="1.4"/><path d="M8 5v4M8 10.5v.5" stroke="#f96073" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span style="font-size:13px; color:#f96073; font-family:'soleil','Inter',sans-serif;" data-i18n="locationTutoring.validationAlert"></span>
+      </div>
     </div>
 
     <div class="screen-footer">
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
-        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="btn-primary" onclick="goNextTutoringLoc()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </div>
@@ -1298,7 +1303,7 @@
     </div>
 
     <div class="screen-body">
-      <p class="sec-label" data-i18n="pet.sectionLabel"></p>
+      <p class="sec-label" id="pet-label" data-i18n="pet.sectionLabel"></p>
       <div class="selector-grid">
         <div class="selector" onclick="togglePet('dogs',this)">
           <div class="selector-top">
@@ -1322,6 +1327,10 @@
           <div class="selector-label" data-i18n="pet.other"></div>
         </div>
       </div>
+      <div id="pet-alert" style="display:none; opacity:0; margin-top:12px; background:#fff0f1; border:1px solid #f96073; border-radius:6px; padding:10px 14px; align-items:center; gap:8px; transition:opacity 0.25s;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#f96073" stroke-width="1.4"/><path d="M8 5v4M8 10.5v.5" stroke="#f96073" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span style="font-size:13px; color:#f96073; font-family:'soleil','Inter',sans-serif;" data-i18n="pet.validationAlert"></span>
+      </div>
       <div class="mt14" id="large-pet-wrap" style="display:none">
         <div class="check-opt green" id="large-pet" onclick="toggleCheck('large-pet')">
           <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1333,7 +1342,7 @@
     <div class="screen-footer">
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
-        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="btn-primary" onclick="goNextPet()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </div>
@@ -2080,6 +2089,10 @@
 
     // Reset service validation when leaving service screen
     if (oldEl && oldEl.id === 's-service' && id !== 'service') hideServiceAlert();
+    // Reset tutoring location validation when leaving that screen
+    if (oldEl && oldEl.id === 's-location-tutoring' && id !== 'location-tutoring') hideTutoringLocAlert();
+    // Reset pet validation when leaving pet screen
+    if (oldEl && oldEl.id === 's-pet' && id !== 'pet') hidePetAlert();
     // Reset location validation when leaving location screen
     if (oldEl && oldEl.id === 's-location' && id !== 'location') {
       const a = document.getElementById('location-alert');
@@ -2255,6 +2268,31 @@
 
   function toggleTutoringLoc(loc, card) {
     card.classList.toggle('selected');
+    if (document.querySelectorAll('#s-location-tutoring .selector.selected').length > 0) hideTutoringLocAlert();
+  }
+
+  function goNextTutoringLoc() {
+    if (document.querySelectorAll('#s-location-tutoring .selector.selected').length === 0) {
+      showTutoringLocAlert();
+    } else {
+      goNext();
+    }
+  }
+
+  function showTutoringLocAlert() {
+    const alert = document.getElementById('tutor-loc-alert');
+    const label = document.getElementById('tutor-loc-label');
+    alert.style.display = 'flex';
+    requestAnimationFrame(() => { alert.style.opacity = '1'; });
+    label.style.color = '#f96073';
+  }
+
+  function hideTutoringLocAlert() {
+    const alert = document.getElementById('tutor-loc-alert');
+    const label = document.getElementById('tutor-loc-label');
+    alert.style.opacity = '0';
+    setTimeout(() => { alert.style.display = 'none'; }, 250);
+    label.style.color = '';
   }
 
   function showMoreLanguages() {
@@ -2273,6 +2311,31 @@
     selectedPets[selectedPets.has(pet) ? 'delete' : 'add'](pet);
     card.classList.toggle('selected', selectedPets.has(pet));
     document.getElementById('large-pet-wrap').style.display = selectedPets.has('dogs') ? '' : 'none';
+    if (selectedPets.size > 0) hidePetAlert();
+  }
+
+  function goNextPet() {
+    if (selectedPets.size === 0) {
+      showPetAlert();
+    } else {
+      goNext();
+    }
+  }
+
+  function showPetAlert() {
+    const alert = document.getElementById('pet-alert');
+    const label = document.getElementById('pet-label');
+    alert.style.display = 'flex';
+    requestAnimationFrame(() => { alert.style.opacity = '1'; });
+    label.style.color = '#f96073';
+  }
+
+  function hidePetAlert() {
+    const alert = document.getElementById('pet-alert');
+    const label = document.getElementById('pet-label');
+    alert.style.opacity = '0';
+    setTimeout(() => { alert.style.display = 'none'; }, 250);
+    label.style.color = '';
   }
 
   function selectOne(groupId, card) {
