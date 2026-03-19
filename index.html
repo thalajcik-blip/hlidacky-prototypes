@@ -441,7 +441,9 @@
     }
     .dt-field::-webkit-calendar-picker-indicator { display: none; }
     .dt-field::placeholder { color: #bec2ce; }
-    .dt-select { appearance: auto; cursor: pointer; }
+    .dt-select { appearance: auto; cursor: pointer; color: #bec2ce; }
+    .dt-select.dt-selected { color: #2a3539; }
+    .dt-select option { color: #2a3539; }
     .dt-icon { flex-shrink: 0; width: 18px; height: 18px; opacity: 0.6; }
     .dt-arrows { flex-shrink: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; opacity: 0.4; }
     .dt-arrows svg { display: block; }
@@ -2589,6 +2591,10 @@
   document.getElementById('freq-time-to').innerHTML = buildTimeOptions('19:00');
   document.getElementById('overnight-time-from').innerHTML = buildTimeOptions('20:00');
   document.getElementById('overnight-time-to').innerHTML = buildTimeOptions('07:00');
+
+  document.querySelectorAll('.dt-select').forEach(sel => {
+    sel.addEventListener('change', () => sel.classList.add('dt-selected'));
+  });
   showScreen('contact');
 
   function toggleOvernight() {
