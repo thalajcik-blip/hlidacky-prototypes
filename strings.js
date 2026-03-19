@@ -33,6 +33,7 @@ const STRINGS = {
     "inputLabel": "Místo",
     "inputPlaceholder": "Václavské náměstí, Praha",
     "hint": "Přesná adresa bude skrytá.",
+    "validationAlert": "Prosím zadejte místo, kde hledáte pomoc",
     "titlePrefix": "Kde potřebujete",
     "titleFallback": "pomoc",
     "titleAnd": "a",

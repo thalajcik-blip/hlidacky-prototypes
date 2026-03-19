@@ -783,13 +783,17 @@
 
     <div class="screen-body">
       <div class="form-group">
-        <label class="form-label" data-i18n="location.inputLabel"></label>
+        <label class="form-label" id="location-label" data-i18n="location.inputLabel"></label>
         <div class="location-wrap">
-          <input type="text" class="form-input" id="location-input" data-i18n-placeholder="location.inputPlaceholder" autocomplete="off">
+          <input type="text" class="form-input" id="location-input" data-i18n-placeholder="location.inputPlaceholder" autocomplete="off" oninput="hideLocationAlert()">
         </div>
         <div class="form-hint">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="location.hint"></span>
+        </div>
+        <div id="location-alert" style="display:none; opacity:0; margin-top:12px; background:#fff0f1; border:1px solid #f96073; border-radius:6px; padding:10px 14px; align-items:center; gap:8px; transition:opacity 0.25s;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#f96073" stroke-width="1.4"/><path d="M8 5v4M8 10.5v.5" stroke="#f96073" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span style="font-size:13px; color:#f96073; font-family:'soleil','Inter',sans-serif;" data-i18n="location.validationAlert"></span>
         </div>
       </div>
     </div>
@@ -800,7 +804,7 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.btnPrev"></span>
         </button>
-        <button class="btn-primary" onclick="goNext()">
+        <button class="btn-primary" onclick="goNextLocation()">
           <span data-i18n="nav.btnNext"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -2074,6 +2078,13 @@
 
     // Reset service validation when leaving service screen
     if (oldEl && oldEl.id === 's-service' && id !== 'service') hideServiceAlert();
+    // Reset location validation when leaving location screen
+    if (oldEl && oldEl.id === 's-location' && id !== 'location') {
+      const a = document.getElementById('location-alert');
+      const l = document.getElementById('location-label');
+      if (a) { a.style.opacity = '0'; a.style.display = 'none'; }
+      if (l) l.style.color = '';
+    }
 
     // Hide shared header on followup screen (it has its own nav)
     document.getElementById('shared-header').style.display = id === 'followup' ? 'none' : '';
@@ -2206,6 +2217,32 @@
     alert.style.opacity = '0';
     setTimeout(() => { alert.style.display = 'none'; }, 250);
     label.style.color = '';
+  }
+
+  function goNextLocation() {
+    if (!document.getElementById('location-input').value.trim()) {
+      showLocationAlert();
+    } else {
+      goNext();
+    }
+  }
+
+  function showLocationAlert() {
+    const alert = document.getElementById('location-alert');
+    const label = document.getElementById('location-label');
+    alert.style.display = 'flex';
+    requestAnimationFrame(() => { alert.style.opacity = '1'; });
+    label.style.color = '#f96073';
+  }
+
+  function hideLocationAlert() {
+    const alert = document.getElementById('location-alert');
+    const label = document.getElementById('location-label');
+    if (document.getElementById('location-input').value.trim()) {
+      alert.style.opacity = '0';
+      setTimeout(() => { alert.style.display = 'none'; }, 250);
+      label.style.color = '';
+    }
   }
 
   function toggleTutoringLoc(loc, card) {
