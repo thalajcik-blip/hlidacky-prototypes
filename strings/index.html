@@ -459,8 +459,75 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .deploy-status a { color: inherit; font-weight: 600; }
   </style>
+  <style>
+    #login-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 36px 32px;
+      width: 100%; max-width: 360px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .login-box img { height: 24px; margin-bottom: 4px; }
+    .login-box h2 { font-size: 17px; font-weight: 600; color: var(--gray-800); }
+    .login-box label { font-size: 12px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
+    .login-box input {
+      width: 100%; padding: 8px 12px;
+      border: 1px solid var(--gray-200); border-radius: 8px;
+      font-family: var(--font); font-size: 14px; outline: none;
+    }
+    .login-box input:focus { border-color: var(--pink); }
+    .login-error { font-size: 13px; color: #c0392b; display: none; }
+    .login-error.show { display: block; }
+  </style>
 </head>
 <body>
+
+<div id="login-overlay">
+  <div class="login-box">
+    <img src="/hlidacky-logo_small.svg" alt="Hlídačky.cz">
+    <h2>Editor překladů</h2>
+    <div>
+      <label>Uživatelské jméno</label>
+      <input type="text" id="login-user" autocomplete="username" autofocus>
+    </div>
+    <div>
+      <label>Heslo</label>
+      <input type="password" id="login-pass" autocomplete="current-password">
+    </div>
+    <span class="login-error" id="login-error">Nesprávné jméno nebo heslo.</span>
+    <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:10px">Přihlásit se</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  if (sessionStorage.getItem('hlidacky_auth') === '1') {
+    document.getElementById('login-overlay').style.display = 'none';
+    return;
+  }
+  function attempt() {
+    var u = document.getElementById('login-user').value;
+    var p = document.getElementById('login-pass').value;
+    if (u === 'hlidacky' && p === 'conquering-europe') {
+      sessionStorage.setItem('hlidacky_auth', '1');
+      document.getElementById('login-overlay').style.display = 'none';
+    } else {
+      document.getElementById('login-error').classList.add('show');
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    }
+  }
+  document.getElementById('login-btn').addEventListener('click', attempt);
+  document.getElementById('login-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') attempt(); });
+  document.getElementById('login-user').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
+})();
+</script>
 
 <header>
   <img src="/hlidacky-logo_small.svg" class="logo" alt="Hlídačky.cz">
