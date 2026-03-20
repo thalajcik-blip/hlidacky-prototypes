@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor překladů — Hlídačky.cz</title>
+  <title>Translation Editor — Hlídačky.cz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="/strings.js"></script>
@@ -491,17 +491,17 @@
 <div id="login-overlay">
   <div class="login-box">
     <img src="/hlidacky-logo_small.svg" alt="Hlídačky.cz">
-    <h2>Editor překladů</h2>
+    <h2>Translation Editor</h2>
     <div>
-      <label>Uživatelské jméno</label>
+      <label>Username</label>
       <input type="text" id="login-user" autocomplete="username" autofocus>
     </div>
     <div>
-      <label>Heslo</label>
+      <label>Password</label>
       <input type="password" id="login-pass" autocomplete="current-password">
     </div>
-    <span class="login-error" id="login-error">Nesprávné jméno nebo heslo.</span>
-    <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:10px">Přihlásit se</button>
+    <span class="login-error" id="login-error">Incorrect username or password.</span>
+    <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:10px">Log in</button>
   </div>
 </div>
 
@@ -531,8 +531,8 @@
 
 <header>
   <img src="/hlidacky-logo_small.svg" class="logo" alt="Hlídačky.cz">
-  <h1>Editor překladů</h1>
-  <span class="badge">interní nástroj</span>
+  <h1>Translation Editor</h1>
+  <span class="badge">internal tool</span>
 </header>
 
 <div class="main">
@@ -541,16 +541,16 @@
 
   <!-- GitHub settings panel -->
   <div class="settings-panel" id="settings-panel">
-    <h3>GitHub připojení</h3>
+    <h3>GitHub connection</h3>
     <div class="settings-row">
       <label>Personal Access Token</label>
       <input type="password" class="token-input" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      <button class="btn btn-outline" id="btn-save-token">Uložit token</button>
+      <button class="btn btn-outline" id="btn-save-token">Save token</button>
       <span class="token-status missing hidden" id="token-status"></span>
     </div>
     <p class="settings-hint">
-      Token potřebuje scope <strong>repo</strong>.
-      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Hlidacky+strings+editor" target="_blank">Vygenerovat token na GitHubu →</a>
+      Token requires scope <strong>repo</strong>.
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Hlidacky+strings+editor" target="_blank">Generate token on GitHub →</a>
     </p>
   </div>
 
@@ -566,19 +566,19 @@
 
   <div class="toolbar">
     <div class="toolbar-left">
-      <input type="text" class="search-input" placeholder="🔍 Hledat v klíčích nebo textech…" id="search-input">
+      <input type="text" class="search-input" placeholder="🔍 Search keys or text…" id="search-input">
       <select class="section-filter" id="section-filter">
-        <option value="">Všechny sekce</option>
+        <option value="">All sections</option>
       </select>
     </div>
     <div class="toolbar-right">
-      <button class="btn btn-outline" id="btn-upload">↑ Nahrát JSON</button>
+      <button class="btn btn-outline" id="btn-upload">↑ Upload JSON</button>
       <input type="file" id="file-upload" accept=".json" class="hidden">
-      <button class="btn btn-outline" id="btn-download">↓ Stáhnout JSON</button>
-      <button class="btn btn-danger hidden" id="btn-reset">↺ Reset na CZ</button>
-      <button class="btn btn-outline" id="btn-settings" title="Nastavení GitHub tokenu">⚙️</button>
-      <button class="btn btn-primary" id="btn-save">Uložit</button>
-      <button class="btn btn-publish hidden" id="btn-publish" disabled>🚀 Publikovat</button>
+      <button class="btn btn-outline" id="btn-download">↓ Download JSON</button>
+      <button class="btn btn-danger hidden" id="btn-reset">↺ Reset to CZ</button>
+      <button class="btn btn-outline" id="btn-settings" title="GitHub token settings">⚙️</button>
+      <button class="btn btn-primary" id="btn-save">Save</button>
+      <button class="btn btn-publish hidden" id="btn-publish" disabled>🚀 Publish</button>
     </div>
   </div>
 
@@ -591,9 +591,9 @@
       </colgroup>
       <thead>
         <tr>
-          <th>Klíč</th>
-          <th>🇬🇧 EN (zdroj)</th>
-          <th id="col-lang-header">Překlad</th>
+          <th>Key</th>
+          <th>🇬🇧 EN (source)</th>
+          <th id="col-lang-header">Translation</th>
         </tr>
       </thead>
       <tbody id="strings-tbody"></tbody>
@@ -694,7 +694,7 @@ function init() {
   if (typeof STRINGS === 'undefined') {
     document.querySelector('.main').innerHTML =
       '<div style="padding:60px;text-align:center;color:#c0392b;font-size:15px">' +
-      'Chyba: strings.js se nepodařilo načíst.</div>';
+      'Error: strings.js could not be loaded.</div>';
     return;
   }
 
@@ -756,7 +756,7 @@ function getSections() {
 
 function renderSectionFilter() {
   const sel = document.getElementById('section-filter');
-  sel.innerHTML = '<option value="">Všechny sekce</option>' +
+  sel.innerHTML = '<option value="">All sections</option>' +
     getSections().map(function(s) {
       return '<option value="' + s + '">' + s + '</option>';
     }).join('');
@@ -788,7 +788,7 @@ function renderTable() {
     }).length;
     const pct = total > 0 ? Math.round(translated / total * 100) : 0;
     document.getElementById('progress-label').textContent =
-      'Přeloženo: ' + translated + ' / ' + total + ' řetězců (' + pct + '%)';
+      'Translated: ' + translated + ' / ' + total + ' strings (' + pct + '%)';
     document.getElementById('progress-fill').style.width = pct + '%';
   }
 
@@ -840,7 +840,7 @@ function renderTable() {
   });
 
   if (visibleCount === 0) {
-    html = '<tr><td colspan="3" class="empty-state">Žádné výsledky pro zadaný filtr.</td></tr>';
+    html = '<tr><td colspan="3" class="empty-state">No results for the current filter.</td></tr>';
   }
 
   tbody.innerHTML = html;
@@ -903,7 +903,7 @@ function showToast(msg) {
 function bindToolbar() {
   document.getElementById('btn-save').addEventListener('click', function() {
     applyAndSave();
-    showToast('✓ Změny uloženy');
+    showToast('✓ Changes saved');
     renderTabs();
     renderTable();
   });
@@ -957,9 +957,9 @@ function bindToolbar() {
         pendingChanges = {};
         renderTabs();
         renderTable();
-        showToast('✓ Nahráno ' + Object.keys(allLangs[currentLang]).length + ' řetězců');
+        showToast('✓ Loaded ' + Object.keys(allLangs[currentLang]).length + ' strings');
       } catch (err) {
-        alert('Chyba při načítání JSON: ' + err.message);
+        alert('Error loading JSON: ' + err.message);
       }
     };
     reader.readAsText(file);
@@ -968,13 +968,13 @@ function bindToolbar() {
 
   document.getElementById('btn-reset').addEventListener('click', function() {
     const langLabel = LANGUAGES.find(function(l) { return l.code === currentLang; }).label;
-    if (!confirm('Resetovat ' + langLabel + ' na CZ zdroj?\n\nZtratíte všechny překlady pro tento jazyk.')) return;
+    if (!confirm('Reset ' + langLabel + ' to CZ source?\n\nAll translations for this language will be lost.')) return;
     allLangs[currentLang] = Object.assign({}, czSource);
     saveLang(currentLang, allLangs[currentLang]);
     pendingChanges = {};
     renderTabs();
     renderTable();
-    showToast('↺ ' + langLabel + ' resetován/a na CZ');
+    showToast('↺ ' + langLabel + ' reset to CZ');
   });
 
   document.getElementById('search-input').addEventListener('input', renderTable);
@@ -1014,7 +1014,7 @@ function setDeployStatus(type, msg, link) {
   bar.className = 'deploy-status visible ' + type;
   spinner.classList.toggle('hidden', type !== 'loading');
   msgEl.innerHTML = link
-    ? msg + ' <a href="' + link + '" target="_blank">Zobrazit deploy →</a>'
+    ? msg + ' <a href="' + link + '" target="_blank">View deploy →</a>'
     : msg;
 }
 
@@ -1042,7 +1042,7 @@ async function publishToGitHub() {
 
   var btn = document.getElementById('btn-publish');
   btn.disabled = true;
-  setDeployStatus('loading', 'Publikuji…');
+  setDeployStatus('loading', 'Publishing…');
 
   try {
     // 1. Get current file SHA
@@ -1072,10 +1072,10 @@ async function publishToGitHub() {
     }
     var result = await putResp.json();
     var vercelUrl = 'https://vercel.com/tomas-halajciks-projects/hlidacky-prototypes/deployments';
-    setDeployStatus('success', '✓ Publikováno — Vercel nasazuje (~30–60 s)', vercelUrl);
+    setDeployStatus('success', '✓ Published — Vercel is deploying (~30–60 s)', vercelUrl);
     setTimeout(hideDeployStatus, 12000);
   } catch (err) {
-    setDeployStatus('error', '✗ Chyba: ' + err.message);
+    setDeployStatus('error', '✗ Error: ' + err.message);
   } finally {
     btn.disabled = false;
   }
@@ -1091,13 +1091,13 @@ function initGitHub() {
     var publishBtn = document.getElementById('btn-publish');
     if (t) {
       tokenInput.value = t;
-      tokenStatus.textContent = '✓ Token nastaven';
+      tokenStatus.textContent = '✓ Token saved';
       tokenStatus.className = 'token-status ok';
       tokenStatus.classList.remove('hidden');
       publishBtn.classList.remove('hidden');
       publishBtn.disabled = false;
     } else {
-      tokenStatus.textContent = 'Token chybí';
+      tokenStatus.textContent = 'Token missing';
       tokenStatus.className = 'token-status missing';
       tokenStatus.classList.remove('hidden');
       publishBtn.classList.add('hidden');
@@ -1108,7 +1108,7 @@ function initGitHub() {
     setToken(tokenInput.value);
     updateTokenStatus();
     document.getElementById('settings-panel').classList.remove('open');
-    showToast('✓ Token uložen');
+    showToast('✓ Token saved');
   });
 
   document.getElementById('btn-settings').addEventListener('click', function() {
