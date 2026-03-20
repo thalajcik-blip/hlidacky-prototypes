@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor překladů — Hlídačky.cz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="/strings.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #f96073;
+      --pink-hover: #e8556a;
+      --gray-800: #2a3539;
+      --gray-600: #6b7176;
+      --gray-300: #c8cacc;
+      --gray-200: #e8eaeb;
+      --gray-100: #f4f5f5;
+      --white: #ffffff;
+      --green: #1a6e3a;
+      --font: 'Inter', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--gray-800);
+      background: var(--gray-100);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo { height: 22px; }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .badge {
+      background: var(--pink);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Layout */
+    .main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+
+    /* Language tabs */
+    .lang-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 5px;
+    }
+
+    .lang-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      border-radius: 7px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .lang-tab:hover {
+      background: var(--gray-100);
+      color: var(--gray-800);
+    }
+
+    .lang-tab.active {
+      background: var(--gray-800);
+      color: white;
+    }
+
+    .lang-tab .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pink);
+      display: none;
+    }
+
+    .lang-tab.has-changes .dot {
+      display: inline-block;
+    }
+
+    /* Progress */
+    #progress-wrap { margin-bottom: 20px; }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--gray-200);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--pink);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      padding: 7px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 14px;
+      width: 220px;
+      outline: none;
+      background: white;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus { border-color: var(--pink); }
+
+    .section-filter {
+      padding: 7px 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 14px;
+      background: white;
+      outline: none;
+      cursor: pointer;
+      color: var(--gray-800);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--pink);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--pink-hover); }
+
+    .btn-outline {
+      background: white;
+      color: var(--gray-800);
+      border: 1px solid var(--gray-200);
+    }
+    .btn-outline:hover { background: var(--gray-100); }
+
+    .btn-danger {
+      background: white;
+      color: #c0392b;
+      border: 1px solid var(--gray-200);
+    }
+    .btn-danger:hover { background: #fff5f5; border-color: #f5c6c6; }
+
+    /* Table */
+    .table-wrap {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    col.col-key   { width: 200px; }
+    col.col-ref   { width: 40%; }
+    col.col-edit  { width: auto; }
+
+    thead th {
+      background: var(--gray-100);
+      padding: 9px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    tbody tr { border-bottom: 1px solid var(--gray-200); }
+    tbody tr:last-child { border-bottom: none; }
+
+    .section-row td {
+      background: var(--gray-100);
+      padding: 5px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    td {
+      padding: 6px 16px;
+      vertical-align: top;
+    }
+
+    .key-cell {
+      font-family: 'Courier New', monospace;
+      font-size: 11.5px;
+      color: var(--gray-600);
+      word-break: break-all;
+      padding-top: 10px;
+    }
+
+    .ref-cell {
+      font-size: 13.5px;
+      color: var(--gray-600);
+      padding-top: 10px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .edit-cell { padding: 4px 16px 4px 0; }
+
+    .string-input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-family: var(--font);
+      font-size: 13.5px;
+      color: var(--gray-800);
+      background: transparent;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+      overflow: hidden;
+      transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+    }
+
+    .string-input:not([readonly]):hover {
+      border-color: var(--gray-200);
+    }
+
+    .string-input:focus {
+      border-color: var(--pink);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(249, 96, 115, 0.1);
+    }
+
+    .string-input.modified {
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .string-input[readonly] {
+      color: var(--gray-600);
+      cursor: default;
+    }
+
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--gray-800);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="/hlidacky-logo_small.svg" class="logo" alt="Hlídačky.cz">
+  <h1>Editor překladů</h1>
+  <span class="badge">interní nástroj</span>
+</header>
+
+<div class="main">
+
+  <div class="lang-tabs" id="lang-tabs"></div>
+
+  <div id="progress-wrap">
+    <div class="progress-label" id="progress-label"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input type="text" class="search-input" placeholder="🔍 Hledat v klíčích nebo textech…" id="search-input">
+      <select class="section-filter" id="section-filter">
+        <option value="">Všechny sekce</option>
+      </select>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-outline" id="btn-upload">↑ Nahrát JSON</button>
+      <input type="file" id="file-upload" accept=".json" class="hidden">
+      <button class="btn btn-outline" id="btn-download">↓ Stáhnout JSON</button>
+      <button class="btn btn-danger hidden" id="btn-reset">↺ Reset na CZ</button>
+      <button class="btn btn-primary" id="btn-save">Uložit</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="col-key">
+        <col class="col-ref">
+        <col class="col-edit">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Klíč</th>
+          <th>CZ (zdroj)</th>
+          <th id="col-lang-header">Překlad</th>
+        </tr>
+      </thead>
+      <tbody id="strings-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LANGUAGES = [
+  { code: 'CZ', label: 'Čeština',      flag: '🇨🇿' },
+  { code: 'SK', label: 'Slovenčina',   flag: '🇸🇰' },
+  { code: 'HU', label: 'Magyar',       flag: '🇭🇺' },
+  { code: 'AT', label: 'Deutsch (AT)', flag: '🇦🇹' },
+  { code: 'HR', label: 'Hrvatski',     flag: '🇭🇷' },
+  { code: 'EN', label: 'English',      flag: '🇬🇧' },
+];
+
+let czSource = {};      // flat CZ keys → values (from STRINGS global)
+let allLangs  = {};     // { CZ: {flat}, SK: {flat}, … }
+let currentLang = 'CZ';
+let pendingChanges = {};
+
+/* ── Flatten / Unflatten ─────────────────────────────────── */
+
+function flatten(obj, prefix) {
+  const out = {};
+  prefix = prefix || '';
+  for (const k of Object.keys(obj)) {
+    const path = prefix ? prefix + '.' + k : k;
+    const v = obj[k];
+    if (Array.isArray(v)) {
+      v.forEach(function(item, i) {
+        if (item !== null && typeof item === 'object') {
+          Object.assign(out, flatten(item, path + '.' + i));
+        } else {
+          out[path + '.' + i] = String(item);
+        }
+      });
+    } else if (v !== null && typeof v === 'object') {
+      Object.assign(out, flatten(v, path));
+    } else {
+      out[path] = String(v);
+    }
+  }
+  return out;
+}
+
+function unflatten(flat) {
+  const result = {};
+  for (const key of Object.keys(flat)) {
+    const parts = key.split('.');
+    let cur = result;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const p = parts[i];
+      const nextIsNum = /^\d+$/.test(parts[i + 1]);
+      if (cur[p] === undefined) cur[p] = nextIsNum ? [] : {};
+      cur = cur[p];
+    }
+    const last = parts[parts.length - 1];
+    if (/^\d+$/.test(last)) {
+      cur[parseInt(last)] = flat[key];
+    } else {
+      cur[last] = flat[key];
+    }
+  }
+  return result;
+}
+
+/* ── Storage ─────────────────────────────────────────────── */
+
+function storageKey(lang) { return 'hlidacky_strings_' + lang; }
+
+function saveLang(lang, flat) {
+  localStorage.setItem(storageKey(lang), JSON.stringify(flat));
+}
+
+function loadLang(lang) {
+  const s = localStorage.getItem(storageKey(lang));
+  return s ? JSON.parse(s) : null;
+}
+
+/* ── Init ─────────────────────────────────────────────────── */
+
+function init() {
+  if (typeof STRINGS === 'undefined') {
+    document.querySelector('.main').innerHTML =
+      '<div style="padding:60px;text-align:center;color:#c0392b;font-size:15px">' +
+      'Chyba: strings.js se nepodařilo načíst.</div>';
+    return;
+  }
+
+  czSource = flatten(STRINGS);
+
+  // CZ is always sourced from strings.js (authoritative)
+  allLangs['CZ'] = Object.assign({}, czSource);
+  saveLang('CZ', allLangs['CZ']);
+
+  // Other languages: load from storage or copy CZ
+  LANGUAGES.forEach(function(lang) {
+    if (lang.code === 'CZ') return;
+    const saved = loadLang(lang.code);
+    allLangs[lang.code] = saved || Object.assign({}, czSource);
+    if (!saved) saveLang(lang.code, allLangs[lang.code]);
+  });
+
+  renderTabs();
+  renderSectionFilter();
+  renderTable();
+  bindToolbar();
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+
+function countChanges(lang) {
+  if (lang === 'CZ') return 0;
+  const data = allLangs[lang] || {};
+  return Object.keys(czSource).filter(function(k) {
+    return data[k] !== undefined && data[k] !== czSource[k];
+  }).length;
+}
+
+function renderTabs() {
+  const container = document.getElementById('lang-tabs');
+  container.innerHTML = LANGUAGES.map(function(lang) {
+    const changes = countChanges(lang.code);
+    const isActive = lang.code === currentLang;
+    const hasChanges = changes > 0;
+    return '<button class="lang-tab' +
+      (isActive ? ' active' : '') +
+      (hasChanges ? ' has-changes' : '') +
+      '" data-lang="' + lang.code + '">' +
+      lang.flag + ' ' + lang.label +
+      '<span class="dot"></span>' +
+      '</button>';
+  }).join('');
+
+  container.querySelectorAll('.lang-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() { switchLang(btn.dataset.lang); });
+  });
+}
+
+/* ── Section filter ──────────────────────────────────────── */
+
+function getSections() {
+  const seen = {};
+  Object.keys(czSource).forEach(function(k) { seen[k.split('.')[0]] = true; });
+  return Object.keys(seen);
+}
+
+function renderSectionFilter() {
+  const sel = document.getElementById('section-filter');
+  sel.innerHTML = '<option value="">Všechny sekce</option>' +
+    getSections().map(function(s) {
+      return '<option value="' + s + '">' + s + '</option>';
+    }).join('');
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+
+function renderTable() {
+  const tbody    = document.getElementById('strings-tbody');
+  const search   = document.getElementById('search-input').value.toLowerCase();
+  const section  = document.getElementById('section-filter').value;
+  const langData = allLangs[currentLang] || {};
+  const isCZ     = currentLang === 'CZ';
+
+  const langMeta = LANGUAGES.find(function(l) { return l.code === currentLang; });
+  document.getElementById('col-lang-header').textContent =
+    langMeta ? langMeta.flag + ' ' + langMeta.label : currentLang;
+
+  // Progress (non-CZ)
+  const progressWrap = document.getElementById('progress-wrap');
+  if (isCZ) {
+    progressWrap.style.display = 'none';
+  } else {
+    progressWrap.style.display = '';
+    const total = Object.keys(czSource).length;
+    const translated = Object.keys(czSource).filter(function(k) {
+      const v = langData[k];
+      return v !== undefined && v !== czSource[k] && v.trim() !== '';
+    }).length;
+    const pct = total > 0 ? Math.round(translated / total * 100) : 0;
+    document.getElementById('progress-label').textContent =
+      'Přeloženo: ' + translated + ' / ' + total + ' řetězců (' + pct + '%)';
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  // Reset & upload buttons
+  document.getElementById('btn-reset').classList.toggle('hidden', isCZ);
+  document.getElementById('btn-upload').classList.toggle('hidden', isCZ);
+
+  const keys = Object.keys(czSource);
+  let html = '';
+  let currentSection = null;
+  let visibleCount = 0;
+
+  keys.forEach(function(key) {
+    const sectionName = key.split('.')[0];
+    const czVal    = czSource[key] || '';
+    const transVal = (langData[key] !== undefined) ? langData[key] : czVal;
+
+    if (section && sectionName !== section) return;
+    if (search) {
+      const subKey = key.slice(sectionName.length + 1);
+      if (
+        key.toLowerCase().indexOf(search) === -1 &&
+        subKey.toLowerCase().indexOf(search) === -1 &&
+        czVal.toLowerCase().indexOf(search) === -1 &&
+        transVal.toLowerCase().indexOf(search) === -1
+      ) return;
+    }
+
+    if (sectionName !== currentSection) {
+      currentSection = sectionName;
+      html += '<tr class="section-row"><td colspan="3">' + esc(sectionName) + '</td></tr>';
+    }
+
+    const subKey    = key.slice(sectionName.length + 1);
+    const isModified = !isCZ && transVal !== czVal;
+    visibleCount++;
+
+    html += '<tr>' +
+      '<td class="key-cell" title="' + esc(key) + '">' + esc(subKey) + '</td>' +
+      '<td class="ref-cell">' + esc(czVal) + '</td>' +
+      '<td class="edit-cell">' +
+        '<textarea class="string-input' + (isModified ? ' modified' : '') + '"' +
+          ' data-key="' + esc(key) + '"' +
+          (isCZ ? ' readonly' : '') +
+          ' rows="1">' + esc(transVal) + '</textarea>' +
+      '</td>' +
+      '</tr>';
+  });
+
+  if (visibleCount === 0) {
+    html = '<tr><td colspan="3" class="empty-state">Žádné výsledky pro zadaný filtr.</td></tr>';
+  }
+
+  tbody.innerHTML = html;
+
+  // Auto-resize & input binding
+  tbody.querySelectorAll('.string-input').forEach(function(ta) {
+    autoResize(ta);
+    if (!isCZ) {
+      ta.addEventListener('input', function() {
+        autoResize(ta);
+        pendingChanges[ta.dataset.key] = ta.value;
+        ta.classList.toggle('modified', ta.value !== czSource[ta.dataset.key]);
+      });
+    }
+  });
+}
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ── Actions ─────────────────────────────────────────────── */
+
+function applyAndSave() {
+  if (Object.keys(pendingChanges).length === 0) return;
+  Object.keys(pendingChanges).forEach(function(k) {
+    allLangs[currentLang][k] = pendingChanges[k];
+  });
+  saveLang(currentLang, allLangs[currentLang]);
+  pendingChanges = {};
+}
+
+function switchLang(code) {
+  if (Object.keys(pendingChanges).length > 0) applyAndSave();
+  currentLang = code;
+  pendingChanges = {};
+  renderTabs();
+  renderTable();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2600);
+}
+
+function bindToolbar() {
+  document.getElementById('btn-save').addEventListener('click', function() {
+    applyAndSave();
+    showToast('✓ Změny uloženy');
+    renderTabs();
+    renderTable();
+  });
+
+  document.getElementById('btn-download').addEventListener('click', function() {
+    applyAndSave();
+    const nested = unflatten(allLangs[currentLang]);
+    const json   = JSON.stringify(nested, null, 2);
+    const blob   = new Blob([json], { type: 'application/json' });
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement('a');
+    a.href     = url;
+    a.download = 'strings_' + currentLang.toLowerCase() + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-upload').addEventListener('click', function() {
+    document.getElementById('file-upload').click();
+  });
+
+  document.getElementById('file-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const obj = JSON.parse(evt.target.result);
+        allLangs[currentLang] = flatten(obj);
+        saveLang(currentLang, allLangs[currentLang]);
+        pendingChanges = {};
+        renderTabs();
+        renderTable();
+        showToast('✓ Nahráno ' + Object.keys(allLangs[currentLang]).length + ' řetězců');
+      } catch (err) {
+        alert('Chyba při načítání JSON: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', function() {
+    const langLabel = LANGUAGES.find(function(l) { return l.code === currentLang; }).label;
+    if (!confirm('Resetovat ' + langLabel + ' na CZ zdroj?\n\nZtratíte všechny překlady pro tento jazyk.')) return;
+    allLangs[currentLang] = Object.assign({}, czSource);
+    saveLang(currentLang, allLangs[currentLang]);
+    pendingChanges = {};
+    renderTabs();
+    renderTable();
+    showToast('↺ ' + langLabel + ' resetován/a na CZ');
+  });
+
+  document.getElementById('search-input').addEventListener('input', renderTable);
+  document.getElementById('section-filter').addEventListener('change', renderTable);
+}
+
+/* ── Boot ────────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>
