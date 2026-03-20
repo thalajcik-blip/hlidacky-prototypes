@@ -161,9 +161,9 @@ const STRINGS = {
     "needs": {
       "modalTitle": "Add information about special needs",
       "autism": "Autism",
-      "diabetes": "Diabetes",
+      "diabetes": "Diabetes ",
       "asthma": "Asthma",
-      "adhd": "ADHD",
+      "adhd": "ADHD ",
       "allergies": "Food allergies",
       "childhood": "Childhood illnesses",
       "sleep": "Sleep disorders",
