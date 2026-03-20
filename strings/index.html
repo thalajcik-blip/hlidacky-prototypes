@@ -549,6 +549,7 @@ const LANGUAGES = [
 
 let czSource = {};      // flat CZ keys → values (from STRINGS global)
 let allLangs  = {};     // { CZ: {flat}, SK: {flat}, … }
+let touched   = {};     // { SK: Set{key, …}, EN: Set{key, …}, … } — confirmed by upload or manual edit
 let currentLang = 'CZ';
 let pendingChanges = {};
 
@@ -601,9 +602,19 @@ function unflatten(flat) {
 /* ── Storage ─────────────────────────────────────────────── */
 
 function storageKey(lang) { return 'hlidacky_strings_' + lang; }
+function touchedKey(lang)  { return 'hlidacky_touched_' + lang; }
 
 function saveLang(lang, flat) {
   localStorage.setItem(storageKey(lang), JSON.stringify(flat));
+}
+
+function saveTouched(lang) {
+  localStorage.setItem(touchedKey(lang), JSON.stringify(Array.from(touched[lang] || [])));
+}
+
+function loadTouched(lang) {
+  const s = localStorage.getItem(touchedKey(lang));
+  return s ? new Set(JSON.parse(s)) : new Set();
 }
 
 function loadLang(lang) {
@@ -633,6 +644,7 @@ function init() {
     const saved = loadLang(lang.code);
     allLangs[lang.code] = saved || Object.assign({}, czSource);
     if (!saved) saveLang(lang.code, allLangs[lang.code]);
+    touched[lang.code] = loadTouched(lang.code);
   });
 
   renderTabs();
@@ -645,10 +657,7 @@ function init() {
 
 function countChanges(lang) {
   if (lang === 'CZ') return 0;
-  const data = allLangs[lang] || {};
-  return Object.keys(czSource).filter(function(k) {
-    return data[k] !== undefined && data[k] !== czSource[k];
-  }).length;
+  return (touched[lang] || new Set()).size;
 }
 
 function renderTabs() {
@@ -707,9 +716,9 @@ function renderTable() {
   } else {
     progressWrap.style.display = '';
     const total = Object.keys(czSource).length;
+    const langTouched = touched[currentLang] || new Set();
     const translated = Object.keys(czSource).filter(function(k) {
-      const v = langData[k];
-      return v !== undefined && v !== czSource[k] && v.trim() !== '';
+      return langTouched.has(k);
     }).length;
     const pct = total > 0 ? Math.round(translated / total * 100) : 0;
     document.getElementById('progress-label').textContent =
@@ -748,7 +757,7 @@ function renderTable() {
     }
 
     const subKey    = key.slice(sectionName.length + 1);
-    const isModified = !isCZ && transVal !== czVal;
+    const isModified = !isCZ && (touched[currentLang] || new Set()).has(key);
     visibleCount++;
 
     html += '<tr>' +
@@ -776,7 +785,9 @@ function renderTable() {
       ta.addEventListener('input', function() {
         autoResize(ta);
         pendingChanges[ta.dataset.key] = ta.value;
-        ta.classList.toggle('modified', ta.value !== czSource[ta.dataset.key]);
+        if (!touched[currentLang]) touched[currentLang] = new Set();
+        touched[currentLang].add(ta.dataset.key);
+        ta.classList.toggle('modified', touched[currentLang].has(ta.dataset.key));
       });
     }
   });
@@ -803,6 +814,7 @@ function applyAndSave() {
     allLangs[currentLang][k] = pendingChanges[k];
   });
   saveLang(currentLang, allLangs[currentLang]);
+  saveTouched(currentLang);
   pendingChanges = {};
 }
 
@@ -876,6 +888,10 @@ function bindToolbar() {
         const obj = JSON.parse(evt.target.result);
         allLangs[currentLang] = flatten(obj);
         saveLang(currentLang, allLangs[currentLang]);
+        // Mark all uploaded keys as confirmed/translated
+        if (!touched[currentLang]) touched[currentLang] = new Set();
+        Object.keys(allLangs[currentLang]).forEach(function(k) { touched[currentLang].add(k); });
+        saveTouched(currentLang);
         pendingChanges = {};
         renderTabs();
         renderTable();
