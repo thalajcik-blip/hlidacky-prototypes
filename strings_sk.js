@@ -1,230 +1,240 @@
-// Auto-generated from strings.json — do not edit manually.
-// To update: paste the translated JSON content between the braces below.
+// strings_sk.js — Slovenčina
+// Published via /strings editor.
 
 const STRINGS = {
   "nav": {
-    "title": "Vytvořit nový inzerát",
-    "btnPrev": "Zpět",
-    "btnNext": "Pokračovat",
-    "cancelConfirm": "Zrušit vytváření inzerátu?"
+    "title": "Vytvoriť nový inzerát",
+    "btnPrev": "Späť",
+    "btnNext": "Pokračovať",
+    "cancelConfirm": "Zrušiť vytváranie inzerátu?"
   },
-
   "exitModal": {
-    "title": "Jste jen krůček od zveřejnění inzerátu",
-    "body": "Nevzdávejte to. Dokončete formulář a získejte nabídky od hlídaček, které dokonale splňují vaše potřeby.",
-    "leave": "Odejít",
-    "stay": "Zobrazit nabídky"
+    "title": "Ste len krôčik od zverejnenia inzerátu",
+    "body": "Nevzdávajte to. Dokončite formulár a získajte ponuky od hlídačiek, ktoré presne spĺňajú vaše potreby.",
+    "leave": "Odisť",
+    "stay": "Zobraziť ponuky"
   },
-
   "service": {
-    "heroTitle": "Koho hledáte?",
-    "heroSub": "Vyberte, s čím potřebujete od hlídačky pomoci.",
-    "sectionLabel": "Vyberte jednu nebo více oblastí pomoci",
-    "validationAlert": "Prosím vyberte alespoň jednu službu",
-    "babysitting": "Hlídání dětí",
-    "cleaning": "Úklid domácnosti",
-    "pet": "Opatrování mazlíčků",
-    "senior": "Péče o seniory",
-    "tutoring": "Doučování"
+    "heroTitle": "Koho hľadáte?",
+    "heroSub": "Vyberte, s čím potrebujete od hlídačky pomôcť.",
+    "sectionLabel": "Vyberte jednu alebo viac oblastí pomoci",
+    "validationAlert": "Prosím, vyberte aspoň jednu službu",
+    "babysitting": "Opatrovanie detí",
+    "cleaning": "Upratovanie domácnosti",
+    "pet": "Stráženie zvieratiek",
+    "senior": "Starostlivosť o seniorov",
+    "tutoring": "Doučovanie"
   },
-
   "location": {
-    "heroSub": "Místo zůstane skryté, ale i přesto vám ukážeme nejlepší hlídačky v okolí.",
-    "inputLabel": "Místo",
-    "inputPlaceholder": "Václavské náměstí, Praha",
-    "hint": "Přesná adresa bude skrytá.",
-    "validationAlert": "Prosím zadejte místo, kde hledáte pomoc",
-    "titlePrefix": "Kde potřebujete",
+    "heroSub": "Miesto zostane skryté, ale aj tak vám ukážeme najlepšie hlídačky v okolí.",
+    "inputLabel": "Miesto",
+    "inputPlaceholder": "Hviezdoslavovo námestie, Bratislava",
+    "hint": "Presná adresa bude skrytá.",
+    "validationAlert": "Prosím, zadajte miesto, kde hľadáte pomoc",
+    "titlePrefix": "Kde potrebujete",
     "titleFallback": "pomoc",
     "titleAnd": "a",
     "serviceNames": {
-      "babysitting": "hlídání dětí",
-      "cleaning": "úklid domácnosti",
-      "pet": "opatrování mazlíčků",
-      "senior": "péči o seniory",
-      "tutoring": "doučování"
+      "babysitting": "opatrovanie detí",
+      "cleaning": "upratovanie domácnosti",
+      "pet": "stráženie zvieratiek",
+      "senior": "starostlivosť o seniorov",
+      "tutoring": "doučovanie"
     }
   },
-
   "cleaning": {
-    "heroTitle": "Co je potřeba uklidit?",
-    "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
-    "sectionLabel": "Co potřebujete uklidit?",
+    "heroTitle": "Čo potrebujete upratať?",
+    "heroSub": "Na základe vášho výberu pripravíme návrh inzerátu.",
+    "sectionLabel": "Čo potrebujete upratať?",
     "flat": "Byt",
-    "house": "Dům"
+    "house": "Dom"
   },
-
   "cleaningExtras": {
-    "heroTitle": "Potřebujete pomoc s něčím dalším?",
-    "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
-    "sectionLabel": "Vyberte doplňkové služby",
+    "heroTitle": "Potrebujete pomoc s niečím ďalším?",
+    "heroSub": "Na základe vášho výberu pripravíme návrh inzerátu.",
+    "sectionLabel": "Vyberte doplnkové služby",
     "optional": "(nepovinné)",
-    "ironing": "Žehlení",
-    "laundry": "Praní",
-    "windowCleaning": "Mytí oken",
-    "airbnbCleaning": "Airbnb / úklid apartmánů",
-    "carCleaning": "Čištění auta",
-    "moveCleaning": "Úklid při stěhování",
-    "upholsteryCleaning": "Čištění čalounění",
+    "ironing": "Žehlenie",
+    "laundry": "Pranie",
+    "windowCleaning": "Umývanie okien",
+    "airbnbCleaning": "Airbnb a upratovanie apartmánov",
+    "carCleaning": "Čistenie auta",
+    "moveCleaning": "Upratovanie pri sťahovaní",
+    "upholsteryCleaning": "Čistenie čalúnenia",
     "lightMaintenance": "Drobná údržba domácnosti",
-    "gardenHelp": "Pomoc se zahradou"
+    "gardenHelp": "Pomoc so záhradou"
   },
-
   "pet": {
-    "heroTitle": "Váš mazlíček",
-    "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
-    "sectionLabel": "O jaká zvířata je potřeba se postarat?",
-    "dogs": "Psi",
-    "cats": "Kočky",
-    "other": "Jiná",
-    "largePet": "Mám velkého psa",
-    "validationAlert": "Prosím vyberte alespoň jedno zvíře"
+    "heroTitle": "Váš domáci miláčik",
+    "heroSub": "Na základe vášho výberu pripravíme návrh inzerátu.",
+    "sectionLabel": "O aké zvieratá sa treba postarať?",
+    "dogs": "Psy",
+    "cats": "Mačky",
+    "other": "Iné",
+    "largePet": "Mám veľkého psa",
+    "validationAlert": "Prosím, vyberte aspoň jedno zviera"
   },
-
   "seniorCare": {
-    "heroTitle": "Specifikace péče",
-    "heroSub": "Pomůže nám to najít to nejlepší pro vaše blízké.",
-    "careTypeLabel": "Jaký typ péče hledáte?",
-    "liveIn": "Nepřetržitá péče (24/7)",
-    "fullTime": "Péče na plný úvazek",
-    "partTime": "Pravidelná docházka (zkrácený úvazek)"
+    "heroTitle": "Špecifikácia starostlivosti",
+    "heroSub": "Pomôže nám to nájsť to najlepšie pre vašich blízkych.",
+    "careTypeLabel": "Aký typ starostlivosti hľadáte?",
+    "liveIn": "Nepretržitá starostlivosť (24/7)",
+    "fullTime": "Starostlivosť na plný úväzok",
+    "partTime": "Pravidelná dochádzka (skrátený úväzok)"
   },
-
   "frequencyPet": {
-    "heroTitle": "Kdy a kde?",
-    "heroSub": "Doplňte poslední detaily k inzerátu.",
-    "howOftenLabel": "Jak často potřebujete pomoc?",
-    "onetime": "jednorázově (během dovolené)",
-    "regularly": "pravidelně",
-    "whereLabel": "Kde potřebujete pomoc?",
+    "heroTitle": "Kedy a kde?",
+    "heroSub": "Doplňte posledné detaily k inzerátu.",
+    "howOftenLabel": "Ako často potrebujete pomoc?",
+    "onetime": "jednorazovo (počas dovolenky)",
+    "regularly": "pravidelne",
+    "whereLabel": "Kde potrebujete pomoc?",
     "atMyHome": "u nás doma",
     "atSitterHome": "u hlídačky doma",
     "dontCare": "nezáleží mi na tom"
   },
-
   "frequency": {
-    "heroTitle": "Kdy a jak často?",
-    "heroSub": "Hledáte jednorázovou, nebo pravidelnou pomoc?",
-    "sectionLabel": "Jak často potřebujete pomoc?",
-    "regularly": "pravidelně",
-    "onetime": "jednorázově",
-    "daysLabel": "Vyberte preferované dny",
+    "heroTitle": "Kedy a ako často?",
+    "heroSub": "Hľadáte jednorazovú alebo pravidelnú pomoc?",
+    "sectionLabel": "Ako často potrebujete pomoc?",
+    "regularly": "pravidelne",
+    "onetime": "jednorazovo",
+    "daysLabel": "Vyberte preferované dni",
     "optional": "(nepovinné)",
     "days": {
-      "mo": "Po", "tu": "Út", "we": "St", "th": "Čt",
-      "fr": "Pá", "sa": "So", "su": "Ne"
+      "mo": "Po",
+      "tu": "Ut",
+      "we": "St",
+      "th": "Št",
+      "fr": "Pi",
+      "sa": "So",
+      "su": "Ne"
     },
-    "freqLabel": "Vyberte četnost",
+    "freqLabel": "Vyberte početnosť",
     "freqOptions": [
-      "Jednou týdně",
-      "Dvakrát týdně",
-      "Každý den",
-      "Jednou za dva týdny",
-      "Jednou měsíčně"
+      "Raz týždenne",
+      "Dvakrát týždenne",
+      "Každý deň",
+      "Raz za dva týždne",
+      "Raz mesačne"
     ],
-    "dateLabel": "Upřesněte datum a čas",
-    "datePlaceholder": "např. každé pondělí od 16:00 do 20:00 a pátek od 14:00 do 18:00, počínaje příštím měsícem",
-    "notsure": "nevím, ještě se rozhoduji",
-    "dateLabelRegular": "Upřesněte datum a čas",
-    "longterm": "Hledám dlouhodobou pomoc"
+    "dateLabel": "Upresnite dátum a čas",
+    "datePlaceholder": "napr. každý pondelok od 16:00 do 20:00 a piatok od 14:00 do 18:00, počnúc budúcim mesiacom",
+    "notsure": "neviem, ešte sa rozhodujem",
+    "dateLabelRegular": "Upresnite dátum a čas",
+    "longterm": "Hľadám dlhodobú pomoc"
   },
-
   "review": {
-    "heroTitle": "Zkontrolujte si svůj inzerát",
-    "heroSub1": "Téměř hotovo!",
-    "heroSub2": "Vašim kritériím odpovídá 128 hlídaček 🎉",
-    "aiLabel": "✨ Přidejte pár detailů, abyste oslovili více hlídaček",
-    "privacyNote": "Vaše osobní údaje zůstávají v soukromí a hlídačkám se nezobrazují.",
-    "btnPost": "Zveřejnit inzerát",
-    "footerNote": "Inzerát zveřejníme zdarma a vytvoříme vám účet na Hlídačky.cz, abyste vše mohli bezpečně spravovat.",
+    "heroTitle": "Skontrolujte si svoj inzerát",
+    "heroSub1": "Takmer hotovo!",
+    "heroSub2": "Vašim kritériám zodpovedá 128 hlídačiek 🎉",
+    "aiLabel": "✨ Pridajte pár detailov, aby ste oslovili viac hlídačiek",
+    "privacyNote": "Vaše osobné údaje zostávajú v súkromí a hlídačkám sa nezobrazujú.",
+    "btnPost": "Zverejniť inzerát",
+    "footerNote": "Inzerát zverejníme zadarmo a vytvoríme vám účet na Hlídačky.sk, aby ste všetko mohli bezpečne spravovať.",
     "generatedTexts": {
-      "babysitting": "Hledáme pečlivou a spolehlivou hlídačku pro naše děti. Potřebujeme pravidelnou pomoc a hledáme zkušeného, přátelského člověka.",
-      "cleaning":    "Hledáme pomoc s pravidelným úklidem domácnosti. Bydlíme v bytě a potřebovali bychom pomoci také s žehlením a praním.",
-      "pet":         "Hledáme zodpovědného člověka se zkušenostmi na opatrování našeho psa během dovolené. Péče bude probíhat u nás doma.",
-      "senior":      "Hledáme laskavého a zodpovědného poskytovatele péče pro staršího člena rodiny. Cílem je každodenní pomoc a zajištění pohodlí domova.",
-      "tutoring":    "Hledáme zkušeného doučovatele, který pomůže našemu dítěti se školními předměty a přípravou na zkoušky. Důležitá je pro nás trpělivost a přizpůsobivost."
+      "babysitting": "Hľadáme pozornú a spoľahlivú hlídačku pre naše deti. Potrebujeme pravidelnú pomoc a hľadáme skúseného, priateľského človeka.",
+      "cleaning": "Hľadáme pomoc s pravidelným upratovaním domácnosti. Bývame v byte a potrebovali by sme pomôcť aj so žehlením a praním.",
+      "pet": "Hľadáme zodpovedného človeka so skúsenosťami na stráženie nášho psa počas dovolenky. Starostlivosť bude prebiehať u nás doma.",
+      "senior": "Hľadáme láskavého a zodpovedného poskytovateľa starostlivosti pre staršieho člena rodiny. Cieľom je každodenná pomoc a zaistenie pohodlia domova.",
+      "tutoring": "Hľadáme skúseného doučovateľa, ktorý pomôže nášmu dieťaťu so školskými predmetmi a prípravou na skúšky. Dôležitá je pre nás trpezlivosť a prispôsobivosť."
     },
-    "hintLabel": "Tip: Přidejte více detailů o vaší nabídce",
+    "hintLabel": "Tip: Pridajte viac detailov o vašej ponuke",
     "pillLanguage": "preferovaný jazyk",
-    "pillNeeds": "speciální potřeby",
+    "pillNeeds": "špeciálne potreby",
     "pillPrice": "odhadovaná cena",
-    "modalCancel": "Zrušit",
-    "modalAdd": "Přidat do popisu",
+    "modalCancel": "Zrušiť",
+    "modalAdd": "Pridať do popisu",
     "language": {
-      "modalTitle": "Přidejte informace o jazyce hlídačky",
-      "cs": "Čeština", "sk": "Slovenština", "en": "Angličtina",
-      "de": "Němčina", "es": "Španělština", "fr": "Francouzština",
-      "it": "Italština", "uk": "Ukrajinština",
-      "moreLangs": "+ více jazyků",
-      "appendText": "Preferujeme hlídačku, která mluví: {langs}."
+      "modalTitle": "Pridajte informácie o jazyku hlídačky",
+      "cs": "Čeština",
+      "sk": "Slovenčina",
+      "en": "Angličtina",
+      "de": "Nemčina",
+      "es": "Španielčina",
+      "fr": "Francúzština",
+      "it": "Taliančina",
+      "uk": "Ukrajinčina",
+      "moreLangs": "+ viac jazykov",
+      "appendText": "Preferujeme hlídačku, ktorá hovorí: {langs}."
     },
     "needs": {
-      "modalTitle": "Přidejte informace o speciálních potřebách",
-      "autism": "Autismus", "diabetes": "Diabetes", "asthma": "Astma",
-      "adhd": "ADHD", "allergies": "Potravinové alergie",
-      "childhood": "Dětské nemoci", "sleep": "Poruchy spánku",
-      "vision": "Zrakové postižení", "hearing": "Sluchové postižení",
-      "epilepsy": "Epilepsie", "other": "Jiné potřeby",
-      "appendText": "Naše dítě má speciální potřeby: {needs}."
+      "modalTitle": "Pridajte informácie o špeciálnych potrebách",
+      "autism": "Autizmus",
+      "diabetes": "Diabetes",
+      "asthma": "Astma",
+      "adhd": "ADHD",
+      "allergies": "Potravinové alergie",
+      "childhood": "Detské choroby",
+      "sleep": "Poruchy spánku",
+      "vision": "Zrakové postihnutie",
+      "hearing": "Sluchové postihnutie",
+      "epilepsy": "Epilepsia",
+      "other": "Iné potreby",
+      "appendText": "Naše dieťa má špeciálne potreby: {needs}."
     },
     "price": {
-      "modalTitle": "Zadejte vaše cenové očekávání",
+      "modalTitle": "Zadajte vaše cenové očakávania",
       "label": "Nastavte cenu",
-      "appendText": "Nabízíme {price}."
+      "appendText": "Ponúkame {price}."
     }
   },
-
   "locationTutoring": {
-    "heroTitle": "Kde chcete doučovat?",
-    "heroSub": "Kde chcete, aby vaše dítě dostávalo hodiny?",
-    "sectionLabel": "Vyberte jedno nebo více míst",
-    "studentPlace": "U žáka doma",
-    "tutorPlace": "U doučovatele",
-    "online": "Online (video výuka)",
-    "validationAlert": "Prosím vyberte alespoň jedno místo"
+    "heroTitle": "Kde chcete doučovať?",
+    "heroSub": "Kde chcete, aby vaše dieťa mávalo hodiny?",
+    "sectionLabel": "Vyberte jedno alebo viac miest",
+    "studentPlace": "U žiaka doma",
+    "tutorPlace": "U doučovateľa",
+    "online": "Online (video výučba)",
+    "validationAlert": "Prosím, vyberte aspoň jedno miesto"
   },
-
   "subjects": {
-    "heroTitle": "Předměty",
-    "heroSub": "Vyberte jeden nebo více předmětů",
+    "heroTitle": "Predmety",
+    "heroSub": "Vyberte jeden alebo viac predmetov",
     "languagesLabel": "Jazyky",
-    "scienceLabel": "Vědy",
+    "scienceLabel": "Vedy",
     "musicLabel": "Hudba",
-    "moreLanguages": "+ další jazyky",
-    "moreMusic": "+ další hudební nástroje",
-    "otherLabel": "Jakýkoli jiný předmět",
-    "otherPlaceholder": "Programování, tanec, dějepis…",
-    "cs": "Čeština", "en": "Angličtina", "de": "Němčina",
-    "fr": "Francouzština", "it": "Italština", "es": "Španělština",
-    "physics": "Fyzika", "math": "Matematika", "chemistry": "Chemie", "biology": "Biologie",
-    "singing": "Zpěv", "piano": "Klavír", "guitar": "Kytara"
+    "moreLanguages": "+ ďalšie jazyky",
+    "moreMusic": "+ ďalšie hudobné nástroje",
+    "otherLabel": "Akýkoľvek iný predmet",
+    "otherPlaceholder": "Programovanie, tanec, dejepis…",
+    "cs": "Čeština",
+    "en": "Angličtina",
+    "de": "Nemčina",
+    "fr": "Francúzština",
+    "it": "Taliančina",
+    "es": "Španielčina",
+    "physics": "Fyzika",
+    "math": "Matematika",
+    "chemistry": "Chémia",
+    "biology": "Biológia",
+    "singing": "Spev",
+    "piano": "Klavír",
+    "guitar": "Gitara"
   },
-
   "contact": {
-    "heroTitle": "Vaše jméno a e-mail",
-    "heroSub": "Abychom vám mohli doručit odpovědi od hlídaček.",
-    "nameLabel": "Celé jméno",
-    "namePlaceholder": "např. Jana Nováková",
+    "heroTitle": "Vaše meno a e-mail",
+    "heroSub": "Aby sme vám mohli doručiť odpovede od hlídačiek.",
+    "nameLabel": "Celé meno",
+    "namePlaceholder": "napr. Jana Nováková",
     "emailLabel": "E-mail",
-    "emailPlaceholder": "jana.novakova@priklad.cz",
-    "emailPrefsLabel": "Vyberte e-maily, které od nás chcete dostávat",
-    "emailMonthly": "Měsíční dávka inspirace v tématech šitých na míru",
-    "emailOffers": "Slevy a nabídky od Hlídačky.cz a partnerů"
+    "emailPlaceholder": "jana.novakova@priklad.sk",
+    "emailPrefsLabel": "Vyberte e-maily, ktoré od nás chcete dostávať",
+    "emailMonthly": "Mesačná dávka inšpirácie v témach šitých na mieru",
+    "emailOffers": "Zľavy a ponuky od Hlídačky.sk a partnerov"
   },
-
   "phone": {
-    "heroTitle": "Telefonní číslo",
-    "heroSub": "Vaše soukromé číslo s mezinárodní předvolbou. Jeho zobrazením získáte více kontaktů od hlídaček.",
-    "inputLabel": "Telefonní číslo",
-    "inputPlaceholder": "777 123 456",
-    "skipLink": "Udělám to později"
+    "heroTitle": "Telefónne číslo",
+    "heroSub": "Vaše súkromné číslo s medzinárodnou predvoľbou. Jeho zobrazením získate viac kontaktov od hlídačiek.",
+    "inputLabel": "Telefónne číslo",
+    "inputPlaceholder": "+421 900 123 456",
+    "skipLink": "Urobím to neskôr"
   },
-
   "success": {
     "heroTitle": "A je to!",
-    "heroSub": "Váš inzerát v místě {city} byl zveřejněn.",
-    "body": "Po schválení zobrazíme váš inzerát hlídačkám ve vašem městě. Jejich odpovědi uvidíte ve svých zprávách a o každé nové vás rovnou informujeme.",
-    "btnContinue": "Pokračovat",
-    "editLink": "Upravit inzerát"
+    "heroSub": "Váš inzerát v mieste {city} bol zverejnený.",
+    "body": "Po schválení zobrazíme váš inzerát hlídačkám vo vašom meste. Ich odpovede uvidíte vo svojich správach a o každej novej vás rovno informujeme.",
+    "btnContinue": "Pokračovať",
+    "editLink": "Upraviť inzerát"
   }
 };
