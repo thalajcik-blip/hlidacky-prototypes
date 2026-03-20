@@ -363,6 +363,101 @@
     }
 
     .hidden { display: none !important; }
+
+    /* Settings panel */
+    .settings-panel {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .settings-panel.open { display: block; }
+    .settings-panel h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .settings-row label {
+      font-size: 13px;
+      color: var(--gray-600);
+      white-space: nowrap;
+    }
+    .token-input {
+      flex: 1;
+      min-width: 280px;
+      padding: 7px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+    }
+    .token-input:focus { border-color: var(--pink); }
+    .settings-hint {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 8px;
+    }
+    .settings-hint a { color: var(--pink); }
+    .token-status {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .token-status.ok { background: #e6f4ec; color: #1a6e3a; }
+    .token-status.missing { background: #fef3cd; color: #7a5c00; }
+
+    /* Publish button */
+    .btn-publish {
+      background: #1a6e3a;
+      color: white;
+    }
+    .btn-publish:hover:not(:disabled) { background: #155c30; }
+    .btn-publish:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Deploy status bar */
+    .deploy-status {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .deploy-status.visible { display: flex; }
+    .deploy-status.success { border-color: #a8d5b8; background: #f0faf4; color: #1a6e3a; }
+    .deploy-status.error   { border-color: #f5c6c6; background: #fff5f5; color: #c0392b; }
+    .deploy-status.loading { color: var(--gray-600); }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--gray-200);
+      border-top-color: var(--pink);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .deploy-status a { color: inherit; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -376,6 +471,26 @@
 <div class="main">
 
   <div class="lang-tabs" id="lang-tabs"></div>
+
+  <!-- GitHub settings panel -->
+  <div class="settings-panel" id="settings-panel">
+    <h3>GitHub připojení</h3>
+    <div class="settings-row">
+      <label>Personal Access Token</label>
+      <input type="password" class="token-input" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <button class="btn btn-outline" id="btn-save-token">Uložit token</button>
+      <span class="token-status missing hidden" id="token-status"></span>
+    </div>
+    <p class="settings-hint">
+      Token potřebuje scope <strong>repo</strong>.
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Hlidacky+strings+editor" target="_blank">Vygenerovat token na GitHubu →</a>
+    </p>
+  </div>
+
+  <div class="deploy-status" id="deploy-status">
+    <span class="spinner hidden" id="deploy-spinner"></span>
+    <span id="deploy-msg"></span>
+  </div>
 
   <div id="progress-wrap">
     <div class="progress-label" id="progress-label"></div>
@@ -395,7 +510,9 @@
       <button class="btn btn-outline" id="btn-download-js">↓ Stáhnout .js</button>
       <button class="btn btn-outline" id="btn-download">↓ Stáhnout JSON</button>
       <button class="btn btn-danger hidden" id="btn-reset">↺ Reset na CZ</button>
+      <button class="btn btn-outline" id="btn-settings" title="Nastavení GitHub tokenu">⚙️</button>
       <button class="btn btn-primary" id="btn-save">Uložit</button>
+      <button class="btn btn-publish hidden" id="btn-publish" disabled>🚀 Publikovat</button>
     </div>
   </div>
 
@@ -779,8 +896,155 @@ function bindToolbar() {
   document.getElementById('section-filter').addEventListener('change', renderTable);
 }
 
+/* ── GitHub publishing ───────────────────────────────────── */
+
+const GH_REPO  = 'thalajcik-blip/hlidacky-prototypes';
+const GH_API   = 'https://api.github.com';
+
+function getToken() {
+  return localStorage.getItem('hlidacky_gh_token') || '';
+}
+
+function setToken(t) {
+  localStorage.setItem('hlidacky_gh_token', t.trim());
+}
+
+function ghFilePath(lang) {
+  return lang === 'CZ' ? 'strings.js' : 'strings_' + lang.toLowerCase() + '.js';
+}
+
+function buildJsContent(lang) {
+  const nested = unflatten(allLangs[lang]);
+  const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
+  return '// ' + ghFilePath(lang) + ' — ' + meta.label + '\n' +
+         '// Published via /strings editor.\n\n' +
+         'const STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
+}
+
+function toBase64(str) {
+  // Handles unicode (UTF-8 → binary → base64)
+  var bytes = new TextEncoder().encode(str);
+  var binary = '';
+  bytes.forEach(function(b) { binary += String.fromCharCode(b); });
+  return btoa(binary);
+}
+
+function setDeployStatus(type, msg, link) {
+  var bar = document.getElementById('deploy-status');
+  var msgEl = document.getElementById('deploy-msg');
+  var spinner = document.getElementById('deploy-spinner');
+  bar.className = 'deploy-status visible ' + type;
+  spinner.classList.toggle('hidden', type !== 'loading');
+  msgEl.innerHTML = link
+    ? msg + ' <a href="' + link + '" target="_blank">Zobrazit deploy →</a>'
+    : msg;
+}
+
+function hideDeployStatus() {
+  document.getElementById('deploy-status').className = 'deploy-status';
+}
+
+async function publishToGitHub() {
+  const token = getToken();
+  if (!token) {
+    document.getElementById('settings-panel').classList.add('open');
+    document.getElementById('gh-token-input').focus();
+    return;
+  }
+
+  applyAndSave();
+  const path    = ghFilePath(currentLang);
+  const content = buildJsContent(currentLang);
+  const headers = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+
+  var btn = document.getElementById('btn-publish');
+  btn.disabled = true;
+  setDeployStatus('loading', 'Publikuji…');
+
+  try {
+    // 1. Get current file SHA
+    var getResp = await fetch(GH_API + '/repos/' + GH_REPO + '/contents/' + path, { headers: headers });
+    if (!getResp.ok && getResp.status !== 404) throw new Error('GitHub API: ' + getResp.status);
+    var sha = null;
+    if (getResp.ok) {
+      var fileData = await getResp.json();
+      sha = fileData.sha;
+    }
+
+    // 2. Commit updated file
+    var body = {
+      message: 'Update ' + path + ' via /strings editor',
+      content: toBase64(content)
+    };
+    if (sha) body.sha = sha;
+
+    var putResp = await fetch(GH_API + '/repos/' + GH_REPO + '/contents/' + path, {
+      method: 'PUT',
+      headers: headers,
+      body: JSON.stringify(body)
+    });
+    if (!putResp.ok) {
+      var err = await putResp.json();
+      throw new Error(err.message || ('GitHub API: ' + putResp.status));
+    }
+    var result = await putResp.json();
+    var vercelUrl = 'https://vercel.com/tomas-halajciks-projects/hlidacky-prototypes/deployments';
+    setDeployStatus('success', '✓ Publikováno — Vercel nasazuje (~30–60 s)', vercelUrl);
+    setTimeout(hideDeployStatus, 12000);
+  } catch (err) {
+    setDeployStatus('error', '✗ Chyba: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function initGitHub() {
+  // Token settings
+  var tokenInput = document.getElementById('gh-token-input');
+  var tokenStatus = document.getElementById('token-status');
+
+  function updateTokenStatus() {
+    var t = getToken();
+    var publishBtn = document.getElementById('btn-publish');
+    if (t) {
+      tokenInput.value = t;
+      tokenStatus.textContent = '✓ Token nastaven';
+      tokenStatus.className = 'token-status ok';
+      tokenStatus.classList.remove('hidden');
+      publishBtn.classList.remove('hidden');
+      publishBtn.disabled = false;
+    } else {
+      tokenStatus.textContent = 'Token chybí';
+      tokenStatus.className = 'token-status missing';
+      tokenStatus.classList.remove('hidden');
+      publishBtn.classList.add('hidden');
+    }
+  }
+
+  document.getElementById('btn-save-token').addEventListener('click', function() {
+    setToken(tokenInput.value);
+    updateTokenStatus();
+    document.getElementById('settings-panel').classList.remove('open');
+    showToast('✓ Token uložen');
+  });
+
+  document.getElementById('btn-settings').addEventListener('click', function() {
+    document.getElementById('settings-panel').classList.toggle('open');
+  });
+
+  document.getElementById('btn-publish').addEventListener('click', publishToGitHub);
+
+  updateTokenStatus();
+}
+
 /* ── Boot ────────────────────────────────────────────────── */
 init();
+initGitHub();
 </script>
 </body>
 </html>
