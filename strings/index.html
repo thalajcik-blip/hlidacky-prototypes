@@ -525,7 +525,7 @@
       <thead>
         <tr>
           <th>Klíč</th>
-          <th>CZ (zdroj)</th>
+          <th>🇬🇧 EN (zdroj)</th>
           <th id="col-lang-header">Překlad</th>
         </tr>
       </thead>
@@ -736,8 +736,9 @@ function renderTable() {
 
   keys.forEach(function(key) {
     const sectionName = key.split('.')[0];
-    const czVal    = czSource[key] || '';
-    const transVal = (langData[key] !== undefined) ? langData[key] : czVal;
+    const enVal    = (allLangs['EN'] && allLangs['EN'][key]) || czSource[key] || '';
+    const czVal    = enVal;
+    const transVal = (langData[key] !== undefined) ? langData[key] : czSource[key] || '';
 
     if (section && sectionName !== section) return;
     if (search) {
