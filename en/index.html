@@ -30,9 +30,10 @@
     .ico { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; }
     .ico svg { width:18px; height:18px; }
   </style>
-  <!-- All UI strings live in strings.js — hand strings.json to translators -->
-  <!-- Language detection: loads /strings_[lang].js for /en/, /sk/, etc. -->
-  <script>(function(){var m=location.pathname.match(/^\/(en|sk|hu|at|hr)(\/|$)/);document.write('<scr'+'ipt src="'+(m?'/strings_'+m[1]+'.js':'/strings.js')+'"><\/scr'+'ipt>');})()</script>
+  <!-- All UI strings live in strings.js (CZ base, always loaded) -->
+  <script src="/strings.js"></script>
+  <!-- Language file merges on top; missing keys fall back to CZ automatically -->
+  <script>(function(){var m=location.pathname.match(/^\/(en|sk|hu|at|hr)(\/|$)/);if(m)document.write('<scr'+'ipt src="/strings_'+m[1]+'.js"><\/scr'+'ipt>');})()</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

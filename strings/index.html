@@ -846,14 +846,21 @@ function bindToolbar() {
     downloadFile(json, 'strings_' + currentLang.toLowerCase() + '.json', 'application/json');
   });
 
+  function buildJsContent(lang) {
+    const nested = unflatten(allLangs[lang]);
+    const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
+    const dm     = 'function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}';
+    return '// strings_' + lang.toLowerCase() + '.js \u2014 ' + meta.label + '\n' +
+           '// Published via /strings editor. Missing keys fall back to CZ source (strings.js).\n' +
+           '(function(){\n  ' + dm + '\n' +
+           '  window.STRINGS = _dm(window.STRINGS, ' + JSON.stringify(nested, null, 2) + ');\n' +
+           '})();\n';
+  }
+
   document.getElementById('btn-download-js').addEventListener('click', function() {
     applyAndSave();
-    const nested = unflatten(allLangs[currentLang]);
-    const lang   = currentLang.toLowerCase();
-    const js     = '// strings_' + lang + '.js — ' + LANGUAGES.find(function(l){return l.code===currentLang;}).label + '\n' +
-                   '// Generated from /strings editor — do not edit manually.\n\n' +
-                   'const STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
-    downloadFile(js, 'strings_' + lang + '.js', 'text/javascript');
+    const lang = currentLang.toLowerCase();
+    downloadFile(buildJsContent(currentLang), 'strings_' + lang + '.js', 'text/javascript');
   });
 
   document.getElementById('btn-upload').addEventListener('click', function() {
@@ -913,13 +920,6 @@ function ghFilePath(lang) {
   return lang === 'CZ' ? 'strings.js' : 'strings_' + lang.toLowerCase() + '.js';
 }
 
-function buildJsContent(lang) {
-  const nested = unflatten(allLangs[lang]);
-  const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
-  return '// ' + ghFilePath(lang) + ' — ' + meta.label + '\n' +
-         '// Published via /strings editor.\n\n' +
-         'const STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
-}
 
 function toBase64(str) {
   // Handles unicode (UTF-8 → binary → base64)
