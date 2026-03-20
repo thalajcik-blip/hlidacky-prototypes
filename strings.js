@@ -1,7 +1,7 @@
 // Auto-generated from strings.json — do not edit manually.
 // To update: paste the translated JSON content between the braces below.
 
-const STRINGS = {
+window.STRINGS = {
   "nav": {
     "title": "Vytvořit nový inzerát",
     "btnPrev": "Zpět",
