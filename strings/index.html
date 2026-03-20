@@ -392,6 +392,7 @@
     <div class="toolbar-right">
       <button class="btn btn-outline" id="btn-upload">↑ Nahrát JSON</button>
       <input type="file" id="file-upload" accept=".json" class="hidden">
+      <button class="btn btn-outline" id="btn-download-js">↓ Stáhnout .js</button>
       <button class="btn btn-outline" id="btn-download">↓ Stáhnout JSON</button>
       <button class="btn btn-danger hidden" id="btn-reset">↺ Reset na CZ</button>
       <button class="btn btn-primary" id="btn-save">Uložit</button>
@@ -711,17 +712,31 @@ function bindToolbar() {
     renderTable();
   });
 
+  function downloadFile(content, filename, type) {
+    const blob = new Blob([content], { type: type });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   document.getElementById('btn-download').addEventListener('click', function() {
     applyAndSave();
     const nested = unflatten(allLangs[currentLang]);
     const json   = JSON.stringify(nested, null, 2);
-    const blob   = new Blob([json], { type: 'application/json' });
-    const url    = URL.createObjectURL(blob);
-    const a      = document.createElement('a');
-    a.href     = url;
-    a.download = 'strings_' + currentLang.toLowerCase() + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadFile(json, 'strings_' + currentLang.toLowerCase() + '.json', 'application/json');
+  });
+
+  document.getElementById('btn-download-js').addEventListener('click', function() {
+    applyAndSave();
+    const nested = unflatten(allLangs[currentLang]);
+    const lang   = currentLang.toLowerCase();
+    const js     = '// strings_' + lang + '.js — ' + LANGUAGES.find(function(l){return l.code===currentLang;}).label + '\n' +
+                   '// Generated from /strings editor — do not edit manually.\n\n' +
+                   'const STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
+    downloadFile(js, 'strings_' + lang + '.js', 'text/javascript');
   });
 
   document.getElementById('btn-upload').addEventListener('click', function() {
