@@ -33,7 +33,8 @@
   <!-- All UI strings live in strings.js (CZ base, always loaded) -->
   <script src="/strings.js"></script>
   <!-- Language file merges on top; missing keys fall back to CZ automatically -->
-  <script>(function(){var m=location.pathname.match(/^\/(en|sk|hu|at|hr)(\/|$)/);if(m)document.write('<scr'+'ipt src="/strings_'+m[1]+'.js"><\/scr'+'ipt>');})()</script>
+  <!-- Root (/) defaults to EN; /cz/ uses CZ base only; other langs load their file -->
+  <script>(function(){var m=location.pathname.match(/^\/(en|sk|hu|at|hr)(\/|$)/);var isCZ=location.pathname.match(/^\/cz(\/|$)/);if(!isCZ)document.write('<scr'+'ipt src="/strings_'+(m?m[1]:'en')+'.js"><\/scr'+'ipt>');})()</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
