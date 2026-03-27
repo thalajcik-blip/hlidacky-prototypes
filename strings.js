@@ -207,6 +207,16 @@ window.STRINGS = {
       "appendText": "Cleaning supplies will be provided by {provider}.",
       "appendNoPreferenceText": "We have no preference on who provides the cleaning supplies."
     },
+    "daysTimes": {
+      "pillLabel": "days & times",
+      "modalTitle": "When and how often?",
+      "appendNotSureText": "We are still flexible about the days and times.",
+      "appendRegularText": "We are looking for regular help.",
+      "appendRegularWithDetails": "We are looking for regular help: {details}.",
+      "appendLongtermText": "We are looking for long-term help.",
+      "appendOneTimeText": "We need one-time help on {date} from {fromTime} to {toTime}.",
+      "appendOneTimeOvernightText": "We need one-time overnight help from {fromDate} {fromTime} to {toDate} {toTime}."
+    },
     "specialOccasions": {
       "pillLabel": "special occasions",
       "modalTitle": "Special occasions",

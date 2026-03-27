@@ -1907,6 +1907,7 @@
         <button class="detail-pill" id="pill-extraTasks" onclick="openPillModal('extraTasks')" data-i18n="review.extraTasks.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-daysTimes" onclick="openPillModal('daysTimes')" data-i18n="review.daysTimes.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2367,6 +2368,8 @@
       document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
       const cleaningSuppliesRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
+      const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
+      document.getElementById('pill-daysTimes').style.display = daysTimesRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting');
@@ -2793,6 +2796,9 @@
       ],
       preSelected: ['noPreference']
     },
+    daysTimes: {
+      icon: '/doodles/calendar.svg'
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -2853,6 +2859,19 @@
   let _currentPill = null;
   let _childCount = 1;
   let _childData = []; // [{gender:'girl',age:'y3'}, ...]
+  let _daysTimesState = {
+    mode: 'notsure',
+    regularText: '',
+    date: '',
+    timeFrom: '16:00',
+    timeTo: '19:00',
+    overnight: false,
+    overnightDateFrom: '',
+    overnightTimeFrom: '20:00',
+    overnightDateTo: '',
+    overnightTimeTo: '07:00',
+    longterm: false
+  };
 
   function getPillI18nBase(type) {
     return type === 'children' ? 'children' : 'review.' + type;
@@ -3015,6 +3034,163 @@
       '</div>';
   }
 
+  function renderDaysTimesBody() {
+    return '<p class="pm-sublabel">' + t('frequency.sectionLabel') + '</p>' +
+      '<div class="radio-group" id="pm-freq-radios">' +
+        '<div class="radio-opt' + (_daysTimesState.mode === 'notsure' ? ' selected' : '') + '" data-value="notsure" onclick="selectPillFreq(\'notsure\',this)">' +
+          '<div class="radio-circle">' + (_daysTimesState.mode === 'notsure' ? '<div class="radio-dot"></div>' : '') + '</div>' +
+          '<span class="radio-lbl">' + t('frequency.notsure') + '</span>' +
+        '</div>' +
+        '<div class="radio-opt' + (_daysTimesState.mode === 'regularly' ? ' selected' : '') + '" data-value="regularly" onclick="selectPillFreq(\'regularly\',this)">' +
+          '<div class="radio-circle">' + (_daysTimesState.mode === 'regularly' ? '<div class="radio-dot"></div>' : '') + '</div>' +
+          '<span class="radio-lbl">' + t('frequency.regularly') + '</span>' +
+        '</div>' +
+        '<div class="radio-opt' + (_daysTimesState.mode === 'onetime' ? ' selected' : '') + '" data-value="onetime" onclick="selectPillFreq(\'onetime\',this)">' +
+          '<div class="radio-circle">' + (_daysTimesState.mode === 'onetime' ? '<div class="radio-dot"></div>' : '') + '</div>' +
+          '<span class="radio-lbl">' + t('frequency.onetime') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div id="pm-freq-regular" style="display:' + (_daysTimesState.mode === 'regularly' ? '' : 'none') + '; padding-top:16px;">' +
+        '<p class="sec-label" style="display:flex;align-items:center;gap:6px;">' +
+          '<span>' + t('frequency.dateLabelRegular') + '</span>' +
+          '<span class="label-optional">' + t('frequency.optional') + '</span>' +
+        '</p>' +
+        '<textarea class="form-textarea" id="pm-freq-textarea" style="margin-top:8px;"></textarea>' +
+      '</div>' +
+      '<div id="pm-freq-onetime" style="display:' + (_daysTimesState.mode === 'onetime' ? '' : 'none') + '; padding-top:16px;">' +
+        '<p class="sec-label" style="display:flex;align-items:center;gap:6px;">' +
+          '<span>' + t('frequency.dateLabel') + '</span>' +
+          '<span class="label-optional">' + t('frequency.optional') + '</span>' +
+          '<button id="pm-overnight-toggle" onclick="togglePillOvernight()" style="margin-left:auto;background:none;border:none;padding:0;cursor:pointer;line-height:0;flex-shrink:0;" title="Overnight booking">' +
+            '<span id="pm-icon-night-wrap" style="display:' + (_daysTimesState.overnight ? 'none' : '') + '"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C11.8281 18.125 13.5508 17.4922 14.8867 16.4375C10.8438 16.332 7.46875 12.957 7.46875 8.84375C7.46875 6.13672 8.875 3.78125 10.9844 2.44531C10.668 2.41016 10.3516 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C10.668 1.25 11.3359 1.32031 12.0039 1.46094C12.3555 1.56641 12.6016 1.84766 12.6367 2.19922C12.6719 2.55078 12.4961 2.90234 12.1797 3.04297C10.0703 4.09766 8.59375 6.3125 8.59375 8.84375C8.59375 12.5703 11.8633 15.5938 15.5898 15.2773C15.9414 15.2773 16.2578 15.4531 16.4336 15.8047C16.5742 16.1211 16.5039 16.5078 16.2227 16.7539C14.6055 18.3008 12.4258 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM15.625 5.75V8H17.875C18.1914 8 18.4375 8.24609 18.4375 8.5625C18.4375 8.87891 18.1914 9.125 17.875 9.125H15.625V11.375C15.625 11.6914 15.3789 11.9375 15.0625 11.9375C14.7461 11.9375 14.5 11.6914 14.5 11.375V9.125H12.25C11.9336 9.125 11.6875 8.87891 11.6875 8.5625C11.6875 8.24609 11.9336 8 12.25 8H14.5V5.75C14.5 5.43359 14.7461 5.1875 15.0625 5.1875C15.3789 5.1875 15.625 5.43359 15.625 5.75Z" fill="#8B91A3"/></svg></span>' +
+            '<span id="pm-icon-day-wrap" style="display:' + (_daysTimesState.overnight ? '' : 'none') + '"><svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.375 2.13057L10.6328 3.9587C10.2461 4.20479 9.7539 4.20479 9.36718 3.9587L6.66015 2.13057L5.99218 5.36495C5.88671 5.82198 5.5703 6.13838 5.11327 6.24385L1.8789 6.87667L3.70702 9.61885C3.95312 10.0056 3.95312 10.4978 3.70702 10.8845L1.8789 13.6267L5.11327 14.2595C5.5703 14.3649 5.88671 14.7165 5.99218 15.1384L6.62499 18.3728L8.34765 17.2126C8.31249 17.4235 8.31249 17.6345 8.31249 17.8454C8.31249 18.0915 8.34765 18.3376 8.3828 18.5485L6.90624 19.5329C6.66015 19.7087 6.34374 19.7087 6.1328 19.6032C5.92187 19.4978 5.67577 19.322 5.60546 19.0056L4.90233 15.3845L1.24608 14.6462C0.964835 14.5759 0.753897 14.3649 0.648428 14.1189C0.578116 13.9079 0.54296 13.5915 0.718741 13.3454L2.7578 10.2517L0.718741 7.15792C0.54296 6.91182 0.578116 6.59542 0.648428 6.38448C0.753897 6.17354 0.964835 5.92745 1.24608 5.85713L4.90233 5.15401L5.60546 1.49776C5.67577 1.18135 5.88671 1.00557 6.1328 0.900103C6.34374 0.794634 6.66015 0.794634 6.90624 0.970416L9.99999 3.00948L13.0937 0.970416C13.3398 0.794634 13.6562 0.794634 13.8672 0.900103C14.1133 1.00557 14.3242 1.18135 14.3945 1.49776L15.0976 5.15401L18.7539 5.89229C19.0351 5.92745 19.2461 6.17354 19.3516 6.38448C19.4219 6.59542 19.457 6.91182 19.2812 7.15792L17.2422 10.2517L19 12.9235C18.4375 12.5017 17.7695 12.1853 17.0664 12.0095L16.293 10.8845C16.0469 10.4978 16.0469 10.0056 16.293 9.61885L18.1211 6.87667L14.8867 6.24385C14.4297 6.13838 14.1133 5.82198 14.0078 5.36495L13.375 2.13057ZM9.99999 7.43917C8.45312 7.43917 7.18749 8.70479 7.18749 10.2517C7.18749 11.7985 8.45312 13.0642 9.99999 13.0642C11.5469 13.0642 12.8125 11.7985 12.8125 10.2517C12.8125 8.70479 11.5469 7.43917 9.99999 7.43917ZM9.99999 14.1892C7.8203 14.1892 6.06249 12.4314 6.06249 10.2517C6.06249 8.07198 7.8203 6.31417 9.99999 6.31417C12.1797 6.31417 13.9375 8.07198 13.9375 10.2517C13.9375 12.4314 12.1797 14.1892 9.99999 14.1892ZM16.1875 13.6267C17.5586 13.6267 18.6836 14.611 18.9297 15.8767C18.9648 15.8767 19 15.8767 19 15.8767C20.2305 15.8767 21.25 16.8962 21.25 18.1267C21.25 19.3571 20.2305 20.3767 19 20.3767H12.5312C11.125 20.3767 9.99999 19.2517 9.99999 17.8454C9.99999 16.4392 11.125 15.3142 12.5312 15.3142C12.8828 15.3142 13.2344 15.3845 13.5156 15.5251C13.9023 14.4353 14.957 13.6267 16.1875 13.6267ZM14.5 16.4743C14.5 16.6853 14.3594 16.8962 14.1484 17.0017C13.9375 17.072 13.6914 17.0368 13.5508 16.861C13.2695 16.6149 12.918 16.4392 12.5312 16.4392C11.7578 16.4392 11.125 17.072 11.125 17.8454C11.125 18.6189 11.7578 19.2517 12.5312 19.2517H19C19.6328 19.2517 20.125 18.7595 20.125 18.1267C20.125 17.4939 19.6328 17.0017 19 17.0017C18.8594 17.0017 18.7539 17.0368 18.6133 17.072C18.4375 17.1423 18.2617 17.1071 18.1211 17.0017C17.9453 16.861 17.875 16.6853 17.875 16.5095C17.875 16.4743 17.875 16.4743 17.875 16.4392C17.875 15.4899 17.1367 14.7517 16.1875 14.7517C15.2734 14.7517 14.5 15.4899 14.5 16.4392V16.4743Z" fill="#8B91A3"/></svg></span>' +
+          '</button>' +
+        '</p>' +
+        '<div id="pm-freq-day-mode" style="display:' + (_daysTimesState.overnight ? 'none' : '') + ';">' +
+          '<div class="datetime-row">' +
+            '<div class="dt-cell" style="flex:1.2;"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-freq-date"></select></div>' +
+            '<div class="dt-cell"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-freq-time-from"></select></div>' +
+            '<div class="dt-cell"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM10.5625 5.1875V10.25C10.5625 10.5664 10.3164 10.8125 10 10.8125H6.0625C5.74609 10.8125 5.5 10.5664 5.5 10.25C5.5 9.93359 5.74609 9.6875 6.0625 9.6875H9.4375V5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-freq-time-to"></select></div>' +
+          '</div>' +
+        '</div>' +
+        '<div id="pm-freq-overnight-mode" style="display:' + (_daysTimesState.overnight ? '' : 'none') + ';">' +
+          '<div class="datetime-row" style="margin-bottom:6px;">' +
+            '<div class="dt-cell" style="flex:0 0 52px; justify-content:center; background:#f7f8fa;"><span style="font-size:13px;color:#8b91a3;font-family:\'soleil\',\'Inter\',sans-serif;">od</span></div>' +
+            '<div class="dt-cell" style="flex:1.2;"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-overnight-date-from"></select></div>' +
+            '<div class="dt-cell"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-overnight-time-from"></select></div>' +
+          '</div>' +
+          '<div class="datetime-row">' +
+            '<div class="dt-cell" style="flex:0 0 52px; justify-content:center; background:#f7f8fa;"><span style="font-size:13px;color:#8b91a3;font-family:\'soleil\',\'Inter\',sans-serif;">do</span></div>' +
+            '<div class="dt-cell" style="flex:1.2;"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-overnight-date-to"></select></div>' +
+            '<div class="dt-cell"><svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM10.5625 5.1875V10.25C10.5625 10.5664 10.3164 10.8125 10 10.8125H6.0625C5.74609 10.8125 5.5 10.5664 5.5 10.25C5.5 9.93359 5.74609 9.6875 6.0625 9.6875H9.4375V5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875Z" fill="#8B91A3"/></svg><select class="dt-field dt-select" id="pm-overnight-time-to"></select></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mt14">' +
+        '<div class="check-opt' + (_daysTimesState.longterm ? ' checked' : '') + '" id="pm-longterm" onclick="togglePillLongterm()" style="display:' + (_daysTimesState.mode === 'regularly' ? '' : 'none') + ';">' +
+          '<div class="check-box">' + (_daysTimesState.longterm ? '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '') + '</div>' +
+          '<span class="check-lbl">' + t('frequency.longterm') + '</span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function initDaysTimesModal() {
+    var regularTextarea = document.getElementById('pm-freq-textarea');
+    if (regularTextarea) {
+      regularTextarea.placeholder = t('frequency.datePlaceholder');
+      regularTextarea.value = _daysTimesState.regularText;
+    }
+    var dateSelect = document.getElementById('pm-freq-date');
+    var timeFromSelect = document.getElementById('pm-freq-time-from');
+    var timeToSelect = document.getElementById('pm-freq-time-to');
+    var overnightDateFrom = document.getElementById('pm-overnight-date-from');
+    var overnightTimeFrom = document.getElementById('pm-overnight-time-from');
+    var overnightDateTo = document.getElementById('pm-overnight-date-to');
+    var overnightTimeTo = document.getElementById('pm-overnight-time-to');
+
+    if (dateSelect) {
+      dateSelect.innerHTML = buildDateOptions(0);
+      if (_daysTimesState.date) {
+        dateSelect.value = _daysTimesState.date;
+        dateSelect.classList.add('dt-selected');
+      }
+    }
+    if (timeFromSelect) {
+      timeFromSelect.innerHTML = buildTimeOptions(_daysTimesState.timeFrom);
+      timeFromSelect.value = _daysTimesState.timeFrom;
+      timeFromSelect.classList.add('dt-selected');
+    }
+    if (timeToSelect) {
+      timeToSelect.innerHTML = buildTimeOptions(_daysTimesState.timeTo);
+      timeToSelect.value = _daysTimesState.timeTo;
+      timeToSelect.classList.add('dt-selected');
+    }
+    if (overnightDateFrom) {
+      overnightDateFrom.innerHTML = buildDateOptions(0);
+      if (_daysTimesState.overnightDateFrom) {
+        overnightDateFrom.value = _daysTimesState.overnightDateFrom;
+        overnightDateFrom.classList.add('dt-selected');
+      }
+    }
+    if (overnightTimeFrom) {
+      overnightTimeFrom.innerHTML = buildTimeOptions(_daysTimesState.overnightTimeFrom);
+      overnightTimeFrom.value = _daysTimesState.overnightTimeFrom;
+      overnightTimeFrom.classList.add('dt-selected');
+    }
+    if (overnightDateTo) {
+      overnightDateTo.innerHTML = buildDateOptions(1);
+      if (_daysTimesState.overnightDateTo) {
+        overnightDateTo.value = _daysTimesState.overnightDateTo;
+        overnightDateTo.classList.add('dt-selected');
+      }
+    }
+    if (overnightTimeTo) {
+      overnightTimeTo.innerHTML = buildTimeOptions(_daysTimesState.overnightTimeTo);
+      overnightTimeTo.value = _daysTimesState.overnightTimeTo;
+      overnightTimeTo.classList.add('dt-selected');
+    }
+
+    document.querySelectorAll('#pm-body .dt-select').forEach(function(sel) {
+      sel.addEventListener('change', function() {
+        sel.classList.add('dt-selected');
+      });
+    });
+  }
+
+  function selectPillFreq(val, el) {
+    document.querySelectorAll('#pm-freq-radios .radio-opt').forEach(function(r) {
+      r.classList.remove('selected');
+      const dot = r.querySelector('.radio-dot');
+      if (dot) dot.remove();
+    });
+    el.classList.add('selected');
+    const circle = el.querySelector('.radio-circle');
+    if (circle && !circle.querySelector('.radio-dot')) {
+      const dot = document.createElement('div');
+      dot.className = 'radio-dot';
+      circle.appendChild(dot);
+    }
+    document.getElementById('pm-freq-regular').style.display = val === 'regularly' ? '' : 'none';
+    document.getElementById('pm-freq-onetime').style.display = val === 'onetime' ? '' : 'none';
+    document.getElementById('pm-longterm').style.display = val === 'regularly' ? '' : 'none';
+  }
+
+  function togglePillOvernight() {
+    const isOvernight = document.getElementById('pm-freq-overnight-mode').style.display !== 'none';
+    document.getElementById('pm-freq-day-mode').style.display = isOvernight ? '' : 'none';
+    document.getElementById('pm-freq-overnight-mode').style.display = isOvernight ? 'none' : '';
+    document.getElementById('pm-icon-night-wrap').style.display = isOvernight ? '' : 'none';
+    document.getElementById('pm-icon-day-wrap').style.display = isOvernight ? 'none' : '';
+  }
+
+  function togglePillLongterm() {
+    var node = document.getElementById('pm-longterm');
+    node.classList.toggle('checked');
+    node.querySelector('.check-box').innerHTML = node.classList.contains('checked')
+      ? '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '';
+  }
+
   function openPillModal(type) {
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
@@ -3024,6 +3200,9 @@
     const body = document.getElementById('pm-body');
     if (type === 'children') {
       body.innerHTML = renderChildrenBody();
+    } else if (type === 'daysTimes') {
+      body.innerHTML = renderDaysTimesBody();
+      initDaysTimesModal();
     } else if (type === 'skillsTalents') {
       body.innerHTML = renderSkillsTalentsBody();
     } else if (type === 'transport') {
@@ -3187,6 +3366,55 @@
           appendText = ' ' + cs.appendNoPreferenceText;
         } else {
           appendText = ' ' + cs.appendText.replace('{provider}', cs[selectedSupplyKey + 'Summary'] || cs[selectedSupplyKey]);
+        }
+      }
+    }
+    if (_currentPill === 'daysTimes') {
+      const selectedModeNode = document.querySelector('#pm-freq-radios .radio-opt.selected');
+      const mode = selectedModeNode ? selectedModeNode.dataset.value : 'notsure';
+      const regularText = document.getElementById('pm-freq-textarea') ? document.getElementById('pm-freq-textarea').value.trim() : '';
+      const overnight = document.getElementById('pm-freq-overnight-mode') && document.getElementById('pm-freq-overnight-mode').style.display !== 'none';
+      const longterm = document.getElementById('pm-longterm') && document.getElementById('pm-longterm').classList.contains('checked');
+      const date = document.getElementById('pm-freq-date') ? document.getElementById('pm-freq-date').value : '';
+      const timeFrom = document.getElementById('pm-freq-time-from') ? document.getElementById('pm-freq-time-from').value : '16:00';
+      const timeTo = document.getElementById('pm-freq-time-to') ? document.getElementById('pm-freq-time-to').value : '19:00';
+      const overnightDateFromVal = document.getElementById('pm-overnight-date-from') ? document.getElementById('pm-overnight-date-from').value : '';
+      const overnightTimeFromVal = document.getElementById('pm-overnight-time-from') ? document.getElementById('pm-overnight-time-from').value : '20:00';
+      const overnightDateToVal = document.getElementById('pm-overnight-date-to') ? document.getElementById('pm-overnight-date-to').value : '';
+      const overnightTimeToVal = document.getElementById('pm-overnight-time-to') ? document.getElementById('pm-overnight-time-to').value : '07:00';
+
+      _daysTimesState = {
+        mode: mode,
+        regularText: regularText,
+        date: date,
+        timeFrom: timeFrom,
+        timeTo: timeTo,
+        overnight: overnight,
+        overnightDateFrom: overnightDateFromVal,
+        overnightTimeFrom: overnightTimeFromVal,
+        overnightDateTo: overnightDateToVal,
+        overnightTimeTo: overnightTimeToVal,
+        longterm: !!longterm
+      };
+
+      const dts = STRINGS.review.daysTimes;
+      if (mode === 'notsure') {
+        appendText = ' ' + dts.appendNotSureText;
+      } else if (mode === 'regularly') {
+        appendText = ' ' + (regularText ? dts.appendRegularWithDetails.replace('{details}', regularText) : dts.appendRegularText);
+        if (longterm) appendText += ' ' + dts.appendLongtermText;
+      } else if (mode === 'onetime') {
+        if (overnight) {
+          appendText = ' ' + dts.appendOneTimeOvernightText
+            .replace('{fromDate}', overnightDateFromVal)
+            .replace('{fromTime}', overnightTimeFromVal)
+            .replace('{toDate}', overnightDateToVal)
+            .replace('{toTime}', overnightTimeToVal);
+        } else {
+          appendText = ' ' + dts.appendOneTimeText
+            .replace('{date}', date)
+            .replace('{fromTime}', timeFrom)
+            .replace('{toTime}', timeTo);
         }
       }
     }
