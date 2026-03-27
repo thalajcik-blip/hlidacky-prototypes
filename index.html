@@ -569,7 +569,7 @@
     .pm-title { flex: 1; font-size: 20px; font-weight: 450; color: #2a3539; line-height: 1.4; letter-spacing: -0.2px; font-family: 'soleil', sans-serif; padding-top: 4px; min-width: 0; }
     .pm-body { flex: 1; overflow-y: auto; }
     .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
-    .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 0; }
+    .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .pm-selector {
       min-height: 80px;
       border: 1px solid #bec2ce; border-radius: 4px;
@@ -2553,7 +2553,7 @@
       const sectionLabelKey = 'review.' + type + '.sectionLabel';
       const labelText = t(sectionLabelKey);
       const labelHtml = labelText !== sectionLabelKey
-        ? '<p style="color:#2A3539;font-variant-numeric:lining-nums tabular-nums;font-family:\'soleil\',sans-serif;font-size:16px;font-weight:450;line-height:140%;margin-bottom:16px">' + labelText + '</p>'
+        ? '<p class="pm-sublabel">' + labelText + '</p>'
         : '';
       body.innerHTML = labelHtml + renderSelectorGrid(type);
       if (type === 'language') {
