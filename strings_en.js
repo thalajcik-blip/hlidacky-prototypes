@@ -147,7 +147,7 @@
     "modalCancel": "Cancel",
     "modalAdd": "Add to description",
     "language": {
-      "modalTitle": "Add information about the sitter's language",
+      "modalTitle": "Sitter’s languages",
       "cs": "Czech",
       "sk": "Slovak",
       "en": "English",
