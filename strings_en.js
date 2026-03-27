@@ -21,7 +21,7 @@
     "sectionLabel": "Select one or more areas of help",
     "validationAlert": "Please select at least one service",
     "babysitting": "Babysitting",
-    "cleaning": "House cleaning",
+    "cleaning": "Household cleaning",
     "pet": "Pet sitting",
     "senior": "Senior care",
     "tutoring": "Tutoring"
@@ -37,7 +37,7 @@
     "titleAnd": "and",
     "serviceNames": {
       "babysitting": "babysitting",
-      "cleaning": "house cleaning",
+      "cleaning": "household cleaning",
       "pet": "pet sitting",
       "senior": "senior care",
       "tutoring": "tutoring"
