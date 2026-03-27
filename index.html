@@ -737,7 +737,7 @@
     .pm-selector.selected .pm-selector-check { background: #22bf1e; border-color: #22bf1e; }
     .pm-selector-icon { font-size: 18px; line-height: 20px; height: 20px; display: flex; align-items: center; }
     .needs-icon { width: 24px; height: 24px; display: block; object-fit: contain; }
-    .pm-selector.selected .pm-selector-icon img {
+    .pm-selector.selected .pm-selector-icon:not(.selector-icon--flag) img {
       filter: brightness(0) saturate(100%) invert(65%) sepia(84%) saturate(1618%) hue-rotate(54deg) brightness(93%) contrast(81%);
     }
     .pm-selector-label {
