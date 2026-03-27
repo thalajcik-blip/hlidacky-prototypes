@@ -2925,10 +2925,11 @@
     return '<div class="pm-selector-grid">' + cfg.items.map(function(item) {
       const label = strings[item.key] || item.key;
       const sel = cfg.preSelected.includes(item.key) ? ' selected' : '';
+      const iconWrapClass = type === 'language' ? 'pm-selector-icon selector-icon--flag' : 'pm-selector-icon';
       return '<div class="pm-selector' + sel + '" data-key="' + item.key + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
         '<div class="pm-selector-top">' +
           '<div class="pm-selector-check">' + (sel ? checkSvg() : '') + '</div>' +
-          '<div class="pm-selector-icon">' + item.icon + '</div>' +
+          '<div class="' + iconWrapClass + '">' + item.icon + '</div>' +
         '</div>' +
         '<div class="pm-selector-label">' + label + '</div>' +
         '</div>';
