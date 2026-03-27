@@ -735,6 +735,22 @@
       transition: all 0.15s;
     }
     .pm-selector.selected .pm-selector-check { background: #22bf1e; border-color: #22bf1e; }
+    .pm-selector-check.pm-selector-radio {
+      border-radius: 50%;
+      background: #fff;
+      border-color: #d9dde4;
+    }
+    .pm-selector.selected .pm-selector-check.pm-selector-radio {
+      background: #22bf1e;
+      border-color: #22bf1e;
+    }
+    .pm-selector-radio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+      flex-shrink: 0;
+    }
     .pm-selector-icon { font-size: 18px; line-height: 20px; height: 20px; display: flex; align-items: center; }
     .needs-icon { width: 24px; height: 24px; display: block; object-fit: contain; }
     .pm-selector.selected .pm-selector-icon:not(.selector-icon--flag) img {
@@ -2931,6 +2947,14 @@
     return '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg>';
   }
 
+  function selectorIndicatorMarkup(type, isSelected) {
+    if (!isSelected) return '';
+    if (type === 'cleaningSupplies') {
+      return '<div class="pm-selector-radio-dot"></div>';
+    }
+    return checkSvg();
+  }
+
   function renderSelectorGrid(type) {
     const cfg = PILL_CONFIG[type];
     const strings = STRINGS.review[type];
@@ -2938,9 +2962,10 @@
       const label = strings[item.key] || item.key;
       const sel = cfg.preSelected.includes(item.key) ? ' selected' : '';
       const iconWrapClass = type === 'language' ? 'pm-selector-icon selector-icon--flag' : 'pm-selector-icon';
+      const checkClass = type === 'cleaningSupplies' ? 'pm-selector-check pm-selector-radio' : 'pm-selector-check';
       return '<div class="pm-selector' + sel + '" data-key="' + item.key + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
         '<div class="pm-selector-top">' +
-          '<div class="pm-selector-check">' + (sel ? checkSvg() : '') + '</div>' +
+          '<div class="' + checkClass + '">' + selectorIndicatorMarkup(type, !!sel) + '</div>' +
           '<div class="' + iconWrapClass + '">' + item.icon + '</div>' +
         '</div>' +
         '<div class="pm-selector-label">' + label + '</div>' +
@@ -3040,6 +3065,10 @@
           if (nodeChk) nodeChk.innerHTML = '';
         }
       });
+      el.classList.add('selected');
+      var activeRadio = el.querySelector('.pm-selector-check');
+      if (activeRadio) activeRadio.innerHTML = selectorIndicatorMarkup(_currentPill, true);
+      return;
     }
     if (_currentPill === 'petsAtHome') {
       var key = el.dataset.key;
@@ -3063,7 +3092,7 @@
     }
     el.classList.toggle('selected');
     const chk = el.querySelector('.pm-selector-check');
-    if (chk) chk.innerHTML = el.classList.contains('selected') ? checkSvg() : '';
+    if (chk) chk.innerHTML = selectorIndicatorMarkup(_currentPill, el.classList.contains('selected'));
   }
 
   function toggleTransportItem(el) {
