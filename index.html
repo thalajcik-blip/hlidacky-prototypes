@@ -1885,6 +1885,7 @@
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-transport" onclick="openPillModal('transport')" data-i18n="transport.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-skillsTalents" onclick="openPillModal('skillsTalents')" data-i18n="review.skillsTalents.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-parentingStyle" onclick="openPillModal('parentingStyle')" data-i18n="review.parentingStyle.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
@@ -2341,6 +2342,8 @@
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
       const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-skillsTalents').style.display = skillsTalentsRelevant ? '' : 'none';
+      const parentingStyleRelevant = selectedServices.has('babysitting');
+      document.getElementById('pill-parentingStyle').style.display = parentingStyleRelevant ? '' : 'none';
       const specialOccasionsRelevant = selectedServices.has('babysitting');
       document.getElementById('pill-specialOccasions').style.display = specialOccasionsRelevant ? '' : 'none';
     }
@@ -2763,6 +2766,17 @@
       ],
       preSelected: []
     },
+    parentingStyle: {
+      icon: '/doodles/parenting-style-form.svg',
+      items: [
+        { key: 'traditional', icon: '<img src="/doodles/parenting-traditional.svg" class="needs-icon" alt="">' },
+        { key: 'respectfulParenting', icon: '<img src="/doodles/parenting-respectful.svg" class="needs-icon" alt="">' },
+        { key: 'forestSchool', icon: '<img src="/doodles/parenting-forest-school.svg" class="needs-icon" alt="">' },
+        { key: 'montessori', icon: '<img src="/doodles/parenting-montessori.svg" class="needs-icon" alt="">' },
+        { key: 'waldorf', icon: '<img src="/doodles/parenting-waldorf.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     price: {
       icon: '/doodles/doodle-money.svg',
       options: ['120 Kč/hod', '140 Kč/hod', '160 Kč/hod', '180 Kč/hod', '200 Kč/hod',
@@ -3042,14 +3056,16 @@
         appendText += ' ' + skillStrings.appendExtraText.replace('{note}', extraNote);
       }
     }
-    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
         const tpl = t('review.' + _currentPill + '.appendText');
         const key = _currentPill === 'language'
           ? '{langs}'
-          : (_currentPill === 'specialOccasions' ? '{occasions}' : '{needs}');
+          : (_currentPill === 'specialOccasions'
+            ? '{occasions}'
+            : (_currentPill === 'parentingStyle' ? '{styles}' : '{needs}'));
         appendText = ' ' + tpl.replace(key, selected.join(', '));
       }
     } else if (_currentPill === 'price') {

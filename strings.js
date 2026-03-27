@@ -194,6 +194,17 @@ window.STRINGS = {
       "appendText": "It would be great if the sitter could support activities such as: {skills}.",
       "appendExtraText": "Additional activities we care about: {note}."
     },
+    "parentingStyle": {
+      "pillLabel": "parenting style",
+      "modalTitle": "Parenting philosophy",
+      "sectionLabel": "Which approach do you use at home? We’ll look for sitters who share your values.",
+      "traditional": "Traditional",
+      "respectfulParenting": "Respectful parenting",
+      "forestSchool": "Forest School / Outdoor",
+      "montessori": "Montessori",
+      "waldorf": "Waldorf",
+      "appendText": "Our parenting style is closest to: {styles}."
+    },
     "price": {
       "modalTitle": "Zadejte vaše cenové očekávání",
       "label": "Nastavte cenu",
