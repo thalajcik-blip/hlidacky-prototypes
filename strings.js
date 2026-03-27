@@ -169,6 +169,17 @@ window.STRINGS = {
       "epilepsy": "Epilepsie", "other": "Jiné potřeby",
       "appendText": "Naše dítě má speciální potřeby: {needs}."
     },
+    "specialOccasions": {
+      "pillLabel": "special occasions",
+      "modalTitle": "Special occasions",
+      "sectionLabel": "Need help for an event?",
+      "parties": "Parties",
+      "holidays": "Holidays",
+      "overnightCare": "Overnight care",
+      "childrensGroups": "Children's groups",
+      "weddings": "Weddings",
+      "appendText": "We would also appreciate help for special occasions such as: {occasions}."
+    },
     "price": {
       "modalTitle": "Zadejte vaše cenové očekávání",
       "label": "Nastavte cenu",

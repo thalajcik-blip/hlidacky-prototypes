@@ -161,6 +161,7 @@
     },
     "needs": {
       "modalTitle": "Special needs",
+      "sectionLabel": "Are there any special needs you want to mention?",
       "autism": "Autism spectrum",
       "diabetes": "Diabetes ",
       "asthma": "Asthma",
@@ -173,6 +174,17 @@
       "epilepsy": "Epilepsy",
       "other": "Other needs",
       "appendText": "Our child has special needs: {needs}."
+    },
+    "specialOccasions": {
+      "pillLabel": "special occasions",
+      "modalTitle": "Special occasions",
+      "sectionLabel": "Need help for an event?",
+      "parties": "Parties",
+      "holidays": "Holidays",
+      "overnightCare": "Overnight care",
+      "childrensGroups": "Children's groups",
+      "weddings": "Weddings",
+      "appendText": "We would also appreciate help for special occasions such as: {occasions}."
     },
     "price": {
       "modalTitle": "Enter your price expectations",

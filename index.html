@@ -1872,6 +1872,7 @@
         <button class="detail-pill" id="pill-transport" onclick="openPillModal('transport')" data-i18n="transport.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
+        <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
         <!-- pill-price hidden: not active yet -->
         <!-- <button class="detail-pill" id="pill-price" onclick="openPillModal('price')" data-i18n="review.pillPrice"></button> -->
       </div>
@@ -2323,6 +2324,8 @@
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting');
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
+      const specialOccasionsRelevant = selectedServices.has('babysitting');
+      document.getElementById('pill-specialOccasions').style.display = specialOccasionsRelevant ? '' : 'none';
     }
     if (id === 'success') updateSuccessSub();
 
@@ -2721,6 +2724,17 @@
         }
       ]
     },
+    specialOccasions: {
+      icon: '/doodles/party-popper.svg',
+      items: [
+        { key: 'parties', icon: '<img src="/doodles/parties.svg" class="needs-icon" alt="">' },
+        { key: 'holidays', icon: '<img src="/doodles/holidays.svg" class="needs-icon" alt="">' },
+        { key: 'overnightCare', icon: '<img src="/doodles/overnight-care.svg" class="needs-icon" alt="">' },
+        { key: 'childrensGroups', icon: '<img src="/doodles/childrens-group.svg" class="needs-icon" alt="">' },
+        { key: 'weddings', icon: '<img src="/doodles/weddings.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     price: {
       icon: '/doodles/doodle-money.svg',
       options: ['120 Kč/hod', '140 Kč/hod', '160 Kč/hod', '180 Kč/hod', '200 Kč/hod',
@@ -2973,12 +2987,14 @@
         appendText = ' ' + ts.appendText.replace('{items}', joinLocalizedList(selectedLabels, ts.and || 'and'));
       }
     }
-    if (_currentPill === 'language' || _currentPill === 'needs') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
         const tpl = t('review.' + _currentPill + '.appendText');
-        const key = _currentPill === 'language' ? '{langs}' : '{needs}';
+        const key = _currentPill === 'language'
+          ? '{langs}'
+          : (_currentPill === 'specialOccasions' ? '{occasions}' : '{needs}');
         appendText = ' ' + tpl.replace(key, selected.join(', '));
       }
     } else if (_currentPill === 'price') {
