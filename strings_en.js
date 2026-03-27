@@ -141,9 +141,9 @@
       "tutoring": "We are looking for an experienced tutor to help our child with school subjects and exam preparation. Patience and adaptability are important to us."
     },
     "hintLabel": "Tip: Add more details about your request",
-    "pillLanguage": "preferred language",
+    "pillLanguage": "language",
     "pillNeeds": "special needs",
-    "pillPrice": "estimated price",
+    "pillPrice": "price",
     "modalCancel": "Cancel",
     "modalAdd": "Add to description",
     "language": {
@@ -232,7 +232,7 @@
     "skipLink": "I'll do this later"
   },
   "success": {
-    "heroTitle": "That’s it!",
+    "heroTitle": "That's it!",
     "heroSub": "Your job in {city} was posted.",
     "body": "We’ll share your job with sitters in your area. Their responses will appear in your messages, with notifications for each new reply.",
     "btnContinue": "Continue",
