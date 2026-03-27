@@ -2591,7 +2591,7 @@
 
   let _currentPill = null;
   let _childCount = 1;
-  let _childData = []; // [{gender:'girl',age:3}, ...]
+  let _childData = []; // [{gender:'girl',age:'y3'}, ...]
 
   function getPillI18nBase(type) {
     return type === 'children' ? 'children' : 'review.' + type;
@@ -2603,10 +2603,32 @@
     return items.slice(0, -1).join(', ') + ' ' + andWord + ' ' + items[items.length - 1];
   }
 
+  function getChildAgeOptions() {
+    var s = STRINGS.children;
+    var opts = [];
+    for (var m = 1; m <= 11; m++) {
+      opts.push({ value: 'm' + m, label: m + ' ' + (m === 1 ? s.monthSingular : s.monthPlural) });
+    }
+    for (var y = 1; y <= 18; y++) {
+      var unit = y === 1 ? s.yearSingular : s.yearPlural;
+      opts.push({ value: 'y' + y, label: y + ' ' + unit });
+    }
+    return opts;
+  }
+
+  function formatChildAgeLabel(ageValue) {
+    var s = STRINGS.children;
+    if (!ageValue) return '3 ' + s.yearPlural;
+    var num = parseInt(String(ageValue).slice(1), 10);
+    if (String(ageValue).charAt(0) === 'm') return num + ' ' + (num === 1 ? s.monthSingular : s.monthPlural);
+    return num + ' ' + (num === 1 ? s.yearSingular : s.yearPlural);
+  }
+
   function renderChildrenBody() {
     var s = STRINGS.children;
     var ords = s.childOrdinals || ['1.','2.','3.','4.','5+'];
     var counts = [1,2,3,4,5];
+    var ageOptions = getChildAgeOptions();
     var html = '<p class="pm-sublabel">' + s.sectionLabel + '</p>';
     if (s.helperText) html += '<p class="ch-helper">' + s.helperText + '</p>';
     html += '<div class="ch-count-row">';
@@ -2615,12 +2637,11 @@
     });
     html += '</div>';
     for (var i = 0; i < _childCount; i++) {
-      var d = _childData[i] || {gender:'girl', age:3};
+      var d = _childData[i] || {gender:'girl', age:'y3'};
       _childData[i] = d;
-      var ageOpts = '';
-      for (var a = 1; a <= 18; a++) {
-        ageOpts += '<option value="' + a + '"' + (d.age === a ? ' selected' : '') + '>' + a + ' ' + s.years + '</option>';
-      }
+      var ageOpts = ageOptions.map(function(opt) {
+        return '<option value="' + opt.value + '"' + (d.age === opt.value ? ' selected' : '') + '>' + opt.label + '</option>';
+      }).join('');
       html += '<div class="ch-row">';
       html += '<div class="ch-row-label"><span>' + (ords[i] || (i+1+'.')) + ' ' + s.childLabel + '</span><span class="ch-age-label">' + (s.ageLabel || '') + '</span></div>';
       html += '<div class="ch-row-inputs">';
@@ -2641,19 +2662,19 @@
   function setChildCount(n) {
     _childCount = n;
     _childData = _childData.slice(0, n);
-    while (_childData.length < n) _childData.push({gender:'girl', age:3});
+    while (_childData.length < n) _childData.push({gender:'girl', age:'y3'});
     document.getElementById('pm-body').innerHTML = renderChildrenBody();
   }
 
   function setChildGender(i, g) {
-    if (!_childData[i]) _childData[i] = {gender:'girl', age:3};
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:'y3'};
     _childData[i].gender = g;
     document.getElementById('pm-body').innerHTML = renderChildrenBody();
   }
 
   function setChildAge(i, v) {
-    if (!_childData[i]) _childData[i] = {gender:'girl', age:3};
-    _childData[i].age = parseInt(v);
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:'y3'};
+    _childData[i].age = v;
   }
 
   function checkSvg() {
@@ -2753,9 +2774,10 @@
       var s = STRINGS.children;
       var descs = [];
       for (var ci = 0; ci < _childCount; ci++) {
-        var cd = _childData[ci] || {gender:'girl', age:3};
-        var summaryTpl = cd.gender === 'girl' ? (s.summaryGirl || '{age} ' + s.years + ' ' + s.girl.toLowerCase()) : (s.summaryBoy || '{age} ' + s.years + ' ' + s.boy.toLowerCase());
-        descs.push(summaryTpl.replace('{age}', cd.age));
+        var cd = _childData[ci] || {gender:'girl', age:'y3'};
+        var ageLabel = formatChildAgeLabel(cd.age);
+        var summaryTpl = cd.gender === 'girl' ? (s.summaryGirl || s.girl.toLowerCase() + ' ({ageLabel})') : (s.summaryBoy || s.boy.toLowerCase() + ' ({ageLabel})');
+        descs.push(summaryTpl.replace('{ageLabel}', ageLabel));
       }
       appendText = ' ' + s.appendText.replace('{desc}', joinLocalizedList(descs, s.and || 'and'));
       var pill = document.getElementById('pill-children');
