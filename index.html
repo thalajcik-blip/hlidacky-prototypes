@@ -1890,6 +1890,7 @@
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-extraTasks" onclick="openPillModal('extraTasks')" data-i18n="review.extraTasks.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2348,6 +2349,8 @@
       document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
       const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
       document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
+      const cleaningSuppliesRelevant = selectedServices.has('cleaning');
+      document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting');
@@ -2765,6 +2768,15 @@
       ],
       preSelected: []
     },
+    cleaningSupplies: {
+      icon: '/doodles/doodle-broom.svg',
+      items: [
+        { key: 'noPreference', icon: '<img src="/doodles/icon-none.svg" class="needs-icon" alt="">' },
+        { key: 'familyProvides', icon: '<img src="/doodles/icon-house.svg" class="needs-icon" alt="">' },
+        { key: 'sitterProvides', icon: '<img src="/doodles/icon-woman-long-hair.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: ['noPreference']
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -3020,6 +3032,15 @@
   }
 
   function toggleModalItem(el) {
+    if (_currentPill === 'cleaningSupplies') {
+      Array.from(document.querySelectorAll('#pm-body .pm-selector')).forEach(function(node) {
+        if (node !== el) {
+          node.classList.remove('selected');
+          var nodeChk = node.querySelector('.pm-selector-check');
+          if (nodeChk) nodeChk.innerHTML = '';
+        }
+      });
+    }
     if (_currentPill === 'petsAtHome') {
       var key = el.dataset.key;
       var siblings = Array.from(document.querySelectorAll('#pm-body .pm-selector'));
@@ -3125,6 +3146,18 @@
           const selectedPetLabels = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
             .map(function(el) { return el.dataset.label; });
           appendText = ' ' + petStrings.appendText.replace('{pets}', selectedPetLabels.join(', '));
+        }
+      }
+    }
+    if (_currentPill === 'cleaningSupplies') {
+      const selectedSupplyKey = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
+        .map(function(el) { return el.dataset.key; })[0];
+      if (selectedSupplyKey) {
+        const cs = STRINGS.review.cleaningSupplies;
+        if (selectedSupplyKey === 'noPreference') {
+          appendText = ' ' + cs.appendNoPreferenceText;
+        } else {
+          appendText = ' ' + cs.appendText.replace('{provider}', cs[selectedSupplyKey + 'Summary'] || cs[selectedSupplyKey]);
         }
       }
     }

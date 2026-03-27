@@ -195,6 +195,18 @@ window.STRINGS = {
       "appendText": "There are pets at home: {pets}.",
       "appendNoneText": "There are no pets at home."
     },
+    "cleaningSupplies": {
+      "pillLabel": "cleaning supplies",
+      "modalTitle": "Cleaning supplies",
+      "sectionLabel": "Who provides the cleaning supplies?",
+      "noPreference": "No preference",
+      "familyProvides": "Family provides",
+      "sitterProvides": "Sitter provides",
+      "familyProvidesSummary": "the family",
+      "sitterProvidesSummary": "the sitter",
+      "appendText": "Cleaning supplies will be provided by {provider}.",
+      "appendNoPreferenceText": "We have no preference on who provides the cleaning supplies."
+    },
     "specialOccasions": {
       "pillLabel": "special occasions",
       "modalTitle": "Special occasions",
