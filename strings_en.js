@@ -186,6 +186,20 @@
       "weddings": "Weddings",
       "appendText": "We would also appreciate help for special occasions such as: {occasions}."
     },
+    "skillsTalents": {
+      "pillLabel": "skills & talents",
+      "modalTitle": "Preferred skills & talents",
+      "sectionLabel": "Which activities would you like the sitter to engage in?",
+      "singing": "Singing",
+      "music": "Music",
+      "sports": "Sports",
+      "dramaDance": "Drama or Dance",
+      "artsCrafts": "Arts and Crafts",
+      "extraLabel": "Anything else?",
+      "extraPlaceholder": "e.g., baking, chess, yoga...",
+      "appendText": "It would be great if the sitter could support activities such as: {skills}.",
+      "appendExtraText": "Additional activities we care about: {note}."
+    },
     "price": {
       "modalTitle": "Enter your price expectations",
       "label": "Set price",
