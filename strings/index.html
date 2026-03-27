@@ -925,18 +925,6 @@ function bindToolbar() {
     downloadFile(json, 'strings_' + currentLang.toLowerCase() + '.json', 'application/json');
   });
 
-  function buildJsContent(lang) {
-    const nested = unflatten(allLangs[lang]);
-    const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
-    const dm     = 'function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}';
-    return '// strings_' + lang.toLowerCase() + '.js \u2014 ' + meta.label + '\n' +
-           '// Published via /strings editor. Missing keys fall back to CZ source (strings.js).\n' +
-           '(function(){\n  ' + dm + '\n' +
-           '  window.STRINGS = _dm(window.STRINGS, ' + JSON.stringify(nested, null, 2) + ');\n' +
-           '})();\n';
-  }
-
-
   document.getElementById('btn-upload').addEventListener('click', function() {
     document.getElementById('file-upload').click();
   });
@@ -982,6 +970,17 @@ function bindToolbar() {
 }
 
 /* ── GitHub publishing ───────────────────────────────────── */
+
+function buildJsContent(lang) {
+  const nested = unflatten(allLangs[lang]);
+  const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
+  const dm     = 'function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}';
+  return '// strings_' + lang.toLowerCase() + '.js \u2014 ' + meta.label + '\n' +
+         '// Published via /strings editor. Missing keys fall back to CZ source (strings.js).\n' +
+         '(function(){\n  ' + dm + '\n' +
+         '  window.STRINGS = _dm(window.STRINGS, ' + JSON.stringify(nested, null, 2) + ');\n' +
+         '})();\n';
+}
 
 const GH_REPO  = 'thalajcik-blip/hlidacky-prototypes';
 const GH_API   = 'https://api.github.com';
