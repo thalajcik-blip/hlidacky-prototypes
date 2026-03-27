@@ -18,7 +18,7 @@
   "service": {
     "heroTitle": "Who are you looking for?",
     "heroSub": "Select what you need from the sitter.",
-    "sectionLabel": "Select one or more areas of help",
+    "sectionLabel": "Select what you need from the sitter.",
     "validationAlert": "Please select at least one service",
     "babysitting": "Babysitting",
     "cleaning": "Household cleaning",
@@ -220,9 +220,9 @@
     "namePlaceholder": "e.g. Jane Doe",
     "emailLabel": "Email",
     "emailPlaceholder": "jane.doe@example.com",
-    "emailPrefsLabel": "Select the emails you'd like to receive from us",
-    "emailMonthly": "Monthly dose of inspiration tailored to your interests",
-    "emailOffers": "Discounts and offers from us and our partners"
+    "emailPrefsLabel": "Select e-mails you want to receive from us",
+    "emailMonthly": "A monthly inspiration on topics tailored to you",
+    "emailOffers": "Discounts and offers from Hlídačky.cz and partners"
   },
   "phone": {
     "heroTitle": "Phone number",
