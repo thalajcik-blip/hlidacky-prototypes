@@ -22,7 +22,7 @@
     "validationAlert": "Please select at least one service",
     "babysitting": "Babysitting",
     "cleaning": "Household cleaning",
-    "pet": "Pet sitting",
+    "pet": "Pet care",
     "senior": "Senior care",
     "tutoring": "Tutoring"
   },
@@ -38,7 +38,7 @@
     "serviceNames": {
       "babysitting": "babysitting",
       "cleaning": "household cleaning",
-      "pet": "pet sitting",
+      "pet": "pet care",
       "senior": "senior care",
       "tutoring": "tutoring"
     }
