@@ -94,6 +94,7 @@ window.STRINGS = {
     "heroTitle": "Kdy a kde?",
     "heroSub": "Doplňte poslední detaily k inzerátu.",
     "howOftenLabel": "Jak často potřebujete pomoc?",
+    "notSureYet": "not sure yet",
     "onetime": "jednorázově (během dovolené)",
     "regularly": "pravidelně",
     "whereLabel": "Kde potřebujete pomoc?",

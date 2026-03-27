@@ -87,6 +87,7 @@
     "heroTitle": "When and where?",
     "heroSub": "💡 Tap the purple tags to add more details:",
     "howOftenLabel": "How often do you need help?",
+    "notSureYet": "not sure yet",
     "onetime": "One-time (e.g. during holidays)",
     "regularly": "regularly",
     "whereLabel": "Where do you need the care?",
