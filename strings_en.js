@@ -44,15 +44,15 @@
     }
   },
   "cleaning": {
-    "heroTitle": "What needs to be cleaned?",
-    "heroSub": "We will prepare a draft of your job post based on your selection.",
+    "heroTitle": "What needs cleaning?",
+    "heroSub": "We'll provide a job draft based on your selection.",
     "sectionLabel": "What do you need to clean?",
     "flat": "Apartment",
     "house": "House"
   },
   "cleaningExtras": {
     "heroTitle": "Do you need help with anything else?",
-    "heroSub": "We will prepare a draft of your job post based on your selection.",
+    "heroSub": "We'll provide a job draft based on your selection.",
     "sectionLabel": "Select additional services",
     "optional": "(optional)",
     "ironing": "Ironing",
@@ -67,7 +67,7 @@
   },
   "pet": {
     "heroTitle": "Your pet",
-    "heroSub": "We will prepare a draft of your job post based on your selection.",
+    "heroSub": "We'll provide a job draft based on your selection.",
     "sectionLabel": "Which pets need care?",
     "dogs": "Dogs",
     "cats": "Cats",
@@ -148,6 +148,7 @@
     "modalAdd": "Add to job post",
     "language": {
       "modalTitle": "Sitter’s languages",
+      "sectionLabel": "Jakým jazykem má hlídačka mluvit?",
       "cs": "Čeština",
       "sk": "Slovenčina",
       "en": "English",
@@ -291,10 +292,16 @@
     "summaryBoy": "a boy ({ageLabel})",
     "summaryGirl": "a girl ({ageLabel})",
     "and": "and",
-    "childOrdinals": ["1st", "2nd", "3rd", "4th", "5+"],
-    "pillLabel": "children"
+    "childOrdinals": [
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5+"
+    ],
+    "pillLabel": "children",
+    "years": "years"
   },
-
   "transport": {
     "pillLabel": "transport",
     "modalTitle": "Location & travel",
@@ -328,7 +335,6 @@
       }
     }
   },
-
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Sitters matching your preferences",
