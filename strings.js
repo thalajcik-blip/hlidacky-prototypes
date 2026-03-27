@@ -181,7 +181,7 @@ window.STRINGS = {
       "appendText": "We would also appreciate help for special occasions such as: {occasions}."
     },
     "skillsTalents": {
-      "pillLabel": "skills & talents",
+      "pillLabel": "skills",
       "modalTitle": "Preferred skills & talents",
       "sectionLabel": "Which activities would you like the sitter to engage in?",
       "singing": "Singing",
