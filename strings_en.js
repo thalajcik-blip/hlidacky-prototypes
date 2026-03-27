@@ -31,7 +31,7 @@
     "inputLabel": "Location",
     "inputPlaceholder": "e.g. London, UK",
     "hint": "The exact address will be hidden.",
-    "validationAlert": "Please enter the location where you need help",
+    "validationAlert": "Please select your location",
     "titlePrefix": "Where do you need",
     "titleFallback": "help",
     "titleAnd": "and",
