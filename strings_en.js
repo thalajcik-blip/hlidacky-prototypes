@@ -233,8 +233,8 @@
   },
   "success": {
     "heroTitle": "That's it!",
-    "heroSub": "Your job post in {city} has been published.",
-    "body": "Once approved, we will show your post to sitters in your city. You will see their replies in your messages, and we will notify you about each new response.",
+    "heroSub": "Your job in {city} was posted.",
+    "body": "We’ll share your job with sitters in your area. Their responses will appear in your messages, with notifications for each new reply.",
     "btnContinue": "Continue",
     "editLink": "Edit job post"
   }
