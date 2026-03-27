@@ -233,11 +233,16 @@ window.STRINGS = {
   "children": {
     "modalTitle": "Informace o dětech",
     "sectionLabel": "Kolik dětí potřebuje péči?",
+    "helperText": "Přidejte věk a pohlaví každého dítěte, ať hlídačky lépe pochopí, koho budete potřebovat pohlídat.",
     "childLabel": "dítě",
     "boy": "Chlapec",
     "girl": "Dívka",
+    "ageLabel": "Věk",
     "years": "let",
     "appendText": "Hledáme péči pro {desc}.",
+    "summaryBoy": "chlapce ({age} let)",
+    "summaryGirl": "dívku ({age} let)",
+    "and": "a",
     "childOrdinals": ["1.", "2.", "3.", "4.", "5+"],
     "pillLabel": "děti"
   },

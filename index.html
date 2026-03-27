@@ -571,17 +571,25 @@
     .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
     .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     /* Children modal */
-    .ch-count-row { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
-    .ch-count-btn { flex: 1; background: var(--white); border: none; border-right: 1px solid var(--border); padding: 12px 0; font-size: 16px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: background 0.15s; }
+    .ch-helper { font-size: 14px; color: #6b7176; line-height: 1.5; letter-spacing: -0.16px; font-family: 'soleil',sans-serif; margin-bottom: 16px; }
+    .ch-count-row { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; background: #fff; }
+    .ch-count-btn { flex: 1; background: var(--white); border: none; border-right: 1px solid var(--border); padding: 14px 0; font-size: 16px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: background 0.15s, color 0.15s; }
     .ch-count-btn:last-child { border-right: none; }
     .ch-count-btn.active { background: var(--green-light); color: var(--green); font-weight: 500; }
-    .ch-row { margin-bottom: 16px; }
-    .ch-row-label { font-size: 14px; font-weight: 450; color: #2a3539; font-family: 'soleil',sans-serif; margin-bottom: 8px; }
-    .ch-row-inputs { display: flex; gap: 8px; }
-    .ch-gender-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); border-radius: 4px; padding: 10px 8px; background: var(--white); font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: all 0.15s; }
+    .ch-row { margin-bottom: 12px; padding: 16px; border: 1px solid #E7EBEE; border-radius: 12px; background: #FAFBFC; }
+    .ch-row-label { display:flex; align-items:center; justify-content:space-between; font-size: 16px; font-weight: 450; color: #2a3539; font-family: 'soleil',sans-serif; margin-bottom: 12px; }
+    .ch-age-label { font-size: 12px; color: #8b91a3; letter-spacing: -0.12px; }
+    .ch-row-inputs { display: flex; gap: 10px; align-items: stretch; }
+    .ch-gender-group { display:flex; gap: 8px; flex: 1.4; }
+    .ch-gender-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); border-radius: 10px; padding: 12px 8px; background: var(--white); font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: all 0.15s; }
     .ch-gender-btn.active { border-color: var(--green); color: var(--green); background: var(--green-light); }
-    .ch-age-select { flex: 1; height: 44px; border: 1px solid var(--border); border-radius: 4px; padding: 0 10px; font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; background: var(--white); outline: none; }
+    .ch-age-wrap { flex: 1; min-width: 104px; display:flex; flex-direction:column; gap:6px; }
+    .ch-age-select { flex: 1; height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 10px; font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; background: var(--white); outline: none; }
     .ch-age-select:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    @media (max-width: 390px) {
+      .ch-row-inputs { flex-direction: column; }
+      .ch-gender-group, .ch-age-wrap { flex: 1 1 auto; }
+    }
     .pm-selector {
       min-height: 80px;
       border: 1px solid #bec2ce; border-radius: 4px;
@@ -1684,7 +1692,7 @@
       <p class="ai-lbl" data-i18n="review.aiLabel"></p>
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
-        <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="review.children.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <!-- pill-price hidden: not active yet -->
@@ -2533,11 +2541,22 @@
   let _childCount = 1;
   let _childData = []; // [{gender:'girl',age:3}, ...]
 
+  function getPillI18nBase(type) {
+    return type === 'children' ? 'children' : 'review.' + type;
+  }
+
+  function joinLocalizedList(items, andWord) {
+    if (items.length <= 1) return items[0] || '';
+    if (items.length === 2) return items[0] + ' ' + andWord + ' ' + items[1];
+    return items.slice(0, -1).join(', ') + ' ' + andWord + ' ' + items[items.length - 1];
+  }
+
   function renderChildrenBody() {
     var s = STRINGS.children;
     var ords = s.childOrdinals || ['1.','2.','3.','4.','5+'];
     var counts = [1,2,3,4,5];
     var html = '<p class="pm-sublabel" style="margin-top:0">' + s.sectionLabel + '</p>';
+    if (s.helperText) html += '<p class="ch-helper">' + s.helperText + '</p>';
     html += '<div class="ch-count-row">';
     counts.forEach(function(n,i) {
       html += '<button class="ch-count-btn' + (n === _childCount ? ' active' : '') + '" onclick="setChildCount(' + n + ')">' + (n === 5 ? '5+' : n) + '</button>';
@@ -2551,15 +2570,17 @@
         ageOpts += '<option value="' + a + '"' + (d.age === a ? ' selected' : '') + '>' + a + ' ' + s.years + '</option>';
       }
       html += '<div class="ch-row">';
-      html += '<div class="ch-row-label">' + (ords[i] || (i+1+'.')) + ' ' + s.childLabel + '</div>';
+      html += '<div class="ch-row-label"><span>' + (ords[i] || (i+1+'.')) + ' ' + s.childLabel + '</span><span class="ch-age-label">' + (s.ageLabel || '') + '</span></div>';
       html += '<div class="ch-row-inputs">';
+      html += '<div class="ch-gender-group">';
       html += '<button class="ch-gender-btn' + (d.gender === 'boy' ? ' active' : '') + '" onclick="setChildGender(' + i + ',\'boy\')">' +
         '<svg width="14" height="22" viewBox="0 0 14 22" fill="none"><path d="M7 14C10.3137 14 13 11.3137 13 8C13 4.68629 10.3137 2 7 2C3.68629 2 1 4.68629 1 8C1 11.3137 3.68629 14 7 14Z" stroke="currentColor" stroke-width="1.5"/><path d="M7 14V20M4 17H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
         ' ' + s.boy + '</button>';
       html += '<button class="ch-gender-btn' + (d.gender === 'girl' ? ' active' : '') + '" onclick="setChildGender(' + i + ',\'girl\')">' +
         '<svg width="14" height="22" viewBox="0 0 14 22" fill="none"><circle cx="7" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 14V20M4 20H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
         ' ' + s.girl + '</button>';
-      html += '<select class="ch-age-select" onchange="setChildAge(' + i + ',this.value)">' + ageOpts + '</select>';
+      html += '</div>';
+      html += '<div class="ch-age-wrap"><select class="ch-age-select" aria-label="' + (s.ageLabel || s.years) + '" onchange="setChildAge(' + i + ',this.value)">' + ageOpts + '</select></div>';
       html += '</div></div>';
     }
     return html;
@@ -2567,6 +2588,8 @@
 
   function setChildCount(n) {
     _childCount = n;
+    _childData = _childData.slice(0, n);
+    while (_childData.length < n) _childData.push({gender:'girl', age:3});
     document.getElementById('pm-body').innerHTML = renderChildrenBody();
   }
 
@@ -2613,17 +2636,15 @@
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
     document.getElementById('pm-icon').innerHTML = '<img src="' + cfg.icon + '" width="42" height="42" alt="">';
-    document.getElementById('pm-title').textContent = t('review.' + type + '.modalTitle');
+    document.getElementById('pm-title').textContent = t(getPillI18nBase(type) + '.modalTitle');
 
     const body = document.getElementById('pm-body');
     if (type === 'children') {
       body.innerHTML = renderChildrenBody();
-      return;
-    }
-    if (type === 'price') {
+    } else if (type === 'price') {
       body.innerHTML = renderPriceBody();
     } else {
-      const sectionLabelKey = 'review.' + type + '.sectionLabel';
+      const sectionLabelKey = getPillI18nBase(type) + '.sectionLabel';
       const labelText = t(sectionLabelKey);
       const labelHtml = labelText !== sectionLabelKey
         ? '<p class="pm-sublabel">' + labelText + '</p>'
@@ -2681,9 +2702,10 @@
       var descs = [];
       for (var ci = 0; ci < _childCount; ci++) {
         var cd = _childData[ci] || {gender:'girl', age:3};
-        descs.push((cd.gender === 'girl' ? s.girl : s.boy).toLowerCase() + ' ' + cd.age + ' ' + s.years);
+        var summaryTpl = cd.gender === 'girl' ? (s.summaryGirl || '{age} ' + s.years + ' ' + s.girl.toLowerCase()) : (s.summaryBoy || '{age} ' + s.years + ' ' + s.boy.toLowerCase());
+        descs.push(summaryTpl.replace('{age}', cd.age));
       }
-      appendText = ' ' + s.appendText.replace('{desc}', descs.join(', '));
+      appendText = ' ' + s.appendText.replace('{desc}', joinLocalizedList(descs, s.and || 'and'));
       var pill = document.getElementById('pill-children');
       typeAppend(ta, appendText);
       pill.style.display = 'none';

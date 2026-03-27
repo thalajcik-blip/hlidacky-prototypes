@@ -241,11 +241,16 @@
   "children": {
     "modalTitle": "Information about children",
     "sectionLabel": "How many kids need care?",
+    "helperText": "Add each child’s age and gender so sitters get a clearer idea of who will need care.",
     "childLabel": "child",
     "boy": "Boy",
     "girl": "Girl",
+    "ageLabel": "Age",
     "years": "years",
     "appendText": "We have {desc}.",
+    "summaryBoy": "a {age}-year-old boy",
+    "summaryGirl": "a {age}-year-old girl",
+    "and": "and",
     "childOrdinals": ["1st", "2nd", "3rd", "4th", "5+"],
     "pillLabel": "children"
   },
