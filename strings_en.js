@@ -132,7 +132,7 @@
     "aiLabel": "💡 Tap the purple tags to add more details:",
     "privacyNote": "Your personal details stay private and are not shown to sitters.",
     "btnPost": "Post job",
-    "footerNote": "Posting is free. We will create a Sitter.com account for you to manage everything securely.",
+    "footerNote": "Post for free. We’ll set up your account to manage it safely.",
     "generatedTexts": {
       "babysitting": "We are looking for a careful and reliable sitter for our children. We need regular help and are seeking an experienced, friendly person.",
       "cleaning": "We need help with regular house cleaning. We live in an apartment and would also appreciate help with ironing and laundry.",
