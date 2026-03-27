@@ -226,5 +226,17 @@ window.STRINGS = {
     "body": "Po schválení zobrazíme váš inzerát hlídačkám ve vašem městě. Jejich odpovědi uvidíte ve svých zprávách a o každé nové vás rovnou informujeme.",
     "btnContinue": "Pokračovat",
     "editLink": "Upravit inzerát"
+  },
+
+  "onboarding": {
+    "navTitle": "Onboarding",
+    "title": "Hlídačky, které odpovídají vašim preferencím",
+    "sub": "👶 Zkušené, dostupné na částečný úvazek, vhodné pro různé věkové kategorie",
+    "verified": "Ověřeno",
+    "readMore": "číst více",
+    "showMore": "Zobrazit více hlídaček",
+    "ctaText": "Okamžitý přístup k hlídačkám — staňte se členem hned teď!",
+    "ctaBtn": "Zobrazit možnosti členství",
+    "restart": "Začít znovu"
   }
 };

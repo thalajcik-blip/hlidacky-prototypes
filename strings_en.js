@@ -232,11 +232,22 @@
     "skipLink": "I'll do this later"
   },
   "success": {
-    "heroTitle": "That's it!",
+    "heroTitle": "That’s it!",
     "heroSub": "Your job in {city} was posted.",
     "body": "We’ll share your job with sitters in your area. Their responses will appear in your messages, with notifications for each new reply.",
     "btnContinue": "Continue",
     "editLink": "Edit job post"
+  },
+  "onboarding": {
+    "navTitle": "Onboarding",
+    "title": "Sitters matching your preferences",
+    "sub": "👶 Experienced, available part-time, suitable for all age groups",
+    "verified": "Verified",
+    "readMore": "read more",
+    "showMore": "Show more sitters",
+    "ctaText": "Instant access to sitters — become a member now!",
+    "ctaBtn": "View membership options",
+    "restart": "Start over"
   }
 });
 })();
