@@ -1664,26 +1664,17 @@
       </div>
       <h2 class="hero-title mt8" data-i18n="review.heroTitle"></h2>
       <p class="hero-sub">
-        <span data-i18n="review.heroSub1"></span><br>
         <span style="color:var(--text);font-weight:500" data-i18n="review.heroSub2"></span>
       </p>
     </div>
 
-    <div class="screen-body">
+    <div class="screen-body" style="display:flex;flex-direction:column;overflow:hidden;padding-bottom:0">
       <p class="ai-lbl" data-i18n="review.aiLabel"></p>
-      <textarea class="form-textarea" id="review-text" style="min-height:150px" oninput="onReviewTextInput()"></textarea>
-      <div class="pill-hint">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
-        <span data-i18n="review.hintLabel"></span>
-      </div>
-      <div class="pill-row">
+      <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
+      <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-price" onclick="openPillModal('price')" data-i18n="review.pillPrice"></button>
-      </div>
-      <div class="privacy-note">
-        <span style="font-size:18px;flex-shrink:0;margin-top:1px">🤫</span>
-        <p class="privacy-note-txt" data-i18n="review.privacyNote"></p>
       </div>
     </div>
 
