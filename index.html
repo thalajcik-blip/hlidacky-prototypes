@@ -1889,6 +1889,7 @@
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-extraTasks" onclick="openPillModal('extraTasks')" data-i18n="review.extraTasks.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2345,6 +2346,8 @@
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
       const extraTasksRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
+      const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
+      document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting');
@@ -2752,6 +2755,16 @@
       ],
       preSelected: []
     },
+    petsAtHome: {
+      icon: '/doodles/pets.svg',
+      items: [
+        { key: 'dogs', icon: '<img src="/doodles/icon-dog.svg" class="needs-icon" alt="">' },
+        { key: 'cats', icon: '<img src="/doodles/icon-cat.svg" class="needs-icon" alt="">' },
+        { key: 'other', icon: '<img src="/doodles/icon-other-animals.svg" class="needs-icon" alt="">' },
+        { key: 'none', icon: '<img src="/doodles/icon-none.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -2912,7 +2925,7 @@
     return '<div class="pm-selector-grid">' + cfg.items.map(function(item) {
       const label = strings[item.key] || item.key;
       const sel = cfg.preSelected.includes(item.key) ? ' selected' : '';
-      return '<div class="pm-selector' + sel + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
+      return '<div class="pm-selector' + sel + '" data-key="' + item.key + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
         '<div class="pm-selector-top">' +
           '<div class="pm-selector-check">' + (sel ? checkSvg() : '') + '</div>' +
           '<div class="pm-selector-icon">' + item.icon + '</div>' +
@@ -3006,6 +3019,26 @@
   }
 
   function toggleModalItem(el) {
+    if (_currentPill === 'petsAtHome') {
+      var key = el.dataset.key;
+      var siblings = Array.from(document.querySelectorAll('#pm-body .pm-selector'));
+      if (key === 'none') {
+        siblings.forEach(function(node) {
+          if (node !== el) {
+            node.classList.remove('selected');
+            var nodeChk = node.querySelector('.pm-selector-check');
+            if (nodeChk) nodeChk.innerHTML = '';
+          }
+        });
+      } else {
+        var noneNode = siblings.find(function(node) { return node.dataset.key === 'none'; });
+        if (noneNode) {
+          noneNode.classList.remove('selected');
+          var noneChk = noneNode.querySelector('.pm-selector-check');
+          if (noneChk) noneChk.innerHTML = '';
+        }
+      }
+    }
     el.classList.toggle('selected');
     const chk = el.querySelector('.pm-selector-check');
     if (chk) chk.innerHTML = el.classList.contains('selected') ? checkSvg() : '';
@@ -3078,6 +3111,20 @@
       }
       if (extraNote) {
         appendText += ' ' + skillStrings.appendExtraText.replace('{note}', extraNote);
+      }
+    }
+    if (_currentPill === 'petsAtHome') {
+      const selectedPetKeys = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
+        .map(function(el) { return el.dataset.key; });
+      if (selectedPetKeys.length > 0) {
+        const petStrings = STRINGS.review.petsAtHome;
+        if (selectedPetKeys.indexOf('none') !== -1) {
+          appendText = ' ' + petStrings.appendNoneText;
+        } else {
+          const selectedPetLabels = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
+            .map(function(el) { return el.dataset.label; });
+          appendText = ' ' + petStrings.appendText.replace('{pets}', selectedPetLabels.join(', '));
+        }
       }
     }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks') {

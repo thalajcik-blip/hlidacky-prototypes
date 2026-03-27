@@ -184,6 +184,17 @@ window.STRINGS = {
       "gardenHelp": "Garden help",
       "appendText": "We would also appreciate help with: {tasks}."
     },
+    "petsAtHome": {
+      "pillLabel": "pets at home",
+      "modalTitle": "Pets at home",
+      "sectionLabel": "Are there any animals at home?",
+      "dogs": "Dogs",
+      "cats": "Cats",
+      "other": "Other",
+      "none": "None",
+      "appendText": "There are pets at home: {pets}.",
+      "appendNoneText": "There are no pets at home."
+    },
     "specialOccasions": {
       "pillLabel": "special occasions",
       "modalTitle": "Special occasions",
