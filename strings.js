@@ -196,6 +196,16 @@ window.STRINGS = {
       "appendText": "There are pets at home: {pets}.",
       "appendNoneText": "There are no pets at home."
     },
+    "dogSize": {
+      "pillLabel": "dog size",
+      "modalTitle": "Dog size",
+      "sectionLabel": "How big is your dog?",
+      "small": "Small (up to 5 kg)",
+      "medium": "Medium (up to 25 kg)",
+      "large": "Large (up to 40 kg)",
+      "huge": "Huge (over 40 kg)",
+      "appendText": "Our dog is: {sizes}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",

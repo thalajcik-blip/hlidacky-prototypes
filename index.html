@@ -1912,6 +1912,7 @@
         <button class="detail-pill" id="pill-daysTimes" onclick="openPillModal('daysTimes')" data-i18n="review.daysTimes.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-dogSize" onclick="openPillModal('dogSize')" data-i18n="review.dogSize.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2370,6 +2371,8 @@
       document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
       const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
       document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
+      const dogSizeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+      document.getElementById('pill-dogSize').style.display = dogSizeRelevant ? '' : 'none';
       const cleaningSuppliesRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
       const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
@@ -2788,6 +2791,16 @@
         { key: 'cats', icon: '<img src="/doodles/icon-cat.svg" class="needs-icon" alt="">' },
         { key: 'other', icon: '<img src="/doodles/icon-other-animals.svg" class="needs-icon" alt="">' },
         { key: 'none', icon: '<img src="/doodles/icon-none.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
+    dogSize: {
+      icon: '/doodles/dog-measure.svg',
+      items: [
+        { key: 'small', icon: '<img src="/doodles/dog-small.svg" class="needs-icon" alt="">' },
+        { key: 'medium', icon: '<img src="/doodles/dog-medium.svg" class="needs-icon" alt="">' },
+        { key: 'large', icon: '<img src="/doodles/dog-large.svg" class="needs-icon" alt="">' },
+        { key: 'huge', icon: '<img src="/doodles/dog-huge.svg" class="needs-icon" alt="">' }
       ],
       preSelected: []
     },
@@ -3422,18 +3435,20 @@
         }
       }
     }
-    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
         const tpl = t('review.' + _currentPill + '.appendText');
         const key = _currentPill === 'language'
           ? '{langs}'
+          : (_currentPill === 'dogSize'
+            ? '{sizes}'
           : (_currentPill === 'specialOccasions'
             ? '{occasions}'
             : (_currentPill === 'parentingStyle'
               ? '{styles}'
-              : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}')));
+              : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}'))));
         appendText = ' ' + tpl.replace(key, selected.join(', '));
       }
     } else if (_currentPill === 'price') {
