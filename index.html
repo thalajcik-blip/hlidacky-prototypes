@@ -572,6 +572,7 @@
       overflow-y: auto;
       scrollbar-gutter: stable;
       padding-right: 6px;
+      padding-top: 4px;
     }
     .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
     .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -782,8 +783,9 @@
       transition: all 0.15s;
     }
     .pm-check-item.selected .pm-check-box {
-      border-color: #22BF1E;
-      background: #EFF9EF;
+      border-color: #F96073;
+      border-radius: 4px;
+      background: #F96073;
     }
     .pm-check-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
     .pm-check-title {
@@ -2735,6 +2737,11 @@
     return type === 'children' ? 'children' : 'review.' + type;
   }
 
+  function getPillModalTitle(type) {
+    if (type === 'children' || type === 'transport') return t(type + '.modalTitle');
+    return t('review.' + type + '.modalTitle');
+  }
+
   function joinLocalizedList(items, andWord) {
     if (items.length <= 1) return items[0] || '';
     if (items.length === 2) return items[0] + ' ' + andWord + ' ' + items[1];
@@ -2816,7 +2823,7 @@
   }
 
   function checkSvg() {
-    return '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    return '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg>';
   }
 
   function renderSelectorGrid(type) {
@@ -2869,7 +2876,7 @@
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
     document.getElementById('pm-icon').innerHTML = '<img src="' + cfg.icon + '" width="42" height="42" alt="">';
-    document.getElementById('pm-title').textContent = t(getPillI18nBase(type) + '.modalTitle');
+    document.getElementById('pm-title').textContent = getPillModalTitle(type);
 
     const body = document.getElementById('pm-body');
     if (type === 'children') {
