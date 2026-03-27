@@ -152,6 +152,7 @@ window.STRINGS = {
     "modalAdd": "Přidat do popisu",
     "language": {
       "modalTitle": "Přidejte informace o jazyce hlídačky",
+      "sectionLabel": "Jakým jazykem má hlídačka mluvit?",
       "cs": "Čeština", "sk": "Slovenština", "en": "Angličtina",
       "de": "Němčina", "es": "Španělština", "fr": "Francouzština",
       "it": "Italština", "uk": "Ukrajinština",
@@ -160,6 +161,7 @@ window.STRINGS = {
     },
     "needs": {
       "modalTitle": "Přidejte informace o speciálních potřebách",
+      "sectionLabel": "Jsou zde speciální potřeby, které chcete zmínit?",
       "autism": "Autismus", "diabetes": "Diabetes", "asthma": "Astma",
       "adhd": "ADHD", "allergies": "Potravinové alergie",
       "childhood": "Dětské nemoci", "sleep": "Poruchy spánku",

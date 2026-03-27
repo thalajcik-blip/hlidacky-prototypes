@@ -148,6 +148,7 @@
     "modalAdd": "Add to description",
     "language": {
       "modalTitle": "Sitter’s languages",
+      "sectionLabel": "Which languages should the sitter speak?",
       "cs": "Czech",
       "sk": "Slovak",
       "en": "English",
@@ -161,6 +162,7 @@
     },
     "needs": {
       "modalTitle": "Special needs",
+      "sectionLabel": "Any special needs to mention?",
       "autism": "Autism",
       "diabetes": "Diabetes ",
       "asthma": "Asthma",

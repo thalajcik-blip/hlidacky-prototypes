@@ -2550,7 +2550,12 @@
     if (type === 'price') {
       body.innerHTML = renderPriceBody();
     } else {
-      body.innerHTML = renderSelectorGrid(type);
+      const sectionLabelKey = 'review.' + type + '.sectionLabel';
+      const labelText = t(sectionLabelKey);
+      const labelHtml = labelText !== sectionLabelKey
+        ? '<p style="color:#2A3539;font-variant-numeric:lining-nums tabular-nums;font-family:\'soleil\',sans-serif;font-size:16px;font-weight:450;line-height:140%;margin-bottom:16px">' + labelText + '</p>'
+        : '';
+      body.innerHTML = labelHtml + renderSelectorGrid(type);
       if (type === 'language') {
         body.innerHTML += '<span class="pm-more-link" data-i18n="review.language.moreLangs"></span>';
       }
