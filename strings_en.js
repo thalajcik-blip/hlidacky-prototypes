@@ -228,7 +228,7 @@
     "heroTitle": "Phone number",
     "heroSub": "Your private number with international prefix. Showing it will help you get more contacts from sitters.",
     "inputLabel": "Phone number",
-    "inputPlaceholder": "+44 7700 900000",
+    "inputPlaceholder": "777 123 456",
     "skipLink": "I'll do this later"
   },
   "success": {
