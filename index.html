@@ -567,7 +567,12 @@
     .pm-icon-wrap { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .pm-icon-wrap img { width: 42px; height: 42px; display: block; }
     .pm-title { flex: 1; font-size: 20px; font-weight: 450; color: #2a3539; line-height: 1.4; letter-spacing: -0.2px; font-family: 'soleil', sans-serif; padding-top: 4px; min-width: 0; }
-    .pm-body { flex: 1; overflow-y: auto; }
+    .pm-body {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding-right: 6px;
+    }
     .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
     .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     /* Children modal */
