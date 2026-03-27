@@ -17,7 +17,7 @@
   },
   "service": {
     "heroTitle": "Who are you looking for?",
-    "heroSub": "Select what you need help with.",
+    "heroSub": "Select what you need from the sitter.",
     "sectionLabel": "Select one or more areas of help",
     "validationAlert": "Please select at least one service",
     "babysitting": "Babysitting",
