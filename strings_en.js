@@ -85,7 +85,7 @@
   },
   "frequencyPet": {
     "heroTitle": "When and where?",
-    "heroSub": "Add the final details to your job post.",
+    "heroSub": "💡 Tap the purple tags to add more details:",
     "howOftenLabel": "How often do you need help?",
     "onetime": "One-time (e.g. during holidays)",
     "regularly": "Regularly",
@@ -129,7 +129,7 @@
     "heroTitle": "Review your job post",
     "heroSub1": "Almost there!",
     "heroSub2": "We found 128 sitters matching your criteria 🎉",
-    "aiLabel": "✨ Add a few details to reach more sitters",
+    "aiLabel": "💡 Tap the purple tags to add more details:",
     "privacyNote": "Your personal details stay private and are not shown to sitters.",
     "btnPost": "Post job",
     "footerNote": "Posting is free. We will create a Sitter.com account for you to manage everything securely.",
