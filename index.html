@@ -750,6 +750,61 @@
     .pm-footer .btn-secondary { flex: 0 0 auto; }
     .pm-footer .btn-primary { padding-left: 24px; padding-right: 24px; }
     .flag-icon { width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; display: block; }
+    .pm-check-section { margin-top: 18px; }
+    .pm-check-section:first-child { margin-top: 0; }
+    .pm-check-label {
+      font-size: 16px;
+      font-weight: 450;
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .pm-check-list { display: flex; flex-direction: column; gap: 12px; }
+    .pm-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pm-check-box {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border: 1px solid #CDD5DD;
+      border-radius: 4px;
+      background: #FFF;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .pm-check-item.selected .pm-check-box {
+      border-color: #22BF1E;
+      background: #EFF9EF;
+    }
+    .pm-check-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .pm-check-title {
+      color: #4A5A61;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+    .pm-check-item.selected .pm-check-title { color: #2A3539; }
+    .pm-check-sub {
+      color: #8B91A3;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 350;
+      line-height: 18px;
+      letter-spacing: -0.16px;
+    }
 
     /* ===== Followup screen — sitter cards ===== */
     @keyframes cardSlideIn {
@@ -1812,6 +1867,7 @@
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-transport" onclick="openPillModal('transport')" data-i18n="transport.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <!-- pill-price hidden: not active yet -->
@@ -2263,6 +2319,8 @@
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
+      const transportRelevant = selectedServices.has('babysitting');
+      document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
     }
     if (id === 'success') updateSuccessSub();
 
@@ -2648,6 +2706,19 @@
     children: {
       icon: '/doodles/doodle-children.svg'
     },
+    transport: {
+      icon: '/doodles/car-and-house.svg',
+      sections: [
+        {
+          key: 'location',
+          items: ['atMyHome', 'atSitterHome']
+        },
+        {
+          key: 'driver',
+          items: ['hasCar', 'comfortableDriving']
+        }
+      ]
+    },
     price: {
       icon: '/doodles/doodle-money.svg',
       options: ['120 Kč/hod', '140 Kč/hod', '160 Kč/hod', '180 Kč/hod', '200 Kč/hod',
@@ -2772,6 +2843,28 @@
       '<select class="form-select" id="pm-price-select">' + opts + '</select>';
   }
 
+  function renderTransportBody() {
+    var cfg = PILL_CONFIG.transport;
+    var s = STRINGS.transport;
+    return cfg.sections.map(function(section) {
+      var sectionStrings = s[section.key];
+      var itemsHtml = section.items.map(function(itemKey) {
+        var item = sectionStrings.items[itemKey];
+        return '<div class="pm-check-item" data-transport-key="' + section.key + '.' + itemKey + '" onclick="toggleTransportItem(this)">' +
+          '<div class="pm-check-box"></div>' +
+          '<div class="pm-check-copy">' +
+            '<div class="pm-check-title">' + item.label + '</div>' +
+            (item.sub ? '<div class="pm-check-sub">' + item.sub + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+      return '<div class="pm-check-section">' +
+        '<p class="pm-check-label">' + sectionStrings.sectionLabel + '</p>' +
+        '<div class="pm-check-list">' + itemsHtml + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   function openPillModal(type) {
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
@@ -2781,6 +2874,8 @@
     const body = document.getElementById('pm-body');
     if (type === 'children') {
       body.innerHTML = renderChildrenBody();
+    } else if (type === 'transport') {
+      body.innerHTML = renderTransportBody();
     } else if (type === 'price') {
       body.innerHTML = renderPriceBody();
     } else {
@@ -2813,6 +2908,11 @@
     el.classList.toggle('selected');
     const chk = el.querySelector('.pm-selector-check');
     if (chk) chk.innerHTML = el.classList.contains('selected') ? checkSvg() : '';
+  }
+
+  function toggleTransportItem(el) {
+    el.classList.toggle('selected');
+    el.querySelector('.pm-check-box').innerHTML = el.classList.contains('selected') ? checkSvg() : '';
   }
 
   function typeAppend(ta, appendText) {
@@ -2852,6 +2952,19 @@
       pill.style.display = 'none';
       closePillModal();
       return;
+    }
+    if (_currentPill === 'transport') {
+      var selectedKeys = Array.from(document.querySelectorAll('#pm-body .pm-check-item.selected')).map(function(el) {
+        return el.dataset.transportKey;
+      });
+      if (selectedKeys.length > 0) {
+        var ts = STRINGS.transport;
+        var selectedLabels = selectedKeys.map(function(key) {
+          var parts = key.split('.');
+          return ts[parts[0]].items[parts[1]].summary || ts[parts[0]].items[parts[1]].label;
+        });
+        appendText = ' ' + ts.appendText.replace('{items}', joinLocalizedList(selectedLabels, ts.and || 'and'));
+      }
     }
     if (_currentPill === 'language' || _currentPill === 'needs') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))

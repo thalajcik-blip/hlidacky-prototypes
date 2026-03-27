@@ -250,6 +250,40 @@ window.STRINGS = {
     "pillLabel": "děti"
   },
 
+  "transport": {
+    "pillLabel": "doprava",
+    "modalTitle": "Místo a doprava",
+    "appendText": "Důležité je pro nás také: {items}.",
+    "and": "a",
+    "location": {
+      "sectionLabel": "Kde potřebujete pomoct?",
+      "items": {
+        "atMyHome": {
+          "label": "U nás doma",
+          "summary": "hlídání u nás doma"
+        },
+        "atSitterHome": {
+          "label": "U hlídačky doma",
+          "summary": "možnost hlídání u hlídačky doma"
+        }
+      }
+    },
+    "driver": {
+      "sectionLabel": "Je potřeba řídit?",
+      "items": {
+        "hasCar": {
+          "label": "Hlídačka má vlastní auto",
+          "summary": "vlastní auto"
+        },
+        "comfortableDriving": {
+          "label": "Hlídačka zvládne řídit děti",
+          "sub": "(má řidičský průkaz a zkušenosti s jízdou s dětmi)",
+          "summary": "řidičský průkaz a zkušenost s řízením dětí"
+        }
+      }
+    }
+  },
+
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Hlídačky, které odpovídají vašim preferencím",

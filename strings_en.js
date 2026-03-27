@@ -258,6 +258,40 @@
     "pillLabel": "children"
   },
 
+  "transport": {
+    "pillLabel": "transport",
+    "modalTitle": "Location & travel",
+    "appendText": "It would also help if the sitter offered: {items}.",
+    "and": "and",
+    "location": {
+      "sectionLabel": "Where do you need help?",
+      "items": {
+        "atMyHome": {
+          "label": "At my home",
+          "summary": "care at our home"
+        },
+        "atSitterHome": {
+          "label": "At sitter’s home",
+          "summary": "the option of care at the sitter’s home"
+        }
+      }
+    },
+    "driver": {
+      "sectionLabel": "Driver needed?",
+      "items": {
+        "hasCar": {
+          "label": "Sitter has their own car",
+          "summary": "their own car"
+        },
+        "comfortableDriving": {
+          "label": "Sitter is comfortable driving children",
+          "sub": "(Sitter has a valid license and experience driving with children)",
+          "summary": "a valid license and experience driving children"
+        }
+      }
+    }
+  },
+
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Sitters matching your preferences",
