@@ -575,7 +575,7 @@
       <button class="btn btn-outline" id="btn-upload">↑ Upload JSON</button>
       <input type="file" id="file-upload" accept=".json" class="hidden">
       <button class="btn btn-outline" id="btn-download">↓ Download JSON</button>
-      <button class="btn btn-danger hidden" id="btn-reset">↺ Reset to CZ</button>
+      <button class="btn btn-danger hidden" id="btn-reset">↺ Reset to EN</button>
       <button class="btn btn-outline" id="btn-settings" title="GitHub token settings">⚙️</button>
       <button class="btn btn-primary" id="btn-save">Save</button>
       <button class="btn btn-publish hidden" id="btn-publish" disabled>🚀 Publish</button>
@@ -613,7 +613,9 @@ const LANGUAGES = [
   { code: 'EN', label: 'English',      flag: '🇬🇧' },
 ];
 
-let czSource = {};      // flat CZ keys → values (from STRINGS global)
+let baseSource = {};    // flat CZ base keys → values (from strings.js / STRINGS global)
+let enSource = {};      // flat EN source keys → values (CZ base + EN overrides)
+let czSource = {};      // alias kept for CZ-specific actions
 let allLangs  = {};     // { CZ: {flat}, SK: {flat}, … }
 let touched   = {};     // { SK: Set{key, …}, EN: Set{key, …}, … } — confirmed by upload or manual edit
 let currentLang = 'EN';
@@ -698,18 +700,20 @@ function init() {
     return;
   }
 
-  czSource = flatten(STRINGS);
+  baseSource = flatten(STRINGS);
+  czSource = Object.assign({}, baseSource);
+  enSource = Object.assign({}, baseSource);
 
   // CZ is always sourced from strings.js (authoritative)
   allLangs['CZ'] = Object.assign({}, czSource);
   saveLang('CZ', allLangs['CZ']);
 
-  // Other languages: load from storage merged with czSource (so new CZ keys always appear)
+  // Other languages default to EN source; while EN overrides are still loading,
+  // baseSource acts as a temporary fallback and is later upgraded to EN.
   LANGUAGES.forEach(function(lang) {
     if (lang.code === 'CZ') return;
     const saved = loadLang(lang.code);
-    // Always merge czSource first so new keys have CZ fallback, then overlay saved translations
-    allLangs[lang.code] = Object.assign({}, czSource, saved || {});
+    allLangs[lang.code] = Object.assign({}, enSource, saved || {});
     if (!saved) saveLang(lang.code, allLangs[lang.code]);
     touched[lang.code] = loadTouched(lang.code);
   });
@@ -721,35 +725,73 @@ function init() {
   loadPublishedLangFiles();
 }
 
-// Fetch published lang .js files and sync any keys missing from localStorage into allLangs
-function loadPublishedLangFiles() {
-  LANGUAGES.forEach(function(lang) {
-    if (lang.code === 'CZ') return;
-    var path = '/strings_' + lang.code.toLowerCase() + '.js';
-    fetch(path).then(function(r) { return r.ok ? r.text() : null; }).then(function(text) {
-      if (!text) return;
-      // Extract the object literal passed to _dm(window.STRINGS, {...})
-      var match = text.match(/_dm\(window\.STRINGS,\s*(\{[\s\S]*\})\s*\)\s*;/);
-      if (!match) return;
-      try {
-        var overrides = JSON.parse(match[1]);
-        var flat = flatten(overrides);
-        // Only fill keys that are NOT already in localStorage (user edits take priority)
-        var hasSaved = !!loadLang(lang.code);
-        if (!hasSaved) return; // already fully initialised from czSource, no file data to merge
-        var current = allLangs[lang.code];
-        Object.keys(flat).forEach(function(k) {
-          // If the saved value is still the CZ fallback, replace with file value
-          if (current[k] === czSource[k] && flat[k] !== czSource[k]) {
-            current[k] = flat[k];
-          }
-        });
-        saveLang(lang.code, current);
-        renderTabs();
-        renderTable();
-      } catch(e) {}
-    }).catch(function() {});
+function syncLangDefaults(langCode, prevDefaults, nextDefaults) {
+  var current = allLangs[langCode] || {};
+  var langTouched = touched[langCode] || new Set();
+  Object.keys(nextDefaults).forEach(function(k) {
+    var currentVal = current[k];
+    var missing = currentVal === undefined;
+    var stillOnPrevDefault = currentVal === prevDefaults[k];
+    if (!langTouched.has(k) && (missing || stillOnPrevDefault)) {
+      current[k] = nextDefaults[k];
+    }
   });
+  allLangs[langCode] = current;
+  saveLang(langCode, current);
+}
+
+function parsePublishedOverrides(text) {
+  if (!text) return null;
+  var match = text.match(/_dm\(window\.STRINGS,\s*(\{[\s\S]*\})\s*\)\s*;/);
+  if (!match) return null;
+  try {
+    return flatten(JSON.parse(match[1]));
+  } catch (e) {
+    return null;
+  }
+}
+
+async function loadPublishedLangFile(langCode) {
+  var path = '/strings_' + langCode.toLowerCase() + '.js';
+  try {
+    var resp = await fetch(path);
+    if (!resp.ok) return;
+    var text = await resp.text();
+    var flat = parsePublishedOverrides(text);
+    if (!flat) return;
+
+    if (langCode === 'EN') {
+      var prevEnSource = Object.assign({}, enSource);
+      enSource = Object.assign({}, baseSource, flat);
+      syncLangDefaults('EN', prevEnSource, enSource);
+      LANGUAGES.forEach(function(lang) {
+        if (lang.code === 'CZ' || lang.code === 'EN') return;
+        syncLangDefaults(lang.code, prevEnSource, enSource);
+      });
+      return;
+    }
+
+    var current = allLangs[langCode];
+    var langTouched = touched[langCode] || new Set();
+    Object.keys(flat).forEach(function(k) {
+      if (!langTouched.has(k) && current[k] === enSource[k] && flat[k] !== enSource[k]) {
+        current[k] = flat[k];
+      }
+    });
+    saveLang(langCode, current);
+  } catch (e) {}
+}
+
+// Fetch published lang .js files and sync any keys missing from localStorage into allLangs.
+async function loadPublishedLangFiles() {
+  await loadPublishedLangFile('EN');
+  await Promise.all(LANGUAGES.filter(function(lang) {
+    return lang.code !== 'CZ' && lang.code !== 'EN';
+  }).map(function(lang) {
+    return loadPublishedLangFile(lang.code);
+  }));
+  renderTabs();
+  renderTable();
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
@@ -814,9 +856,9 @@ function renderTable() {
     progressWrap.style.display = 'none';
   } else {
     progressWrap.style.display = '';
-    const total = Object.keys(czSource).length;
+    const total = Object.keys(enSource).length;
     const langTouched = touched[currentLang] || new Set();
-    const translated = Object.keys(czSource).filter(function(k) {
+    const translated = Object.keys(enSource).filter(function(k) {
       return langTouched.has(k);
     }).length;
     const pct = total > 0 ? Math.round(translated / total * 100) : 0;
@@ -829,16 +871,16 @@ function renderTable() {
   document.getElementById('btn-reset').classList.toggle('hidden', isCZ);
   document.getElementById('btn-upload').classList.toggle('hidden', isCZ);
 
-  const keys = Object.keys(czSource);
+  const keys = Object.keys(baseSource);
   let html = '';
   let currentSection = null;
   let visibleCount = 0;
 
   keys.forEach(function(key) {
     const sectionName = key.split('.')[0];
-    const enVal    = (allLangs['EN'] && allLangs['EN'][key]) || czSource[key] || '';
+    const enVal    = (allLangs['EN'] && allLangs['EN'][key]) || enSource[key] || baseSource[key] || '';
     const czVal    = enVal;
-    const transVal = (langData[key] !== undefined) ? langData[key] : czSource[key] || '';
+    const transVal = (langData[key] !== undefined) ? langData[key] : enSource[key] || baseSource[key] || '';
 
     if (section && sectionName !== section) return;
     if (search) {
@@ -978,7 +1020,7 @@ function bindToolbar() {
         pendingChanges = {};
         renderTabs();
         renderTable();
-        showToast('✓ Loaded ' + Object.keys(allLangs[currentLang]).length + ' strings');
+      showToast('✓ Loaded ' + Object.keys(allLangs[currentLang]).length + ' strings');
       } catch (err) {
         alert('Error loading JSON: ' + err.message);
       }
@@ -989,13 +1031,15 @@ function bindToolbar() {
 
   document.getElementById('btn-reset').addEventListener('click', function() {
     const langLabel = LANGUAGES.find(function(l) { return l.code === currentLang; }).label;
-    if (!confirm('Reset ' + langLabel + ' to CZ source?\n\nAll translations for this language will be lost.')) return;
-    allLangs[currentLang] = Object.assign({}, czSource);
+    if (!confirm('Reset ' + langLabel + ' to EN source?\n\nAll translations for this language will be lost.')) return;
+    allLangs[currentLang] = Object.assign({}, enSource);
+    touched[currentLang] = new Set();
     saveLang(currentLang, allLangs[currentLang]);
+    saveTouched(currentLang);
     pendingChanges = {};
     renderTabs();
     renderTable();
-    showToast('↺ ' + langLabel + ' reset to CZ');
+    showToast('↺ ' + langLabel + ' reset to EN');
   });
 
   document.getElementById('search-input').addEventListener('input', renderTable);
