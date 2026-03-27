@@ -160,7 +160,7 @@
       "appendText": "We prefer a sitter who speaks: {langs}."
     },
     "needs": {
-      "modalTitle": "Add information about special needs",
+      "modalTitle": "Special needs",
       "autism": "Autism",
       "diabetes": "Diabetes ",
       "asthma": "Asthma",
