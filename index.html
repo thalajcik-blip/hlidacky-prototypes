@@ -574,6 +574,7 @@
     .ch-helper { font-size: 14px; color: #6b7176; line-height: 1.5; letter-spacing: -0.16px; font-family: 'soleil',sans-serif; margin-bottom: 16px; }
     .ch-count-row {
       display: flex;
+      height: 52px;
       padding: 4px;
       align-items: flex-start;
       gap: 4px;
@@ -581,13 +582,15 @@
       border: 1px solid #E5E5EA;
       background: #FFF;
       margin-bottom: 18px;
+      box-sizing: border-box;
     }
     .ch-count-btn {
       flex: 1;
+      height: 100%;
       background: #FFF;
       border: 1px solid transparent;
       border-radius: 2px;
-      padding: 18px 0;
+      padding: 0;
       font-variant-numeric: lining-nums tabular-nums;
       font-family: 'soleil',sans-serif;
       font-size: 16px;
@@ -596,7 +599,11 @@
       line-height: 20px;
       color: #4A5A61;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
+      box-sizing: border-box;
     }
     .ch-count-btn:hover:not(.active) {
       border-radius: 2px;
@@ -610,11 +617,6 @@
       line-height: 20px;
     }
     .ch-count-btn.active {
-      display: flex;
-      padding: 12px 0;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       border-radius: 2px;
       border: 1px solid #D3F2D2;
       background: #EFF9EF;
