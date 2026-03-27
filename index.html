@@ -570,6 +570,18 @@
     .pm-body { flex: 1; overflow-y: auto; }
     .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
     .pm-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    /* Children modal */
+    .ch-count-row { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+    .ch-count-btn { flex: 1; background: var(--white); border: none; border-right: 1px solid var(--border); padding: 12px 0; font-size: 16px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: background 0.15s; }
+    .ch-count-btn:last-child { border-right: none; }
+    .ch-count-btn.active { background: var(--green-light); color: var(--green); font-weight: 500; }
+    .ch-row { margin-bottom: 16px; }
+    .ch-row-label { font-size: 14px; font-weight: 450; color: #2a3539; font-family: 'soleil',sans-serif; margin-bottom: 8px; }
+    .ch-row-inputs { display: flex; gap: 8px; }
+    .ch-gender-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); border-radius: 4px; padding: 10px 8px; background: var(--white); font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; cursor: pointer; transition: all 0.15s; }
+    .ch-gender-btn.active { border-color: var(--green); color: var(--green); background: var(--green-light); }
+    .ch-age-select { flex: 1; height: 44px; border: 1px solid var(--border); border-radius: 4px; padding: 0 10px; font-size: 15px; font-family: 'soleil',sans-serif; color: #2a3539; background: var(--white); outline: none; }
+    .ch-age-select:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
     .pm-selector {
       min-height: 80px;
       border: 1px solid #bec2ce; border-radius: 4px;
@@ -1672,6 +1684,7 @@
       <p class="ai-lbl" data-i18n="review.aiLabel"></p>
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
+        <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="review.children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <!-- pill-price hidden: not active yet -->
@@ -2121,6 +2134,8 @@
       updateReviewText();
       const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring') || selectedServices.has('senior');
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
+      const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
+      document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
     }
     if (id === 'success') updateSuccessSub();
 
@@ -2503,6 +2518,9 @@
       ],
       preSelected: []
     },
+    children: {
+      icon: '/doodles/doodle-children.svg'
+    },
     price: {
       icon: '/doodles/doodle-money.svg',
       options: ['120 Kč/hod', '140 Kč/hod', '160 Kč/hod', '180 Kč/hod', '200 Kč/hod',
@@ -2512,6 +2530,56 @@
   };
 
   let _currentPill = null;
+  let _childCount = 1;
+  let _childData = []; // [{gender:'girl',age:3}, ...]
+
+  function renderChildrenBody() {
+    var s = STRINGS.children;
+    var ords = s.childOrdinals || ['1.','2.','3.','4.','5+'];
+    var counts = [1,2,3,4,5];
+    var html = '<p class="pm-sublabel" style="margin-top:0">' + s.sectionLabel + '</p>';
+    html += '<div class="ch-count-row">';
+    counts.forEach(function(n,i) {
+      html += '<button class="ch-count-btn' + (n === _childCount ? ' active' : '') + '" onclick="setChildCount(' + n + ')">' + (n === 5 ? '5+' : n) + '</button>';
+    });
+    html += '</div>';
+    for (var i = 0; i < _childCount; i++) {
+      var d = _childData[i] || {gender:'girl', age:3};
+      _childData[i] = d;
+      var ageOpts = '';
+      for (var a = 1; a <= 18; a++) {
+        ageOpts += '<option value="' + a + '"' + (d.age === a ? ' selected' : '') + '>' + a + ' ' + s.years + '</option>';
+      }
+      html += '<div class="ch-row">';
+      html += '<div class="ch-row-label">' + (ords[i] || (i+1+'.')) + ' ' + s.childLabel + '</div>';
+      html += '<div class="ch-row-inputs">';
+      html += '<button class="ch-gender-btn' + (d.gender === 'boy' ? ' active' : '') + '" onclick="setChildGender(' + i + ',\'boy\')">' +
+        '<svg width="14" height="22" viewBox="0 0 14 22" fill="none"><path d="M7 14C10.3137 14 13 11.3137 13 8C13 4.68629 10.3137 2 7 2C3.68629 2 1 4.68629 1 8C1 11.3137 3.68629 14 7 14Z" stroke="currentColor" stroke-width="1.5"/><path d="M7 14V20M4 17H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
+        ' ' + s.boy + '</button>';
+      html += '<button class="ch-gender-btn' + (d.gender === 'girl' ? ' active' : '') + '" onclick="setChildGender(' + i + ',\'girl\')">' +
+        '<svg width="14" height="22" viewBox="0 0 14 22" fill="none"><circle cx="7" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 14V20M4 20H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
+        ' ' + s.girl + '</button>';
+      html += '<select class="ch-age-select" onchange="setChildAge(' + i + ',this.value)">' + ageOpts + '</select>';
+      html += '</div></div>';
+    }
+    return html;
+  }
+
+  function setChildCount(n) {
+    _childCount = n;
+    document.getElementById('pm-body').innerHTML = renderChildrenBody();
+  }
+
+  function setChildGender(i, g) {
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:3};
+    _childData[i].gender = g;
+    document.getElementById('pm-body').innerHTML = renderChildrenBody();
+  }
+
+  function setChildAge(i, v) {
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:3};
+    _childData[i].age = parseInt(v);
+  }
 
   function checkSvg() {
     return '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -2548,6 +2616,10 @@
     document.getElementById('pm-title').textContent = t('review.' + type + '.modalTitle');
 
     const body = document.getElementById('pm-body');
+    if (type === 'children') {
+      body.innerHTML = renderChildrenBody();
+      return;
+    }
     if (type === 'price') {
       body.innerHTML = renderPriceBody();
     } else {
@@ -2604,6 +2676,20 @@
     const ta = document.getElementById('review-text');
     let appendText = '';
 
+    if (_currentPill === 'children') {
+      var s = STRINGS.children;
+      var descs = [];
+      for (var ci = 0; ci < _childCount; ci++) {
+        var cd = _childData[ci] || {gender:'girl', age:3};
+        descs.push((cd.gender === 'girl' ? s.girl : s.boy).toLowerCase() + ' ' + cd.age + ' ' + s.years);
+      }
+      appendText = ' ' + s.appendText.replace('{desc}', descs.join(', '));
+      var pill = document.getElementById('pill-children');
+      typeAppend(ta, appendText);
+      pill.style.display = 'none';
+      closePillModal();
+      return;
+    }
     if (_currentPill === 'language' || _currentPill === 'needs') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });

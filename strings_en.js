@@ -238,6 +238,18 @@
     "btnContinue": "Continue",
     "editLink": "Edit job post"
   },
+  "children": {
+    "modalTitle": "Information about children",
+    "sectionLabel": "How many kids need care?",
+    "childLabel": "child",
+    "boy": "Boy",
+    "girl": "Girl",
+    "years": "years",
+    "appendText": "We have {desc}.",
+    "childOrdinals": ["1st", "2nd", "3rd", "4th", "5+"],
+    "pillLabel": "children"
+  },
+
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Sitters matching your preferences",

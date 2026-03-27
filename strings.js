@@ -230,6 +230,18 @@ window.STRINGS = {
     "editLink": "Upravit inzerát"
   },
 
+  "children": {
+    "modalTitle": "Informace o dětech",
+    "sectionLabel": "Kolik dětí potřebuje péči?",
+    "childLabel": "dítě",
+    "boy": "Chlapec",
+    "girl": "Dívka",
+    "years": "let",
+    "appendText": "Hledáme péči pro {desc}.",
+    "childOrdinals": ["1.", "2.", "3.", "4.", "5+"],
+    "pillLabel": "děti"
+  },
+
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Hlídačky, které odpovídají vašim preferencím",
