@@ -704,11 +704,12 @@ function init() {
   allLangs['CZ'] = Object.assign({}, czSource);
   saveLang('CZ', allLangs['CZ']);
 
-  // Other languages: load from storage or copy CZ
+  // Other languages: load from storage merged with czSource (so new CZ keys always appear)
   LANGUAGES.forEach(function(lang) {
     if (lang.code === 'CZ') return;
     const saved = loadLang(lang.code);
-    allLangs[lang.code] = saved || Object.assign({}, czSource);
+    // Always merge czSource first so new keys have CZ fallback, then overlay saved translations
+    allLangs[lang.code] = Object.assign({}, czSource, saved || {});
     if (!saved) saveLang(lang.code, allLangs[lang.code]);
     touched[lang.code] = loadTouched(lang.code);
   });
@@ -717,6 +718,38 @@ function init() {
   renderSectionFilter();
   renderTable();
   bindToolbar();
+  loadPublishedLangFiles();
+}
+
+// Fetch published lang .js files and sync any keys missing from localStorage into allLangs
+function loadPublishedLangFiles() {
+  LANGUAGES.forEach(function(lang) {
+    if (lang.code === 'CZ') return;
+    var path = '/strings_' + lang.code.toLowerCase() + '.js';
+    fetch(path).then(function(r) { return r.ok ? r.text() : null; }).then(function(text) {
+      if (!text) return;
+      // Extract the object literal passed to _dm(window.STRINGS, {...})
+      var match = text.match(/_dm\(window\.STRINGS,\s*(\{[\s\S]*\})\s*\)\s*;/);
+      if (!match) return;
+      try {
+        var overrides = JSON.parse(match[1]);
+        var flat = flatten(overrides);
+        // Only fill keys that are NOT already in localStorage (user edits take priority)
+        var hasSaved = !!loadLang(lang.code);
+        if (!hasSaved) return; // already fully initialised from czSource, no file data to merge
+        var current = allLangs[lang.code];
+        Object.keys(flat).forEach(function(k) {
+          // If the saved value is still the CZ fallback, replace with file value
+          if (current[k] === czSource[k] && flat[k] !== czSource[k]) {
+            current[k] = flat[k];
+          }
+        });
+        saveLang(lang.code, current);
+        renderTabs();
+        renderTable();
+      } catch(e) {}
+    }).catch(function() {});
+  });
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
