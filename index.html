@@ -1913,6 +1913,7 @@
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogSize" onclick="openPillModal('dogSize')" data-i18n="review.dogSize.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-dogAge" onclick="openPillModal('dogAge')" data-i18n="review.dogAge.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2373,6 +2374,8 @@
       document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
       const dogSizeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
       document.getElementById('pill-dogSize').style.display = dogSizeRelevant ? '' : 'none';
+      const dogAgeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+      document.getElementById('pill-dogAge').style.display = dogAgeRelevant ? '' : 'none';
       const cleaningSuppliesRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
       const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
@@ -2804,6 +2807,15 @@
       ],
       preSelected: []
     },
+    dogAge: {
+      icon: '/doodles/doodle-dog-settings.svg',
+      items: [
+        { key: 'puppy', icon: '<img src="/doodles/puppy.svg" class="needs-icon" alt="">' },
+        { key: 'adult', icon: '<img src="/doodles/adult.svg" class="needs-icon" alt="">' },
+        { key: 'senior', icon: '<img src="/doodles/senior.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     cleaningSupplies: {
       icon: '/doodles/doodle-broom.svg',
       items: [
@@ -2876,6 +2888,7 @@
   let _currentPill = null;
   let _childCount = 1;
   let _childData = []; // [{gender:'girl',age:'y3'}, ...]
+  let _dogAgeState = { age: '', extra: false };
   let _daysTimesState = {
     mode: 'notsure',
     regularText: '',
@@ -2985,7 +2998,7 @@
 
   function selectorIndicatorMarkup(type, isSelected) {
     if (!isSelected) return '';
-    if (type === 'cleaningSupplies') {
+    if (type === 'cleaningSupplies' || type === 'dogAge') {
       return '<div class="pm-selector-radio-dot"></div>';
     }
     return checkSvg();
@@ -2996,9 +3009,11 @@
     const strings = STRINGS.review[type];
     return '<div class="pm-selector-grid">' + cfg.items.map(function(item) {
       const label = strings[item.key] || item.key;
-      const sel = cfg.preSelected.includes(item.key) ? ' selected' : '';
+      const sel = (type === 'dogAge'
+        ? _dogAgeState.age === item.key
+        : cfg.preSelected.includes(item.key)) ? ' selected' : '';
       const iconWrapClass = type === 'language' ? 'pm-selector-icon selector-icon--flag' : 'pm-selector-icon';
-      const checkClass = type === 'cleaningSupplies' ? 'pm-selector-check pm-selector-radio' : 'pm-selector-check';
+      const checkClass = (type === 'cleaningSupplies' || type === 'dogAge') ? 'pm-selector-check pm-selector-radio' : 'pm-selector-check';
       return '<div class="pm-selector' + sel + '" data-key="' + item.key + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
         '<div class="pm-selector-top">' +
           '<div class="' + checkClass + '">' + selectorIndicatorMarkup(type, !!sel) + '</div>' +
@@ -3111,6 +3126,22 @@
       '</div>';
   }
 
+  function renderDogAgeBody() {
+    var extraLabel = '';
+    if (_dogAgeState.age === 'puppy') extraLabel = t('review.dogAge.puppyExtraAttention');
+    if (_dogAgeState.age === 'senior') extraLabel = t('review.dogAge.seniorSpecialCare');
+    return '<p class="pm-sublabel">' + t('review.dogAge.sectionLabel') + '</p>' +
+      renderSelectorGrid('dogAge') +
+      (_dogAgeState.age === 'puppy' || _dogAgeState.age === 'senior'
+        ? '<div class="mt14">' +
+            '<div class="check-opt' + (_dogAgeState.extra ? ' checked' : '') + '" id="pm-dog-age-extra" onclick="toggleDogAgeExtra()">' +
+              '<div class="check-box">' + (_dogAgeState.extra ? '<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '') + '</div>' +
+              '<span class="check-lbl">' + extraLabel + '</span>' +
+            '</div>' +
+          '</div>'
+        : '');
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3217,6 +3248,8 @@
     const body = document.getElementById('pm-body');
     if (type === 'children') {
       body.innerHTML = renderChildrenBody();
+    } else if (type === 'dogAge') {
+      body.innerHTML = renderDogAgeBody();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3266,6 +3299,24 @@
       if (activeRadio) activeRadio.innerHTML = selectorIndicatorMarkup(_currentPill, true);
       return;
     }
+    if (_currentPill === 'dogAge') {
+      var wasSelected = el.classList.contains('selected');
+      Array.from(document.querySelectorAll('#pm-body .pm-selector')).forEach(function(node) {
+        node.classList.remove('selected');
+        var nodeChk = node.querySelector('.pm-selector-check');
+        if (nodeChk) nodeChk.innerHTML = '';
+      });
+      if (!wasSelected) {
+        el.classList.add('selected');
+        var dogAgeChk = el.querySelector('.pm-selector-check');
+        if (dogAgeChk) dogAgeChk.innerHTML = selectorIndicatorMarkup(_currentPill, true);
+      }
+      _dogAgeState.age = wasSelected ? '' : el.dataset.key;
+      _dogAgeState.extra = (_dogAgeState.age === 'puppy' || _dogAgeState.age === 'senior') ? _dogAgeState.extra : false;
+      var body = document.getElementById('pm-body');
+      if (body) body.innerHTML = renderDogAgeBody();
+      return;
+    }
     if (_currentPill === 'petsAtHome') {
       var key = el.dataset.key;
       var siblings = Array.from(document.querySelectorAll('#pm-body .pm-selector'));
@@ -3289,6 +3340,12 @@
     el.classList.toggle('selected');
     const chk = el.querySelector('.pm-selector-check');
     if (chk) chk.innerHTML = selectorIndicatorMarkup(_currentPill, el.classList.contains('selected'));
+  }
+
+  function toggleDogAgeExtra() {
+    _dogAgeState.extra = !_dogAgeState.extra;
+    var body = document.getElementById('pm-body');
+    if (body) body.innerHTML = renderDogAgeBody();
   }
 
   function toggleTransportItem(el) {
@@ -3432,6 +3489,15 @@
             .replace('{date}', date)
             .replace('{fromTime}', timeFrom)
             .replace('{toTime}', timeTo);
+        }
+      }
+    }
+    if (_currentPill === 'dogAge') {
+      const dogAgeStrings = STRINGS.review.dogAge;
+      if (_dogAgeState.age) {
+        appendText = ' ' + dogAgeStrings.appendText.replace('{age}', dogAgeStrings[_dogAgeState.age + 'Summary']);
+        if (_dogAgeState.extra) {
+          appendText += ' ' + (_dogAgeState.age === 'puppy' ? dogAgeStrings.appendPuppyExtraText : dogAgeStrings.appendSeniorExtraText);
         }
       }
     }

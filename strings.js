@@ -206,6 +206,22 @@ window.STRINGS = {
       "huge": "Huge (over 40 kg)",
       "appendText": "Our dog is: {sizes}."
     },
+    "dogAge": {
+      "pillLabel": "dog's age",
+      "modalTitle": "Dog's age",
+      "sectionLabel": "How old is your dog?",
+      "puppy": "Puppy",
+      "adult": "Adult",
+      "senior": "Senior",
+      "puppyExtraAttention": "The puppy requires extra attention",
+      "seniorSpecialCare": "The dog requires special care",
+      "puppySummary": "a puppy",
+      "adultSummary": "an adult dog",
+      "seniorSummary": "a senior dog",
+      "appendText": "Our dog is {age}.",
+      "appendPuppyExtraText": "The puppy requires extra attention.",
+      "appendSeniorExtraText": "The dog requires special care."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
