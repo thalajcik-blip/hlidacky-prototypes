@@ -27,7 +27,7 @@
     "tutoring": "Tutoring"
   },
   "location": {
-    "heroSub": "Your exact location stays private, but we’ll still show you the best matches nearby.",
+    "heroSub": "The location will stay private, but we’ll still show you the best matches nearby.",
     "inputLabel": "Location",
     "inputPlaceholder": "e.g. London, UK",
     "hint": "The exact address will be hidden.",
@@ -121,7 +121,7 @@
     ],
     "dateLabel": "Specify date and time",
     "datePlaceholder": "e.g. every Monday 4pm–8pm and Friday 2pm–6pm, starting next month",
-    "notsure": "I'm not sure yet",
+    "notsure": "not sure",
     "dateLabelRegular": "Specify date and time",
     "longterm": "I am looking for long-term help"
   },
