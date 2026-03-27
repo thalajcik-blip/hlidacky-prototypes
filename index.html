@@ -1882,6 +1882,7 @@
       <p class="ai-lbl" data-i18n="review.aiLabel"></p>
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
       <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
+        <button class="detail-pill" id="pill-extraTasks" onclick="openPillModal('extraTasks')" data-i18n="review.extraTasks.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2273,7 +2274,7 @@
     }
 
     const flow = ['contact', 'service', 'location'];
-    if (selectedServices.has('cleaning')) flow.push('cleaning', 'cleaning-extras');
+    if (selectedServices.has('cleaning')) flow.push('cleaning');
     if (selectedServices.has('pet')) flow.push('pet');
     if (selectedServices.has('tutoring')) flow.push('subjects');
     if (seniorOnly || cleaningOnly) {
@@ -2336,6 +2337,8 @@
       updateReviewText();
       const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring') || selectedServices.has('senior');
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
+      const extraTasksRelevant = selectedServices.has('cleaning');
+      document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting');
@@ -2728,6 +2731,21 @@
       ],
       preSelected: []
     },
+    extraTasks: {
+      icon: '/doodles/extra-services.svg',
+      items: [
+        { key: 'ironing', icon: '<img src="/doodles/icon-ironing.svg" class="needs-icon" alt="">' },
+        { key: 'laundry', icon: '<img src="/doodles/icon-laundry.svg" class="needs-icon" alt="">' },
+        { key: 'windowCleaning', icon: '<img src="/doodles/icon-window-cleaning.svg" class="needs-icon" alt="">' },
+        { key: 'airbnbCleaning', icon: '<img src="/doodles/icon-airbnb-cleaning.svg" class="needs-icon" alt="">' },
+        { key: 'carCleaning', icon: '<img src="/doodles/icon-car-cleaning.svg" class="needs-icon" alt="">' },
+        { key: 'moveCleaning', icon: '<img src="/doodles/icon-move-cleaning.svg" class="needs-icon" alt="">' },
+        { key: 'upholsteryCleaning', icon: '<img src="/doodles/icon-upholstery.svg" class="needs-icon" alt="">' },
+        { key: 'lightMaintenance', icon: '<img src="/doodles/icon-maintenance.svg" class="needs-icon" alt="">' },
+        { key: 'gardenHelp', icon: '<img src="/doodles/icon-garden.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -3056,7 +3074,7 @@
         appendText += ' ' + skillStrings.appendExtraText.replace('{note}', extraNote);
       }
     }
-    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
@@ -3065,7 +3083,9 @@
           ? '{langs}'
           : (_currentPill === 'specialOccasions'
             ? '{occasions}'
-            : (_currentPill === 'parentingStyle' ? '{styles}' : '{needs}'));
+            : (_currentPill === 'parentingStyle'
+              ? '{styles}'
+              : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}')));
         appendText = ' ' + tpl.replace(key, selected.join(', '));
       }
     } else if (_currentPill === 'price') {

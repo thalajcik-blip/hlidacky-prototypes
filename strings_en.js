@@ -176,6 +176,21 @@
       "other": "Other needs",
       "appendText": "Our child has special needs: {needs}."
     },
+    "extraTasks": {
+      "pillLabel": "extra tasks",
+      "modalTitle": "Extra tasks",
+      "sectionLabel": "Any special cleaning requests?",
+      "ironing": "Ironing",
+      "laundry": "Laundry",
+      "windowCleaning": "Window cleaning",
+      "airbnbCleaning": "Airbnb/apartments cleaning",
+      "carCleaning": "Car cleaning",
+      "moveCleaning": "Move-in/move-out cleaning",
+      "upholsteryCleaning": "Upholstery cleaning",
+      "lightMaintenance": "Light home maintenance",
+      "gardenHelp": "Garden help",
+      "appendText": "We would also appreciate help with: {tasks}."
+    },
     "specialOccasions": {
       "pillLabel": "special occasions",
       "modalTitle": "Special occasions",
