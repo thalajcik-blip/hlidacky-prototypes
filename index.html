@@ -2458,65 +2458,7 @@
     if (id === 'location') updateLocTitle();
     if (id === 'review') {
       updateReviewText();
-      document.querySelectorAll('.detail-pill').forEach(function(pill, idx) {
-        pill.style.order = idx;
-      });
-      const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
-      document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
-      const specialRequirementsRelevant = selectedServices.has('senior');
-      document.getElementById('pill-specialRequirements').style.display = specialRequirementsRelevant ? '' : 'none';
-      const extraTasksRelevant = selectedServices.has('cleaning') || selectedServices.has('senior');
-      document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
-      const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
-      document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
-      const dogSizeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
-      document.getElementById('pill-dogSize').style.display = dogSizeRelevant ? '' : 'none';
-      const dogAgeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
-      document.getElementById('pill-dogAge').style.display = dogAgeRelevant ? '' : 'none';
-      const dogPersonalityRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
-      document.getElementById('pill-dogPersonality').style.display = dogPersonalityRelevant ? '' : 'none';
-      const healthDietRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
-      document.getElementById('pill-healthDiet').style.display = healthDietRelevant ? '' : 'none';
-      const typeCareRelevant = selectedServices.has('pet');
-      document.getElementById('pill-typeCare').style.display = typeCareRelevant ? '' : 'none';
-      const cleaningSuppliesRelevant = selectedServices.has('cleaning');
-      document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
-      const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
-      document.getElementById('pill-daysTimes').style.display = daysTimesRelevant ? '' : 'none';
-      const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
-      document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
-      const gradeLevelsRelevant = selectedServices.has('tutoring');
-      document.getElementById('pill-gradeLevels').style.display = gradeLevelsRelevant ? '' : 'none';
-      const entranceExamsRelevant = selectedServices.has('tutoring');
-      document.getElementById('pill-entranceExams').style.display = entranceExamsRelevant ? '' : 'none';
-      const scheduleRelevant = selectedServices.has('tutoring');
-      document.getElementById('pill-schedule').style.display = scheduleRelevant ? '' : 'none';
-      const teachingStyleRelevant = selectedServices.has('tutoring');
-      document.getElementById('pill-teachingStyle').style.display = teachingStyleRelevant ? '' : 'none';
-      const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
-      document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
-      const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
-      document.getElementById('pill-skillsTalents').style.display = skillsTalentsRelevant ? '' : 'none';
-      const parentingStyleRelevant = selectedServices.has('babysitting');
-      document.getElementById('pill-parentingStyle').style.display = parentingStyleRelevant ? '' : 'none';
-      const specialOccasionsRelevant = selectedServices.has('babysitting');
-      document.getElementById('pill-specialOccasions').style.display = specialOccasionsRelevant ? '' : 'none';
-      if (selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
-        [
-          'pill-language',
-          'pill-children',
-          'pill-gradeLevels',
-          'pill-entranceExams',
-          'pill-needs',
-          'pill-schedule',
-          'pill-teachingStyle',
-          'pill-skillsTalents',
-          'pill-petsAtHome'
-        ].forEach(function(id, idx) {
-          var pill = document.getElementById(id);
-          if (pill) pill.style.order = idx;
-        });
-      }
+      updateReviewPills();
     }
     if (id === 'success') updateSuccessSub();
 
@@ -2592,6 +2534,68 @@
     selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
     showScreen('contact');
+  }
+
+  function updateReviewPills() {
+    document.querySelectorAll('.detail-pill').forEach(function(pill, idx) {
+      pill.style.order = idx;
+    });
+    const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
+    document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
+    const specialRequirementsRelevant = selectedServices.has('senior');
+    document.getElementById('pill-specialRequirements').style.display = specialRequirementsRelevant ? '' : 'none';
+    const extraTasksRelevant = selectedServices.has('cleaning') || selectedServices.has('senior');
+    document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
+    const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
+    document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
+    const dogSizeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+    document.getElementById('pill-dogSize').style.display = dogSizeRelevant ? '' : 'none';
+    const dogAgeRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+    document.getElementById('pill-dogAge').style.display = dogAgeRelevant ? '' : 'none';
+    const dogPersonalityRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+    document.getElementById('pill-dogPersonality').style.display = dogPersonalityRelevant ? '' : 'none';
+    const healthDietRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+    document.getElementById('pill-healthDiet').style.display = healthDietRelevant ? '' : 'none';
+    const typeCareRelevant = selectedServices.has('pet');
+    document.getElementById('pill-typeCare').style.display = typeCareRelevant ? '' : 'none';
+    const cleaningSuppliesRelevant = selectedServices.has('cleaning');
+    document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
+    const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
+    document.getElementById('pill-daysTimes').style.display = daysTimesRelevant ? '' : 'none';
+    const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
+    document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
+    const gradeLevelsRelevant = selectedServices.has('tutoring');
+    document.getElementById('pill-gradeLevels').style.display = gradeLevelsRelevant ? '' : 'none';
+    const entranceExamsRelevant = selectedServices.has('tutoring');
+    document.getElementById('pill-entranceExams').style.display = entranceExamsRelevant ? '' : 'none';
+    const scheduleRelevant = selectedServices.has('tutoring');
+    document.getElementById('pill-schedule').style.display = scheduleRelevant ? '' : 'none';
+    const teachingStyleRelevant = selectedServices.has('tutoring');
+    document.getElementById('pill-teachingStyle').style.display = teachingStyleRelevant ? '' : 'none';
+    const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
+    document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
+    const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
+    document.getElementById('pill-skillsTalents').style.display = skillsTalentsRelevant ? '' : 'none';
+    const parentingStyleRelevant = selectedServices.has('babysitting');
+    document.getElementById('pill-parentingStyle').style.display = parentingStyleRelevant ? '' : 'none';
+    const specialOccasionsRelevant = selectedServices.has('babysitting');
+    document.getElementById('pill-specialOccasions').style.display = specialOccasionsRelevant ? '' : 'none';
+    if (selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
+      [
+        'pill-language',
+        'pill-children',
+        'pill-gradeLevels',
+        'pill-entranceExams',
+        'pill-needs',
+        'pill-schedule',
+        'pill-teachingStyle',
+        'pill-skillsTalents',
+        'pill-petsAtHome'
+      ].forEach(function(id, idx) {
+        var pill = document.getElementById(id);
+        if (pill) pill.style.order = idx;
+      });
+    }
   }
 
   // ============================================================
@@ -3687,7 +3691,7 @@
 
   function onReviewTextInput() {
     if (!document.getElementById('review-text').value.trim()) {
-      document.querySelectorAll('.detail-pill').forEach(p => p.style.display = '');
+      updateReviewPills();
     }
   }
 
