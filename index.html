@@ -2436,7 +2436,7 @@
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
       const specialRequirementsRelevant = selectedServices.has('senior');
       document.getElementById('pill-specialRequirements').style.display = specialRequirementsRelevant ? '' : 'none';
-      const extraTasksRelevant = selectedServices.has('cleaning');
+      const extraTasksRelevant = selectedServices.has('cleaning') || selectedServices.has('senior');
       document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
       const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
       document.getElementById('pill-petsAtHome').style.display = petsAtHomeRelevant ? '' : 'none';
@@ -3134,7 +3134,12 @@
   function renderSelectorGrid(type) {
     const cfg = PILL_CONFIG[type];
     const strings = STRINGS.review[type];
-    return '<div class="pm-selector-grid">' + cfg.items.map(function(item) {
+    const items = (type === 'extraTasks' && selectedServices.has('senior') && !selectedServices.has('cleaning'))
+      ? cfg.items.filter(function(item) {
+          return ['ironing', 'laundry', 'windowCleaning', 'carCleaning', 'lightMaintenance', 'gardenHelp'].indexOf(item.key) !== -1;
+        })
+      : cfg.items;
+    return '<div class="pm-selector-grid">' + items.map(function(item) {
       const label = strings[item.key] || item.key;
       const sel = (type === 'dogAge'
         ? _dogAgeState.age === item.key
