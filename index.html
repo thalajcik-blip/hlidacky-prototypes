@@ -1942,6 +1942,7 @@
         <button class="detail-pill" id="pill-petsAtHome" onclick="openPillModal('petsAtHome')" data-i18n="review.petsAtHome.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
+        <button class="detail-pill" id="pill-specialRequirements" onclick="openPillModal('specialRequirements')" data-i18n="review.specialRequirements.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-transport" onclick="openPillModal('transport')" data-i18n="transport.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
@@ -2431,8 +2432,10 @@
     if (id === 'location') updateLocTitle();
     if (id === 'review') {
       updateReviewText();
-      const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring') || selectedServices.has('senior');
+      const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
+      const specialRequirementsRelevant = selectedServices.has('senior');
+      document.getElementById('pill-specialRequirements').style.display = specialRequirementsRelevant ? '' : 'none';
       const extraTasksRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-extraTasks').style.display = extraTasksRelevant ? '' : 'none';
       const petsAtHomeRelevant = selectedServices.has('cleaning') || selectedServices.has('senior') || selectedServices.has('tutoring');
@@ -2840,6 +2843,23 @@
         { key: 'hearing',    icon: '<img src="/doodles/needs-hearing.svg"    class="needs-icon" alt="">' },
         { key: 'epilepsy',   icon: '<img src="/doodles/needs-epilepsy.svg"   class="needs-icon" alt="">' },
         { key: 'other',      icon: '<img src="/doodles/needs-other.svg"      class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
+    specialRequirements: {
+      icon: '/doodles/doodle-special-requirements.svg',
+      items: [
+        { key: 'keepingCompany', icon: '<img src="/doodles/sr-keeping-company.svg" class="needs-icon" alt="">' },
+        { key: 'alzheimers', icon: '<img src="/doodles/sr-alzheimers.svg" class="needs-icon" alt="">' },
+        { key: 'parkinsons', icon: '<img src="/doodles/sr-parkinsons.svg" class="needs-icon" alt="">' },
+        { key: 'diabetes', icon: '<img src="/doodles/sr-diabetes.svg" class="needs-icon" alt="">' },
+        { key: 'dementia', icon: '<img src="/doodles/sr-dementia.svg" class="needs-icon" alt="">' },
+        { key: 'mobilityIssues', icon: '<img src="/doodles/sr-mobility.svg" class="needs-icon" alt="">' },
+        { key: 'personalHygiene', icon: '<img src="/doodles/sr-personal-hygiene.svg" class="needs-icon" alt="">' },
+        { key: 'mealPreparation', icon: '<img src="/doodles/sr-meal-preparation.svg" class="needs-icon" alt="">' },
+        { key: 'doctorAppointments', icon: '<img src="/doodles/sr-doctor-appointments.svg" class="needs-icon" alt="">' },
+        { key: 'physiotherapy', icon: '<img src="/doodles/sr-physiotherapy.svg" class="needs-icon" alt="">' },
+        { key: 'artTherapy', icon: '<img src="/doodles/sr-art-therapy.svg" class="needs-icon" alt="">' }
       ],
       preSelected: []
     },
@@ -3746,7 +3766,7 @@
         appendText = ' ' + tcs.appendText.replace('{types}', selectedCare.join(', '));
       }
     }
-    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
@@ -3755,11 +3775,13 @@
           ? '{langs}'
           : (_currentPill === 'dogSize'
             ? '{sizes}'
+          : (_currentPill === 'specialRequirements'
+            ? '{requirements}'
           : (_currentPill === 'specialOccasions'
             ? '{occasions}'
             : (_currentPill === 'parentingStyle'
               ? '{styles}'
-              : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}'))));
+              : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}')))));
         appendText = ' ' + tpl.replace(key, selected.join(', '));
       }
     } else if (_currentPill === 'price') {

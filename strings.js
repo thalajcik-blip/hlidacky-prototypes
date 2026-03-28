@@ -177,6 +177,23 @@ window.STRINGS = {
       "epilepsy": "Epilepsie", "other": "Jiné potřeby",
       "appendText": "Naše dítě má speciální potřeby: {needs}."
     },
+    "specialRequirements": {
+      "pillLabel": "special requirements",
+      "modalTitle": "Special requirements",
+      "sectionLabel": "Any specific care needs or experience?",
+      "keepingCompany": "Keeping company",
+      "alzheimers": "Alzheimer's disease",
+      "parkinsons": "Parkinson's disease",
+      "diabetes": "Diabetes",
+      "dementia": "Dementia",
+      "mobilityIssues": "Mobility issues",
+      "personalHygiene": "Personal hygiene",
+      "mealPreparation": "Meal preparation",
+      "doctorAppointments": "Doctor appointments",
+      "physiotherapy": "Physiotherapy",
+      "artTherapy": "Art therapy",
+      "appendText": "Special care requirements include: {requirements}."
+    },
     "extraTasks": {
       "pillLabel": "extra tasks",
       "modalTitle": "Extra tasks",
