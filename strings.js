@@ -82,12 +82,19 @@ window.STRINGS = {
   },
 
   "seniorCare": {
-    "heroTitle": "Specifikace péče",
-    "heroSub": "Pomůže nám to najít to nejlepší pro vaše blízké.",
-    "careTypeLabel": "Jaký typ péče hledáte?",
-    "liveIn": "Nepřetržitá péče (24/7)",
-    "fullTime": "Péče na plný úvazek",
-    "partTime": "Pravidelná docházka (zkrácený úvazek)"
+    "heroTitle": "Care specifics",
+    "heroSub": "This helps us find the best match for their needs.",
+    "careTypeLabel": "What type of care are you looking for?",
+    "notSure": "Not sure",
+    "notSureSub": "You can specify it later",
+    "liveIn": "24/7 live-in care",
+    "liveInSub": "Full-time support with sitter staying in the home.",
+    "fullTime": "Full-time care",
+    "fullTimeSub": "Daily support, typically 35-40 hours per week.",
+    "partTime": "Part-time care",
+    "partTimeSub": "Flexible or occasional assistance as needed.",
+    "holidayCare": "Holiday care",
+    "holidayCareSub": "Temporary care to provide caregiver relief."
   },
 
   "frequencyPet": {

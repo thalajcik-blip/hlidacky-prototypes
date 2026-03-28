@@ -1595,18 +1595,41 @@
 
     <div class="screen-body">
       <p class="radio-section-label" data-i18n="seniorCare.careTypeLabel"></p>
-      <div class="radio-group" style="margin-top:12px;">
-        <div class="radio-opt selected" onclick="selectRadio(this, 'senior-care-type')">
-          <div class="radio-dot"></div>
-          <span class="radio-lbl" data-i18n="seniorCare.liveIn"></span>
+      <div style="margin-top:12px;">
+        <div class="check-opt" id="senior-care-not-sure" onclick="toggleSeniorCareOption('senior-care-not-sure')" style="padding:0 0 10px;">
+          <div class="check-box"></div>
+          <div>
+            <div style="font-weight:500;color:#2A3539;" data-i18n="seniorCare.notSure"></div>
+            <div style="color:#8B95A7;margin-top:2px;" data-i18n="seniorCare.notSureSub"></div>
+          </div>
         </div>
-        <div class="radio-opt" onclick="selectRadio(this, 'senior-care-type')">
-          <div class="radio-dot"></div>
-          <span class="radio-lbl" data-i18n="seniorCare.fullTime"></span>
+        <div class="check-opt" id="senior-care-livein" onclick="toggleSeniorCareOption('senior-care-livein')" style="padding:0 0 10px;">
+          <div class="check-box"></div>
+          <div>
+            <div style="font-weight:500;color:#2A3539;" data-i18n="seniorCare.liveIn"></div>
+            <div style="color:#8B95A7;margin-top:2px;" data-i18n="seniorCare.liveInSub"></div>
+          </div>
         </div>
-        <div class="radio-opt" onclick="selectRadio(this, 'senior-care-type')">
-          <div class="radio-dot"></div>
-          <span class="radio-lbl" data-i18n="seniorCare.partTime"></span>
+        <div class="check-opt" id="senior-care-fulltime" onclick="toggleSeniorCareOption('senior-care-fulltime')" style="padding:0 0 10px;">
+          <div class="check-box"></div>
+          <div>
+            <div style="font-weight:500;color:#2A3539;" data-i18n="seniorCare.fullTime"></div>
+            <div style="color:#8B95A7;margin-top:2px;" data-i18n="seniorCare.fullTimeSub"></div>
+          </div>
+        </div>
+        <div class="check-opt" id="senior-care-parttime" onclick="toggleSeniorCareOption('senior-care-parttime')" style="padding:0 0 10px;">
+          <div class="check-box"></div>
+          <div>
+            <div style="font-weight:500;color:#2A3539;" data-i18n="seniorCare.partTime"></div>
+            <div style="color:#8B95A7;margin-top:2px;" data-i18n="seniorCare.partTimeSub"></div>
+          </div>
+        </div>
+        <div class="check-opt" id="senior-care-holiday" onclick="toggleSeniorCareOption('senior-care-holiday')" style="padding:0;">
+          <div class="check-box"></div>
+          <div>
+            <div style="font-weight:500;color:#2A3539;" data-i18n="seniorCare.holidayCare"></div>
+            <div style="color:#8B95A7;margin-top:2px;" data-i18n="seniorCare.holidayCareSub"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2298,6 +2321,44 @@
       opt.classList.remove('selected');
     });
     el.classList.add('selected');
+  }
+
+  function toggleSeniorCareOption(id) {
+    var node = document.getElementById(id);
+    if (!node) return;
+    var isNotSure = id === 'senior-care-not-sure';
+    var all = [
+      'senior-care-not-sure',
+      'senior-care-livein',
+      'senior-care-fulltime',
+      'senior-care-parttime',
+      'senior-care-holiday'
+    ];
+    if (isNotSure) {
+      var nextState = !node.classList.contains('checked');
+      all.forEach(function(key) {
+        var item = document.getElementById(key);
+        if (!item) return;
+        item.classList.remove('checked');
+        var box = item.querySelector('.check-box');
+        if (box) box.innerHTML = '';
+      });
+      if (nextState) {
+        node.classList.add('checked');
+        var ownBox = node.querySelector('.check-box');
+        if (ownBox) ownBox.innerHTML = checkSvg();
+      }
+      return;
+    }
+    var notSureNode = document.getElementById('senior-care-not-sure');
+    if (notSureNode) {
+      notSureNode.classList.remove('checked');
+      var notSureBox = notSureNode.querySelector('.check-box');
+      if (notSureBox) notSureBox.innerHTML = '';
+    }
+    node.classList.toggle('checked');
+    var box = node.querySelector('.check-box');
+    if (box) box.innerHTML = node.classList.contains('checked') ? checkSvg() : '';
   }
 
   function showScreen(id) {
