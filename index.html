@@ -3025,15 +3025,26 @@
     longterm: false
   };
 
+  function isTutoringChildrenVariant() {
+    return selectedServices.has('tutoring') && !selectedServices.has('babysitting');
+  }
+
+  function getChildrenStrings() {
+    return isTutoringChildrenVariant() ? STRINGS.childrenTutor : STRINGS.children;
+  }
+
   function getPillI18nBase(type) {
     if (type === 'language' && selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
       return 'review.languageTutor';
+    }
+    if (type === 'children' && isTutoringChildrenVariant()) {
+      return 'childrenTutor';
     }
     return type === 'children' ? 'children' : 'review.' + type;
   }
 
   function getPillModalTitle(type) {
-    if (type === 'children') return t(type + '.modalTitle');
+    if (type === 'children') return t(getPillI18nBase(type) + '.modalTitle');
     if (type === 'transport') {
       return selectedServices.has('senior') && !selectedServices.has('babysitting')
         ? t('transport.modalTitleSenior')
@@ -3049,8 +3060,15 @@
   }
 
   function getChildAgeOptions() {
-    var s = STRINGS.children;
+    var s = getChildrenStrings();
     var opts = [];
+    if (isTutoringChildrenVariant()) {
+      opts.push({ value: 'u2', label: s.lessThanTwo });
+      for (var ty = 2; ty <= 18; ty++) {
+        opts.push({ value: 'y' + ty, label: ty + ' ' + (ty === 1 ? s.yearSingular : s.yearPlural) });
+      }
+      return opts;
+    }
     for (var m = 1; m <= 11; m++) {
       opts.push({ value: 'm' + m, label: m + ' ' + (m === 1 ? s.monthSingular : s.monthPlural) });
     }
@@ -3062,15 +3080,16 @@
   }
 
   function formatChildAgeLabel(ageValue) {
-    var s = STRINGS.children;
-    if (!ageValue) return '3 ' + s.yearPlural;
+    var s = getChildrenStrings();
+    if (!ageValue) return isTutoringChildrenVariant() ? '8 ' + s.yearPlural : '3 ' + s.yearPlural;
+    if (ageValue === 'u2') return s.lessThanTwo;
     var num = parseInt(String(ageValue).slice(1), 10);
     if (String(ageValue).charAt(0) === 'm') return num + ' ' + (num === 1 ? s.monthSingular : s.monthPlural);
     return num + ' ' + (num === 1 ? s.yearSingular : s.yearPlural);
   }
 
   function renderChildrenBody() {
-    var s = STRINGS.children;
+    var s = getChildrenStrings();
     var ords = s.childOrdinals || ['1.','2.','3.','4.','5+'];
     var counts = [1,2,3,4,5];
     var ageOptions = getChildAgeOptions();
@@ -3082,7 +3101,7 @@
     });
     html += '</div>';
     for (var i = 0; i < _childCount; i++) {
-      var d = _childData[i] || {gender:'girl', age:'y3'};
+      var d = _childData[i] || {gender:'girl', age:(isTutoringChildrenVariant() ? 'y8' : 'y3')};
       _childData[i] = d;
       var ageOpts = ageOptions.map(function(opt) {
         return '<option value="' + opt.value + '"' + (d.age === opt.value ? ' selected' : '') + '>' + opt.label + '</option>';
@@ -3107,18 +3126,18 @@
   function setChildCount(n) {
     _childCount = n;
     _childData = _childData.slice(0, n);
-    while (_childData.length < n) _childData.push({gender:'girl', age:'y3'});
+    while (_childData.length < n) _childData.push({gender:'girl', age:(isTutoringChildrenVariant() ? 'y8' : 'y3')});
     document.getElementById('pm-body').innerHTML = renderChildrenBody();
   }
 
   function setChildGender(i, g) {
-    if (!_childData[i]) _childData[i] = {gender:'girl', age:'y3'};
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:(isTutoringChildrenVariant() ? 'y8' : 'y3')};
     _childData[i].gender = g;
     document.getElementById('pm-body').innerHTML = renderChildrenBody();
   }
 
   function setChildAge(i, v) {
-    if (!_childData[i]) _childData[i] = {gender:'girl', age:'y3'};
+    if (!_childData[i]) _childData[i] = {gender:'girl', age:(isTutoringChildrenVariant() ? 'y8' : 'y3')};
     _childData[i].age = v;
   }
 
@@ -3453,7 +3472,8 @@
   function openPillModal(type) {
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
-    document.getElementById('pm-icon').innerHTML = '<img src="' + cfg.icon + '" width="42" height="42" alt="">';
+    const icon = (type === 'children' && isTutoringChildrenVariant()) ? '/doodles/doodle-graduation-hat.svg' : cfg.icon;
+    document.getElementById('pm-icon').innerHTML = '<img src="' + icon + '" width="42" height="42" alt="">';
     document.getElementById('pm-title').textContent = getPillModalTitle(type);
 
     const body = document.getElementById('pm-body');
@@ -3628,10 +3648,10 @@
     let appendText = '';
 
     if (_currentPill === 'children') {
-      var s = STRINGS.children;
+      var s = getChildrenStrings();
       var descs = [];
       for (var ci = 0; ci < _childCount; ci++) {
-        var cd = _childData[ci] || {gender:'girl', age:'y3'};
+        var cd = _childData[ci] || {gender:'girl', age:(isTutoringChildrenVariant() ? 'y8' : 'y3')};
         var ageLabel = formatChildAgeLabel(cd.age);
         var summaryTpl = cd.gender === 'girl' ? (s.summaryGirl || s.girl.toLowerCase() + ' ({ageLabel})') : (s.summaryBoy || s.boy.toLowerCase() + ' ({ageLabel})');
         descs.push(summaryTpl.replace('{ageLabel}', ageLabel));

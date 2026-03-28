@@ -466,6 +466,29 @@
     "pillLabel": "children",
     "years": "years"
   },
+  "childrenTutor": {
+    "modalTitle": "Student information",
+    "sectionLabel": "How many students need tutoring?",
+    "childLabel": "student",
+    "boy": "Boy",
+    "girl": "Girl",
+    "ageLabel": "Age",
+    "lessThanTwo": "less than 2",
+    "yearSingular": "year",
+    "yearPlural": "years",
+    "appendText": "We are looking for tutoring for {desc}.",
+    "summaryBoy": "a boy ({ageLabel})",
+    "summaryGirl": "a girl ({ageLabel})",
+    "and": "and",
+    "childOrdinals": [
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5+"
+    ],
+    "pillLabel": "children"
+  },
   "transport": {
     "pillLabel": "transport",
     "modalTitle": "Location & travel",
