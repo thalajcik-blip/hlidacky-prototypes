@@ -1945,6 +1945,7 @@
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-gradeLevels" onclick="openPillModal('gradeLevels')" data-i18n="review.gradeLevels.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-skillsTalents" onclick="openPillModal('skillsTalents')" data-i18n="review.skillsTalents.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-parentingStyle" onclick="openPillModal('parentingStyle')" data-i18n="review.parentingStyle.pillLabel" style="display:none"></button>
@@ -2456,6 +2457,8 @@
       document.getElementById('pill-daysTimes').style.display = daysTimesRelevant ? '' : 'none';
       const childrenRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
+      const gradeLevelsRelevant = selectedServices.has('tutoring');
+      document.getElementById('pill-gradeLevels').style.display = gradeLevelsRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
       const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
@@ -2940,6 +2943,9 @@
     daysTimes: {
       icon: '/doodles/calendar.svg'
     },
+    gradeLevels: {
+      icon: '/doodles/grade-levels-doodle.svg'
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -3011,6 +3017,7 @@
     health: []
   };
   let _typeCareState = [];
+  let _gradeLevelsState = [];
   let _daysTimesState = {
     mode: 'notsure',
     regularText: '',
@@ -3372,6 +3379,22 @@
     '</div>';
   }
 
+  function renderGradeLevelsBody() {
+    var s = STRINGS.review.gradeLevels;
+    return '<div class="pm-check-section">' +
+      '<p class="pm-check-label">' + s.sectionLabel + '</p>' +
+      '<div class="pm-check-list">' + s.items.map(function(item) {
+        var selected = _gradeLevelsState.indexOf(item.key) !== -1;
+        return '<div class="pm-check-item' + (selected ? ' selected' : '') + '" data-gradelevel-key="' + item.key + '" onclick="toggleGradeLevelItem(this)">' +
+          '<div class="pm-check-box">' + (selected ? checkSvg() : '') + '</div>' +
+          '<div class="pm-check-copy">' +
+            '<div class="pm-check-title">' + item.label + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3487,6 +3510,8 @@
       body.innerHTML = renderHealthDietBody();
     } else if (type === 'typeCare') {
       body.innerHTML = renderTypeCareBody();
+    } else if (type === 'gradeLevels') {
+      body.innerHTML = renderGradeLevelsBody();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3598,6 +3623,15 @@
     _dogPersonalityState[field] = value;
     var body = document.getElementById('pm-body');
     if (body) body.innerHTML = renderDogPersonalityBody();
+  }
+
+  function toggleGradeLevelItem(el) {
+    var key = el.dataset.gradelevelKey;
+    var idx = _gradeLevelsState.indexOf(key);
+    if (idx === -1) _gradeLevelsState.push(key);
+    else _gradeLevelsState.splice(idx, 1);
+    var body = document.getElementById('pm-body');
+    if (body) body.innerHTML = renderGradeLevelsBody();
   }
 
   function toggleHealthDietItem(el) {
@@ -3800,6 +3834,15 @@
         .map(function(item) { return item.label; });
       if (selectedCare.length > 0) {
         appendText = ' ' + tcs.appendText.replace('{types}', selectedCare.join(', '));
+      }
+    }
+    if (_currentPill === 'gradeLevels') {
+      const gls = STRINGS.review.gradeLevels;
+      const selectedLevels = gls.items
+        .filter(function(item) { return _gradeLevelsState.indexOf(item.key) !== -1; })
+        .map(function(item) { return item.label; });
+      if (selectedLevels.length > 0) {
+        appendText = ' ' + gls.appendText.replace('{levels}', selectedLevels.join(', '));
       }
     }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {

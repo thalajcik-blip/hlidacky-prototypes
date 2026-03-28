@@ -311,6 +311,17 @@ window.STRINGS = {
       ],
       "appendText": "We are looking for this type of pet care: {types}."
     },
+    "gradeLevels": {
+      "pillLabel": "grade levels",
+      "modalTitle": "Grade levels",
+      "sectionLabel": "What's the academic level?",
+      "items": [
+        { "key": "preschool", "label": "pre-school" },
+        { "key": "elementary", "label": "elementary school" },
+        { "key": "secondary", "label": "secondary school" }
+      ],
+      "appendText": "The academic level is: {levels}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
