@@ -183,6 +183,15 @@ window.STRINGS = {
       "epilepsy": "Epilepsie", "other": "Jiné potřeby",
       "appendText": "Naše dítě má speciální potřeby: {needs}."
     },
+    "needsTutor": {
+      "modalTitle": "Special requirements",
+      "sectionLabel": "Any specific learning needs or formats?",
+      "speechDisorders": "Speech disorders",
+      "learningDisorders": "Learning disorders",
+      "helpWithHomework": "Help with homework",
+      "homeSchooling": "Home-schooling",
+      "appendText": "Special tutoring requirements include: {needs}."
+    },
     "specialRequirements": {
       "pillLabel": "special requirements",
       "modalTitle": "Special requirements",

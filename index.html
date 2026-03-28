@@ -2850,6 +2850,12 @@
         { key: 'epilepsy',   icon: '<img src="/doodles/needs-epilepsy.svg"   class="needs-icon" alt="">' },
         { key: 'other',      icon: '<img src="/doodles/needs-other.svg"      class="needs-icon" alt="">' }
       ],
+      tutoringItems: [
+        { key: 'speechDisorders', icon: '<img src="/doodles/tutoring-speech-disorders.svg" class="needs-icon" alt="">' },
+        { key: 'learningDisorders', icon: '<img src="/doodles/tutoring-learning-disorders.svg" class="needs-icon" alt="">' },
+        { key: 'helpWithHomework', icon: '<img src="/doodles/tutoring-help-with-homework.svg" class="needs-icon" alt="">' },
+        { key: 'homeSchooling', icon: '<img src="/doodles/tutoring-home-schooling.svg" class="needs-icon" alt="">' }
+      ],
       preSelected: []
     },
     specialRequirements: {
@@ -3051,6 +3057,9 @@
     if (type === 'language' && selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
       return 'review.languageTutor';
     }
+    if (type === 'needs' && selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
+      return 'review.needsTutor';
+    }
     if (type === 'children' && isTutoringChildrenVariant()) {
       return 'childrenTutor';
     }
@@ -3170,13 +3179,18 @@
   function renderSelectorGrid(type) {
     const cfg = PILL_CONFIG[type];
     const strings = STRINGS.review[type];
-    const items = (type === 'extraTasks' && selectedServices.has('senior') && !selectedServices.has('cleaning'))
+    const items = (type === 'needs' && selectedServices.has('tutoring') && !selectedServices.has('babysitting'))
+      ? cfg.tutoringItems
+      : ((type === 'extraTasks' && selectedServices.has('senior') && !selectedServices.has('cleaning'))
       ? cfg.items.filter(function(item) {
           return ['ironing', 'laundry', 'windowCleaning', 'carCleaning', 'lightMaintenance', 'gardenHelp'].indexOf(item.key) !== -1;
         })
-      : cfg.items;
+      : cfg.items);
     return '<div class="pm-selector-grid">' + items.map(function(item) {
-      const label = strings[item.key] || item.key;
+      const labelStrings = type === 'needs' && selectedServices.has('tutoring') && !selectedServices.has('babysitting')
+        ? STRINGS.review.needsTutor
+        : strings;
+      const label = labelStrings[item.key] || item.key;
       const sel = (type === 'dogAge'
         ? _dogAgeState.age === item.key
         : cfg.preSelected.includes(item.key)) ? ' selected' : '';
@@ -3518,7 +3532,11 @@
   function openPillModal(type) {
     _currentPill = type;
     const cfg = PILL_CONFIG[type];
-    const icon = (type === 'children' && isTutoringChildrenVariant()) ? '/doodles/doodle-graduation-hat.svg' : cfg.icon;
+    const icon = (type === 'children' && isTutoringChildrenVariant())
+      ? '/doodles/doodle-graduation-hat.svg'
+      : (type === 'needs' && selectedServices.has('tutoring') && !selectedServices.has('babysitting'))
+        ? '/doodles/tutoring-special-requirements-doodle.svg'
+        : cfg.icon;
     document.getElementById('pm-icon').innerHTML = '<img src="' + icon + '" width="42" height="42" alt="">';
     document.getElementById('pm-title').textContent = getPillModalTitle(type);
 
