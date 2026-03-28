@@ -451,6 +451,28 @@
     .dt-icon { flex-shrink: 0; width: 18px; height: 18px; opacity: 0.6; }
     .dt-arrows { flex-shrink: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer; opacity: 0.4; }
     .dt-arrows svg { display: block; }
+    .pm-date-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 52px;
+      padding: 0 14px;
+      border: 1px solid #A7C3FF;
+      border-radius: 6px;
+      background: #FFF;
+      margin-top: 8px;
+    }
+    .pm-date-select-wrap .dt-field {
+      font-weight: 450;
+      color: #2A3539;
+    }
+    .pm-date-select-wrap .dt-arrows {
+      margin-left: auto;
+      opacity: 1;
+    }
+    .pm-date-select-wrap .dt-arrows svg path {
+      stroke: #F96073;
+    }
 
     /* Misc */
     .ai-lbl { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; font-family: 'soleil', sans-serif; }
@@ -1947,6 +1969,7 @@
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-gradeLevels" onclick="openPillModal('gradeLevels')" data-i18n="review.gradeLevels.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-entranceExams" onclick="openPillModal('entranceExams')" data-i18n="review.entranceExams.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-schedule" onclick="openPillModal('schedule')" data-i18n="review.schedule.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-skillsTalents" onclick="openPillModal('skillsTalents')" data-i18n="review.skillsTalents.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-parentingStyle" onclick="openPillModal('parentingStyle')" data-i18n="review.parentingStyle.pillLabel" style="display:none"></button>
@@ -2462,6 +2485,8 @@
       document.getElementById('pill-gradeLevels').style.display = gradeLevelsRelevant ? '' : 'none';
       const entranceExamsRelevant = selectedServices.has('tutoring');
       document.getElementById('pill-entranceExams').style.display = entranceExamsRelevant ? '' : 'none';
+      const scheduleRelevant = selectedServices.has('tutoring');
+      document.getElementById('pill-schedule').style.display = scheduleRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
       const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
@@ -2958,6 +2983,15 @@
     entranceExams: {
       icon: '/doodles/doodle-entrance-exams.svg'
     },
+    schedule: {
+      icon: '/doodles/tutoring-schedule-doodle.svg',
+      items: [
+        { key: 'morning', icon: '<img src="/doodles/tutoring-morning.svg" class="needs-icon" alt="">' },
+        { key: 'afternoon', icon: '<img src="/doodles/tutoring-afternoon.svg" class="needs-icon" alt="">' },
+        { key: 'evening', icon: '<img src="/doodles/tutoring-evening.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -3031,6 +3065,7 @@
   let _typeCareState = [];
   let _gradeLevelsState = [];
   let _entranceExamsState = [];
+  let _scheduleState = { date: '0', slots: [] };
   let _daysTimesState = {
     mode: 'notsure',
     regularText: '',
@@ -3193,6 +3228,8 @@
       const label = labelStrings[item.key] || item.key;
       const sel = (type === 'dogAge'
         ? _dogAgeState.age === item.key
+        : type === 'schedule'
+          ? _scheduleState.slots.indexOf(item.key) !== -1
         : cfg.preSelected.includes(item.key)) ? ' selected' : '';
       const iconWrapClass = type === 'language' ? 'pm-selector-icon selector-icon--flag' : 'pm-selector-icon';
       const checkClass = (type === 'cleaningSupplies' || type === 'dogAge') ? 'pm-selector-check pm-selector-radio' : 'pm-selector-check';
@@ -3432,6 +3469,23 @@
     '</div>';
   }
 
+  function renderScheduleBody() {
+    var s = STRINGS.review.schedule;
+    return '<div class="pm-check-section">' +
+      '<p class="pm-check-label">' + s.sectionLabel + '</p>' +
+      '<div class="pm-date-select-wrap">' +
+        '<select class="dt-field dt-select dt-selected" id="pm-schedule-date"></select>' +
+        '<div class="dt-arrows" aria-hidden="true">' +
+          '<svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.75 1.5L6.5 6.25L11.25 1.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="pm-check-section">' +
+      '<p class="pm-check-label"><span>' + s.timeLabel + '</span> <span class="label-optional">' + s.optional + '</span></p>' +
+    '</div>' +
+    renderSelectorGrid('schedule');
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3495,6 +3549,18 @@
     });
   }
 
+  function initScheduleModal() {
+    var scheduleSelect = document.getElementById('pm-schedule-date');
+    if (!scheduleSelect) return;
+    scheduleSelect.innerHTML = buildDateOptions(0, 14, true);
+    scheduleSelect.value = _scheduleState.date || '0';
+    scheduleSelect.classList.add('dt-selected');
+    scheduleSelect.addEventListener('change', function() {
+      _scheduleState.date = this.value;
+      this.classList.add('dt-selected');
+    });
+  }
+
   function selectPillFreq(val, el) {
     document.querySelectorAll('#pm-freq-radios .radio-opt').forEach(function(r) {
       r.classList.remove('selected');
@@ -3555,6 +3621,9 @@
       body.innerHTML = renderGradeLevelsBody();
     } else if (type === 'entranceExams') {
       body.innerHTML = renderEntranceExamsBody();
+    } else if (type === 'schedule') {
+      body.innerHTML = renderScheduleBody();
+      initScheduleModal();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3641,6 +3710,12 @@
           if (noneChk) noneChk.innerHTML = '';
         }
       }
+    }
+    if (_currentPill === 'schedule') {
+      var scheduleKey = el.dataset.key;
+      var scheduleIdx = _scheduleState.slots.indexOf(scheduleKey);
+      if (scheduleIdx === -1) _scheduleState.slots.push(scheduleKey);
+      else _scheduleState.slots.splice(scheduleIdx, 1);
     }
     el.classList.toggle('selected');
     const chk = el.querySelector('.pm-selector-check');
@@ -3906,6 +3981,17 @@
         appendText = ' ' + ees.appendText.replace('{exams}', selectedExams.join(', '));
       }
     }
+    if (_currentPill === 'schedule') {
+      const ss = STRINGS.review.schedule;
+      const dateSelect = document.getElementById('pm-schedule-date');
+      const dateLabel = dateSelect && dateSelect.selectedIndex >= 0 ? dateSelect.options[dateSelect.selectedIndex].text : '';
+      const selectedSlots = ss.items
+        .filter(function(item) { return Array.from(document.querySelectorAll('#pm-body .pm-selector.selected')).some(function(el) { return el.dataset.key === item.key; }); })
+        .map(function(item) { return item.label.toLowerCase(); });
+      appendText = ' ' + (selectedSlots.length > 0 ? ss.appendTextWithTimes : ss.appendText)
+        .replace('{date}', dateLabel || '')
+        .replace('{times}', selectedSlots.join(', '));
+    }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
@@ -4017,12 +4103,16 @@
   applyStrings();
   // Populate date selects with next 14 days
   const DAY_NAMES = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
-  function buildDateOptions(selectedOffset) {
+  const DAY_NAMES_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  function buildDateOptions(selectedOffset, totalDays, verboseEnglish) {
+    const count = typeof totalDays === 'number' ? totalDays : 14;
     const opts = [];
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < count; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
-      const label = DAY_NAMES[d.getDay()] + ' ' + d.getDate() + '. ' + (d.getMonth() + 1) + '.';
+      const label = verboseEnglish
+        ? d.getDate() + '.' + (d.getMonth() + 1) + '. (' + DAY_NAMES_EN[d.getDay()] + ')'
+        : DAY_NAMES[d.getDay()] + ' ' + d.getDate() + '. ' + (d.getMonth() + 1) + '.';
       opts.push(`<option value="${i}"${i === selectedOffset ? ' selected' : ''}>${label}</option>`);
     }
     return opts.join('');

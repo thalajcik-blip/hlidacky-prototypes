@@ -350,6 +350,20 @@
       ],
       "appendText": "We are preparing for: {exams}."
     },
+    "schedule": {
+      "pillLabel": "schedule",
+      "modalTitle": "Schedule",
+      "sectionLabel": "When would you like the first session?",
+      "timeLabel": "Select your preferred time of day",
+      "optional": "(optional)",
+      "items": [
+        { "key": "morning", "label": "Morning" },
+        { "key": "afternoon", "label": "Afternoon" },
+        { "key": "evening", "label": "Evening" }
+      ],
+      "appendText": "The first session would ideally be on {date}.",
+      "appendTextWithTimes": "The first session would ideally be on {date}, preferably in the {times}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
