@@ -76,7 +76,7 @@
     "validationAlert": "Please select at least one pet"
   },
   "seniorCare": {
-    "heroTitle": "Care details",
+    "heroTitle": "Care specifics",
     "heroSub": "This helps us find the best fit for your loved ones.",
     "careTypeLabel": "What type of care are you looking for?",
     "liveIn": "Live-in care (24/7)",
