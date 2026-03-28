@@ -1915,6 +1915,7 @@
         <button class="detail-pill" id="pill-dogSize" onclick="openPillModal('dogSize')" data-i18n="review.dogSize.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogAge" onclick="openPillModal('dogAge')" data-i18n="review.dogAge.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogPersonality" onclick="openPillModal('dogPersonality')" data-i18n="review.dogPersonality.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-healthDiet" onclick="openPillModal('healthDiet')" data-i18n="review.healthDiet.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2379,6 +2380,8 @@
       document.getElementById('pill-dogAge').style.display = dogAgeRelevant ? '' : 'none';
       const dogPersonalityRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
       document.getElementById('pill-dogPersonality').style.display = dogPersonalityRelevant ? '' : 'none';
+      const healthDietRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
+      document.getElementById('pill-healthDiet').style.display = healthDietRelevant ? '' : 'none';
       const cleaningSuppliesRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
       const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
@@ -2834,6 +2837,9 @@
       ],
       preSelected: []
     },
+    healthDiet: {
+      icon: '/doodles/doodle-healthcheck.svg'
+    },
     cleaningSupplies: {
       icon: '/doodles/doodle-broom.svg',
       items: [
@@ -2911,6 +2917,10 @@
     traits: [],
     dogFriendly: 'yes',
     kidsFriendly: 'yes'
+  };
+  let _dogHealthDietState = {
+    diet: [],
+    health: []
   };
   let _daysTimesState = {
     mode: 'notsure',
@@ -3201,6 +3211,26 @@
       radioSection('kidsFriendly', s.kidsFriendlyLabel, _dogPersonalityState.kidsFriendly, s.kidsFriendlyYes, s.kidsFriendlyNo);
   }
 
+  function renderHealthDietBody() {
+    var s = STRINGS.review.healthDiet;
+    function renderSection(sectionKey) {
+      return '<div class="pm-check-section">' +
+        '<p class="pm-check-label">' + s[sectionKey].sectionLabel + '</p>' +
+        '<div class="pm-check-list">' + s[sectionKey].items.map(function(item) {
+          var selected = _dogHealthDietState[sectionKey].indexOf(item.key) !== -1;
+          return '<div class="pm-check-item' + (selected ? ' selected' : '') + '" data-healthdiet-section="' + sectionKey + '" data-healthdiet-key="' + item.key + '" onclick="toggleHealthDietItem(this)">' +
+            '<div class="pm-check-box">' + (selected ? checkSvg() : '') + '</div>' +
+            '<div class="pm-check-copy">' +
+              '<div class="pm-check-title">' + item.label + '</div>' +
+              (item.sub ? '<div class="pm-check-sub">' + item.sub + '</div>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('') + '</div>' +
+      '</div>';
+    }
+    return renderSection('diet') + renderSection('health');
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3311,6 +3341,8 @@
       body.innerHTML = renderDogAgeBody();
     } else if (type === 'dogPersonality') {
       body.innerHTML = renderDogPersonalityBody();
+    } else if (type === 'healthDiet') {
+      body.innerHTML = renderHealthDietBody();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3422,6 +3454,17 @@
     _dogPersonalityState[field] = value;
     var body = document.getElementById('pm-body');
     if (body) body.innerHTML = renderDogPersonalityBody();
+  }
+
+  function toggleHealthDietItem(el) {
+    var section = el.dataset.healthdietSection;
+    var key = el.dataset.healthdietKey;
+    var list = _dogHealthDietState[section];
+    var idx = list.indexOf(key);
+    if (idx === -1) list.push(key);
+    else list.splice(idx, 1);
+    var body = document.getElementById('pm-body');
+    if (body) body.innerHTML = renderHealthDietBody();
   }
 
   function toggleTransportItem(el) {
@@ -3585,6 +3628,17 @@
       }
       appendText += ' ' + (_dogPersonalityState.dogFriendly === 'yes' ? dps.appendDogFriendlyYes : dps.appendDogFriendlyNo);
       appendText += ' ' + (_dogPersonalityState.kidsFriendly === 'yes' ? dps.appendKidsFriendlyYes : dps.appendKidsFriendlyNo);
+    }
+    if (_currentPill === 'healthDiet') {
+      const hds = STRINGS.review.healthDiet;
+      const selectedDiet = hds.diet.items.filter(function(item) { return _dogHealthDietState.diet.indexOf(item.key) !== -1; }).map(function(item) { return item.label; });
+      const selectedHealth = hds.health.items.filter(function(item) { return _dogHealthDietState.health.indexOf(item.key) !== -1; }).map(function(item) { return item.label; });
+      if (selectedDiet.length > 0) {
+        appendText += ' ' + hds.appendDietText.replace('{diet}', selectedDiet.join(', '));
+      }
+      if (selectedHealth.length > 0) {
+        appendText += ' ' + hds.appendHealthText.replace('{health}', selectedHealth.join(', '));
+      }
     }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))

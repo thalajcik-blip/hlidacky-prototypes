@@ -247,6 +247,28 @@ window.STRINGS = {
       "appendKidsFriendlyYes": "Our dog is good with kids.",
       "appendKidsFriendlyNo": "Our dog is not used to children."
     },
+    "healthDiet": {
+      "pillLabel": "health and diet",
+      "modalTitle": "Health & diet",
+      "diet": {
+        "sectionLabel": "Any special diet or allergies?",
+        "items": [
+          { "key": "standardDiet", "label": "Standard diet", "sub": "No restrictions" },
+          { "key": "specialDiet", "label": "Special diet/sllergies", "sub": "Grain-free, raw, specific brand, etc." },
+          { "key": "noTreats", "label": "Strict: No treats", "sub": "Dogs with sensitive stomach or weight needs" }
+        ]
+      },
+      "health": {
+        "sectionLabel": "Does your dog have any health needs?",
+        "items": [
+          { "key": "medication", "label": "Help with medication", "sub": "Sitter will need to give pills, drops, or injections" },
+          { "key": "mobility", "label": "Mobility or exercise needs", "sub": "Struggles with stairs, requires short walks only, or has joint issues" },
+          { "key": "medicalHistory", "label": "Medical history", "sub": "History of seizures, anxiety, or specific chronic conditions" }
+        ]
+      },
+      "appendDietText": "Our dog has these diet preferences or restrictions: {diet}.",
+      "appendHealthText": "Our dog has these health-related needs: {health}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
