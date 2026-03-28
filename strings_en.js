@@ -156,7 +156,7 @@
     "modalAdd": "Add to job post",
     "language": {
       "modalTitle": "Sitter’s languages",
-      "sectionLabel": "Jakým jazykem má hlídačka mluvit?",
+      "sectionLabel": "Which languages should the sitter speak?",
       "cs": "Čeština",
       "sk": "Slovenčina",
       "en": "English",
@@ -167,6 +167,12 @@
       "uk": "Українська",
       "moreLangs": "+ more languages",
       "appendText": "We prefer a sitter who speaks: {langs}."
+    },
+    "languageTutor": {
+      "modalTitle": "Tutor’s languages",
+      "sectionLabel": "Which languages should the tutor speak?",
+      "moreLangs": "+ more languages",
+      "appendText": "We prefer a tutor who speaks: {langs}."
     },
     "needs": {
       "modalTitle": "Special needs",

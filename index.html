@@ -3026,6 +3026,9 @@
   };
 
   function getPillI18nBase(type) {
+    if (type === 'language' && selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
+      return 'review.languageTutor';
+    }
     return type === 'children' ? 'children' : 'review.' + type;
   }
 
@@ -3036,7 +3039,7 @@
         ? t('transport.modalTitleSenior')
         : t('transport.modalTitle');
     }
-    return t('review.' + type + '.modalTitle');
+    return t(getPillI18nBase(type) + '.modalTitle');
   }
 
   function joinLocalizedList(items, andWord) {
@@ -3481,7 +3484,7 @@
         : '';
       body.innerHTML = labelHtml + renderSelectorGrid(type);
       if (type === 'language') {
-        body.innerHTML += '<span class="pm-more-link" data-i18n="review.language.moreLangs"></span>';
+        body.innerHTML += '<span class="pm-more-link" data-i18n="' + getPillI18nBase('language') + '.moreLangs"></span>';
       }
     }
     applyStrings();
@@ -3783,7 +3786,7 @@
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
-        const tpl = t('review.' + _currentPill + '.appendText');
+        const tpl = t(getPillI18nBase(_currentPill) + '.appendText');
         const key = _currentPill === 'language'
           ? '{langs}'
           : (_currentPill === 'dogSize'

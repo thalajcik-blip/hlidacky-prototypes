@@ -167,6 +167,12 @@ window.STRINGS = {
       "moreLangs": "+ více jazyků",
       "appendText": "Preferujeme hlídačku, která mluví: {langs}."
     },
+    "languageTutor": {
+      "modalTitle": "Tutor's languages",
+      "sectionLabel": "Which languages should the tutor speak?",
+      "moreLangs": "+ more languages",
+      "appendText": "We prefer a tutor who speaks: {langs}."
+    },
     "needs": {
       "modalTitle": "Přidejte informace o speciálních potřebách",
       "sectionLabel": "Jsou zde speciální potřeby, které chcete zmínit?",
