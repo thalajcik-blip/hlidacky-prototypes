@@ -447,6 +447,7 @@ window.STRINGS = {
   "transport": {
     "pillLabel": "doprava",
     "modalTitle": "Místo a doprava",
+    "modalTitleSenior": "Transport & travel",
     "appendText": "Důležité je pro nás také: {items}.",
     "and": "a",
     "location": {
@@ -473,6 +474,20 @@ window.STRINGS = {
           "label": "Hlídačka zvládne řídit děti",
           "sub": "(má řidičský průkaz a zkušenosti s jízdou s dětmi)",
           "summary": "řidičský průkaz a zkušenost s řízením dětí"
+        }
+      }
+    },
+    "driverSenior": {
+      "sectionLabel": "Is driving required?",
+      "items": {
+        "hasCar": {
+          "label": "Sitter has their own car",
+          "summary": "their own car"
+        },
+        "comfortableDriving": {
+          "label": "Sitter is comfortable driving seniors",
+          "sub": "Sitter has a valid license and experience driving seniors (e.g. to doctor’s appointments or errands).",
+          "summary": "a valid license and experience driving seniors"
         }
       }
     }

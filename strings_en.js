@@ -463,6 +463,7 @@
   "transport": {
     "pillLabel": "transport",
     "modalTitle": "Location & travel",
+    "modalTitleSenior": "Transport & travel",
     "appendText": "It would also help if the sitter offered: {items}.",
     "and": "and",
     "location": {
@@ -489,6 +490,20 @@
           "label": "Sitter is comfortable driving children",
           "sub": "(Sitter has a valid license and experience driving with children)",
           "summary": "a valid license and experience driving children"
+        }
+      }
+    },
+    "driverSenior": {
+      "sectionLabel": "Is driving required?",
+      "items": {
+        "hasCar": {
+          "label": "Sitter has their own car",
+          "summary": "their own car"
+        },
+        "comfortableDriving": {
+          "label": "Sitter is comfortable driving seniors",
+          "sub": "Sitter has a valid license and experience driving seniors (e.g. to doctor’s appointments or errands).",
+          "summary": "a valid license and experience driving seniors"
         }
       }
     }
