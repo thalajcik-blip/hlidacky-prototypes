@@ -329,6 +329,18 @@
       ],
       "appendText": "The academic level is: {levels}."
     },
+    "entranceExams": {
+      "pillLabel": "entrance exams",
+      "modalTitle": "Entrance exams",
+      "sectionLabel": "Preparing for any exams?",
+      "items": [
+        { "key": "primaryAdmissions", "label": "primary school admissions" },
+        { "key": "highSchoolAdmissions", "label": "high school admissions" },
+        { "key": "schoolLeaving", "label": "school leaving examinations" },
+        { "key": "otherTests", "label": "other tests & exams" }
+      ],
+      "appendText": "We are preparing for: {exams}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",

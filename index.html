@@ -1946,6 +1946,7 @@
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-gradeLevels" onclick="openPillModal('gradeLevels')" data-i18n="review.gradeLevels.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-entranceExams" onclick="openPillModal('entranceExams')" data-i18n="review.entranceExams.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-skillsTalents" onclick="openPillModal('skillsTalents')" data-i18n="review.skillsTalents.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-parentingStyle" onclick="openPillModal('parentingStyle')" data-i18n="review.parentingStyle.pillLabel" style="display:none"></button>
@@ -2459,6 +2460,8 @@
       document.getElementById('pill-children').style.display = childrenRelevant ? '' : 'none';
       const gradeLevelsRelevant = selectedServices.has('tutoring');
       document.getElementById('pill-gradeLevels').style.display = gradeLevelsRelevant ? '' : 'none';
+      const entranceExamsRelevant = selectedServices.has('tutoring');
+      document.getElementById('pill-entranceExams').style.display = entranceExamsRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
       const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
@@ -2946,6 +2949,9 @@
     gradeLevels: {
       icon: '/doodles/grade-levels-doodle.svg'
     },
+    entranceExams: {
+      icon: '/doodles/doodle-entrance-exams.svg'
+    },
     children: {
       icon: '/doodles/doodle-children.svg'
     },
@@ -3018,6 +3024,7 @@
   };
   let _typeCareState = [];
   let _gradeLevelsState = [];
+  let _entranceExamsState = [];
   let _daysTimesState = {
     mode: 'notsure',
     regularText: '',
@@ -3395,6 +3402,22 @@
     '</div>';
   }
 
+  function renderEntranceExamsBody() {
+    var s = STRINGS.review.entranceExams;
+    return '<div class="pm-check-section">' +
+      '<p class="pm-check-label">' + s.sectionLabel + '</p>' +
+      '<div class="pm-check-list">' + s.items.map(function(item) {
+        var selected = _entranceExamsState.indexOf(item.key) !== -1;
+        return '<div class="pm-check-item' + (selected ? ' selected' : '') + '" data-entranceexam-key="' + item.key + '" onclick="toggleEntranceExamItem(this)">' +
+          '<div class="pm-check-box">' + (selected ? checkSvg() : '') + '</div>' +
+          '<div class="pm-check-copy">' +
+            '<div class="pm-check-title">' + item.label + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3512,6 +3535,8 @@
       body.innerHTML = renderTypeCareBody();
     } else if (type === 'gradeLevels') {
       body.innerHTML = renderGradeLevelsBody();
+    } else if (type === 'entranceExams') {
+      body.innerHTML = renderEntranceExamsBody();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3632,6 +3657,15 @@
     else _gradeLevelsState.splice(idx, 1);
     var body = document.getElementById('pm-body');
     if (body) body.innerHTML = renderGradeLevelsBody();
+  }
+
+  function toggleEntranceExamItem(el) {
+    var key = el.dataset.entranceexamKey;
+    var idx = _entranceExamsState.indexOf(key);
+    if (idx === -1) _entranceExamsState.push(key);
+    else _entranceExamsState.splice(idx, 1);
+    var body = document.getElementById('pm-body');
+    if (body) body.innerHTML = renderEntranceExamsBody();
   }
 
   function toggleHealthDietItem(el) {
@@ -3843,6 +3877,15 @@
         .map(function(item) { return item.label; });
       if (selectedLevels.length > 0) {
         appendText = ' ' + gls.appendText.replace('{levels}', selectedLevels.join(', '));
+      }
+    }
+    if (_currentPill === 'entranceExams') {
+      const ees = STRINGS.review.entranceExams;
+      const selectedExams = ees.items
+        .filter(function(item) { return _entranceExamsState.indexOf(item.key) !== -1; })
+        .map(function(item) { return item.label; });
+      if (selectedExams.length > 0) {
+        appendText = ' ' + ees.appendText.replace('{exams}', selectedExams.join(', '));
       }
     }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
