@@ -1916,6 +1916,7 @@
         <button class="detail-pill" id="pill-dogAge" onclick="openPillModal('dogAge')" data-i18n="review.dogAge.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogPersonality" onclick="openPillModal('dogPersonality')" data-i18n="review.dogPersonality.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-healthDiet" onclick="openPillModal('healthDiet')" data-i18n="review.healthDiet.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-typeCare" onclick="openPillModal('typeCare')" data-i18n="review.typeCare.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-language" onclick="openPillModal('language')" data-i18n="review.pillLanguage"></button>
         <button class="detail-pill" id="pill-needs" onclick="openPillModal('needs')" data-i18n="review.pillNeeds"></button>
         <button class="detail-pill" id="pill-children" onclick="openPillModal('children')" data-i18n="children.pillLabel" style="display:none"></button>
@@ -2382,6 +2383,8 @@
       document.getElementById('pill-dogPersonality').style.display = dogPersonalityRelevant ? '' : 'none';
       const healthDietRelevant = selectedServices.has('pet') && selectedPets.has('dogs');
       document.getElementById('pill-healthDiet').style.display = healthDietRelevant ? '' : 'none';
+      const typeCareRelevant = selectedServices.has('pet');
+      document.getElementById('pill-typeCare').style.display = typeCareRelevant ? '' : 'none';
       const cleaningSuppliesRelevant = selectedServices.has('cleaning');
       document.getElementById('pill-cleaningSupplies').style.display = cleaningSuppliesRelevant ? '' : 'none';
       const daysTimesRelevant = selectedServices.has('cleaning') || selectedServices.has('pet');
@@ -2840,6 +2843,9 @@
     healthDiet: {
       icon: '/doodles/doodle-healthcheck.svg'
     },
+    typeCare: {
+      icon: '/doodles/doodle-dog-settings.svg'
+    },
     cleaningSupplies: {
       icon: '/doodles/doodle-broom.svg',
       items: [
@@ -2922,6 +2928,7 @@
     diet: [],
     health: []
   };
+  let _typeCareState = [];
   let _daysTimesState = {
     mode: 'notsure',
     regularText: '',
@@ -3231,6 +3238,23 @@
     return renderSection('diet') + renderSection('health');
   }
 
+  function renderTypeCareBody() {
+    var s = STRINGS.review.typeCare;
+    return '<div class="pm-check-section">' +
+      '<p class="pm-check-label">' + s.sectionLabel + '</p>' +
+      '<div class="pm-check-list">' + s.items.map(function(item) {
+        var selected = _typeCareState.indexOf(item.key) !== -1;
+        return '<div class="pm-check-item' + (selected ? ' selected' : '') + '" data-typecare-key="' + item.key + '" onclick="toggleTypeCareItem(this)">' +
+          '<div class="pm-check-box">' + (selected ? checkSvg() : '') + '</div>' +
+          '<div class="pm-check-copy">' +
+            '<div class="pm-check-title">' + item.label + '</div>' +
+            (item.sub ? '<div class="pm-check-sub">' + item.sub + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+
   function initDaysTimesModal() {
     var regularTextarea = document.getElementById('pm-freq-textarea');
     if (regularTextarea) {
@@ -3343,6 +3367,8 @@
       body.innerHTML = renderDogPersonalityBody();
     } else if (type === 'healthDiet') {
       body.innerHTML = renderHealthDietBody();
+    } else if (type === 'typeCare') {
+      body.innerHTML = renderTypeCareBody();
     } else if (type === 'daysTimes') {
       body.innerHTML = renderDaysTimesBody();
       initDaysTimesModal();
@@ -3465,6 +3491,15 @@
     else list.splice(idx, 1);
     var body = document.getElementById('pm-body');
     if (body) body.innerHTML = renderHealthDietBody();
+  }
+
+  function toggleTypeCareItem(el) {
+    var key = el.dataset.typecareKey;
+    var idx = _typeCareState.indexOf(key);
+    if (idx === -1) _typeCareState.push(key);
+    else _typeCareState.splice(idx, 1);
+    var body = document.getElementById('pm-body');
+    if (body) body.innerHTML = renderTypeCareBody();
   }
 
   function toggleTransportItem(el) {
@@ -3638,6 +3673,15 @@
       }
       if (selectedHealth.length > 0) {
         appendText += ' ' + hds.appendHealthText.replace('{health}', selectedHealth.join(', '));
+      }
+    }
+    if (_currentPill === 'typeCare') {
+      const tcs = STRINGS.review.typeCare;
+      const selectedCare = tcs.items
+        .filter(function(item) { return _typeCareState.indexOf(item.key) !== -1; })
+        .map(function(item) { return item.label; });
+      if (selectedCare.length > 0) {
+        appendText = ' ' + tcs.appendText.replace('{types}', selectedCare.join(', '));
       }
     }
     if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {

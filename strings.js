@@ -269,6 +269,18 @@ window.STRINGS = {
       "appendDietText": "Our dog has these diet preferences or restrictions: {diet}.",
       "appendHealthText": "Our dog has these health-related needs: {health}."
     },
+    "typeCare": {
+      "pillLabel": "type of care",
+      "modalTitle": "Type of care",
+      "sectionLabel": "What help does your pet need?",
+      "items": [
+        { "key": "walking", "label": "Walking", "sub": "Walking and potty breaks" },
+        { "key": "sittingAtMyHome", "label": "Sitting at my home", "sub": "Sitter stays at your home to care for your pet" },
+        { "key": "stayingAtSitterHome", "label": "Staying at sitter's home", "sub": "Your pet stays at the sitter's home" },
+        { "key": "holidayCare", "label": "Holiday care", "sub": "Longer or continuous care while you are away" }
+      ],
+      "appendText": "We are looking for this type of pet care: {types}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
