@@ -1970,6 +1970,7 @@
         <button class="detail-pill" id="pill-gradeLevels" onclick="openPillModal('gradeLevels')" data-i18n="review.gradeLevels.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-entranceExams" onclick="openPillModal('entranceExams')" data-i18n="review.entranceExams.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-schedule" onclick="openPillModal('schedule')" data-i18n="review.schedule.pillLabel" style="display:none"></button>
+        <button class="detail-pill" id="pill-teachingStyle" onclick="openPillModal('teachingStyle')" data-i18n="review.teachingStyle.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-specialOccasions" onclick="openPillModal('specialOccasions')" data-i18n="review.specialOccasions.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-skillsTalents" onclick="openPillModal('skillsTalents')" data-i18n="review.skillsTalents.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-parentingStyle" onclick="openPillModal('parentingStyle')" data-i18n="review.parentingStyle.pillLabel" style="display:none"></button>
@@ -2487,6 +2488,8 @@
       document.getElementById('pill-entranceExams').style.display = entranceExamsRelevant ? '' : 'none';
       const scheduleRelevant = selectedServices.has('tutoring');
       document.getElementById('pill-schedule').style.display = scheduleRelevant ? '' : 'none';
+      const teachingStyleRelevant = selectedServices.has('tutoring');
+      document.getElementById('pill-teachingStyle').style.display = teachingStyleRelevant ? '' : 'none';
       const transportRelevant = selectedServices.has('babysitting') || selectedServices.has('senior');
       document.getElementById('pill-transport').style.display = transportRelevant ? '' : 'none';
       const skillsTalentsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
@@ -2989,6 +2992,16 @@
         { key: 'morning', icon: '<img src="/doodles/tutoring-morning.svg" class="needs-icon" alt="">' },
         { key: 'afternoon', icon: '<img src="/doodles/tutoring-afternoon.svg" class="needs-icon" alt="">' },
         { key: 'evening', icon: '<img src="/doodles/tutoring-evening.svg" class="needs-icon" alt="">' }
+      ],
+      preSelected: []
+    },
+    teachingStyle: {
+      icon: '/doodles/tutoring-teaching-style-doodle.svg',
+      items: [
+        { key: 'traditional', icon: '<img src="/doodles/parenting-traditional.svg" class="needs-icon" alt="">' },
+        { key: 'forestSchool', icon: '<img src="/doodles/parenting-forest-school.svg" class="needs-icon" alt="">' },
+        { key: 'montessori', icon: '<img src="/doodles/parenting-montessori.svg" class="needs-icon" alt="">' },
+        { key: 'waldorf', icon: '<img src="/doodles/parenting-waldorf.svg" class="needs-icon" alt="">' }
       ],
       preSelected: []
     },
@@ -3992,7 +4005,7 @@
         .replace('{date}', dateLabel || '')
         .replace('{times}', selectedSlots.join(', '));
     }
-    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
+    if (_currentPill === 'language' || _currentPill === 'needs' || _currentPill === 'specialRequirements' || _currentPill === 'specialOccasions' || _currentPill === 'parentingStyle' || _currentPill === 'teachingStyle' || _currentPill === 'extraTasks' || _currentPill === 'dogSize') {
       const selected = Array.from(document.querySelectorAll('#pm-body .pm-selector.selected'))
         .map(function(el) { return el.dataset.label; });
       if (selected.length > 0) {
@@ -4005,7 +4018,7 @@
             ? '{requirements}'
           : (_currentPill === 'specialOccasions'
             ? '{occasions}'
-            : (_currentPill === 'parentingStyle'
+            : (_currentPill === 'parentingStyle' || _currentPill === 'teachingStyle'
               ? '{styles}'
               : (_currentPill === 'extraTasks' ? '{tasks}' : '{needs}')))));
         appendText = ' ' + tpl.replace(key, selected.join(', '));

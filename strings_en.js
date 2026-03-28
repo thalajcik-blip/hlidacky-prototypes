@@ -364,6 +364,16 @@
       "appendText": "The first session would ideally be on {date}.",
       "appendTextWithTimes": "The first session would ideally be on {date}, preferably in the {times}."
     },
+    "teachingStyle": {
+      "pillLabel": "teaching style",
+      "modalTitle": "Teaching style",
+      "sectionLabel": "What's your preferred teaching style?",
+      "traditional": "Traditional",
+      "forestSchool": "Forest School / Outdoor",
+      "montessori": "Montessori",
+      "waldorf": "Waldorf",
+      "appendText": "Our preferred teaching style is: {styles}."
+    },
     "cleaningSupplies": {
       "pillLabel": "cleaning supplies",
       "modalTitle": "Cleaning supplies",
