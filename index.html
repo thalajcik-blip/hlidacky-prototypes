@@ -2458,6 +2458,9 @@
     if (id === 'location') updateLocTitle();
     if (id === 'review') {
       updateReviewText();
+      document.querySelectorAll('.detail-pill').forEach(function(pill, idx) {
+        pill.style.order = idx;
+      });
       const needsRelevant = selectedServices.has('babysitting') || selectedServices.has('tutoring');
       document.getElementById('pill-needs').style.display = needsRelevant ? '' : 'none';
       const specialRequirementsRelevant = selectedServices.has('senior');
@@ -2498,6 +2501,22 @@
       document.getElementById('pill-parentingStyle').style.display = parentingStyleRelevant ? '' : 'none';
       const specialOccasionsRelevant = selectedServices.has('babysitting');
       document.getElementById('pill-specialOccasions').style.display = specialOccasionsRelevant ? '' : 'none';
+      if (selectedServices.has('tutoring') && !selectedServices.has('babysitting')) {
+        [
+          'pill-language',
+          'pill-children',
+          'pill-gradeLevels',
+          'pill-entranceExams',
+          'pill-needs',
+          'pill-schedule',
+          'pill-teachingStyle',
+          'pill-skillsTalents',
+          'pill-petsAtHome'
+        ].forEach(function(id, idx) {
+          var pill = document.getElementById(id);
+          if (pill) pill.style.order = idx;
+        });
+      }
     }
     if (id === 'success') updateSuccessSub();
 
