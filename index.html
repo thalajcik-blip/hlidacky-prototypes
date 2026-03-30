@@ -2493,7 +2493,11 @@
     }
 
     // Update shared progress bar
-    const pct = Math.round(50 + (currentIdx / (flow.length - 1)) * 50);
+    const phoneIdx = flow.indexOf('phone');
+    const progressTargetIdx = phoneIdx === -1 ? flow.length - 1 : phoneIdx;
+    const pct = progressTargetIdx <= 0
+      ? 100
+      : Math.round(Math.min(100, 50 + (currentIdx / progressTargetIdx) * 50));
     const fill = document.getElementById('shared-progress-fill');
     if (fill) fill.style.width = pct + '%';
 
