@@ -46,6 +46,14 @@ window.STRINGS = {
     }
   },
 
+  "price": {
+    "heroTitle": "Fixed per hour or upon agreement?",
+    "inputLabel": "Set up your price",
+    "inputPlaceholder": "e.g. 240 Kč p/hour, 800 Kč p/day...",
+    "averageHint": "Average price in your area is 240 Kč per hour",
+    "placeholderFallback": "240 Kč per hour"
+  },
+
   "cleaning": {
     "heroTitle": "Co je potřeba uklidit?",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
@@ -142,6 +150,11 @@ window.STRINGS = {
     "heroSub1": "Téměř hotovo!",
     "heroSub2": "Vašim kritériím odpovídá 128 hlídaček 🎉",
     "aiLabel": "✨ Přidejte pár detailů, abyste oslovili více hlídaček",
+    "multiHeroTitle": "Add more job details",
+    "multiHeroSub1": "You're just one step away.",
+    "multiHeroSub2": "We'll share it with 128 sitters in your area.",
+    "multiLabel": "Job description",
+    "multiPlaceholder": "Hello sitters, we would like to find {services} in {location}. Our price expectation is around {price}",
     "privacyNote": "Vaše osobní údaje zůstávají v soukromí a hlídačkám se nezobrazují.",
     "btnPost": "Zveřejnit inzerát",
     "footerNote": "Inzerát zveřejníme zdarma a vytvoříme vám účet na Hlídačky.cz, abyste vše mohli bezpečně spravovat.",

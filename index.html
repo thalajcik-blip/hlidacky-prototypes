@@ -1936,6 +1936,35 @@
     </div>
   </div>
 
+  <!-- ===== SCREEN 4.5: Price — multi-vertical only ===== -->
+  <div class="screen" id="s-price">
+
+    <div class="hero">
+      <div class="hero-illus">
+        <img src="/doodles/price.svg" alt="" style="width:72px;height:72px;display:block;">
+      </div>
+      <h2 class="hero-title" data-i18n="price.heroTitle"></h2>
+    </div>
+
+    <div class="screen-body">
+      <div class="form-group">
+        <label class="form-label" data-i18n="price.inputLabel"></label>
+        <input type="text" class="form-input" id="price-input" data-i18n-placeholder="price.inputPlaceholder" autocomplete="off">
+        <div class="form-hint">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="price.averageHint"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SCREEN 5: Review post ===== -->
   <div class="screen" id="s-review">
 
@@ -1943,16 +1972,23 @@
       <div class="sitter-avatars">
         <img src="/doodles/sitter-group.png" alt="Hlídačky">
       </div>
-      <h2 class="hero-title mt8" data-i18n="review.heroTitle"></h2>
-      <p class="hero-sub">
-        <span style="color:var(--text);font-weight:500" data-i18n="review.heroSub2"></span>
+      <h2 class="hero-title mt8" id="review-hero-title" data-i18n="review.heroTitle"></h2>
+      <p class="hero-sub" id="review-hero-sub-primary">
+        <span style="color:var(--text);font-weight:500" id="review-hero-sub-primary-text" data-i18n="review.heroSub2"></span>
       </p>
+      <p class="hero-sub" id="review-hero-sub-secondary" style="display:none;"></p>
     </div>
 
     <div class="screen-body" style="display:flex;flex-direction:column;overflow:hidden;padding-bottom:0">
-      <p class="ai-lbl" data-i18n="review.aiLabel"></p>
+      <div id="review-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
+        <p class="ai-lbl" id="review-ai-label" data-i18n="review.aiLabel" style="margin-bottom:0;"></p>
+        <div id="review-location-chip" style="display:none;align-items:center;gap:6px;color:#8B91A3;font-size:14px;font-family:'soleil','Inter',sans-serif;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" stroke="#8B91A3" stroke-width="1.1" fill="none"/></svg>
+          <span id="review-location-text"></span>
+        </div>
+      </div>
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
-      <div class="pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
+      <div class="pill-row" id="review-pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-daysTimes" onclick="openPillModal('daysTimes')" data-i18n="review.daysTimes.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogSize" onclick="openPillModal('dogSize')" data-i18n="review.dogSize.pillLabel" style="display:none"></button>
@@ -1983,11 +2019,11 @@
       <div class="btn-row">
         <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
         <button class="btn-primary" onclick="goNext()">
-          <span data-i18n="review.btnPost"></span>
+          <span id="review-next-label" data-i18n="review.btnPost"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-      <p class="post-note" data-i18n="review.footerNote"></p>
+      <p class="post-note" id="review-footer-note" data-i18n="review.footerNote"></p>
     </div>
   </div>
 
@@ -2347,7 +2383,14 @@
   let currentIdx = 0;
   let navDirection = 'forward';
 
+  function isMultiServiceFlow() {
+    return selectedServices.size > 1;
+  }
+
   function buildFlow() {
+    if (isMultiServiceFlow()) {
+      return ['contact', 'service', 'location', 'price', 'review', 'phone', 'success', 'followup'];
+    }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
     const seniorOnly = selectedServices.has('senior') && selectedServices.size === 1;
@@ -2458,7 +2501,7 @@
     if (id === 'location') updateLocTitle();
     if (id === 'review') {
       updateReviewText();
-      updateReviewPills();
+      if (!isMultiServiceFlow()) updateReviewPills();
     }
     if (id === 'success') updateSuccessSub();
 
@@ -2533,6 +2576,10 @@
   function restartFlow() {
     selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
+    var reviewText = document.getElementById('review-text');
+    if (reviewText) reviewText.value = '';
+    var priceInput = document.getElementById('price-input');
+    if (priceInput) priceInput.value = '';
     showScreen('contact');
   }
 
@@ -2780,7 +2827,69 @@
 
   let _typewriterTimer = null;
 
+  function getSelectedServiceLabelList() {
+    const names = [...selectedServices].map(function(service) {
+      return t('location.serviceNames.' + service);
+    });
+    const and = t('location.titleAnd');
+    if (names.length <= 1) return names[0] || t('location.titleFallback');
+    if (names.length === 2) return names.join(' ' + and + ' ');
+    return names.slice(0, -1).join(', ') + ' ' + and + ' ' + names[names.length - 1];
+  }
+
+  function updateReviewLayout() {
+    var multi = isMultiServiceFlow();
+    var title = document.getElementById('review-hero-title');
+    var subPrimary = document.getElementById('review-hero-sub-primary');
+    var subPrimaryText = document.getElementById('review-hero-sub-primary-text');
+    var subSecondary = document.getElementById('review-hero-sub-secondary');
+    var aiLabel = document.getElementById('review-ai-label');
+    var locationChip = document.getElementById('review-location-chip');
+    var locationText = document.getElementById('review-location-text');
+    var pillRow = document.getElementById('review-pill-row');
+    var footerNote = document.getElementById('review-footer-note');
+    var nextLabel = document.getElementById('review-next-label');
+    var ta = document.getElementById('review-text');
+    var city = (document.getElementById('location-input').value || 'Prague').trim();
+    var price = (document.getElementById('price-input') && document.getElementById('price-input').value.trim()) || t('price.placeholderFallback');
+
+    if (multi) {
+      title.textContent = t('review.multiHeroTitle');
+      subPrimary.style.display = '';
+      subPrimaryText.textContent = t('review.multiHeroSub1');
+      subSecondary.style.display = '';
+      subSecondary.textContent = t('review.multiHeroSub2');
+      aiLabel.textContent = t('review.multiLabel');
+      locationChip.style.display = 'flex';
+      locationText.textContent = city;
+      pillRow.style.display = 'none';
+      footerNote.style.display = 'none';
+      nextLabel.textContent = t('nav.btnNext');
+      ta.placeholder = t('review.multiPlaceholder')
+        .replace('{services}', getSelectedServiceLabelList())
+        .replace('{location}', city)
+        .replace('{price}', price);
+      return;
+    }
+
+    title.textContent = t('review.heroTitle');
+    subPrimary.style.display = '';
+    subPrimaryText.textContent = t('review.heroSub2');
+    subSecondary.style.display = 'none';
+    aiLabel.textContent = t('review.aiLabel');
+    locationChip.style.display = 'none';
+    pillRow.style.display = '';
+    footerNote.style.display = '';
+    nextLabel.textContent = t('review.btnPost');
+    ta.placeholder = '';
+  }
+
   function updateReviewText() {
+    updateReviewLayout();
+    if (isMultiServiceFlow()) {
+      if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+      return;
+    }
     const firstService = [...selectedServices][0] || 'babysitting';
     const fullText = t('review.generatedTexts.' + firstService);
     const ta = document.getElementById('review-text');
@@ -3690,7 +3799,7 @@
   }
 
   function onReviewTextInput() {
-    if (!document.getElementById('review-text').value.trim()) {
+    if (!isMultiServiceFlow() && !document.getElementById('review-text').value.trim()) {
       updateReviewPills();
     }
   }

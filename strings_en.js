@@ -43,6 +43,13 @@
       "tutoring": "tutoring"
     }
   },
+  "price": {
+    "heroTitle": "Fixed per hour or upon agreement?",
+    "inputLabel": "Set up your price",
+    "inputPlaceholder": "e.g. 240 Kč p/hour, 800 Kč p/day...",
+    "averageHint": "Average price in your area is 240 Kč per hour",
+    "placeholderFallback": "240 Kč per hour"
+  },
   "cleaning": {
     "heroTitle": "What needs cleaning?",
     "heroSub": "We'll provide a job draft based on your selection.",
@@ -138,6 +145,11 @@
     "heroSub1": "Almost there!",
     "heroSub2": "We found 128 sitters matching your criteria 🎉",
     "aiLabel": "💡 Tap the purple tags to add more details:",
+    "multiHeroTitle": "Add more job details",
+    "multiHeroSub1": "You're just one step away.",
+    "multiHeroSub2": "We'll share it with 128 sitters in your area.",
+    "multiLabel": "Job description",
+    "multiPlaceholder": "Hello sitters, we would like to find {services} in {location}. Our price expectation is around {price}",
     "privacyNote": "Your personal details stay private and are not shown to sitters.",
     "btnPost": "Post job",
     "footerNote": "Post for free. We’ll set up your account to manage it safely.",
