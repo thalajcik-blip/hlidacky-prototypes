@@ -1,21 +1,20 @@
-// Auto-generated from strings.json — do not edit manually.
-// To update: paste the translated JSON content between the braces below.
-
-window.STRINGS = {
+// strings_cz.js — Čeština
+// Published via /strings editor. Missing keys fall back to CZ source (strings.js).
+(function(){
+  function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}
+  window.STRINGS = _dm(window.STRINGS, {
   "nav": {
     "title": "Vytvořit nový inzerát",
     "btnPrev": "Zpět",
     "btnNext": "Pokračovat",
     "cancelConfirm": "Zrušit vytváření inzerátu?"
   },
-
   "exitModal": {
     "title": "Jste jen krůček od zveřejnění inzerátu",
     "body": "Nevzdávejte to. Dokončete formulář a získejte nabídky od hlídaček, které dokonale splňují vaše potřeby.",
     "leave": "Odejít",
     "stay": "Zobrazit nabídky"
   },
-
   "service": {
     "heroTitle": "Koho hledáte?",
     "heroSub": "Vyberte, s čím potřebujete od hlídačky pomoci.",
@@ -27,7 +26,6 @@ window.STRINGS = {
     "senior": "Péče o seniory",
     "tutoring": "Doučování"
   },
-
   "location": {
     "heroSub": "Místo zůstane skryté, ale i přesto vám ukážeme nejlepší hlídačky v okolí.",
     "inputLabel": "Místo",
@@ -45,7 +43,6 @@ window.STRINGS = {
       "tutoring": "doučování"
     }
   },
-
   "price": {
     "heroTitle": "Fixed per hour or upon agreement?",
     "inputLabel": "Set up your price",
@@ -53,7 +50,6 @@ window.STRINGS = {
     "averageHint": "Average price in your area is 240 Kč per hour",
     "placeholderFallback": "240 Kč per hour"
   },
-
   "cleaning": {
     "heroTitle": "Co je potřeba uklidit?",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
@@ -61,7 +57,6 @@ window.STRINGS = {
     "flat": "Byt",
     "house": "Dům"
   },
-
   "cleaningExtras": {
     "heroTitle": "Potřebujete pomoc s něčím dalším?",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
@@ -77,7 +72,6 @@ window.STRINGS = {
     "lightMaintenance": "Drobná údržba domácnosti",
     "gardenHelp": "Pomoc se zahradou"
   },
-
   "pet": {
     "heroTitle": "Váš mazlíček",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
@@ -88,7 +82,6 @@ window.STRINGS = {
     "largePet": "Mám velkého psa",
     "validationAlert": "Prosím vyberte alespoň jedno zvíře"
   },
-
   "seniorCare": {
     "heroTitle": "Care specifics",
     "heroSub": "This helps us find the best match for their needs.",
@@ -104,7 +97,6 @@ window.STRINGS = {
     "holidayCare": "Holiday care",
     "holidayCareSub": "Temporary care to provide caregiver relief."
   },
-
   "frequencyPet": {
     "heroTitle": "Kdy a kde?",
     "heroSub": "Doplňte poslední detaily k inzerátu.",
@@ -117,7 +109,6 @@ window.STRINGS = {
     "atSitterHome": "u hlídačky doma",
     "dontCare": "nezáleží mi na tom"
   },
-
   "frequency": {
     "heroTitle": "Kdy a jak často?",
     "heroSub": "Hledáte jednorázovou, nebo pravidelnou pomoc?",
@@ -127,8 +118,13 @@ window.STRINGS = {
     "daysLabel": "Vyberte preferované dny",
     "optional": "(nepovinné)",
     "days": {
-      "mo": "Po", "tu": "Út", "we": "St", "th": "Čt",
-      "fr": "Pá", "sa": "So", "su": "Ne"
+      "mo": "Po",
+      "tu": "Út",
+      "we": "St",
+      "th": "Čt",
+      "fr": "Pá",
+      "sa": "So",
+      "su": "Ne"
     },
     "freqLabel": "Vyberte četnost",
     "freqOptions": [
@@ -144,7 +140,6 @@ window.STRINGS = {
     "dateLabelRegular": "Upřesněte datum a čas",
     "longterm": "Hledám dlouhodobou pomoc"
   },
-
   "review": {
     "heroTitle": "Zkontrolujte si svůj inzerát",
     "heroSub1": "Téměř hotovo!",
@@ -160,10 +155,10 @@ window.STRINGS = {
     "footerNote": "Inzerát zveřejníme zdarma a vytvoříme vám účet na Hlídačky.cz, abyste vše mohli bezpečně spravovat.",
     "generatedTexts": {
       "babysitting": "Hledáme pečlivou a spolehlivou hlídačku pro naše děti. Potřebujeme pravidelnou pomoc a hledáme zkušeného, přátelského člověka.",
-      "cleaning":    "Hledáme pomoc s pravidelným úklidem domácnosti. Bydlíme v bytě a potřebovali bychom pomoci také s žehlením a praním.",
-      "pet":         "Hledáme zodpovědného člověka se zkušenostmi na opatrování našeho psa během dovolené. Péče bude probíhat u nás doma.",
-      "senior":      "Hledáme laskavého a zodpovědného poskytovatele péče pro staršího člena rodiny. Cílem je každodenní pomoc a zajištění pohodlí domova.",
-      "tutoring":    "Hledáme zkušeného doučovatele, který pomůže našemu dítěti se školními předměty a přípravou na zkoušky. Důležitá je pro nás trpělivost a přizpůsobivost."
+      "cleaning": "Hledáme pomoc s pravidelným úklidem domácnosti. Bydlíme v bytě a potřebovali bychom pomoci také s žehlením a praním.",
+      "pet": "Hledáme zodpovědného člověka se zkušenostmi na opatrování našeho psa během dovolené. Péče bude probíhat u nás doma.",
+      "senior": "Hledáme laskavého a zodpovědného poskytovatele péče pro staršího člena rodiny. Cílem je každodenní pomoc a zajištění pohodlí domova.",
+      "tutoring": "Hledáme zkušeného doučovatele, který pomůže našemu dítěti se školními předměty a přípravou na zkoušky. Důležitá je pro nás trpělivost a přizpůsobivost."
     },
     "hintLabel": "Tip: Přidejte více detailů o vaší nabídce",
     "pillLanguage": "preferovaný jazyk",
@@ -174,9 +169,14 @@ window.STRINGS = {
     "language": {
       "modalTitle": "Přidejte informace o jazyce hlídačky",
       "sectionLabel": "Jakým jazykem má hlídačka mluvit?",
-      "cs": "Čeština", "sk": "Slovenština", "en": "Angličtina",
-      "de": "Němčina", "es": "Španělština", "fr": "Francouzština",
-      "it": "Italština", "uk": "Ukrajinština",
+      "cs": "Čeština",
+      "sk": "Slovenština",
+      "en": "Angličtina",
+      "de": "Němčina",
+      "es": "Španělština",
+      "fr": "Francouzština",
+      "it": "Italština",
+      "uk": "Ukrajinština",
       "moreLangs": "+ více jazyků",
       "appendText": "Preferujeme hlídačku, která mluví: {langs}."
     },
@@ -189,11 +189,17 @@ window.STRINGS = {
     "needs": {
       "modalTitle": "Přidejte informace o speciálních potřebách",
       "sectionLabel": "Jsou zde speciální potřeby, které chcete zmínit?",
-      "autism": "Autismus", "diabetes": "Diabetes", "asthma": "Astma",
-      "adhd": "ADHD", "allergies": "Potravinové alergie",
-      "childhood": "Dětské nemoci", "sleep": "Poruchy spánku",
-      "vision": "Zrakové postižení", "hearing": "Sluchové postižení",
-      "epilepsy": "Epilepsie", "other": "Jiné potřeby",
+      "autism": "Autismus",
+      "diabetes": "Diabetes",
+      "asthma": "Astma",
+      "adhd": "ADHD",
+      "allergies": "Potravinové alergie",
+      "childhood": "Dětské nemoci",
+      "sleep": "Poruchy spánku",
+      "vision": "Zrakové postižení",
+      "hearing": "Sluchové postižení",
+      "epilepsy": "Epilepsie",
+      "other": "Jiné potřeby",
       "appendText": "Naše dítě má speciální potřeby: {needs}."
     },
     "needsTutor": {
@@ -305,17 +311,41 @@ window.STRINGS = {
       "diet": {
         "sectionLabel": "Any special diet or allergies?",
         "items": [
-          { "key": "standardDiet", "label": "Standard diet", "sub": "No restrictions" },
-          { "key": "specialDiet", "label": "Special diet/sllergies", "sub": "Grain-free, raw, specific brand, etc." },
-          { "key": "noTreats", "label": "Strict: No treats", "sub": "Dogs with sensitive stomach or weight needs" }
+          {
+            "key": "standardDiet",
+            "label": "Standard diet",
+            "sub": "No restrictions"
+          },
+          {
+            "key": "specialDiet",
+            "label": "Special diet/sllergies",
+            "sub": "Grain-free, raw, specific brand, etc."
+          },
+          {
+            "key": "noTreats",
+            "label": "Strict: No treats",
+            "sub": "Dogs with sensitive stomach or weight needs"
+          }
         ]
       },
       "health": {
         "sectionLabel": "Does your dog have any health needs?",
         "items": [
-          { "key": "medication", "label": "Help with medication", "sub": "Sitter will need to give pills, drops, or injections" },
-          { "key": "mobility", "label": "Mobility or exercise needs", "sub": "Struggles with stairs, requires short walks only, or has joint issues" },
-          { "key": "medicalHistory", "label": "Medical history", "sub": "History of seizures, anxiety, or specific chronic conditions" }
+          {
+            "key": "medication",
+            "label": "Help with medication",
+            "sub": "Sitter will need to give pills, drops, or injections"
+          },
+          {
+            "key": "mobility",
+            "label": "Mobility or exercise needs",
+            "sub": "Struggles with stairs, requires short walks only, or has joint issues"
+          },
+          {
+            "key": "medicalHistory",
+            "label": "Medical history",
+            "sub": "History of seizures, anxiety, or specific chronic conditions"
+          }
         ]
       },
       "appendDietText": "Our dog has these diet preferences or restrictions: {diet}.",
@@ -326,10 +356,26 @@ window.STRINGS = {
       "modalTitle": "Type of care",
       "sectionLabel": "What help does your pet need?",
       "items": [
-        { "key": "walking", "label": "Walking", "sub": "Walking and potty breaks" },
-        { "key": "sittingAtMyHome", "label": "Sitting at my home", "sub": "Sitter stays at your home to care for your pet" },
-        { "key": "stayingAtSitterHome", "label": "Staying at sitter's home", "sub": "Your pet stays at the sitter's home" },
-        { "key": "holidayCare", "label": "Holiday care", "sub": "Longer or continuous care while you are away" }
+        {
+          "key": "walking",
+          "label": "Walking",
+          "sub": "Walking and potty breaks"
+        },
+        {
+          "key": "sittingAtMyHome",
+          "label": "Sitting at my home",
+          "sub": "Sitter stays at your home to care for your pet"
+        },
+        {
+          "key": "stayingAtSitterHome",
+          "label": "Staying at sitter's home",
+          "sub": "Your pet stays at the sitter's home"
+        },
+        {
+          "key": "holidayCare",
+          "label": "Holiday care",
+          "sub": "Longer or continuous care while you are away"
+        }
       ],
       "appendText": "We are looking for this type of pet care: {types}."
     },
@@ -338,9 +384,18 @@ window.STRINGS = {
       "modalTitle": "Grade levels",
       "sectionLabel": "What's the academic level?",
       "items": [
-        { "key": "preschool", "label": "pre-school" },
-        { "key": "elementary", "label": "elementary school" },
-        { "key": "secondary", "label": "secondary school" }
+        {
+          "key": "preschool",
+          "label": "pre-school"
+        },
+        {
+          "key": "elementary",
+          "label": "elementary school"
+        },
+        {
+          "key": "secondary",
+          "label": "secondary school"
+        }
       ],
       "appendText": "The academic level is: {levels}."
     },
@@ -349,10 +404,22 @@ window.STRINGS = {
       "modalTitle": "Entrance exams",
       "sectionLabel": "Preparing for any exams?",
       "items": [
-        { "key": "primaryAdmissions", "label": "primary school admissions" },
-        { "key": "highSchoolAdmissions", "label": "high school admissions" },
-        { "key": "schoolLeaving", "label": "school leaving examinations" },
-        { "key": "otherTests", "label": "other tests & exams" }
+        {
+          "key": "primaryAdmissions",
+          "label": "primary school admissions"
+        },
+        {
+          "key": "highSchoolAdmissions",
+          "label": "high school admissions"
+        },
+        {
+          "key": "schoolLeaving",
+          "label": "school leaving examinations"
+        },
+        {
+          "key": "otherTests",
+          "label": "other tests & exams"
+        }
       ],
       "appendText": "We are preparing for: {exams}."
     },
@@ -363,9 +430,18 @@ window.STRINGS = {
       "timeLabel": "Select your preferred time of day",
       "optional": "(optional)",
       "items": [
-        { "key": "morning", "label": "Morning" },
-        { "key": "afternoon", "label": "Afternoon" },
-        { "key": "evening", "label": "Evening" }
+        {
+          "key": "morning",
+          "label": "Morning"
+        },
+        {
+          "key": "afternoon",
+          "label": "Afternoon"
+        },
+        {
+          "key": "evening",
+          "label": "Evening"
+        }
       ],
       "appendText": "The first session would ideally be on {date}.",
       "appendTextWithTimes": "The first session would ideally be on {date}, preferably in the {times}."
@@ -444,7 +520,6 @@ window.STRINGS = {
       "appendText": "Nabízíme {price}."
     }
   },
-
   "locationTutoring": {
     "heroTitle": "Kde chcete doučovat?",
     "heroSub": "Kde chcete, aby vaše dítě dostávalo hodiny?",
@@ -454,7 +529,6 @@ window.STRINGS = {
     "online": "Online (video výuka)",
     "validationAlert": "Prosím vyberte alespoň jedno místo"
   },
-
   "subjects": {
     "heroTitle": "Předměty",
     "heroSub": "Vyberte jeden nebo více předmětů",
@@ -465,12 +539,20 @@ window.STRINGS = {
     "moreMusic": "+ další hudební nástroje",
     "otherLabel": "Jakýkoli jiný předmět",
     "otherPlaceholder": "Programování, tanec, dějepis…",
-    "cs": "Čeština", "en": "Angličtina", "de": "Němčina",
-    "fr": "Francouzština", "it": "Italština", "es": "Španělština",
-    "physics": "Fyzika", "math": "Matematika", "chemistry": "Chemie", "biology": "Biologie",
-    "singing": "Zpěv", "piano": "Klavír", "guitar": "Kytara"
+    "cs": "Čeština",
+    "en": "Angličtina",
+    "de": "Němčina",
+    "fr": "Francouzština",
+    "it": "Italština",
+    "es": "Španělština",
+    "physics": "Fyzika",
+    "math": "Matematika",
+    "chemistry": "Chemie",
+    "biology": "Biologie",
+    "singing": "Zpěv",
+    "piano": "Klavír",
+    "guitar": "Kytara"
   },
-
   "contact": {
     "heroTitle": "Vaše jméno a e-mail",
     "heroSub": "Abychom vám mohli doručit odpovědi od hlídaček.",
@@ -482,7 +564,6 @@ window.STRINGS = {
     "emailMonthly": "Měsíční dávka inspirace v tématech šitých na míru",
     "emailOffers": "Slevy a nabídky od Hlídačky.cz a partnerů"
   },
-
   "phone": {
     "heroTitle": "Telefonní číslo",
     "heroSub": "Vaše soukromé číslo s mezinárodní předvolbou. Jeho zobrazením získáte více kontaktů od hlídaček.",
@@ -490,7 +571,6 @@ window.STRINGS = {
     "inputPlaceholder": "777 123 456",
     "skipLink": "Udělám to později"
   },
-
   "success": {
     "heroTitle": "A je to!",
     "heroSub": "Váš inzerát v místě {city} byl zveřejněn.",
@@ -498,7 +578,6 @@ window.STRINGS = {
     "btnContinue": "Pokračovat",
     "editLink": "Upravit inzerát"
   },
-
   "children": {
     "modalTitle": "Informace o dětech",
     "sectionLabel": "Kolik dětí potřebuje péči?",
@@ -515,10 +594,15 @@ window.STRINGS = {
     "summaryBoy": "chlapce ({ageLabel})",
     "summaryGirl": "dívku ({ageLabel})",
     "and": "a",
-    "childOrdinals": ["1.", "2.", "3.", "4.", "5+"],
+    "childOrdinals": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5+"
+    ],
     "pillLabel": "děti"
   },
-
   "childrenTutor": {
     "modalTitle": "Student information",
     "sectionLabel": "How many students need tutoring?",
@@ -533,10 +617,15 @@ window.STRINGS = {
     "summaryBoy": "a boy ({ageLabel})",
     "summaryGirl": "a girl ({ageLabel})",
     "and": "and",
-    "childOrdinals": ["1st", "2nd", "3rd", "4th", "5+"],
+    "childOrdinals": [
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5+"
+    ],
     "pillLabel": "children"
   },
-
   "transport": {
     "pillLabel": "doprava",
     "modalTitle": "Místo a doprava",
@@ -585,7 +674,6 @@ window.STRINGS = {
       }
     }
   },
-
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Hlídačky, které odpovídají vašim preferencím",
@@ -597,4 +685,5 @@ window.STRINGS = {
     "ctaBtn": "Zobrazit možnosti členství",
     "restart": "Začít znovu"
   }
-};
+});
+})();
