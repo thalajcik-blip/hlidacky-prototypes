@@ -83,16 +83,16 @@
     "validationAlert": "Please select at least one pet"
   },
   "seniorCare": {
-    "heroTitle": "Care specifics",
-    "heroSub": "This helps us find the best match for their needs.",
+    "heroTitle": "Care details",
+    "heroSub": "This helps us find the best fit for your loved ones.",
     "careTypeLabel": "What type of care are you looking for?",
     "notSure": "Not sure",
     "notSureSub": "You can specify it later",
-    "liveIn": "24/7 live-in care",
+    "liveIn": "Live-in care (24/7)",
     "liveInSub": "Full-time support with sitter staying in the home.",
     "fullTime": "Full-time care",
     "fullTimeSub": "Daily support, typically 35-40 hours per week.",
-    "partTime": "Part-time care",
+    "partTime": "Regular part-time visits",
     "partTimeSub": "Flexible or occasional assistance as needed.",
     "holidayCare": "Holiday care",
     "holidayCareSub": "Temporary care to provide caregiver relief."
@@ -192,7 +192,7 @@
       "autism": "Autism spectrum",
       "diabetes": "Diabetes ",
       "asthma": "Asthma",
-      "adhd": "ADHD ",
+      "adhd": "ADHD/ADD",
       "allergies": "Food allergies",
       "childhood": "Childhood diseases",
       "sleep": "Sleep disorders",
@@ -311,17 +311,41 @@
       "diet": {
         "sectionLabel": "Any special diet or allergies?",
         "items": [
-          { "key": "standardDiet", "label": "Standard diet", "sub": "No restrictions" },
-          { "key": "specialDiet", "label": "Special diet/sllergies", "sub": "Grain-free, raw, specific brand, etc." },
-          { "key": "noTreats", "label": "Strict: No treats", "sub": "Dogs with sensitive stomach or weight needs" }
+          {
+            "key": "standardDiet",
+            "label": "Standard diet",
+            "sub": "No restrictions"
+          },
+          {
+            "key": "specialDiet",
+            "label": "Special diet/sllergies",
+            "sub": "Grain-free, raw, specific brand, etc."
+          },
+          {
+            "key": "noTreats",
+            "label": "Strict: No treats",
+            "sub": "Dogs with sensitive stomach or weight needs"
+          }
         ]
       },
       "health": {
         "sectionLabel": "Does your dog have any health needs?",
         "items": [
-          { "key": "medication", "label": "Help with medication", "sub": "Sitter will need to give pills, drops, or injections" },
-          { "key": "mobility", "label": "Mobility or exercise needs", "sub": "Struggles with stairs, requires short walks only, or has joint issues" },
-          { "key": "medicalHistory", "label": "Medical history", "sub": "History of seizures, anxiety, or specific chronic conditions" }
+          {
+            "key": "medication",
+            "label": "Help with medication",
+            "sub": "Sitter will need to give pills, drops, or injections"
+          },
+          {
+            "key": "mobility",
+            "label": "Mobility or exercise needs",
+            "sub": "Struggles with stairs, requires short walks only, or has joint issues"
+          },
+          {
+            "key": "medicalHistory",
+            "label": "Medical history",
+            "sub": "History of seizures, anxiety, or specific chronic conditions"
+          }
         ]
       },
       "appendDietText": "Our dog has these diet preferences or restrictions: {diet}.",
@@ -332,10 +356,26 @@
       "modalTitle": "Type of care",
       "sectionLabel": "What help does your pet need?",
       "items": [
-        { "key": "walking", "label": "Walking", "sub": "Walking and potty breaks" },
-        { "key": "sittingAtMyHome", "label": "Sitting at my home", "sub": "Sitter stays at your home to care for your pet" },
-        { "key": "stayingAtSitterHome", "label": "Staying at sitter's home", "sub": "Your pet stays at the sitter's home" },
-        { "key": "holidayCare", "label": "Holiday care", "sub": "Longer or continuous care while you are away" }
+        {
+          "key": "walking",
+          "label": "Walking",
+          "sub": "Walking and potty breaks"
+        },
+        {
+          "key": "sittingAtMyHome",
+          "label": "Sitting at my home",
+          "sub": "Sitter stays at your home to care for your pet"
+        },
+        {
+          "key": "stayingAtSitterHome",
+          "label": "Staying at sitter's home",
+          "sub": "Your pet stays at the sitter's home"
+        },
+        {
+          "key": "holidayCare",
+          "label": "Holiday care",
+          "sub": "Longer or continuous care while you are away"
+        }
       ],
       "appendText": "We are looking for this type of pet care: {types}."
     },
@@ -344,9 +384,18 @@
       "modalTitle": "Grade levels",
       "sectionLabel": "What's the academic level?",
       "items": [
-        { "key": "preschool", "label": "pre-school" },
-        { "key": "elementary", "label": "elementary school" },
-        { "key": "secondary", "label": "secondary school" }
+        {
+          "key": "preschool",
+          "label": "pre-school"
+        },
+        {
+          "key": "elementary",
+          "label": "elementary school"
+        },
+        {
+          "key": "secondary",
+          "label": "secondary school"
+        }
       ],
       "appendText": "The academic level is: {levels}."
     },
@@ -355,10 +404,22 @@
       "modalTitle": "Entrance exams",
       "sectionLabel": "Preparing for any exams?",
       "items": [
-        { "key": "primaryAdmissions", "label": "primary school admissions" },
-        { "key": "highSchoolAdmissions", "label": "high school admissions" },
-        { "key": "schoolLeaving", "label": "school leaving examinations" },
-        { "key": "otherTests", "label": "other tests & exams" }
+        {
+          "key": "primaryAdmissions",
+          "label": "primary school admissions"
+        },
+        {
+          "key": "highSchoolAdmissions",
+          "label": "high school admissions"
+        },
+        {
+          "key": "schoolLeaving",
+          "label": "school leaving examinations"
+        },
+        {
+          "key": "otherTests",
+          "label": "other tests & exams"
+        }
       ],
       "appendText": "We are preparing for: {exams}."
     },
@@ -369,9 +430,18 @@
       "timeLabel": "Select your preferred time of day",
       "optional": "(optional)",
       "items": [
-        { "key": "morning", "label": "Morning" },
-        { "key": "afternoon", "label": "Afternoon" },
-        { "key": "evening", "label": "Evening" }
+        {
+          "key": "morning",
+          "label": "Morning"
+        },
+        {
+          "key": "afternoon",
+          "label": "Afternoon"
+        },
+        {
+          "key": "evening",
+          "label": "Evening"
+        }
       ],
       "appendText": "The first session would ideally be on {date}.",
       "appendTextWithTimes": "The first session would ideally be on {date}, preferably in the {times}."
