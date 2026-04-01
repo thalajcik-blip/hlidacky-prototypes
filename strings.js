@@ -1,8 +1,7 @@
-// strings_cz.js — Čeština
-// Published via /strings editor. Missing keys fall back to CZ source (strings.js).
-(function(){
-  function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}
-  window.STRINGS = _dm(window.STRINGS, {
+// Auto-generated from strings.json — do not edit manually.
+// To update: paste the translated JSON content between the braces below.
+
+window.STRINGS = {
   "nav": {
     "title": "Vytvořit nový inzerát",
     "btnPrev": "Zpět",
@@ -685,5 +684,4 @@
     "ctaBtn": "Zobrazit možnosti členství",
     "restart": "Začít znovu"
   }
-});
-})();
+};

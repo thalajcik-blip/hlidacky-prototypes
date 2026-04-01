@@ -1051,6 +1051,11 @@ function bindToolbar() {
 function buildJsContent(lang) {
   const nested = unflatten(allLangs[lang]);
   const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
+  if (lang === 'CZ') {
+    return '// Auto-generated from strings.json — do not edit manually.\n' +
+           '// To update: paste the translated JSON content between the braces below.\n\n' +
+           'window.STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
+  }
   const dm     = 'function _dm(b,o){var r=Object.assign({},b||{});Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm((b&&b[k])||{},o[k]):o[k];});return r;}';
   return '// strings_' + lang.toLowerCase() + '.js \u2014 ' + meta.label + '\n' +
          '// Published via /strings editor. Missing keys fall back to CZ source (strings.js).\n' +
