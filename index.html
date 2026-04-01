@@ -30,6 +30,9 @@
     .ico { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; }
     .ico svg { width:18px; height:18px; }
   </style>
+  <script>
+    window.STRINGS = window.STRINGS || {};
+  </script>
   <!-- All UI strings live in strings.js (CZ base, always loaded) -->
   <script src="/strings.js"></script>
   <!-- Language file merges on top; missing keys fall back to CZ automatically -->
@@ -2347,7 +2350,7 @@
   // i18n — resolve "a.b.c" key paths against STRINGS object
   // ============================================================
   function t(key) {
-    return key.split('.').reduce((obj, k) => obj && obj[k], STRINGS) ?? key;
+    return key.split('.').reduce((obj, k) => obj && obj[k], window.STRINGS || {}) ?? key;
   }
 
   function applyStrings() {
@@ -2362,7 +2365,7 @@
     // Dynamic day buttons
     const dayRow = document.getElementById('day-row');
     if (dayRow) {
-      const days = STRINGS.frequency.days;
+      const days = (window.STRINGS && window.STRINGS.frequency && window.STRINGS.frequency.days) || {};
       const defaultSelected = [];
       dayRow.innerHTML = Object.entries(days).map(([k, v]) =>
         `<button class="day-btn${defaultSelected.includes(k) ? ' selected' : ''}" onclick="toggleDay(this)">${v}</button>`
@@ -2371,7 +2374,8 @@
     // Frequency select options
     const freqSel = document.getElementById('freq-select');
     if (freqSel) {
-      freqSel.innerHTML = STRINGS.frequency.freqOptions.map(o => `<option>${o}</option>`).join('');
+      const options = (window.STRINGS && window.STRINGS.frequency && window.STRINGS.frequency.freqOptions) || [];
+      freqSel.innerHTML = options.map(o => `<option>${o}</option>`).join('');
     }
   }
 

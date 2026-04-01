@@ -1,7 +1,7 @@
 // strings_en.js — English
 // Published via /strings editor. Missing keys fall back to CZ source (strings.js).
 (function(){
-  function _dm(b,o){var r=Object.assign({},b);Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm(b[k]||{},o[k]):o[k];});return r;}
+  function _dm(b,o){var r=Object.assign({},b||{});Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm((b&&b[k])||{},o[k]):o[k];});return r;}
   window.STRINGS = _dm(window.STRINGS, {
   "nav": {
     "title": "Create a new job post",
