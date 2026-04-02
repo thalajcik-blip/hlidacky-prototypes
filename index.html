@@ -1991,7 +1991,7 @@
         </div>
       </div>
       <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" oninput="onReviewTextInput()"></textarea>
-      <div class="pill-row" id="review-pill-row" style="padding:8px 0 40px;margin-bottom:0;flex-shrink:0">
+      <div class="pill-row" id="review-pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-daysTimes" onclick="openPillModal('daysTimes')" data-i18n="review.daysTimes.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-dogSize" onclick="openPillModal('dogSize')" data-i18n="review.dogSize.pillLabel" style="display:none"></button>
@@ -2016,6 +2016,7 @@
         <!-- pill-price hidden: not active yet -->
         <!-- <button class="detail-pill" id="pill-price" onclick="openPillModal('price')" data-i18n="review.pillPrice"></button> -->
       </div>
+      <div id="review-pill-spacer" style="height:40px;flex-shrink:0"></div>
     </div>
 
     <div class="screen-footer">
@@ -2855,6 +2856,7 @@
     var locationChip = document.getElementById('review-location-chip');
     var locationText = document.getElementById('review-location-text');
     var pillRow = document.getElementById('review-pill-row');
+    var pillSpacer = document.getElementById('review-pill-spacer');
     var footerNote = document.getElementById('review-footer-note');
     var nextLabel = document.getElementById('review-next-label');
     var ta = document.getElementById('review-text');
@@ -2871,6 +2873,7 @@
       locationChip.style.display = 'flex';
       locationText.textContent = city;
       pillRow.style.display = 'none';
+      pillSpacer.style.display = 'none';
       footerNote.style.display = 'none';
       nextLabel.textContent = t('nav.btnNext');
       ta.placeholder = t('review.multiPlaceholder')
@@ -2887,6 +2890,7 @@
     aiLabel.textContent = t('review.aiLabel');
     locationChip.style.display = 'none';
     pillRow.style.display = '';
+    pillSpacer.style.display = '';
     footerNote.style.display = '';
     nextLabel.textContent = t('review.btnPost');
     ta.placeholder = '';
