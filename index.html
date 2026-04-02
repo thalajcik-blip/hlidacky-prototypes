@@ -2848,7 +2848,6 @@
 
   function updateReviewLayout() {
     var multi = isMultiServiceFlow();
-    var cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
     var title = document.getElementById('review-hero-title');
     var subPrimary = document.getElementById('review-hero-sub-primary');
     var subPrimaryText = document.getElementById('review-hero-sub-primary-text');
@@ -2893,21 +2892,14 @@
     aiLabel.textContent = t('review.aiLabel');
     locationChip.style.display = 'none';
     pillRow.style.display = '';
-    pillSpacer.style.display = cleaningOnly ? 'none' : '';
+    pillSpacer.style.display = '';
     footerNote.style.display = '';
     nextLabel.textContent = t('review.btnPost');
     ta.placeholder = '';
-    if (cleaningOnly) {
-      document.getElementById('review-label-row').style.marginBottom = '6px';
-      pillRow.style.marginBottom = '12px';
-      pillRow.style.order = '2';
-      ta.style.order = '3';
-    } else {
-      document.getElementById('review-label-row').style.marginBottom = '12px';
-      pillRow.style.marginBottom = '0';
-      pillRow.style.order = '';
-      ta.style.order = '';
-    }
+    document.getElementById('review-label-row').style.marginBottom = '12px';
+    pillRow.style.marginBottom = '0';
+    pillRow.style.order = '';
+    ta.style.order = '';
   }
 
   function updateReviewText() {
