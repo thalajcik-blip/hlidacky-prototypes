@@ -2898,9 +2898,13 @@
     nextLabel.textContent = t('review.btnPost');
     ta.placeholder = '';
     if (cleaningOnly) {
+      document.getElementById('review-label-row').style.marginBottom = '6px';
+      pillRow.style.marginBottom = '12px';
       pillRow.style.order = '2';
       ta.style.order = '3';
     } else {
+      document.getElementById('review-label-row').style.marginBottom = '12px';
+      pillRow.style.marginBottom = '0';
       pillRow.style.order = '';
       ta.style.order = '';
     }
