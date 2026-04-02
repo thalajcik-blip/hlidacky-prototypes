@@ -141,7 +141,7 @@
     "longterm": "I am looking for long-term help"
   },
   "review": {
-    "heroTitle": "Review your job post",
+    "heroTitle": "New job",
     "heroSub1": "Almost there!",
     "heroSub2": "We found 128 sitters matching your criteria 🎉",
     "aiLabel": "💡 Tap the purple tags to add more details:",
