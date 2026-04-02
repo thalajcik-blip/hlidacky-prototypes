@@ -2848,6 +2848,7 @@
 
   function updateReviewLayout() {
     var multi = isMultiServiceFlow();
+    var cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
     var title = document.getElementById('review-hero-title');
     var subPrimary = document.getElementById('review-hero-sub-primary');
     var subPrimaryText = document.getElementById('review-hero-sub-primary-text');
@@ -2880,6 +2881,8 @@
         .replace('{services}', getSelectedServiceLabelList())
         .replace('{location}', city)
         .replace('{price}', price);
+      ta.style.order = '';
+      pillRow.style.order = '';
       return;
     }
 
@@ -2890,10 +2893,17 @@
     aiLabel.textContent = t('review.aiLabel');
     locationChip.style.display = 'none';
     pillRow.style.display = '';
-    pillSpacer.style.display = '';
+    pillSpacer.style.display = cleaningOnly ? 'none' : '';
     footerNote.style.display = '';
     nextLabel.textContent = t('review.btnPost');
     ta.placeholder = '';
+    if (cleaningOnly) {
+      pillRow.style.order = '2';
+      ta.style.order = '3';
+    } else {
+      pillRow.style.order = '';
+      ta.style.order = '';
+    }
   }
 
   function updateReviewText() {
