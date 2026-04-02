@@ -4261,6 +4261,27 @@
     }, fillDelay);
   }
 
+  function replaceFooterChevronIcons() {
+    document.querySelectorAll('.screen-footer .btn-row > .btn-secondary:first-child svg').forEach(function(svg) {
+      var img = document.createElement('img');
+      img.src = '/doodles/chevron-left.svg';
+      img.width = 16;
+      img.height = 16;
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      svg.replaceWith(img);
+    });
+    document.querySelectorAll('.screen-footer .btn-row > .btn-primary svg:last-child').forEach(function(svg) {
+      var img = document.createElement('img');
+      img.src = '/doodles/chevron-right.svg';
+      img.width = 16;
+      img.height = 16;
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      svg.replaceWith(img);
+    });
+  }
+
   // ============================================================
   // Boot
   // ============================================================
@@ -4273,6 +4294,7 @@
   }
 
   applyStrings();
+  replaceFooterChevronIcons();
   // Populate date selects with next 14 days
   const DAY_NAMES = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
   const DAY_NAMES_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
