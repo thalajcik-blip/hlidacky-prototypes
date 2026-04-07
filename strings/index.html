@@ -946,9 +946,9 @@ function renderTable() {
     document.getElementById('progress-fill').style.width = pct + '%';
   }
 
-  // Reset & upload buttons
+  // Toolbar actions
   document.getElementById('btn-reset').classList.toggle('hidden', isCZ);
-  document.getElementById('btn-upload').classList.toggle('hidden', isCZ);
+  document.getElementById('btn-upload').classList.remove('hidden');
 
   const keys = Object.keys(baseSource);
   let html = '';
