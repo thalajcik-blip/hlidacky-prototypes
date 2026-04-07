@@ -253,8 +253,9 @@
       box-shadow: 0 1px 0 rgba(42, 53, 57, 0.04);
       display: flex;
       align-items: center;
-      padding: 0 16px;
+      padding: 0 12px;
       min-width: 0;
+      position: relative;
     }
 
     .jobs-field--search {
@@ -268,8 +269,8 @@
     }
 
     .jobs-field-icon {
-      width: 28px;
-      height: 28px;
+      width: 18px;
+      height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -278,13 +279,16 @@
 
     .jobs-field-icon img,
     .jobs-field-icon svg,
+    .jobs-field-action img,
     .jobs-field-action svg {
       display: block;
-      width: 28px;
-      height: 28px;
+      width: 18px;
+      height: 18px;
     }
 
-    .jobs-field-value {
+    .jobs-field-value,
+    .jobs-field-input,
+    .jobs-field-select {
       min-width: 0;
       color: #2A3539;
       font-family: 'soleil', sans-serif;
@@ -298,15 +302,100 @@
       text-overflow: ellipsis;
     }
 
+    .jobs-field-input {
+      flex: 1 1 auto;
+      border: 0;
+      background: transparent;
+      outline: none;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .jobs-field-input::placeholder {
+      color: #8B91A3;
+    }
+
+    .jobs-field-select {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 0;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      padding-right: 20px;
+      cursor: pointer;
+    }
+
     .jobs-field-action {
       margin-left: auto;
       flex-shrink: 0;
-      width: 28px;
-      height: 28px;
+      width: 18px;
+      height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #F96073;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .jobs-field-action--passive {
+      pointer-events: none;
+    }
+
+    .location-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .location-suggestions {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 4px);
+      left: -31px;
+      width: calc(100% + 61px);
+      background: #fff;
+      border: 1px solid #E5E5EA;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 4px 0;
+      margin: 0;
+      list-style: none;
+      max-height: calc(6 * 44px);
+      overflow-y: auto;
+      display: none;
+    }
+
+    .location-suggestions.open {
+      display: block;
+    }
+
+    .location-suggestions li {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #2A3539;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #F7F7F7;
+      font-family: 'soleil', sans-serif;
+    }
+
+    .location-suggestions li:last-child {
+      border-bottom: none;
+    }
+
+    .location-suggestions li:hover {
+      background: #F7F7F7;
+    }
+
+    .location-suggestions li svg {
+      flex-shrink: 0;
+      opacity: 0.5;
     }
 
     .placeholder-card {
@@ -407,14 +496,23 @@
               <span class="jobs-field-icon" aria-hidden="true">
                 <img src="/jobs/jobs-for-sitters/assets/icon-search.svg" alt="">
               </span>
-              <div class="jobs-field-value" data-i18n="sittersHub.locationValue"></div>
-              <span class="jobs-field-action" aria-hidden="true">
+              <div class="location-wrap">
+                <input id="sitters-location-input" class="jobs-field-input" type="text" value="Praha 2" autocomplete="off">
+                <ul class="location-suggestions" id="sitters-location-suggestions"></ul>
+              </div>
+              <button class="jobs-field-action" id="sitters-location-clear" type="button" aria-label="Clear location">
                 <img src="/jobs/jobs-for-sitters/assets/icon-x-mark.svg" alt="">
-              </span>
+              </button>
             </div>
             <div class="jobs-field jobs-field--select">
-              <div class="jobs-field-value" data-i18n="sittersHub.radiusValue"></div>
-              <span class="jobs-field-action" aria-hidden="true">
+              <select class="jobs-field-select" id="sitters-radius-select" aria-label="Distance radius">
+                <option>+5 km</option>
+                <option>+10 km</option>
+                <option>+15 km</option>
+                <option selected>+20 km</option>
+                <option>+25 km</option>
+              </select>
+              <span class="jobs-field-action jobs-field-action--passive" aria-hidden="true">
                 <img src="/jobs/jobs-for-sitters/assets/icon-chevron-down.svg" alt="">
               </span>
             </div>
@@ -431,6 +529,17 @@
     </div>
   </main>
   <script>
+    var SITTERS_LOCATION_SUGGESTIONS = [
+      'Václavské náměstí, Praha 1',
+      'Náměstí Míru, Praha 2',
+      'Náměstí Republiky, Praha 1',
+      'Karlovo náměstí, Praha 2',
+      'Anděl, Praha 5',
+      'Dejvická, Praha 6',
+      'Jiřího z Poděbrad, Praha 3',
+      'Masarykovo nádraží, Praha 1'
+    ];
+
     function t(path) {
       return path.split('.').reduce(function(acc, key) {
         return acc && acc[key] !== undefined ? acc[key] : null;
@@ -463,6 +572,57 @@
         image.src = isSelected ? button.getAttribute('data-off') : button.getAttribute('data-on');
       });
     });
+
+    (function initSittersLocationSuggestions() {
+      var input = document.getElementById('sitters-location-input');
+      var list = document.getElementById('sitters-location-suggestions');
+      var clear = document.getElementById('sitters-location-clear');
+      if (!input || !list || !clear) return;
+
+      function pinIcon() {
+        return '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" fill="#BEC2CE"/></svg>';
+      }
+
+      function renderSuggestions(query) {
+        var q = (query || '').trim().toLowerCase();
+        var filtered = q ? SITTERS_LOCATION_SUGGESTIONS.filter(function(item) {
+          return item.toLowerCase().indexOf(q) !== -1;
+        }) : SITTERS_LOCATION_SUGGESTIONS.slice();
+
+        list.innerHTML = filtered.map(function(item) {
+          return '<li>' + pinIcon() + item + '</li>';
+        }).join('');
+
+        if (filtered.length) list.classList.add('open');
+        else list.classList.remove('open');
+
+        list.querySelectorAll('li').forEach(function(li, index) {
+          li.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            input.value = filtered[index];
+            list.classList.remove('open');
+          });
+        });
+      }
+
+      input.addEventListener('focus', function() {
+        renderSuggestions(input.value);
+      });
+
+      input.addEventListener('input', function() {
+        renderSuggestions(input.value);
+      });
+
+      input.addEventListener('blur', function() {
+        setTimeout(function() { list.classList.remove('open'); }, 150);
+      });
+
+      clear.addEventListener('click', function() {
+        input.value = '';
+        input.focus();
+        renderSuggestions('');
+      });
+    })();
   </script>
 </body>
 </html>
