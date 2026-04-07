@@ -346,34 +346,48 @@
       pointer-events: none;
     }
 
-    .placeholder-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--surface);
-      padding: 18px 16px;
-      display: grid;
-      gap: 10px;
-      box-shadow: 0 2px 8px rgba(42, 53, 57, 0.04);
+    .results-section {
+      width: 100%;
+      background: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 120px;
     }
 
-    .placeholder-card h1 {
-      font-size: 28px;
-      line-height: 1.04;
-      letter-spacing: -0.04em;
+    .results-inner {
+      width: 375px;
+      max-width: 100%;
+      padding: 8px 12px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .placeholder-card p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
+    .results-notifications-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.8;
+      color: #8B91A3;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
     }
 
-    .placeholder-block {
-      height: 140px;
-      border-radius: 16px;
-      border: 1px dashed #d7dde1;
-      background:
-        linear-gradient(180deg, rgba(247, 248, 251, 0.92) 0%, rgba(242, 245, 248, 0.92) 100%);
+    .results-notifications-link:hover {
+      opacity: 1;
+    }
+
+    .results-notifications-link img {
+      width: 12px;
+      height: 12px;
+      display: block;
     }
 
     @media (pointer: coarse) and (max-width: 768px) {
@@ -466,13 +480,14 @@
             </div>
           </div>
         </section>
-        <article class="placeholder-card">
-          <h1 data-i18n="sittersHub.title"></h1>
-          <p data-i18n="sittersHub.subtitle"></p>
-        </article>
-        <div class="placeholder-block" aria-hidden="true"></div>
-        <div class="placeholder-block" aria-hidden="true"></div>
-        <div class="placeholder-block" aria-hidden="true"></div>
+        <section class="results-section" aria-label="Results">
+          <div class="results-inner">
+            <a class="results-notifications-link" href="#" id="sitters-notifications-link">
+              <img src="/jobs/jobs-for-sitters/assets/icon-bell.svg" alt="" aria-hidden="true">
+              <span data-i18n="sittersHub.notificationsLink"></span>
+            </a>
+          </div>
+        </section>
       </section>
     </div>
   </main>
