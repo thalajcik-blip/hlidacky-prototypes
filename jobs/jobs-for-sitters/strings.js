@@ -1,6 +1,7 @@
 window.STRINGS = {
   "sittersHub": {
     "navTitle": "Práce pro hlídačky",
+    "topNavTitle": "Jobs",
     "title": "Jobs for sitters",
     "subtitle": "Aktuální prototyp obrazovky hledání práce pro hlídačky.",
     "bodyTitle": "Prototyp se připravuje",

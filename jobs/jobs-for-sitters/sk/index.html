@@ -74,6 +74,36 @@
       background: var(--panel);
     }
 
+    .top-navbar {
+      display: flex;
+      width: 100%;
+      padding: 8px 16px;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #E5E5EA;
+      background: #FFF;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 4;
+    }
+
+    .top-navbar img {
+      display: block;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .top-navbar-title {
+      color: #2A3539;
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.051px;
+    }
+
     .status-time {
       color: #2A3539;
       font-family: 'soleil', Inter, system-ui, sans-serif;
@@ -96,7 +126,7 @@
     }
 
     .content {
-      min-height: calc(100% - 52px);
+      min-height: 100%;
       padding: 12px 16px 120px;
       display: grid;
       align-content: start;
@@ -144,6 +174,10 @@
         display: none;
       }
 
+      .top-navbar {
+        display: none;
+      }
+
       .phone-frame {
         width: 100%;
         height: 100vh;
@@ -163,6 +197,10 @@
         <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
         <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
       </div>
+    </div>
+    <div class="top-navbar">
+      <img src="/jobs/jobs-for-sitters/assets/icon-paperplane.svg" alt="">
+      <div class="top-navbar-title" data-i18n="sittersHub.topNavTitle"></div>
     </div>
     <div class="screen-scroll">
       <section class="content">
