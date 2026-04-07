@@ -260,11 +260,12 @@
     }
 
     .jobs-field--location {
-      flex: 1 1 auto;
+      flex: 1 1 0;
       position: relative;
       justify-content: space-between;
       gap: 8px;
       overflow: hidden;
+      min-width: 0;
     }
 
     .jobs-field--select {
@@ -362,6 +363,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 12px;
     }
 
     .results-notifications-link {
@@ -391,6 +393,105 @@
       flex-shrink: 0;
     }
 
+    .job-adverts-grid {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .job-advert-box {
+      display: flex;
+      width: 100%;
+      min-width: 320px;
+      max-width: 720px;
+      padding: 20px 20px 24px 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      border-radius: 8px;
+      border: 1px solid #E5E5EA;
+      background: #FFF;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.20);
+      min-height: 164px;
+    }
+
+    .job-advert-box.is-hidden {
+      display: none;
+    }
+
+    .job-advert-skeleton {
+      width: 100%;
+      display: grid;
+      gap: 12px;
+    }
+
+    .job-advert-line {
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #F4F6FA 0%, #EBEFF5 100%);
+    }
+
+    .job-advert-line--title {
+      width: 68%;
+      height: 14px;
+    }
+
+    .job-advert-line--meta {
+      width: 44%;
+    }
+
+    .job-advert-line--body-1 {
+      width: 100%;
+    }
+
+    .job-advert-line--body-2 {
+      width: 92%;
+    }
+
+    .job-advert-line--body-3 {
+      width: 76%;
+    }
+
+    .job-advert-line--cta {
+      width: 128px;
+      height: 36px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #FFE0E5 0%, #FFD3DA 100%);
+      margin-top: 8px;
+    }
+
+    .results-show-more {
+      display: inline-flex;
+      min-height: 32px;
+      padding: 8px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      background: transparent;
+      color: #8B91A3;
+      text-align: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+    }
+
+    .results-show-more:hover {
+      color: #2A3539;
+    }
+
+    .results-show-more svg {
+      display: block;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
     @media (pointer: coarse) and (max-width: 768px) {
       body {
         padding: 0;
@@ -411,6 +512,10 @@
         max-height: none;
         border-radius: 0;
         box-shadow: none;
+      }
+
+      .form-demo-grid {
+        width: 100%;
       }
     }
   </style>
@@ -487,6 +592,35 @@
               <img src="/jobs/jobs-for-sitters/assets/icon-bell.svg" alt="" aria-hidden="true">
               <span data-i18n="sittersHub.notificationsLink"></span>
             </a>
+            <div class="job-adverts-grid" id="sitters-results-grid">
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+              <article class="job-advert-box is-hidden"><div class="job-advert-skeleton"><div class="job-advert-line job-advert-line--title"></div><div class="job-advert-line job-advert-line--meta"></div><div class="job-advert-line job-advert-line--body-1"></div><div class="job-advert-line job-advert-line--body-2"></div><div class="job-advert-line job-advert-line--body-3"></div><div class="job-advert-line job-advert-line--cta"></div></div></article>
+            </div>
+            <button class="results-show-more" id="sitters-show-more" type="button">
+              <span data-i18n="sittersHub.showMore"></span>
+              <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
         </section>
       </section>
@@ -540,6 +674,19 @@
 
       select.addEventListener('change', sync);
       sync();
+    })();
+
+    (function initSittersShowMore() {
+      var button = document.getElementById('sitters-show-more');
+      var hiddenCards = Array.prototype.slice.call(document.querySelectorAll('.job-advert-box.is-hidden'));
+      if (!button || !hiddenCards.length) return;
+
+      button.addEventListener('click', function() {
+        hiddenCards.forEach(function(card) {
+          card.classList.remove('is-hidden');
+        });
+        button.style.display = 'none';
+      });
     })();
   </script>
 </body>
