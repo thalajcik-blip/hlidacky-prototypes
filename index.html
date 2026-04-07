@@ -275,7 +275,19 @@
           <a class="btn" href="/strings/?prototype=jobs">Open strings editor</a>
         </div>
         <div class="card-meta">
-          <button class="text-link" type="button" id="open-language-picker">Choose language</button>
+          <button class="text-link" type="button" data-language-picker="jobs">Choose language</button>
+        </div>
+      </article>
+      <article class="card">
+        <div class="eyebrow">Prototype</div>
+        <h2>Jobs for sitters</h2>
+        <p>The current job-search screen prototype for sitters.</p>
+        <div class="actions">
+          <a class="btn primary" href="/sitters/">Open prototype</a>
+          <a class="btn" href="/strings/?prototype=sitters">Open strings editor</a>
+        </div>
+        <div class="card-meta">
+          <button class="text-link" type="button" data-language-picker="sitters">Choose language</button>
         </div>
       </article>
     </section>
@@ -285,27 +297,52 @@
       <div class="lang-head">
         <div>
           <h3 id="language-dialog-title">Choose language</h3>
-          <p>Open the Jobs for families prototype in a specific language version.</p>
+          <p id="language-dialog-copy">Open the selected prototype in a specific language version.</p>
         </div>
         <button class="lang-close" type="button" id="close-language-picker" aria-label="Close language picker">×</button>
       </div>
-      <div class="lang-list">
-        <a class="lang-item" href="/jobs/en/"><span>🇬🇧 <strong>English</strong></span><span>Open</span></a>
-        <a class="lang-item" href="/jobs/cz/"><span>🇨🇿 <strong>Čeština</strong></span><span>Open</span></a>
-        <a class="lang-item" href="/jobs/sk/"><span>🇸🇰 <strong>Slovenčina</strong></span><span>Open</span></a>
-        <a class="lang-item" href="/jobs/hu/"><span>🇭🇺 <strong>Magyar</strong></span><span>Open</span></a>
-        <a class="lang-item" href="/jobs/at/"><span>🇦🇹 <strong>Deutsch (AT)</strong></span><span>Open</span></a>
-        <a class="lang-item" href="/jobs/hr/"><span>🇭🇷 <strong>Hrvatski</strong></span><span>Open</span></a>
-      </div>
+      <div class="lang-list" id="language-list"></div>
     </div>
   </div>
   <script>
     (function() {
       var modal = document.getElementById('language-modal');
-      var openBtn = document.getElementById('open-language-picker');
+      var openBtns = document.querySelectorAll('[data-language-picker]');
       var closeBtn = document.getElementById('close-language-picker');
+      var list = document.getElementById('language-list');
+      var copy = document.getElementById('language-dialog-copy');
+      var prototypeConfig = {
+        jobs: {
+          label: 'Jobs for families',
+          base: '/jobs',
+          description: 'Open the Jobs for families prototype in a specific language version.'
+        },
+        sitters: {
+          label: 'Jobs for sitters',
+          base: '/sitters',
+          description: 'Open the Jobs for sitters prototype in a specific language version.'
+        }
+      };
+      var languages = [
+        { code: 'en', flag: '🇬🇧', label: 'English' },
+        { code: 'cz', flag: '🇨🇿', label: 'Čeština' },
+        { code: 'sk', flag: '🇸🇰', label: 'Slovenčina' },
+        { code: 'hu', flag: '🇭🇺', label: 'Magyar' },
+        { code: 'at', flag: '🇦🇹', label: 'Deutsch (AT)' },
+        { code: 'hr', flag: '🇭🇷', label: 'Hrvatski' }
+      ];
 
-      function openModal() {
+      function renderLanguageList(key) {
+        var config = prototypeConfig[key];
+        copy.textContent = config.description;
+        list.innerHTML = languages.map(function(lang) {
+          return '<a class="lang-item" href="' + config.base + '/' + lang.code + '/">' +
+            '<span>' + lang.flag + ' <strong>' + lang.label + '</strong></span><span>Open</span></a>';
+        }).join('');
+      }
+
+      function openModal(key) {
+        renderLanguageList(key);
         modal.hidden = false;
       }
 
@@ -313,7 +350,11 @@
         modal.hidden = true;
       }
 
-      openBtn.addEventListener('click', openModal);
+      openBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          openModal(btn.getAttribute('data-language-picker'));
+        });
+      });
       closeBtn.addEventListener('click', closeModal);
       modal.addEventListener('click', function(e) {
         if (e.target === modal) closeModal();
