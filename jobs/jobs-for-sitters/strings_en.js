@@ -7,7 +7,7 @@
       "topNavTitle": "Jobs",
       "selectorLabel": "Show all job offerings for",
       "notificationsLink": "Set up notifications",
-      "showMore": "Show more sitters",
+      "showMore": "show more results",
       "locationValue": "Praha 2",
       "radiusValue": "+20 km",
       "title": "Jobs for sitters",
