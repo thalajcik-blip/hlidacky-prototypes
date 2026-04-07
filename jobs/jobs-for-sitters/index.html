@@ -264,8 +264,10 @@
 
     .jobs-field--select {
       flex: 0 0 128px;
+      position: relative;
       justify-content: space-between;
       gap: 8px;
+      overflow: hidden;
     }
 
     .jobs-field-icon {
@@ -323,9 +325,14 @@
       border: 0;
       background: transparent;
       outline: none;
+      position: absolute;
+      inset: 0;
       width: 100%;
-      padding-right: 0;
+      height: 100%;
+      opacity: 0;
+      padding: 0 12px;
       cursor: pointer;
+      z-index: 2;
       white-space: nowrap;
       text-overflow: clip;
     }
@@ -510,6 +517,7 @@
               </button>
             </div>
             <div class="jobs-field jobs-field--select">
+              <div class="jobs-field-value" id="sitters-radius-display">+20 km</div>
               <select class="jobs-field-select" id="sitters-radius-select" aria-label="Distance radius">
                 <option>+5 km</option>
                 <option>+10 km</option>
@@ -627,6 +635,20 @@
         input.focus();
         renderSuggestions('');
       });
+    })();
+
+    (function initSittersRadiusSelect() {
+      var select = document.getElementById('sitters-radius-select');
+      var display = document.getElementById('sitters-radius-display');
+      if (!select || !display) return;
+
+      function sync() {
+        var option = select.options[select.selectedIndex];
+        display.textContent = option ? option.text : '';
+      }
+
+      select.addEventListener('change', sync);
+      sync();
     })();
   </script>
 </body>
