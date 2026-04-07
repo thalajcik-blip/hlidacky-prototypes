@@ -27,8 +27,7 @@
       --bg: #dce2e8;
       --panel: #ffffff;
       --border: #dde2e5;
-      --green: #0ba825;
-      --green-shadow: rgba(0, 0, 0, 0.16);
+      --surface: #f7f8fb;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,112 +55,81 @@
       flex-direction: column;
     }
 
-    .phone-notch {
-      width: 110px;
-      height: 28px;
-      background: #000;
-      border-radius: 0 0 16px 16px;
-      margin: 0 auto;
-      flex-shrink: 0;
-    }
-
-    .phone-header {
-      height: 74px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #f0f2f4;
-      flex-shrink: 0;
-    }
-
-    .phone-header img {
-      width: 28px;
-      height: 28px;
-    }
-
-    .phone-header h1 {
-      font-size: 15px;
-      font-weight: 450;
-      line-height: 1.2;
-    }
-
-    .hero {
-      padding: 34px 24px 28px;
-      background: linear-gradient(180deg, #f7f8fb 0%, #eff3f8 100%);
-      border-bottom: 1px solid #edf1f5;
-      text-align: center;
-    }
-
-    .hero h2 {
-      margin-bottom: 10px;
-      font-size: 32px;
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      max-width: 280px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.45;
-    }
-
-    .body {
+    .screen-scroll {
       flex: 1;
       min-height: 0;
-      padding: 24px;
+      overflow-y: auto;
+      background: var(--panel);
+    }
+
+    .status-bar {
+      height: 52px;
+      padding: 14px 21px 10px 23px;
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 24px;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .status-time {
+      font-size: 17px;
+      font-weight: 590;
+      line-height: 1;
+      letter-spacing: -0.35px;
+      color: #000;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-icons img {
+      display: block;
+      flex-shrink: 0;
     }
 
     .content {
+      min-height: calc(100% - 52px);
+      padding: 12px 16px 120px;
       display: grid;
-      gap: 12px;
+      align-content: start;
+      gap: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
     }
 
-    .content h3 {
-      font-size: 26px;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-
-    .content p {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.55;
-    }
-
-    .footer {
+    .placeholder-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      padding: 18px 16px;
       display: grid;
       gap: 10px;
+      box-shadow: 0 2px 8px rgba(42, 53, 57, 0.04);
     }
 
-    .btn {
-      min-height: 52px;
-      padding: 14px 24px 16px;
-      border-radius: 4px;
-      border: 1px solid #e5e5ea;
-      font: inherit;
-      font-size: 16px;
-      line-height: 22px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      color: var(--text);
-      box-shadow: inset 0 -3px 0 #e5e5ea;
+    .placeholder-card h1 {
+      font-size: 28px;
+      line-height: 1.04;
+      letter-spacing: -0.04em;
     }
 
-    .btn.primary {
-      border-color: var(--green);
-      background: var(--green);
-      color: #fff;
-      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    .placeholder-card p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .placeholder-block {
+      height: 140px;
+      border-radius: 16px;
+      border: 1px dashed #d7dde1;
+      background:
+        linear-gradient(180deg, rgba(247, 248, 251, 0.92) 0%, rgba(242, 245, 248, 0.92) 100%);
     }
 
     @media (pointer: coarse) and (max-width: 768px) {
@@ -182,26 +150,26 @@
 </head>
 <body>
   <main class="phone-frame">
-    <div class="phone-notch"></div>
-    <header class="phone-header">
-      <img src="/hlidacky-logo_small.svg" alt="Hlídačky.cz">
-      <h1 data-i18n="sittersHub.navTitle"></h1>
-      <div style="width:28px"></div>
-    </header>
-    <section class="hero">
-      <h2 data-i18n="sittersHub.title"></h2>
-      <p data-i18n="sittersHub.subtitle"></p>
-    </section>
-    <section class="body">
-      <div class="content">
-        <h3 data-i18n="sittersHub.bodyTitle"></h3>
-        <p data-i18n="sittersHub.bodyText"></p>
+    <div class="screen-scroll">
+      <div class="status-bar">
+        <div class="status-time">9:41</div>
+        <div class="status-icons" aria-label="Phone status">
+          <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
+          <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
+          <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
+        </div>
       </div>
-      <div class="footer">
-        <a class="btn primary" href="/strings/?prototype=sitters" data-i18n="sittersHub.primaryCta"></a>
-        <a class="btn" href="/" data-i18n="sittersHub.secondaryCta"></a>
-      </div>
-    </section>
+
+      <section class="content">
+        <article class="placeholder-card">
+          <h1 data-i18n="sittersHub.title"></h1>
+          <p data-i18n="sittersHub.subtitle"></p>
+        </article>
+        <div class="placeholder-block" aria-hidden="true"></div>
+        <div class="placeholder-block" aria-hidden="true"></div>
+        <div class="placeholder-block" aria-hidden="true"></div>
+      </section>
+    </div>
   </main>
   <script>
     function t(path) {
