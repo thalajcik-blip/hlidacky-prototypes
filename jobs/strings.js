@@ -6,19 +6,19 @@ window.STRINGS = {
     "title": "Vytvořit nový inzerát",
     "btnPrev": "Zpět",
     "btnNext": "Pokračovat",
-    "cancelConfirm": "Zrušit vytváření inzerátu?"
+    "cancelConfirm": "Chcete zrušit vytváření tohoto inzerátu?"
   },
   "exitModal": {
-    "title": "Jste jen krůček od zveřejnění inzerátu",
-    "body": "Nevzdávejte to. Dokončete formulář a získejte nabídky od hlídaček, které dokonale splňují vaše potřeby.",
+    "title": "K podání inzerátu zbývá už jen krůček",
+    "body": "Teď to nevzdávejte. Stačí dokončit formulář a získáte nabídky od hlídaček, které přesně odpovídají vašim potřebám.",
     "leave": "Odejít",
     "stay": "Zobrazit nabídky"
   },
   "service": {
     "heroTitle": "Koho hledáte?",
     "heroSub": "Vyberte, s čím potřebujete od hlídačky pomoci.",
-    "sectionLabel": "Vyberte jednu nebo více oblastí pomoci",
-    "validationAlert": "Prosím vyberte alespoň jednu službu",
+    "sectionLabel": "Vyberte, s čím potřebujete od hlídačky pomoci.",
+    "validationAlert": "Vyberte prosím alespoň jednu službu",
     "babysitting": "Hlídání dětí",
     "cleaning": "Úklid domácnosti",
     "pet": "Opatrování mazlíčků",
@@ -26,11 +26,11 @@ window.STRINGS = {
     "tutoring": "Doučování"
   },
   "location": {
-    "heroSub": "Místo zůstane skryté, ale i přesto vám ukážeme nejlepší hlídačky v okolí.",
-    "inputLabel": "Místo",
-    "inputPlaceholder": "Václavské náměstí, Praha",
-    "hint": "Přesná adresa bude skrytá.",
-    "validationAlert": "Prosím zadejte místo, kde hledáte pomoc",
+    "heroSub": "Přesná poloha zůstane skrytá, ale i tak vám ukážeme nejlepší shody v okolí.",
+    "inputLabel": "Lokalita",
+    "inputPlaceholder": "např. Praha, ČR",
+    "hint": "Přesná adresa nebude zveřejněna.",
+    "validationAlert": "Vyberte prosím svou lokalitu",
     "titlePrefix": "Kde potřebujete",
     "titleFallback": "pomoc",
     "titleAnd": "a",
@@ -43,11 +43,11 @@ window.STRINGS = {
     }
   },
   "price": {
-    "heroTitle": "Fixed per hour or upon agreement?",
-    "inputLabel": "Set up your price",
-    "inputPlaceholder": "e.g. 240 Kč p/hour, 800 Kč p/day...",
-    "averageHint": "Average price in your area is 240 Kč per hour",
-    "placeholderFallback": "240 Kč per hour"
+    "heroTitle": "Fixní cena za hodinu, nebo dohodou?",
+    "inputLabel": "Nastavte si cenu",
+    "inputPlaceholder": "např. 240 Kč/hod, 800 Kč/den...",
+    "averageHint": "Průměrná cena ve vaší oblasti je 240 Kč za hodinu",
+    "placeholderFallback": "240 Kč za hodinu"
   },
   "cleaning": {
     "heroTitle": "Co je potřeba uklidit?",
@@ -57,56 +57,56 @@ window.STRINGS = {
     "house": "Dům"
   },
   "cleaningExtras": {
-    "heroTitle": "Potřebujete pomoc s něčím dalším?",
+    "heroTitle": "Potřebujete pomoc ještě s něčím dalším?",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
     "sectionLabel": "Vyberte doplňkové služby",
-    "optional": "(nepovinné)",
+    "optional": "(volitelné)",
     "ironing": "Žehlení",
     "laundry": "Praní",
     "windowCleaning": "Mytí oken",
-    "airbnbCleaning": "Airbnb / úklid apartmánů",
+    "airbnbCleaning": "Úklid krátkodobých pronájmů / Airbnb",
     "carCleaning": "Čištění auta",
-    "moveCleaning": "Úklid při stěhování",
+    "moveCleaning": "Úklid po stěhování",
     "upholsteryCleaning": "Čištění čalounění",
     "lightMaintenance": "Drobná údržba domácnosti",
-    "gardenHelp": "Pomoc se zahradou"
+    "gardenHelp": "Pomoc na zahradě"
   },
   "pet": {
     "heroTitle": "Váš mazlíček",
     "heroSub": "Na základě vašeho výběru připravíme návrh inzerátu.",
-    "sectionLabel": "O jaká zvířata je potřeba se postarat?",
+    "sectionLabel": "O jaká zvířata je třeba se postarat?",
     "dogs": "Psi",
     "cats": "Kočky",
     "other": "Jiná",
     "largePet": "Mám velkého psa",
-    "validationAlert": "Prosím vyberte alespoň jedno zvíře"
+    "validationAlert": "Vyberte prosím alespoň jednoho mazlíčka"
   },
   "seniorCare": {
-    "heroTitle": "Care specifics",
-    "heroSub": "This helps us find the best match for their needs.",
-    "careTypeLabel": "What type of care are you looking for?",
-    "notSure": "Not sure",
-    "notSureSub": "You can specify it later",
-    "liveIn": "24/7 live-in care",
-    "liveInSub": "Full-time support with sitter staying in the home.",
-    "fullTime": "Full-time care",
-    "fullTimeSub": "Daily support, typically 35-40 hours per week.",
-    "partTime": "Part-time care",
-    "partTimeSub": "Flexible or occasional assistance as needed.",
-    "holidayCare": "Holiday care",
-    "holidayCareSub": "Temporary care to provide caregiver relief."
+    "heroTitle": "Detaily péče",
+    "heroSub": "Tyto informace nám pomohou najít pro vaše blízké tu nejlepší shodu.",
+    "careTypeLabel": "O jaký typ péče máte zájem?",
+    "notSure": "Zatím nevím",
+    "notSureSub": "Upřesnit můžete později",
+    "liveIn": "Nepřetržitá péče (24/7)",
+    "liveInSub": "Celodenní podpora, kdy hlídačka bydlí přímo v domácnosti.",
+    "fullTime": "Péče na plný úvazek",
+    "fullTimeSub": "Každodenní pomoc, obvykle 35–40 hodin týdně.",
+    "partTime": "Pravidelná docházka",
+    "partTimeSub": "Flexibilní nebo občasná výpomoc podle potřeby.",
+    "holidayCare": "Odlehčovací péče",
+    "holidayCareSub": "Dočasná pomoc pro úlevu rodinným pečujícím."
   },
   "frequencyPet": {
     "heroTitle": "Kdy a kde?",
-    "heroSub": "Doplňte poslední detaily k inzerátu.",
+    "heroSub": "💡 Klepnutím na fialové štítky přidáte další podrobnosti:",
     "howOftenLabel": "Jak často potřebujete pomoc?",
-    "notSureYet": "not sure yet",
-    "onetime": "jednorázově (během dovolené)",
+    "notSureYet": "zatím nevím",
+    "onetime": "Jednorázově (např. během dovolené)",
     "regularly": "pravidelně",
-    "whereLabel": "Kde potřebujete pomoc?",
-    "atMyHome": "u nás doma",
-    "atSitterHome": "u hlídačky doma",
-    "dontCare": "nezáleží mi na tom"
+    "whereLabel": "Kde má péče probíhat?",
+    "atMyHome": "U nás doma",
+    "atSitterHome": "U hlídačky doma",
+    "dontCare": "Je mi to jedno"
   },
   "frequency": {
     "heroTitle": "Kdy a jak často?",
@@ -115,7 +115,7 @@ window.STRINGS = {
     "regularly": "pravidelně",
     "onetime": "jednorázově",
     "daysLabel": "Vyberte preferované dny",
-    "optional": "(nepovinné)",
+    "optional": "(volitelné)",
     "days": {
       "mo": "Po",
       "tu": "Út",
@@ -125,419 +125,419 @@ window.STRINGS = {
       "sa": "So",
       "su": "Ne"
     },
-    "freqLabel": "Vyberte četnost",
+    "freqLabel": "Zvolte frekvenci",
     "freqOptions": [
       "Jednou týdně",
       "Dvakrát týdně",
       "Každý den",
-      "Jednou za dva týdny",
+      "Jednou za čtrnáct dní",
       "Jednou měsíčně"
     ],
     "dateLabel": "Upřesněte datum a čas",
-    "datePlaceholder": "např. každé pondělí od 16:00 do 20:00 a pátek od 14:00 do 18:00, počínaje příštím měsícem",
-    "notsure": "nevím, ještě se rozhoduji",
+    "datePlaceholder": "např. každé pondělí 16:00–20:00 a pátek 14:00–18:00, od příštího měsíce",
+    "notsure": "zatím nevím",
     "dateLabelRegular": "Upřesněte datum a čas",
     "longterm": "Hledám dlouhodobou pomoc"
   },
   "review": {
-    "heroTitle": "Zkontrolujte si svůj inzerát",
-    "heroSub1": "Téměř hotovo!",
-    "heroSub2": "Vašim kritériím odpovídá 128 hlídaček 🎉",
-    "aiLabel": "✨ Přidejte pár detailů, abyste oslovili více hlídaček",
-    "multiHeroTitle": "Add more job details",
-    "multiHeroSub1": "You're just one step away.",
-    "multiHeroSub2": "We'll share it with 128 sitters in your area.",
-    "multiLabel": "Job description",
-    "multiPlaceholder": "Hello sitters, we would like to find {services} in {location}. Our price expectation is around {price}",
+    "heroTitle": "Nový inzerát",
+    "heroSub1": "Už zbývá jen kousek!",
+    "heroSub2": "Našli jsme 128 hlídaček, které odpovídají vašim kritériím 🎉",
+    "aiLabel": "💡 Klepnutím na fialové štítky přidáte další podrobnosti:",
+    "multiHeroTitle": "Doplňte podrobnosti o inzerátu",
+    "multiHeroSub1": "Jste už jen krůček od cíle.",
+    "multiHeroSub2": "Váš inzerát rozešleme 128 hlídačkám ve vašem okolí.",
+    "multiLabel": "Znění inzerátu",
+    "multiPlaceholder": "Dobrý den, rádi bychom našli pomoc v oblasti {services} v lokalitě {location}. Naše představa o ceně je kolem {price}",
     "privacyNote": "Vaše osobní údaje zůstávají v soukromí a hlídačkám se nezobrazují.",
     "btnPost": "Zveřejnit inzerát",
-    "footerNote": "Inzerát zveřejníme zdarma a vytvoříme vám účet na Hlídačky.cz, abyste vše mohli bezpečně spravovat.",
+    "footerNote": "Zveřejnění je zdarma. Vytvoříme vám účet, abyste mohli vše bezpečně spravovat.",
     "generatedTexts": {
-      "babysitting": "Hledáme pečlivou a spolehlivou hlídačku pro naše děti. Potřebujeme pravidelnou pomoc a hledáme zkušeného, přátelského člověka.",
-      "cleaning": "Hledáme pomoc s pravidelným úklidem domácnosti. Bydlíme v bytě a potřebovali bychom pomoci také s žehlením a praním.",
-      "pet": "Hledáme zodpovědného člověka se zkušenostmi na opatrování našeho psa během dovolené. Péče bude probíhat u nás doma.",
-      "senior": "Hledáme laskavého a zodpovědného poskytovatele péče pro staršího člena rodiny. Cílem je každodenní pomoc a zajištění pohodlí domova.",
-      "tutoring": "Hledáme zkušeného doučovatele, který pomůže našemu dítěti se školními předměty a přípravou na zkoušky. Důležitá je pro nás trpělivost a přizpůsobivost."
+      "babysitting": "Hledáme pečlivou a spolehlivou hlídačku pro naše děti. Potřebujeme pravidelnou pomoc a hledáme někoho s přátelským přístupem a zkušenostmi.",
+      "cleaning": "Potřebujeme pomoc s pravidelným úklidem domácnosti. Bydlíme v bytě a ocenili bychom také výpomoc s žehlením a praním.",
+      "pet": "Hledáme zodpovědnou osobu se zkušenostmi, která by nám pohlídala psa během naší dovolené. Péče bude probíhat u nás doma.",
+      "senior": "Hledáme laskavou a zodpovědnou pomoc k seniorovi v naší rodině. Cílem je každodenní asistence a zajištění domácího pohodlí.",
+      "tutoring": "Hledáme zkušeného doučovatele, který by pomohl našemu dítěti se školními předměty a přípravou na zkoušky. Důležitá je pro nás trpělivost a schopnost přizpůsobit se."
     },
-    "hintLabel": "Tip: Přidejte více detailů o vaší nabídce",
-    "pillLanguage": "preferovaný jazyk",
-    "pillNeeds": "speciální potřeby",
-    "pillPrice": "odhadovaná cena",
+    "hintLabel": "Tip: Přidejte ke své žádosti více podrobností",
+    "pillLanguage": "jazyk",
+    "pillNeeds": "specifické potřeby",
+    "pillPrice": "cena",
     "modalCancel": "Zrušit",
-    "modalAdd": "Přidat do popisu",
+    "modalAdd": "Přidat do inzerátu",
     "language": {
-      "modalTitle": "Přidejte informace o jazyce hlídačky",
-      "sectionLabel": "Jakým jazykem má hlídačka mluvit?",
+      "modalTitle": "Jazyky hlídačky",
+      "sectionLabel": "Kterými jazyky by měla hlídačka mluvit?",
       "cs": "Čeština",
-      "sk": "Slovenština",
-      "en": "Angličtina",
-      "de": "Němčina",
-      "es": "Španělština",
-      "fr": "Francouzština",
-      "it": "Italština",
-      "uk": "Ukrajinština",
-      "moreLangs": "+ více jazyků",
-      "appendText": "Preferujeme hlídačku, která mluví: {langs}."
+      "sk": "Slovenčina",
+      "en": "English",
+      "de": "Deutsch",
+      "es": "Español",
+      "fr": "Français",
+      "it": "Italiano",
+      "uk": "Українська",
+      "moreLangs": "+ další jazyky",
+      "appendText": "Upřednostňujeme hlídačku, která ovládá tyto jazyky: {langs}."
     },
     "languageTutor": {
-      "modalTitle": "Tutor's languages",
-      "sectionLabel": "Which languages should the tutor speak?",
-      "moreLangs": "+ more languages",
-      "appendText": "We prefer a tutor who speaks: {langs}."
+      "modalTitle": "Jazyky doučovatele",
+      "sectionLabel": "Kterými jazyky by měl doučovatel mluvit?",
+      "moreLangs": "+ další jazyky",
+      "appendText": "Upřednostňujeme doučovatele, který ovládá tyto jazyky: {langs}."
     },
     "needs": {
-      "modalTitle": "Přidejte informace o speciálních potřebách",
-      "sectionLabel": "Jsou zde speciální potřeby, které chcete zmínit?",
-      "autism": "Autismus",
-      "diabetes": "Diabetes",
+      "modalTitle": "Specifické potřeby",
+      "sectionLabel": "Chcete uvést nějaké specifické potřeby?",
+      "autism": "Poruchy autistického spektra",
+      "diabetes": "Cukrovka",
       "asthma": "Astma",
-      "adhd": "ADHD",
+      "adhd": "ADHD/ADD",
       "allergies": "Potravinové alergie",
-      "childhood": "Dětské nemoci",
+      "childhood": "Běžná dětská onemocnění",
       "sleep": "Poruchy spánku",
-      "vision": "Zrakové postižení",
-      "hearing": "Sluchové postižení",
+      "vision": "Zrakové vady",
+      "hearing": "Sluchové vady",
       "epilepsy": "Epilepsie",
       "other": "Jiné potřeby",
-      "appendText": "Naše dítě má speciální potřeby: {needs}."
+      "appendText": "Naše dítě má specifické potřeby: {needs}."
     },
     "needsTutor": {
-      "modalTitle": "Special requirements",
-      "sectionLabel": "Any specific learning needs or formats?",
-      "speechDisorders": "Speech disorders",
-      "learningDisorders": "Learning disorders",
-      "helpWithHomework": "Help with homework",
-      "homeSchooling": "Home-schooling",
-      "appendText": "Special tutoring requirements include: {needs}."
+      "modalTitle": "Speciální požadavky",
+      "sectionLabel": "Máte konkrétní potřeby ohledně učení nebo formátu?",
+      "speechDisorders": "Poruchy řeči",
+      "learningDisorders": "Poruchy učení",
+      "helpWithHomework": "Pomoc s domácími úkoly",
+      "homeSchooling": "Domácí vzdělávání",
+      "appendText": "Mezi speciální požadavky na doučování patří: {needs}."
     },
     "specialRequirements": {
-      "pillLabel": "special requirements",
-      "modalTitle": "Special requirements",
-      "sectionLabel": "Any specific care needs or experience?",
-      "keepingCompany": "Keeping company",
-      "alzheimers": "Alzheimer's disease",
-      "parkinsons": "Parkinson's disease",
-      "diabetes": "Diabetes",
-      "dementia": "Dementia",
-      "mobilityIssues": "Mobility issues",
-      "personalHygiene": "Personal hygiene",
-      "mealPreparation": "Meal preparation",
-      "doctorAppointments": "Doctor appointments",
-      "physiotherapy": "Physiotherapy",
-      "artTherapy": "Art therapy",
-      "appendText": "Special care requirements include: {requirements}."
+      "pillLabel": "speciální požadavky",
+      "modalTitle": "Speciální požadavky",
+      "sectionLabel": "Vyžaduje péče konkrétní zkušenosti nebo dovednosti?",
+      "keepingCompany": "Dělání společnosti",
+      "alzheimers": "Alzheimerova choroba",
+      "parkinsons": "Parkinsonova nemoc",
+      "diabetes": "Cukrovka",
+      "dementia": "Demence",
+      "mobilityIssues": "Problémy s pohybem",
+      "personalHygiene": "Osobní hygiena",
+      "mealPreparation": "Příprava jídla",
+      "doctorAppointments": "Doprovod k lékaři",
+      "physiotherapy": "Fyzioterapie",
+      "artTherapy": "Arteterapie",
+      "appendText": "Mezi speciální požadavky na péči patří: {requirements}."
     },
     "extraTasks": {
-      "pillLabel": "extra tasks",
-      "modalTitle": "Extra tasks",
-      "sectionLabel": "Any special cleaning requests?",
-      "ironing": "Ironing",
-      "laundry": "Laundry",
-      "windowCleaning": "Window cleaning",
-      "airbnbCleaning": "Airbnb/apartments cleaning",
-      "carCleaning": "Car cleaning",
-      "moveCleaning": "Move-in/move-out cleaning",
-      "upholsteryCleaning": "Upholstery cleaning",
-      "lightMaintenance": "Light home maintenance",
-      "gardenHelp": "Garden help",
-      "appendText": "We would also appreciate help with: {tasks}."
+      "pillLabel": "úkoly navíc",
+      "modalTitle": "Extra úkoly",
+      "sectionLabel": "Máte nějaké speciální požadavky na úklid?",
+      "ironing": "Žehlení",
+      "laundry": "Praní",
+      "windowCleaning": "Mytí oken",
+      "airbnbCleaning": "Úklid Airbnb / apartmánů",
+      "carCleaning": "Čištění auta",
+      "moveCleaning": "Úklid po stěhování",
+      "upholsteryCleaning": "Čištění čalounění",
+      "lightMaintenance": "Drobná údržba domácnosti",
+      "gardenHelp": "Pomoc na zahradě",
+      "appendText": "Ocenili bychom také výpomoc s: {tasks}."
     },
     "petsAtHome": {
-      "pillLabel": "pets at home",
-      "modalTitle": "Pets at home",
-      "sectionLabel": "Are there any animals at home?",
-      "dogs": "Dogs",
-      "cats": "Cats",
-      "other": "Other",
-      "none": "None",
-      "appendText": "There are pets at home: {pets}.",
-      "appendNoneText": "There are no pets at home."
+      "pillLabel": "mazlíčci v domácnosti",
+      "modalTitle": "Zvířata v domácnosti",
+      "sectionLabel": "Máte doma nějaká zvířata?",
+      "dogs": "Psi",
+      "cats": "Kočky",
+      "other": "Jiná",
+      "none": "Žádná",
+      "appendText": "V domácnosti jsou tito mazlíčci: {pets}.",
+      "appendNoneText": "V domácnosti nejsou žádná zvířata."
     },
     "dogSize": {
-      "pillLabel": "dog size",
-      "modalTitle": "Dog size",
-      "sectionLabel": "How big is your dog?",
-      "small": "Small (up to 5 kg)",
-      "medium": "Medium (up to 25 kg)",
-      "large": "Large (up to 40 kg)",
-      "huge": "Huge (over 40 kg)",
-      "appendText": "Our dog is: {sizes}."
+      "pillLabel": "velikost psa",
+      "modalTitle": "Velikost psa",
+      "sectionLabel": "Jak velký je váš pes?",
+      "small": "Malý (do 5 kg)",
+      "medium": "Střední (do 25 kg)",
+      "large": "Velký (do 40 kg)",
+      "huge": "Obrovský (nad 40 kg)",
+      "appendText": "Náš pes je: {sizes}."
     },
     "dogAge": {
-      "pillLabel": "dog's age",
-      "modalTitle": "Dog's age",
-      "sectionLabel": "How old is your dog?",
-      "puppy": "Puppy",
-      "adult": "Adult",
+      "pillLabel": "věk psa",
+      "modalTitle": "Věk psa",
+      "sectionLabel": "Jak starý je váš pes?",
+      "puppy": "Štěně",
+      "adult": "Dospělý",
       "senior": "Senior",
-      "puppyExtraAttention": "The puppy requires extra attention",
-      "seniorSpecialCare": "The dog requires special care",
-      "puppySummary": "a puppy",
-      "adultSummary": "an adult dog",
-      "seniorSummary": "a senior dog",
-      "appendText": "Our dog is {age}.",
-      "appendPuppyExtraText": "The puppy requires extra attention.",
-      "appendSeniorExtraText": "The dog requires special care."
+      "puppyExtraAttention": "Štěně vyžaduje zvýšenou pozornost",
+      "seniorSpecialCare": "Pes vyžaduje speciální péči",
+      "puppySummary": "štěně",
+      "adultSummary": "dospělý pes",
+      "seniorSummary": "psí senior",
+      "appendText": "Náš pes je {age}.",
+      "appendPuppyExtraText": "Štěně vyžaduje zvýšenou pozornost.",
+      "appendSeniorExtraText": "Pes vyžaduje speciální péči."
     },
     "dogPersonality": {
-      "pillLabel": "dog's personality",
-      "modalTitle": "Dog's personality",
-      "sectionLabel": "What's your dog like?",
-      "highEnergy": "High-energy",
-      "calm": "Calm",
-      "playful": "Playful",
-      "protective": "Protective",
-      "social": "Social/Friendly",
-      "curious": "Curious",
-      "stubborn": "Stubborn",
-      "wellTrained": "Well-trained",
-      "intelligent": "Intelligent",
-      "dogFriendlyLabel": "Is your dog dog-friendly?",
-      "dogFriendlyYes": "Yes, very friendly",
-      "dogFriendlyNo": "No, prefers to be alone",
-      "kidsFriendlyLabel": "Is your dog good with kids?",
-      "kidsFriendlyYes": "Yes, loves kids",
-      "kidsFriendlyNo": "No, not used to children",
-      "appendTraitsText": "Our dog is: {traits}.",
-      "appendDogFriendlyYes": "Our dog is very friendly with other dogs.",
-      "appendDogFriendlyNo": "Our dog prefers to be alone around other dogs.",
-      "appendKidsFriendlyYes": "Our dog is good with kids.",
-      "appendKidsFriendlyNo": "Our dog is not used to children."
+      "pillLabel": "povaha psa",
+      "modalTitle": "Povaha psa",
+      "sectionLabel": "Jakou má váš pes povahu?",
+      "highEnergy": "Energický",
+      "calm": "Klidný",
+      "playful": "Hravý",
+      "protective": "Ochranitelský",
+      "social": "Společenský / přátelský",
+      "curious": "Zvědavý",
+      "stubborn": "Tvrdohlavý",
+      "wellTrained": "Dobře vycvičený",
+      "intelligent": "Inteligentní",
+      "dogFriendlyLabel": "Snese se s jinými psy?",
+      "dogFriendlyYes": "Ano, je velmi přátelský",
+      "dogFriendlyNo": "Ne, raději je sám",
+      "kidsFriendlyLabel": "Má rád děti?",
+      "kidsFriendlyYes": "Ano, děti miluje",
+      "kidsFriendlyNo": "Ne, na děti není zvyklý",
+      "appendTraitsText": "Náš pes je: {traits}.",
+      "appendDogFriendlyYes": "Náš pes je k ostatním psům velmi přátelský.",
+      "appendDogFriendlyNo": "Náš pes je v přítomnosti jiných psů raději sám.",
+      "appendKidsFriendlyYes": "Náš pes se k dětem chová velmi dobře.",
+      "appendKidsFriendlyNo": "Náš pes není na děti zvyklý."
     },
     "healthDiet": {
-      "pillLabel": "health and diet",
-      "modalTitle": "Health & diet",
+      "pillLabel": "zdraví a strava",
+      "modalTitle": "Zdraví a strava",
       "diet": {
-        "sectionLabel": "Any special diet or allergies?",
+        "sectionLabel": "Má pes speciální dietu nebo alergie?",
         "items": [
           {
             "key": "standardDiet",
-            "label": "Standard diet",
-            "sub": "No restrictions"
+            "label": "Běžná strava",
+            "sub": "Bez omezení"
           },
           {
             "key": "specialDiet",
-            "label": "Special diet/sllergies",
-            "sub": "Grain-free, raw, specific brand, etc."
+            "label": "Speciální dieta / alergie",
+            "sub": "Bezobilná strava, syrové maso (BARF), konkrétní značka apod."
           },
           {
             "key": "noTreats",
-            "label": "Strict: No treats",
-            "sub": "Dogs with sensitive stomach or weight needs"
+            "label": "Přísné: Nepodávat pamlsky",
+            "sub": "Psi s citlivým žaludkem nebo s potřebou hlídat váhu"
           }
         ]
       },
       "health": {
-        "sectionLabel": "Does your dog have any health needs?",
+        "sectionLabel": "Má váš pes nějaké zdravotní potřeby?",
         "items": [
           {
             "key": "medication",
-            "label": "Help with medication",
-            "sub": "Sitter will need to give pills, drops, or injections"
+            "label": "Pomoc s léky",
+            "sub": "Hlídačka bude muset podávat tablety, kapky nebo injekce"
           },
           {
             "key": "mobility",
-            "label": "Mobility or exercise needs",
-            "sub": "Struggles with stairs, requires short walks only, or has joint issues"
+            "label": "Potřeby spojené s pohybem",
+            "sub": "Špatně zvládá schody, vyžaduje pouze krátké procházky nebo má problémy s klouby"
           },
           {
             "key": "medicalHistory",
-            "label": "Medical history",
-            "sub": "History of seizures, anxiety, or specific chronic conditions"
+            "label": "Anamnéza",
+            "sub": "Záchvatové stavy, úzkost nebo konkrétní chronická onemocnění"
           }
         ]
       },
-      "appendDietText": "Our dog has these diet preferences or restrictions: {diet}.",
-      "appendHealthText": "Our dog has these health-related needs: {health}."
+      "appendDietText": "Náš pes má tyto stravovací preference nebo omezení: {diet}.",
+      "appendHealthText": "Náš pes má tyto zdravotní potřeby: {health}."
     },
     "typeCare": {
-      "pillLabel": "type of care",
-      "modalTitle": "Type of care",
-      "sectionLabel": "What help does your pet need?",
+      "pillLabel": "typ péče",
+      "modalTitle": "Druh péče",
+      "sectionLabel": "Jakou pomoc váš mazlíček potřebuje?",
       "items": [
         {
           "key": "walking",
-          "label": "Walking",
-          "sub": "Walking and potty breaks"
+          "label": "Venčení",
+          "sub": "Pravidelné venčení a venkovní aktivity"
         },
         {
           "key": "sittingAtMyHome",
-          "label": "Sitting at my home",
-          "sub": "Sitter stays at your home to care for your pet"
+          "label": "Hlídání u nás doma",
+          "sub": "Hlídačka zůstává u vás doma a pečuje o mazlíčka"
         },
         {
           "key": "stayingAtSitterHome",
-          "label": "Staying at sitter's home",
-          "sub": "Your pet stays at the sitter's home"
+          "label": "Pobyt u hlídačky doma",
+          "sub": "Váš mazlíček bude pobývat v domácnosti hlídačky"
         },
         {
           "key": "holidayCare",
-          "label": "Holiday care",
-          "sub": "Longer or continuous care while you are away"
+          "label": "Péče během dovolené",
+          "sub": "Delší nebo nepřetržitá péče po dobu vaší nepřítomnosti"
         }
       ],
-      "appendText": "We are looking for this type of pet care: {types}."
+      "appendText": "Hledáme tento typ péče o mazlíčka: {types}."
     },
     "gradeLevels": {
-      "pillLabel": "grade levels",
-      "modalTitle": "Grade levels",
-      "sectionLabel": "What's the academic level?",
+      "pillLabel": "studijní úroveň",
+      "modalTitle": "Úroveň vzdělání",
+      "sectionLabel": "O jakou studijní úroveň se jedná?",
       "items": [
         {
           "key": "preschool",
-          "label": "pre-school"
+          "label": "předškolák"
         },
         {
           "key": "elementary",
-          "label": "elementary school"
+          "label": "základní škola"
         },
         {
           "key": "secondary",
-          "label": "secondary school"
+          "label": "střední škola"
         }
       ],
-      "appendText": "The academic level is: {levels}."
+      "appendText": "Úroveň vzdělání studenta je: {levels}."
     },
     "entranceExams": {
-      "pillLabel": "entrance exams",
-      "modalTitle": "Entrance exams",
-      "sectionLabel": "Preparing for any exams?",
+      "pillLabel": "přijímací zkoušky",
+      "modalTitle": "Zkoušky",
+      "sectionLabel": "Připravujete se na nějaké zkoušky?",
       "items": [
         {
           "key": "primaryAdmissions",
-          "label": "primary school admissions"
+          "label": "přijímací řízení na ZŠ"
         },
         {
           "key": "highSchoolAdmissions",
-          "label": "high school admissions"
+          "label": "přijímací řízení na SŠ"
         },
         {
           "key": "schoolLeaving",
-          "label": "school leaving examinations"
+          "label": "maturita"
         },
         {
           "key": "otherTests",
-          "label": "other tests & exams"
+          "label": "jiné testy a zkoušky"
         }
       ],
-      "appendText": "We are preparing for: {exams}."
+      "appendText": "Připravujeme se na: {exams}."
     },
     "schedule": {
-      "pillLabel": "schedule",
-      "modalTitle": "Schedule",
-      "sectionLabel": "When would you like the first session?",
-      "timeLabel": "Select your preferred time of day",
-      "optional": "(optional)",
+      "pillLabel": "harmonogram",
+      "modalTitle": "Harmonogram",
+      "sectionLabel": "Kdy by mělo proběhnout první setkání?",
+      "timeLabel": "Zvolte preferovanou denní dobu",
+      "optional": "(volitelné)",
       "items": [
         {
           "key": "morning",
-          "label": "Morning"
+          "label": "Ráno"
         },
         {
           "key": "afternoon",
-          "label": "Afternoon"
+          "label": "Odpoledne"
         },
         {
           "key": "evening",
-          "label": "Evening"
+          "label": "Večer"
         }
       ],
-      "appendText": "The first session would ideally be on {date}.",
-      "appendTextWithTimes": "The first session would ideally be on {date}, preferably in the {times}."
+      "appendText": "První lekce by se měla ideálně uskutečnit v termínu: {date}.",
+      "appendTextWithTimes": "První lekce by se měla ideálně uskutečnit v termínu: {date}, nejlépe v čase: {times}."
     },
     "teachingStyle": {
-      "pillLabel": "teaching style",
-      "modalTitle": "Teaching style",
-      "sectionLabel": "What's your preferred teaching style?",
-      "traditional": "Traditional",
-      "forestSchool": "Forest School / Outdoor",
+      "pillLabel": "styl výuky",
+      "modalTitle": "Styl výuky",
+      "sectionLabel": "Jaký styl výuky upřednostňujete?",
+      "traditional": "Tradiční",
+      "forestSchool": "Lesní škola / venkovní výuka",
       "montessori": "Montessori",
       "waldorf": "Waldorf",
-      "appendText": "Our preferred teaching style is: {styles}."
+      "appendText": "Náš preferovaný styl výuky je: {styles}."
     },
     "cleaningSupplies": {
-      "pillLabel": "cleaning supplies",
-      "modalTitle": "Cleaning supplies",
-      "sectionLabel": "Who provides the cleaning supplies?",
-      "noPreference": "No preference",
-      "familyProvides": "Family provides",
-      "sitterProvides": "Sitter provides",
-      "familyProvidesSummary": "the family",
-      "sitterProvidesSummary": "the sitter",
-      "appendText": "Cleaning supplies will be provided by {provider}.",
-      "appendNoPreferenceText": "We have no preference on who provides the cleaning supplies."
+      "pillLabel": "čisticí prostředky",
+      "modalTitle": "Čisticí prostředky",
+      "sectionLabel": "Kdo zajistí čisticí prostředky?",
+      "noPreference": "Je mi to jedno",
+      "familyProvides": "Zajistí rodina",
+      "sitterProvides": "Zajistí hlídačka",
+      "familyProvidesSummary": "rodina",
+      "sitterProvidesSummary": "hlídačka",
+      "appendText": "Čisticí prostředky zajistí {provider}.",
+      "appendNoPreferenceText": "Nemáme vyhraněnou preferenci ohledně zajištění čisticích prostředků."
     },
     "daysTimes": {
-      "pillLabel": "days & times",
-      "modalTitle": "When and how often?",
-      "appendNotSureText": "We are still flexible about the days and times.",
-      "appendRegularText": "We are looking for regular help.",
-      "appendRegularWithDetails": "We are looking for regular help: {details}.",
-      "appendLongtermText": "We are looking for long-term help.",
-      "appendOneTimeText": "We need one-time help on {date} from {fromTime} to {toTime}.",
-      "appendOneTimeOvernightText": "We need one-time overnight help from {fromDate} {fromTime} to {toDate} {toTime}."
+      "pillLabel": "dny a časy",
+      "modalTitle": "Kdy a jak často?",
+      "appendNotSureText": "Ohledně konkrétních dnů a časů jsme stále flexibilní.",
+      "appendRegularText": "Hledáme pravidelnou pomoc.",
+      "appendRegularWithDetails": "Hledáme pravidelnou pomoc: {details}.",
+      "appendLongtermText": "Hledáme dlouhodobou pomoc.",
+      "appendOneTimeText": "Hledáme jednorázovou pomoc na {date} od {fromTime} do {toTime}.",
+      "appendOneTimeOvernightText": "Hledáme jednorázové hlídání přes noc od {fromDate} {fromTime} do {toDate} {toTime}."
     },
     "specialOccasions": {
-      "pillLabel": "special occasions",
-      "modalTitle": "Special occasions",
-      "sectionLabel": "Need help for an event?",
-      "parties": "Parties",
-      "holidays": "Holidays",
-      "overnightCare": "Overnight care",
-      "childrensGroups": "Children's groups",
-      "weddings": "Weddings",
-      "appendText": "We would also appreciate help for special occasions such as: {occasions}."
+      "pillLabel": "zvláštní příležitosti",
+      "modalTitle": "Speciální příležitosti",
+      "sectionLabel": "Potřebujete pomoc na konkrétní událost?",
+      "parties": "Oslavy",
+      "holidays": "Dovolené / Prázdniny",
+      "overnightCare": "Hlídání přes noc",
+      "childrensGroups": "Dětské skupiny",
+      "weddings": "Svatby",
+      "appendText": "Ocenili bychom pomoc také při zvláštních příležitostech, jako jsou: {occasions}."
     },
     "skillsTalents": {
-      "pillLabel": "skills",
-      "modalTitle": "Preferred skills & talents",
-      "sectionLabel": "Which activities would you like the sitter to engage in?",
-      "singing": "Singing",
-      "music": "Music",
-      "sports": "Sports",
-      "dramaDance": "Drama or Dance",
-      "artsCrafts": "Arts and Crafts",
-      "extraLabel": "Anything else?",
-      "extraPlaceholder": "e.g., baking, chess, yoga...",
-      "appendText": "It would be great if the sitter could support activities such as: {skills}.",
-      "appendExtraText": "Additional activities we care about: {note}."
+      "pillLabel": "dovednosti",
+      "modalTitle": "Preferované dovednosti",
+      "sectionLabel": "Do jakých činností byste rádi hlídačku zapojili?",
+      "singing": "Zpěv",
+      "music": "Hudba",
+      "sports": "Sport",
+      "dramaDance": "Divadlo nebo tanec",
+      "artsCrafts": "Tvoření a ruční práce",
+      "extraLabel": "Něco dalšího?",
+      "extraPlaceholder": "např. pečení, šachy, jóga...",
+      "appendText": "Bylo by skvělé, kdyby hlídačka mohla podpořit aktivity jako: {skills}.",
+      "appendExtraText": "Další činnosti, na kterých nám záleží: {note}."
     },
     "parentingStyle": {
-      "pillLabel": "parenting style",
-      "modalTitle": "Parenting philosophy",
-      "sectionLabel": "Which approach do you use at home? We’ll look for sitters who share your values.",
-      "traditional": "Traditional",
-      "respectfulParenting": "Respectful parenting",
-      "forestSchool": "Forest School / Outdoor",
+      "pillLabel": "výchovný styl",
+      "modalTitle": "Výchovná filozofie",
+      "sectionLabel": "Jaký přístup používáte u vás doma? Budeme hledat hlídačky, které sdílejí vaše hodnoty.",
+      "traditional": "Tradiční",
+      "respectfulParenting": "Respektující výchova",
+      "forestSchool": "Lesní škola / venkovní přístup",
       "montessori": "Montessori",
       "waldorf": "Waldorf",
-      "appendText": "Our parenting style is closest to: {styles}."
+      "appendText": "Náš výchovný styl je nejblíže přístupu: {styles}."
     },
     "price": {
-      "modalTitle": "Zadejte vaše cenové očekávání",
-      "label": "Nastavte cenu",
+      "modalTitle": "Zadejte svou představu o ceně",
+      "label": "Nastavit cenu",
       "appendText": "Nabízíme {price}."
     }
   },
   "locationTutoring": {
-    "heroTitle": "Kde chcete doučovat?",
-    "heroSub": "Kde chcete, aby vaše dítě dostávalo hodiny?",
+    "heroTitle": "Kde má doučování probíhat?",
+    "heroSub": "V jakém prostředí si lekce představujete?",
     "sectionLabel": "Vyberte jedno nebo více míst",
-    "studentPlace": "U žáka doma",
+    "studentPlace": "U studenta doma",
     "tutorPlace": "U doučovatele",
-    "online": "Online (video výuka)",
-    "validationAlert": "Prosím vyberte alespoň jedno místo"
+    "online": "Online (přes video)",
+    "validationAlert": "Vyberte prosím alespoň jedno místo"
   },
   "subjects": {
     "heroTitle": "Předměty",
     "heroSub": "Vyberte jeden nebo více předmětů",
     "languagesLabel": "Jazyky",
-    "scienceLabel": "Vědy",
+    "scienceLabel": "Přírodní vědy",
     "musicLabel": "Hudba",
     "moreLanguages": "+ další jazyky",
-    "moreMusic": "+ další hudební nástroje",
+    "moreMusic": "+ další nástroje",
     "otherLabel": "Jakýkoli jiný předmět",
-    "otherPlaceholder": "Programování, tanec, dějepis…",
+    "otherPlaceholder": "Programování, tanec, historie...",
     "cs": "Čeština",
     "en": "Angličtina",
     "de": "Němčina",
@@ -560,36 +560,36 @@ window.STRINGS = {
     "emailLabel": "E-mail",
     "emailPlaceholder": "jana.novakova@priklad.cz",
     "emailPrefsLabel": "Vyberte e-maily, které od nás chcete dostávat",
-    "emailMonthly": "Měsíční dávka inspirace v tématech šitých na míru",
+    "emailMonthly": "Měsíční inspirace s tématy na míru",
     "emailOffers": "Slevy a nabídky od Hlídačky.cz a partnerů"
   },
   "phone": {
     "heroTitle": "Telefonní číslo",
-    "heroSub": "Vaše soukromé číslo s mezinárodní předvolbou. Jeho zobrazením získáte více kontaktů od hlídaček.",
+    "heroSub": "Vaše soukromé číslo s mezinárodní předvolbou. Jeho uvedení vám pomůže získat více nabídek od hlídaček.",
     "inputLabel": "Telefonní číslo",
     "inputPlaceholder": "777 123 456",
     "skipLink": "Udělám to později"
   },
   "success": {
     "heroTitle": "A je to!",
-    "heroSub": "Váš inzerát v místě {city} byl zveřejněn.",
-    "body": "Po schválení zobrazíme váš inzerát hlídačkám ve vašem městě. Jejich odpovědi uvidíte ve svých zprávách a o každé nové vás rovnou informujeme.",
+    "heroSub": "Váš inzerát pro město {city} byl zveřejněn.",
+    "body": "Váš inzerát rozešleme hlídačkám ve vašem okolí. Jejich odpovědi se vám zobrazí ve zprávách a o každé nové reakci vás budeme informovat.",
     "btnContinue": "Pokračovat",
     "editLink": "Upravit inzerát"
   },
   "children": {
     "modalTitle": "Informace o dětech",
-    "sectionLabel": "Kolik dětí potřebuje péči?",
-    "helperText": "Přidejte věk a pohlaví každého dítěte, ať hlídačky lépe pochopí, koho budete potřebovat pohlídat.",
+    "sectionLabel": "O kolik dětí je třeba se postarat?",
+    "helperText": "Uveďte věk a pohlaví každého dítěte, aby hlídačky získaly jasnou představu o svých úkolech.",
     "childLabel": "dítě",
     "boy": "Chlapec",
     "girl": "Dívka",
     "ageLabel": "Věk",
     "monthSingular": "měsíc",
-    "monthPlural": "měsíce",
+    "monthPlural": "měsíců",
     "yearSingular": "rok",
-    "yearPlural": "roky",
-    "appendText": "Hledáme péči pro {desc}.",
+    "yearPlural": "let",
+    "appendText": "Máme {desc}.",
     "summaryBoy": "chlapce ({ageLabel})",
     "summaryGirl": "dívku ({ageLabel})",
     "and": "a",
@@ -598,89 +598,90 @@ window.STRINGS = {
       "2.",
       "3.",
       "4.",
-      "5+"
+      "5.+"
+    ],
+    "pillLabel": "děti",
+    "years": "let"
+  },
+  "childrenTutor": {
+    "modalTitle": "Informace o studentovi",
+    "sectionLabel": "Pro kolik studentů doučování hledáte?",
+    "childLabel": "student",
+    "boy": "Chlapec",
+    "girl": "Dívka",
+    "ageLabel": "Věk",
+    "lessThanTwo": "méně než 2",
+    "yearSingular": "rok",
+    "yearPlural": "let",
+    "appendText": "Hledáme doučování pro {desc}.",
+    "summaryBoy": "chlapce ({ageLabel})",
+    "summaryGirl": "dívku ({ageLabel})",
+    "and": "a",
+    "childOrdinals": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.+"
     ],
     "pillLabel": "děti"
   },
-  "childrenTutor": {
-    "modalTitle": "Student information",
-    "sectionLabel": "How many students need tutoring?",
-    "childLabel": "student",
-    "boy": "Boy",
-    "girl": "Girl",
-    "ageLabel": "Age",
-    "lessThanTwo": "less than 2",
-    "yearSingular": "year",
-    "yearPlural": "years",
-    "appendText": "We are looking for tutoring for {desc}.",
-    "summaryBoy": "a boy ({ageLabel})",
-    "summaryGirl": "a girl ({ageLabel})",
-    "and": "and",
-    "childOrdinals": [
-      "1st",
-      "2nd",
-      "3rd",
-      "4th",
-      "5+"
-    ],
-    "pillLabel": "children"
-  },
   "transport": {
     "pillLabel": "doprava",
-    "modalTitle": "Místo a doprava",
-    "modalTitleSenior": "Transport & travel",
-    "appendText": "Důležité je pro nás také: {items}.",
+    "modalTitle": "Místo a dojíždění",
+    "modalTitleSenior": "Doprava a cestování",
+    "appendText": "Také by nám pomohlo, kdyby hlídačka nabízela: {items}.",
     "and": "a",
     "location": {
-      "sectionLabel": "Kde potřebujete pomoct?",
+      "sectionLabel": "Kde potřebujete pomoc?",
       "items": {
         "atMyHome": {
           "label": "U nás doma",
-          "summary": "hlídání u nás doma"
+          "summary": "péči u nás doma"
         },
         "atSitterHome": {
           "label": "U hlídačky doma",
-          "summary": "možnost hlídání u hlídačky doma"
+          "summary": "možnost péče u hlídačky doma"
         }
       }
     },
     "driver": {
-      "sectionLabel": "Je potřeba řídit?",
+      "sectionLabel": "Požadujete řidičský průkaz?",
       "items": {
         "hasCar": {
           "label": "Hlídačka má vlastní auto",
           "summary": "vlastní auto"
         },
         "comfortableDriving": {
-          "label": "Hlídačka zvládne řídit děti",
-          "sub": "(má řidičský průkaz a zkušenosti s jízdou s dětmi)",
-          "summary": "řidičský průkaz a zkušenost s řízením dětí"
+          "label": "Hlídačce nevadí vozit děti",
+          "sub": "(Hlídačka má platný řidičský průkaz a zkušenosti s převážením dětí)",
+          "summary": "platný řidičský průkaz a zkušenost s vozením dětí"
         }
       }
     },
     "driverSenior": {
-      "sectionLabel": "Is driving required?",
+      "sectionLabel": "Je vyžadováno řízení auta?",
       "items": {
         "hasCar": {
-          "label": "Sitter has their own car",
-          "summary": "their own car"
+          "label": "Hlídačka má vlastní auto",
+          "summary": "vlastní auto"
         },
         "comfortableDriving": {
-          "label": "Sitter is comfortable driving seniors",
-          "sub": "Sitter has a valid license and experience driving seniors (e.g. to doctor’s appointments or errands).",
-          "summary": "a valid license and experience driving seniors"
+          "label": "Hlídačce nevadí vozit seniory",
+          "sub": "Hlídačka má platný řidičský průkaz a zkušenosti s doprovodem seniorů (např. k lékaři nebo na nákupy).",
+          "summary": "platný řidičský průkaz a zkušenost s převážením seniorů"
         }
       }
     }
   },
   "onboarding": {
-    "navTitle": "Onboarding",
-    "title": "Hlídačky, které odpovídají vašim preferencím",
-    "sub": "👶 Zkušené, dostupné na částečný úvazek, vhodné pro různé věkové kategorie",
+    "navTitle": "Úvodní nastavení",
+    "title": "Hlídačky odpovídající vašim preferencím",
+    "sub": "👶 Zkušené, dostupné na částečný úvazek a vhodné pro všechny věkové skupiny",
     "verified": "Ověřeno",
-    "readMore": "číst více",
-    "showMore": "Zobrazit více hlídaček",
-    "ctaText": "Okamžitý přístup k hlídačkám — staňte se členem hned teď!",
+    "readMore": "přečíst více",
+    "showMore": "Zobrazit další hlídačky",
+    "ctaText": "Získejte okamžitý přístup k hlídačkám – staňte se členem hned teď!",
     "ctaBtn": "Zobrazit možnosti členství",
     "restart": "Začít znovu"
   }
