@@ -192,10 +192,7 @@
 
     .selector-chip:hover {
       border-color: #2A3539;
-    }
-
-    .selector-chip:hover img {
-      filter: brightness(0) saturate(100%) invert(15%) sepia(9%) saturate(822%) hue-rotate(153deg) brightness(95%) contrast(89%);
+      background: #F7F7F7;
     }
 
     .selector-chip img {
@@ -338,6 +335,20 @@
     });
 
     document.querySelectorAll('.selector-chip').forEach(function(button) {
+      var image = button.querySelector('img');
+
+      button.addEventListener('mouseenter', function() {
+        if (!button.classList.contains('is-selected')) {
+          image.src = button.getAttribute('data-on');
+        }
+      });
+
+      button.addEventListener('mouseleave', function() {
+        if (!button.classList.contains('is-selected')) {
+          image.src = button.getAttribute('data-off');
+        }
+      });
+
       button.addEventListener('click', function() {
         document.querySelectorAll('.selector-chip').forEach(function(other) {
           var img = other.querySelector('img');
@@ -346,7 +357,6 @@
           img.src = other.getAttribute('data-off');
         });
 
-        var image = button.querySelector('img');
         button.classList.add('is-selected');
         button.setAttribute('aria-pressed', 'true');
         image.src = button.getAttribute('data-on');
