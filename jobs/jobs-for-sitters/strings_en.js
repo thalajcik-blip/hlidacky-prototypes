@@ -5,6 +5,7 @@
     "sittersHub": {
       "navTitle": "Jobs for sitters",
       "topNavTitle": "Jobs",
+      "selectorLabel": "Show all job offerings for",
       "title": "Jobs for sitters",
       "subtitle": "The current job-search screen prototype for sitters.",
       "bodyTitle": "Prototype scaffold",
