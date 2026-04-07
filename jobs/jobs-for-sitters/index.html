@@ -190,9 +190,9 @@
       transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
-    .selector-chip:hover {
+    .selector-chip:not(.is-selected):hover {
       border-color: #2A3539;
-      background: #F7F7F7;
+      background: #FFF;
     }
 
     .selector-chip img {
@@ -208,6 +208,7 @@
 
     .selector-chip.is-selected:hover {
       border-color: var(--chip-color, #F96073);
+      background: #FFF;
     }
 
     .selector-chip--babysitting { --chip-color: #F96073; }
@@ -564,18 +565,6 @@
 
     document.querySelectorAll('.selector-chip').forEach(function(button) {
       var image = button.querySelector('img');
-
-      button.addEventListener('mouseenter', function() {
-        if (!button.classList.contains('is-selected')) {
-          image.src = button.getAttribute('data-on');
-        }
-      });
-
-      button.addEventListener('mouseleave', function() {
-        if (!button.classList.contains('is-selected')) {
-          image.src = button.getAttribute('data-off');
-        }
-      });
 
       button.addEventListener('click', function() {
         var isSelected = button.classList.contains('is-selected');

@@ -190,9 +190,9 @@
       transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
-    .selector-chip:hover {
+    .selector-chip:not(.is-selected):hover {
       border-color: #2A3539;
-      background: #F7F7F7;
+      background: #FFF;
     }
 
     .selector-chip img {
@@ -208,6 +208,7 @@
 
     .selector-chip.is-selected:hover {
       border-color: var(--chip-color, #F96073);
+      background: #FFF;
     }
 
     .selector-chip--babysitting { --chip-color: #F96073; }
@@ -360,18 +361,17 @@
       position: relative;
       flex: 1 1 auto;
       min-width: 0;
-      overflow: hidden;
     }
 
     .location-suggestions {
-      position: absolute;
-      z-index: 20;
-      top: calc(100% + 4px);
-      left: -31px;
-      width: calc(100% + 61px);
+      position: fixed;
+      z-index: 40;
+      top: 0;
+      left: 0;
+      width: 0;
       background: #fff;
       border: 1px solid #E5E5EA;
-      border-radius: 8px;
+      border-radius: 0 0 8px 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.10);
       padding: 4px 0;
       margin: 0;
@@ -566,18 +566,6 @@
     document.querySelectorAll('.selector-chip').forEach(function(button) {
       var image = button.querySelector('img');
 
-      button.addEventListener('mouseenter', function() {
-        if (!button.classList.contains('is-selected')) {
-          image.src = button.getAttribute('data-on');
-        }
-      });
-
-      button.addEventListener('mouseleave', function() {
-        if (!button.classList.contains('is-selected')) {
-          image.src = button.getAttribute('data-off');
-        }
-      });
-
       button.addEventListener('click', function() {
         var isSelected = button.classList.contains('is-selected');
         button.classList.toggle('is-selected', !isSelected);
@@ -590,10 +578,20 @@
       var input = document.getElementById('sitters-location-input');
       var list = document.getElementById('sitters-location-suggestions');
       var clear = document.getElementById('sitters-location-clear');
+      var frame = document.querySelector('.phone-frame');
+      var scrollRoot = document.querySelector('.screen-scroll');
       if (!input || !list || !clear) return;
 
       function pinIcon() {
         return '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" fill="#BEC2CE"/></svg>';
+      }
+
+      function positionList() {
+        var inputRect = input.getBoundingClientRect();
+        var frameRect = frame ? frame.getBoundingClientRect() : { left: 0, width: window.innerWidth };
+        list.style.top = (inputRect.bottom + 4) + 'px';
+        list.style.left = frameRect.left + 'px';
+        list.style.width = frameRect.width + 'px';
       }
 
       function renderSuggestions(query) {
@@ -606,8 +604,12 @@
           return '<li>' + pinIcon() + item + '</li>';
         }).join('');
 
-        if (filtered.length) list.classList.add('open');
-        else list.classList.remove('open');
+        if (filtered.length) {
+          positionList();
+          list.classList.add('open');
+        } else {
+          list.classList.remove('open');
+        }
 
         list.querySelectorAll('li').forEach(function(li, index) {
           li.addEventListener('mousedown', function(e) {
@@ -635,6 +637,20 @@
         input.focus();
         renderSuggestions('');
       });
+
+      window.addEventListener('resize', function() {
+        if (list.classList.contains('open')) positionList();
+      });
+
+      window.addEventListener('scroll', function() {
+        if (list.classList.contains('open')) positionList();
+      }, true);
+
+      if (scrollRoot) {
+        scrollRoot.addEventListener('scroll', function() {
+          if (list.classList.contains('open')) positionList();
+        });
+      }
     })();
 
     (function initSittersRadiusSelect() {
