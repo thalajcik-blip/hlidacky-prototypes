@@ -6,7 +6,6 @@
   <title>Translation Editor — Hlídačky.cz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="/strings.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -566,6 +565,7 @@
 
   <div class="toolbar">
     <div class="toolbar-left">
+      <select class="section-filter" id="prototype-filter"></select>
       <input type="text" class="search-input" placeholder="🔍 Search keys or text…" id="search-input">
       <select class="section-filter" id="section-filter">
         <option value="">All sections</option>
@@ -604,6 +604,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
+const PROTOTYPES = [
+  { id: 'jobs', label: 'Jobs prototype', base: '/jobs' }
+];
+
 const LANGUAGES = [
   { code: 'CZ', label: 'Čeština',      flag: '🇨🇿' },
   { code: 'SK', label: 'Slovenčina',   flag: '🇸🇰' },
@@ -620,6 +624,7 @@ let allLangs  = {};     // { CZ: {flat}, SK: {flat}, … }
 let touched   = {};     // { SK: Set{key, …}, EN: Set{key, …}, … } — confirmed by upload or manual edit
 let currentLang = 'EN';
 let pendingChanges = {};
+let currentPrototype = null;
 
 /* ── Flatten / Unflatten ─────────────────────────────────── */
 
@@ -669,8 +674,12 @@ function unflatten(flat) {
 
 /* ── Storage ─────────────────────────────────────────────── */
 
-function storageKey(lang) { return 'hlidacky_strings_' + lang; }
-function touchedKey(lang)  { return 'hlidacky_touched_' + lang; }
+function prototypeStoragePrefix() {
+  return 'hlidacky_' + (currentPrototype ? currentPrototype.id : 'jobs') + '_';
+}
+
+function storageKey(lang) { return prototypeStoragePrefix() + 'strings_' + lang; }
+function touchedKey(lang)  { return prototypeStoragePrefix() + 'touched_' + lang; }
 
 function saveLang(lang, flat) {
   localStorage.setItem(storageKey(lang), JSON.stringify(flat));
@@ -690,17 +699,79 @@ function loadLang(lang) {
   return s ? JSON.parse(s) : null;
 }
 
+function getPrototypeById(id) {
+  return PROTOTYPES.find(function(proto) { return proto.id === id; }) || PROTOTYPES[0];
+}
+
+function getPrototypeQueryParam() {
+  return new URLSearchParams(location.search).get('prototype');
+}
+
+function rememberPrototype(id) {
+  localStorage.setItem('hlidacky_current_prototype', id);
+}
+
+function getInitialPrototype() {
+  return getPrototypeById(
+    getPrototypeQueryParam() ||
+    localStorage.getItem('hlidacky_current_prototype') ||
+    PROTOTYPES[0].id
+  );
+}
+
+function prototypeAssetPath(path) {
+  return currentPrototype.base + '/' + path.replace(/^\/+/, '');
+}
+
+function ghRepoPath(path) {
+  return currentPrototype.base.replace(/^\/+/, '') + '/' + path.replace(/^\/+/, '');
+}
+
+function parseBaseStrings(text) {
+  if (!text) return null;
+  var match = text.match(/window\.STRINGS\s*=\s*(\{[\s\S]*\})\s*;/);
+  if (!match) return null;
+  try {
+    return flatten(JSON.parse(match[1]));
+  } catch (e) {
+    return null;
+  }
+}
+
 /* ── Init ─────────────────────────────────────────────────── */
 
-function init() {
-  if (typeof STRINGS === 'undefined') {
+async function init() {
+  currentPrototype = getInitialPrototype();
+  pendingChanges = {};
+  baseSource = {};
+  enSource = {};
+  czSource = {};
+  allLangs = {};
+  touched = {};
+
+  renderPrototypeFilter();
+
+  var resp;
+  try {
+    resp = await fetch(prototypeAssetPath('strings.js'));
+  } catch (e) {}
+  if (!resp || !resp.ok) {
     document.querySelector('.main').innerHTML =
       '<div style="padding:60px;text-align:center;color:#c0392b;font-size:15px">' +
-      'Error: strings.js could not be loaded.</div>';
+      'Error: strings.js could not be loaded for ' + currentPrototype.label + '.</div>';
     return;
   }
 
-  baseSource = flatten(STRINGS);
+  var text = await resp.text();
+  var parsed = parseBaseStrings(text);
+  if (!parsed) {
+    document.querySelector('.main').innerHTML =
+      '<div style="padding:60px;text-align:center;color:#c0392b;font-size:15px">' +
+      'Error: strings.js could not be parsed for ' + currentPrototype.label + '.</div>';
+    return;
+  }
+
+  baseSource = parsed;
   czSource = Object.assign({}, baseSource);
   enSource = Object.assign({}, baseSource);
 
@@ -752,7 +823,7 @@ function parsePublishedOverrides(text) {
 }
 
 async function loadPublishedLangFile(langCode) {
-  var path = '/strings_' + langCode.toLowerCase() + '.js';
+  var path = prototypeAssetPath('strings_' + langCode.toLowerCase() + '.js');
   try {
     var resp = await fetch(path);
     if (!resp.ok) return;
@@ -780,6 +851,14 @@ async function loadPublishedLangFile(langCode) {
     });
     saveLang(langCode, current);
   } catch (e) {}
+}
+
+function renderPrototypeFilter() {
+  var sel = document.getElementById('prototype-filter');
+  sel.innerHTML = PROTOTYPES.map(function(proto) {
+    return '<option value="' + proto.id + '">' + proto.label + '</option>';
+  }).join('');
+  sel.value = currentPrototype.id;
 }
 
 // Fetch published lang .js files and sync any keys missing from localStorage into allLangs.
@@ -976,6 +1055,15 @@ function showToast(msg) {
 }
 
 function bindToolbar() {
+  document.getElementById('prototype-filter').addEventListener('change', function(e) {
+    if (Object.keys(pendingChanges).length > 0) applyAndSave();
+    currentPrototype = getPrototypeById(e.target.value);
+    rememberPrototype(currentPrototype.id);
+    history.replaceState(null, '', '?prototype=' + encodeURIComponent(currentPrototype.id));
+    pendingChanges = {};
+    init();
+  });
+
   document.getElementById('btn-save').addEventListener('click', function() {
     applyAndSave();
     showToast('✓ Changes saved');
@@ -997,7 +1085,11 @@ function bindToolbar() {
     applyAndSave();
     const nested = unflatten(allLangs[currentLang]);
     const json   = JSON.stringify(nested, null, 2);
-    downloadFile(json, 'strings_' + currentLang.toLowerCase() + '.json', 'application/json');
+    downloadFile(
+      json,
+      currentPrototype.id + '_strings_' + currentLang.toLowerCase() + '.json',
+      'application/json'
+    );
   });
 
   document.getElementById('btn-upload').addEventListener('click', function() {
@@ -1076,7 +1168,7 @@ function setToken(t) {
 }
 
 function ghFilePath(lang) {
-  return lang === 'CZ' ? 'strings.js' : 'strings_' + lang.toLowerCase() + '.js';
+  return ghRepoPath(lang === 'CZ' ? 'strings.js' : 'strings_' + lang.toLowerCase() + '.js');
 }
 
 
