@@ -10,13 +10,13 @@
     (function() {
       var langs = ['en', 'sk', 'hu', 'at', 'hr', 'cz'];
       var segments = location.pathname.split('/').filter(Boolean);
-      var first = segments[0] || '';
-      var second = segments[1] || '';
-      var base = first && langs.indexOf(first) === -1 ? '/' + first : '';
-      var lang = langs.indexOf(first) !== -1 ? first : (langs.indexOf(second) !== -1 ? second : '');
-      document.write('<scr' + 'ipt src="' + (base || '') + '/strings.js"><\/scr' + 'ipt>');
+      var last = segments[segments.length - 1] || '';
+      var lang = langs.indexOf(last) !== -1 ? last : '';
+      var baseSegments = lang ? segments.slice(0, -1) : segments.slice();
+      var base = baseSegments.length ? '/' + baseSegments.join('/') : '';
+      document.write('<scr' + 'ipt src="' + base + '/strings.js"><\/scr' + 'ipt>');
       if (lang !== 'cz') {
-        document.write('<scr' + 'ipt src="' + (base || '') + '/strings_' + (lang || 'en') + '.js"><\/scr' + 'ipt>');
+        document.write('<scr' + 'ipt src="' + base + '/strings_' + (lang || 'en') + '.js"><\/scr' + 'ipt>');
       }
     })();
   </script>
