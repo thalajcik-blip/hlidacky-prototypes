@@ -350,16 +350,10 @@
       });
 
       button.addEventListener('click', function() {
-        document.querySelectorAll('.selector-chip').forEach(function(other) {
-          var img = other.querySelector('img');
-          other.classList.remove('is-selected');
-          other.setAttribute('aria-pressed', 'false');
-          img.src = other.getAttribute('data-off');
-        });
-
-        button.classList.add('is-selected');
-        button.setAttribute('aria-pressed', 'true');
-        image.src = button.getAttribute('data-on');
+        var isSelected = button.classList.contains('is-selected');
+        button.classList.toggle('is-selected', !isSelected);
+        button.setAttribute('aria-pressed', isSelected ? 'false' : 'true');
+        image.src = isSelected ? button.getAttribute('data-off') : button.getAttribute('data-on');
       });
     });
   </script>
