@@ -55,13 +55,6 @@
       flex-direction: column;
     }
 
-    .screen-scroll {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      background: var(--panel);
-    }
-
     .status-bar {
       height: 52px;
       padding: 14px 21px 10px 23px;
@@ -69,9 +62,16 @@
       align-items: flex-start;
       justify-content: space-between;
       background: #fff;
-      position: sticky;
-      top: 0;
+      flex-shrink: 0;
+      position: relative;
       z-index: 5;
+    }
+
+    .screen-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--panel);
     }
 
     .status-time {
@@ -152,16 +152,15 @@
 </head>
 <body>
   <main class="phone-frame">
-    <div class="screen-scroll">
-      <div class="status-bar">
-        <div class="status-time">9:41</div>
-        <div class="status-icons" aria-label="Phone status">
-          <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
-          <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
-          <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
-        </div>
+    <div class="status-bar">
+      <div class="status-time">9:41</div>
+      <div class="status-icons" aria-label="Phone status">
+        <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
+        <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
       </div>
-
+    </div>
+    <div class="screen-scroll">
       <section class="content">
         <article class="placeholder-card">
           <h1 data-i18n="sittersHub.title"></h1>
