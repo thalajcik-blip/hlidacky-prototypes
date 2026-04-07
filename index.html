@@ -101,6 +101,13 @@
       margin-top: 4px;
     }
 
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -136,11 +143,118 @@
       background: #0a8c20;
     }
 
+    .text-link {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--purple);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .lang-modal[hidden] {
+      display: none;
+    }
+
+    .lang-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(30, 40, 46, 0.35);
+      backdrop-filter: blur(4px);
+    }
+
+    .lang-dialog {
+      width: min(440px, 100%);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(221, 226, 229, 0.95);
+      background: #fff;
+      box-shadow: 0 18px 50px rgba(49, 72, 87, 0.18);
+    }
+
+    .lang-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .lang-head h3 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .lang-head p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .lang-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #e5e5ea;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+    }
+
+    .lang-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .lang-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+      padding: 14px 16px 16px;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 16px;
+      line-height: 22px;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+    }
+
+    .lang-item:hover {
+      background: #f7f7f7;
+    }
+
+    .lang-item strong {
+      font-weight: 400;
+    }
+
     @media (max-width: 640px) {
       body { padding: 16px; }
       .hero, .content { padding-left: 20px; padding-right: 20px; }
       .actions { flex-direction: column; }
+      .card-meta { align-items: flex-start; }
       .btn { width: 100%; }
+      .lang-modal { padding: 16px; }
+      .lang-dialog { padding: 20px; }
     }
   </style>
 </head>
@@ -159,8 +273,54 @@
           <a class="btn primary" href="/jobs/">Open prototype</a>
           <a class="btn" href="/strings/?prototype=jobs">Open strings editor</a>
         </div>
+        <div class="card-meta">
+          <button class="text-link" type="button" id="open-language-picker">Choose language</button>
+        </div>
       </article>
     </section>
   </main>
+  <div class="lang-modal" id="language-modal" hidden>
+    <div class="lang-dialog" role="dialog" aria-modal="true" aria-labelledby="language-dialog-title">
+      <div class="lang-head">
+        <div>
+          <h3 id="language-dialog-title">Choose language</h3>
+          <p>Open the Jobs for families prototype in a specific language version.</p>
+        </div>
+        <button class="lang-close" type="button" id="close-language-picker" aria-label="Close language picker">×</button>
+      </div>
+      <div class="lang-list">
+        <a class="lang-item" href="/jobs/en/"><span>🇬🇧 <strong>English</strong></span><span>Open</span></a>
+        <a class="lang-item" href="/jobs/cz/"><span>🇨🇿 <strong>Čeština</strong></span><span>Open</span></a>
+        <a class="lang-item" href="/jobs/sk/"><span>🇸🇰 <strong>Slovenčina</strong></span><span>Open</span></a>
+        <a class="lang-item" href="/jobs/hu/"><span>🇭🇺 <strong>Magyar</strong></span><span>Open</span></a>
+        <a class="lang-item" href="/jobs/at/"><span>🇦🇹 <strong>Deutsch (AT)</strong></span><span>Open</span></a>
+        <a class="lang-item" href="/jobs/hr/"><span>🇭🇷 <strong>Hrvatski</strong></span><span>Open</span></a>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var modal = document.getElementById('language-modal');
+      var openBtn = document.getElementById('open-language-picker');
+      var closeBtn = document.getElementById('close-language-picker');
+
+      function openModal() {
+        modal.hidden = false;
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
+    })();
+  </script>
 </body>
 </html>
