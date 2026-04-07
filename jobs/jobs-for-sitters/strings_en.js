@@ -6,6 +6,8 @@
       "navTitle": "Jobs for sitters",
       "topNavTitle": "Jobs",
       "selectorLabel": "Show all job offerings for",
+      "locationValue": "Praha 2",
+      "radiusValue": "+20 km",
       "title": "Jobs for sitters",
       "subtitle": "The current job-search screen prototype for sitters.",
       "bodyTitle": "Prototype scaffold",

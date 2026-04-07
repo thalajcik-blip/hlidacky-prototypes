@@ -3,6 +3,8 @@ window.STRINGS = {
     "navTitle": "Práce pro hlídačky",
     "topNavTitle": "Jobs",
     "selectorLabel": "Show all job offerings for",
+    "locationValue": "Praha 2",
+    "radiusValue": "+20 km",
     "title": "Jobs for sitters",
     "subtitle": "Aktuální prototyp obrazovky hledání práce pro hlídačky.",
     "bodyTitle": "Prototyp se připravuje",

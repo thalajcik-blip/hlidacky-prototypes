@@ -221,6 +221,85 @@
       outline-offset: 2px;
     }
 
+    .form-demo-section {
+      display: flex;
+      width: 375px;
+      max-width: 100%;
+      padding: 0 20px;
+      margin: 0 auto;
+    }
+
+    .form-demo-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .jobs-field {
+      height: 52px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #FFF;
+      box-shadow: 0 1px 0 rgba(42, 53, 57, 0.04);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      min-width: 0;
+    }
+
+    .jobs-field--search {
+      gap: 12px;
+    }
+
+    .jobs-field--select {
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .jobs-field-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .jobs-field-icon img,
+    .jobs-field-icon svg,
+    .jobs-field-action svg {
+      display: block;
+      width: 28px;
+      height: 28px;
+    }
+
+    .jobs-field-value {
+      min-width: 0;
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.051px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .jobs-field-action {
+      margin-left: auto;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F96073;
+    }
+
     .placeholder-card {
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -311,6 +390,29 @@
             <button class="selector-chip selector-chip--tutoring" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt="Tutoring">
             </button>
+          </div>
+        </section>
+        <section class="form-demo-section" aria-label="Filters">
+          <div class="form-demo-grid">
+            <div class="jobs-field jobs-field--search">
+              <span class="jobs-field-icon" aria-hidden="true">
+                <img src="/doodles/magnifying-glass.svg" alt="">
+              </span>
+              <div class="jobs-field-value" data-i18n="sittersHub.locationValue"></div>
+              <span class="jobs-field-action" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M6 6L18 18M18 6L6 18" stroke="#F96073" stroke-width="2.6" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+            <div class="jobs-field jobs-field--select">
+              <div class="jobs-field-value" data-i18n="sittersHub.radiusValue"></div>
+              <span class="jobs-field-action" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9L12 15L18 9" stroke="#F96073" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
           </div>
         </section>
         <article class="placeholder-card">
