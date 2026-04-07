@@ -260,11 +260,12 @@
     }
 
     .jobs-field--location {
-      flex: 1 1 auto;
+      flex: 1 1 0;
       position: relative;
       justify-content: space-between;
       gap: 8px;
       overflow: hidden;
+      min-width: 0;
     }
 
     .jobs-field--select {
@@ -411,6 +412,10 @@
         max-height: none;
         border-radius: 0;
         box-shadow: none;
+      }
+
+      .form-demo-grid {
+        width: 100%;
       }
     }
   </style>
