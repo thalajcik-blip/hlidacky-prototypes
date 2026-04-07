@@ -67,6 +67,18 @@
       z-index: 5;
     }
 
+    .notch-pill {
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
     .screen-scroll {
       flex: 1;
       min-height: 0;
@@ -527,6 +539,7 @@
 <body>
   <main class="phone-frame">
     <div class="status-bar">
+      <div class="notch-pill"></div>
       <div class="status-time">9:41</div>
       <div class="status-icons" aria-label="Phone status">
         <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">

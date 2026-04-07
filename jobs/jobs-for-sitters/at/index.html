@@ -67,20 +67,16 @@
       z-index: 5;
     }
 
-    .phone-notch {
-      height: 44px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
     .notch-pill {
       width: 120px;
       height: 34px;
       background: #000;
       border-radius: 20px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
 
     .screen-scroll {
@@ -522,10 +518,6 @@
         display: none;
       }
 
-      .phone-notch {
-        display: none;
-      }
-
       .top-navbar {
         display: none;
       }
@@ -546,8 +538,8 @@
 </head>
 <body>
   <main class="phone-frame">
-    <div class="phone-notch"><div class="notch-pill"></div></div>
     <div class="status-bar">
+      <div class="notch-pill"></div>
       <div class="status-time">9:41</div>
       <div class="status-icons" aria-label="Phone status">
         <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
