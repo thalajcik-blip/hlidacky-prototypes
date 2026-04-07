@@ -681,9 +681,15 @@
 
       button.addEventListener('click', function() {
         var cards = Array.prototype.slice.call(grid.querySelectorAll('.job-advert-box'));
-        cards.slice(visibleCount, visibleCount + batchSize).forEach(function(card) {
+        var nextBatch = cards.slice(visibleCount, visibleCount + batchSize);
+        nextBatch.forEach(function(card) {
           card.classList.remove('is-hidden');
         });
+        if (nextBatch.length) {
+          requestAnimationFrame(function() {
+            nextBatch[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
         visibleCount = Math.min(visibleCount + batchSize, totalCards);
         syncButton();
       });
