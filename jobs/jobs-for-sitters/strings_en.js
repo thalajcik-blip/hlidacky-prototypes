@@ -4,7 +4,7 @@
   window.STRINGS = _dm(window.STRINGS, {
     "sittersHub": {
       "navTitle": "Jobs for sitters",
-      "topNavTitle": "Jobs",
+      "topNavTitle": "jobs",
       "title": "Jobs for sitters",
       "subtitle": "The current job-search screen prototype for sitters.",
       "bodyTitle": "Prototype scaffold",
