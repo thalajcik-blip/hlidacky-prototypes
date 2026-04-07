@@ -185,12 +185,43 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      padding: 0;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .selector-chip:hover {
+      border-color: #2A3539;
+    }
+
+    .selector-chip:hover img {
+      filter: brightness(0) saturate(100%) invert(15%) sepia(9%) saturate(822%) hue-rotate(153deg) brightness(95%) contrast(89%);
     }
 
     .selector-chip img {
       width: 24px;
       height: 24px;
       display: block;
+      transition: filter 0.15s ease;
+    }
+
+    .selector-chip.is-selected {
+      border-color: var(--chip-color, #F96073);
+    }
+
+    .selector-chip.is-selected:hover {
+      border-color: var(--chip-color, #F96073);
+    }
+
+    .selector-chip--babysitting { --chip-color: #F96073; }
+    .selector-chip--cleaning { --chip-color: #35CFEA; }
+    .selector-chip--pet-care { --chip-color: #00D98B; }
+    .selector-chip--senior-care { --chip-color: #FD8B25; }
+    .selector-chip--tutoring { --chip-color: #B85EFF; }
+
+    .selector-chip:focus-visible {
+      outline: 2px solid rgba(42, 53, 57, 0.25);
+      outline-offset: 2px;
     }
 
     .placeholder-card {
@@ -268,21 +299,21 @@
         <section class="selector-section">
           <div class="selector-section-label" data-i18n="sittersHub.selectorLabel"></div>
           <div class="selector-group" aria-label="Service filters">
-            <div class="selector-chip" aria-current="true">
+            <button class="selector-chip selector-chip--babysitting is-selected" type="button" aria-pressed="true" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt="Babysitting">
-            </div>
-            <div class="selector-chip">
+            </button>
+            <button class="selector-chip selector-chip--cleaning" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt="Cleaning">
-            </div>
-            <div class="selector-chip">
+            </button>
+            <button class="selector-chip selector-chip--pet-care" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt="Pet care">
-            </div>
-            <div class="selector-chip">
+            </button>
+            <button class="selector-chip selector-chip--senior-care" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt="Senior care">
-            </div>
-            <div class="selector-chip">
+            </button>
+            <button class="selector-chip selector-chip--tutoring" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg">
               <img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt="Tutoring">
-            </div>
+            </button>
           </div>
         </section>
         <article class="placeholder-card">
@@ -304,6 +335,22 @@
 
     document.querySelectorAll('[data-i18n]').forEach(function(node) {
       node.textContent = t(node.getAttribute('data-i18n'));
+    });
+
+    document.querySelectorAll('.selector-chip').forEach(function(button) {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('.selector-chip').forEach(function(other) {
+          var img = other.querySelector('img');
+          other.classList.remove('is-selected');
+          other.setAttribute('aria-pressed', 'false');
+          img.src = other.getAttribute('data-off');
+        });
+
+        var image = button.querySelector('img');
+        button.classList.add('is-selected');
+        button.setAttribute('aria-pressed', 'true');
+        image.src = button.getAttribute('data-on');
+      });
     });
   </script>
 </body>
