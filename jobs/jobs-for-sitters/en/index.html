@@ -1203,6 +1203,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      position: relative;
     }
 
     .job-advert-topline {
@@ -1262,6 +1263,74 @@
       width: 20px;
       height: 20px;
       display: block;
+    }
+
+    .job-advert-dismiss-menu {
+      position: absolute;
+      top: 28px;
+      right: 0;
+      z-index: 5;
+      width: min(260px, calc(100vw - 72px));
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      border: 1px solid #E5E5EA;
+      border-radius: 8px;
+      background: #FFF;
+      box-shadow: 0 8px 24px -8px rgba(42, 53, 57, 0.24);
+    }
+
+    .job-advert-dismiss-option {
+      width: 100%;
+      border: 0;
+      background: none;
+      padding: 10px 16px;
+      text-align: left;
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+    }
+
+    .job-advert-dismiss-option:hover {
+      background: #F7F7F7;
+    }
+
+    .job-advert-dismiss-menu {
+      position: absolute;
+      top: 28px;
+      right: 0;
+      z-index: 5;
+      width: min(260px, calc(100vw - 72px));
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      border: 1px solid #E5E5EA;
+      border-radius: 8px;
+      background: #FFF;
+      box-shadow: 0 8px 24px -8px rgba(42, 53, 57, 0.24);
+    }
+
+    .job-advert-dismiss-option {
+      width: 100%;
+      border: 0;
+      background: none;
+      padding: 10px 16px;
+      text-align: left;
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+    }
+
+    .job-advert-dismiss-option:hover {
+      background: #F7F7F7;
     }
 
     .job-advert-heading {
@@ -1727,7 +1796,9 @@
   </main>
   <script>
     window.sittersState = {
-      appliedServices: ['babysitting']
+      appliedServices: ['babysitting'],
+      dismissedJobIds: [],
+      openDismissJobId: null
     };
 
     function t(path) {
@@ -2150,6 +2221,14 @@
       var batchSize = 10;
       var visibleCount = 0;
       var reloadTimer = null;
+      var repliedSequence = 0;
+      var cardsData = Array.from({ length: totalCards }, function(_, index) {
+        return {
+          id: 'job-' + (index + 1),
+          status: 'new',
+          repliedOrder: null
+        };
+      });
 
       function esc(text) {
         return String(text)
@@ -2175,14 +2254,50 @@
         return '<svg class="job-advert-tag-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.25a1.375 1.375 0 1 0 0 2.75 1.375 1.375 0 0 0 0-2.75ZM3.417 9.75V7.958A1.958 1.958 0 0 1 5.375 6h1.25a1.958 1.958 0 0 1 1.958 1.958V9.75M2.667 5.333V6.5M9.333 5.333V6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       }
 
-      function cardMarkup(hidden) {
+      function activeTabKey() {
+        var activeTab = document.querySelector('.results-filter-tab.is-active .results-filter-tab-label');
+        if (!activeTab) return 'new';
+        var key = activeTab.getAttribute('data-i18n') || '';
+        return key.split('.').pop() || 'new';
+      }
+
+      function getFilteredCardsData() {
+        var tab = activeTabKey();
+        var newCards = cardsData.filter(function(card) {
+          return card.status === 'new';
+        });
+        var repliedCards = cardsData.filter(function(card) {
+          return card.status === 'replied';
+        }).sort(function(a, b) {
+          return (a.repliedOrder || 0) - (b.repliedOrder || 0);
+        });
+
+        if (tab === 'new') return newCards;
+        if (tab === 'replied') return repliedCards;
+        return newCards.concat(repliedCards);
+      }
+
+      function dismissMenuMarkup(card) {
+        if (window.sittersState.openDismissJobId !== card.id) return '';
+        var reasonKeys = ['location', 'rate', 'schedule', 'other'];
         return [
-          '<article class="job-advert-box', hidden ? ' is-hidden' : '', '">',
+          '<div class="job-advert-dismiss-menu" role="menu">',
+          reasonKeys.map(function(key) {
+            return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</button>';
+          }).join(''),
+          '</div>'
+        ].join('');
+      }
+
+      function cardMarkup(card, hidden) {
+        return [
+          '<article class="job-advert-box', hidden ? ' is-hidden' : '', '" data-job-id="', card.id, '">',
             '<div class="job-advert-card">',
               '<div class="job-advert-topline">',
                 '<div class="job-advert-posted"><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
-                '<button class="job-advert-close" type="button" aria-label="Close advert">', iconClose(), '</button>',
+                '<button class="job-advert-close" type="button" aria-label="Close advert" data-job-id="', card.id, '">', iconClose(), '</button>',
               '</div>',
+              dismissMenuMarkup(card),
               '<div class="job-advert-heading-group">',
                 '<div class="job-advert-heading">',
                   '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
@@ -2235,9 +2350,10 @@
 
       function renderCards() {
         var html = '';
-        for (var i = 0; i < totalCards; i++) {
-          html += cardMarkup(i >= visibleCount);
-        }
+        var filteredCards = getFilteredCardsData();
+        filteredCards.forEach(function(card, index) {
+          html += cardMarkup(card, index >= visibleCount);
+        });
         grid.innerHTML = html;
       }
 
@@ -2251,7 +2367,7 @@
       }
 
       function syncButton() {
-        button.style.display = visibleCount < totalCards ? 'inline-flex' : 'none';
+        button.style.display = visibleCount < getFilteredCardsData().length ? 'inline-flex' : 'none';
       }
 
       function triggerResultsReload() {
@@ -2271,6 +2387,11 @@
       renderCards();
       syncButton();
       window.sittersTriggerResultsReload = triggerResultsReload;
+      window.sittersSyncResultsAfterFilterChange = function() {
+        visibleCount = Math.max(batchSize, Math.min(visibleCount, Math.max(getFilteredCardsData().length, batchSize)));
+        window.sittersState.openDismissJobId = null;
+        triggerResultsReload();
+      };
 
       button.addEventListener('click', function() {
         var cards = Array.prototype.slice.call(grid.querySelectorAll('.job-advert-box'));
@@ -2283,8 +2404,44 @@
             nextBatch[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
         }
-        visibleCount = Math.min(visibleCount + batchSize, totalCards);
+        visibleCount = Math.min(visibleCount + batchSize, getFilteredCardsData().length);
         syncButton();
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.job-advert-dismiss-menu') && !event.target.closest('.job-advert-close')) {
+          if (window.sittersState.openDismissJobId) {
+            window.sittersState.openDismissJobId = null;
+            renderCards();
+            syncButton();
+          }
+        }
+      });
+
+      grid.addEventListener('click', function(event) {
+        var closeButton = event.target.closest('.job-advert-close');
+        if (closeButton) {
+          var toggleId = closeButton.getAttribute('data-job-id');
+          window.sittersState.openDismissJobId = window.sittersState.openDismissJobId === toggleId ? null : toggleId;
+          renderCards();
+          syncButton();
+          return;
+        }
+
+        var reasonButton = event.target.closest('.job-advert-dismiss-option');
+        if (!reasonButton) return;
+        var jobId = reasonButton.getAttribute('data-job-id');
+        var card = cardsData.find(function(item) { return item.id === jobId; });
+        if (!card) return;
+
+        card.status = 'replied';
+        card.repliedOrder = ++repliedSequence;
+        if (window.sittersState.dismissedJobIds.indexOf(jobId) === -1) {
+          window.sittersState.dismissedJobIds.push(jobId);
+        }
+        window.sittersState.openDismissJobId = null;
+        visibleCount = batchSize;
+        triggerResultsReload();
       });
 
       syncButton();
