@@ -617,17 +617,19 @@
       border-radius: 4px;
       background: #F96073;
       color: #FFF;
-      display: inline-flex;
-      align-items: center;
+      display: flex;
+      padding: 14px 24px 16px 20px;
       justify-content: center;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      align-self: stretch;
       font-family: 'soleil', sans-serif;
       font-size: 16px;
       font-style: normal;
-      font-weight: 600;
+      font-weight: 450;
       line-height: 22px;
       cursor: pointer;
-      box-shadow: inset 0 -3px 0 rgba(191, 52, 73, 0.45);
+      box-shadow: inset 0 -3px 0 #E6213A;
       margin-top: 20px;
     }
 
@@ -643,6 +645,11 @@
       height: 16px;
       display: block;
       flex-shrink: 0;
+    }
+
+    .job-advert-reply:hover {
+      background: #E6213A;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
     }
 
     .job-advert-actions {
