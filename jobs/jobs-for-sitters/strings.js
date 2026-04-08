@@ -69,6 +69,7 @@ window.STRINGS = {
       "author": "Alexandra",
       "wrote": "wrote:",
       "body": "Hello, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years old in November) and a daughter (2 years old). Mon-Fri 8-14:00. After agreement possible adjustment of time. Exceptional evening babysitting. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement.",
+      "dismissTitle": "Why are you declining?",
       "dismissReasons": {
         "location": "The location doesn't fit.",
         "rate": "The rate doesn't match my expectations.",

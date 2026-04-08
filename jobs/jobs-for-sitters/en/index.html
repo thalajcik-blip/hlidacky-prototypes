@@ -1295,6 +1295,16 @@
       box-shadow: 0 8px 24px -8px rgba(42, 53, 57, 0.24);
     }
 
+    .job-advert-dismiss-label {
+      padding: 10px 16px 8px;
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+    }
+
     .job-advert-dismiss-option {
       width: 100%;
       border: 0;
@@ -2302,6 +2312,7 @@
         var reasonKeys = ['location', 'rate', 'schedule', 'other'];
         return [
           '<div class="job-advert-dismiss-menu" role="menu">',
+          '<div class="job-advert-dismiss-label">' + esc(t('sittersHub.jobAdvert.dismissTitle')) + '</div>',
           reasonKeys.map(function(key) {
             return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</button>';
           }).join(''),
