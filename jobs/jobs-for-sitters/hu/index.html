@@ -1612,8 +1612,8 @@
         return key.split('.').pop() || 'new';
       }
 
-      function pillMarkup(parts, className) {
-        return '<div class="active-filter-pill ' + className + '">' + parts.join('') + '</div>';
+      function pillMarkup(parts, className, serviceKey) {
+        return '<div class="active-filter-pill ' + className + '"' + (serviceKey ? ' data-service="' + serviceKey + '"' : '') + '>' + parts.join('') + '</div>';
       }
 
       function syncAlignment() {
@@ -1635,7 +1635,8 @@
                 '<span>' + t(meta.labelKey) + '</span>',
                 '<img class="active-filter-pill-close" src="' + meta.close + '" alt="" aria-hidden="true">'
               ],
-              meta.pillClass
+              meta.pillClass,
+              serviceKey
             )
           );
         });
@@ -1646,6 +1647,15 @@
 
       window.sittersRenderActiveFilters = render;
       window.addEventListener('resize', syncAlignment);
+      row.addEventListener('click', function(event) {
+        var close = event.target.closest('.active-filter-pill-close');
+        if (!close) return;
+        var pill = close.closest('.active-filter-pill[data-service]');
+        if (!pill) return;
+        if (window.sittersRemoveAppliedService) {
+          window.sittersRemoveAppliedService(pill.getAttribute('data-service'));
+        }
+      });
       render();
     })();
 
@@ -1732,6 +1742,16 @@
         if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
       }
 
+      function syncServiceChipsFromAppliedState() {
+        serviceChips.forEach(function(button) {
+          var isActive = (window.sittersState.appliedServices || []).indexOf(button.getAttribute('data-service')) !== -1;
+          button.classList.toggle('is-active', isActive);
+          syncServiceChip(button);
+        });
+        syncModalBadge();
+        syncApplyButtonLabel();
+      }
+
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
         modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
@@ -1739,6 +1759,7 @@
       }
 
       openButton.addEventListener('click', function() {
+        syncServiceChipsFromAppliedState();
         syncModalBadge();
         syncApplyButtonLabel();
         setOpen(true);
@@ -1778,6 +1799,16 @@
           if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
         });
       }
+
+      window.sittersRemoveAppliedService = function(serviceKey) {
+        window.sittersState.appliedServices = (window.sittersState.appliedServices || []).filter(function(key) {
+          return key !== serviceKey;
+        });
+        syncServiceChipsFromAppliedState();
+        setBadgeVisibility(triggerBadge, window.sittersState.appliedServices.length);
+        if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
+        if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
+      };
 
       modal.querySelectorAll('.filters-section-header').forEach(function(header) {
         function toggleSection() {
