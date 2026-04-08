@@ -1300,11 +1300,11 @@
           </div>
           <div class="filters-section-content">
             <div class="filters-service-chips">
-              <button class="filters-service-chip is-active" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.babysitting"></span></button>
-              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.cleaning"></span></button>
-              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.petCare"></span></button>
-              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
-              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
+              <button class="filters-service-chip is-active" type="button" aria-pressed="true" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.babysitting"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.cleaning"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.petCare"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
             </div>
             <button class="filters-clear-all" type="button" data-i18n="sittersHub.filtersModal.clearFilters"></button>
           </div>
@@ -1376,6 +1376,15 @@
       var closeButton = document.getElementById('sitters-close-filters');
       if (!modal || !openButton || !closeButton) return;
 
+      function syncServiceChip(button) {
+        var image = button.querySelector('.filters-service-chip-icon img');
+        var isActive = button.classList.contains('is-active');
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        if (image) {
+          image.src = isActive ? button.getAttribute('data-on') : button.getAttribute('data-off');
+        }
+      }
+
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
         modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
@@ -1388,6 +1397,14 @@
 
       closeButton.addEventListener('click', function() {
         setOpen(false);
+      });
+
+      modal.querySelectorAll('.filters-service-chip').forEach(function(button) {
+        syncServiceChip(button);
+        button.addEventListener('click', function() {
+          button.classList.toggle('is-active');
+          syncServiceChip(button);
+        });
       });
 
       modal.querySelectorAll('.filters-section-header').forEach(function(header) {
