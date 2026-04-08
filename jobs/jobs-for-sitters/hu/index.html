@@ -1265,6 +1265,21 @@
       display: block;
     }
 
+    .job-advert-status-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .job-advert-status-icon img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
     .job-advert-dismiss-menu {
       position: absolute;
       top: 28px;
@@ -2242,6 +2257,10 @@
         return '<img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="" aria-hidden="true">';
       }
 
+      function iconMessage() {
+        return '<img src="/jobs/jobs-for-sitters/assets/icon-message.svg" alt="" aria-hidden="true">';
+      }
+
       function iconReply() {
         return '<img src="/jobs/jobs-for-sitters/assets/icon-reply-v2.svg" alt="" aria-hidden="true">';
       }
@@ -2278,6 +2297,7 @@
       }
 
       function dismissMenuMarkup(card) {
+        if (card.status !== 'new') return '';
         if (window.sittersState.openDismissJobId !== card.id) return '';
         var reasonKeys = ['location', 'rate', 'schedule', 'other'];
         return [
@@ -2295,7 +2315,9 @@
             '<div class="job-advert-card">',
               '<div class="job-advert-topline">',
                 '<div class="job-advert-posted"><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
-                '<button class="job-advert-close" type="button" aria-label="Close advert" data-job-id="', card.id, '">', iconClose(), '</button>',
+                (card.status === 'replied'
+                  ? '<span class="job-advert-status-icon" aria-hidden="true">' + iconMessage() + '</span>'
+                  : '<button class="job-advert-close" type="button" aria-label="Close advert" data-job-id="' + card.id + '">' + iconClose() + '</button>'),
               '</div>',
               dismissMenuMarkup(card),
               '<div class="job-advert-heading-group">',
