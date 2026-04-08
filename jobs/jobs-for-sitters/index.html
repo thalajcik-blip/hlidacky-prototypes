@@ -159,9 +159,9 @@
       margin: 0 auto;
       background: #FFF;
       border-bottom: 1px solid #E5E5EA;
-      position: sticky;
-      top: 0;
-      z-index: 4;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 3;
     }
 
     .results-filter-tab {
@@ -829,19 +829,19 @@
         <div class="top-navbar-title" data-i18n="sittersHub.topNavTitle"></div>
       </div>
     </div>
+    <section class="results-filter-tabs" aria-label="Result filters">
+      <button class="results-filter-tab is-active" type="button" aria-pressed="true">
+        <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.new"></span>
+      </button>
+      <button class="results-filter-tab" type="button" aria-pressed="false">
+        <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.replied"></span>
+      </button>
+      <button class="results-filter-tab" type="button" aria-pressed="false">
+        <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.all"></span>
+      </button>
+    </section>
     <div class="screen-scroll">
       <section class="content">
-        <section class="results-filter-tabs" aria-label="Result filters">
-          <button class="results-filter-tab is-active" type="button" aria-pressed="true">
-            <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.new"></span>
-          </button>
-          <button class="results-filter-tab" type="button" aria-pressed="false">
-            <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.replied"></span>
-          </button>
-          <button class="results-filter-tab" type="button" aria-pressed="false">
-            <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.all"></span>
-          </button>
-        </section>
         <section class="selector-section">
           <div class="selector-section-label" data-i18n="sittersHub.selectorLabel"></div>
           <div class="selector-group" aria-label="Service filters">
