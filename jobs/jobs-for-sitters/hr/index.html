@@ -684,26 +684,15 @@
     .filters-sort-radio {
       width: 18px;
       height: 18px;
-      border-radius: 999px;
-      border: 3px solid #D7DCE6;
-      background: #FFF;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    .filters-sort-option.is-active .filters-sort-radio {
-      border-color: #F96073;
-      background: #F96073;
-    }
-
-    .filters-sort-option.is-active .filters-sort-radio::after {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #FFF;
+    .filters-sort-radio img {
+      width: 18px;
+      height: 18px;
       display: block;
     }
 
@@ -1335,9 +1324,9 @@
           </div>
           <div class="filters-section-content">
             <div class="filters-sort-options">
-              <button class="filters-sort-option is-active" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.latest"></span></button>
-              <button class="filters-sort-option" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.closest"></span></button>
-              <button class="filters-sort-option" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.bestPaid"></span></button>
+              <button class="filters-sort-option is-active" type="button" aria-pressed="true"><span class="filters-sort-radio"><img src="/jobs/jobs-for-sitters/assets/radio-selected.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.latest"></span></button>
+              <button class="filters-sort-option" type="button" aria-pressed="false"><span class="filters-sort-radio"><img src="/jobs/jobs-for-sitters/assets/radio-non-selected.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.closest"></span></button>
+              <button class="filters-sort-option" type="button" aria-pressed="false"><span class="filters-sort-radio"><img src="/jobs/jobs-for-sitters/assets/radio-non-selected.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.bestPaid"></span></button>
             </div>
           </div>
         </section>
@@ -1495,13 +1484,25 @@
       });
 
       modal.querySelectorAll('.filters-sort-option').forEach(function(button) {
+        function syncSortOption(option) {
+          var isActive = option.classList.contains('is-active');
+          var image = option.querySelector('.filters-sort-radio img');
+          option.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          if (image) {
+            image.src = isActive
+              ? '/jobs/jobs-for-sitters/assets/radio-selected.svg'
+              : '/jobs/jobs-for-sitters/assets/radio-non-selected.svg';
+          }
+        }
+
+        syncSortOption(button);
         button.addEventListener('click', function() {
           modal.querySelectorAll('.filters-sort-option').forEach(function(option) {
             option.classList.remove('is-active');
-            option.setAttribute('aria-pressed', 'false');
+            syncSortOption(option);
           });
           button.classList.add('is-active');
-          button.setAttribute('aria-pressed', 'true');
+          syncSortOption(button);
         });
       });
 
