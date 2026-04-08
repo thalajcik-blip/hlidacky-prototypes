@@ -855,20 +855,6 @@
       flex-shrink: 0;
     }
 
-    .active-filter-pill--location {
-      background: #EDEBFF;
-      color: #4C24EC;
-    }
-
-    .active-filter-pill--location:hover {
-      background: #CFC2FF;
-    }
-
-    .active-filter-pill--location .active-filter-pill-close {
-      width: 18px;
-      height: 18px;
-    }
-
     .active-filter-pill--babysitting {
       background: #FEECEE;
       color: #E6213A;
@@ -888,18 +874,30 @@
     }
 
     .active-filter-pill--petCare {
-      background: #DFFBF0;
-      color: #11B977;
+      background: #E0FAF1;
+      color: #00BD79;
+    }
+
+    .active-filter-pill--petCare:hover {
+      background: #88FFD4;
     }
 
     .active-filter-pill--seniorCare {
-      background: #FFF1E1;
-      color: #E97815;
+      background: #FFF1E5;
+      color: #ED7000;
+    }
+
+    .active-filter-pill--seniorCare:hover {
+      background: #FEE7D1;
     }
 
     .active-filter-pill--tutoring {
-      background: #F1E5FF;
-      color: #9B3DFF;
+      background: #F6EBFF;
+      color: #A533FF;
+    }
+
+    .active-filter-pill--tutoring:hover {
+      background: #E4C1FF;
     }
 
     .active-filter-pill-icon {
@@ -1617,15 +1615,6 @@
         heading.textContent = t('sittersHub.activeFiltersHeading.' + activeTabKey());
 
         var html = [];
-        html.push(
-          pillMarkup(
-            [
-              '<span>' + locationDisplay.textContent + ' (' + radiusDisplay.textContent + ')</span>',
-              '<img class="active-filter-pill-close" src="/jobs/jobs-for-sitters/assets/x-indigo.svg" alt="" aria-hidden="true">'
-            ],
-            'active-filter-pill--location'
-          )
-        );
 
         (window.sittersState.appliedServices || []).forEach(function(serviceKey) {
           var meta = serviceMeta[serviceKey];
