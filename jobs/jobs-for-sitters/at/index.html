@@ -484,7 +484,6 @@
     .job-advert-heading {
       display: flex;
       align-items: center;
-      gap: 6px;
       min-width: 0;
     }
 
@@ -505,27 +504,15 @@
 
     .job-advert-title {
       color: #2A3539;
+      font-feature-settings: 'liga' off, 'clig' off;
       font-family: 'soleil', sans-serif;
-      font-size: 18px;
+      font-size: 20px;
       font-style: normal;
-      font-weight: 600;
-      line-height: 120%;
-      letter-spacing: -0.2px;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.32px;
       min-width: 0;
       flex: 1 1 auto;
-    }
-
-    .job-advert-eye {
-      width: 16px;
-      height: 16px;
-      color: #BEC2CE;
-      flex-shrink: 0;
-    }
-
-    .job-advert-eye img {
-      width: 16px;
-      height: 16px;
-      display: block;
     }
 
     .job-advert-tags {
@@ -872,10 +859,6 @@
           .replace(/"/g, '&quot;');
       }
 
-      function iconEye() {
-        return '<img src="/jobs/jobs-for-sitters/assets/icon-eye-v2.svg" alt="" aria-hidden="true">';
-      }
-
       function iconClose() {
         return '<img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="" aria-hidden="true">';
       }
@@ -902,7 +885,6 @@
               '</div>',
               '<div class="job-advert-heading">',
                 '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
-                '<span class="job-advert-eye">', iconEye(), '</span>',
               '</div>',
               '<div class="job-advert-tags">',
               '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
