@@ -15,7 +15,20 @@
       "bodyTitle": "Prototype scaffold",
       "bodyText": "The mobile container is ready for the first sitter-facing job-search screens.",
       "primaryCta": "Open strings editor",
-      "secondaryCta": "Back to hub"
+      "secondaryCta": "Back to hub",
+      "jobAdvert": {
+        "posted": "Posted 2 hours ago",
+        "title": "Potočná 44, Brno–Bystrc",
+        "distance": "3 km",
+        "price": "450 Kč/h",
+        "service": "Babysitting",
+        "date": "June 4, 18:00",
+        "author": "Alexandra",
+        "wrote": "wrote:",
+        "body": "Hello, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years old in November) and a daughter (2 years old). Mon-Fri 8-14:00. After agreement possible adjustment of time. Exceptional evening babysitting. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement.",
+        "reply": "Reply to job",
+        "otherActions": "Other actions"
+      }
     }
   });
 })();
