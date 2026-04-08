@@ -643,21 +643,6 @@
       filter: brightness(0) invert(1);
     }
 
-    .filters-clear-all {
-      margin-top: 12px;
-      color: #F96073;
-      font-family: 'soleil', sans-serif;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 450;
-      line-height: 140%;
-      text-decoration: underline;
-      background: none;
-      border: 0;
-      padding: 0;
-      cursor: pointer;
-    }
-
     .filters-sort-options {
       display: flex;
       flex-direction: column;
@@ -1305,7 +1290,6 @@
               <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
               <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
             </div>
-            <button class="filters-clear-all" type="button" data-i18n="sittersHub.filtersModal.clearFilters"></button>
           </div>
         </section>
         <section class="filters-section" data-section="sort">
@@ -1377,8 +1361,16 @@
       var modalBadge = modal ? modal.querySelector('.filters-modal-header-badge') : null;
       var triggerBadge = openButton ? openButton.querySelector('.jobs-filter-badge') : null;
       var serviceChips = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-service-chip')) : [];
-      var clearButtons = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-section-clear, .filters-clear-all')) : [];
+      var clearButtons = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-section-clear')) : [];
       if (!modal || !openButton || !closeButton) return;
+
+      var serviceWeights = {
+        babysitting: 42,
+        cleaning: 22,
+        petCare: 18,
+        seniorCare: 16,
+        tutoring: 30
+      };
 
       function syncServiceChip(button) {
         var image = button.querySelector('.filters-service-chip-icon img');
@@ -1393,6 +1385,25 @@
         return serviceChips.filter(function(button) {
           return button.classList.contains('is-active');
         }).length;
+      }
+
+      function getFilteredJobsCount() {
+        var activeServices = serviceChips.filter(function(button) {
+          return button.classList.contains('is-active');
+        });
+        if (activeServices.length === 0 || activeServices.length === serviceChips.length) {
+          return 128;
+        }
+        return activeServices.reduce(function(total, button) {
+          var keyNode = button.querySelector('[data-i18n]');
+          var key = keyNode ? keyNode.getAttribute('data-i18n').split('.').pop() : '';
+          return total + (serviceWeights[key] || 0);
+        }, 0);
+      }
+
+      function syncApplyButtonLabel() {
+        if (!applyButton) return;
+        applyButton.textContent = 'Show ' + getFilteredJobsCount() + ' jobs';
       }
 
       function setBadgeVisibility(node, count) {
@@ -1427,6 +1438,7 @@
 
       openButton.addEventListener('click', function() {
         syncModalBadge();
+        syncApplyButtonLabel();
         setOpen(true);
       });
 
@@ -1440,6 +1452,7 @@
           button.classList.toggle('is-active');
           syncServiceChip(button);
           syncModalBadge();
+          syncApplyButtonLabel();
         });
       });
 
@@ -1452,6 +1465,7 @@
             syncServiceChip(chip);
           });
           syncModalBadge();
+          syncApplyButtonLabel();
         });
       });
 
@@ -1508,6 +1522,7 @@
 
       applyActiveFilters();
       syncModalBadge();
+      syncApplyButtonLabel();
     })();
 
     (function initSittersLocationSelect() {
