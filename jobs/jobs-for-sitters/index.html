@@ -1783,11 +1783,13 @@
       }
 
       function render() {
-        heading.textContent = t('sittersHub.activeFiltersHeading.' + activeTabKey());
+        var services = window.sittersState.appliedServices || [];
+        var headingRoot = services.length ? 'sittersHub.activeFiltersHeading.' : 'sittersHub.activeFiltersHeadingEmpty.';
+        heading.textContent = t(headingRoot + activeTabKey());
 
         var html = [];
 
-        (window.sittersState.appliedServices || []).forEach(function(serviceKey) {
+        services.forEach(function(serviceKey) {
           var meta = serviceMeta[serviceKey];
           if (!meta) return;
           html.push(
