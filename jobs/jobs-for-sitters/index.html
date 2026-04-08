@@ -1285,69 +1285,42 @@
       top: 28px;
       right: 0;
       z-index: 5;
-      width: min(260px, calc(100vw - 72px));
+      width: min(300px, calc(100vw - 72px));
       display: flex;
       flex-direction: column;
-      padding: 8px 0;
+      padding: 0;
       border: 1px solid #E5E5EA;
       border-radius: 8px;
       background: #FFF;
       box-shadow: 0 8px 24px -8px rgba(42, 53, 57, 0.24);
+      overflow: hidden;
     }
 
     .job-advert-dismiss-label {
-      padding: 10px 16px 8px;
-      color: #2A3539;
+      padding: 14px 20px;
+      color: #4A5A61;
       font-family: 'soleil', sans-serif;
       font-size: 14px;
       font-style: normal;
       font-weight: 450;
-      line-height: 140%;
+      line-height: 16.8px;
+      letter-spacing: -0.24px;
+      text-transform: uppercase;
+      background: #FEECEE;
     }
 
     .job-advert-dismiss-option {
       width: 100%;
       border: 0;
       background: none;
-      padding: 10px 16px;
-      text-align: left;
-      color: #2A3539;
-      font-family: 'soleil', sans-serif;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 140%;
-      cursor: pointer;
-    }
-
-    .job-advert-dismiss-option:hover {
-      background: #F7F7F7;
-    }
-
-    .job-advert-dismiss-menu {
-      position: absolute;
-      top: 28px;
-      right: 0;
-      z-index: 5;
-      width: min(260px, calc(100vw - 72px));
+      padding: 18px 20px;
       display: flex;
-      flex-direction: column;
-      padding: 8px 0;
-      border: 1px solid #E5E5EA;
-      border-radius: 8px;
-      background: #FFF;
-      box-shadow: 0 8px 24px -8px rgba(42, 53, 57, 0.24);
-    }
-
-    .job-advert-dismiss-option {
-      width: 100%;
-      border: 0;
-      background: none;
-      padding: 10px 16px;
+      align-items: center;
+      gap: 16px;
       text-align: left;
       color: #2A3539;
       font-family: 'soleil', sans-serif;
-      font-size: 14px;
+      font-size: 18px;
       font-style: normal;
       font-weight: 400;
       line-height: 140%;
@@ -1356,6 +1329,13 @@
 
     .job-advert-dismiss-option:hover {
       background: #F7F7F7;
+    }
+
+    .job-advert-dismiss-option img {
+      width: 24px;
+      height: 24px;
+      display: block;
+      flex-shrink: 0;
     }
 
     .job-advert-heading {
@@ -2283,6 +2263,16 @@
         return '<svg class="job-advert-tag-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.25a1.375 1.375 0 1 0 0 2.75 1.375 1.375 0 0 0 0-2.75ZM3.417 9.75V7.958A1.958 1.958 0 0 1 5.375 6h1.25a1.958 1.958 0 0 1 1.958 1.958V9.75M2.667 5.333V6.5M9.333 5.333V6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       }
 
+      function dismissReasonIcon(key) {
+        var map = {
+          location: '/jobs/jobs-for-sitters/assets/icon-location.svg',
+          rate: '/jobs/jobs-for-sitters/assets/icon-money.svg',
+          schedule: '/jobs/jobs-for-sitters/assets/icon-calendar.svg',
+          other: '/jobs/jobs-for-sitters/assets/icon-misc.svg'
+        };
+        return '<img src="' + map[key] + '" alt="" aria-hidden="true">';
+      }
+
       function activeTabKey() {
         var activeTab = document.querySelector('.results-filter-tab.is-active .results-filter-tab-label');
         if (!activeTab) return 'new';
@@ -2314,7 +2304,7 @@
           '<div class="job-advert-dismiss-menu" role="menu">',
           '<div class="job-advert-dismiss-label">' + esc(t('sittersHub.jobAdvert.dismissTitle')) + '</div>',
           reasonKeys.map(function(key) {
-            return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</button>';
+            return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + dismissReasonIcon(key) + '<span>' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</span></button>';
           }).join(''),
           '</div>'
         ].join('');

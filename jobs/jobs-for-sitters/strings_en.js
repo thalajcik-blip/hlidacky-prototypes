@@ -75,7 +75,7 @@
         "dismissTitle": "Why are you declining?",
         "dismissReasons": {
           "location": "The location doesn't fit.",
-          "rate": "The rate doesn't match my expectations.",
+          "rate": "The rate is too low for me.",
           "schedule": "The schedule doesn't work.",
           "other": "I have another reason."
         },
