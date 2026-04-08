@@ -5,6 +5,11 @@ window.STRINGS = {
     "selectorLabel": "Show all job offerings for",
     "notificationsLink": "Set up notifications",
     "showMore": "show more results",
+    "resultsTabs": {
+      "new": "New",
+      "replied": "Replied",
+      "all": "All"
+    },
     "locationValue": "Praha 2",
     "radiusValue": "+20 km",
     "title": "Jobs for sitters",
