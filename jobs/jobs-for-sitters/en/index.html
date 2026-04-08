@@ -822,10 +822,15 @@
       padding: 0 12px;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
+    }
+
+    .active-filters-row.is-overflowing {
+      justify-content: flex-start;
     }
 
     .active-filters-row::-webkit-scrollbar {
@@ -1611,6 +1616,10 @@
         return '<div class="active-filter-pill ' + className + '">' + parts.join('') + '</div>';
       }
 
+      function syncAlignment() {
+        row.classList.toggle('is-overflowing', row.scrollWidth > row.clientWidth + 1);
+      }
+
       function render() {
         heading.textContent = t('sittersHub.activeFiltersHeading.' + activeTabKey());
 
@@ -1632,9 +1641,11 @@
         });
 
         row.innerHTML = html.join('');
+        requestAnimationFrame(syncAlignment);
       }
 
       window.sittersRenderActiveFilters = render;
+      window.addEventListener('resize', syncAlignment);
       render();
     })();
 
