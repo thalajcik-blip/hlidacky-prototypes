@@ -661,27 +661,32 @@
     .filters-sort-options {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .filters-sort-option {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       color: #4A5A61;
       font-family: 'soleil', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 450;
       line-height: 140%;
       cursor: pointer;
+      background: none;
+      border: 0;
+      padding: 0;
+      text-align: left;
     }
 
     .filters-sort-radio {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
-      border: 2px solid #D7DCE6;
+      border: 3px solid #D7DCE6;
+      background: #FFF;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -690,14 +695,15 @@
 
     .filters-sort-option.is-active .filters-sort-radio {
       border-color: #F96073;
+      background: #F96073;
     }
 
     .filters-sort-option.is-active .filters-sort-radio::after {
       content: "";
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      background: #F96073;
+      background: #FFF;
       display: block;
     }
 
@@ -1485,6 +1491,17 @@
             event.preventDefault();
             toggleSection();
           }
+        });
+      });
+
+      modal.querySelectorAll('.filters-sort-option').forEach(function(button) {
+        button.addEventListener('click', function() {
+          modal.querySelectorAll('.filters-sort-option').forEach(function(option) {
+            option.classList.remove('is-active');
+            option.setAttribute('aria-pressed', 'false');
+          });
+          button.classList.add('is-active');
+          button.setAttribute('aria-pressed', 'true');
         });
       });
 
