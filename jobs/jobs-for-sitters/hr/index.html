@@ -851,6 +851,90 @@
       display: none;
     }
 
+    .job-advert-box.is-skeleton {
+      pointer-events: none;
+    }
+
+    .job-advert-skeleton {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skeleton-line,
+    .skeleton-chip,
+    .skeleton-button {
+      border-radius: 8px;
+      background: linear-gradient(90deg, #EEF2F6 0%, #F7F9FB 50%, #EEF2F6 100%);
+      background-size: 200% 100%;
+      animation: sittersSkeletonPulse 1.1s ease-in-out infinite;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      width: 100%;
+    }
+
+    .skeleton-line--sm {
+      width: 120px;
+      height: 12px;
+    }
+
+    .skeleton-line--title {
+      width: 72%;
+      height: 28px;
+    }
+
+    .skeleton-line--meta {
+      width: 140px;
+      height: 12px;
+    }
+
+    .skeleton-line--text {
+      height: 12px;
+    }
+
+    .skeleton-line--text-short {
+      width: 86%;
+    }
+
+    .skeleton-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .skeleton-chip {
+      height: 24px;
+      border-radius: 4px;
+    }
+
+    .skeleton-chip--price {
+      width: 72px;
+    }
+
+    .skeleton-chip--service {
+      width: 116px;
+    }
+
+    .skeleton-chip--date {
+      width: 104px;
+    }
+
+    .skeleton-button {
+      width: 100%;
+      height: 44px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    @keyframes sittersSkeletonPulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     .job-advert-card {
       width: 100%;
       display: flex;
@@ -1350,6 +1434,7 @@
         });
         button.classList.add('is-active');
         button.setAttribute('aria-pressed', 'true');
+        if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
     });
 
@@ -1473,6 +1558,7 @@
         applyButton.addEventListener('click', function() {
           applyActiveFilters();
           setOpen(false);
+          if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
         });
       }
 
@@ -1535,7 +1621,10 @@
         display.textContent = option ? option.text : '';
       }
 
-      select.addEventListener('change', sync);
+      select.addEventListener('change', function() {
+        sync();
+        if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
+      });
       sync();
     })();
 
@@ -1549,7 +1638,10 @@
         display.textContent = option ? option.text : '';
       }
 
-      select.addEventListener('change', sync);
+      select.addEventListener('change', function() {
+        sync();
+        if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
+      });
       sync();
     })();
 
@@ -1561,6 +1653,7 @@
       var totalCards = 40;
       var batchSize = 10;
       var visibleCount = 0;
+      var reloadTimer = null;
 
       function esc(text) {
         return String(text)
@@ -1618,16 +1711,70 @@
         ].join('');
       }
 
-      var html = '';
-      for (var i = 0; i < totalCards; i++) {
-        html += cardMarkup(i >= batchSize);
+      function skeletonCardMarkup() {
+        return [
+          '<article class="job-advert-box is-skeleton">',
+            '<div class="job-advert-skeleton">',
+              '<div class="job-advert-topline">',
+                '<div class="skeleton-line skeleton-line--sm"></div>',
+                '<div class="skeleton-line skeleton-line--sm" style="width:20px;height:20px;"></div>',
+              '</div>',
+              '<div class="skeleton-line skeleton-line--title"></div>',
+              '<div class="skeleton-line skeleton-line--meta"></div>',
+              '<div class="skeleton-chip-row">',
+                '<div class="skeleton-chip skeleton-chip--price"></div>',
+                '<div class="skeleton-chip skeleton-chip--service"></div>',
+                '<div class="skeleton-chip skeleton-chip--date"></div>',
+              '</div>',
+              '<div class="job-advert-divider"></div>',
+              '<div class="skeleton-line skeleton-line--text"></div>',
+              '<div class="skeleton-line skeleton-line--text"></div>',
+              '<div class="skeleton-line skeleton-line--text skeleton-line--text-short"></div>',
+              '<div class="job-advert-divider"></div>',
+              '<div class="skeleton-button"></div>',
+            '</div>',
+          '</article>'
+        ].join('');
       }
-      grid.innerHTML = html;
-      visibleCount = batchSize;
+
+      function renderCards() {
+        var html = '';
+        for (var i = 0; i < totalCards; i++) {
+          html += cardMarkup(i >= visibleCount);
+        }
+        grid.innerHTML = html;
+      }
+
+      function renderSkeletons() {
+        var skeletonCount = Math.min(4, Math.max(visibleCount, 1));
+        var html = '';
+        for (var i = 0; i < skeletonCount; i++) {
+          html += skeletonCardMarkup();
+        }
+        grid.innerHTML = html;
+      }
 
       function syncButton() {
         button.style.display = visibleCount < totalCards ? 'inline-flex' : 'none';
       }
+
+      function triggerResultsReload() {
+        if (reloadTimer) {
+          clearTimeout(reloadTimer);
+        }
+        renderSkeletons();
+        button.style.display = 'none';
+        reloadTimer = setTimeout(function() {
+          renderCards();
+          syncButton();
+          reloadTimer = null;
+        }, 450);
+      }
+
+      visibleCount = batchSize;
+      renderCards();
+      syncButton();
+      window.sittersTriggerResultsReload = triggerResultsReload;
 
       button.addEventListener('click', function() {
         var cards = Array.prototype.slice.call(grid.querySelectorAll('.job-advert-box'));
