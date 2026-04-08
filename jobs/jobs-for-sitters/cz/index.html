@@ -1407,7 +1407,17 @@
       }
 
       function syncModalBadge() {
-        setBadgeVisibility(modalBadge, getSelectedServicesCount());
+        var count = getSelectedServicesCount();
+        var servicesSection = modal.querySelector('.filters-section[data-section="services"]');
+        var sectionClear = servicesSection ? servicesSection.querySelector('.filters-section-clear') : null;
+        var sectionDot = servicesSection ? servicesSection.querySelector('.filters-section-clear-dot') : null;
+        setBadgeVisibility(modalBadge, count);
+        if (sectionClear) {
+          sectionClear.style.display = count > 0 ? 'inline-flex' : 'none';
+        }
+        if (sectionDot) {
+          sectionDot.style.display = count > 0 ? 'inline-flex' : 'none';
+        }
       }
 
       function applyActiveFilters() {
