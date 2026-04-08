@@ -488,6 +488,21 @@
       min-width: 0;
     }
 
+    .job-advert-distance-line {
+      color: #6F7A86;
+      font-family: 'soleil', sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.18px;
+    }
+
+    .job-advert-distance-line strong {
+      color: #2A3539;
+      font-weight: 600;
+    }
+
     .job-advert-title {
       color: #2A3539;
       font-family: 'soleil', sans-serif;
@@ -540,11 +555,6 @@
       height: 12px;
       display: block;
       flex-shrink: 0;
-    }
-
-    .job-advert-tag--distance {
-      background: #F3F4F6;
-      color: #6B7176;
     }
 
     .job-advert-tag--price {
@@ -895,7 +905,8 @@
                 '<span class="job-advert-eye">', iconEye(), '</span>',
               '</div>',
               '<div class="job-advert-tags">',
-                '<span class="job-advert-tag job-advert-tag--distance">', esc(t('sittersHub.jobAdvert.distance')), '</span>',
+              '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
+              '<div class="job-advert-tags">',
                 '<span class="job-advert-tag job-advert-tag--price">', esc(t('sittersHub.jobAdvert.price')), '</span>',
                 '<span class="job-advert-tag job-advert-tag--service">', iconBabysitting(), esc(t('sittersHub.jobAdvert.service')), '</span>',
                 '<span class="job-advert-tag job-advert-tag--date">', esc(t('sittersHub.jobAdvert.date')), '</span>',

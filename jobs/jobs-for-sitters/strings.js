@@ -17,6 +17,7 @@ window.STRINGS = {
       "posted": "Posted 2 hours ago",
       "title": "Potočná 44, Brno–Bystrc",
       "distance": "3 km",
+      "distanceSuffix": "away from you",
       "price": "450 Kč/h",
       "service": "Babysitting",
       "date": "June 4, 18:00",
