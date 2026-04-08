@@ -10,6 +10,23 @@ window.STRINGS = {
       "replied": "Replied",
       "all": "All"
     },
+    "filtersModal": {
+      "title": "Filters",
+      "activeCount": "1",
+      "servicesTitle": "Select services",
+      "clear": "Clear",
+      "babysitting": "Babysitting",
+      "cleaning": "Cleaning",
+      "petCare": "Pet care",
+      "seniorCare": "Senior care",
+      "tutoring": "Tutoring",
+      "clearFilters": "Clear filters",
+      "sortTitle": "Sort by",
+      "latest": "Latest",
+      "closest": "Closest",
+      "bestPaid": "Best paid",
+      "showJobs": "Show 128 jobs"
+    },
     "locationValue": "Praha 2",
     "radiusValue": "+20 km",
     "title": "Jobs for sitters",

@@ -390,6 +390,316 @@
       pointer-events: none;
     }
 
+    .filters-modal {
+      position: absolute;
+      inset: 52px 0 0;
+      background: #FFF;
+      z-index: 20;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .filters-modal.is-open {
+      display: flex;
+    }
+
+    .filters-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #E5E5EA;
+      background: #FFF;
+      flex-shrink: 0;
+    }
+
+    .filters-modal-title-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .filters-modal-title-icon,
+    .filters-modal-title-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+      color: #4A5A61;
+      flex-shrink: 0;
+    }
+
+    .filters-modal-title {
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 120%;
+      letter-spacing: -0.2px;
+    }
+
+    .filters-modal-header-badge {
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #F96073;
+      color: #FFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 100%;
+      flex-shrink: 0;
+    }
+
+    .filters-modal-close {
+      width: 24px;
+      height: 24px;
+      border: 0;
+      background: none;
+      color: #BEC2CE;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .filters-modal-close img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .filters-modal-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 16px;
+      background: #FFF;
+    }
+
+    .filters-section {
+      padding: 16px 0;
+      border-bottom: 1px solid #E5E5EA;
+    }
+
+    .filters-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .filters-section-title-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .filters-section-icon,
+    .filters-section-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      color: #6F7A86;
+      flex-shrink: 0;
+    }
+
+    .filters-section-title {
+      color: #4A5A61;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .filters-section-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .filters-section-clear {
+      color: #F96073;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      text-decoration: underline;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .filters-section-clear-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #F96073;
+      flex-shrink: 0;
+    }
+
+    .filters-section-chevron,
+    .filters-section-chevron svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: #4A5A61;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .filters-section.is-collapsed .filters-section-chevron {
+      transform: rotate(-180deg);
+    }
+
+    .filters-section-content {
+      padding-top: 14px;
+    }
+
+    .filters-section.is-collapsed .filters-section-content {
+      display: none;
+    }
+
+    .filters-service-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 8px;
+    }
+
+    .filters-service-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #E5E5EA;
+      background: #FFF;
+      color: #6F7A86;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      cursor: pointer;
+    }
+
+    .filters-service-chip.is-active {
+      border-color: transparent;
+      background: #FEE8EA;
+      color: #F96073;
+    }
+
+    .filters-service-chip-icon,
+    .filters-service-chip-icon img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .filters-clear-all {
+      margin-top: 12px;
+      color: #F96073;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      text-decoration: underline;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .filters-sort-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .filters-sort-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #4A5A61;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      cursor: pointer;
+    }
+
+    .filters-sort-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 2px solid #D7DCE6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .filters-sort-option.is-active .filters-sort-radio {
+      border-color: #F96073;
+    }
+
+    .filters-sort-option.is-active .filters-sort-radio::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #F96073;
+      display: block;
+    }
+
+    .filters-modal-footer {
+      position: sticky;
+      bottom: 0;
+      background: #FFF;
+      border-top: 1px solid #E5E5EA;
+      padding: 14px 20px 20px;
+      flex-shrink: 0;
+    }
+
+    .filters-modal-cta {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: #0DB020;
+      color: #FFF;
+      text-align: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+    }
+
     .jobs-field-icon {
       width: 18px;
       height: 18px;
@@ -844,6 +1154,10 @@
         display: none;
       }
 
+      .filters-modal {
+        inset: 0;
+      }
+
       .phone-frame {
         width: 100%;
         height: 100vh;
@@ -931,6 +1245,74 @@
         </section>
       </section>
     </div>
+    <div class="filters-modal" id="sitters-filters-modal" aria-hidden="true">
+      <div class="filters-modal-header">
+        <div class="filters-modal-title-wrap">
+          <span class="filters-modal-title-icon" aria-hidden="true">
+            <img src="/jobs/jobs-for-sitters/assets/icon-filters.svg" alt="">
+          </span>
+          <div class="filters-modal-title" data-i18n="sittersHub.filtersModal.title"></div>
+          <span class="filters-modal-header-badge" data-i18n="sittersHub.filtersModal.activeCount"></span>
+        </div>
+        <button class="filters-modal-close" id="sitters-close-filters" type="button" aria-label="Close filters">
+          <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
+        </button>
+      </div>
+      <div class="filters-modal-body">
+        <section class="filters-section" data-section="services">
+          <div class="filters-section-header" role="button" tabindex="0" aria-expanded="true">
+            <div class="filters-section-title-wrap">
+              <span class="filters-section-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 8v5M10 6.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <div class="filters-section-title" data-i18n="sittersHub.filtersModal.servicesTitle"></div>
+            </div>
+            <div class="filters-section-controls">
+              <button class="filters-section-clear" type="button" data-i18n="sittersHub.filtersModal.clear"></button>
+              <span class="filters-section-clear-dot" aria-hidden="true"></span>
+              <span class="filters-section-chevron" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none"><path d="m3.5 9.5 4.5-4 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="filters-section-content">
+            <div class="filters-service-chips">
+              <button class="filters-service-chip is-active" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.babysitting"></span></button>
+              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.cleaning"></span></button>
+              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.petCare"></span></button>
+              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
+              <button class="filters-service-chip" type="button"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
+            </div>
+            <button class="filters-clear-all" type="button" data-i18n="sittersHub.filtersModal.clearFilters"></button>
+          </div>
+        </section>
+        <section class="filters-section" data-section="sort">
+          <div class="filters-section-header" role="button" tabindex="0" aria-expanded="true">
+            <div class="filters-section-title-wrap">
+              <span class="filters-section-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M6 5h10M6 10h7M6 15h4M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <div class="filters-section-title" data-i18n="sittersHub.filtersModal.sortTitle"></div>
+            </div>
+            <div class="filters-section-controls">
+              <span class="filters-section-chevron" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none"><path d="m3.5 9.5 4.5-4 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="filters-section-content">
+            <div class="filters-sort-options">
+              <button class="filters-sort-option is-active" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.latest"></span></button>
+              <button class="filters-sort-option" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.closest"></span></button>
+              <button class="filters-sort-option" type="button"><span class="filters-sort-radio"></span><span data-i18n="sittersHub.filtersModal.bestPaid"></span></button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="filters-modal-footer">
+        <button class="filters-modal-cta" type="button" data-i18n="sittersHub.filtersModal.showJobs"></button>
+      </div>
+    </div>
   </main>
   <script>
     function t(path) {
@@ -964,6 +1346,48 @@
         button.setAttribute('aria-pressed', 'true');
       });
     });
+
+    (function initSittersFiltersModal() {
+      var modal = document.getElementById('sitters-filters-modal');
+      var openButton = document.getElementById('sitters-open-filters');
+      var closeButton = document.getElementById('sitters-close-filters');
+      if (!modal || !openButton || !closeButton) return;
+
+      function setOpen(isOpen) {
+        modal.classList.toggle('is-open', isOpen);
+        modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        openButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+
+      openButton.addEventListener('click', function() {
+        setOpen(true);
+      });
+
+      closeButton.addEventListener('click', function() {
+        setOpen(false);
+      });
+
+      modal.querySelectorAll('.filters-section-header').forEach(function(header) {
+        function toggleSection() {
+          var section = header.closest('.filters-section');
+          var nextState = !section.classList.contains('is-collapsed');
+          section.classList.toggle('is-collapsed', nextState);
+          header.setAttribute('aria-expanded', nextState ? 'false' : 'true');
+        }
+
+        header.addEventListener('click', function(event) {
+          if (event.target.closest('.filters-section-clear')) return;
+          toggleSection();
+        });
+
+        header.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleSection();
+          }
+        });
+      });
+    })();
 
     (function initSittersLocationSelect() {
       var select = document.getElementById('sitters-location-select');
