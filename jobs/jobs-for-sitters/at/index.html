@@ -344,6 +344,51 @@
       overflow: hidden;
     }
 
+    .jobs-filter-button {
+      width: 52px;
+      height: 52px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #FFF;
+      box-shadow: 0 1px 0 rgba(42, 53, 57, 0.04);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .jobs-filter-button:hover {
+      background: #F7F7F7;
+    }
+
+    .jobs-filter-button img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .jobs-filter-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #F96073;
+      color: #FFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1;
+      pointer-events: none;
+    }
+
     .jobs-field-icon {
       width: 18px;
       height: 18px;
@@ -842,26 +887,6 @@
     </section>
     <div class="screen-scroll">
       <section class="content">
-        <section class="selector-section">
-          <div class="selector-section-label" data-i18n="sittersHub.selectorLabel"></div>
-          <div class="selector-group" aria-label="Service filters">
-            <button class="selector-chip selector-chip--babysitting is-selected" type="button" aria-pressed="true" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg">
-              <img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt="Babysitting">
-            </button>
-            <button class="selector-chip selector-chip--cleaning" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg">
-              <img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt="Cleaning">
-            </button>
-            <button class="selector-chip selector-chip--pet-care" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg">
-              <img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt="Pet care">
-            </button>
-            <button class="selector-chip selector-chip--senior-care" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg">
-              <img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt="Senior care">
-            </button>
-            <button class="selector-chip selector-chip--tutoring" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg">
-              <img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt="Tutoring">
-            </button>
-          </div>
-        </section>
         <section class="form-demo-section" aria-label="Filters">
           <div class="form-demo-grid">
             <div class="jobs-field jobs-field--location">
@@ -888,6 +913,10 @@
                 <img src="/jobs/jobs-for-sitters/assets/icon-chevron-down-v2.svg" alt="">
               </span>
             </div>
+            <button class="jobs-filter-button" id="sitters-open-filters" type="button" aria-label="Open filters" aria-haspopup="dialog" aria-expanded="false">
+              <img src="/jobs/jobs-for-sitters/assets/icon-filters.svg" alt="" aria-hidden="true">
+              <span class="jobs-filter-badge" aria-hidden="true">1</span>
+            </button>
           </div>
         </section>
         <section class="results-section" aria-label="Results">
