@@ -391,7 +391,8 @@
       pointer-events: none;
     }
 
-    .filters-modal {
+    .filters-modal,
+    .notifications-modal {
       position: absolute;
       inset: 52px 0 0;
       background: #FFF;
@@ -401,7 +402,8 @@
       min-height: 0;
     }
 
-    .filters-modal.is-open {
+    .filters-modal.is-open,
+    .notifications-modal.is-open {
       display: flex;
     }
 
@@ -705,6 +707,112 @@
       line-height: 22px;
       box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
       cursor: pointer;
+    }
+
+    .notifications-modal-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px 20px 20px;
+      background: #FFF;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .notifications-modal-lead {
+      color: #4A5A61;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 350;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+      margin: 0;
+    }
+
+    .notifications-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .notifications-field-label {
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+    }
+
+    .notifications-field {
+      width: 100%;
+      min-height: 52px;
+    }
+
+    .notifications-field .jobs-field-value {
+      padding-right: 28px;
+    }
+
+    .notifications-field .jobs-field-action {
+      pointer-events: none;
+    }
+
+    .notifications-modal-footer {
+      position: sticky;
+      bottom: 0;
+      background: #FFF;
+      border-top: 1px solid #E5E5EA;
+      padding: 14px 20px 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .notifications-modal-cancel {
+      color: #A6ADBB;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      text-decoration: underline;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .notifications-modal-save {
+      flex: 1;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: #0DB020;
+      color: #FFF;
+      text-align: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px 16px;
+    }
+
+    .notifications-modal-save img {
+      width: 16px;
+      height: 16px;
+      display: block;
     }
 
     .jobs-field-icon {
@@ -1363,7 +1471,8 @@
         display: none;
       }
 
-      .filters-modal {
+      .filters-modal,
+      .notifications-modal {
         inset: 0;
       }
 
@@ -1523,6 +1632,59 @@
       </div>
       <div class="filters-modal-footer">
         <button class="filters-modal-cta" type="button" data-i18n="sittersHub.filtersModal.showJobs"></button>
+      </div>
+    </div>
+    <div class="notifications-modal" id="sitters-notifications-modal" aria-hidden="true">
+      <div class="filters-modal-header">
+        <div class="filters-modal-title-wrap">
+          <span class="filters-modal-title-icon" aria-hidden="true">
+            <img src="/jobs/jobs-for-sitters/assets/doodle-notification-settings.svg" alt="">
+          </span>
+          <div class="filters-modal-title" data-i18n="sittersHub.notificationsModal.title"></div>
+        </div>
+        <button class="filters-modal-close" id="sitters-close-notifications" type="button" aria-label="Close notifications">
+          <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
+        </button>
+      </div>
+      <div class="notifications-modal-body">
+        <p class="notifications-modal-lead" data-i18n="sittersHub.notificationsModal.body"></p>
+        <div class="notifications-field-group">
+          <label class="notifications-field-label" for="sitters-email-notifications" data-i18n="sittersHub.notificationsModal.emailLabel"></label>
+          <div class="jobs-field notifications-field">
+            <div class="jobs-field-value" id="sitters-email-notifications-display"></div>
+            <select class="jobs-field-select" id="sitters-email-notifications" aria-label="E-mail notifications">
+              <option selected data-i18n="sittersHub.notificationsModal.immediately">Immediately after publication</option>
+              <option data-i18n="sittersHub.notificationsModal.never">Never</option>
+              <option data-i18n="sittersHub.notificationsModal.daily">Summary once a day</option>
+              <option data-i18n="sittersHub.notificationsModal.weekly">Summary once a week</option>
+            </select>
+            <span class="jobs-field-action jobs-field-action--passive" aria-hidden="true">
+              <img src="/jobs/jobs-for-sitters/assets/icon-chevron-down-v2.svg" alt="">
+            </span>
+          </div>
+        </div>
+        <div class="notifications-field-group">
+          <label class="notifications-field-label" for="sitters-mobile-notifications" data-i18n="sittersHub.notificationsModal.mobileLabel"></label>
+          <div class="jobs-field notifications-field">
+            <div class="jobs-field-value" id="sitters-mobile-notifications-display"></div>
+            <select class="jobs-field-select" id="sitters-mobile-notifications" aria-label="Mobile notifications">
+              <option selected data-i18n="sittersHub.notificationsModal.immediately">Immediately after publication</option>
+              <option data-i18n="sittersHub.notificationsModal.never">Never</option>
+              <option data-i18n="sittersHub.notificationsModal.daily">Summary once a day</option>
+              <option data-i18n="sittersHub.notificationsModal.weekly">Summary once a week</option>
+            </select>
+            <span class="jobs-field-action jobs-field-action--passive" aria-hidden="true">
+              <img src="/jobs/jobs-for-sitters/assets/icon-chevron-down-v2.svg" alt="">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="notifications-modal-footer">
+        <button class="notifications-modal-cancel" id="sitters-cancel-notifications" type="button" data-i18n="sittersHub.notificationsModal.cancel"></button>
+        <button class="notifications-modal-save" id="sitters-save-notifications" type="button">
+          <img src="/jobs/jobs-for-sitters/assets/icon-check.svg" alt="" aria-hidden="true">
+          <span data-i18n="sittersHub.notificationsModal.save"></span>
+        </button>
       </div>
     </div>
   </main>
@@ -1875,6 +2037,51 @@
         if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
       sync();
+    })();
+
+    (function initSittersNotificationsModal() {
+      var modal = document.getElementById('sitters-notifications-modal');
+      var openLink = document.getElementById('sitters-notifications-link');
+      var closeButton = document.getElementById('sitters-close-notifications');
+      var cancelButton = document.getElementById('sitters-cancel-notifications');
+      var saveButton = document.getElementById('sitters-save-notifications');
+      var emailSelect = document.getElementById('sitters-email-notifications');
+      var mobileSelect = document.getElementById('sitters-mobile-notifications');
+      var emailDisplay = document.getElementById('sitters-email-notifications-display');
+      var mobileDisplay = document.getElementById('sitters-mobile-notifications-display');
+      if (!modal || !openLink || !closeButton || !cancelButton || !saveButton || !emailSelect || !mobileSelect || !emailDisplay || !mobileDisplay) return;
+
+      function syncSelect(select, display) {
+        var option = select.options[select.selectedIndex];
+        display.textContent = option ? option.text : '';
+      }
+
+      function setOpen(isOpen) {
+        modal.classList.toggle('is-open', isOpen);
+        modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      }
+
+      openLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        setOpen(true);
+      });
+
+      [closeButton, cancelButton, saveButton].forEach(function(button) {
+        button.addEventListener('click', function() {
+          setOpen(false);
+        });
+      });
+
+      emailSelect.addEventListener('change', function() {
+        syncSelect(emailSelect, emailDisplay);
+      });
+
+      mobileSelect.addEventListener('change', function() {
+        syncSelect(mobileSelect, mobileDisplay);
+      });
+
+      syncSelect(emailSelect, emailDisplay);
+      syncSelect(mobileSelect, mobileDisplay);
     })();
 
     (function initSittersRadiusSelect() {

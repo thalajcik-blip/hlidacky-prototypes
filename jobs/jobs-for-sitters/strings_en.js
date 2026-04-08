@@ -35,6 +35,18 @@
         "bestPaid": "Best paid",
         "showJobs": "Show 128 jobs"
       },
+      "notificationsModal": {
+        "title": "Notification settings",
+        "body": "Stay up to date with the latest job opportunities in your area. Choose how often you'd like to receive updates.",
+        "emailLabel": "E-mail notifications",
+        "mobileLabel": "Mobile notifications",
+        "immediately": "Immediately after publication",
+        "never": "Never",
+        "daily": "Summary once a day",
+        "weekly": "Summary once a week",
+        "cancel": "Cancel",
+        "save": "Save changes"
+      },
       "locationValue": "Praha 2",
       "radiusValue": "+20 km",
       "title": "Jobs for sitters",
