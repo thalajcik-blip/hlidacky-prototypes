@@ -797,6 +797,121 @@
       gap: 12px;
     }
 
+    .active-filters-summary {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .active-filters-heading {
+      color: #2A3539;
+      text-align: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+    }
+
+    .active-filters-row {
+      width: calc(100% + 24px);
+      margin: 0 -12px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .active-filters-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .active-filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'soleil', sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: 0;
+      transition: background-color 160ms ease;
+    }
+
+    .active-filter-pill img {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .active-filter-pill--location {
+      background: #EDEBFF;
+      color: #4C24EC;
+    }
+
+    .active-filter-pill--location:hover {
+      background: #CFC2FF;
+    }
+
+    .active-filter-pill--location .active-filter-pill-close {
+      width: 18px;
+      height: 18px;
+    }
+
+    .active-filter-pill--babysitting {
+      background: #FEECEE;
+      color: #E6213A;
+    }
+
+    .active-filter-pill--babysitting:hover {
+      background: #FFD5DA;
+    }
+
+    .active-filter-pill--cleaning {
+      background: #E7F9FC;
+      color: #009CB8;
+    }
+
+    .active-filter-pill--cleaning:hover {
+      background: #D5F4FA;
+    }
+
+    .active-filter-pill--petCare {
+      background: #DFFBF0;
+      color: #11B977;
+    }
+
+    .active-filter-pill--seniorCare {
+      background: #FFF1E1;
+      color: #E97815;
+    }
+
+    .active-filter-pill--tutoring {
+      background: #F1E5FF;
+      color: #9B3DFF;
+    }
+
+    .active-filter-pill-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .active-filter-pill-close {
+      width: 16px;
+      height: 16px;
+    }
+
     .results-notifications-link {
       display: inline-flex;
       align-items: center;
@@ -1324,6 +1439,10 @@
         </section>
         <section class="results-section" aria-label="Results">
           <div class="results-inner">
+            <div class="active-filters-summary" id="sitters-active-filters">
+              <div class="active-filters-heading" id="sitters-active-filters-heading"></div>
+              <div class="active-filters-row" id="sitters-active-filters-row"></div>
+            </div>
             <a class="results-notifications-link" href="#" id="sitters-notifications-link">
               <img src="/jobs/jobs-for-sitters/assets/icon-bell.svg" alt="" aria-hidden="true">
               <span data-i18n="sittersHub.notificationsLink"></span>
@@ -1368,11 +1487,11 @@
           </div>
           <div class="filters-section-content">
             <div class="filters-service-chips">
-              <button class="filters-service-chip is-active" type="button" aria-pressed="true" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.babysitting"></span></button>
-              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.cleaning"></span></button>
-              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.petCare"></span></button>
-              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
-              <button class="filters-service-chip" type="button" aria-pressed="false" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
+              <button class="filters-service-chip is-active" type="button" aria-pressed="true" data-service="babysitting" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.babysitting"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-service="cleaning" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.cleaning"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-service="petCare" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.petCare"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-service="seniorCare" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.seniorCare"></span></button>
+              <button class="filters-service-chip" type="button" aria-pressed="false" data-service="tutoring" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="sittersHub.filtersModal.tutoring"></span></button>
             </div>
           </div>
         </section>
@@ -1405,6 +1524,10 @@
     </div>
   </main>
   <script>
+    window.sittersState = {
+      appliedServices: ['babysitting']
+    };
+
     function t(path) {
       return path.split('.').reduce(function(acc, key) {
         return acc && acc[key] !== undefined ? acc[key] : null;
@@ -1434,9 +1557,97 @@
         });
         button.classList.add('is-active');
         button.setAttribute('aria-pressed', 'true');
+        if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
         if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
     });
+
+    (function initSittersActiveFilters() {
+      var heading = document.getElementById('sitters-active-filters-heading');
+      var row = document.getElementById('sitters-active-filters-row');
+      var locationDisplay = document.getElementById('sitters-location-display');
+      var radiusDisplay = document.getElementById('sitters-radius-display');
+      if (!heading || !row || !locationDisplay || !radiusDisplay) return;
+
+      var serviceMeta = {
+        babysitting: {
+          labelKey: 'sittersHub.filtersModal.babysitting',
+          pillClass: 'active-filter-pill--babysitting',
+          icon: '/jobs/jobs-for-sitters/assets/active-babysitting.svg',
+          close: '/jobs/jobs-for-sitters/assets/x-pink.svg'
+        },
+        cleaning: {
+          labelKey: 'sittersHub.filtersModal.cleaning',
+          pillClass: 'active-filter-pill--cleaning',
+          icon: '/jobs/jobs-for-sitters/assets/active-cleaning.svg',
+          close: '/jobs/jobs-for-sitters/assets/x-cyan.svg'
+        },
+        petCare: {
+          labelKey: 'sittersHub.filtersModal.petCare',
+          pillClass: 'active-filter-pill--petCare',
+          icon: '/jobs/jobs-for-sitters/assets/active-pet-care.svg',
+          close: '/jobs/jobs-for-sitters/assets/x-teal.svg'
+        },
+        seniorCare: {
+          labelKey: 'sittersHub.filtersModal.seniorCare',
+          pillClass: 'active-filter-pill--seniorCare',
+          icon: '/jobs/jobs-for-sitters/assets/active-senior-care.svg',
+          close: '/jobs/jobs-for-sitters/assets/x-orange.svg'
+        },
+        tutoring: {
+          labelKey: 'sittersHub.filtersModal.tutoring',
+          pillClass: 'active-filter-pill--tutoring',
+          icon: '/jobs/jobs-for-sitters/assets/active-tutoring.svg',
+          close: '/jobs/jobs-for-sitters/assets/x-indigo.svg'
+        }
+      };
+
+      function activeTabKey() {
+        var activeTab = document.querySelector('.results-filter-tab.is-active .results-filter-tab-label');
+        if (!activeTab) return 'new';
+        var key = activeTab.getAttribute('data-i18n') || '';
+        return key.split('.').pop() || 'new';
+      }
+
+      function pillMarkup(parts, className) {
+        return '<div class="active-filter-pill ' + className + '">' + parts.join('') + '</div>';
+      }
+
+      function render() {
+        heading.textContent = t('sittersHub.activeFiltersHeading.' + activeTabKey());
+
+        var html = [];
+        html.push(
+          pillMarkup(
+            [
+              '<span>' + locationDisplay.textContent + ' (' + radiusDisplay.textContent + ')</span>',
+              '<img class="active-filter-pill-close" src="/jobs/jobs-for-sitters/assets/x-indigo.svg" alt="" aria-hidden="true">'
+            ],
+            'active-filter-pill--location'
+          )
+        );
+
+        (window.sittersState.appliedServices || []).forEach(function(serviceKey) {
+          var meta = serviceMeta[serviceKey];
+          if (!meta) return;
+          html.push(
+            pillMarkup(
+              [
+                '<img class="active-filter-pill-icon" src="' + meta.icon + '" alt="" aria-hidden="true">',
+                '<span>' + t(meta.labelKey) + '</span>',
+                '<img class="active-filter-pill-close" src="' + meta.close + '" alt="" aria-hidden="true">'
+              ],
+              meta.pillClass
+            )
+          );
+        });
+
+        row.innerHTML = html.join('');
+      }
+
+      window.sittersRenderActiveFilters = render;
+      render();
+    })();
 
     (function initSittersFiltersModal() {
       var modal = document.getElementById('sitters-filters-modal');
@@ -1512,7 +1723,13 @@
       }
 
       function applyActiveFilters() {
+        window.sittersState.appliedServices = serviceChips.filter(function(button) {
+          return button.classList.contains('is-active');
+        }).map(function(button) {
+          return button.getAttribute('data-service');
+        });
         setBadgeVisibility(triggerBadge, getSelectedServicesCount());
+        if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
       }
 
       function setOpen(isOpen) {
@@ -1623,6 +1840,7 @@
 
       select.addEventListener('change', function() {
         sync();
+        if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
         if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
       sync();
@@ -1640,6 +1858,7 @@
 
       select.addEventListener('change', function() {
         sync();
+        if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
         if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
       sync();

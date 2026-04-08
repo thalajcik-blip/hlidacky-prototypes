@@ -13,6 +13,11 @@
         "replied": "Replied",
         "all": "All"
       },
+      "activeFiltersHeading": {
+        "new": "Show latest job offerings for",
+        "replied": "Show replied job offerings for",
+        "all": "Show all job offerings for"
+      },
       "filtersModal": {
         "title": "Filters",
         "activeCount": "1",
