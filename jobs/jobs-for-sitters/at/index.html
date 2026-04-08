@@ -447,12 +447,28 @@
     }
 
     .job-advert-posted {
-      color: #8B91A3;
+      color: #6C757D;
+      font-feature-settings: 'liga' off, 'clig' off;
       font-family: 'soleil', sans-serif;
       font-size: 12px;
       font-style: normal;
-      font-weight: 400;
-      line-height: 140%;
+      font-weight: 350;
+      line-height: 132%;
+      letter-spacing: -0.16px;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .job-advert-posted-time {
+      color: #2A3539;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.16px;
     }
 
     .job-advert-close {
@@ -567,11 +583,13 @@
 
     .job-advert-message {
       color: #4A5A61;
+      font-feature-settings: 'liga' off, 'clig' off;
       font-family: 'soleil', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       font-style: normal;
-      font-weight: 400;
+      font-weight: 350;
       line-height: 150%;
+      letter-spacing: -0.16px;
     }
 
     .job-advert-message-intro {
@@ -880,7 +898,7 @@
           '<article class="job-advert-box', hidden ? ' is-hidden' : '', '">',
             '<div class="job-advert-card">',
               '<div class="job-advert-topline">',
-                '<div class="job-advert-posted">', esc(t('sittersHub.jobAdvert.posted')), '</div>',
+                '<div class="job-advert-posted"><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
                 '<button class="job-advert-close" type="button" aria-label="Close advert">', iconClose(), '</button>',
               '</div>',
               '<div class="job-advert-heading">',

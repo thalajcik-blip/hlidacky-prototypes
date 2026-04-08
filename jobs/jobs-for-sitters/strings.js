@@ -14,7 +14,8 @@ window.STRINGS = {
     "primaryCta": "Otevřít editor stringů",
     "secondaryCta": "Zpět na rozcestník",
     "jobAdvert": {
-      "posted": "Posted 2 hours ago",
+      "postedLabel": "posted",
+      "postedTime": "2 hours ago",
       "title": "Potočná 44, Brno–Bystrc",
       "distance": "3 km",
       "distanceSuffix": "away from you",

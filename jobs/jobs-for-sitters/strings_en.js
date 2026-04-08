@@ -17,7 +17,8 @@
       "primaryCta": "Open strings editor",
       "secondaryCta": "Back to hub",
       "jobAdvert": {
-        "posted": "Posted 2 hours ago",
+        "postedLabel": "posted",
+        "postedTime": "2 hours ago",
         "title": "Potočná 44, Brno–Bystrc",
         "distance": "3 km",
         "distanceSuffix": "away from you",
