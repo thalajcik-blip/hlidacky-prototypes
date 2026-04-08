@@ -924,6 +924,17 @@
       });
     });
 
+    document.querySelectorAll('.results-filter-tab').forEach(function(button) {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('.results-filter-tab').forEach(function(tab) {
+          tab.classList.remove('is-active');
+          tab.setAttribute('aria-pressed', 'false');
+        });
+        button.classList.add('is-active');
+        button.setAttribute('aria-pressed', 'true');
+      });
+    });
+
     (function initSittersLocationSelect() {
       var select = document.getElementById('sitters-location-select');
       var display = document.getElementById('sitters-location-display');
