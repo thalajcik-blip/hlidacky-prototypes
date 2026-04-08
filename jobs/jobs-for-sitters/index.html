@@ -639,6 +639,10 @@
       flex-shrink: 0;
     }
 
+    .filters-service-chip.is-active .filters-service-chip-icon img {
+      filter: brightness(0) invert(1);
+    }
+
     .filters-clear-all {
       margin-top: 12px;
       color: #F96073;
@@ -1374,6 +1378,11 @@
       var modal = document.getElementById('sitters-filters-modal');
       var openButton = document.getElementById('sitters-open-filters');
       var closeButton = document.getElementById('sitters-close-filters');
+      var applyButton = modal ? modal.querySelector('.filters-modal-cta') : null;
+      var modalBadge = modal ? modal.querySelector('.filters-modal-header-badge') : null;
+      var triggerBadge = openButton ? openButton.querySelector('.jobs-filter-badge') : null;
+      var serviceChips = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-service-chip')) : [];
+      var clearButtons = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-section-clear, .filters-clear-all')) : [];
       if (!modal || !openButton || !closeButton) return;
 
       function syncServiceChip(button) {
@@ -1385,6 +1394,26 @@
         }
       }
 
+      function getSelectedServicesCount() {
+        return serviceChips.filter(function(button) {
+          return button.classList.contains('is-active');
+        }).length;
+      }
+
+      function setBadgeVisibility(node, count) {
+        if (!node) return;
+        node.textContent = String(count);
+        node.style.display = count > 0 ? 'inline-flex' : 'none';
+      }
+
+      function syncModalBadge() {
+        setBadgeVisibility(modalBadge, getSelectedServicesCount());
+      }
+
+      function applyActiveFilters() {
+        setBadgeVisibility(triggerBadge, getSelectedServicesCount());
+      }
+
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
         modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
@@ -1392,6 +1421,7 @@
       }
 
       openButton.addEventListener('click', function() {
+        syncModalBadge();
         setOpen(true);
       });
 
@@ -1399,13 +1429,33 @@
         setOpen(false);
       });
 
-      modal.querySelectorAll('.filters-service-chip').forEach(function(button) {
+      serviceChips.forEach(function(button) {
         syncServiceChip(button);
         button.addEventListener('click', function() {
           button.classList.toggle('is-active');
           syncServiceChip(button);
+          syncModalBadge();
         });
       });
+
+      clearButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          serviceChips.forEach(function(chip) {
+            chip.classList.remove('is-active');
+            syncServiceChip(chip);
+          });
+          syncModalBadge();
+        });
+      });
+
+      if (applyButton) {
+        applyButton.addEventListener('click', function() {
+          applyActiveFilters();
+          setOpen(false);
+        });
+      }
 
       modal.querySelectorAll('.filters-section-header').forEach(function(header) {
         function toggleSection() {
@@ -1427,6 +1477,9 @@
           }
         });
       });
+
+      applyActiveFilters();
+      syncModalBadge();
     })();
 
     (function initSittersLocationSelect() {
