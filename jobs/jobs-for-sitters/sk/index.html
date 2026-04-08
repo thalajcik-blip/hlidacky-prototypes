@@ -1266,12 +1266,16 @@
     }
 
     .job-advert-status-icon {
+      border: 0;
+      background: none;
       width: 20px;
       height: 20px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      padding: 0;
+      cursor: pointer;
     }
 
     .job-advert-status-icon img {
@@ -1334,6 +1338,13 @@
     }
 
     .job-advert-dismiss-option img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .job-advert-dismiss-radio {
       width: 16px;
       height: 16px;
       display: block;
@@ -2233,7 +2244,8 @@
         return {
           id: 'job-' + (index + 1),
           status: 'new',
-          repliedOrder: null
+          repliedOrder: null,
+          dismissReason: null
         };
       });
 
@@ -2275,6 +2287,12 @@
         return '<img src="' + map[key] + '" alt="" aria-hidden="true">';
       }
 
+      function dismissReasonRadio(isSelected) {
+        return '<img class="job-advert-dismiss-radio" src="' + (isSelected
+          ? '/jobs/jobs-for-sitters/assets/radio-selected.svg'
+          : '/jobs/jobs-for-sitters/assets/radio-non-selected.svg') + '" alt="" aria-hidden="true">';
+      }
+
       function activeTabKey() {
         var activeTab = document.querySelector('.results-filter-tab.is-active .results-filter-tab-label');
         if (!activeTab) return 'new';
@@ -2299,14 +2317,16 @@
       }
 
       function dismissMenuMarkup(card) {
-        if (card.status !== 'new') return '';
         if (window.sittersState.openDismissJobId !== card.id) return '';
         var reasonKeys = ['location', 'rate', 'schedule', 'other'];
         return [
           '<div class="job-advert-dismiss-menu" role="menu">',
           '<div class="job-advert-dismiss-label">' + esc(t('sittersHub.jobAdvert.dismissTitle')) + '</div>',
           reasonKeys.map(function(key) {
-            return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + dismissReasonIcon(key) + '<span>' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</span></button>';
+            var leading = card.status === 'replied'
+              ? dismissReasonRadio(card.dismissReason === key)
+              : dismissReasonIcon(key);
+            return '<button class="job-advert-dismiss-option" type="button" data-dismiss-reason="' + key + '" data-job-id="' + card.id + '">' + leading + '<span>' + esc(t('sittersHub.jobAdvert.dismissReasons.' + key)) + '</span></button>';
           }).join(''),
           '</div>'
         ].join('');
@@ -2319,7 +2339,7 @@
               '<div class="job-advert-topline">',
                 '<div class="job-advert-posted"><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
                 (card.status === 'replied'
-                  ? '<span class="job-advert-status-icon" aria-hidden="true">' + iconMessage() + '</span>'
+                  ? '<button class="job-advert-status-icon" type="button" aria-label="Show decline reason" data-job-id="' + card.id + '">' + iconMessage() + '</button>'
                   : '<button class="job-advert-close" type="button" aria-label="Close advert" data-job-id="' + card.id + '">' + iconClose() + '</button>'),
               '</div>',
               dismissMenuMarkup(card),
@@ -2434,7 +2454,7 @@
       });
 
       document.addEventListener('click', function(event) {
-        if (!event.target.closest('.job-advert-dismiss-menu') && !event.target.closest('.job-advert-close')) {
+        if (!event.target.closest('.job-advert-dismiss-menu') && !event.target.closest('.job-advert-close') && !event.target.closest('.job-advert-status-icon')) {
           if (window.sittersState.openDismissJobId) {
             window.sittersState.openDismissJobId = null;
             renderCards();
@@ -2453,16 +2473,28 @@
           return;
         }
 
+        var statusButton = event.target.closest('.job-advert-status-icon');
+        if (statusButton) {
+          var repliedId = statusButton.getAttribute('data-job-id');
+          window.sittersState.openDismissJobId = window.sittersState.openDismissJobId === repliedId ? null : repliedId;
+          renderCards();
+          syncButton();
+          return;
+        }
+
         var reasonButton = event.target.closest('.job-advert-dismiss-option');
         if (!reasonButton) return;
         var jobId = reasonButton.getAttribute('data-job-id');
         var card = cardsData.find(function(item) { return item.id === jobId; });
         if (!card) return;
 
-        card.status = 'replied';
-        card.repliedOrder = ++repliedSequence;
-        if (window.sittersState.dismissedJobIds.indexOf(jobId) === -1) {
-          window.sittersState.dismissedJobIds.push(jobId);
+        card.dismissReason = reasonButton.getAttribute('data-dismiss-reason');
+        if (card.status !== 'replied') {
+          card.status = 'replied';
+          card.repliedOrder = ++repliedSequence;
+          if (window.sittersState.dismissedJobIds.indexOf(jobId) === -1) {
+            window.sittersState.dismissedJobIds.push(jobId);
+          }
         }
         window.sittersState.openDismissJobId = null;
         visibleCount = batchSize;
