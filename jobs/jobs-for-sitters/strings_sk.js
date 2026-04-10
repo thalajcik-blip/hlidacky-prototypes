@@ -127,6 +127,10 @@
         "title": "Gratulujeme",
         "body": "Vaša správa pre rodinu {familyName} bola úspešne odoslaná."
       },
+      "archiveToast": {
+        "title": "Inzerát bol archivovaný",
+        "body": "Stále ho nájdete v záložke Archivované."
+      },
       "otherActions": "Ďalšie akcie",
       "otherActionsMenu": {
         "userJobs": "Zobraziť všetky inzeráty používateľa",

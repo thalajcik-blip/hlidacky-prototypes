@@ -780,6 +780,7 @@ async function init() {
   // CZ is always sourced from strings.js (authoritative)
   allLangs['CZ'] = Object.assign({}, czSource);
   saveLang('CZ', allLangs['CZ']);
+  touched['CZ'] = loadTouched('CZ');
 
   // Other languages default to EN source; while EN overrides are still loading,
   // baseSource acts as a temporary fallback and is later upgraded to EN.
@@ -878,7 +879,6 @@ async function loadPublishedLangFiles() {
 /* ── Tabs ─────────────────────────────────────────────────── */
 
 function countChanges(lang) {
-  if (lang === 'CZ') return 0;
   return (touched[lang] || new Set()).size;
 }
 
@@ -980,7 +980,7 @@ function renderTable() {
     }
 
     const subKey    = key.slice(sectionName.length + 1);
-    const isModified = !isCZ && (touched[currentLang] || new Set()).has(key);
+    const isModified = (touched[currentLang] || new Set()).has(key);
     visibleCount++;
 
     html += '<tr>' +
@@ -989,7 +989,6 @@ function renderTable() {
       '<td class="edit-cell">' +
         '<textarea class="string-input' + (isModified ? ' modified' : '') + '"' +
           ' data-key="' + esc(key) + '"' +
-          (isCZ ? ' readonly' : '') +
           ' rows="1">' + esc(transVal) + '</textarea>' +
       '</td>' +
       '</tr>';
@@ -1004,15 +1003,13 @@ function renderTable() {
   // Auto-resize & input binding
   tbody.querySelectorAll('.string-input').forEach(function(ta) {
     autoResize(ta);
-    if (!isCZ) {
-      ta.addEventListener('input', function() {
-        autoResize(ta);
-        pendingChanges[ta.dataset.key] = ta.value;
-        if (!touched[currentLang]) touched[currentLang] = new Set();
-        touched[currentLang].add(ta.dataset.key);
-        ta.classList.toggle('modified', touched[currentLang].has(ta.dataset.key));
-      });
-    }
+    ta.addEventListener('input', function() {
+      autoResize(ta);
+      pendingChanges[ta.dataset.key] = ta.value;
+      if (!touched[currentLang]) touched[currentLang] = new Set();
+      touched[currentLang].add(ta.dataset.key);
+      ta.classList.toggle('modified', touched[currentLang].has(ta.dataset.key));
+    });
   });
 }
 

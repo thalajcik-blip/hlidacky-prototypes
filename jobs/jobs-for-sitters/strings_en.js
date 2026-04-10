@@ -119,6 +119,10 @@
           "title": "Congratulations",
           "body": "Your message to {familyName} has been sent successfully."
         },
+        "archiveToast": {
+          "title": "Job ad archived",
+          "body": "You can still find it under the Archived tab."
+        },
         "otherActions": "Other actions",
         "otherActionsMenu": {
           "userJobs": "Show all jobs of the user",
