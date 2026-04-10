@@ -24,7 +24,8 @@
     "activeFiltersHeadingEmpty": {
       "new": "Összes legújabb állásajánlat",
       "replied": "Összes megválaszolt állásajánlat",
-      "archived": "Összes archivált állásajánlat"
+      "archived": "Összes archivált állásajánlat",
+      "all": "Show all job offerings"
     },
     "filtersModal": {
       "title": "Szűrők",
@@ -121,10 +122,14 @@
           "apply": "A kiválasztott sablon használata"
         }
       },
-      "reply": "Jelentkezés az állásra",
+      "reply": "Jelentkezés",
       "toast": {
         "title": "Gratulálunk!",
         "body": "Az Ön üzenetét sikeresen elküldtük a(z) {familyName} családnak."
+      },
+      "archiveToast": {
+        "title": "Az álláshirdetés archiválva",
+        "body": "Továbbra is megtalálod az Archivált fül alatt."
       },
       "otherActions": "További műveletek",
       "otherActionsMenu": {
