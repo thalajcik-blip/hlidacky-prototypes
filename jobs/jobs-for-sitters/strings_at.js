@@ -1,17 +1,137 @@
-// strings_at.js — English fallback until localized
+// strings_at.js — Deutsch (AT)
+// Published via /strings editor. Missing keys fall back to CZ source (strings.js).
 (function(){
   function _dm(b,o){var r=Object.assign({},b||{});Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm((b&&b[k])||{},o[k]):o[k];});return r;}
   window.STRINGS = _dm(window.STRINGS, {
-    "sittersHub": {
-      "navTitle": "Jobs for sitters",
-      "topNavTitle": "Jobs",
-      "selectorLabel": "Show all job offerings for",
-      "title": "Jobs for sitters",
-      "subtitle": "The current job-search screen prototype for sitters.",
-      "bodyTitle": "Prototype scaffold",
-      "bodyText": "The mobile container is ready for the first sitter-facing job-search screens.",
-      "primaryCta": "Open strings editor",
-      "secondaryCta": "Back to hub"
+  "sittersHub": {
+    "navTitle": "Jobs für Betreuer:innen",
+    "topNavTitle": "Jobs",
+    "selectorLabel": "Alle Stellenangebote anzeigen für",
+    "notificationsLink": "Benachrichtigungen einrichten",
+    "showMore": "mehr Ergebnisse anzeigen",
+    "resultsTabs": {
+      "new": "Neu",
+      "replied": "Beantwortet",
+      "archived": "Archiviert",
+      "all": "Alle"
+    },
+    "activeFiltersHeading": {
+      "new": "Aktuelle Stellenangebote anzeigen für",
+      "replied": "Beantwortete Stellenangebote anzeigen für",
+      "archived": "Archivierte Stellenangebote anzeigen für",
+      "all": "Alle Stellenangebote anzeigen für"
+    },
+    "activeFiltersHeadingEmpty": {
+      "new": "Alle aktuellen Stellenangebote anzeigen",
+      "replied": "Alle beantworteten Stellenangebote anzeigen",
+      "archived": "Alle archivierten Stellenangebote anzeigen"
+    },
+    "filtersModal": {
+      "title": "Filter",
+      "activeCount": "1",
+      "servicesTitle": "Hilfe auswählen",
+      "clear": "Löschen",
+      "babysitting": "Kinderbetreuung",
+      "cleaning": "Haushaltshilfe",
+      "petCare": "Tierbetreuung",
+      "seniorCare": "Seniorenbetreuung",
+      "tutoring": "Lernhilfe",
+      "locationTitle": "Standort",
+      "radiusTitle": "Umkreis",
+      "clearFilters": "Filter zurücksetzen",
+      "showJobs": "128 Jobs anzeigen",
+      "sortTitle": "Sortieren nach",
+      "latest": "Neueste",
+      "closest": "Nächste",
+      "bestPaid": "Bestbezahlte"
+    },
+    "notificationsModal": {
+      "title": "Benachrichtigungseinstellungen",
+      "body": "Bleiben Sie über die neuesten Jobmöglichkeiten in Ihrer Nähe auf dem Laufenden. Wählen Sie aus, wie oft Sie Updates erhalten möchten.",
+      "emailLabel": "E-Mail-Benachrichtigungen",
+      "mobileLabel": "Mobile Benachrichtigungen",
+      "immediately": "Sofort nach Veröffentlichung",
+      "never": "Nie",
+      "daily": "Zusammenfassung einmal täglich",
+      "weekly": "Zusammenfassung einmal wöchentlich",
+      "cancel": "Abbrechen",
+      "save": "Änderungen speichern",
+      "toast": {
+        "title": "Ihre Einstellungen wurden aktualisiert.",
+        "body": ""
+      },
+      "inboxToast": {
+        "title": "Ihr Posteingang sieht ordentlich aus!",
+        "body": "Sie haben {countLabel} Jobs bearbeitet und damit Ihre künftigen Treffer verbessert.",
+        "all": "alle"
+      }
+    },
+    "reportModal": {
+      "title": "Unangemessene Anzeige melden",
+      "label": "Bitte beschreiben Sie uns das Problem:",
+      "placeholder": "Schreiben Sie hier Ihre Nachricht...",
+      "submit": "Meldung absenden",
+      "toast": {
+        "title": "Meldung wurde gesendet",
+        "body": "Unser Support-Team wurde bereits über Ihr Anliegen informiert."
+      }
+    },
+    "locationValue": "Wien",
+    "radiusValue": "+20 km",
+    "title": "Jobs für Betreuer:innen",
+    "subtitle": "Der aktuelle Prototyp der Jobsuche für Betreuer:innen.",
+    "bodyTitle": "Prototyp-Struktur",
+    "bodyText": "Der mobile Container ist bereit für die ersten Ansichten der Jobsuche.",
+    "primaryCta": "Editor öffnen",
+    "secondaryCta": "Zurück zur Übersicht",
+    "jobAdvert": {
+      "postedLabel": "veröffentlicht",
+      "postedTime": "vor 2 Stunden",
+      "title": "Potočná 44, Brno–Bystrc",
+      "distance": "3 km",
+      "distanceSuffix": "von Ihnen entfernt",
+      "price": "18 €/Std.",
+      "service": "Kinderbetreuung",
+      "date": "4. Juni, 18:00",
+      "author": "Alexandra",
+      "wrote": "schrieb:",
+      "alreadyReplied": "Bereits beantwortet",
+      "readMore": "weiterlesen",
+      "body": "Guten Tag, ich suche ab September für das kommende Schuljahr eine Leihoma oder einen Babysitter für die regelmäßige Betreuung meiner zwei Kinder (Sohn, im November 4 Jahre alt, und Tochter, 2 Jahre alt). Zeiten: Mo–Fr 8:00–14:00 Uhr. Nach Absprache sind Zeitanpassungen möglich. Gelegentlich bräuchten wir auch eine Betreuung am Abend. Nach gegenseitiger Vereinbarung wäre auch eine Begleitung im gemeinsamen Urlaub möglich.",
+      "dismissTitle": "Warum archivieren Sie diesen Job?",
+      "dismissReasons": {
+        "location": "Der Standort passt nicht.",
+        "rate": "Die Bezahlung ist mir zu gering.",
+        "schedule": "Die Zeiten passen nicht.",
+        "other": "Ich habe einen anderen Grund."
+      },
+      "replyComposer": {
+        "sentAt": "Sie haben gerade geantwortet",
+        "showMessages": "Nachrichten anzeigen",
+        "automaticReply": "Automatische Antwort",
+        "clear": "Löschen",
+        "yourReply": "Ihre Antwort",
+        "inputPlaceholder": "Geben Sie hier Ihre Nachricht ein...",
+        "useTemplate": "Vorlage verwenden",
+        "templateLabel": "Vorlage",
+        "allTemplates": "Alle Vorlagen",
+        "sendMessage": "Nachricht senden",
+        "templatesModal": {
+          "title": "Vorlage wählen",
+          "apply": "Ausgewählte Vorlage verwenden"
+        }
+      },
+      "reply": "Auf Job antworten",
+      "toast": {
+        "title": "Herzlichen Glückwunsch",
+        "body": "Ihre Nachricht an Familie {familyName} wurde erfolgreich gesendet."
+      },
+      "otherActions": "Weitere Aktionen",
+      "otherActionsMenu": {
+        "userJobs": "Alle Jobs dieses Nutzers anzeigen",
+        "reportAd": "Unangemessene Anzeige melden"
+      }
     }
-  });
+  }
+});
 })();
