@@ -1,83 +1,135 @@
+// Auto-generated from strings.json — do not edit manually.
+// To update: paste the translated JSON content between the braces below.
+
 window.STRINGS = {
   "sittersHub": {
-    "navTitle": "Práce pro hlídačky",
-    "topNavTitle": "Jobs",
-    "selectorLabel": "Show all job offerings for",
-    "notificationsLink": "Set up notifications",
-    "showMore": "show more results",
+    "navTitle": "Inzeráty pro hlídačky",
+    "topNavTitle": "Inzeráty",
+    "selectorLabel": "Zobrazit všechny inzeráty pro",
+    "notificationsLink": "Nastavit si upozornění",
+    "showMore": "zobrazit další výsledky",
     "resultsTabs": {
-      "new": "New",
-      "replied": "Replied",
-      "all": "All"
+      "new": "Nové",
+      "replied": "Odpovězené",
+      "archived": "Archivované",
+      "all": "Všechny"
     },
     "activeFiltersHeading": {
-      "new": "Show latest job offerings for",
-      "replied": "Show replied job offerings for",
-      "all": "Show all job offerings for"
+      "new": "Zobrazit nejnovější inzeráty pro",
+      "replied": "Zobrazit odpovězené inzeráty pro",
+      "archived": "Zobrazit archivované inzeráty pro",
+      "all": "Zobrazit všechny inzeráty pro"
     },
     "activeFiltersHeadingEmpty": {
-      "new": "Show all latest job offerings",
-      "replied": "Show all replied job offerings",
-      "all": "Show all job offerings"
+      "new": "Zobrazit všechny nejnovější inzeráty",
+      "replied": "Zobrazit všechny odpovězené inzeráty",
+      "archived": "Zobrazit všetky archivované inzeráty"
     },
     "filtersModal": {
-      "title": "Filters",
+      "title": "Filtry",
       "activeCount": "1",
-      "servicesTitle": "Select services",
-      "clear": "Clear",
-      "babysitting": "Babysitting",
-      "cleaning": "Cleaning",
-      "petCare": "Pet care",
-      "seniorCare": "Senior care",
-      "tutoring": "Tutoring",
-      "clearFilters": "Clear filters",
-      "sortTitle": "Sort by",
-      "latest": "Latest",
-      "closest": "Closest",
-      "bestPaid": "Best paid",
-      "showJobs": "Show 128 jobs"
+      "servicesTitle": "Vyberte si pomoc",
+      "clear": "Smazat",
+      "babysitting": "Hlídání dětí",
+      "cleaning": "Úklid domácnosti",
+      "petCare": "Opatrování mazlíčků",
+      "seniorCare": "Péče o seniory",
+      "tutoring": "Doučování",
+      "locationTitle": "Lokalita",
+      "radiusTitle": "Okruh",
+      "clearFilters": "Vymazat filtry",
+      "showJobs": "Zobrazit 128 inzerátů",
+      "sortTitle": "Seřadit podle",
+      "latest": "Nejnovější",
+      "closest": "Nejbližší",
+      "bestPaid": "Nejlépe placené"
     },
     "notificationsModal": {
-      "title": "Notification settings",
-      "body": "Stay up to date with the latest job opportunities in your area. Choose how often you'd like to receive updates.",
-      "emailLabel": "E-mail notifications",
-      "mobileLabel": "Mobile notifications",
-      "immediately": "Immediately after publication",
-      "never": "Never",
-      "daily": "Summary once a day",
-      "weekly": "Summary once a week",
-      "cancel": "Cancel",
-      "save": "Save changes"
+      "title": "Nastavení upozornění",
+      "body": "Mějte neustálý přehled o nejnovějších inzerátech ve vašem okolí. Vyberte si, jak často vám máme posílat novinky.",
+      "emailLabel": "E-mailová upozornění",
+      "mobileLabel": "Mobilní upozornění",
+      "immediately": "Ihned po zveřejnění",
+      "never": "Nikdy",
+      "daily": "Souhrn jednou denně",
+      "weekly": "Souhrn jednou týdně",
+      "cancel": "Zrušit",
+      "save": "Uložit změny",
+      "toast": {
+        "title": "Nastavení upozornění byla aktualizována.",
+        "body": ""
+      },
+      "inboxToast": {
+        "title": "Vaše doručená pošta vypadá lépe!",
+        "body": "Zpracovali jste {countLabel} inzerátů a zlepšili tak své budoucí shody.",
+        "all": "všechny"
+      }
+    },
+    "reportModal": {
+      "title": "Nahlásit nevhodný inzerát",
+      "label": "Popište nám prosím, v čem je problém:",
+      "placeholder": "Zde napište svou zprávu...",
+      "submit": "Odeslat hlášení",
+      "toast": {
+        "title": "Hlášení bylo odesláno",
+        "body": "Naše podpora již byla o upozorněna na váš podnět."
+      }
     },
     "locationValue": "Praha 2",
     "radiusValue": "+20 km",
-    "title": "Jobs for sitters",
-    "subtitle": "Aktuální prototyp obrazovky hledání práce pro hlídačky.",
-    "bodyTitle": "Prototyp se připravuje",
-    "bodyText": "Mobilní kontejner je připravený pro první sitter-facing obrazovky hledání práce.",
-    "primaryCta": "Otevřít editor stringů",
-    "secondaryCta": "Zpět na rozcestník",
+    "title": "Inzeráty pro hlídačky",
+    "subtitle": "Aktuální prototyp obrazovky pro vyhledávání práce pro hlídačky.",
+    "bodyTitle": "Konstrukce prototypu",
+    "bodyText": "Mobilní rozhraní je připraveno pro první obrazovky vyhledávání práce určené hlídačkám.",
+    "primaryCta": "Otevřít editor řetězců",
+    "secondaryCta": "Zpět na přehled",
     "jobAdvert": {
-      "postedLabel": "posted",
-      "postedTime": "2 hours ago",
+      "postedLabel": "zveřejněno",
+      "postedTime": "před 2 hodinami",
       "title": "Potočná 44, Brno–Bystrc",
       "distance": "3 km",
-      "distanceSuffix": "away from you",
+      "distanceSuffix": "od vás",
       "price": "450 Kč/h",
-      "service": "Babysitting",
-      "date": "June 4, 18:00",
+      "service": "Hlídání dětí",
+      "date": "4. června, 18:00",
       "author": "Alexandra",
-      "wrote": "wrote:",
-      "body": "Hello, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years old in November) and a daughter (2 years old). Mon-Fri 8-14:00. After agreement possible adjustment of time. Exceptional evening babysitting. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement.",
-      "dismissTitle": "Why are you declining?",
+      "wrote": "píše:",
+      "alreadyReplied": "Již jste odpověděli",
+      "readMore": "číst dále",
+      "body": "Dobrý den, hledám hlídačku na pravidelné hlídání od září pro nadcházející školní rok. Jedná se o dvě děti – syna (v listopadu mu budou 4 roky) a dceru (2 roky). Čas: po–pá 8:00–14:00, po dohodě je možná úprava času. Výjimečně bych potřebovala i večerní hlídání. Po vzájemné dohodě je možné využít služeb hlídačky i během společné dovolené.",
+      "dismissTitle": "Proč si tento inzerát archivujete?",
       "dismissReasons": {
-        "location": "The location doesn't fit.",
-        "rate": "The rate is too low for me.",
-        "schedule": "The schedule doesn't work.",
-        "other": "I have another reason."
+        "location": "Lokalita mi nevyhovuje.",
+        "rate": "Sazba je pro mě příliš nízká.",
+        "schedule": "Čas mi nevyhovuje.",
+        "other": "Mám jiný důvod."
       },
-      "reply": "Reply to job",
-      "otherActions": "Other actions"
+      "replyComposer": {
+        "sentAt": "Odpověděli jste před chvílí",
+        "showMessages": "Zobrazit zprávy",
+        "automaticReply": "Automatická odpověď",
+        "clear": "Vymazat",
+        "yourReply": "Vaše odpověď",
+        "inputPlaceholder": "Zde zadejte svou zprávu...",
+        "useTemplate": "Použít šablonu",
+        "templateLabel": "šablona",
+        "allTemplates": "Všechny šablony",
+        "sendMessage": "Odeslat zprávu",
+        "templatesModal": {
+          "title": "Použít šablonu",
+          "apply": "Použít vybranou šablonu"
+        }
+      },
+      "reply": "Odpovědět na inzerát",
+      "toast": {
+        "title": "Gratulujeme",
+        "body": "Vaše zpráva pro rodinu {familyName} byla úspěšně odeslána."
+      },
+      "otherActions": "Další akce",
+      "otherActionsMenu": {
+        "userJobs": "Zobrazit všechny inzeráty uživatele",
+        "reportAd": "Upozornit na nevhodný inzerát"
+      }
     }
   }
 };
