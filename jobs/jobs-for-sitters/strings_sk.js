@@ -86,7 +86,7 @@
     "primaryCta": "Otvoriť editor reťazcov",
     "secondaryCta": "Späť do centra",
     "jobAdvert": {
-      "postedLabel": "zverejnené",
+      "postedLabel": "zverejnila",
       "postedTime": "pred 2 hodinami",
       "title": "Potočná 44, Brno–Bystrc",
       "distance": "3 km",
