@@ -122,7 +122,7 @@
           "apply": "Použiť vybranú šablónu"
         }
       },
-      "reply": "Odpovedať na inzerát",
+      "reply": "Odpovedať",
       "toast": {
         "title": "Gratulujeme",
         "body": "Vaša správa pre rodinu {familyName} bola úspešne odoslaná."
