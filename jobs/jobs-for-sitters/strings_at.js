@@ -24,7 +24,8 @@
     "activeFiltersHeadingEmpty": {
       "new": "Alle aktuellen Stellenangebote anzeigen",
       "replied": "Alle beantworteten Stellenangebote anzeigen",
-      "archived": "Alle archivierten Stellenangebote anzeigen"
+      "archived": "Alle archivierten Stellenangebote anzeigen",
+      "all": "Show all job offerings"
     },
     "filtersModal": {
       "title": "Filter",
@@ -121,10 +122,14 @@
           "apply": "Ausgewählte Vorlage verwenden"
         }
       },
-      "reply": "Auf Job antworten",
+      "reply": "Antworten",
       "toast": {
         "title": "Herzlichen Glückwunsch",
         "body": "Ihre Nachricht an Familie {familyName} wurde erfolgreich gesendet."
+      },
+      "archiveToast": {
+        "title": "Inserat archiviert",
+        "body": "Sie finden es weiterhin im Reiter Archiviert."
       },
       "otherActions": "Weitere Aktionen",
       "otherActionsMenu": {
