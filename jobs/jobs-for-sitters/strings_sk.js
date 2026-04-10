@@ -24,7 +24,8 @@
     "activeFiltersHeadingEmpty": {
       "new": "Zobraziť všetky najnovšie inzeráty",
       "replied": "Zobraziť všetky inzeráty s odpoveďou",
-      "archived": "Zobraziť všetky archivované inzeráty"
+      "archived": "Zobraziť všetky archivované inzeráty",
+      "all": "Show all job offerings"
     },
     "filtersModal": {
       "title": "Filtre",
