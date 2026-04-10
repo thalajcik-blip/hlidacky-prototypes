@@ -75,6 +75,20 @@
       background: #fff;
     }
 
+    .card-layout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .card-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: grid;
+      gap: 12px;
+    }
+
     .eyebrow {
       font-size: 12px;
       font-weight: 700;
@@ -107,6 +121,34 @@
       align-items: center;
       gap: 16px;
       flex-wrap: wrap;
+    }
+
+    .qr-card {
+      flex: 0 0 auto;
+      width: 120px;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f9fbfd;
+    }
+
+    .qr-image {
+      width: 92px;
+      height: 92px;
+      display: block;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #e5e5ea;
+    }
+
+    .qr-label {
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     .btn {
@@ -253,6 +295,8 @@
       .hero, .content { padding-left: 20px; padding-right: 20px; }
       .actions { flex-direction: column; }
       .card-meta { align-items: flex-start; }
+      .card-layout { flex-direction: column; }
+      .qr-card { width: 100%; justify-items: start; }
       .btn { width: 100%; }
       .lang-modal { padding: 16px; }
       .lang-dialog { padding: 20px; }
@@ -267,27 +311,43 @@
     </section>
     <section class="content">
       <article class="card">
-        <div class="eyebrow">Prototype</div>
-        <h2>Jobs for families</h2>
-        <p>The current family job-posting prototype, including single-vertical and multi-vertical flows.</p>
-        <div class="actions">
-          <a class="btn primary" href="/jobs-for-families/">Open prototype</a>
-          <a class="btn" href="/strings/?prototype=jobs">Open strings editor</a>
-        </div>
-        <div class="card-meta">
-          <button class="text-link" type="button" data-language-picker="jobs">Choose language</button>
+        <div class="card-layout">
+          <div class="card-copy">
+            <div class="eyebrow">Prototype</div>
+            <h2>Jobs for families</h2>
+            <p>The current family job-posting prototype, including single-vertical and multi-vertical flows.</p>
+            <div class="actions">
+              <a class="btn primary" href="/jobs-for-families/">Open prototype</a>
+              <a class="btn" href="/strings/?prototype=jobs">Open strings editor</a>
+            </div>
+            <div class="card-meta">
+              <button class="text-link" type="button" data-language-picker="jobs">Choose language</button>
+            </div>
+          </div>
+          <div class="qr-card">
+            <img class="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=184x184&data=https%3A%2F%2Fhlidacky-prototypes.vercel.app%2Fjobs-for-families%2F" alt="QR code for Jobs for families prototype">
+            <div class="qr-label">Scan to open on mobile</div>
+          </div>
         </div>
       </article>
       <article class="card">
-        <div class="eyebrow">Prototype</div>
-        <h2>Jobs for sitters</h2>
-        <p>The current job-search screen prototype for sitters.</p>
-        <div class="actions">
-          <a class="btn primary" href="/jobs/jobs-for-sitters/">Open prototype</a>
-          <a class="btn" href="/strings/?prototype=sitters">Open strings editor</a>
-        </div>
-        <div class="card-meta">
-          <button class="text-link" type="button" data-language-picker="sitters">Choose language</button>
+        <div class="card-layout">
+          <div class="card-copy">
+            <div class="eyebrow">Prototype</div>
+            <h2>Jobs for sitters</h2>
+            <p>The current job-search screen prototype for sitters.</p>
+            <div class="actions">
+              <a class="btn primary" href="/jobs/jobs-for-sitters/">Open prototype</a>
+              <a class="btn" href="/strings/?prototype=sitters">Open strings editor</a>
+            </div>
+            <div class="card-meta">
+              <button class="text-link" type="button" data-language-picker="sitters">Choose language</button>
+            </div>
+          </div>
+          <div class="qr-card">
+            <img class="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=184x184&data=https%3A%2F%2Fhlidacky-prototypes.vercel.app%2Fjobs%2Fjobs-for-sitters%2F" alt="QR code for Jobs for sitters prototype">
+            <div class="qr-label">Scan to open on mobile</div>
+          </div>
         </div>
       </article>
     </section>

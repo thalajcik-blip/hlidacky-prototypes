@@ -11,17 +11,17 @@
       "resultsTabs": {
         "new": "New",
         "replied": "Replied",
-        "all": "All"
+        "archived": "Archived"
       },
       "activeFiltersHeading": {
         "new": "Show latest job offerings for",
         "replied": "Show replied job offerings for",
-        "all": "Show all job offerings for"
+        "archived": "Show archived job offerings for"
       },
       "activeFiltersHeadingEmpty": {
         "new": "Show all latest job offerings",
         "replied": "Show all replied job offerings",
-        "all": "Show all job offerings"
+        "archived": "Show all archived job offerings"
       },
       "filtersModal": {
         "title": "Filters",
@@ -33,11 +33,9 @@
         "petCare": "Pet care",
         "seniorCare": "Senior care",
         "tutoring": "Tutoring",
+        "locationTitle": "Location",
+        "radiusTitle": "Radius",
         "clearFilters": "Clear filters",
-        "sortTitle": "Sort by",
-        "latest": "Latest",
-        "closest": "Closest",
-        "bestPaid": "Best paid",
         "showJobs": "Show 128 jobs"
       },
       "notificationsModal": {
@@ -50,7 +48,26 @@
         "daily": "Summary once a day",
         "weekly": "Summary once a week",
         "cancel": "Cancel",
-        "save": "Save changes"
+        "save": "Save changes",
+        "toast": {
+          "title": "Your notification settings are updated.",
+          "body": ""
+        },
+        "inboxToast": {
+          "title": "Your inbox is looking better!",
+          "body": "You've processed {countLabel} jobs and improved your future matches.",
+          "all": "all"
+        }
+      },
+      "reportModal": {
+        "title": "Report a harmful job ad",
+        "label": "Please, write down what the problem is:",
+        "placeholder": "Write your message here...",
+        "submit": "Submit report",
+        "toast": {
+          "title": "Report submitted",
+          "body": "Our support has been already notified about your concern."
+        }
       },
       "locationValue": "Praha 2",
       "radiusValue": "+20 km",
@@ -71,16 +88,42 @@
         "date": "June 4, 18:00",
         "author": "Alexandra",
         "wrote": "wrote:",
+        "alreadyReplied": "Already replied",
+        "readMore": "read more",
         "body": "Hello, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years old in November) and a daughter (2 years old). Mon-Fri 8-14:00. After agreement possible adjustment of time. Exceptional evening babysitting. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement.",
-        "dismissTitle": "Why are you declining?",
+        "dismissTitle": "Why you're archiving this job",
         "dismissReasons": {
           "location": "The location doesn't fit.",
           "rate": "The rate is too low for me.",
           "schedule": "The schedule doesn't work.",
           "other": "I have another reason."
         },
+        "replyComposer": {
+          "sentAt": "You replied just a moment ago",
+          "showMessages": "Show messages",
+          "automaticReply": "Automatic reply",
+          "clear": "Clear",
+          "yourReply": "Your reply",
+          "inputPlaceholder": "Enter your message here...",
+          "useTemplate": "Use template",
+          "templateLabel": "template",
+          "allTemplates": "All templates",
+          "sendMessage": "Send a message",
+          "templatesModal": {
+            "title": "Use a template",
+            "apply": "Use selected template"
+          }
+        },
         "reply": "Reply to job",
-        "otherActions": "Other actions"
+        "toast": {
+          "title": "Congratulations",
+          "body": "Your message to {familyName} has been sent successfully."
+        },
+        "otherActions": "Other actions",
+        "otherActionsMenu": {
+          "userJobs": "Show all jobs of the user",
+          "reportAd": "Notify of an inappropriate ad"
+        }
       }
     }
   });
