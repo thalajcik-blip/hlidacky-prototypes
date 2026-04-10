@@ -84,7 +84,7 @@ window.STRINGS = {
     "primaryCta": "Otevřít editor řetězců",
     "secondaryCta": "Zpět na přehled",
     "jobAdvert": {
-      "postedLabel": "zveřejněno",
+      "postedLabel": "zveřejnějnila",
       "postedTime": "před 2 hodinami",
       "title": "Potočná 44, Brno–Bystrc",
       "distance": "3 km",
