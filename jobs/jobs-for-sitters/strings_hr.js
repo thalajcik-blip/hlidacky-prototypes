@@ -24,7 +24,8 @@
     "activeFiltersHeadingEmpty": {
       "new": "Prikaži sve najnovije oglase",
       "replied": "Prikaži sve oglase na koje ste odgovorili",
-      "archived": "Prikaži sve arhivirane oglase"
+      "archived": "Prikaži sve arhivirane oglase",
+      "all": "Show all job offerings"
     },
     "filtersModal": {
       "title": "Filteri",
@@ -121,10 +122,14 @@
           "apply": "Koristi odabrani predložak"
         }
       },
-      "reply": "Odgovori na oglas",
+      "reply": "Odgovori",
       "toast": {
         "title": "Čestitamo",
         "body": "Vaša poruka obitelji {familyName} uspješno je poslana."
+      },
+      "archiveToast": {
+        "title": "Oglas je arhiviran",
+        "body": "I dalje ga možete pronaći pod karticom Arhivirano."
       },
       "otherActions": "Ostale radnje",
       "otherActionsMenu": {
