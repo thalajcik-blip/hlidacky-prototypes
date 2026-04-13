@@ -116,6 +116,20 @@
         "useTemplate": "Sablon használata",
         "templateLabel": "sablon",
         "allTemplates": "Összes sablon",
+        "templates": [
+          "Hi, I'd love to care for your little ones. The schedule works well for me too 🙂. Please let me know if your offer is available. Thank you!",
+          "Hi, I'd love to care for your little ones. Let me know if your offer is available.",
+          "Hey, I'd be delighted to look after your little ones. The schedule fits well for me 💕",
+          "Hello Alexandra, your offer sounds like a great match for me. I have experience with children of a similar age and I'm available on the days you mentioned.",
+          "Hi, I am available for regular babysitting and occasional evening care as well. I would love to hear more details about your family and the routine you need help with.",
+          "Hello, thank you for sharing your offer. I have several years of babysitting experience and the proposed timing works very well for me.",
+          "Hi, I’m interested in this job. I’m reliable, warm, and used to caring for toddlers and preschool children on a regular basis.",
+          "Hello, this looks like something I could help with. I’m available long-term and I’m comfortable with both structured daytime care and playtime outdoors.",
+          "Hi Alexandra, I’d be happy to support your family. I can help with daytime babysitting, preparing simple meals, and keeping the children engaged.",
+          "Hello, your offer caught my eye right away. I have a calm approach, strong references, and availability that matches your requested schedule.",
+          "Hi, I’d love to connect about this babysitting opportunity. I’m flexible, communicative, and happy to adjust to your children’s needs.",
+          "Hello, I’m very interested in this role. I enjoy creating a safe and playful environment for children and would be glad to discuss the details with you."
+        ],
         "sendMessage": "Üzenet küldése",
         "templatesModal": {
           "title": "Sablon használata",

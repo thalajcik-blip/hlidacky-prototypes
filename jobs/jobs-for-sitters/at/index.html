@@ -934,11 +934,43 @@
       line-height: 150%;
       letter-spacing: -0.16px;
       white-space: normal;
+    }
+
+    .report-modal-card-preview.is-collapsed {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 10;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .report-modal-preview-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .report-modal-preview-more {
+      border: 0;
+      padding: 0;
+      background: none;
+      color: #F96073;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .report-modal-preview-more.is-visible {
+      display: inline-flex;
     }
 
     .report-modal-field-group {
@@ -2412,6 +2444,16 @@
     }
 
     @media (pointer: coarse) and (max-width: 768px) {
+      .toast-card {
+        align-items: center;
+      }
+
+      .toast-copy {
+        align-self: center;
+        justify-content: center;
+        padding-top: 0;
+      }
+
       body {
         min-height: 100dvh;
         align-items: flex-start;
@@ -2726,7 +2768,10 @@
       </div>
       <div class="report-modal-body">
         <p class="report-modal-meta" id="sitters-report-meta"></p>
-        <div class="report-modal-card-preview" id="sitters-report-preview"></div>
+        <div class="report-modal-preview-block">
+          <div class="report-modal-card-preview is-collapsed" id="sitters-report-preview"></div>
+          <button class="report-modal-preview-more" id="sitters-report-preview-more" type="button" data-i18n="sittersHub.jobAdvert.readMore">read more</button>
+        </div>
         <div class="report-modal-field-group">
           <label class="report-modal-field-label" for="sitters-report-textarea" data-i18n="sittersHub.reportModal.label"></label>
           <textarea class="report-modal-textarea" id="sitters-report-textarea" data-i18n-placeholder="sittersHub.reportModal.placeholder" placeholder="Write your message here..."></textarea>
@@ -3225,8 +3270,10 @@
       var submitButton = document.getElementById('sitters-submit-report');
       var meta = document.getElementById('sitters-report-meta');
       var preview = document.getElementById('sitters-report-preview');
+      var previewMore = document.getElementById('sitters-report-preview-more');
       var textarea = document.getElementById('sitters-report-textarea');
-      if (!modal || !closeButton || !submitButton || !meta || !preview || !textarea) return;
+      var previewExpanded = false;
+      if (!modal || !closeButton || !submitButton || !meta || !preview || !previewMore || !textarea) return;
 
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
@@ -3237,17 +3284,40 @@
         return t('sittersHub.jobAdvert.author') + ' ' + t('sittersHub.jobAdvert.postedLabel') + ' ' + t('sittersHub.jobAdvert.postedTime') + ':';
       }
 
+      function syncPreviewClamp() {
+        if (previewExpanded) {
+          preview.classList.remove('is-collapsed');
+          previewMore.classList.remove('is-visible');
+          return;
+        }
+        preview.classList.add('is-collapsed');
+        var collapsedHeight = preview.getBoundingClientRect().height;
+        preview.classList.remove('is-collapsed');
+        var expandedHeight = preview.getBoundingClientRect().height;
+        preview.classList.add('is-collapsed');
+        var isOverflowing = expandedHeight > collapsedHeight + 1;
+        previewMore.classList.toggle('is-visible', isOverflowing);
+      }
+
       window.sittersOpenReportModal = function(jobId) {
         var card = window.cardsDataForSitters ? window.cardsDataForSitters.find(function(item) { return item.id === jobId; }) : null;
         if (!card) return;
         meta.textContent = reportMetaText(card);
         preview.textContent = card.bodyText || t('sittersHub.jobAdvert.body');
+        previewExpanded = false;
+        syncPreviewClamp();
         textarea.value = '';
         setOpen(true);
         requestAnimationFrame(function() {
+          syncPreviewClamp();
           try { textarea.focus({ preventScroll: true }); } catch (error) {}
         });
       };
+
+      previewMore.addEventListener('click', function() {
+        previewExpanded = true;
+        syncPreviewClamp();
+      });
 
       closeButton.addEventListener('click', function() {
         setOpen(false);
@@ -3410,7 +3480,7 @@
       var initialNewJobIds = [];
       var inboxToastMilestonesShown = [];
       var serviceKeys = ['babysitting', 'cleaning', 'petCare', 'seniorCare', 'tutoring'];
-      var replyTemplates = [
+      var defaultReplyTemplates = [
         "Hi, I'd love to care for your little ones. The schedule works well for me too 🙂. Please let me know if your offer is available. Thank you!",
         "Hi, I'd love to care for your little ones. Let me know if your offer is available.",
         "Hey, I'd be delighted to look after your little ones. The schedule fits well for me 💕",
@@ -3424,6 +3494,10 @@
         "Hi, I’d love to connect about this babysitting opportunity. I’m flexible, communicative, and happy to adjust to your children’s needs.",
         "Hello, I’m very interested in this role. I enjoy creating a safe and playful environment for children and would be glad to discuss the details with you."
       ];
+      var localizedReplyTemplates = t('sittersHub.jobAdvert.replyComposer.templates');
+      var replyTemplates = Array.isArray(localizedReplyTemplates) && localizedReplyTemplates.length
+        ? localizedReplyTemplates.slice()
+        : defaultReplyTemplates.slice();
       var firstCardLongDescription = "Hello, I am looking for a reliable and caring nanny for regular babysitting starting in September for the upcoming school year. The position would involve looking after two children: a son, who will be 4 years old in November, and a daughter, who is currently 2 years old. The expected schedule is Monday to Friday, approximately from 8:00 to 14:00. However, there is some flexibility in the working hours, and adjustments can be made based on mutual agreement. Occasionally, we may also need evening babysitting, but this would always be arranged in advance. In addition, there may be an opportunity to accompany us on a family holiday to help with childcare, though this would depend on mutual agreement and availability.";
       var cardsData = Array.from({ length: totalCards }, function(_, index) {
         var card = {
