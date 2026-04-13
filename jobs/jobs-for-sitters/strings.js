@@ -114,6 +114,20 @@ window.STRINGS = {
         "useTemplate": "Použít šablonu",
         "templateLabel": "šablona",
         "allTemplates": "Všechny šablony",
+        "templates": [
+          "Ahoj, ráda bych se postarala o vaše děti. Rozvrh mi také dobře vyhovuje 🙂. Dejte mi prosím vědět, zda je vaše nabídka stále aktuální. Děkuji!",
+          "Ahoj, ráda bych se postarala o vaše děti. Dejte mi vědět, zda je vaše nabídka stále aktuální.",
+          "Ahoj, moc ráda se postarám o vaše děti. Rozvrh mi skvěle vyhovuje 💕",
+          "Dobrý den Alexandro, vaše nabídka mi připadá jako skvělá příležitost. Mám zkušenosti s dětmi podobného věku a ve dnech, které uvádíte, mám čas.",
+          "Dobrý den, jsem k dispozici na pravidelné hlídání i občasné večerní hlídání. Ráda se dozvím více o vaší rodině a denním režimu, se kterým potřebujete pomoci.",
+          "Dobrý den, děkuji za sdílení vaší nabídky. Mám několikaletou zkušenost s hlídáním dětí a navrhovaný čas mi velmi dobře vyhovuje.",
+          "Dobrý den, o tuto práci mám zájem. Jsem spolehlivá, milá a zvyklá na pravidelnou péči o batolata i předškolní děti.",
+          "Dobrý den, s touto nabídkou bych vám ráda pomohla. Mám zájem o dlouhodobou spolupráci a vyhovuje mi jak strukturovaný denní režim, tak aktivní čas venku.",
+          "Ahoj Alexandro, ráda podpořím vaši rodinu. Mohu pomoci s denním hlídáním, přípravou jednoduchých jídel i smysluplným programem pro děti.",
+          "Dobrý den, vaše nabídka mě zaujala na první pohled. Mám klidný přístup, dobré reference a časové možnosti, které odpovídají vámi uvedenému rozvrhu.",
+          "Dobrý den, ráda se s vámi spojím ohledně této příležitosti k hlídání. Jsem flexibilní, komunikativní a ráda se přizpůsobím potřebám vašich dětí.",
+          "Dobrý den, o tuto roli mám velký zájem. Baví mě vytvářet pro děti bezpečné a hravé prostředí a ráda s vámi proberu více detailů."
+        ],
         "sendMessage": "Odeslat zprávu",
         "templatesModal": {
           "title": "Použít šablonu",
