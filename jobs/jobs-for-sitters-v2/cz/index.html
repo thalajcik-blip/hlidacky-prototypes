@@ -3138,6 +3138,7 @@
     function rerenderRemoteStrings() {
       applyStaticTranslations();
       if (window.sittersSyncLocationDisplays) window.sittersSyncLocationDisplays();
+      if (window.sittersSyncReplyTemplates) window.sittersSyncReplyTemplates();
       if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
       if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
     }
@@ -3949,10 +3950,14 @@
         "Hi, I’d love to connect about this babysitting opportunity. I’m flexible, communicative, and happy to adjust to your children’s needs.",
         "Hello, I’m very interested in this role. I enjoy creating a safe and playful environment for children and would be glad to discuss the details with you."
       ];
-      var localizedReplyTemplates = t('sittersHub.jobAdvert.replyComposer.templates');
-      var replyTemplates = Array.isArray(localizedReplyTemplates) && localizedReplyTemplates.length
-        ? localizedReplyTemplates.slice()
-        : defaultReplyTemplates.slice();
+      function getReplyTemplates() {
+        var localizedReplyTemplates = t('sittersHub.jobAdvert.replyComposer.templates');
+        return Array.isArray(localizedReplyTemplates) && localizedReplyTemplates.length
+          ? localizedReplyTemplates.slice()
+          : defaultReplyTemplates.slice();
+      }
+
+      var replyTemplates = getReplyTemplates();
       var firstCardLongDescription = "Hello, I am looking for a reliable and caring nanny for regular babysitting starting in September for the upcoming school year. The position would involve looking after two children: a son, who will be 4 years old in November, and a daughter, who is currently 2 years old. The expected schedule is Monday to Friday, approximately from 8:00 to 14:00. However, there is some flexibility in the working hours, and adjustments can be made based on mutual agreement. Occasionally, we may also need evening babysitting, but this would always be arranged in advance. In addition, there may be an opportunity to accompany us on a family holiday to help with childcare, though this would depend on mutual agreement and availability.";
       var cardsData = Array.from({ length: totalCards }, function(_, index) {
         var card = {
@@ -4019,6 +4024,27 @@
         return card.id;
       });
       window.cardsDataForSitters = cardsData;
+
+      function syncReplyTemplatesFromStrings() {
+        replyTemplates = getReplyTemplates();
+        cardsData.forEach(function(card) {
+          if (card.replyStage === 'template') {
+            var nextIndex = Math.max(0, Math.min(card.templateIndex || 0, replyTemplates.length - 1));
+            card.templateIndex = nextIndex;
+            card.replyText = replyTemplates[nextIndex] || '';
+          }
+        });
+        if (templatesModal && templatesModal.classList.contains('is-open')) {
+          modalTemplateIndex = Math.max(0, Math.min(modalTemplateIndex || 0, replyTemplates.length - 1));
+          renderTemplatesModal();
+        }
+        if (grid && grid.children.length) {
+          renderCards();
+          syncButton();
+        }
+      }
+
+      window.sittersSyncReplyTemplates = syncReplyTemplatesFromStrings;
 
       function esc(text) {
         return String(text)
