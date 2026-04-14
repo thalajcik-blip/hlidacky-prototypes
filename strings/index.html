@@ -458,6 +458,29 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .deploy-status a { color: inherit; font-weight: 600; }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #eef8f1;
+      color: #1a6e3a;
+      border: 1px solid #cfe7d7;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
   </style>
   <style>
     #login-overlay {
@@ -558,6 +581,7 @@
       </select>
     </div>
     <div class="toolbar-right">
+      <span class="live-badge">Saved live to Supabase</span>
       <button class="btn btn-outline" id="btn-upload">↑ Upload JSON</button>
       <input type="file" id="file-upload" accept=".json" class="hidden">
       <button class="btn btn-outline" id="btn-download">↓ Download JSON</button>
