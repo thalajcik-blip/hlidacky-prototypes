@@ -75,6 +75,28 @@ window.STRINGS = {
         "body": "Naše podpora již byla o upozorněna na váš podnět."
       }
     },
+    "feedbackModal": {
+      "button": "Feedback",
+      "title": "Podělte se o své dojmy",
+      "body": "Napište nám prosím svou zpětnou vazbu k tomuto prototypu:",
+      "prototypeLabel": "Prototyp",
+      "nameLabel": "Vaše jméno",
+      "namePlaceholder": "Vaše jméno",
+      "emailLabel": "Váš e-mail",
+      "emailPlaceholder": "Váš e-mail",
+      "messageLabel": "Co vám běží hlavou...",
+      "optional": "(volitelné)",
+      "placeholder": "Jak se vám líbí nové funkce? Budeme rádi za zpětnou vazbu, co funguje dobře a co bychom mohli zlepšit.",
+      "submit": "Odeslat feedback",
+      "submitting": "Odesílání...",
+      "success": "Děkujeme, feedback byl odeslán.",
+      "error": "Feedback se nepodařilo odeslat. Zkuste to prosím znovu.",
+      "validation": "Napište prosím nejprve svůj feedback.",
+      "toast": {
+        "title": "Děkujeme za feedback",
+        "body": "Váš podnět jsme uložili k tomuto prototypu."
+      }
+    },
     "locationValue": "Praha 2",
     "radiusValue": "+20 km",
     "title": "Inzeráty pro hlídačky",
@@ -86,7 +108,7 @@ window.STRINGS = {
     "jobAdvert": {
       "postedLabel": "zveřejnila",
       "postedTime": "před 2 hodinami",
-      "title": "Potočná 44, Brno–Bystrc",
+      "title": "Potočná 44, Praha 2",
       "distance": "3 km",
       "distanceSuffix": "od vás",
       "price": "450 Kč/h",
@@ -141,7 +163,8 @@ window.STRINGS = {
       },
       "archiveToast": {
         "title": "Inzerát archivován",
-        "body": "Stále ho najdete v záložce Archivované."
+        "body": "Stále ho najdete v záložce Archivované.",
+        "undo": "Vrátit akci"
       },
       "otherActions": "Další akce",
       "otherActionsMenu": {

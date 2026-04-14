@@ -47,6 +47,7 @@
       }
     })();
   </script>
+  <script src="/strings-runtime.js" data-prototype="jobs"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -2405,6 +2406,18 @@
       const options = (window.STRINGS && window.STRINGS.frequency && window.STRINGS.frequency.freqOptions) || [];
       freqSel.innerHTML = options.map(o => `<option>${o}</option>`).join('');
     }
+  }
+
+  window.addEventListener('hlidacky:strings-updated', function(event) {
+    if (!event.detail || !event.detail.applied) return;
+    applyStrings();
+  });
+
+  if (window.HlidackyStringsRuntime && window.HlidackyStringsRuntime.ready) {
+    window.HlidackyStringsRuntime.ready.then(function(detail) {
+      if (!detail || !detail.applied) return;
+      applyStrings();
+    });
   }
 
   // ============================================================

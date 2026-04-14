@@ -20,6 +20,7 @@
       }
     })();
   </script>
+  <script src="/strings-runtime.js" data-prototype="sitters"></script>
   <style>
     :root {
       --text: #2a3539;
@@ -121,11 +122,79 @@
     .top-navbar-title {
       color: #2A3539;
       font-family: 'soleil', Inter, system-ui, sans-serif;
-      font-size: 16px;
+      font-size: 14px;
       font-style: normal;
       font-weight: 400;
       line-height: 24px;
       letter-spacing: -0.051px;
+    }
+
+    .feedback-fab {
+      position: absolute;
+      top: 44px;
+      right: 22px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      background: radial-gradient(circle at 32% 28%, #9F61FF 0%, #7A3CFF 62%, #5F29D9 100%);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+        0 18px 30px -16px rgba(122, 60, 255, 0.72),
+        0 0 30px rgba(147, 87, 255, 0.48);
+      color: #FFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+      z-index: 6;
+      transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+      animation: feedbackGlow 2.4s ease-in-out infinite;
+    }
+
+    .feedback-fab:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+        0 22px 34px -16px rgba(122, 60, 255, 0.82),
+        0 0 36px rgba(147, 87, 255, 0.58);
+      filter: saturate(1.04);
+    }
+
+    .feedback-fab:focus-visible {
+      outline: 2px solid rgba(122, 60, 255, 0.34);
+      outline-offset: 4px;
+    }
+
+    .feedback-fab img,
+    .feedback-fab svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .feedback-fab.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      box-shadow: none;
+      transform: scale(0.92);
+    }
+
+    @keyframes feedbackGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+          0 18px 30px -16px rgba(122, 60, 255, 0.72),
+          0 0 26px rgba(147, 87, 255, 0.42);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+          0 22px 36px -16px rgba(122, 60, 255, 0.86),
+          0 0 42px rgba(147, 87, 255, 0.66);
+      }
     }
 
     .status-time {
@@ -443,6 +512,11 @@
     .notifications-modal.is-open,
     .templates-modal.is-open {
       display: flex;
+    }
+
+    .feedback-modal {
+      inset: 0;
+      z-index: 26;
     }
 
     .filters-modal-header {
@@ -1016,6 +1090,69 @@
     .report-modal-textarea:focus-visible {
       outline: 2px solid rgba(118, 164, 255, 0.8);
       outline-offset: 2px;
+    }
+
+    .feedback-modal-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px 20px 20px;
+      background: #FFF;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feedback-modal-field-label-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feedback-modal-optional {
+      color: #8B91A3;
+      text-align: right;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .feedback-modal-input {
+      min-height: 52px;
+      resize: none;
+      border-color: #E5E5EA;
+      box-shadow: none;
+    }
+
+    .feedback-modal-textarea {
+      min-height: 124px;
+      border-color: #E5E5EA;
+      box-shadow: none;
+    }
+
+    .feedback-modal-status {
+      min-height: 18px;
+      margin: -2px 0 0;
+      color: #2E9B39;
+      font-family: 'soleil', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: 0;
+    }
+
+    .feedback-modal-status.is-error {
+      color: #D6455D;
+    }
+
+    .feedback-modal-status:empty {
+      display: none;
     }
 
     .templates-modal .filters-modal-header {
@@ -2336,35 +2473,36 @@
     }
 
     .toast-layer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: var(--toast-bottom-offset, 0px);
+      position: sticky;
+      top: 0;
       z-index: 30;
       pointer-events: none;
-      padding: 0 16px 16px;
+      padding: 0 16px;
       display: flex;
       justify-content: center;
     }
 
     .toast-card {
       width: 100%;
-      border-radius: 12px;
+      border-radius: 4px;
       border: 1px solid #FFC8CF;
       background: #FFF1F3;
       box-shadow: 0 16px 40px -20px rgba(42, 53, 57, 0.38);
-      padding: 16px;
+      padding: 8px 16px;
       display: grid;
-      grid-template-columns: 72px minmax(0, 1fr) 24px;
-      gap: 14px;
-      align-items: start;
+      grid-template-columns: 40px minmax(0, 1fr) 24px;
+      gap: 12px;
+      align-items: center;
+      display: none;
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(-12px);
       transition: opacity 220ms ease, transform 220ms ease;
       pointer-events: none;
     }
 
     .toast-card.is-visible {
+      display: grid;
+      margin: 8px 0;
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
@@ -2372,8 +2510,8 @@
 
     .toast-illustration,
     .toast-illustration svg {
-      width: 72px;
-      height: 72px;
+      width: 40px;
+      height: 40px;
       display: block;
       flex-shrink: 0;
     }
@@ -2382,14 +2520,9 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      padding-top: 2px;
-    }
-
-    .toast-card--notifications .toast-copy {
-      align-self: center;
+      align-items: flex-start;
       justify-content: center;
-      padding-top: 0;
+      gap: 2px;
     }
 
     .toast-title {
@@ -2401,20 +2534,28 @@
       font-weight: 450;
       line-height: 140%;
       letter-spacing: -0.32px;
+      min-width: 0;
     }
 
-    .toast-body {
+    .toast-action {
+      border: 0;
+      padding: 0;
+      background: none;
       color: #4A5A61;
       font-family: 'soleil', sans-serif;
       font-size: 12px;
       font-style: normal;
       font-weight: 350;
       line-height: 132%;
-      letter-spacing: -0.32px;
+      letter-spacing: -0.16px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      display: none;
     }
 
-    .toast-body:empty {
-      display: none;
+    .toast-action.is-visible {
+      display: inline-flex;
     }
 
     .toast-close {
@@ -2448,12 +2589,6 @@
         align-items: center;
       }
 
-      .toast-copy {
-        align-self: center;
-        justify-content: center;
-        padding-top: 0;
-      }
-
       body {
         min-height: 100dvh;
         align-items: flex-start;
@@ -2474,6 +2609,19 @@
       .notifications-modal,
       .templates-modal {
         inset: 0;
+      }
+
+      .feedback-fab {
+        top: 18px;
+        right: 14px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .feedback-fab img,
+      .feedback-fab svg {
+        width: 20px;
+        height: 20px;
       }
 
       .phone-frame {
@@ -2511,6 +2659,9 @@
         <div class="top-navbar-title" data-i18n="sittersHub.topNavTitle"></div>
       </div>
     </div>
+    <button class="feedback-fab" id="sitters-feedback-fab" type="button" aria-label="Open feedback form">
+      <img src="/jobs/jobs-for-sitters/assets/icon-bubble-heart.svg" alt="" aria-hidden="true">
+    </button>
     <section class="results-filter-tabs" aria-label="Result filters">
       <button class="results-filter-tab is-active" type="button" aria-pressed="true">
         <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.new"></span>
@@ -2523,6 +2674,42 @@
       </button>
     </section>
     <div class="screen-scroll">
+      <div class="toast-layer" aria-live="polite" aria-atomic="true">
+        <div class="toast-card" id="sitters-toast" role="status">
+          <div class="toast-illustration" id="sitters-toast-illustration" aria-hidden="true">
+            <svg class="toast-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M52.1066 28.9352C51.1366 28.7652 54.5416 27.8102 54.5416 27.8102L51.2466 27.1452L54.0416 26.7252L56.6716 26.3302L56.8566 25.7552C54.3966 25.5002 50.6916 25.1152 50.6566 25.1152C50.6216 25.1152 54.1566 24.4852 57.3916 24.0652L57.4966 23.7402C58.4866 20.6302 56.6216 17.3402 53.4466 16.5952L20.6766 8.90018C17.6166 8.18018 14.5666 10.1202 13.9216 13.1952L12.2366 21.2202C15.1016 21.1252 17.7616 22.0352 18.4416 22.0002C18.5016 21.9952 18.5516 21.9902 18.5766 21.9902C18.6316 21.9902 18.5766 21.9902 18.4416 22.0002C17.6616 22.0752 14.2666 22.6152 11.8566 23.0052L11.7416 23.5552C12.9416 23.6302 13.6666 23.7102 13.8816 23.7052C20.7216 23.5502 12.4866 25.0752 11.3066 25.6102L8.62162 38.3802C7.93162 41.6552 10.2566 44.8002 13.5916 45.1052L45.1666 47.9752C47.7816 48.2152 50.2066 46.6002 51.0066 44.1002L55.7516 29.2202C54.3566 29.1352 52.6566 29.0202 52.1116 28.9252L52.1066 28.9352Z" fill="#FFD5DA"/>
+              <path d="M6.94531 37.3553L46.5203 11.8203L45.8403 27.1653C40.5703 27.7303 36.5553 34.4553 38.6353 38.8253C40.7153 43.1953 44.5553 44.7303 44.5553 44.7303L43.7703 52.2653L31.7453 47.3903C31.7453 47.3903 25.3953 53.8903 25.4153 53.4603C25.4353 53.0303 18.9303 42.2953 18.9303 42.2953L6.95031 37.3503L6.94531 37.3553Z" fill="white"/>
+              <path d="M9.58203 37.7102L46.357 13.9902L45.512 26.5552C45.512 26.5552 38.807 28.8852 38.452 34.3902C38.097 39.8952 44.552 44.7302 44.552 44.7302L43.767 52.2652L31.742 47.3902C31.742 47.3902 25.292 54.0352 25.412 53.4602C25.532 52.8852 18.927 42.2952 18.927 42.2952L9.58203 37.7052V37.7102Z" fill="#FFF3CD"/>
+              <path d="M30.0045 4.68945L27.1445 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M27.1445 4.68945L30.0045 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M13.8717 50.1592L11.0117 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M11.0117 50.1592L13.8717 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M53.9297 50.7793V54.8243" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M51.9023 52.8047H55.9523" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M52.7145 12.1439C53.6507 12.1439 54.4095 11.385 54.4095 10.4489C54.4095 9.51278 53.6507 8.75391 52.7145 8.75391C51.7784 8.75391 51.0195 9.51278 51.0195 10.4489C51.0195 11.385 51.7784 12.1439 52.7145 12.1439Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.1325 17.7543C10.0686 17.7543 10.8275 16.9954 10.8275 16.0593C10.8275 15.1231 10.0686 14.3643 9.1325 14.3643C8.19638 14.3643 7.4375 15.1231 7.4375 16.0593C7.4375 16.9954 8.19638 17.7543 9.1325 17.7543Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M35.4372 57.0541C36.3733 57.0541 37.1322 56.2952 37.1322 55.3591C37.1322 54.4229 36.3733 53.6641 35.4372 53.6641C34.5011 53.6641 33.7422 54.4229 33.7422 55.3591C33.7422 56.2952 34.5011 57.0541 35.4372 57.0541Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M44.0253 48.4843L43.9503 49.5393L43.7653 52.2643L25.8153 44.9893L39.7453 21.5193L18.9253 42.5243L6.94531 37.3543L46.5203 11.8193L45.6503 24.5543" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18.9219 42.5244L25.4069 53.4594L25.8119 44.9894" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M25.4102 53.459L31.7402 47.499" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7.26844 31.5088L4.27344 33.4038" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M28.575 18.0439L10.625 29.3889" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" fill="white"/>
+              <path d="M46.5175 44.8641C50.98 44.8641 54.5975 41.2466 54.5975 36.7841C54.5975 32.3216 50.98 28.7041 46.5175 28.7041C42.055 28.7041 38.4375 32.3216 38.4375 36.7841C38.4375 41.2466 42.055 44.8641 46.5175 44.8641Z" fill="#FF9BA7"/>
+              <path d="M42.6328 36.8996L45.3228 39.5896L50.9378 33.9746" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="toast-copy">
+            <div class="toast-title" id="sitters-toast-title"></div>
+            <button class="toast-action" id="sitters-toast-action" type="button"></button>
+          </div>
+          <button class="toast-close" id="sitters-toast-close" type="button" aria-label="Close toast">
+            <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
+          </button>
+        </div>
+      </div>
       <section class="content">
         <section class="form-demo-section" aria-label="Filters">
           <div class="form-demo-grid">
@@ -2784,39 +2971,43 @@
         </button>
       </div>
     </div>
-    <div class="toast-layer" aria-live="polite" aria-atomic="true">
-      <div class="toast-card" id="sitters-toast" role="status">
-        <div class="toast-illustration" id="sitters-toast-illustration" aria-hidden="true">
-          <svg class="toast-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M52.1066 28.9352C51.1366 28.7652 54.5416 27.8102 54.5416 27.8102L51.2466 27.1452L54.0416 26.7252L56.6716 26.3302L56.8566 25.7552C54.3966 25.5002 50.6916 25.1152 50.6566 25.1152C50.6216 25.1152 54.1566 24.4852 57.3916 24.0652L57.4966 23.7402C58.4866 20.6302 56.6216 17.3402 53.4466 16.5952L20.6766 8.90018C17.6166 8.18018 14.5666 10.1202 13.9216 13.1952L12.2366 21.2202C15.1016 21.1252 17.7616 22.0352 18.4416 22.0002C18.5016 21.9952 18.5516 21.9902 18.5766 21.9902C18.6316 21.9902 18.5766 21.9902 18.4416 22.0002C17.6616 22.0752 14.2666 22.6152 11.8566 23.0052L11.7416 23.5552C12.9416 23.6302 13.6666 23.7102 13.8816 23.7052C20.7216 23.5502 12.4866 25.0752 11.3066 25.6102L8.62162 38.3802C7.93162 41.6552 10.2566 44.8002 13.5916 45.1052L45.1666 47.9752C47.7816 48.2152 50.2066 46.6002 51.0066 44.1002L55.7516 29.2202C54.3566 29.1352 52.6566 29.0202 52.1116 28.9252L52.1066 28.9352Z" fill="#FFD5DA"/>
-            <path d="M6.94531 37.3553L46.5203 11.8203L45.8403 27.1653C40.5703 27.7303 36.5553 34.4553 38.6353 38.8253C40.7153 43.1953 44.5553 44.7303 44.5553 44.7303L43.7703 52.2653L31.7453 47.3903C31.7453 47.3903 25.3953 53.8903 25.4153 53.4603C25.4353 53.0303 18.9303 42.2953 18.9303 42.2953L6.95031 37.3503L6.94531 37.3553Z" fill="white"/>
-            <path d="M9.58203 37.7102L46.357 13.9902L45.512 26.5552C45.512 26.5552 38.807 28.8852 38.452 34.3902C38.097 39.8952 44.552 44.7302 44.552 44.7302L43.767 52.2652L31.742 47.3902C31.742 47.3902 25.292 54.0352 25.412 53.4602C25.532 52.8852 18.927 42.2952 18.927 42.2952L9.58203 37.7052V37.7102Z" fill="#FFF3CD"/>
-            <path d="M30.0045 4.68945L27.1445 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M27.1445 4.68945L30.0045 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M13.8717 50.1592L11.0117 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M11.0117 50.1592L13.8717 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M53.9297 50.7793V54.8243" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M51.9023 52.8047H55.9523" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M52.7145 12.1439C53.6507 12.1439 54.4095 11.385 54.4095 10.4489C54.4095 9.51278 53.6507 8.75391 52.7145 8.75391C51.7784 8.75391 51.0195 9.51278 51.0195 10.4489C51.0195 11.385 51.7784 12.1439 52.7145 12.1439Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9.1325 17.7543C10.0686 17.7543 10.8275 16.9954 10.8275 16.0593C10.8275 15.1231 10.0686 14.3643 9.1325 14.3643C8.19638 14.3643 7.4375 15.1231 7.4375 16.0593C7.4375 16.9954 8.19638 17.7543 9.1325 17.7543Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M35.4372 57.0541C36.3733 57.0541 37.1322 56.2952 37.1322 55.3591C37.1322 54.4229 36.3733 53.6641 35.4372 53.6641C34.5011 53.6641 33.7422 54.4229 33.7422 55.3591C33.7422 56.2952 34.5011 57.0541 35.4372 57.0541Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M44.0253 48.4843L43.9503 49.5393L43.7653 52.2643L25.8153 44.9893L39.7453 21.5193L18.9253 42.5243L6.94531 37.3543L46.5203 11.8193L45.6503 24.5543" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M18.9219 42.5244L25.4069 53.4594L25.8119 44.9894" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M25.4102 53.459L31.7402 47.499" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7.26844 31.5088L4.27344 33.4038" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M28.575 18.0439L10.625 29.3889" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" fill="white"/>
-            <path d="M46.5175 44.8641C50.98 44.8641 54.5975 41.2466 54.5975 36.7841C54.5975 32.3216 50.98 28.7041 46.5175 28.7041C42.055 28.7041 38.4375 32.3216 38.4375 36.7841C38.4375 41.2466 42.055 44.8641 46.5175 44.8641Z" fill="#FF9BA7"/>
-            <path d="M42.6328 36.8996L45.3228 39.5896L50.9378 33.9746" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+    <div class="notifications-modal feedback-modal" id="sitters-feedback-modal" aria-hidden="true">
+      <div class="filters-modal-header">
+        <div class="filters-modal-title-wrap">
+          <span class="filters-modal-title-icon" aria-hidden="true">
+            <img src="/jobs/jobs-for-sitters/assets/doodle-feedback-heart.svg" alt="">
+          </span>
+          <div class="filters-modal-title" data-i18n="sittersHub.feedbackModal.title"></div>
         </div>
-        <div class="toast-copy">
-          <div class="toast-title" id="sitters-toast-title"></div>
-          <div class="toast-body" id="sitters-toast-body"></div>
-        </div>
-        <button class="toast-close" id="sitters-toast-close" type="button" aria-label="Close toast">
+        <button class="filters-modal-close" id="sitters-close-feedback" type="button" aria-label="Close feedback modal">
           <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
+        </button>
+      </div>
+      <div class="feedback-modal-body">
+        <div class="report-modal-field-group">
+          <div class="feedback-modal-field-label-row">
+            <label class="report-modal-field-label" for="sitters-feedback-name" data-i18n="sittersHub.feedbackModal.nameLabel"></label>
+            <span class="feedback-modal-optional" data-i18n="sittersHub.feedbackModal.optional"></span>
+          </div>
+          <input class="report-modal-textarea feedback-modal-input" id="sitters-feedback-name" type="text" data-i18n-placeholder="sittersHub.feedbackModal.namePlaceholder" placeholder="Your name">
+        </div>
+        <div class="report-modal-field-group">
+          <div class="feedback-modal-field-label-row">
+            <label class="report-modal-field-label" for="sitters-feedback-email" data-i18n="sittersHub.feedbackModal.emailLabel"></label>
+            <span class="feedback-modal-optional" data-i18n="sittersHub.feedbackModal.optional"></span>
+          </div>
+          <input class="report-modal-textarea feedback-modal-input" id="sitters-feedback-email" type="email" data-i18n-placeholder="sittersHub.feedbackModal.emailPlaceholder" placeholder="Your e-mail">
+        </div>
+        <div class="report-modal-field-group">
+          <label class="report-modal-field-label" for="sitters-feedback-textarea" data-i18n="sittersHub.feedbackModal.messageLabel"></label>
+          <textarea class="report-modal-textarea feedback-modal-textarea" id="sitters-feedback-textarea" data-i18n-placeholder="sittersHub.feedbackModal.placeholder" placeholder="Write your suggestion, opinion..."></textarea>
+        </div>
+        <p class="feedback-modal-status" id="sitters-feedback-status" aria-live="polite"></p>
+      </div>
+      <div class="notifications-modal-footer">
+        <button class="notifications-modal-save" id="sitters-submit-feedback" type="button">
+          <img src="/jobs/jobs-for-sitters/assets/icon-check.svg" alt="" aria-hidden="true">
+          <span data-i18n="sittersHub.feedbackModal.submit"></span>
         </button>
       </div>
     </div>
@@ -2843,13 +3034,44 @@
       });
     }
 
-    document.querySelectorAll('[data-i18n]').forEach(function(node) {
-      node.textContent = t(node.getAttribute('data-i18n'));
+    function applyStaticTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(function(node) {
+        node.textContent = t(node.getAttribute('data-i18n'));
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(node) {
+        node.setAttribute('placeholder', t(node.getAttribute('data-i18n-placeholder')));
+      });
+    }
+
+    function rerenderRemoteStrings() {
+      applyStaticTranslations();
+      if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
+      if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
+    }
+
+    applyStaticTranslations();
+
+    window.addEventListener('hlidacky:strings-updated', function(event) {
+      if (!event.detail || !event.detail.applied) return;
+      rerenderRemoteStrings();
     });
 
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(node) {
-      node.setAttribute('placeholder', t(node.getAttribute('data-i18n-placeholder')));
-    });
+    if (window.HlidackyStringsRuntime && window.HlidackyStringsRuntime.ready) {
+      window.HlidackyStringsRuntime.ready.then(function(detail) {
+        if (!detail || !detail.applied) return;
+        rerenderRemoteStrings();
+      });
+    }
+
+    window.sittersUpdateFeedbackFabVisibility = function() {
+      var fab = document.getElementById('sitters-feedback-fab');
+      if (!fab) return;
+      var hasOpenModal = !!document.querySelector('.filters-modal.is-open, .notifications-modal.is-open, .templates-modal.is-open');
+      fab.classList.toggle('is-hidden', hasOpenModal);
+    };
+
+    window.sittersUpdateFeedbackFabVisibility();
 
     window.sittersSyncSelectorChips = function() {};
 
@@ -3093,6 +3315,7 @@
         if (openButton) {
           openButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         }
+        if (window.sittersUpdateFeedbackFabVisibility) window.sittersUpdateFeedbackFabVisibility();
       }
 
       function openFiltersModal() {
@@ -3234,6 +3457,7 @@
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
         modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        if (window.sittersUpdateFeedbackFabVisibility) window.sittersUpdateFeedbackFabVisibility();
       }
 
       openLink.addEventListener('click', function(event) {
@@ -3278,6 +3502,7 @@
       function setOpen(isOpen) {
         modal.classList.toggle('is-open', isOpen);
         modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        if (window.sittersUpdateFeedbackFabVisibility) window.sittersUpdateFeedbackFabVisibility();
       }
 
       function reportMetaText(card) {
@@ -3331,6 +3556,144 @@
       });
     })();
 
+    (function initSittersFeedbackModal() {
+      var modal = document.getElementById('sitters-feedback-modal');
+      var openButton = document.getElementById('sitters-feedback-fab');
+      var closeButton = document.getElementById('sitters-close-feedback');
+      var submitButton = document.getElementById('sitters-submit-feedback');
+      var submitLabel = submitButton ? submitButton.querySelector('span') : null;
+      var nameInput = document.getElementById('sitters-feedback-name');
+      var emailInput = document.getElementById('sitters-feedback-email');
+      var textarea = document.getElementById('sitters-feedback-textarea');
+      var status = document.getElementById('sitters-feedback-status');
+      var locationDisplay = document.getElementById('sitters-location-display');
+      var radiusDisplay = document.getElementById('sitters-radius-display');
+      var isSubmitting = false;
+      if (!modal || !openButton || !closeButton || !submitButton || !submitLabel || !nameInput || !emailInput || !textarea || !status) return;
+
+      function currentLanguageCode() {
+        var match = window.location.pathname.match(/\/(en|sk|cz|at|hr|hu)\/?$/i);
+        return match ? match[1].toLowerCase() : 'cz';
+      }
+
+      function prototypeRouteKind() {
+        return window.location.pathname.indexOf('/sitters-test/') === 0 ? 'sitters-test' : 'jobs-for-sitters';
+      }
+
+      function feedbackPrototypeLabel() {
+        return t('sittersHub.navTitle') + ' / ' + currentLanguageCode().toUpperCase();
+      }
+
+      function currentActiveTab() {
+        var activeTab = document.querySelector('.results-filter-tab.is-active .results-filter-tab-label');
+        if (!activeTab) return 'new';
+        var key = activeTab.getAttribute('data-i18n') || '';
+        return key.split('.').pop() || 'new';
+      }
+
+      function setOpen(isOpen) {
+        modal.classList.toggle('is-open', isOpen);
+        modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        if (window.sittersUpdateFeedbackFabVisibility) window.sittersUpdateFeedbackFabVisibility();
+      }
+
+      function setStatus(message, type) {
+        status.textContent = message || '';
+        status.classList.toggle('is-error', type === 'error');
+      }
+
+      function setSubmitting(nextValue) {
+        isSubmitting = nextValue;
+        submitButton.disabled = nextValue;
+        submitButton.setAttribute('aria-busy', nextValue ? 'true' : 'false');
+        submitLabel.textContent = nextValue
+          ? t('sittersHub.feedbackModal.submitting')
+          : t('sittersHub.feedbackModal.submit');
+      }
+
+      function buildPayload() {
+        return {
+          prototype_key: 'jobs-for-sitters',
+          prototype_name: t('sittersHub.navTitle'),
+          prototype_path: window.location.pathname,
+          language: currentLanguageCode(),
+          active_tab: currentActiveTab(),
+          contact_name: nameInput.value.trim(),
+          contact_email: emailInput.value.trim(),
+          feedback_text: textarea.value.trim(),
+          page_url: window.location.href,
+          submitted_from: prototypeRouteKind(),
+          user_agent: window.navigator && window.navigator.userAgent ? window.navigator.userAgent : '',
+          context: {
+            prototype_label: feedbackPrototypeLabel(),
+            location: locationDisplay ? (locationDisplay.textContent || '').trim() : '',
+            radius: radiusDisplay ? (radiusDisplay.textContent || '').trim() : '',
+            applied_services: (window.sittersState.appliedServices || []).slice(),
+            route_kind: prototypeRouteKind()
+          }
+        };
+      }
+
+      openButton.addEventListener('click', function() {
+        setStatus('', '');
+        setSubmitting(false);
+        setOpen(true);
+        requestAnimationFrame(function() {
+          try { nameInput.focus({ preventScroll: true }); } catch (error) {}
+        });
+      });
+
+      closeButton.addEventListener('click', function() {
+        if (isSubmitting) return;
+        setOpen(false);
+        setStatus('', '');
+      });
+
+      submitButton.addEventListener('click', function() {
+        var feedbackText = textarea.value.trim();
+        if (!feedbackText) {
+          setStatus(t('sittersHub.feedbackModal.validation'), 'error');
+          try { textarea.focus({ preventScroll: true }); } catch (error) {}
+          return;
+        }
+
+        setStatus('', '');
+        setSubmitting(true);
+
+        fetch('/api/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(buildPayload())
+        })
+          .then(function(response) {
+            return response.json().catch(function() { return {}; }).then(function(data) {
+              if (!response.ok) {
+                throw new Error((data && data.error) || t('sittersHub.feedbackModal.error'));
+              }
+              return data;
+            });
+          })
+          .then(function() {
+            nameInput.value = '';
+            emailInput.value = '';
+            textarea.value = '';
+            setOpen(false);
+            setStatus('', '');
+            if (window.sittersShowFeedbackToast) {
+              window.sittersShowFeedbackToast();
+            }
+          })
+          .catch(function(error) {
+            setStatus((error && error.message) || t('sittersHub.feedbackModal.error'), 'error');
+          })
+          .finally(function() {
+            setSubmitting(false);
+          });
+      });
+    })();
+
     (function initSittersRadiusSelect() {
       var select = document.getElementById('sitters-radius-select');
       var display = document.getElementById('sitters-radius-display');
@@ -3361,7 +3724,7 @@
       var toast = document.getElementById('sitters-toast');
       var toastIllustration = document.getElementById('sitters-toast-illustration');
       var toastTitle = document.getElementById('sitters-toast-title');
-      var toastBody = document.getElementById('sitters-toast-body');
+      var toastAction = document.getElementById('sitters-toast-action');
       var toastCloseButton = document.getElementById('sitters-toast-close');
       var defaultToastIllustration = toastIllustration ? toastIllustration.innerHTML : '';
       var notificationToastIllustration = `<svg class="toast-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3479,6 +3842,7 @@
       var toastAnimationRunId = 0;
       var initialNewJobIds = [];
       var inboxToastMilestonesShown = [];
+      var lastArchivedCardState = null;
       var serviceKeys = ['babysitting', 'cleaning', 'petCare', 'seniorCare', 'tutoring'];
       var defaultReplyTemplates = [
         "Hi, I'd love to care for your little ones. The schedule works well for me too 🙂. Please let me know if your offer is available. Thank you!",
@@ -3753,29 +4117,28 @@
           toast.classList.remove('is-visible');
           toast.classList.remove('toast-card--notifications');
         }
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
       }
 
       function syncToastOffset() {
-        if (!toast) return;
-        var keyboardInset = 0;
-        if (window.visualViewport && window.visualViewport.height) {
-          keyboardInset = Math.max(0, window.innerHeight - window.visualViewport.height);
-        }
-        var bottomOffset = keyboardInset > 0 ? (keyboardInset + 8) : 0;
-        toast.style.setProperty('--toast-bottom-offset', bottomOffset + 'px');
+        return;
       }
 
       function showSentToast(familyName) {
-        if (!toast || !toastTitle || !toastBody) return;
+        if (!toast || !toastTitle) return;
         syncToastOffset();
         if (toastIllustration) {
           toastIllustration.innerHTML = defaultToastIllustration;
         }
         toast.classList.remove('toast-card--notifications');
         toastTitle.textContent = t('sittersHub.jobAdvert.toast.title');
-        toastBody.textContent = formatText(t('sittersHub.jobAdvert.toast.body'), {
-          familyName: familyName || t('sittersHub.jobAdvert.author')
-        });
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
         toast.classList.add('is-visible');
         prepareToastSVG();
         requestAnimationFrame(function() {
@@ -3790,14 +4153,17 @@
       }
 
       function showNotificationsToast() {
-        if (!toast || !toastTitle || !toastBody) return;
+        if (!toast || !toastTitle) return;
         syncToastOffset();
         if (toastIllustration) {
           toastIllustration.innerHTML = notificationToastIllustration;
         }
         toast.classList.add('toast-card--notifications');
         toastTitle.textContent = t('sittersHub.notificationsModal.toast.title');
-        toastBody.textContent = t('sittersHub.notificationsModal.toast.body');
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
         toast.classList.add('is-visible');
         prepareToastSVG();
         requestAnimationFrame(function() {
@@ -3812,14 +4178,42 @@
       }
 
       function showReportToast() {
-        if (!toast || !toastTitle || !toastBody) return;
+        if (!toast || !toastTitle) return;
         syncToastOffset();
         if (toastIllustration) {
           toastIllustration.innerHTML = reportToastIllustration;
         }
         toast.classList.remove('toast-card--notifications');
         toastTitle.textContent = t('sittersHub.reportModal.toast.title');
-        toastBody.textContent = t('sittersHub.reportModal.toast.body');
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
+        toast.classList.add('is-visible');
+        prepareToastSVG();
+        requestAnimationFrame(function() {
+          animateToastSVG();
+        });
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        toastTimer = setTimeout(function() {
+          hideToast();
+        }, 3400);
+      }
+
+      function showFeedbackToast() {
+        if (!toast || !toastTitle) return;
+        syncToastOffset();
+        if (toastIllustration) {
+          toastIllustration.innerHTML = reportToastIllustration;
+        }
+        toast.classList.remove('toast-card--notifications');
+        toastTitle.textContent = t('sittersHub.feedbackModal.toast.title');
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
         toast.classList.add('is-visible');
         prepareToastSVG();
         requestAnimationFrame(function() {
@@ -3834,14 +4228,17 @@
       }
 
       function showArchiveToast() {
-        if (!toast || !toastTitle || !toastBody) return;
+        if (!toast || !toastTitle) return;
         syncToastOffset();
         if (toastIllustration) {
           toastIllustration.innerHTML = archiveToastIllustration;
         }
         toast.classList.remove('toast-card--notifications');
         toastTitle.textContent = t('sittersHub.jobAdvert.archiveToast.title');
-        toastBody.textContent = t('sittersHub.jobAdvert.archiveToast.body');
+        if (toastAction) {
+          toastAction.textContent = t('sittersHub.jobAdvert.archiveToast.undo');
+          toastAction.classList.add('is-visible');
+        }
         toast.classList.add('is-visible');
         prepareToastSVG();
         requestAnimationFrame(function() {
@@ -3870,18 +4267,17 @@
       }
 
       function showInboxProgressToast(milestone) {
-        if (!toast || !toastTitle || !toastBody) return;
+        if (!toast || !toastTitle) return;
         syncToastOffset();
         if (toastIllustration) {
           toastIllustration.innerHTML = inboxToastIllustration;
         }
         toast.classList.remove('toast-card--notifications');
         toastTitle.textContent = t('sittersHub.notificationsModal.inboxToast.title');
-        toastBody.textContent = formatText(t('sittersHub.notificationsModal.inboxToast.body'), {
-          countLabel: milestone === 'all'
-            ? t('sittersHub.notificationsModal.inboxToast.all')
-            : String(milestone)
-        });
+        if (toastAction) {
+          toastAction.classList.remove('is-visible');
+          toastAction.textContent = '';
+        }
         toast.classList.add('is-visible');
         prepareToastSVG();
         requestAnimationFrame(function() {
@@ -3907,6 +4303,7 @@
 
       window.sittersShowNotificationsToast = showNotificationsToast;
       window.sittersShowReportToast = showReportToast;
+      window.sittersShowFeedbackToast = showFeedbackToast;
 
       function queueTypewriter(jobId, text) {
         pendingTypewriterJobId = jobId;
@@ -4064,6 +4461,7 @@
         if (!templatesModal) return;
         templatesModal.classList.toggle('is-open', isOpen);
         templatesModal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        if (window.sittersUpdateFeedbackFabVisibility) window.sittersUpdateFeedbackFabVisibility();
         if (!isOpen) {
           window.sittersState.openTemplatesJobId = null;
         }
@@ -4435,9 +4833,7 @@
             actionCard.replyTimestamp = t('sittersHub.jobAdvert.replyComposer.sentAt');
             renderCards();
             syncButton();
-            if (!maybeShowInboxProgressToast()) {
-              showSentToast(t('sittersHub.jobAdvert.author'));
-            }
+            showSentToast(t('sittersHub.jobAdvert.author'));
             return;
           }
 
@@ -4540,6 +4936,17 @@
         if (!card) return;
 
         card.dismissReason = reasonButton.getAttribute('data-dismiss-reason');
+        lastArchivedCardState = {
+          id: card.id,
+          status: card.status,
+          keepInNewTab: card.keepInNewTab,
+          repliedOrder: card.repliedOrder,
+          dismissReason: card.dismissReason,
+          replyStage: card.replyStage,
+          replyText: card.replyText,
+          customReplyText: card.customReplyText,
+          replyTimestamp: card.replyTimestamp
+        };
         card.status = 'archived';
         card.replyStage = null;
         card.repliedOrder = null;
@@ -4550,9 +4957,7 @@
         window.sittersState.openMoreActionsJobId = null;
         visibleCount = batchSize;
         triggerResultsReload();
-        if (!maybeShowInboxProgressToast()) {
-          showArchiveToast();
-        }
+        showArchiveToast();
       });
 
       grid.addEventListener('pointerdown', function(event) {
@@ -4629,9 +5034,7 @@
         card.replyTimestamp = t('sittersHub.jobAdvert.replyComposer.sentAt');
         renderCards();
         syncButton();
-        if (!maybeShowInboxProgressToast()) {
-          showSentToast(t('sittersHub.jobAdvert.author'));
-        }
+        showSentToast(t('sittersHub.jobAdvert.author'));
       });
 
       if (templatesList) {
@@ -4659,6 +5062,35 @@
       if (toastCloseButton) {
         toastCloseButton.addEventListener('click', function() {
           hideToast();
+        });
+      }
+
+      if (toastAction) {
+        toastAction.addEventListener('click', function() {
+          if (!lastArchivedCardState || !window.cardsDataForSitters) return;
+          var restoredCard = window.cardsDataForSitters.find(function(item) {
+            return item.id === lastArchivedCardState.id;
+          });
+          if (!restoredCard) return;
+          restoredCard.status = lastArchivedCardState.status;
+          restoredCard.keepInNewTab = lastArchivedCardState.keepInNewTab;
+          restoredCard.repliedOrder = lastArchivedCardState.repliedOrder;
+          restoredCard.dismissReason = lastArchivedCardState.dismissReason;
+          restoredCard.replyStage = lastArchivedCardState.replyStage;
+          restoredCard.replyText = lastArchivedCardState.replyText;
+          restoredCard.customReplyText = lastArchivedCardState.customReplyText;
+          restoredCard.replyTimestamp = lastArchivedCardState.replyTimestamp;
+          window.sittersState.dismissedJobIds = (window.sittersState.dismissedJobIds || []).filter(function(jobId) {
+            return jobId !== restoredCard.id;
+          });
+          lastArchivedCardState = null;
+          hideToast();
+          if (window.sittersSyncResultsAfterFilterChange) {
+            window.sittersSyncResultsAfterFilterChange();
+          } else {
+            renderCards();
+            syncButton();
+          }
         });
       }
 

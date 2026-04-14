@@ -99,7 +99,7 @@
         "body": "Vaša poznámka bola uložená k tomuto prototypu."
       }
     },
-    "locationValue": "Bratislava",
+    "locationValue": "Bratislava 4",
     "radiusValue": "+20 km",
     "title": "Inzeráty pre hlídačky",
     "subtitle": "Aktuálny prototyp obrazovky na vyhľadávanie práce pre hlídačky.",
@@ -110,7 +110,7 @@
     "jobAdvert": {
       "postedLabel": "zverejnila",
       "postedTime": "pred 2 hodinami",
-      "title": " Stodolova 3409/11, Žilina-Hájik",
+      "title": "Rosinova 11/904, Bratislava 4",
       "distance": "3 km",
       "distanceSuffix": "od vás",
       "price": "18 €/h",
@@ -160,12 +160,13 @@
       },
       "reply": "Odpovedať",
       "toast": {
-        "title": "Gratulujeme",
+        "title": "Správa bola odoslaná",
         "body": "Vaša správa pre rodinu {familyName} bola úspešne odoslaná."
       },
       "archiveToast": {
         "title": "Inzerát bol archivovaný",
-        "body": "Stále ho nájdete v záložke Archivované."
+        "body": "Stále ho nájdete v záložke Archivované.",
+        "undo": "Vrátiť akciu"
       },
       "otherActions": "Ďalšie akcie",
       "otherActionsMenu": {

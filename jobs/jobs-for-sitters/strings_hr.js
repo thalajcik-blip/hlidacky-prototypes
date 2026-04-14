@@ -77,6 +77,28 @@
         "body": "Naša korisnička podrška je obaviještena o Vašem podnesku."
       }
     },
+    "feedbackModal": {
+      "button": "Feedback",
+      "title": "Podijelite svoje dojmove",
+      "body": "Molimo upišite svoje povratne informacije o ovom prototipu:",
+      "prototypeLabel": "Prototip",
+      "nameLabel": "Vaše ime",
+      "namePlaceholder": "Vaše ime",
+      "emailLabel": "Vaš e-mail",
+      "emailPlaceholder": "Vaš e-mail",
+      "messageLabel": "Recite nam što vam je na umu...",
+      "optional": "(nije obavezno)",
+      "placeholder": "Kako vam se sviđaju nove funkcionalnosti? Voljeli bismo čuti što vam dobro radi i što bismo mogli poboljšati.",
+      "submit": "Pošalji feedback",
+      "submitting": "Šalje se...",
+      "success": "Hvala, feedback je poslan.",
+      "error": "Feedback nije moguće poslati. Pokušajte ponovno.",
+      "validation": "Molimo najprije napišite svoj feedback.",
+      "toast": {
+        "title": "Hvala na feedbacku",
+        "body": "Vaša bilješka spremljena je uz ovaj prototip."
+      }
+    },
     "locationValue": "Zagreb",
     "radiusValue": "+20 km",
     "title": "Oglasi za siterice",
@@ -143,7 +165,8 @@
       },
       "archiveToast": {
         "title": "Oglas je arhiviran",
-        "body": "I dalje ga možete pronaći pod karticom Arhivirano."
+        "body": "I dalje ga možete pronaći pod karticom Arhivirano.",
+        "undo": "Poništi radnju"
       },
       "otherActions": "Ostale radnje",
       "otherActionsMenu": {

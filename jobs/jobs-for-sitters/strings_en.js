@@ -69,6 +69,28 @@
           "body": "Our support has been already notified about your concern."
         }
       },
+      "feedbackModal": {
+        "button": "Feedback",
+        "title": "Share your thoughts",
+        "body": "Please, write down your feedback for this prototype:",
+        "prototypeLabel": "Prototype",
+        "nameLabel": "Your name",
+        "namePlaceholder": "Your name",
+        "emailLabel": "Your e-mail",
+        "emailPlaceholder": "Your e-mail",
+        "messageLabel": "Tell us what's on your mind...",
+        "optional": "(optional)",
+        "placeholder": "How do you like the new features? We'd love to hear what works for you and what we could improve.",
+        "submit": "Send feedback",
+        "submitting": "Submitting...",
+        "success": "Thank you, your feedback has been submitted.",
+        "error": "We couldn't submit your feedback. Please try again.",
+        "validation": "Please write your feedback first.",
+        "toast": {
+          "title": "Thanks for your feedback",
+          "body": "Your note has been saved with this prototype."
+        }
+      },
       "locationValue": "Praha 2",
       "radiusValue": "+20 km",
       "title": "Jobs for sitters",
@@ -130,12 +152,13 @@
         },
         "reply": "Reply to job",
         "toast": {
-          "title": "Congratulations",
+          "title": "Message delivered",
           "body": "Your message to {familyName} has been sent successfully."
         },
         "archiveToast": {
           "title": "Job ad archived",
-          "body": "You can still find it under the Archived tab."
+          "body": "You can still find it under the Archived tab.",
+          "undo": "Undo action"
         },
         "otherActions": "Other actions",
         "otherActionsMenu": {

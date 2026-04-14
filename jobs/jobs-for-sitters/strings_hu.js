@@ -77,6 +77,28 @@
         "body": "Ügyfélszolgálatunkat értesítettük a problémáról."
       }
     },
+    "feedbackModal": {
+      "button": "Feedback",
+      "title": "Ossza meg velünk a gondolatait",
+      "body": "Kérjük, írja le a visszajelzését ehhez a prototípushoz:",
+      "prototypeLabel": "Prototípus",
+      "nameLabel": "Az Ön neve",
+      "namePlaceholder": "Az Ön neve",
+      "emailLabel": "Az Ön e-mail-címe",
+      "emailPlaceholder": "Az Ön e-mail-címe",
+      "messageLabel": "Mi jár a fejében...",
+      "optional": "(opcionális)",
+      "placeholder": "Hogy tetszenek az új funkciók? Szívesen hallanánk, mi működik jól, és min javíthatnánk.",
+      "submit": "Visszajelzés küldése",
+      "submitting": "Küldés...",
+      "success": "Köszönjük, a visszajelzés elküldve.",
+      "error": "Nem sikerült elküldeni a visszajelzést. Kérjük, próbálja újra.",
+      "validation": "Kérjük, először írja meg a visszajelzését.",
+      "toast": {
+        "title": "Köszönjük a visszajelzést",
+        "body": "Megjegyzését elmentettük ehhez a prototípushoz."
+      }
+    },
     "locationValue": "Budapest",
     "radiusValue": "+20 km",
     "title": "Állások segítőknek",
@@ -143,7 +165,8 @@
       },
       "archiveToast": {
         "title": "Az álláshirdetés archiválva",
-        "body": "Továbbra is megtalálod az Archivált fül alatt."
+        "body": "Továbbra is megtalálod az Archivált fül alatt.",
+        "undo": "Művelet visszavonása"
       },
       "otherActions": "További műveletek",
       "otherActionsMenu": {

@@ -350,6 +350,26 @@
           </div>
         </div>
       </article>
+      <article class="card">
+        <div class="card-layout">
+          <div class="card-copy">
+            <div class="eyebrow">Prototype</div>
+            <h2>Jobs for sitters v2</h2>
+            <p>A standalone copy of the sitter job-search prototype for the next iteration.</p>
+            <div class="actions">
+              <a class="btn primary" href="/jobs/jobs-for-sitters-v2/">Open prototype</a>
+              <a class="btn" href="/strings/?prototype=sitters-v2">Open strings editor</a>
+            </div>
+            <div class="card-meta">
+              <button class="text-link" type="button" data-language-picker="sitters-v2">Choose language</button>
+            </div>
+          </div>
+          <div class="qr-card">
+            <img class="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=184x184&data=https%3A%2F%2Fhlidacky-prototypes.vercel.app%2Fjobs%2Fjobs-for-sitters-v2%2F" alt="QR code for Jobs for sitters v2 prototype">
+            <div class="qr-label">Scan to open on mobile</div>
+          </div>
+        </div>
+      </article>
     </section>
   </main>
   <div class="lang-modal" id="language-modal" hidden>
@@ -381,6 +401,11 @@
           label: 'Jobs for sitters',
           base: '/jobs/jobs-for-sitters',
           description: 'Open the Jobs for sitters prototype in a specific language version.'
+        },
+        'sitters-v2': {
+          label: 'Jobs for sitters v2',
+          base: '/jobs/jobs-for-sitters-v2',
+          description: 'Open the Jobs for sitters v2 prototype in a specific language version.'
         }
       };
       var languages = [

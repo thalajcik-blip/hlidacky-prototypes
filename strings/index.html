@@ -539,21 +539,6 @@
 
   <div class="lang-tabs" id="lang-tabs"></div>
 
-  <!-- GitHub settings panel -->
-  <div class="settings-panel" id="settings-panel">
-    <h3>GitHub connection</h3>
-    <div class="settings-row">
-      <label>Personal Access Token</label>
-      <input type="password" class="token-input" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      <button class="btn btn-outline" id="btn-save-token">Save token</button>
-      <span class="token-status missing hidden" id="token-status"></span>
-    </div>
-    <p class="settings-hint">
-      Token requires scope <strong>repo</strong>.
-      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Hlidacky+strings+editor" target="_blank">Generate token on GitHub →</a>
-    </p>
-  </div>
-
   <div class="deploy-status" id="deploy-status">
     <span class="spinner hidden" id="deploy-spinner"></span>
     <span id="deploy-msg"></span>
@@ -577,9 +562,7 @@
       <input type="file" id="file-upload" accept=".json" class="hidden">
       <button class="btn btn-outline" id="btn-download">↓ Download JSON</button>
       <button class="btn btn-danger hidden" id="btn-reset">↺ Reset to EN</button>
-      <button class="btn btn-outline" id="btn-settings" title="GitHub token settings">⚙️</button>
-      <button class="btn btn-primary" id="btn-save">Save</button>
-      <button class="btn btn-publish hidden" id="btn-publish" disabled>🚀 Publish</button>
+      <button class="btn btn-primary" id="btn-save">Save to Supabase</button>
     </div>
   </div>
 
@@ -607,7 +590,8 @@
 <script>
 const PROTOTYPES = [
   { id: 'jobs', label: 'Jobs for families', base: '/jobs-for-families' },
-  { id: 'sitters', label: 'Jobs for sitters', base: '/jobs/jobs-for-sitters' }
+  { id: 'sitters', label: 'Jobs for sitters', base: '/jobs/jobs-for-sitters' },
+  { id: 'sitters-v2', label: 'Jobs for sitters v2', base: '/jobs/jobs-for-sitters-v2' }
 ];
 
 const LANGUAGES = [
@@ -627,6 +611,7 @@ let touched   = {};     // { SK: Set{key, …}, EN: Set{key, …}, … } — con
 let currentLang = 'EN';
 let pendingChanges = {};
 let currentPrototype = null;
+let toolbarBound = false;
 
 /* ── Flatten / Unflatten ─────────────────────────────────── */
 
@@ -796,7 +781,8 @@ async function init() {
   renderSectionFilter();
   renderTable();
   bindToolbar();
-  loadPublishedLangFiles();
+  await loadPublishedLangFiles();
+  await loadRemoteOverrides();
 }
 
 function syncLangDefaults(langCode, prevDefaults, nextDefaults) {
@@ -874,6 +860,57 @@ async function loadPublishedLangFiles() {
   }));
   renderTabs();
   renderTable();
+}
+
+function applyRemoteOverrideItem(item) {
+  if (!item || !item.payload || typeof item.payload !== 'object') return;
+
+  var langCode = normalizeLangCode(item.language);
+  if (!langCode || !allLangs[langCode]) return;
+
+  var flat = flatten(item.payload);
+  var remoteTouched = Array.isArray(item.touched_keys) && item.touched_keys.length
+    ? item.touched_keys.map(function(key) { return String(key); })
+    : Object.keys(flat);
+
+  if (langCode === 'EN') {
+    var prevEnSource = Object.assign({}, enSource);
+    enSource = Object.assign({}, baseSource, flat);
+    syncLangDefaults('EN', prevEnSource, enSource);
+    LANGUAGES.forEach(function(lang) {
+      if (lang.code === 'CZ' || lang.code === 'EN') return;
+      syncLangDefaults(lang.code, prevEnSource, enSource);
+    });
+  }
+
+  allLangs[langCode] = Object.assign({}, allLangs[langCode], flat);
+  touched[langCode] = new Set(remoteTouched);
+  saveLang(langCode, allLangs[langCode]);
+  saveTouched(langCode);
+}
+
+async function loadRemoteOverrides() {
+  try {
+    var response = await fetch('/api/strings?prototype=' + encodeURIComponent(currentPrototype.id), {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' }
+    });
+    var data = await response.json().catch(function() { return {}; });
+
+    if (!response.ok) {
+      throw new Error((data && data.error) || ('Strings API: ' + response.status));
+    }
+
+    (data.items || []).forEach(applyRemoteOverrideItem);
+    renderTabs();
+    renderTable();
+  } catch (error) {
+    console.warn('Remote strings overrides were not loaded:', error);
+  }
+}
+
+function normalizeLangCode(code) {
+  return String(code || '').trim().toUpperCase();
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
@@ -1038,6 +1075,20 @@ function applyAndSave() {
   pendingChanges = {};
 }
 
+function buildTouchedPayload(langCode) {
+  var source = allLangs[langCode] || {};
+  var keys = Array.from(touched[langCode] || []);
+  var flat = {};
+
+  keys.forEach(function(key) {
+    if (source[key] !== undefined) {
+      flat[key] = source[key];
+    }
+  });
+
+  return unflatten(flat);
+}
+
 function switchLang(code) {
   if (Object.keys(pendingChanges).length > 0) applyAndSave();
   currentLang = code;
@@ -1054,6 +1105,9 @@ function showToast(msg) {
 }
 
 function bindToolbar() {
+  if (toolbarBound) return;
+  toolbarBound = true;
+
   document.getElementById('prototype-filter').addEventListener('change', function(e) {
     if (Object.keys(pendingChanges).length > 0) applyAndSave();
     currentPrototype = getPrototypeById(e.target.value);
@@ -1063,12 +1117,7 @@ function bindToolbar() {
     init();
   });
 
-  document.getElementById('btn-save').addEventListener('click', function() {
-    applyAndSave();
-    showToast('✓ Changes saved');
-    renderTabs();
-    renderTable();
-  });
+  document.getElementById('btn-save').addEventListener('click', saveCurrentLanguageToSupabase);
 
   function downloadFile(content, filename, type) {
     const blob = new Blob([content], { type: type });
@@ -1137,47 +1186,7 @@ function bindToolbar() {
   document.getElementById('section-filter').addEventListener('change', renderTable);
 }
 
-/* ── GitHub publishing ───────────────────────────────────── */
-
-function buildJsContent(lang) {
-  const nested = unflatten(allLangs[lang]);
-  const meta   = LANGUAGES.find(function(l) { return l.code === lang; });
-  if (lang === 'CZ') {
-    return '// Auto-generated from strings.json — do not edit manually.\n' +
-           '// To update: paste the translated JSON content between the braces below.\n\n' +
-           'window.STRINGS = ' + JSON.stringify(nested, null, 2) + ';\n';
-  }
-  const dm     = 'function _dm(b,o){var r=Object.assign({},b||{});Object.keys(o).forEach(function(k){r[k]=(o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))?_dm((b&&b[k])||{},o[k]):o[k];});return r;}';
-  return '// strings_' + lang.toLowerCase() + '.js \u2014 ' + meta.label + '\n' +
-         '// Published via /strings editor. Missing keys fall back to CZ source (strings.js).\n' +
-         '(function(){\n  ' + dm + '\n' +
-         '  window.STRINGS = _dm(window.STRINGS, ' + JSON.stringify(nested, null, 2) + ');\n' +
-         '})();\n';
-}
-
-const GH_REPO  = 'thalajcik-blip/hlidacky-prototypes';
-const GH_API   = 'https://api.github.com';
-
-function getToken() {
-  return localStorage.getItem('hlidacky_gh_token') || '';
-}
-
-function setToken(t) {
-  localStorage.setItem('hlidacky_gh_token', t.trim());
-}
-
-function ghFilePath(lang) {
-  return ghRepoPath(lang === 'CZ' ? 'strings.js' : 'strings_' + lang.toLowerCase() + '.js');
-}
-
-
-function toBase64(str) {
-  // Handles unicode (UTF-8 → binary → base64)
-  var bytes = new TextEncoder().encode(str);
-  var binary = '';
-  bytes.forEach(function(b) { binary += String.fromCharCode(b); });
-  return btoa(binary);
-}
+/* ── Supabase sync ───────────────────────────────────────── */
 
 function setDeployStatus(type, msg, link) {
   var bar = document.getElementById('deploy-status');
@@ -1194,58 +1203,41 @@ function hideDeployStatus() {
   document.getElementById('deploy-status').className = 'deploy-status';
 }
 
-async function publishToGitHub() {
-  const token = getToken();
-  if (!token) {
-    document.getElementById('settings-panel').classList.add('open');
-    document.getElementById('gh-token-input').focus();
-    return;
-  }
-
+async function saveCurrentLanguageToSupabase() {
   applyAndSave();
-  const path    = ghFilePath(currentLang);
-  const content = buildJsContent(currentLang);
-  const headers = {
-    'Authorization': 'Bearer ' + token,
-    'Accept': 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json'
-  };
-
-  var btn = document.getElementById('btn-publish');
+  var btn = document.getElementById('btn-save');
   btn.disabled = true;
-  setDeployStatus('loading', 'Publishing…');
+  setDeployStatus('loading', 'Saving strings…');
 
   try {
-    // 1. Get current file SHA
-    var getResp = await fetch(GH_API + '/repos/' + GH_REPO + '/contents/' + path, { headers: headers });
-    if (!getResp.ok && getResp.status !== 404) throw new Error('GitHub API: ' + getResp.status);
-    var sha = null;
-    if (getResp.ok) {
-      var fileData = await getResp.json();
-      sha = fileData.sha;
-    }
-
-    // 2. Commit updated file
-    var body = {
-      message: 'Update ' + path + ' via /strings editor',
-      content: toBase64(content)
-    };
-    if (sha) body.sha = sha;
-
-    var putResp = await fetch(GH_API + '/repos/' + GH_REPO + '/contents/' + path, {
-      method: 'PUT',
-      headers: headers,
-      body: JSON.stringify(body)
+    var response = await fetch('/api/strings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        prototype_key: currentPrototype.id,
+        language: currentLang,
+        payload: buildTouchedPayload(currentLang),
+        touched_keys: Array.from(touched[currentLang] || [])
+      })
     });
-    if (!putResp.ok) {
-      var err = await putResp.json();
-      throw new Error(err.message || ('GitHub API: ' + putResp.status));
+
+    var data = await response.json().catch(function() { return {}; });
+    if (!response.ok) {
+      throw new Error((data && data.error) || ('Strings API: ' + response.status));
     }
-    var result = await putResp.json();
-    var vercelUrl = 'https://vercel.com/tomas-halajciks-projects/hlidacky-prototypes/deployments';
-    setDeployStatus('success', '✓ Published — Vercel is deploying (~30–60 s)', vercelUrl);
-    setTimeout(hideDeployStatus, 12000);
+
+    if (data.item) {
+      applyRemoteOverrideItem(data.item);
+    }
+
+    renderTabs();
+    renderTable();
+    showToast('✓ Strings saved');
+    setDeployStatus('success', '✓ Strings saved to Supabase');
+    setTimeout(hideDeployStatus, 4000);
   } catch (err) {
     setDeployStatus('error', '✗ Error: ' + err.message);
   } finally {
@@ -1253,48 +1245,8 @@ async function publishToGitHub() {
   }
 }
 
-function initGitHub() {
-  // Token settings
-  var tokenInput = document.getElementById('gh-token-input');
-  var tokenStatus = document.getElementById('token-status');
-
-  function updateTokenStatus() {
-    var t = getToken();
-    var publishBtn = document.getElementById('btn-publish');
-    if (t) {
-      tokenInput.value = t;
-      tokenStatus.textContent = '✓ Token saved';
-      tokenStatus.className = 'token-status ok';
-      tokenStatus.classList.remove('hidden');
-      publishBtn.classList.remove('hidden');
-      publishBtn.disabled = false;
-    } else {
-      tokenStatus.textContent = 'Token missing';
-      tokenStatus.className = 'token-status missing';
-      tokenStatus.classList.remove('hidden');
-      publishBtn.classList.add('hidden');
-    }
-  }
-
-  document.getElementById('btn-save-token').addEventListener('click', function() {
-    setToken(tokenInput.value);
-    updateTokenStatus();
-    document.getElementById('settings-panel').classList.remove('open');
-    showToast('✓ Token saved');
-  });
-
-  document.getElementById('btn-settings').addEventListener('click', function() {
-    document.getElementById('settings-panel').classList.toggle('open');
-  });
-
-  document.getElementById('btn-publish').addEventListener('click', publishToGitHub);
-
-  updateTokenStatus();
-}
-
 /* ── Boot ────────────────────────────────────────────────── */
 init();
-initGitHub();
 </script>
 </body>
 </html>

@@ -77,6 +77,28 @@
         "body": "Unser Support-Team wurde bereits über Ihr Anliegen informiert."
       }
     },
+    "feedbackModal": {
+      "button": "Feedback",
+      "title": "Teilen Sie uns Ihre Gedanken mit",
+      "body": "Bitte schreiben Sie Ihr Feedback zu diesem Prototyp auf:",
+      "prototypeLabel": "Prototyp",
+      "nameLabel": "Ihr Name",
+      "namePlaceholder": "Ihr Name",
+      "emailLabel": "Ihre E-Mail",
+      "emailPlaceholder": "Ihre E-Mail",
+      "messageLabel": "Was geht Ihnen durch den Kopf...",
+      "optional": "(optional)",
+      "placeholder": "Wie gefallen Ihnen die neuen Funktionen? Wir würden gerne hören, was für Sie gut funktioniert und was wir verbessern könnten.",
+      "submit": "Feedback senden",
+      "submitting": "Wird gesendet...",
+      "success": "Danke, Ihr Feedback wurde gesendet.",
+      "error": "Ihr Feedback konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+      "validation": "Bitte schreiben Sie zuerst Ihr Feedback.",
+      "toast": {
+        "title": "Danke für Ihr Feedback",
+        "body": "Ihre Notiz wurde zu diesem Prototyp gespeichert."
+      }
+    },
     "locationValue": "Wien",
     "radiusValue": "+20 km",
     "title": "Jobs für Betreuer:innen",
@@ -143,7 +165,8 @@
       },
       "archiveToast": {
         "title": "Inserat archiviert",
-        "body": "Sie finden es weiterhin im Reiter Archiviert."
+        "body": "Sie finden es weiterhin im Reiter Archiviert.",
+        "undo": "Ruckgangig machen"
       },
       "otherActions": "Weitere Aktionen",
       "otherActionsMenu": {
