@@ -92,6 +92,10 @@
         }
       },
       "locationValue": "Praha 2",
+      "locationOptions": {
+        "myLocations": "all my locations",
+        "allLocations": "all locations"
+      },
       "radiusValue": "+20 km",
       "title": "Jobs for sitters",
       "subtitle": "The current job-search screen prototype for sitters.",

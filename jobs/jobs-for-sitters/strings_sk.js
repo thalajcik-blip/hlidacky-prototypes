@@ -100,6 +100,10 @@
       }
     },
     "locationValue": "Bratislava 4",
+    "locationOptions": {
+      "myLocations": "všetky moje lokality",
+      "allLocations": "všetky lokality"
+    },
     "radiusValue": "+20 km",
     "title": "Inzeráty pre hlídačky",
     "subtitle": "Aktuálny prototyp obrazovky na vyhľadávanie práce pre hlídačky.",

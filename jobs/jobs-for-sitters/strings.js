@@ -98,6 +98,10 @@ window.STRINGS = {
       }
     },
     "locationValue": "Praha 2",
+    "locationOptions": {
+      "myLocations": "všechny moje lokality",
+      "allLocations": "všechny lokality"
+    },
     "radiusValue": "+20 km",
     "title": "Inzeráty pro hlídačky",
     "subtitle": "Aktuální prototyp obrazovky pro vyhledávání práce pro hlídačky.",

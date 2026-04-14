@@ -100,6 +100,10 @@
       }
     },
     "locationValue": "Zagreb",
+    "locationOptions": {
+      "myLocations": "sve moje lokacije",
+      "allLocations": "sve lokacije"
+    },
     "radiusValue": "+20 km",
     "title": "Oglasi za siterice",
     "subtitle": "Trenutačni prototip ekrana za traženje posla za siterice.",

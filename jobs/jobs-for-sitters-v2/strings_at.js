@@ -100,6 +100,10 @@
       }
     },
     "locationValue": "Wien",
+    "locationOptions": {
+      "myLocations": "alle meine Orte",
+      "allLocations": "alle Orte"
+    },
     "radiusValue": "+20 km",
     "title": "Jobs für Betreuer:innen",
     "subtitle": "Der aktuelle Prototyp der Jobsuche für Betreuer:innen.",

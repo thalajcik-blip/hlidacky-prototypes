@@ -2787,11 +2787,11 @@
               <button id="sitters-open-filters" type="button" aria-label="Open filters" aria-haspopup="dialog" aria-expanded="false">
                 <span class="jobs-filter-badge" aria-hidden="true">1</span>
               </button>
-              <div id="sitters-location-display">Praha 2</div>
+              <div id="sitters-location-display"></div>
               <select id="sitters-location-select" aria-label="Search jobs in">
-                <option selected>Praha 2</option>
-                <option>all my locations</option>
-                <option>all locations</option>
+                <option value="primary" selected data-i18n="sittersHub.locationValue">Praha 2</option>
+                <option value="my-locations" data-i18n="sittersHub.locationOptions.myLocations">all my locations</option>
+                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">all locations</option>
               </select>
               <div id="sitters-radius-display">+20 km</div>
               <select id="sitters-radius-select" aria-label="Distance radius">
@@ -2878,12 +2878,12 @@
           </div>
           <div class="filters-section-content">
             <div class="filters-select-field">
-              <div class="filters-select-field-value" id="sitters-modal-location-display">Praha 2</div>
+              <div class="filters-select-field-value" id="sitters-modal-location-display"></div>
               <svg class="filters-select-field-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 6.5 4.5 4 4.5-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <select class="filters-select-field-select" id="sitters-modal-location-select" aria-label="Location filter">
-                <option>Praha 2</option>
-                <option>all my locations</option>
-                <option>all locations</option>
+                <option value="primary" data-i18n="sittersHub.locationValue">Praha 2</option>
+                <option value="my-locations" data-i18n="sittersHub.locationOptions.myLocations">all my locations</option>
+                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">all locations</option>
               </select>
             </div>
           </div>
@@ -3137,6 +3137,7 @@
 
     function rerenderRemoteStrings() {
       applyStaticTranslations();
+      if (window.sittersSyncLocationDisplays) window.sittersSyncLocationDisplays();
       if (window.sittersRenderActiveFilters) window.sittersRenderActiveFilters();
       if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
     }
@@ -3229,7 +3230,7 @@
         var radiusText = (radiusDisplay.textContent || '').trim();
         var label = locationText;
 
-        if (locationText && radiusText && locationText !== 'all locations') {
+        if (locationText && radiusText && locationDisplay && locationDisplay.getAttribute('data-location-mode') !== 'all-locations') {
           label += ' (' + radiusText + ')';
         }
 
@@ -3345,13 +3346,14 @@
         if (!select || !display) return;
         var option = select.options[select.selectedIndex];
         display.textContent = option ? option.text : '';
+        if (display.id === 'sitters-location-display') {
+          display.setAttribute('data-location-mode', select.value || '');
+        }
       }
 
       function radiusShouldBeVisible() {
         if (!modalLocationSelect) return true;
-        var option = modalLocationSelect.options[modalLocationSelect.selectedIndex];
-        var value = option ? option.text : '';
-        return value !== 'all locations';
+        return modalLocationSelect.value !== 'all-locations';
       }
 
       function syncRadiusSectionVisibility() {
@@ -3461,6 +3463,10 @@
 
       window.sittersOpenFiltersModal = openFiltersModal;
       window.sittersSyncFiltersFromAppliedState = syncServiceChipsFromAppliedState;
+      window.sittersSyncLocationDisplays = function() {
+        syncSelectDisplay(topLocationSelect, document.getElementById('sitters-location-display'));
+        syncSelectDisplay(modalLocationSelect, modalLocationDisplay);
+      };
 
       modal.querySelectorAll('.filters-section-header').forEach(function(header) {
         function toggleSection() {
@@ -3518,6 +3524,7 @@
         if (window.sittersTriggerResultsReload) window.sittersTriggerResultsReload();
       });
       sync();
+      if (window.sittersSyncLocationDisplays) window.sittersSyncLocationDisplays();
     })();
 
     (function initSittersNotificationsModal() {

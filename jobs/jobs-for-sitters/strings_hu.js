@@ -100,6 +100,10 @@
       }
     },
     "locationValue": "Budapest",
+    "locationOptions": {
+      "myLocations": "összes helyszínem",
+      "allLocations": "összes helyszín"
+    },
     "radiusValue": "+20 km",
     "title": "Állások segítőknek",
     "subtitle": "A segítőknek szánt álláskereső felület jelenlegi prototípusa.",
