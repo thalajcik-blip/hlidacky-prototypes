@@ -77,6 +77,28 @@
         "body": "Naša podpora už bola o vašom podnete informovaná."
       }
     },
+    "feedbackModal": {
+      "button": "Feedback",
+      "title": "Podeľte sa o svoje dojmy",
+      "body": "Napíšte nám prosím svoju spätnú väzbu k tomuto prototypu:",
+      "prototypeLabel": "Prototyp",
+      "nameLabel": "Vaše meno",
+      "namePlaceholder": "Vaše meno",
+      "emailLabel": "Váš e-mail",
+      "emailPlaceholder": "Váš e-mail",
+      "messageLabel": "Čo vám napadá...",
+      "optional": "(voliteľné)",
+      "placeholder": "Ako sa vám páčia nové funkcie? Radi si prečítame, čo vám funguje a čo by sme mohli zlepšiť.",
+      "submit": "Odoslať feedback",
+      "submitting": "Odosiela sa...",
+      "success": "Ďakujeme, feedback bol odoslaný.",
+      "error": "Feedback sa nepodarilo odoslať. Skúste to prosím znova.",
+      "validation": "Najprv prosím napíšte svoj feedback.",
+      "toast": {
+        "title": "Ďakujeme za feedback",
+        "body": "Vaša poznámka bola uložená k tomuto prototypu."
+      }
+    },
     "locationValue": "Bratislava",
     "radiusValue": "+20 km",
     "title": "Inzeráty pre hlídačky",
@@ -88,7 +110,7 @@
     "jobAdvert": {
       "postedLabel": "zverejnila",
       "postedTime": "pred 2 hodinami",
-      "title": "Potočná 44, Brno–Bystrc",
+      "title": " Stodolova 3409/11, Žilina-Hájik",
       "distance": "3 km",
       "distanceSuffix": "od vás",
       "price": "18 €/h",
@@ -98,7 +120,7 @@
       "wrote": "píše:",
       "alreadyReplied": "Už ste odpovedali",
       "readMore": "čítať viac",
-      "body": "Dobrý deň, hľadám hlídačku na pravidelné opatrovanie od septembra na nasledujúci školský rok pre dve deti – syna (v novembri bude mať 4 roky) a dcéru (2 roky). Čas: po–pia 8:00 – 14:00, po dohode je možná úprava času. Výnimočne by som potrebovala aj večerné opatrovanie. Po vzájomnej dohode je možné využiť služby hlídačky aj počas spoločnej dovolenky.",
+      "body": "Dobrý deň, hľadám pani na pravidelné opatrovanie od septembra na nasledujúci školský rok pre dve deti – syna (v novembri bude mať 4 roky) a dcéru (2 roky). Čas: po–pia 8:00 – 14:00, po dohode je možná úprava času. Výnimočne by som potrebovala aj večerné opatrovanie. Po vzájomnej dohode je možné využiť služby hlídačky aj počas spoločnej dovolenky.",
       "dismissTitle": "Prečo si tento inzerát archivujete?",
       "dismissReasons": {
         "location": "Lokalita mi nevyhovuje.",
