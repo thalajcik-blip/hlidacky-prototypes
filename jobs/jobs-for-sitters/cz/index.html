@@ -1674,6 +1674,37 @@
       margin-bottom: 10px;
     }
 
+    .job-advert-topline-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .job-advert-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 42px;
+      border: 2px solid #FFF;
+      background-color: lightgray;
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.20);
+      flex-shrink: 0;
+    }
+
+    .job-advert-topline-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+      flex: 1 1 auto;
+      padding-top: 2px;
+    }
+
     .job-advert-posted {
       color: #6C757D;
       font-feature-settings: 'liga' off, 'clig' off;
@@ -1965,6 +1996,7 @@
       align-items: flex-start;
       gap: 2px;
       min-width: 0;
+      width: 100%;
     }
 
     .job-advert-distance-line {
@@ -3985,6 +4017,7 @@
         "Hi, I’d love to connect about this babysitting opportunity. I’m flexible, communicative, and happy to adjust to your children’s needs.",
         "Hello, I’m very interested in this role. I enjoy creating a safe and playful environment for children and would be glad to discuss the details with you."
       ];
+      var thumbnailOrder = [7, 14, 3, 18, 10, 1, 16, 5, 12, 20, 8, 2, 17, 9, 13, 4, 19, 6, 15, 11];
       function getReplyTemplates() {
         var localizedReplyTemplates = t('sittersHub.jobAdvert.replyComposer.templates');
         return Array.isArray(localizedReplyTemplates) && localizedReplyTemplates.length
@@ -4002,6 +4035,7 @@
           repliedOrder: null,
           dismissReason: null,
           serviceKey: serviceKeys[index % serviceKeys.length],
+          thumbnailPath: '/jobs/jobs-for-sitters/assets/thumbnails/thumbnail-' + String(thumbnailOrder[index % thumbnailOrder.length]).padStart(2, '0') + '.jpg',
           replyStage: null,
           templateIndex: 0,
           replyText: replyTemplates[0],
@@ -4700,18 +4734,23 @@
           '<article class="job-advert-box', hidden ? ' is-hidden' : '', '" data-job-id="', card.id, '">',
             '<div class="job-advert-card">',
               '<div class="job-advert-topline">',
-                '<div class="job-advert-posted"><span class="job-advert-posted-author">', esc(t('sittersHub.jobAdvert.author')), '</span><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
+                '<div class="job-advert-topline-main">',
+                  '<div class="job-advert-avatar" style="background-image:url(\'', esc(card.thumbnailPath || ''), '\')"></div>',
+                  '<div class="job-advert-topline-copy">',
+                    '<div class="job-advert-posted"><span class="job-advert-posted-author">', esc(t('sittersHub.jobAdvert.author')), '</span><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
+                    '<div class="job-advert-heading-group">',
+                      '<div class="job-advert-heading">',
+                        '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
+                      '</div>',
+                      '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
+                    '</div>',
+                  '</div>',
+                '</div>',
                 (card.status === 'replied'
                     ? '<div class="job-advert-status-badge">' + iconCheckStatus() + '<span>' + esc(t('sittersHub.jobAdvert.alreadyReplied')) + '</span></div>'
                     : '<div class="job-advert-topline-actions"><button class="job-advert-ellipsis" type="button" aria-label="More actions" data-more-actions-trigger="true" data-job-id="' + card.id + '">' + iconEllipsis() + '</button></div>'),
               '</div>',
               moreActionsMenuMarkup(card),
-              '<div class="job-advert-heading-group">',
-                '<div class="job-advert-heading">',
-                  '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
-                '</div>',
-                '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
-              '</div>',
               '<div class="job-advert-tags">',
                 '<span class="job-advert-tag job-advert-tag--price">', esc(t('sittersHub.jobAdvert.price')), '</span>',
                 serviceBadgeMarkup(card.serviceKey),
