@@ -101,8 +101,9 @@
     },
     "locationValue": "Budapest",
     "locationOptions": {
+      "secondaryLocation": "Brandýs nad Labem",
       "myLocations": "összes helyszínem",
-      "allLocations": "összes helyszín"
+      "allLocations": "bárhol"
     },
     "radiusValue": "+20 km",
     "title": "Állások segítőknek",

@@ -101,8 +101,9 @@
     },
     "locationValue": "Bratislava 4",
     "locationOptions": {
+      "secondaryLocation": "Brandýs nad Labem",
       "myLocations": "všetky moje lokality",
-      "allLocations": "všetky lokality"
+      "allLocations": "kdekoľvek"
     },
     "radiusValue": "+20 km",
     "title": "Inzeráty pre hlídačky",

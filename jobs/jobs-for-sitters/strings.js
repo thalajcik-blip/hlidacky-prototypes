@@ -99,8 +99,9 @@ window.STRINGS = {
     },
     "locationValue": "Praha 2",
     "locationOptions": {
+      "secondaryLocation": "Brandýs nad Labem",
       "myLocations": "všechny moje lokality",
-      "allLocations": "všechny lokality"
+      "allLocations": "kdekoli"
     },
     "radiusValue": "+20 km",
     "title": "Inzeráty pro hlídačky",

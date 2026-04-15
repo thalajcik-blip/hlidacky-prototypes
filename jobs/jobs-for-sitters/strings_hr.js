@@ -101,8 +101,9 @@
     },
     "locationValue": "Zagreb",
     "locationOptions": {
+      "secondaryLocation": "Brandýs nad Labem",
       "myLocations": "sve moje lokacije",
-      "allLocations": "sve lokacije"
+      "allLocations": "bilo gdje"
     },
     "radiusValue": "+20 km",
     "title": "Oglasi za siterice",

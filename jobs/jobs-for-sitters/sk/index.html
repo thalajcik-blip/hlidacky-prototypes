@@ -834,6 +834,65 @@
       border: 0;
     }
 
+    .filters-location-options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .filters-location-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+    }
+
+    .filters-location-radio {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .filters-location-option-control {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 2px solid #C4CAD4;
+      background: #FFF;
+      flex-shrink: 0;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .filters-location-radio:checked + .filters-location-option-control {
+      border: 7px solid #F96073;
+    }
+
+    .filters-location-radio:focus-visible + .filters-location-option-control {
+      box-shadow: 0 0 0 4px rgba(249, 96, 115, 0.16);
+    }
+
+    .filters-location-option-label {
+      color: #2A3539;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .filters-visually-hidden-select {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     .filters-modal-footer {
       position: sticky;
       bottom: 0;
@@ -1468,6 +1527,10 @@
       text-decoration: underline;
       cursor: pointer;
       transition: opacity 200ms ease;
+    }
+
+    .results-notifications-link--alert {
+      color: #F96073;
     }
 
     .results-notifications-link:hover {
@@ -2735,8 +2798,9 @@
               <div id="sitters-location-display"></div>
               <select id="sitters-location-select" aria-label="Search jobs in">
                 <option value="primary" selected data-i18n="sittersHub.locationValue">Praha 2</option>
+                <option value="secondary" data-i18n="sittersHub.locationOptions.secondaryLocation">Brandýs nad Labem</option>
                 <option value="my-locations" data-i18n="sittersHub.locationOptions.myLocations">all my locations</option>
-                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">all locations</option>
+                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">Anywhere</option>
               </select>
               <div id="sitters-radius-display">+20 km</div>
               <select id="sitters-radius-select" aria-label="Distance radius">
@@ -2822,15 +2886,34 @@
             </div>
           </div>
           <div class="filters-section-content">
-            <div class="filters-select-field">
-              <div class="filters-select-field-value" id="sitters-modal-location-display"></div>
-              <svg class="filters-select-field-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 6.5 4.5 4 4.5-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <select class="filters-select-field-select" id="sitters-modal-location-select" aria-label="Location filter">
-                <option value="primary" data-i18n="sittersHub.locationValue">Praha 2</option>
-                <option value="my-locations" data-i18n="sittersHub.locationOptions.myLocations">all my locations</option>
-                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">all locations</option>
-              </select>
+            <div class="filters-location-options" id="sitters-modal-location-options" role="radiogroup" aria-label="Location filter">
+              <label class="filters-location-option">
+                <input class="filters-location-radio" type="radio" name="sitters-modal-location" value="primary" checked>
+                <span class="filters-location-option-control" aria-hidden="true"></span>
+                <span class="filters-location-option-label" data-i18n="sittersHub.locationValue">Praha 2</span>
+              </label>
+              <label class="filters-location-option">
+                <input class="filters-location-radio" type="radio" name="sitters-modal-location" value="secondary">
+                <span class="filters-location-option-control" aria-hidden="true"></span>
+                <span class="filters-location-option-label" data-i18n="sittersHub.locationOptions.secondaryLocation">Brandýs nad Labem</span>
+              </label>
+              <label class="filters-location-option">
+                <input class="filters-location-radio" type="radio" name="sitters-modal-location" value="my-locations">
+                <span class="filters-location-option-control" aria-hidden="true"></span>
+                <span class="filters-location-option-label" data-i18n="sittersHub.locationOptions.myLocations">all my locations</span>
+              </label>
+              <label class="filters-location-option">
+                <input class="filters-location-radio" type="radio" name="sitters-modal-location" value="all-locations">
+                <span class="filters-location-option-control" aria-hidden="true"></span>
+                <span class="filters-location-option-label" data-i18n="sittersHub.locationOptions.allLocations">Anywhere</span>
+              </label>
             </div>
+            <select class="filters-visually-hidden-select" id="sitters-modal-location-select" aria-label="Location filter">
+                <option value="primary" data-i18n="sittersHub.locationValue">Praha 2</option>
+                <option value="secondary" data-i18n="sittersHub.locationOptions.secondaryLocation">Brandýs nad Labem</option>
+                <option value="my-locations" data-i18n="sittersHub.locationOptions.myLocations">all my locations</option>
+                <option value="all-locations" data-i18n="sittersHub.locationOptions.allLocations">Anywhere</option>
+              </select>
           </div>
         </section>
         <section class="filters-section" data-section="radius">
@@ -3179,8 +3262,8 @@
       var topLocationSelect = document.getElementById('sitters-location-select');
       var topRadiusSelect = document.getElementById('sitters-radius-select');
       var modalLocationSelect = document.getElementById('sitters-modal-location-select');
+      var modalLocationRadios = modal ? Array.prototype.slice.call(modal.querySelectorAll('input[name="sitters-modal-location"]')) : [];
       var modalRadiusSelect = document.getElementById('sitters-modal-radius-select');
-      var modalLocationDisplay = document.getElementById('sitters-modal-location-display');
       var modalRadiusDisplay = document.getElementById('sitters-modal-radius-display');
       var radiusSection = modal ? modal.querySelector('.filters-section[data-section="radius"]') : null;
       var serviceChips = modal ? Array.prototype.slice.call(modal.querySelectorAll('.filters-service-chip')) : [];
@@ -3274,6 +3357,13 @@
         return modalLocationSelect.value !== 'all-locations';
       }
 
+      function syncLocationRadiosFromSelect() {
+        if (!modalLocationSelect || !modalLocationRadios.length) return;
+        modalLocationRadios.forEach(function(radio) {
+          radio.checked = radio.value === modalLocationSelect.value;
+        });
+      }
+
       function syncRadiusSectionVisibility() {
         if (!radiusSection) return;
         radiusSection.classList.toggle('is-hidden', !radiusShouldBeVisible());
@@ -3281,19 +3371,19 @@
 
       function syncModalSelectsFromTopState() {
         if (topLocationSelect && modalLocationSelect) {
-          modalLocationSelect.selectedIndex = topLocationSelect.selectedIndex;
+          modalLocationSelect.value = topLocationSelect.value;
         }
         if (topRadiusSelect && modalRadiusSelect) {
           modalRadiusSelect.selectedIndex = topRadiusSelect.selectedIndex;
         }
-        syncSelectDisplay(modalLocationSelect, modalLocationDisplay);
+        syncLocationRadiosFromSelect();
         syncSelectDisplay(modalRadiusSelect, modalRadiusDisplay);
         syncRadiusSectionVisibility();
       }
 
       function applyModalSelectsToTopState() {
-        if (topLocationSelect && modalLocationSelect && topLocationSelect.selectedIndex !== modalLocationSelect.selectedIndex) {
-          topLocationSelect.selectedIndex = modalLocationSelect.selectedIndex;
+        if (topLocationSelect && modalLocationSelect && topLocationSelect.value !== modalLocationSelect.value) {
+          topLocationSelect.value = modalLocationSelect.value;
           topLocationSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
         if (topRadiusSelect && modalRadiusSelect && topRadiusSelect.selectedIndex !== modalRadiusSelect.selectedIndex) {
@@ -3384,7 +3474,7 @@
       window.sittersSyncFiltersFromAppliedState = syncServiceChipsFromAppliedState;
       window.sittersSyncLocationDisplays = function() {
         syncSelectDisplay(topLocationSelect, document.getElementById('sitters-location-display'));
-        syncSelectDisplay(modalLocationSelect, modalLocationDisplay);
+        syncLocationRadiosFromSelect();
       };
 
       modal.querySelectorAll('.filters-section-header').forEach(function(header) {
@@ -3410,10 +3500,18 @@
 
       if (modalLocationSelect) {
         modalLocationSelect.addEventListener('change', function() {
-          syncSelectDisplay(modalLocationSelect, modalLocationDisplay);
+          syncLocationRadiosFromSelect();
           syncRadiusSectionVisibility();
         });
       }
+
+      modalLocationRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          if (!radio.checked || !modalLocationSelect) return;
+          modalLocationSelect.value = radio.value;
+          syncRadiusSectionVisibility();
+        });
+      });
 
       if (modalRadiusSelect) {
         modalRadiusSelect.addEventListener('change', function() {
@@ -3455,11 +3553,28 @@
       var mobileSelect = document.getElementById('sitters-mobile-notifications');
       var emailDisplay = document.getElementById('sitters-email-notifications-display');
       var mobileDisplay = document.getElementById('sitters-mobile-notifications-display');
+      var openLinkIcon = openLink ? openLink.querySelector('img') : null;
+      var defaultBellIcon = '/jobs/jobs-for-sitters/assets/icon-bell.svg';
+      var alertBellIcon = '/jobs/jobs-for-sitters/assets/icon-bell-alert.svg';
+      var savedEmailIndex = emailSelect ? emailSelect.selectedIndex : 0;
+      var savedMobileIndex = mobileSelect ? mobileSelect.selectedIndex : 0;
       if (!modal || !openLink || !closeButton || !saveButton || !emailSelect || !mobileSelect || !emailDisplay || !mobileDisplay) return;
 
       function syncSelect(select, display) {
         var option = select.options[select.selectedIndex];
         display.textContent = option ? option.text : '';
+      }
+
+      function isNeverIndex(index) {
+        return index === 1;
+      }
+
+      function syncNotificationsLinkState() {
+        var shouldHighlight = isNeverIndex(savedEmailIndex) && isNeverIndex(savedMobileIndex);
+        openLink.classList.toggle('results-notifications-link--alert', shouldHighlight);
+        if (openLinkIcon) {
+          openLinkIcon.src = shouldHighlight ? alertBellIcon : defaultBellIcon;
+        }
       }
 
       function setOpen(isOpen) {
@@ -3478,6 +3593,9 @@
       });
 
       saveButton.addEventListener('click', function() {
+        savedEmailIndex = emailSelect.selectedIndex;
+        savedMobileIndex = mobileSelect.selectedIndex;
+        syncNotificationsLinkState();
         setOpen(false);
         if (window.sittersShowNotificationsToast) {
           window.sittersShowNotificationsToast();
@@ -3494,6 +3612,7 @@
 
       syncSelect(emailSelect, emailDisplay);
       syncSelect(mobileSelect, mobileDisplay);
+      syncNotificationsLinkState();
     })();
 
     (function initSittersReportModal() {

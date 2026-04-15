@@ -101,8 +101,9 @@
     },
     "locationValue": "Wien",
     "locationOptions": {
+      "secondaryLocation": "Brandýs nad Labem",
       "myLocations": "alle meine Orte",
-      "allLocations": "alle Orte"
+      "allLocations": "überall"
     },
     "radiusValue": "+20 km",
     "title": "Jobs für Betreuer:innen",

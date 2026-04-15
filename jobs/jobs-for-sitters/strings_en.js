@@ -93,8 +93,9 @@
       },
       "locationValue": "Praha 2",
       "locationOptions": {
+        "secondaryLocation": "Brandýs nad Labem",
         "myLocations": "all my locations",
-        "allLocations": "all locations"
+        "allLocations": "Anywhere"
       },
       "radiusValue": "+20 km",
       "title": "Jobs for sitters",
