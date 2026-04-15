@@ -854,17 +854,30 @@
     }
 
     .filters-location-option-control {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
       border: 2px solid #C4CAD4;
       background: #FFF;
       flex-shrink: 0;
-      transition: border-color 180ms ease, box-shadow 180ms ease;
+      position: relative;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
     }
 
     .filters-location-radio:checked + .filters-location-option-control {
-      border: 7px solid #F96073;
+      border-color: #F96073;
+      background: #F96073;
+    }
+
+    .filters-location-radio:checked + .filters-location-option-control::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 6px;
+      height: 6px;
+      margin: auto;
+      border-radius: 999px;
+      background: #FFF;
     }
 
     .filters-location-radio:focus-visible + .filters-location-option-control {
