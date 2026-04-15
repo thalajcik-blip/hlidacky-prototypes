@@ -1689,7 +1689,7 @@
 
     .job-advert-topline-main {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
       min-width: 0;
       flex: 1 1 auto;
@@ -1710,10 +1710,9 @@
 
     .job-advert-topline-copy {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       min-width: 0;
       flex: 1 1 auto;
-      padding-top: 2px;
     }
 
     .job-advert-posted {
@@ -1725,10 +1724,18 @@
       font-weight: 350;
       line-height: 132%;
       letter-spacing: -0.16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .job-advert-posted-line {
       display: inline-flex;
       align-items: baseline;
       gap: 4px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      min-width: 0;
     }
 
     .job-advert-posted-time {
@@ -4748,7 +4755,7 @@
                 '<div class="job-advert-topline-main">',
                   '<div class="job-advert-avatar" style="background-image:url(\'', esc(card.thumbnailPath || ''), '\')"></div>',
                   '<div class="job-advert-topline-copy">',
-                    '<div class="job-advert-posted"><span class="job-advert-posted-author">', esc(t('sittersHub.jobAdvert.author')), '</span><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
+                    '<div class="job-advert-posted"><span class="job-advert-posted-line"><span class="job-advert-posted-author">', esc(t('sittersHub.jobAdvert.author')), '</span><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span></span><span class="job-advert-posted-line"><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></span></div>',
                   '</div>',
                 '</div>',
                 (card.status === 'replied'
