@@ -1710,9 +1710,7 @@
 
     .job-advert-topline-copy {
       display: flex;
-      flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
       min-width: 0;
       flex: 1 1 auto;
       padding-top: 2px;
@@ -4751,12 +4749,6 @@
                   '<div class="job-advert-avatar" style="background-image:url(\'', esc(card.thumbnailPath || ''), '\')"></div>',
                   '<div class="job-advert-topline-copy">',
                     '<div class="job-advert-posted"><span class="job-advert-posted-author">', esc(t('sittersHub.jobAdvert.author')), '</span><span>', esc(t('sittersHub.jobAdvert.postedLabel')), '</span><span class="job-advert-posted-time">', esc(t('sittersHub.jobAdvert.postedTime')), '</span></div>',
-                    '<div class="job-advert-heading-group">',
-                      '<div class="job-advert-heading">',
-                        '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
-                      '</div>',
-                      '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
-                    '</div>',
                   '</div>',
                 '</div>',
                 (card.status === 'replied'
@@ -4764,6 +4756,12 @@
                     : '<div class="job-advert-topline-actions"><button class="job-advert-ellipsis" type="button" aria-label="More actions" data-more-actions-trigger="true" data-job-id="' + card.id + '">' + iconEllipsis() + '</button></div>'),
               '</div>',
               moreActionsMenuMarkup(card),
+              '<div class="job-advert-heading-group">',
+                '<div class="job-advert-heading">',
+                  '<div class="job-advert-title">', esc(t('sittersHub.jobAdvert.title')), '</div>',
+                '</div>',
+                '<div class="job-advert-distance-line"><strong>', esc(t('sittersHub.jobAdvert.distance')), '</strong> ', esc(t('sittersHub.jobAdvert.distanceSuffix')), '</div>',
+              '</div>',
               '<div class="job-advert-tags">',
                 '<span class="job-advert-tag job-advert-tag--price">', esc(t('sittersHub.jobAdvert.price')), '</span>',
                 serviceBadgeMarkup(card.serviceKey),
