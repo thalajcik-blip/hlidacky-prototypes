@@ -26,3 +26,14 @@ create index if not exists prototype_feedback_prototype_key_idx
 
 create index if not exists prototype_feedback_language_idx
   on public.prototype_feedback (language);
+
+alter table public.prototype_feedback enable row level security;
+
+drop policy if exists "prototype_feedback_deny_all" on public.prototype_feedback;
+create policy "prototype_feedback_deny_all"
+  on public.prototype_feedback
+  as restrictive
+  for all
+  to public
+  using (false)
+  with check (false);

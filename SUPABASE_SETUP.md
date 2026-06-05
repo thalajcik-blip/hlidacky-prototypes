@@ -14,6 +14,8 @@ Run the SQL from:
 
 in the Supabase SQL editor.
 
+These SQL files also enable Row Level Security on both tables and explicitly block direct access from `anon` and `authenticated`. The app uses the server-side `SUPABASE_SERVICE_ROLE_KEY`, so this is the intended production setup.
+
 ## 2. Configure Vercel environment variables
 
 Add these environment variables to the `hlidacky-prototypes` Vercel project:

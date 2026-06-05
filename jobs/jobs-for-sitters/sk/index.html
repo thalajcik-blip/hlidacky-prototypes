@@ -85,6 +85,7 @@
     .screen-scroll {
       flex: 1;
       min-height: 0;
+      position: relative;
       overflow-y: auto;
       overflow-x: hidden;
       background: var(--panel);
@@ -2274,10 +2275,30 @@
       min-width: 0;
     }
 
+    .job-advert-archived-tag {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 4px;
+      background: #F3F4F6;
+      color: #6F7A86;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'soleil', sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+      letter-spacing: -0.16px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
     .job-advert-archive-trigger {
       flex: 0 0 80px;
       width: 80px;
-      min-height: 44px;
+      min-height: 52px;
+      margin-left: auto;
       border-radius: 4px;
       border: 1px solid #D0D5DD;
       background: #FFF;
@@ -2551,6 +2572,36 @@
       gap: 10px;
     }
 
+    .job-advert-reply.is-loading {
+      color: transparent;
+      position: relative;
+      pointer-events: none;
+    }
+
+    .job-advert-reply.is-loading img,
+    .job-advert-reply.is-loading span:not(.job-advert-reply-spinner) {
+      opacity: 0;
+    }
+
+    .job-advert-reply-spinner {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 4px solid rgba(255, 255, 255, 0.34);
+      border-top-color: #FFF;
+      animation: sittersButtonSpin 0.72s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sittersButtonSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .results-show-more {
       display: inline-flex;
       min-height: 52px;
@@ -2586,8 +2637,10 @@
     }
 
     .toast-layer {
-      position: sticky;
-      top: 0;
+      position: absolute;
+      top: calc(52px + 48px + 44px + 8px);
+      left: 0;
+      right: 0;
       z-index: 30;
       pointer-events: none;
       padding: 0 16px;
@@ -2786,43 +2839,43 @@
         <span class="results-filter-tab-label" data-i18n="sittersHub.resultsTabs.archived"></span>
       </button>
     </section>
-    <div class="screen-scroll">
-      <div class="toast-layer" aria-live="polite" aria-atomic="true">
-        <div class="toast-card" id="sitters-toast" role="status">
-          <div class="toast-illustration" id="sitters-toast-illustration" aria-hidden="true">
-            <svg class="toast-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M52.1066 28.9352C51.1366 28.7652 54.5416 27.8102 54.5416 27.8102L51.2466 27.1452L54.0416 26.7252L56.6716 26.3302L56.8566 25.7552C54.3966 25.5002 50.6916 25.1152 50.6566 25.1152C50.6216 25.1152 54.1566 24.4852 57.3916 24.0652L57.4966 23.7402C58.4866 20.6302 56.6216 17.3402 53.4466 16.5952L20.6766 8.90018C17.6166 8.18018 14.5666 10.1202 13.9216 13.1952L12.2366 21.2202C15.1016 21.1252 17.7616 22.0352 18.4416 22.0002C18.5016 21.9952 18.5516 21.9902 18.5766 21.9902C18.6316 21.9902 18.5766 21.9902 18.4416 22.0002C17.6616 22.0752 14.2666 22.6152 11.8566 23.0052L11.7416 23.5552C12.9416 23.6302 13.6666 23.7102 13.8816 23.7052C20.7216 23.5502 12.4866 25.0752 11.3066 25.6102L8.62162 38.3802C7.93162 41.6552 10.2566 44.8002 13.5916 45.1052L45.1666 47.9752C47.7816 48.2152 50.2066 46.6002 51.0066 44.1002L55.7516 29.2202C54.3566 29.1352 52.6566 29.0202 52.1116 28.9252L52.1066 28.9352Z" fill="#FFD5DA"/>
-              <path d="M6.94531 37.3553L46.5203 11.8203L45.8403 27.1653C40.5703 27.7303 36.5553 34.4553 38.6353 38.8253C40.7153 43.1953 44.5553 44.7303 44.5553 44.7303L43.7703 52.2653L31.7453 47.3903C31.7453 47.3903 25.3953 53.8903 25.4153 53.4603C25.4353 53.0303 18.9303 42.2953 18.9303 42.2953L6.95031 37.3503L6.94531 37.3553Z" fill="white"/>
-              <path d="M9.58203 37.7102L46.357 13.9902L45.512 26.5552C45.512 26.5552 38.807 28.8852 38.452 34.3902C38.097 39.8952 44.552 44.7302 44.552 44.7302L43.767 52.2652L31.742 47.3902C31.742 47.3902 25.292 54.0352 25.412 53.4602C25.532 52.8852 18.927 42.2952 18.927 42.2952L9.58203 37.7052V37.7102Z" fill="#FFF3CD"/>
-              <path d="M30.0045 4.68945L27.1445 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M27.1445 4.68945L30.0045 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M13.8717 50.1592L11.0117 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M11.0117 50.1592L13.8717 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M53.9297 50.7793V54.8243" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M51.9023 52.8047H55.9523" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M52.7145 12.1439C53.6507 12.1439 54.4095 11.385 54.4095 10.4489C54.4095 9.51278 53.6507 8.75391 52.7145 8.75391C51.7784 8.75391 51.0195 9.51278 51.0195 10.4489C51.0195 11.385 51.7784 12.1439 52.7145 12.1439Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9.1325 17.7543C10.0686 17.7543 10.8275 16.9954 10.8275 16.0593C10.8275 15.1231 10.0686 14.3643 9.1325 14.3643C8.19638 14.3643 7.4375 15.1231 7.4375 16.0593C7.4375 16.9954 8.19638 17.7543 9.1325 17.7543Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M35.4372 57.0541C36.3733 57.0541 37.1322 56.2952 37.1322 55.3591C37.1322 54.4229 36.3733 53.6641 35.4372 53.6641C34.5011 53.6641 33.7422 54.4229 33.7422 55.3591C33.7422 56.2952 34.5011 57.0541 35.4372 57.0541Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M44.0253 48.4843L43.9503 49.5393L43.7653 52.2643L25.8153 44.9893L39.7453 21.5193L18.9253 42.5243L6.94531 37.3543L46.5203 11.8193L45.6503 24.5543" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M18.9219 42.5244L25.4069 53.4594L25.8119 44.9894" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M25.4102 53.459L31.7402 47.499" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7.26844 31.5088L4.27344 33.4038" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M28.575 18.0439L10.625 29.3889" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" fill="white"/>
-              <path d="M46.5175 44.8641C50.98 44.8641 54.5975 41.2466 54.5975 36.7841C54.5975 32.3216 50.98 28.7041 46.5175 28.7041C42.055 28.7041 38.4375 32.3216 38.4375 36.7841C38.4375 41.2466 42.055 44.8641 46.5175 44.8641Z" fill="#FF9BA7"/>
-              <path d="M42.6328 36.8996L45.3228 39.5896L50.9378 33.9746" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="toast-copy">
-            <div class="toast-title" id="sitters-toast-title"></div>
-            <button class="toast-action" id="sitters-toast-action" type="button"></button>
-          </div>
-          <button class="toast-close" id="sitters-toast-close" type="button" aria-label="Close toast">
-            <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
-          </button>
+    <div class="toast-layer" aria-live="polite" aria-atomic="true">
+      <div class="toast-card" id="sitters-toast" role="status">
+        <div class="toast-illustration" id="sitters-toast-illustration" aria-hidden="true">
+          <svg class="toast-svg" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M52.1066 28.9352C51.1366 28.7652 54.5416 27.8102 54.5416 27.8102L51.2466 27.1452L54.0416 26.7252L56.6716 26.3302L56.8566 25.7552C54.3966 25.5002 50.6916 25.1152 50.6566 25.1152C50.6216 25.1152 54.1566 24.4852 57.3916 24.0652L57.4966 23.7402C58.4866 20.6302 56.6216 17.3402 53.4466 16.5952L20.6766 8.90018C17.6166 8.18018 14.5666 10.1202 13.9216 13.1952L12.2366 21.2202C15.1016 21.1252 17.7616 22.0352 18.4416 22.0002C18.5016 21.9952 18.5516 21.9902 18.5766 21.9902C18.6316 21.9902 18.5766 21.9902 18.4416 22.0002C17.6616 22.0752 14.2666 22.6152 11.8566 23.0052L11.7416 23.5552C12.9416 23.6302 13.6666 23.7102 13.8816 23.7052C20.7216 23.5502 12.4866 25.0752 11.3066 25.6102L8.62162 38.3802C7.93162 41.6552 10.2566 44.8002 13.5916 45.1052L45.1666 47.9752C47.7816 48.2152 50.2066 46.6002 51.0066 44.1002L55.7516 29.2202C54.3566 29.1352 52.6566 29.0202 52.1116 28.9252L52.1066 28.9352Z" fill="#FFD5DA"/>
+            <path d="M6.94531 37.3553L46.5203 11.8203L45.8403 27.1653C40.5703 27.7303 36.5553 34.4553 38.6353 38.8253C40.7153 43.1953 44.5553 44.7303 44.5553 44.7303L43.7703 52.2653L31.7453 47.3903C31.7453 47.3903 25.3953 53.8903 25.4153 53.4603C25.4353 53.0303 18.9303 42.2953 18.9303 42.2953L6.95031 37.3503L6.94531 37.3553Z" fill="white"/>
+            <path d="M9.58203 37.7102L46.357 13.9902L45.512 26.5552C45.512 26.5552 38.807 28.8852 38.452 34.3902C38.097 39.8952 44.552 44.7302 44.552 44.7302L43.767 52.2652L31.742 47.3902C31.742 47.3902 25.292 54.0352 25.412 53.4602C25.532 52.8852 18.927 42.2952 18.927 42.2952L9.58203 37.7052V37.7102Z" fill="#FFF3CD"/>
+            <path d="M30.0045 4.68945L27.1445 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M27.1445 4.68945L30.0045 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.8717 50.1592L11.0117 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.0117 50.1592L13.8717 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M53.9297 50.7793V54.8243" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M51.9023 52.8047H55.9523" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M52.7145 12.1439C53.6507 12.1439 54.4095 11.385 54.4095 10.4489C54.4095 9.51278 53.6507 8.75391 52.7145 8.75391C51.7784 8.75391 51.0195 9.51278 51.0195 10.4489C51.0195 11.385 51.7784 12.1439 52.7145 12.1439Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.1325 17.7543C10.0686 17.7543 10.8275 16.9954 10.8275 16.0593C10.8275 15.1231 10.0686 14.3643 9.1325 14.3643C8.19638 14.3643 7.4375 15.1231 7.4375 16.0593C7.4375 16.9954 8.19638 17.7543 9.1325 17.7543Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M35.4372 57.0541C36.3733 57.0541 37.1322 56.2952 37.1322 55.3591C37.1322 54.4229 36.3733 53.6641 35.4372 53.6641C34.5011 53.6641 33.7422 54.4229 33.7422 55.3591C33.7422 56.2952 34.5011 57.0541 35.4372 57.0541Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M44.0253 48.4843L43.9503 49.5393L43.7653 52.2643L25.8153 44.9893L39.7453 21.5193L18.9253 42.5243L6.94531 37.3543L46.5203 11.8193L45.6503 24.5543" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18.9219 42.5244L25.4069 53.4594L25.8119 44.9894" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M25.4102 53.459L31.7402 47.499" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7.26844 31.5088L4.27344 33.4038" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M28.575 18.0439L10.625 29.3889" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" fill="white"/>
+            <path d="M46.5175 44.8641C50.98 44.8641 54.5975 41.2466 54.5975 36.7841C54.5975 32.3216 50.98 28.7041 46.5175 28.7041C42.055 28.7041 38.4375 32.3216 38.4375 36.7841C38.4375 41.2466 42.055 44.8641 46.5175 44.8641Z" fill="#FF9BA7"/>
+            <path d="M42.6328 36.8996L45.3228 39.5896L50.9378 33.9746" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
+        <div class="toast-copy">
+          <div class="toast-title" id="sitters-toast-title"></div>
+          <button class="toast-action" id="sitters-toast-action" type="button"></button>
+        </div>
+        <button class="toast-close" id="sitters-toast-close" type="button" aria-label="Close toast">
+          <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
+        </button>
       </div>
+    </div>
+    <div class="screen-scroll">
       <section class="content">
         <section class="form-demo-section" aria-label="Filters">
           <div class="form-demo-grid">
@@ -4020,6 +4073,7 @@
       var initialNewJobIds = [];
       var inboxToastMilestonesShown = [];
       var lastArchivedCardState = null;
+      var archiveTransitionTimers = {};
       var serviceKeys = ['babysitting', 'cleaning', 'petCare', 'seniorCare', 'tutoring'];
       var defaultReplyTemplates = [
         "Hi, I'd love to care for your little ones. The schedule works well for me too 🙂. Please let me know if your offer is available. Thank you!",
@@ -4054,6 +4108,7 @@
           dismissReason: null,
           serviceKey: serviceKeys[index % serviceKeys.length],
           thumbnailPath: '/jobs/jobs-for-sitters/assets/thumbnails/thumbnail-' + String(thumbnailOrder[index % thumbnailOrder.length]).padStart(2, '0') + '.jpg',
+          archivePending: false,
           replyStage: null,
           templateIndex: 0,
           replyText: replyTemplates[0],
@@ -4306,6 +4361,14 @@
 
       function archiveTriggerMarkup(card) {
         return '<button class="job-advert-archive-trigger" type="button" aria-label="Archive advert" data-dismiss-trigger="true" data-job-id="' + card.id + '">' + iconArchiveBoxButton() + iconChevronDownPink() + '</button>';
+      }
+
+      function archivedTagMarkup() {
+        return '<span class="job-advert-archived-tag">' + esc(t('sittersHub.resultsTabs.archived')) + '</span>';
+      }
+
+      function loadingReplyMarkup(card) {
+        return '<button class="job-advert-reply is-loading" type="button" disabled aria-disabled="true" data-job-id="' + card.id + '"><span class="job-advert-reply-spinner" aria-hidden="true"></span>' + iconReply() + '<span>' + esc(t('sittersHub.jobAdvert.reply')) + '</span></button>';
       }
 
       function templatePagerLabel(card) {
@@ -4735,15 +4798,40 @@
             '<div class="job-advert-response-preview">', esc(card.replyText), '</div>',
             '<div class="job-advert-action-row">',
               '<button class="job-advert-secondary" type="button" data-reply-action="show-messages" data-job-id="', card.id, '">', iconReplyMessages(), '<span>', esc(t('sittersHub.jobAdvert.replyComposer.showMessages')), '</span></button>',
+              archiveTriggerMarkup(card),
+              dismissMenuMarkup(card),
             '</div>',
           '</div>'
         ].join('');
       }
 
       function actionAreaMarkup(card) {
+        if (card.status === 'archived') {
+          if (activeTabKey() === 'archived') {
+            return '<div class="job-advert-action-row"><button class="job-advert-reply" type="button" data-reply-action="open-template" data-job-id="' + card.id + '">' + iconReply() + '<span>' + esc(t('sittersHub.jobAdvert.reply')) + '</span></button>' + archiveTriggerMarkup(card) + dismissMenuMarkup(card) + '</div>';
+          }
+          return '<div class="job-advert-action-row">' + archivedTagMarkup() + archiveTriggerMarkup(card) + dismissMenuMarkup(card) + '</div>';
+        }
+        if (card.archivePending) {
+          return '<div class="job-advert-action-row">' + loadingReplyMarkup(card) + archiveTriggerMarkup(card) + dismissMenuMarkup(card) + '</div>';
+        }
         if (card.replyStage === 'summary') return replySummaryMarkup(card);
         if (card.replyStage === 'template' || card.replyStage === 'custom') return replyComposerMarkup(card);
         return '<div class="job-advert-action-row"><button class="job-advert-reply" type="button" data-reply-action="open-template" data-job-id="' + card.id + '">' + iconReply() + '<span>' + esc(t('sittersHub.jobAdvert.reply')) + '</span></button>' + archiveTriggerMarkup(card) + dismissMenuMarkup(card) + '</div>';
+      }
+
+      function finalizeArchive(jobId) {
+        var card = cardsData.find(function(item) { return item.id === jobId; });
+        if (!card) return;
+        card.archivePending = false;
+        card.status = 'archived';
+        card.keepInNewTab = activeTabKey() === 'new';
+        card.replyStage = null;
+        card.repliedOrder = null;
+        archiveTransitionTimers[jobId] = null;
+        renderCards();
+        syncButton();
+        showArchiveToast();
       }
 
       function cardMarkup(card, hidden) {
@@ -5144,29 +5232,33 @@
         var card = cardsData.find(function(item) { return item.id === jobId; });
         if (!card) return;
 
-        card.dismissReason = reasonButton.getAttribute('data-dismiss-reason');
         lastArchivedCardState = {
           id: card.id,
           status: card.status,
           keepInNewTab: card.keepInNewTab,
           repliedOrder: card.repliedOrder,
           dismissReason: card.dismissReason,
+          archivePending: card.archivePending,
           replyStage: card.replyStage,
           replyText: card.replyText,
           customReplyText: card.customReplyText,
           replyTimestamp: card.replyTimestamp
         };
-        card.status = 'archived';
-        card.replyStage = null;
-        card.repliedOrder = null;
+        card.dismissReason = reasonButton.getAttribute('data-dismiss-reason');
+        card.archivePending = true;
         if (window.sittersState.dismissedJobIds.indexOf(jobId) === -1) {
           window.sittersState.dismissedJobIds.push(jobId);
         }
         window.sittersState.openDismissJobId = null;
         window.sittersState.openMoreActionsJobId = null;
-        visibleCount = batchSize;
-        triggerResultsReload();
-        showArchiveToast();
+        if (archiveTransitionTimers[jobId]) {
+          clearTimeout(archiveTransitionTimers[jobId]);
+        }
+        renderCards();
+        syncButton();
+        archiveTransitionTimers[jobId] = setTimeout(function() {
+          finalizeArchive(jobId);
+        }, 520);
       });
 
       grid.addEventListener('pointerdown', function(event) {
@@ -5281,10 +5373,15 @@
             return item.id === lastArchivedCardState.id;
           });
           if (!restoredCard) return;
+          if (archiveTransitionTimers[restoredCard.id]) {
+            clearTimeout(archiveTransitionTimers[restoredCard.id]);
+            archiveTransitionTimers[restoredCard.id] = null;
+          }
           restoredCard.status = lastArchivedCardState.status;
           restoredCard.keepInNewTab = lastArchivedCardState.keepInNewTab;
           restoredCard.repliedOrder = lastArchivedCardState.repliedOrder;
           restoredCard.dismissReason = lastArchivedCardState.dismissReason;
+          restoredCard.archivePending = !!lastArchivedCardState.archivePending;
           restoredCard.replyStage = lastArchivedCardState.replyStage;
           restoredCard.replyText = lastArchivedCardState.replyText;
           restoredCard.customReplyText = lastArchivedCardState.customReplyText;

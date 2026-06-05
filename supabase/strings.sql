@@ -16,3 +16,14 @@ create index if not exists prototype_strings_prototype_idx
 
 create index if not exists prototype_strings_updated_at_idx
   on public.prototype_strings (updated_at desc);
+
+alter table public.prototype_strings enable row level security;
+
+drop policy if exists "prototype_strings_deny_all" on public.prototype_strings;
+create policy "prototype_strings_deny_all"
+  on public.prototype_strings
+  as restrictive
+  for all
+  to public
+  using (false)
+  with check (false);
