@@ -1294,7 +1294,18 @@
       .messages-content {
         display: grid;
         grid-template-rows: auto 1fr auto;
-        min-height: calc(100dvh - 84px);
+        height: calc(100dvh - 84px);
+        max-height: calc(100dvh - 84px);
+        overflow: hidden;
+      }
+
+      .conversation-body {
+        overflow-x: hidden;
+        padding-inline: 16px;
+      }
+
+      .composer {
+        flex-shrink: 0;
       }
 
       .messages-sidebar {
@@ -2035,6 +2046,19 @@
       startTypewriter(draftTemplates[templateIndex]);
       resetSidebarScroll();
       window.setTimeout(scrollConversationToBottom, 80);
+
+      // Visual Viewport API — keeps composer visible when keyboard opens on mobile
+      var messagesContent = document.querySelector('.messages-content');
+      if (window.visualViewport && messagesContent) {
+        function onViewportResize() {
+          var topbarHeight = 84;
+          var vvHeight = window.visualViewport.height;
+          messagesContent.style.height = (vvHeight - topbarHeight) + 'px';
+          messagesContent.style.maxHeight = (vvHeight - topbarHeight) + 'px';
+          window.setTimeout(scrollConversationToBottom, 50);
+        }
+        window.visualViewport.addEventListener('resize', onViewportResize);
+      }
     })();
   </script>
 </body>
