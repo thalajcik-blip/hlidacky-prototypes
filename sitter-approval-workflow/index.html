@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlídačky.cz admin - Sitter Approval</title>
+  <link rel="icon" type="image/svg+xml" href="../hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink: #fb6f86;
+      --pink-soft: #fff0f3;
+      --green: #2db84d;
+      --green-soft: #eaf8ed;
+      --purple: #7f61ff;
+      --purple-soft: #f0ecff;
+      --blue: #3397d4;
+      --orange: #f2a43a;
+      --text: #3f4a52;
+      --muted: #8a96a0;
+      --line: #e6e9ee;
+      --header: #e9edf3;
+      --stripe: #f3f6fa;
+      --white: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    a,
+    button,
+    [role="button"],
+    [tabindex]:not([tabindex="-1"]),
+    .tag,
+    .tag-more {
+      cursor: pointer;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #fff;
+      color: var(--text);
+      font-family: soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+    }
+
+    .admin-shell {
+      min-width: 1180px;
+    }
+
+    .brand-bar {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: stretch;
+      height: 80px;
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .brand {
+      width: 206px;
+      padding: 16px 18px;
+      color: #fff;
+      background: var(--Pink-Pink-300, #FF9BA7);
+      display: flex;
+      align-items: center;
+      column-gap: 4px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex: 0 0 48px;
+    }
+
+    .brand-name {
+      display: grid;
+      line-height: 1;
+      justify-items: start;
+    }
+
+    .brand-name strong {
+      color: var(--Supportive-Full-White, #FFF);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 36px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 108%;
+      letter-spacing: -0.32px;
+    }
+
+    .brand-name span {
+      color: var(--Supportive-Full-White, #FFF);
+      text-align: left;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 350;
+      line-height: 108%;
+      letter-spacing: -0.32px;
+    }
+
+    .nav {
+      flex: 1;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 0;
+      padding: 0 240px 0 34px;
+      overflow: hidden;
+    }
+
+    .nav a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 50px;
+      padding: 0 15px;
+      color: var(--Gray-Gray-800, #2A3539);
+      text-decoration: none;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.32px;
+      white-space: nowrap;
+    }
+
+    .nav a.active {
+      color: var(--Pink-Pink-400, #F96073);
+    }
+
+    .nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 0;
+      height: 2px;
+      background: var(--pink);
+    }
+
+    .nav .icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .nav-select {
+      position: relative;
+      display: none;
+      width: 360px;
+    }
+
+    .nav-select-trigger {
+      width: 100%;
+      height: 52px;
+      padding: 0 20px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--Pink-Pink-400, #F96073);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      letter-spacing: -0.32px;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.15s;
+    }
+
+    .nav-select-trigger:hover {
+      background-color: #F7F7F7;
+    }
+
+    .nav-select-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .nav-select-chevron {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+    }
+
+    .nav-select-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 50;
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 14px 32px rgba(42, 53, 57, 0.14);
+    }
+
+    .nav-select-menu[hidden] {
+      display: none;
+    }
+
+    .nav-select-menu a {
+      height: auto;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      color: var(--Gray-Gray-800, #2A3539);
+    }
+
+    .nav-select-menu a::after {
+      display: none;
+    }
+
+    .nav-select-menu a.active {
+      color: var(--Pink-Pink-400, #F96073);
+      background: var(--pink-soft);
+    }
+
+    main {
+      width: 1280px;
+      margin: 62px auto 0;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 18px;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .breadcrumb-link {
+      color: var(--Gray-Gray-500, #8B91A3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .breadcrumb-link:hover {
+      color: var(--Pink-Pink-400, #F96073);
+    }
+
+    .breadcrumb-current {
+      color: var(--Gray-Gray-900, #212529);
+    }
+
+    .breadcrumb-arrow {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 16px;
+    }
+
+    .breadcrumb-arrow img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--color-supportive-full-white, #FFF);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover {
+      width: 256px;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:focus-visible {
+      width: 256px;
+      outline: none;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    .title-icon {
+      width: 40px;
+      height: 40px;
+      display: block;
+      flex: 0 0 40px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--Gray-Gray-900, #212529);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 40px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 130%;
+      letter-spacing: -0.32px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      height: 52px;
+      padding: 4px;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      border: 1px solid #E5E5EA;
+      background: #FFF;
+      box-sizing: border-box;
+    }
+
+    .tab {
+      height: 100%;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      background: #FFF;
+      color: #4A5A61;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      border: 1px solid #D3F2D2;
+      background: #EFF9EF;
+      color: var(--green);
+    }
+
+    .tab:hover:not(.active) {
+      border-radius: 2px;
+      background: #F7F7F7;
+      color: #4A5A61;
+    }
+
+    .table-card {
+      border: 1px solid #dfe5eb;
+      border-radius: 5px;
+      overflow: visible;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead {
+      background: #E3E9F0;
+    }
+
+    thead th:first-child {
+      border-top-left-radius: 5px;
+    }
+
+    thead th:last-child {
+      border-top-right-radius: 5px;
+    }
+
+    th {
+      height: 34px;
+      padding: 0 12px;
+      overflow: hidden;
+      color: var(--Gray-Gray-700, #4A5A61);
+      text-overflow: ellipsis;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 16px;
+      letter-spacing: 0.065px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sort-button {
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      letter-spacing: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sort-button::after {
+      content: "";
+      flex: 0 0 auto;
+      color: #8B91A3;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    th[aria-sort="ascending"] .sort-button::after {
+      content: "↑";
+      color: var(--Pink-Pink-400, #F96073);
+    }
+
+    th[aria-sort="descending"] .sort-button::after {
+      content: "↓";
+      color: var(--Pink-Pink-400, #F96073);
+    }
+
+    tbody tr.is-striped {
+      background: var(--stripe);
+    }
+
+    td {
+      height: 48px;
+      padding: 0 12px;
+      border-top: 1px solid #edf0f4;
+      color: #59636c;
+      font-size: 13px;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+
+    .col-id { width: 72px; }
+    .col-name { width: 174px; }
+    .col-service { width: 100px; }
+    .col-activity { width: 148px; }
+    .col-tags { width: 206px; }
+    .col-actions { width: 128px; text-align: center; }
+
+    .th-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .th-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex: 0 0 14px;
+    }
+
+    .th-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .id-link {
+      color: var(--Gray-Gray-700, #4A5A61);
+      leading-trim: both;
+      text-edge: cap;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      text-decoration-line: underline;
+      text-decoration-style: solid;
+      text-decoration-skip-ink: auto;
+      text-decoration-color: rgba(74, 90, 97, 0.32);
+      text-decoration-thickness: 8%;
+      text-underline-offset: 16%;
+      text-underline-position: from-font;
+    }
+
+    .name-value {
+      color: var(--Gray-Gray-700, #4A5A61);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: 0.07px;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 2px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      color: #777f86;
+      background: #f6f7f9;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status.yes {
+      border-radius: 64px;
+      background: var(--Green-Green-100, #EFF9EF);
+      color: var(--Green-Green-500, #0BA825);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .status.waiting {
+      border-radius: 64px;
+      background: var(--Indigo-Indigo-100, #EDEBFF);
+      color: var(--Indigo-Indigo-500, #4C24EC);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .status.no {
+      border-radius: 64px;
+      background: var(--Gray-Gray-200, #F7F7F7);
+      color: var(--Gray-Gray-600, #6C757D);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .status-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex: 0 0 14px;
+    }
+
+    .activity {
+      display: grid;
+      gap: 2px;
+      line-height: 1.2;
+    }
+
+    .activity strong {
+      color: var(--color-gray-700, #4A5A61);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: 0.06px;
+    }
+
+    .activity span {
+      color: var(--color-pink-400, #F96073);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 16px;
+      letter-spacing: 0.06px;
+    }
+
+    .activity .support {
+      color: var(--color-indigo-400, #654AF0);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.06px;
+    }
+
+    .tags {
+      display: flex;
+      align-items: center;
+      align-content: center;
+      gap: 4px;
+      flex: 1 0 0;
+      align-self: stretch;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 0 6px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      white-space: nowrap;
+      transition: background-color 150ms ease;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .tags > .tag::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 120;
+      min-width: 220px;
+      max-width: 300px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-gray-300, #E5E5EA);
+      border-radius: 6px;
+      background: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 12px 28px rgba(42, 53, 57, 0.16);
+      color: var(--color-gray-800, #2A3539);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 140%;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, 4px);
+      transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+      pointer-events: none;
+    }
+
+    .tags > .tag::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 3px);
+      z-index: 121;
+      width: 10px;
+      height: 10px;
+      border-right: 1px solid var(--color-gray-300, #E5E5EA);
+      border-bottom: 1px solid var(--color-gray-300, #E5E5EA);
+      background: #FFF;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) rotate(45deg);
+      transition: opacity 150ms ease, visibility 150ms ease;
+      pointer-events: none;
+    }
+
+    .tags > .tag:hover::after,
+    .tags > .tag:hover::before,
+    .tags > .tag:focus-visible::after,
+    .tags > .tag:focus-visible::before {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tags > .tag:hover::after,
+    .tags > .tag:focus-visible::after {
+      transform: translate(-50%, 0);
+    }
+
+    .tag.babysitting {
+      color: var(--color-pink-500, #E6213A);
+      background: var(--color-pink-100, #FEECEE);
+    }
+
+    .tag.babysitting:hover {
+      background: var(--color-pink-200, #FFD0D6);
+    }
+
+    .tag.cleaning {
+      color: var(--color-cyan-600, #009CB8);
+      background: var(--color-cyan-100, #E7F9FC);
+    }
+
+    .tag.cleaning:hover {
+      background: var(--color-cyan-200, #B2F2F8);
+    }
+
+    .tag.pet {
+      color: var(--color-teal-500, #00BD79);
+      background: var(--color-teal-100, #E0FAF1);
+    }
+
+    .tag.pet:hover {
+      background: var(--color-teal-200, #ABF7D4);
+    }
+
+    .tag.senior {
+      color: var(--color-orange-500, #ED7000);
+      background: var(--color-orange-100, #FFF1E5);
+    }
+
+    .tag.senior:hover {
+      background: var(--color-orange-200, #FFD9BF);
+    }
+
+    .tag.tutoring {
+      color: var(--color-violet-500, #A533FF);
+      background: var(--color-violet-100, #F6EBFF);
+    }
+
+    .tag.tutoring:hover {
+      background: var(--color-violet-200, #E4C1FF);
+    }
+
+    .tag-more {
+      position: relative;
+      display: flex;
+      padding: 2px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      color: var(--color-indigo-500, #4C24EC);
+      background: var(--purple-soft);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      text-align: center;
+      cursor: default;
+    }
+
+    .tag-more-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 100;
+      min-width: 190px;
+      max-width: 240px;
+      padding: 8px;
+      border: 1px solid var(--color-gray-300, #E5E5EA);
+      border-radius: 6px;
+      background: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 12px 28px rgba(42, 53, 57, 0.16);
+      display: grid;
+      gap: 4px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, 4px);
+      transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+      pointer-events: none;
+    }
+
+    .tag-more:hover .tag-more-tooltip,
+    .tag-more:focus .tag-more-tooltip,
+    .tag-more:focus-within .tag-more-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+
+    .tag-more-tooltip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 10px;
+      height: 10px;
+      background: #FFF;
+      border-right: 1px solid var(--color-gray-300, #E5E5EA);
+      border-bottom: 1px solid var(--color-gray-300, #E5E5EA);
+      transform: translate(-50%, -5px) rotate(45deg);
+    }
+
+    .tag-more-tooltip .tag {
+      justify-content: flex-start;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      height: 32px;
+      padding: 6px 8px 8px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      border-radius: 4px;
+      border: 1px solid var(--Gray-Gray-300, #E5E5EA);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: 0 -3px 0 0 #E5E5EA inset;
+      color: var(--Gray-Gray-800, #2A3539);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      border: 1px solid var(--Gray-Gray-400, #BEC2CE);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: 0 -3px 0 0 #BDC1CB inset;
+    }
+
+    .action-btn:active {
+      height: 32px;
+      padding: 7px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      border-radius: 4px;
+      border: 1px solid var(--Gray-Gray-400, #BEC2CE);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: none;
+    }
+
+    .action-btn img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .table-footer {
+      display: flex;
+      min-height: 49px;
+      padding: 8px 20px;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      align-self: stretch;
+      border-top: 1px solid var(--color-gray-300, #E5E5EA);
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background: var(--color-supportive-full-white, #FFF);
+      color: var(--color-gray-600, #6C757D);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .table-count {
+      margin-right: auto;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .pagination[hidden] {
+      display: none;
+    }
+
+    .page {
+      min-width: 32px;
+      height: 32px;
+      border: 1px solid #edf0f4;
+      border-left: 0;
+      background: #fff;
+      color: var(--color-pink-400, #F96073);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      cursor: default;
+    }
+
+    .page:first-child {
+      border-left: 1px solid #edf0f4;
+    }
+
+    .page.active {
+      color: #fff;
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .page.muted {
+      color: #99a3ad;
+    }
+
+    .page img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1560px) {
+      .nav {
+        padding: 0 180px 0 24px;
+      }
+
+      .nav a {
+        gap: 6px;
+        padding: 0 9px;
+        font-size: 14px;
+        letter-spacing: -0.2px;
+      }
+
+      .nav .icon {
+        width: 14px;
+        height: 14px;
+        flex-basis: 14px;
+      }
+    }
+
+    @media (max-width: 1220px) {
+      .brand {
+        width: 184px;
+        padding-inline: 14px;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+      }
+
+      .brand-name strong {
+        font-size: 31px;
+      }
+
+      .brand-name span {
+        font-size: 14px;
+      }
+
+      .nav {
+        padding: 0 150px 0 18px;
+      }
+
+      .nav a {
+        gap: 5px;
+        padding: 0 7px;
+        font-size: 13px;
+      }
+
+      .nav .icon {
+        width: 13px;
+        height: 13px;
+        flex-basis: 13px;
+      }
+    }
+
+    @media (max-width: 976px) {
+      .admin-shell {
+        min-width: 0;
+      }
+
+      .brand-bar {
+        min-width: 760px;
+      }
+
+      .nav {
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px 0 18px;
+        overflow: visible;
+      }
+
+      .nav > a {
+        display: none;
+      }
+
+      .nav-select {
+        display: block;
+      }
+
+      main {
+        width: calc(100% - 48px);
+        min-width: 760px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="brand-bar">
+      <div class="brand" aria-label="admin KIRA">
+        <img class="brand-mark" src="assets/hlidacky-symbol.svg" alt="">
+        <div class="brand-name">
+          <strong>admin</strong>
+          <span>KIRA</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Admin sections">
+        <a href="#"><img class="icon" src="assets/fa-dashboard.svg" alt="">Dashboard</a>
+        <a href="#"><img class="icon" src="assets/fa-email.svg" alt="">By e-mail</a>
+        <a href="#"><img class="icon" src="assets/fa-family.svg" alt="">Parents</a>
+        <a class="active" href="#"><img class="icon" src="assets/fa-sitters.svg" alt="">Sitters</a>
+        <a href="#"><img class="icon" src="assets/fa-jobs.svg" alt="">Jobs</a>
+        <a href="#"><img class="icon" src="assets/fa-parents.svg" alt="">Parents CRM</a>
+        <a href="#"><img class="icon" src="assets/fa-campaigns.svg" alt="">Campaigns</a>
+        <a href="#"><img class="icon" src="assets/fa-blog.svg" alt="">Blog</a>
+        <a href="#"><img class="icon" src="assets/fa-cms.svg" alt="">CMS</a>
+        <a href="#"><img class="icon" src="assets/fa-forum.svg" alt="">Forum</a>
+        <a href="#"><img class="icon" src="assets/fa-web.svg" alt="">Web</a>
+        <div class="nav-select">
+          <button class="nav-select-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-select-label"><img class="icon" src="assets/fa-sitters.svg" alt="">Sitters</span>
+            <img class="nav-select-chevron" src="assets/icon-chevron-down.svg" alt="">
+          </button>
+          <div class="nav-select-menu" hidden>
+            <a href="#"><img class="icon" src="assets/fa-dashboard.svg" alt="">Dashboard</a>
+            <a href="#"><img class="icon" src="assets/fa-email.svg" alt="">By e-mail</a>
+            <a href="#"><img class="icon" src="assets/fa-family.svg" alt="">Parents</a>
+            <a class="active" href="#"><img class="icon" src="assets/fa-sitters.svg" alt="">Sitters</a>
+            <a href="#"><img class="icon" src="assets/fa-jobs.svg" alt="">Jobs</a>
+            <a href="#"><img class="icon" src="assets/fa-parents.svg" alt="">Parents CRM</a>
+            <a href="#"><img class="icon" src="assets/fa-campaigns.svg" alt="">Campaigns</a>
+            <a href="#"><img class="icon" src="assets/fa-blog.svg" alt="">Blog</a>
+            <a href="#"><img class="icon" src="assets/fa-cms.svg" alt="">CMS</a>
+            <a href="#"><img class="icon" src="assets/fa-forum.svg" alt="">Forum</a>
+            <a href="#"><img class="icon" src="assets/fa-web.svg" alt="">Web</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="breadcrumbs">
+        <a class="breadcrumb-link" href="#">Sitters</a>
+        <span class="breadcrumb-arrow" aria-hidden="true"><img src="assets/icon-arrow-right.svg" alt=""></span>
+        <span class="breadcrumb-current">Sitter Approval</span>
+      </div>
+
+      <div class="page-title">
+        <img class="title-icon" src="assets/fa-icon-sitters-big.svg" alt="">
+        <h1>Sitter Approval</h1>
+      </div>
+
+      <a class="switch-view-button" href="sitter/index.html" aria-label="Switch to sitter’s view">
+        <img class="switch-view-button-icon" src="assets/icon-people.svg" alt="">
+        <span class="switch-view-button-label">Switch to sitter’s view</span>
+      </a>
+
+      <div class="tabs" aria-label="Approval status filters">
+        <button class="tab active" type="button" data-activity-filter="all" aria-pressed="true">All</button>
+        <button class="tab" type="button" data-activity-filter="sitter" aria-pressed="false">Waiting for approval</button>
+        <button class="tab" type="button" data-activity-filter="support" aria-pressed="false">Waiting for sitter</button>
+      </div>
+
+      <section class="table-card" aria-label="Sitter approval list">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-id sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="0">ID</button></th>
+              <th class="col-name sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="1">Name</button></th>
+              <th class="col-service sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="2"><span class="th-label"><img class="th-icon" src="assets/babysitting.svg" alt=""><span class="th-text">Babysitti...</span></span></button></th>
+              <th class="col-service sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="3"><span class="th-label"><img class="th-icon" src="assets/cleaning.svg" alt=""><span class="th-text">Cleaning</span></span></button></th>
+              <th class="col-service sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="4"><span class="th-label"><img class="th-icon" src="assets/pet-care.svg" alt=""><span class="th-text">Pet care</span></span></button></th>
+              <th class="col-service sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="5"><span class="th-label"><img class="th-icon" src="assets/senior-care.svg" alt=""><span class="th-text">Senior ca...</span></span></button></th>
+              <th class="col-service sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="6"><span class="th-label"><img class="th-icon" src="assets/tutoring.svg" alt=""><span class="th-text">Tutoring</span></span></button></th>
+              <th class="col-activity sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="7">Last activity</button></th>
+              <th class="col-tags sortable" scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort-column="8">Tags</button></th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-sitter-id="567891">
+              <td><a class="id-link" href="#">567891</a></td>
+              <td><span class="name-value">Jana Novotná</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="support" data-sitter-activity><strong>Apr 02, 2025, 14:44</strong><span class="support">by support</span></div></td>
+              <td><div class="tags" data-sitter-tags><a class="tag babysitting" href="detail/index.html" data-tooltip="Babysitting / About me: Specific experience info is lacking">👶 About: Childcare</a><span class="tag-more" tabindex="0">+2<span class="tag-more-tooltip"><a class="tag babysitting" href="detail/index.html">👶 About: Contact info</a><a class="tag cleaning" href="detail/index.html">🧹 About: Cleaning</a></span></span></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567888</a></td>
+              <td><span class="name-value">Jolana Roháčková</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 12:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567887</a></td>
+              <td><span class="name-value">Anna Masná</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 11:41</strong><span>by sitter</span></div></td>
+              <td><div class="tags"></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567885</a></td>
+              <td><span class="name-value">Roland Huna</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 11:30</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><a class="tag pet" href="detail/index.html" data-tooltip="Pet care / Pet care profile: Bio contains contact information">🐾 Bio: Contact info</a><a class="tag pet" href="detail/index.html" data-tooltip="Pet care / Pet care profile: About me is not specific enough">🐾 About me: Not Specific</a></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567882</a></td>
+              <td><span class="name-value">Marcela Truhlíková</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 10:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><a class="tag cleaning" href="detail/index.html" data-tooltip="Cleaning / About cleaning: Specific service info is lacking">🧹 About me: Not Specific</a></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567878</a></td>
+              <td><span class="name-value">Gabriela Slaninková</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="support"><strong>Apr 02, 2025, 14:44</strong><span class="support">by support</span></div></td>
+              <td><div class="tags"><a class="tag senior" href="detail/index.html" data-tooltip="Senior care / Experience: Specific experience info is lacking">🧡 Experience: Not Specific</a><a class="tag senior" href="detail/index.html" data-tooltip="Senior care / Availability: Specific availability info is lacking">🧡 Availability: Not Specific</a></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567876</a></td>
+              <td><span class="name-value">Marie Sojčíková</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 12:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><a class="tag babysitting" href="detail/index.html" data-tooltip="Babysitting / About me: Specific experience info is lacking">👶 About me: Not Specific</a><a class="tag babysitting" href="detail/index.html" data-tooltip="Babysitting / About me: The text is too short/missing">👶 About me: Missing</a></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567870</a></td>
+              <td><span class="name-value">Simona Marinaro</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 12:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><a class="tag babysitting" href="detail/index.html" data-tooltip="Babysitting / About me: Exposes sensitive or contact information">👶 About me: Sensitive info</a><a class="tag cleaning" href="detail/index.html" data-tooltip="Cleaning / About cleaning: Specific service info is lacking">🧹 About me: Not Specific</a><span class="tag-more" tabindex="0">+1<span class="tag-more-tooltip"><a class="tag cleaning" href="detail/index.html">🧹 Price/Avail.: Unclear</a></span></span></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567864</a></td>
+              <td><span class="name-value">Miroslava Babišová</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 12:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><span class="tag babysitting">👶 About me: Inconsistent</span></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td><a class="id-link" href="#">567860</a></td>
+              <td><span class="name-value">Erika Trnavská</span></td>
+              <td><span class="status yes"><img class="status-icon" src="assets/checkmark.svg" alt="">Yes</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status waiting"><img class="status-icon" src="assets/waiting-icon.svg" alt="">Waiting</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><span class="status no"><img class="status-icon" src="assets/x-mark.svg" alt="">No</span></td>
+              <td><div class="activity" data-activity-by="sitter"><strong>Apr 02, 2025, 12:22</strong><span>by sitter</span></div></td>
+              <td><div class="tags"><a class="tag cleaning" href="detail/index.html" data-tooltip="Cleaning / About cleaning: Specific service info is lacking">🧹 About me: Not Specific</a><a class="tag pet" href="detail/index.html" data-tooltip="Pet care / Pet care profile: Bio contains contact information">🐾 Bio: Contact info</a><span class="tag-more" tabindex="0">+1<span class="tag-more-tooltip"><a class="tag pet" href="detail/index.html">🐾 About me: Not Specific</a></span></span></div></td>
+              <td class="col-actions"><a class="action-btn" href="detail/index.html" aria-label="Open sitter detail">Details<img src="assets/button-chevron-right.svg" alt=""></a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <footer class="table-footer">
+          <div class="table-count"><span id="visible-count">10</span> of 148 items</div>
+          <div class="pagination" aria-label="Pagination">
+            <button class="page muted" type="button" aria-label="Previous page"><img src="assets/arrow-left-gray.svg" alt=""></button>
+            <button class="page active" type="button">1</button>
+            <button class="page" type="button">2</button>
+            <button class="page" type="button">3</button>
+            <button class="page" type="button">4</button>
+            <button class="page" type="button">5</button>
+            <button class="page muted" type="button">...</button>
+            <button class="page" type="button" aria-label="Next page"><img src="assets/arrow-right-pink.svg" alt=""></button>
+          </div>
+        </footer>
+      </section>
+    </main>
+  </div>
+  <script>
+    (function() {
+      var trigger = document.querySelector('.nav-select-trigger');
+      var menu = document.querySelector('.nav-select-menu');
+
+      if (!trigger || !menu) return;
+
+      function closeMenu() {
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+
+      trigger.addEventListener('click', function() {
+        var willOpen = menu.hidden;
+        menu.hidden = !willOpen;
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-select')) closeMenu();
+      });
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closeMenu();
+      });
+    })();
+
+    (function() {
+      var DASHBOARD_ACTIVITY_KEY = 'sitter-approval-dashboard-activity';
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-activity-filter]'));
+      var rows = Array.prototype.slice.call(document.querySelectorAll('.table-card tbody tr'));
+      var visibleCount = document.getElementById('visible-count');
+      var pagination = document.querySelector('.pagination');
+      var tbody = document.querySelector('.table-card tbody');
+      var sortButtons = Array.prototype.slice.call(document.querySelectorAll('[data-sort-column]'));
+      var sortState = {
+        column: 0,
+        direction: 'descending'
+      };
+
+      function formatOverviewActivity(date) {
+        var month = date.toLocaleDateString('en-US', { month: 'short' });
+        var day = date.toLocaleDateString('en-US', { day: '2-digit' });
+        var year = date.toLocaleDateString('en-US', { year: 'numeric' });
+        var time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        return month + ' ' + day + ', ' + year + ', ' + time;
+      }
+
+      function applyDashboardActivityUpdate() {
+        var raw = localStorage.getItem(DASHBOARD_ACTIVITY_KEY);
+        if (!raw) return;
+
+        try {
+          var payload = JSON.parse(raw);
+          if (!payload || !payload.sitterId || !payload.timestamp) return;
+
+          var row = document.querySelector('tr[data-sitter-id="' + payload.sitterId + '"]');
+          if (!row) return;
+
+          var activity = row.querySelector('[data-sitter-activity]');
+          if (!activity) return;
+
+          var strong = activity.querySelector('strong');
+          var label = activity.querySelector('span');
+          var date = new Date(payload.timestamp);
+
+          activity.setAttribute('data-activity-by', 'sitter');
+          if (strong && !Number.isNaN(date.getTime())) {
+            strong.textContent = formatOverviewActivity(date);
+          }
+          if (label) {
+            label.textContent = 'by sitter';
+            label.classList.remove('support');
+          }
+        } catch (error) {
+          console.warn('Failed to parse sitter dashboard activity update.', error);
+        }
+      }
+
+      function cellText(row, column) {
+        var cell = row.cells[column];
+        return cell ? cell.textContent.trim() : '';
+      }
+
+      function parseDate(value) {
+        var normalized = value.replace(/\s+/g, ' ').replace(',', '');
+        var date = new Date(normalized);
+        return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+      }
+
+      function sortValue(row, column) {
+        var value = cellText(row, column);
+
+        if (column === 0) return Number(value.replace(/\D/g, '')) || 0;
+        if (column === 7) return parseDate(value.split('by ')[0] || value);
+        return value.toLocaleLowerCase();
+      }
+
+      function applySort() {
+        if (sortState.column === null || !tbody) return;
+
+        var direction = sortState.direction === 'ascending' ? 1 : -1;
+        rows.sort(function(a, b) {
+          var aValue = sortValue(a, sortState.column);
+          var bValue = sortValue(b, sortState.column);
+
+          if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return (aValue - bValue) * direction;
+          }
+
+          return String(aValue).localeCompare(String(bValue), undefined, { numeric: true }) * direction;
+        });
+
+        rows.forEach(function(row) {
+          tbody.appendChild(row);
+        });
+      }
+
+      function updateSortHeaders(activeButton) {
+        sortButtons.forEach(function(button) {
+          var header = button.closest('th');
+          if (!header) return;
+
+          header.setAttribute(
+            'aria-sort',
+            button === activeButton ? sortState.direction : 'none'
+          );
+        });
+      }
+
+      function updateVisibleStripes() {
+        var visibleIndex = 0;
+
+        rows.forEach(function(row) {
+          row.classList.remove('is-striped');
+          if (row.hidden) return;
+
+          visibleIndex += 1;
+          if (visibleIndex % 2 === 0) row.classList.add('is-striped');
+        });
+      }
+
+      function applyActivityFilter(filter) {
+        var count = 0;
+
+        applySort();
+
+        rows.forEach(function(row) {
+          var activity = row.querySelector('[data-activity-by]');
+          var value = activity ? activity.getAttribute('data-activity-by') : '';
+          var isVisible = filter === 'all' || value === filter;
+
+          row.hidden = !isVisible;
+          if (isVisible) count += 1;
+        });
+
+        updateVisibleStripes();
+        if (visibleCount) visibleCount.textContent = String(count);
+        if (pagination) pagination.hidden = count < 10;
+      }
+
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          tabs.forEach(function(item) {
+            item.classList.remove('active');
+            item.setAttribute('aria-pressed', 'false');
+          });
+
+          tab.classList.add('active');
+          tab.setAttribute('aria-pressed', 'true');
+          applyActivityFilter(tab.getAttribute('data-activity-filter') || 'all');
+        });
+      });
+
+      sortButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var column = Number(button.getAttribute('data-sort-column'));
+
+          if (sortState.column === column) {
+            sortState.direction = sortState.direction === 'ascending' ? 'descending' : 'ascending';
+          } else {
+            sortState.column = column;
+            sortState.direction = 'ascending';
+          }
+
+          updateSortHeaders(button);
+          var activeTab = document.querySelector('[data-activity-filter].active');
+          applyActivityFilter(activeTab ? activeTab.getAttribute('data-activity-filter') : 'all');
+        });
+      });
+
+      applyDashboardActivityUpdate();
+      updateSortHeaders(document.querySelector('[data-sort-column="0"]'));
+      applyActivityFilter('all');
+    })();
+  </script>
+</body>
+</html>

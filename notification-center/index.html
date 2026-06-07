@@ -1,0 +1,3179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlídačky.cz - Sitter Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="../../hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-200: #FFD0D6;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --pink-600: #D91B34;
+      --color-pink-400: #F96073;
+      --green-100: #EFF9EF;
+      --green-500: #0BA825;
+      --green-600: #078E1D;
+      --color-green-600: #078E1D;
+      --violet-100: #F4EAFE;
+      --violet-300: #BF7BFF;
+      --blue-100: #EEF3F9;
+      --blue-200: #DCE6F3;
+      --gray-100: #F7F9FC;
+      --gray-200: #EEF2F7;
+      --color-gray-200: #EEF2F7;
+      --gray-300: #E5E5EA;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --white: #FFF;
+      --shadow-card: 0 10px 24px rgba(42, 53, 57, 0.08);
+      --action-item-icon-size: 56px;
+      --urgent-action-item-icon-scale: 1.142857143;
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white, #FFF);
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a,
+    button,
+    [role="button"],
+    [tabindex]:not([tabindex="-1"]) {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: 100%;
+      min-width: 1180px;
+    }
+
+    .topbar {
+      position: relative;
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(229, 229, 234, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--pink-400);
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 148px;
+      height: auto;
+      display: block;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-800);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .mobile-nav-toggle-close {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-menu {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-close {
+      display: inline-flex;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover {
+      width: 256px;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:focus-visible {
+      width: 256px;
+      outline: none;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    body.settings-modal-open {
+      overflow: hidden;
+    }
+
+    .settings-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 260;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 270;
+      width: min(1120px, calc(100vw - 32px));
+      max-height: min(80vh, 860px);
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.24);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .settings-modal-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .settings-modal-header-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .settings-modal-header-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .settings-modal-header-action:hover,
+    .settings-modal-header-action:focus-visible {
+      color: var(--pink-500);
+      outline: none;
+    }
+
+    .settings-modal-close {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-modal-close img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .settings-modal-close:hover,
+    .settings-modal-close:focus-visible {
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .settings-modal-body {
+      padding: 16px 24px 24px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .settings-matrix {
+      min-width: 960px;
+      display: grid;
+      grid-template-columns: minmax(280px, 1.8fr) repeat(6, minmax(88px, 1fr));
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .settings-cell {
+      min-width: 0;
+      padding: 16px 14px;
+      border-right: 1px solid var(--gray-300);
+      border-bottom: 1px solid var(--gray-300);
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .settings-cell--head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--white);
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .settings-cell--label {
+      justify-content: flex-start;
+      padding-inline: 18px;
+    }
+
+    .settings-item-label {
+      color: var(--gray-900);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 1.35;
+      letter-spacing: -0.16px;
+    }
+
+    .settings-cell--label.is-hidden .settings-row-label {
+      opacity: 0.56;
+    }
+
+    .settings-toggle {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 2px solid #D8DDE7;
+      border-radius: 6px;
+      background: var(--white);
+      flex: 0 0 24px;
+      transition: background-color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .settings-toggle::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 11px;
+      height: 6px;
+      border-left: 2px solid transparent;
+      border-bottom: 2px solid transparent;
+      transform: rotate(-45deg) translate(1px, -1px);
+      transition: border-color 0.18s ease;
+    }
+
+    .settings-toggle[aria-pressed="true"] {
+      border-color: var(--pink-400);
+      background: var(--pink-400);
+    }
+
+    .settings-toggle[aria-pressed="true"]::after {
+      border-left-color: var(--white);
+      border-bottom-color: var(--white);
+    }
+
+    .main-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .main-nav a {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 96px;
+      padding-left: 14px;
+      padding-right: 14px;
+      padding-top: 12px;
+      padding-bottom: 8px;
+      border-bottom: 6px solid transparent;
+      color: var(--gray-800, #2A3539);
+      text-decoration: none;
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.3px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .main-nav a.active {
+      color: var(--pink-400);
+    }
+
+    .main-nav a:hover,
+    .main-nav a:focus-visible {
+      border-bottom-color: var(--color-pink-400);
+      background: var(--color-gray-200);
+      outline: none;
+    }
+
+    .main-nav-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      flex: 0 0 26px;
+    }
+
+    .main-nav-icon img {
+      width: 26px;
+      height: 26px;
+      display: block;
+      filter: brightness(0) saturate(100%) invert(15%) sepia(10%) saturate(1152%) hue-rotate(157deg) brightness(95%) contrast(88%);
+      transition: filter 0.15s ease;
+    }
+
+    .main-nav a.active .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(3600%) hue-rotate(309deg) brightness(101%) contrast(95%);
+    }
+
+    .main-nav-notification {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      display: flex;
+      min-width: 16px;
+      padding: 2px 4px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      background: var(--pink-20-pink-400, #F96073);
+      color: var(--supportive-20-full-white, #FFF);
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 100%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.96);
+    }
+
+    .main-nav-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      height: 18px;
+      justify-content: flex-start;
+    }
+
+    .main-nav-text {
+      display: block;
+    }
+
+    .main-nav-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--gray-300, #E5E5EA);
+      margin: 0 2px 0 4px;
+    }
+
+    .mobile-nav-backdrop {
+      display: none;
+    }
+
+    .mobile-nav-header {
+      display: none;
+    }
+
+    .mobile-nav-close {
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #A3AAB2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-close svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    main {
+      width: 980px;
+      margin: 34px auto 60px;
+      display: grid;
+      justify-items: center;
+    }
+
+    .hero {
+      width: 856px;
+      padding-top: 60px;
+      padding-bottom: 20px;
+      margin-bottom: 26px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      color: var(--color-gray-800, #2A3539);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 48px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.32px;
+    }
+
+    .hero p {
+      margin: 0 0 20px;
+      color: var(--gray-700, #4A5A61);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.32px;
+    }
+
+    .hero p span {
+      color: var(--pink-400);
+    }
+
+    .hero-progress {
+      width: 856px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero-progress-bar {
+      height: 16px;
+      border-radius: 999px;
+      background: #E0E8F3;
+      overflow: hidden;
+    }
+
+    .hero-progress-fill {
+      width: 25%;
+      height: 100%;
+      border-radius: 999px 0 0 999px;
+      background: var(--pink-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-supportive-full-white, #FFF);
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 14px;
+      transition: width 180ms ease;
+    }
+
+    .dashboard-column {
+      width: 856px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .issues-card {
+      border: 1px solid #F8C9D0;
+      border-radius: 8px;
+      background: #FFF7F8;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: background-color 300ms ease, border-color 300ms ease;
+    }
+
+    .issues-card:not(.is-collapsed) {
+      border-color: rgba(229, 229, 234, 0.9);
+      background: var(--slate-100, #EEF3F9);
+    }
+
+    .review-status-banner {
+      border: 1px solid #4ED4FF;
+      border-radius: 4px;
+      background: #E6F8FF;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      width: 856px;
+      min-height: 56px;
+      padding: 16px;
+      gap: 10px;
+    }
+
+    .review-status-banner[hidden] {
+      display: none;
+    }
+
+    .review-status-icon {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+    }
+
+    .review-status-icon img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .review-status-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+      color: var(--color-gray-800, var(--gray-800));
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+    }
+
+    .review-status-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex: 0 0 auto;
+    }
+
+    .review-status-reply {
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .review-status-reply:hover {
+      background: var(--pink-500);
+    }
+
+    .review-status-close {
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font: inherit;
+      font-size: 30px;
+      line-height: 1;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .issues-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .issues-card-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .issues-card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 48px;
+    }
+
+    .issues-card-icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+
+    .issues-card-copy h2 {
+      margin: 0 0 4px;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .issues-card-copy p {
+      margin: 0;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .issues-toggle {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+      pointer-events: none;
+    }
+
+    .issues-toggle img {
+      width: 24px;
+      height: 24px;
+      display: block;
+      transform: rotate(0deg);
+      transition: transform 180ms ease;
+    }
+
+    .issues-card:not(.is-collapsed) .issues-toggle img {
+      transform: rotate(180deg);
+    }
+
+    .issues-card-body {
+      padding: 0 20px 20px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .issues-card.is-collapsed .issues-card-body {
+      display: none;
+    }
+
+    .issues-card-body-wrap {
+      display: grid;
+      gap: 22px;
+      padding: 0 56px;
+    }
+
+    .task-list {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .task-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .task-status {
+      width: 24px;
+      height: 24px;
+      margin-top: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+    }
+
+    .task-status img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .task-content h3 {
+      margin: 0 0 3px;
+      color: var(--color-gray-800, #2A3539);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 150%;
+      letter-spacing: -0.24px;
+    }
+
+    .task-content p {
+      margin: 0 0 4px;
+      color: var(--color-gray-800, #2A3539);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .task-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pink-400);
+      text-decoration-line: underline;
+      text-decoration-thickness: 8%;
+      text-underline-offset: 12%;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .task-edit img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+    }
+
+    .task-progress {
+      display: grid;
+      gap: 8px;
+    }
+
+    .task-progress-bars {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .task-progress-bars span {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--gray-200);
+      transition: background-color 0.15s ease;
+    }
+
+    .task-progress-bars span.is-complete {
+      background: var(--pink-400);
+    }
+
+    .task-progress-note {
+      color: var(--gray-500);
+      text-align: center;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .review-notes {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-notes label {
+      color: var(--gray-700);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .review-notes textarea {
+      width: 100%;
+      min-height: 64px;
+      padding: 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--gray-800);
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+
+    .review-notes textarea:focus {
+      border-color: #8FB1F6;
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .submit-review {
+      width: 100%;
+      max-width: 560px;
+      min-height: 48px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      font: inherit;
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .submit-review:hover:not(:disabled) {
+      background: var(--green-600);
+    }
+
+    .submit-review:disabled {
+      background: #7FD398;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+      cursor: default;
+    }
+
+    .review-hint {
+      width: 100%;
+      max-width: 560px;
+      color: var(--color-gray-600, #6C757D);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .info-card {
+      border: 1px solid rgba(229, 229, 234, 0.9);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .info-card-content {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .info-card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 48px;
+    }
+
+    .info-card-icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+
+    .info-card-body {
+      min-width: 0;
+    }
+
+    .info-card-body h3 {
+      margin: 0 0 4px;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .info-card-body p {
+      margin: 0;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .info-card-body a {
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .info-card-action {
+      flex: 0 0 auto;
+      align-self: center;
+    }
+
+    .info-card-button {
+      min-width: 154px;
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .action-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+    }
+
+    .action-item--is-dismissing {
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      max-height: 0 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      border-top-width: 0 !important;
+      border-bottom-width: 0 !important;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        max-height 0.3s ease,
+        margin 0.3s ease,
+        padding 0.3s ease,
+        border-width 0.3s ease;
+    }
+
+    @keyframes urgentActionItemIconPulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(var(--urgent-action-item-icon-scale));
+      }
+    }
+
+    @keyframes urgentActionItemBorderPulse {
+      0%,
+      100% {
+        border-color: var(--pink-200);
+      }
+
+      50% {
+        border-color: var(--pink-500);
+      }
+    }
+
+    @keyframes actionItemReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .action-item--priority-urgent {
+      border-color: var(--pink-300);
+      background: var(--pink-100);
+      animation: urgentActionItemBorderPulse 2.4s ease-in-out infinite;
+    }
+
+    .action-item--priority-normal {
+      border-color: var(--violet-300);
+      background: var(--violet-100);
+    }
+
+    .action-item--is-entering {
+      animation: actionItemReveal 260ms ease-out both;
+    }
+
+    .action-item--priority-low {
+      border-color: rgba(229, 229, 234, 0.9);
+      background: var(--white);
+    }
+
+    .action-item__media {
+      width: var(--action-item-icon-size);
+      height: var(--action-item-icon-size);
+      display: grid;
+      place-items: center;
+      flex: 0 0 var(--action-item-icon-size);
+    }
+
+    .action-item__media img {
+      width: var(--action-item-icon-size);
+      height: var(--action-item-icon-size);
+      display: block;
+      transform-origin: center;
+      will-change: transform;
+    }
+
+    .action-item--priority-urgent .action-item__media img {
+      animation: urgentActionItemIconPulse 2.4s ease-in-out infinite;
+    }
+
+    .action-item__body {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      align-self: center;
+    }
+
+    .action-item__title {
+      margin: 0;
+      color: var(--gray-900);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description {
+      margin: 0;
+      color: var(--gray-700);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 145%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description a {
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .action-item__aside {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      align-self: center;
+      min-height: 40px;
+    }
+
+    .action-item__aside--button {
+      align-self: center;
+    }
+
+    .action-item__button {
+      min-width: 142px;
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .action-item__button--grow {
+      background: var(--green-500);
+    }
+
+    .action-item__button--grow:hover {
+      background: var(--color-green-600);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .action-item__button:hover {
+      background: var(--pink-500);
+    }
+
+    .action-item__control {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0.9;
+      transition: opacity 0.15s ease;
+    }
+
+    .action-item__control:hover {
+      opacity: 1;
+    }
+
+    .action-item__control img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .action-item--expandable {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 0;
+    }
+
+    .action-item__summary {
+      width: 100%;
+      padding: 16px 18px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) 24px;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .action-item__summary-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .action-item__summary .action-item__title,
+    .action-item__summary .action-item__description {
+      color: var(--gray-900);
+    }
+
+    .action-item__summary .action-item__description {
+      color: var(--gray-700);
+    }
+
+    .action-item__chevron {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      transition: transform 180ms ease;
+    }
+
+    .action-item__chevron svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .action-item__chevron img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .action-item--expandable:not(.is-collapsed) .action-item__chevron {
+      transform: rotate(180deg);
+    }
+
+    .action-item__expandable-body {
+      padding: 0 18px 18px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .action-item--expandable.is-collapsed .action-item__expandable-body {
+      display: none;
+    }
+
+    .action-item__expandable-inner {
+      display: grid;
+      gap: 22px;
+      padding-left: 24px;
+      max-width: 640px;
+    }
+
+    .action-item--expandable .task-list,
+    .action-item--expandable .review-notes,
+    .action-item--expandable .submit-review,
+    .action-item--expandable .review-hint {
+      max-width: 940px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .action-item--priority-urgent {
+        animation: none;
+      }
+
+      .action-item--priority-urgent .action-item__media img {
+        animation: none;
+      }
+    }
+
+    .status-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 32px;
+      transform: translateX(-50%);
+      z-index: 130;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: rgba(42, 53, 57, 0.94);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 20px;
+      box-shadow: 0 10px 24px rgba(42, 53, 57, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .status-toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    @media (max-width: 1179px) {
+      .app-shell {
+        min-width: 0;
+      }
+
+      .topbar {
+        padding: 0 24px;
+        gap: 24px;
+      }
+
+      main {
+        width: 100%;
+        max-width: 980px;
+        padding: 0 24px;
+        margin: 24px auto 48px;
+        justify-items: stretch;
+      }
+
+      .hero,
+      .dashboard-column,
+      .review-status-banner,
+      .hero-progress {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .action-item {
+        grid-template-columns: 56px minmax(0, 1fr);
+      }
+
+      .action-item--expandable {
+        grid-template-columns: 1fr;
+      }
+
+      .action-item__aside--button {
+        grid-column: 2 / -1;
+        justify-content: flex-start;
+        margin-top: 4px;
+      }
+
+      .action-item__button {
+        min-width: 0;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .action-item__aside:not(.action-item__aside--button) {
+        justify-content: flex-end;
+        align-self: start;
+      }
+
+      .action-item__body,
+      .action-item__summary-copy {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --mobile-topbar-height: 104px;
+        --action-item-icon-size: 40px;
+        --urgent-action-item-icon-scale: 1.2;
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      body.mobile-nav-open {
+        overflow: hidden;
+      }
+
+      .app-shell {
+        min-width: 0;
+      }
+
+      .topbar {
+        min-height: var(--mobile-topbar-height);
+        padding: 28px 20px;
+        align-items: center;
+        gap: 16px;
+        z-index: 210;
+      }
+
+      .brand img {
+        width: 140px;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
+        flex: 0 0 auto;
+      }
+
+      .main-nav {
+        position: fixed;
+        top: var(--mobile-topbar-height);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: none;
+        padding: 0 0 24px;
+        min-height: calc(100dvh - var(--mobile-topbar-height));
+        background: var(--white);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        overflow-y: auto;
+      }
+
+      .main-nav.is-open {
+        display: flex;
+      }
+
+      .mobile-nav-header {
+        display: none;
+      }
+
+      .main-nav a {
+        min-width: 0;
+        min-height: 76px;
+        padding: 20px;
+        border-bottom-width: 0;
+        border-radius: 0;
+        border-bottom: 1px solid var(--gray-300);
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 14px;
+        text-align: left;
+        background: var(--white);
+      }
+
+      .main-nav a.active {
+        background: var(--gray-100);
+        box-shadow: inset 6px 0 0 var(--pink-400);
+      }
+
+      .main-nav a:hover,
+      .main-nav a:focus-visible {
+        border-bottom-color: var(--gray-300);
+        background: var(--gray-100);
+      }
+
+      .main-nav-icon {
+        flex: 0 0 26px;
+      }
+
+      .main-nav-label {
+        height: auto;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .main-nav-divider {
+        display: none;
+      }
+
+      .mobile-nav-backdrop {
+        display: none;
+      }
+
+      main {
+        width: 100%;
+        max-width: 980px;
+        padding: 0 16px;
+        margin: 20px auto 40px;
+        justify-items: stretch;
+      }
+
+      .hero,
+      .dashboard-column,
+      .review-status-banner {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .dashboard-column {
+        gap: 12px;
+      }
+
+      .hero-progress,
+      .task-list,
+      .review-notes,
+      .review-notes textarea,
+      .submit-review,
+      .review-hint,
+      .action-item__expandable-inner {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .hero {
+        padding-top: 0;
+        padding-bottom: 12px;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        text-align: center;
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 450;
+        line-height: 140%;
+        letter-spacing: -0.2px;
+      }
+
+      .issues-card-body-wrap {
+        padding: 0;
+      }
+
+      .review-status-banner,
+      .info-card,
+      .action-item {
+        padding: 16px;
+      }
+
+      .review-status-banner,
+      .info-card-content {
+        gap: 14px;
+      }
+
+      .action-item__summary {
+        grid-template-columns: 48px minmax(0, 1fr) 24px;
+        padding: 16px 14px 16px 8px;
+        gap: 8px;
+      }
+
+      .action-item__chevron {
+        justify-self: end;
+        align-self: start;
+        margin-top: -8px;
+        margin-right: -8px;
+      }
+
+      .action-item__expandable-body {
+        padding: 0 16px 16px;
+      }
+
+      .action-item__expandable-inner {
+        padding-left: 0;
+      }
+
+      .review-status-banner,
+      .info-card,
+      .action-item,
+      .issues-card {
+        border-radius: 4px;
+      }
+
+      .review-status-banner {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .review-status-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .info-card {
+        gap: 14px;
+      }
+
+      .info-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .info-card-action {
+        width: 100%;
+      }
+
+      .info-card-button {
+        width: 100%;
+      }
+
+      .action-item {
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        gap: 0;
+        padding: 14px 14px 16px 8px;
+      }
+
+      .action-item--expandable {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0;
+      }
+
+      .action-item__media {
+        width: var(--action-item-icon-size);
+        height: var(--action-item-icon-size);
+      }
+
+      .action-item__media img {
+        width: var(--action-item-icon-size);
+        height: var(--action-item-icon-size);
+      }
+
+      .action-item__title {
+        font-size: 15px;
+      }
+
+      .action-item__description {
+        font-size: 13px;
+      }
+
+      .action-item__aside {
+        min-height: 0;
+      }
+
+      .action-item__aside--button {
+        grid-column: 2 / -1;
+        justify-content: flex-start;
+        margin-top: 4px;
+      }
+
+      .action-item__button {
+        min-width: 100px;
+        width: auto;
+        display: flex;
+        padding: 6px 12px 8px 12px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 4px;
+        background: var(--color-pink-400);
+        box-shadow: 0 -3px 0 0 #E6213A inset;
+        color: var(--white);
+        font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 450;
+        line-height: 18px;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .action-item__aside:not(.action-item__aside--button) {
+        justify-content: flex-end;
+        align-self: start;
+        transform: translate(8px, -8px);
+      }
+
+      .task-content,
+      .action-item__body,
+      .action-item__summary-copy,
+      .action-item__summary {
+        min-width: 0;
+      }
+
+      .settings-modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+      }
+
+      .settings-modal-header {
+        padding: 18px 16px 16px;
+        flex-wrap: wrap;
+      }
+
+      .settings-modal-header h2 {
+        font-size: 20px;
+      }
+
+      .settings-modal-header-actions {
+        order: 2;
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .settings-modal-body {
+        padding: 12px 16px 16px;
+      }
+
+      .settings-matrix {
+        min-width: 760px;
+        grid-template-columns: minmax(220px, 1.5fr) repeat(6, minmax(72px, 1fr));
+      }
+
+      .settings-cell {
+        padding: 12px 10px;
+      }
+
+      .settings-item-label {
+        font-size: 14px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/notification-center/">
+        <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+      </a>
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-nav" data-mobile-nav-toggle>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-menu" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+            <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+            <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+          </svg>
+        </span>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-close" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+            <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+          </svg>
+        </span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Sitter navigation" data-mobile-nav>
+        <div class="mobile-nav-header">
+          <a class="brand" href="/notification-center/">
+            <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+          </a>
+          <button class="mobile-nav-close" type="button" aria-label="Close navigation menu" data-mobile-nav-close>
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+              <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+            </svg>
+          </button>
+        </div>
+        <a class="active" href="/notification-center/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/dashboard.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Dashboard</span></span>
+        </a>
+        <a href="/notification-center/calendar/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/ico-calendar.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Calendar</span></span>
+        </a>
+        <a href="/notification-center/messages/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-messages.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Messages</span></span>
+        </a>
+        <a href="/notification-center/bookings/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Bookings</span></span>
+        </a>
+        <a href="/notification-center/jobs/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/jobs.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Jobs</span></span>
+        </a>
+        <span class="main-nav-divider" aria-hidden="true"></span>
+        <a href="/notification-center/profile/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/profile.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Profile</span></span>
+        </a>
+      </nav>
+      <div class="mobile-nav-backdrop" data-mobile-nav-backdrop hidden></div>
+    </header>
+
+    <a class="switch-view-button" href="#" aria-label="Notification settings">
+      <img class="switch-view-button-icon" src="/notification-center/assets/icon-gear.svg" alt="">
+      <span class="switch-view-button-label">Notification settings</span>
+    </a>
+
+    <div class="settings-modal-backdrop" data-settings-modal-backdrop hidden></div>
+    <section class="settings-modal" aria-labelledby="notification-settings-title" aria-modal="true" role="dialog" data-settings-modal hidden>
+      <div class="settings-modal-header">
+        <h2 id="notification-settings-title">Notification settings</h2>
+        <div class="settings-modal-header-actions">
+          <button class="settings-modal-header-action" type="button" data-settings-show-all>Show all</button>
+          <button class="settings-modal-header-action" type="button" data-settings-show-none>Show none</button>
+        </div>
+        <button class="settings-modal-close" type="button" aria-label="Close notification settings" data-settings-modal-close>
+          <img src="/notification-center/assets/xicon.svg" alt="">
+        </button>
+      </div>
+      <div class="settings-modal-body" data-settings-modal-list></div>
+    </section>
+
+    <main>
+      <section class="hero">
+        <h1>Dashboard</h1>
+        <p>You are improving through fulfilling the tasks <span>move up</span></p>
+        <div class="hero-progress" aria-hidden="true">
+          <div class="hero-progress-bar">
+            <div class="hero-progress-fill" data-progress-fill>25%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-column">
+        <article class="action-item action-item--priority-urgent action-item--expandable is-collapsed" data-expandable-action-item data-approval-action-item>
+          <button class="action-item__summary" type="button" aria-expanded="false" data-expandable-toggle>
+            <div class="action-item__media"><img src="/notification-center/assets/Complete these steps for approval.svg" alt=""></div>
+            <div class="action-item__summary-copy">
+              <h3 class="action-item__title">Complete these steps for approval</h3>
+              <p class="action-item__description">Complete all before submitting</p>
+            </div>
+            <span class="action-item__chevron" aria-hidden="true">
+              <img src="/notification-center/assets/icon-chevron-down.svg" alt="">
+            </span>
+          </button>
+          <div class="action-item__expandable-body" hidden data-expandable-body>
+            <div class="action-item__expandable-inner">
+              <div class="task-list">
+                <div class="task-item">
+                  <div class="task-status" aria-hidden="true"><img src="/sitter-approval-workflow/assets/circle-check-icon.svg" alt=""></div>
+                  <div class="task-content">
+                    <h3>Expand babysitting text</h3>
+                    <p>Include specifics like the ages of children, activities and your overall experience.</p>
+                    <a class="task-edit" href="#"><img src="/sitter-approval-workflow/assets/pen-to-square-icon.svg" alt="">Edit</a>
+                  </div>
+                </div>
+                <div class="task-item">
+                  <div class="task-status" aria-hidden="true"><img src="/sitter-approval-workflow/assets/hourglass-icon-pink.svg" alt=""></div>
+                  <div class="task-content">
+                    <h3>Remove personal contact details</h3>
+                    <p>Please remove phone numbers, email addresses, or links from the About me section in your babysitting profile.</p>
+                    <a class="task-edit" href="#"><img src="/sitter-approval-workflow/assets/pen-to-square-icon.svg" alt="">Edit</a>
+                  </div>
+                </div>
+                <div class="task-item">
+                  <div class="task-status" aria-hidden="true"><img src="/sitter-approval-workflow/assets/hourglass-icon-pink.svg" alt=""></div>
+                  <div class="task-content">
+                    <h3>Describe your approach to home cleaning</h3>
+                    <p>Add this to your About me section of your cleaning profile.</p>
+                    <a class="task-edit" href="#"><img src="/sitter-approval-workflow/assets/pen-to-square-icon.svg" alt="">Edit</a>
+                  </div>
+                </div>
+                <div class="task-progress">
+                  <div class="task-progress-bars">
+                    <span class="is-complete"></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div class="task-progress-note">1 of 3 fixed</div>
+                </div>
+              </div>
+
+              <div class="review-notes">
+                <label for="approval-review-note">Optional note for our review team</label>
+                <textarea id="approval-review-note" placeholder="Write your message here..."></textarea>
+              </div>
+
+              <button class="submit-review" type="button" data-approval-submit>✓&nbsp;&nbsp;Submit for review</button>
+              <div class="review-hint">We’ll usually review your updates within 24 hours (in the business days)</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-normal" hidden data-reviewing-action-item>
+          <div class="action-item__media"><img src="/notification-center/assets/We are currently reviewing your submission.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">We are currently reviewing your submission</h3>
+            <p class="action-item__description">We will get back to you soon</p>
+          </div>
+          <div class="action-item__aside action-item__aside--button">
+            <a class="action-item__button" href="#">Reply</a>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/You have unanswered bookings.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">You have 2 unanswered bookings</h3>
+            <p class="action-item__description">Please don't let families wait for too long.</p>
+          </div>
+          <div class="action-item__aside action-item__aside--button">
+            <a class="action-item__button" href="#">Go to bookings</a>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/You have unanswered messages.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">You have 4 unanswered messages</h3>
+            <p class="action-item__description">Please don't let families wait for too long.</p>
+          </div>
+          <div class="action-item__aside action-item__aside--button">
+            <a class="action-item__button" href="#">Go to messages</a>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/Identity verification required.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Identity verification required</h3>
+            <p class="action-item__description">Please upload your ID document to complete your profile and start applying for help offers.</p>
+          </div>
+          <div class="action-item__aside action-item__aside--button">
+            <a class="action-item__button" href="#">Go to settings</a>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/Check your entered e-mail address.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Check your entered e-mail address</h3>
+            <p class="action-item__description">There might be a typo in your email address your.email@gmail.com. You can update it in your <a href="#">email settings</a>.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/Check your entered e-mail address-1.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Check your entered e-mail address</h3>
+            <p class="action-item__description">We tried to reach you, but the email couldn't be delivered. Please check if your inbox is full or update your address in your <a href="#">email settings</a>.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-urgent">
+          <div class="action-item__media"><img src="/notification-center/assets/Minimum age requirement not met.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Minimum age requirement not met</h3>
+            <p class="action-item__description">According to your date of birth, you are below the minimum age required to offer help on our platform. Your profile has been limited. Please <a href="#">contact our support</a> if you believe this is a mistake.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Get paid directly to your bank account.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Get paid directly to your bank account</h3>
+            <p class="action-item__description">Activate online payments so families can book you easily and pay you securely through the platform. <a href="#">Add your bank details</a> in your profile settings.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/High demand for cleaning.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">High demand for cleaning in Prague!</h3>
+            <p class="action-item__description">There is currently a high demand for household help in Prague. Create or update your <a href="#">cleaning profile</a> now to get more bookings and boost your income.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Get verified in person in Bratislava!.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Get verified in person in Bratislava!</h3>
+            <p class="action-item__description">Boost your profile's credibility and get more job offers. <a href="#">Schedule your appointment</a> in our new Verification Center.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Get more bookings with GROW.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Get more bookings with GROW</h3>
+            <p class="action-item__description">Show up higher in search and see if your message was read.</p>
+          </div>
+          <div class="action-item__aside action-item__aside--button">
+            <a class="action-item__button action-item__button--grow" href="#">Upgrade to GROW</a>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/We are launching a new FORUM!.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">We are launching a new FORUM! 🚀</h3>
+            <p class="action-item__description">Share experiences and find the support you are looking for. <a href="#">Explore trending topics</a> and build a community.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Bank iD.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Bank iD</h3>
+            <p class="action-item__description"><a href="#">Verify your identity</a> via Bank iD.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Video verification.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Video verification</h3>
+            <p class="action-item__description">Register for a session through <a href="#">Video verification</a>.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/mojeID.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">mojeID</h3>
+            <p class="action-item__description">Verify your phone number and email address via <a href="#">mojeID</a>.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Verification center.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Verification center</h3>
+            <p class="action-item__description">Schedule an appointment at the <a href="#">Verification Center</a>.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Present calendar.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Present calendar</h3>
+            <p class="action-item__description">Fill out your <a href="#">availability calendar</a> to show when you're free.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Boost your profile with a First Aid certificate.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Boost your profile with a First Aid certificate</h3>
+            <p class="action-item__description">Families value safety. Schedule your session <a href="#">here</a>.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/apartment cleaning..svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Hosts need help with Airbnb/apartment cleaning.</h3>
+            <p class="action-item__description">You can now offer Airbnb turnovers in your profile. <a href="#">Update your settings</a> to start receiving requests for holiday rentals.</p>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Join our WhatsApp channel.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Join our WhatsApp channel</h3>
+            <p class="action-item__description">Click the bell 🔔 and <a href="#">subscribe to channel</a> to be the first to get the latest updates.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Show that families keep coming back to you.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Show that families keep coming back to you</h3>
+            <p class="action-item__description">You will earn points and a profile badge for completing multiple bookings with the same family.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Enter information about your COVID-19 vaccine.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Enter information about your COVID-19 vaccine</h3>
+            <p class="action-item__description">Covid is currently the top concern for families. <a href="#">Select</a> whether you haven't had the vaccine yet or if you have and are willing to provide a certificate to the family.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+
+        <article class="action-item action-item--priority-low">
+          <div class="action-item__media"><img src="/notification-center/assets/Families choose sitters who reply fast.svg" alt=""></div>
+          <div class="action-item__body">
+            <h3 class="action-item__title">Families choose sitters who reply fast</h3>
+            <p class="action-item__description">Check your messages now and don't miss your next great job. <a href="#">Find jobs</a> near you.</p>
+          </div>
+          <div class="action-item__aside">
+            <button class="action-item__control" type="button" aria-label="Dismiss"><img src="/notification-center/assets/xicon.svg" alt=""></button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="status-toast" data-status-toast>Sent to support for review</div>
+
+  <script>
+    (function() {
+      var STORAGE_KEY = 'sitter-approval-dashboard-state';
+      var ACTIVITY_KEY = 'sitter-approval-dashboard-activity';
+      var MESSAGE_KEY = 'sitter-approval-dashboard-message';
+      var SUPPORT_REQUEST_KEY = 'sitter-approval-support-request';
+      var SUPPORT_STATUS_KEY = 'sitter-approval-support-status';
+      var ACTION_ITEM_SETTINGS_KEY = 'notification-center-action-item-settings';
+      var ACTION_ITEM_DISMISSED_KEY = 'notification-center-dismissed-items';
+      var ACTION_ITEM_REVIEW_MODE_KEY = 'notification-center-review-mode';
+      var ACTION_ITEM_PAGES = ['dashboard', 'calendar', 'messages', 'bookings', 'jobs', 'profile'];
+      var ACTION_ITEM_PAGE_LABELS = {
+        dashboard: 'Dashboard',
+        calendar: 'Calendar',
+        messages: 'Messages',
+        bookings: 'Bookings',
+        jobs: 'Jobs',
+        profile: 'Profile'
+      };
+      var CURRENT_ACTION_ITEM_PAGE = 'dashboard';
+      var sitterId = '567891';
+
+      var defaultState = {
+        expanded: true,
+        notes: '',
+        submittedAt: '',
+        sourceRequestTimestamp: '',
+        tasks: []
+      };
+
+      var TASK_COPY = {
+        'personal-name-real': {
+          title: 'Use your real name',
+          description: 'Replace nicknames or diminutives with your real first name.'
+        },
+        'personal-name-diacritics': {
+          title: 'Add the correct diacritics',
+          description: 'Match the full name on your ID, including accents and special characters.'
+        },
+        'location-address-missing': {
+          title: 'Add your full address',
+          description: 'Fill in the location field with the street and the rest of the address.'
+        },
+        'location-note-missing': {
+          title: 'Explain availability by location',
+          description: 'Add when you are available at each location.'
+        },
+        'babysitting-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'babysitting-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'babysitting-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'babysitting-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'cleaning-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'cleaning-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'cleaning-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'cleaning-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'pet-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'pet-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'pet-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'pet-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'babysitting-about-grammar': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'babysitting-about-sensitive-info': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'babysitting-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'babysitting-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'babysitting-about-inconsistent': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'babysitting-about-missing': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your experience and offer better.'
+        },
+        'babysitting-about-not-specific': {
+          title: 'Describe your childcare experience',
+          description: 'Explain your experience with children, what you offer, and why parents should choose you.'
+        },
+        'babysitting-experience-not-specific': {
+          title: 'Be more specific about experience',
+          description: 'Add concrete details about the type and length of your childcare experience.'
+        },
+        'babysitting-availability-conflict': {
+          title: 'Fix availability mismatch',
+          description: 'Update the profile text so it matches your current availability settings.'
+        },
+        'babysitting-age-group-missing': {
+          title: 'Add age group details',
+          description: 'Mention which age groups of children you usually care for.'
+        },
+        'babysitting-certificate-missing': {
+          title: 'Add the missing certificate',
+          description: 'Upload or complete the qualification document mentioned in your profile.'
+        },
+        'babysitting-qualification-verify': {
+          title: 'Verify your qualification',
+          description: 'Provide enough proof or detail so support can verify this qualification.'
+        },
+        'babysitting-other-inconsistent': {
+          title: 'Fix profile inconsistency',
+          description: 'There is a mismatch in the profile that needs to be corrected before approval.'
+        },
+        'babysitting-support-manual-review': {
+          title: 'Needs manual review',
+          description: 'This item still needs clarification before support can approve it.'
+        },
+        'pet-about-typo': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'pet-about-contact': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'pet-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'pet-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'pet-about-differentiate': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'pet-about-brief': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your pet care offer better.'
+        },
+        'pet-about-pet-sitting': {
+          title: 'Describe your pet sitting',
+          description: 'Explain your experience with animals, what you offer, and why families should choose you.'
+        },
+        'pet-about-about-pet': {
+          title: 'Explain pet requirements',
+          description: 'Add what you need to know in advance and which animals you do not sit.'
+        },
+        'cleaning-about-typo': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'cleaning-about-contact': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'cleaning-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'cleaning-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'cleaning-about-differentiate': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'cleaning-about-brief': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your cleaning offer better.'
+        },
+        'cleaning-about-not-specific': {
+          title: 'Describe your cleaning services',
+          description: 'Explain your cleaning experience, what you offer, and why families should choose you.'
+        }
+      };
+
+      var issuesCard = document.querySelector('[data-issues-card]');
+      var issuesCardHeader = document.querySelector('[data-issues-card-header]');
+      var reviewStatusBanner = document.querySelector('[data-review-status-banner]');
+      var reviewStatusReply = document.querySelector('[data-review-status-reply]');
+      var reviewStatusClose = document.querySelector('[data-review-status-close]');
+      var taskList = document.querySelector('[data-task-list]');
+      var toggleButton = document.querySelector('[data-issues-toggle]');
+      var notesTextarea = document.querySelector('[data-review-notes]');
+      var submitButton = document.querySelector('[data-submit-review]');
+      var toast = document.querySelector('[data-status-toast]');
+      var progressFill = document.querySelector('[data-progress-fill]');
+      var mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
+      var mobileNav = document.querySelector('[data-mobile-nav]');
+      var mobileNavBackdrop = document.querySelector('[data-mobile-nav-backdrop]');
+      var mobileNavClose = document.querySelector('[data-mobile-nav-close]');
+      var settingsButton = document.querySelector('.switch-view-button');
+      var settingsModalBackdrop = document.querySelector('[data-settings-modal-backdrop]');
+      var settingsModal = document.querySelector('[data-settings-modal]');
+      var settingsModalClose = document.querySelector('[data-settings-modal-close]');
+      var settingsModalList = document.querySelector('[data-settings-modal-list]');
+      var settingsShowAllButton = document.querySelector('[data-settings-show-all]');
+      var settingsShowNoneButton = document.querySelector('[data-settings-show-none]');
+      var dashboardActionItems = Array.prototype.slice.call(document.querySelectorAll('.dashboard-column > .action-item'));
+      var toastTimer = null;
+      var isReplyMode = false;
+
+      function closeMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.remove('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavBackdrop.hidden = true;
+        document.body.classList.remove('mobile-nav-open');
+      }
+
+      function openMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.add('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'true');
+        mobileNavBackdrop.hidden = false;
+        document.body.classList.add('mobile-nav-open');
+      }
+
+      if (mobileNavToggle && mobileNav && mobileNavBackdrop) {
+        mobileNavToggle.addEventListener('click', function() {
+          if (mobileNav.classList.contains('is-open')) {
+            closeMobileNav();
+            return;
+          }
+
+          openMobileNav();
+        });
+
+        mobileNavBackdrop.addEventListener('click', closeMobileNav);
+
+        if (mobileNavClose) {
+          mobileNavClose.addEventListener('click', closeMobileNav);
+        }
+
+        mobileNav.addEventListener('click', function(event) {
+          if (event.target.closest('a')) {
+            closeMobileNav();
+          }
+        });
+
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 900) {
+            closeMobileNav();
+          }
+        });
+
+        document.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') {
+            closeMobileNav();
+          }
+        });
+      }
+
+      function readJSON(key, fallbackValue) {
+        try {
+          var value = window.localStorage.getItem(key);
+          return value ? JSON.parse(value) : fallbackValue;
+        } catch (error) {
+          return fallbackValue;
+        }
+      }
+
+      function writeJSON(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {}
+      }
+
+      function slugify(value) {
+        return (value || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      function getActionItemLabel(actionItem) {
+        var title = actionItem.querySelector('.action-item__title');
+        return title ? title.textContent.trim() : 'Action item';
+      }
+
+      function normalizeActionItemSettings(settingsValue) {
+        var normalizedSettings = {};
+
+        dashboardActionItems.forEach(function(actionItem) {
+          var actionItemId = actionItem.getAttribute('data-action-item-id');
+          var currentValue = settingsValue ? settingsValue[actionItemId] : null;
+          var pageSettings = {};
+
+          ACTION_ITEM_PAGES.forEach(function(pageKey) {
+            if (currentValue && typeof currentValue === 'object' && !Array.isArray(currentValue)) {
+              pageSettings[pageKey] = currentValue[pageKey] === true;
+            } else if (pageKey === CURRENT_ACTION_ITEM_PAGE) {
+              pageSettings[pageKey] = currentValue !== false;
+            } else {
+              pageSettings[pageKey] = false;
+            }
+          });
+
+          normalizedSettings[actionItemId] = pageSettings;
+        });
+
+        return normalizedSettings;
+      }
+
+      var approvalActionItem = document.querySelector('[data-approval-action-item]');
+      var approvalSubmitButton = document.querySelector('[data-approval-submit]');
+      var reviewingActionItem = document.querySelector('[data-reviewing-action-item]');
+      var actionItemSettings = readJSON(ACTION_ITEM_SETTINGS_KEY, {});
+      var dismissedActionItems = readJSON(ACTION_ITEM_DISMISSED_KEY, {});
+      var reviewMode = readJSON(ACTION_ITEM_REVIEW_MODE_KEY, false) === true;
+
+      dashboardActionItems.forEach(function(actionItem, index) {
+        var label = getActionItemLabel(actionItem);
+        var actionItemId = actionItem.getAttribute('data-action-item-id');
+
+        if (!actionItemId) {
+          actionItemId = slugify(label) || 'action-item';
+          actionItemId = actionItemId + '-' + (index + 1);
+          actionItem.setAttribute('data-action-item-id', actionItemId);
+        }
+
+        actionItem.setAttribute('data-action-item-label', label);
+      });
+
+      actionItemSettings = normalizeActionItemSettings(actionItemSettings);
+      writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+
+      function isActionItemEnabled(actionItem) {
+        var actionItemId = actionItem.getAttribute('data-action-item-id');
+        var pageSettings = actionItemSettings[actionItemId] || {};
+        return pageSettings[CURRENT_ACTION_ITEM_PAGE] === true;
+      }
+
+      function setReviewMode(nextValue) {
+        reviewMode = nextValue === true;
+        writeJSON(ACTION_ITEM_REVIEW_MODE_KEY, reviewMode);
+      }
+
+      function applyActionItemVisibility() {
+        dashboardActionItems.forEach(function(actionItem) {
+          var actionItemId = actionItem.getAttribute('data-action-item-id');
+          var shouldShow = isActionItemEnabled(actionItem);
+
+          if (actionItem === approvalActionItem) {
+            shouldShow = shouldShow && !reviewMode;
+          } else if (actionItem === reviewingActionItem) {
+            shouldShow = shouldShow && reviewMode;
+          } else {
+            shouldShow = shouldShow && dismissedActionItems[actionItemId] !== true;
+          }
+
+          actionItem.hidden = !shouldShow;
+
+          if (shouldShow) {
+            actionItem.classList.remove('action-item--is-dismissing');
+            actionItem.style.removeProperty('max-height');
+            actionItem.style.removeProperty('margin-top');
+            actionItem.style.removeProperty('margin-bottom');
+          }
+        });
+      }
+
+      function updateSettingsToggleStates() {
+        if (!settingsModalList) return;
+
+        Array.prototype.slice.call(settingsModalList.querySelectorAll('[data-settings-toggle-id]')).forEach(function(toggle) {
+          var actionItemId = toggle.getAttribute('data-settings-toggle-id');
+          var pageKey = toggle.getAttribute('data-settings-page');
+          var isEnabled = actionItemSettings[actionItemId] && actionItemSettings[actionItemId][pageKey] === true;
+          toggle.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
+
+          if (pageKey === CURRENT_ACTION_ITEM_PAGE) {
+            var rowLabel = settingsModalList.querySelector('[data-settings-row-label="' + actionItemId + '"]');
+            if (rowLabel) {
+              rowLabel.classList.toggle('is-hidden', !isEnabled);
+            }
+          }
+        });
+      }
+
+      function buildSettingsModalList() {
+        if (!settingsModalList) return;
+
+        settingsModalList.innerHTML = '';
+
+        var matrix = document.createElement('div');
+        matrix.className = 'settings-matrix';
+
+        var cornerCell = document.createElement('div');
+        cornerCell.className = 'settings-cell settings-cell--head settings-cell--label';
+        cornerCell.textContent = 'Action item';
+        matrix.appendChild(cornerCell);
+
+        ACTION_ITEM_PAGES.forEach(function(pageKey) {
+          var headCell = document.createElement('div');
+          headCell.className = 'settings-cell settings-cell--head';
+          headCell.textContent = ACTION_ITEM_PAGE_LABELS[pageKey];
+          matrix.appendChild(headCell);
+        });
+
+        dashboardActionItems.forEach(function(actionItem) {
+          var actionItemId = actionItem.getAttribute('data-action-item-id');
+          var actionItemLabel = actionItem.getAttribute('data-action-item-label') || getActionItemLabel(actionItem);
+          var settingsLabelCell = document.createElement('div');
+
+          settingsLabelCell.className = 'settings-cell settings-cell--label';
+          settingsLabelCell.setAttribute('data-settings-row-label', actionItemId);
+          settingsLabelCell.innerHTML = '<div class="settings-item-label settings-row-label">' + actionItemLabel + '</div>';
+          matrix.appendChild(settingsLabelCell);
+
+          ACTION_ITEM_PAGES.forEach(function(pageKey) {
+            var settingsToggleCell = document.createElement('div');
+            var settingsToggle = document.createElement('button');
+
+            settingsToggleCell.className = 'settings-cell';
+            settingsToggle.className = 'settings-toggle';
+            settingsToggle.type = 'button';
+            settingsToggle.setAttribute('aria-label', 'Toggle ' + actionItemLabel + ' on ' + ACTION_ITEM_PAGE_LABELS[pageKey]);
+            settingsToggle.setAttribute('data-settings-toggle-id', actionItemId);
+            settingsToggle.setAttribute('data-settings-page', pageKey);
+
+            settingsToggleCell.appendChild(settingsToggle);
+            matrix.appendChild(settingsToggleCell);
+          });
+        });
+
+        settingsModalList.appendChild(matrix);
+        updateSettingsToggleStates();
+      }
+
+      function openSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+
+        if (!settingsModalList || !settingsModalList.children.length) {
+          buildSettingsModalList();
+        } else {
+          updateSettingsToggleStates();
+        }
+
+        settingsModal.hidden = false;
+        settingsModalBackdrop.hidden = false;
+        document.body.classList.add('settings-modal-open');
+
+        window.requestAnimationFrame(function() {
+          if (settingsModalClose) {
+            settingsModalClose.focus();
+          }
+        });
+      }
+
+      function closeSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+
+        settingsModal.hidden = true;
+        settingsModalBackdrop.hidden = true;
+        document.body.classList.remove('settings-modal-open');
+      }
+
+      if (settingsButton) {
+        settingsButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          openSettingsModal();
+        });
+      }
+
+      if (settingsModalBackdrop) {
+        settingsModalBackdrop.addEventListener('click', closeSettingsModal);
+      }
+
+      if (settingsModalClose) {
+        settingsModalClose.addEventListener('click', closeSettingsModal);
+      }
+
+      if (settingsModalList) {
+        settingsModalList.addEventListener('click', function(event) {
+          var toggle = event.target.closest('[data-settings-toggle-id]');
+          if (!toggle) return;
+
+          var actionItemId = toggle.getAttribute('data-settings-toggle-id');
+          var pageKey = toggle.getAttribute('data-settings-page');
+          var nextEnabledState = !(actionItemSettings[actionItemId] && actionItemSettings[actionItemId][pageKey] === true);
+
+          actionItemSettings[actionItemId][pageKey] = nextEnabledState;
+
+          if (pageKey === CURRENT_ACTION_ITEM_PAGE && nextEnabledState) {
+            delete dismissedActionItems[actionItemId];
+            writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+          }
+
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          updateSettingsToggleStates();
+          applyActionItemVisibility();
+        });
+      }
+
+      if (settingsShowAllButton) {
+        settingsShowAllButton.addEventListener('click', function() {
+          dashboardActionItems.forEach(function(actionItem) {
+            var actionItemId = actionItem.getAttribute('data-action-item-id');
+            ACTION_ITEM_PAGES.forEach(function(pageKey) {
+              actionItemSettings[actionItemId][pageKey] = true;
+            });
+          });
+
+          dismissedActionItems = {};
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+          updateSettingsToggleStates();
+          applyActionItemVisibility();
+        });
+      }
+
+      if (settingsShowNoneButton) {
+        settingsShowNoneButton.addEventListener('click', function() {
+          dashboardActionItems.forEach(function(actionItem) {
+            var actionItemId = actionItem.getAttribute('data-action-item-id');
+            ACTION_ITEM_PAGES.forEach(function(pageKey) {
+              actionItemSettings[actionItemId][pageKey] = false;
+            });
+          });
+
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          updateSettingsToggleStates();
+          applyActionItemVisibility();
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && settingsModal && !settingsModal.hidden) {
+          closeSettingsModal();
+        }
+      });
+
+      applyActionItemVisibility();
+
+      document.querySelectorAll('[data-expandable-action-item]').forEach(function(actionItem) {
+        var toggle = actionItem.querySelector('[data-expandable-toggle]');
+        var body = actionItem.querySelector('[data-expandable-body]');
+        if (!toggle || !body) return;
+
+        toggle.addEventListener('click', function() {
+          var isCollapsed = actionItem.classList.contains('is-collapsed');
+          actionItem.classList.toggle('is-collapsed', !isCollapsed);
+          toggle.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+          body.hidden = !isCollapsed;
+        });
+      });
+
+      if (approvalActionItem && approvalSubmitButton && reviewingActionItem) {
+        approvalSubmitButton.addEventListener('click', function() {
+          approvalActionItem.classList.add('is-collapsed');
+
+          var expandableBody = approvalActionItem.querySelector('[data-expandable-body]');
+          var expandableToggle = approvalActionItem.querySelector('[data-expandable-toggle]');
+
+          if (expandableBody) {
+            expandableBody.hidden = true;
+          }
+
+          if (expandableToggle) {
+            expandableToggle.setAttribute('aria-expanded', 'false');
+          }
+
+          setReviewMode(true);
+          applyActionItemVisibility();
+
+          if (!reviewingActionItem.hidden) {
+            reviewingActionItem.classList.remove('action-item--is-entering');
+            window.requestAnimationFrame(function() {
+              reviewingActionItem.classList.add('action-item--is-entering');
+            });
+          }
+        });
+
+        reviewingActionItem.addEventListener('animationend', function(event) {
+          if (event.animationName === 'actionItemReveal') {
+            reviewingActionItem.classList.remove('action-item--is-entering');
+          }
+        });
+      }
+
+      function dismissActionItem(actionItem) {
+        if (!actionItem || actionItem.hidden || actionItem.classList.contains('action-item--is-dismissing')) return;
+
+        var actionItemId = actionItem.getAttribute('data-action-item-id');
+        if (actionItemId) {
+          dismissedActionItems[actionItemId] = true;
+          writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+        }
+
+        actionItem.style.maxHeight = actionItem.offsetHeight + 'px';
+        actionItem.style.marginTop = '0px';
+        actionItem.style.marginBottom = '0px';
+
+        window.requestAnimationFrame(function() {
+          actionItem.classList.add('action-item--is-dismissing');
+        });
+
+        window.setTimeout(function() {
+          actionItem.hidden = true;
+          actionItem.classList.remove('action-item--is-dismissing');
+          actionItem.style.removeProperty('max-height');
+          actionItem.style.removeProperty('margin-top');
+          actionItem.style.removeProperty('margin-bottom');
+          applyActionItemVisibility();
+        }, 300);
+      }
+
+      document.addEventListener('click', function(event) {
+        var dismissButton = event.target.closest('.action-item__control');
+        if (!dismissButton) return;
+
+        var actionItem = dismissButton.closest('.action-item');
+        if (!actionItem) return;
+
+        dismissActionItem(actionItem);
+      });
+
+      if (!issuesCard || !issuesCardHeader || !reviewStatusBanner || !taskList || !toggleButton || !notesTextarea || !submitButton) return;
+
+      function formatProfilePath(issue) {
+        if (issue.shared) {
+          return issue.sectionLabel || 'Profile';
+        }
+
+        if (issue.profileLabel && issue.sectionLabel) {
+          return issue.profileLabel + ' / ' + issue.sectionLabel;
+        }
+
+        return issue.profileLabel || issue.sectionLabel || 'Profile';
+      }
+
+      function buildTaskFromIssue(issue) {
+        var profilePath = formatProfilePath(issue);
+        var taskCopy = TASK_COPY[issue.key] || {
+          title: issue.tagLabel || issue.description || 'Update this section',
+          description: issue.description || 'Update this section before approval.'
+        };
+
+        return {
+          id: issue.key,
+          checked: false,
+          title: taskCopy.title,
+          description: taskCopy.description,
+          profile: profilePath
+        };
+      }
+
+      function getSupportRequestData() {
+        try {
+          var raw = localStorage.getItem(SUPPORT_REQUEST_KEY);
+          if (!raw) {
+            return {
+              timestamp: '',
+              tasks: []
+            };
+          }
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== sitterId || !Array.isArray(parsed.issues)) {
+            return {
+              timestamp: '',
+              tasks: []
+            };
+          }
+
+          return {
+            timestamp: typeof parsed.timestamp === 'string' ? parsed.timestamp : '',
+            tasks: parsed.issues
+              .filter(function(issue) { return issue && issue.key; })
+              .map(buildTaskFromIssue)
+          };
+        } catch (error) {
+          console.warn('Failed to read support request issues.', error);
+          return {
+            timestamp: '',
+            tasks: []
+          };
+        }
+      }
+
+      function getSupportWaitingCount() {
+        try {
+          var raw = localStorage.getItem(SUPPORT_STATUS_KEY);
+          if (!raw) return null;
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== sitterId || typeof parsed.waitingCount !== 'number') return null;
+
+          return parsed.waitingCount;
+        } catch (error) {
+          console.warn('Failed to read support status.', error);
+          return null;
+        }
+      }
+
+      function mergeTasksWithSavedState(sourceTasks, savedTasks) {
+        return sourceTasks.map(function(task) {
+          var savedTask = Array.isArray(savedTasks)
+            ? savedTasks.find(function(item) { return item.id === task.id; })
+            : null;
+
+          return Object.assign({}, task, {
+            checked: !!(savedTask && savedTask.checked)
+          });
+        });
+      }
+
+      function loadState() {
+        var supportRequest = getSupportRequestData();
+        var requestTasks = supportRequest.tasks;
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            return Object.assign({}, defaultState, {
+              sourceRequestTimestamp: supportRequest.timestamp,
+              tasks: requestTasks
+            });
+          }
+
+          var parsed = JSON.parse(raw);
+          var savedRequestTimestamp = typeof parsed.sourceRequestTimestamp === 'string' ? parsed.sourceRequestTimestamp : '';
+          var hasSameRequest = savedRequestTimestamp && supportRequest.timestamp && savedRequestTimestamp === supportRequest.timestamp;
+
+          return {
+            expanded: typeof parsed.expanded === 'boolean' ? parsed.expanded : defaultState.expanded,
+            notes: typeof parsed.notes === 'string' ? parsed.notes : '',
+            submittedAt: typeof parsed.submittedAt === 'string' ? parsed.submittedAt : '',
+            sourceRequestTimestamp: supportRequest.timestamp,
+            tasks: hasSameRequest ? mergeTasksWithSavedState(requestTasks, parsed.tasks) : requestTasks
+          };
+        } catch (error) {
+          console.warn('Failed to load sitter dashboard state.', error);
+          return Object.assign({}, defaultState, {
+            sourceRequestTimestamp: supportRequest.timestamp,
+            tasks: requestTasks
+          });
+        }
+      }
+
+      var state = loadState();
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function getCheckedCount() {
+        return state.tasks.filter(function(task) { return task.checked; }).length;
+      }
+
+      function renderTasks() {
+        var checkedCount = getCheckedCount();
+        var total = state.tasks.length;
+
+        if (!total) {
+          taskList.innerHTML = '' +
+            '<div class="task-item" style="display:block;">' +
+              '<div class="task-content">' +
+                '<h3>No issues from support right now</h3>' +
+                '<p>Once support sends you requested changes from KIRA, they will appear here as tasks to resolve.</p>' +
+              '</div>' +
+            '</div>';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Submit for review';
+          return;
+        }
+
+        taskList.innerHTML = state.tasks.map(function(task) {
+          return '' +
+            '<div class="task-item">' +
+              '<div class="task-status" aria-hidden="true"><img src="' + (task.checked ? '/sitter-approval-workflow/assets/circle-check-icon.svg' : '/sitter-approval-workflow/assets/hourglass-icon-pink.svg') + '" alt=""></div>' +
+              '<div class="task-content">' +
+                '<h3>' + task.title + '</h3>' +
+                '<p>' + task.description + '</p>' +
+                '<a class="task-edit" href="#" data-task-edit="' + task.id + '"><img src="/sitter-approval-workflow/assets/pen-to-square-icon.svg" alt="">Edit</a>' +
+              '</div>' +
+            '</div>';
+        }).join('') +
+        '<div class="task-progress">' +
+          '<div class="task-progress-bars">' +
+            state.tasks.map(function(task, index) {
+              return '<span class="' + (index < checkedCount ? 'is-complete' : '') + '"></span>';
+            }).join('') +
+          '</div>' +
+          '<div class="task-progress-note">' + checkedCount + ' of ' + total + ' fixed</div>' +
+        '</div>';
+
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit for review';
+      }
+
+      function renderExpandedState() {
+        issuesCard.classList.toggle('is-collapsed', !state.expanded);
+        issuesCardHeader.setAttribute('aria-expanded', state.expanded ? 'true' : 'false');
+        toggleButton.setAttribute('aria-label', state.expanded ? 'Hide the issues' : 'Show the issues');
+      }
+
+      function renderNotes() {
+        notesTextarea.value = state.notes;
+        autoGrowReviewNotes();
+      }
+
+      function autoGrowReviewNotes() {
+        if (!notesTextarea) return;
+        notesTextarea.style.height = '64px';
+        notesTextarea.style.height = Math.max(64, notesTextarea.scrollHeight) + 'px';
+      }
+
+      function isSitterSubmissionAwaitingReview(supportRequestTimestamp) {
+        if (!state.submittedAt) return false;
+        if (!supportRequestTimestamp) return true;
+
+        var submittedAt = new Date(state.submittedAt).getTime();
+        var supportRequestAt = new Date(supportRequestTimestamp).getTime();
+
+        if (isNaN(submittedAt)) return false;
+        if (isNaN(supportRequestAt)) return true;
+
+        return submittedAt >= supportRequestAt;
+      }
+
+      function render() {
+        var waitingCount = getSupportWaitingCount();
+        var supportRequest = getSupportRequestData();
+        var hasSameRequest = state.sourceRequestTimestamp && supportRequest.timestamp && state.sourceRequestTimestamp === supportRequest.timestamp;
+        var hasSupportIssues = supportRequest.tasks.length > 0;
+        var shouldShowReviewStatus = !isReplyMode && waitingCount !== 0 && (!hasSupportIssues || isSitterSubmissionAwaitingReview(supportRequest.timestamp));
+
+        state.sourceRequestTimestamp = supportRequest.timestamp;
+        state.tasks = hasSameRequest ? mergeTasksWithSavedState(supportRequest.tasks, state.tasks) : supportRequest.tasks;
+        issuesCard.hidden = waitingCount === 0 || shouldShowReviewStatus;
+        reviewStatusBanner.hidden = !shouldShowReviewStatus;
+        renderExpandedState();
+        if (!issuesCard.hidden) {
+          renderTasks();
+          renderNotes();
+        }
+        saveState();
+      }
+
+      function showToast() {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+
+        toast.classList.add('is-visible');
+        toastTimer = setTimeout(function() {
+          toast.classList.remove('is-visible');
+        }, 2600);
+      }
+
+      function buildSubmittedMessagePayload(timestamp) {
+        return {
+          sitterId: sitterId,
+          timestamp: timestamp,
+          intro: 'I updated the requested items and I’m sending my profile for review again.',
+          notes: state.notes.trim(),
+          resolvedTasks: state.tasks.filter(function(task) { return task.checked; }).map(function(task) {
+            return task.title;
+          })
+        };
+      }
+
+      function toggleIssuesCard() {
+        state.expanded = !state.expanded;
+        saveState();
+        renderExpandedState();
+      }
+
+      issuesCardHeader.addEventListener('click', function() {
+        toggleIssuesCard();
+      });
+
+      issuesCardHeader.addEventListener('keydown', function(event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        toggleIssuesCard();
+      });
+
+      taskList.addEventListener('click', function(event) {
+        var editLink = event.target.closest('[data-task-edit]');
+        if (!editLink) return;
+        event.preventDefault();
+
+        var task = state.tasks.find(function(item) {
+          return item.id === editLink.getAttribute('data-task-edit');
+        });
+        if (!task) return;
+
+        task.checked = !task.checked;
+        saveState();
+        renderTasks();
+      });
+
+      notesTextarea.addEventListener('input', function() {
+        state.notes = notesTextarea.value;
+        autoGrowReviewNotes();
+        saveState();
+      });
+
+      submitButton.addEventListener('click', function() {
+        if (submitButton.disabled) return;
+
+        isReplyMode = false;
+        state.submittedAt = new Date().toISOString();
+        var messagePayload = buildSubmittedMessagePayload(state.submittedAt);
+
+        localStorage.setItem(ACTIVITY_KEY, JSON.stringify({
+          sitterId: sitterId,
+          timestamp: state.submittedAt
+        }));
+
+        localStorage.setItem(MESSAGE_KEY, JSON.stringify(messagePayload));
+
+        state.notes = '';
+        saveState();
+
+        showToast();
+        render();
+      });
+
+      if (reviewStatusReply) {
+        reviewStatusReply.addEventListener('click', function(event) {
+          event.preventDefault();
+          isReplyMode = true;
+          state.expanded = true;
+          saveState();
+          render();
+        });
+      }
+
+      if (reviewStatusClose) {
+        reviewStatusClose.addEventListener('click', function() {
+          isReplyMode = false;
+          reviewStatusBanner.hidden = true;
+        });
+      }
+
+      render();
+      autoGrowReviewNotes();
+    })();
+  </script>
+</body>
+</html>

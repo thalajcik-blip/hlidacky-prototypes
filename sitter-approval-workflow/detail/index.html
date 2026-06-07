@@ -1,0 +1,3904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlídačky.cz admin - Sitter Detail</title>
+  <link rel="icon" type="image/svg+xml" href="../../hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --color-pink-100: #FEECEE;
+      --color-pink-200: #FFD0D6;
+      --color-pink-500: #E6213A;
+      --color-cyan-100: #E7F9FC;
+      --color-cyan-200: #B2F2F8;
+      --color-cyan-500: #00B0C8;
+      --color-teal-100: #E0FAF1;
+      --color-teal-200: #ABF7D4;
+      --color-teal-500: #00BD79;
+      --color-orange-100: #FFF1E5;
+      --color-orange-200: #FFD9BF;
+      --color-orange-500: #ED7000;
+      --color-violet-100: #F6EBFF;
+      --color-violet-200: #E4C1FF;
+      --color-violet-500: #A533FF;
+      --color-blue-100: #EAF2FF;
+      --color-blue-200: #CBDAFC;
+      --color-blue-300: #8FB1F6;
+      --color-blue-500: #2E6BE6;
+      --green-100: #EFF9EF;
+      --green-500: #0BA825;
+      --indigo-100: #EDEBFF;
+      --indigo-400: #654AF0;
+      --indigo-500: #4C24EC;
+      --gray-100: #F3F6FA;
+      --gray-200: #F7F7F7;
+      --gray-300: #E5E5EA;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --white: #FFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    a,
+    button,
+    [role="button"],
+    [tabindex]:not([tabindex="-1"]),
+    .tag[data-tag-key],
+    .tag-remove,
+    .tag-more {
+      cursor: pointer;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white);
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .admin-shell { min-width: 1180px; }
+
+    .brand-bar {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: stretch;
+      height: 80px;
+      border-bottom: 1px solid var(--gray-300);
+      background: var(--white);
+    }
+
+    .brand {
+      width: 206px;
+      padding: 16px 18px;
+      color: #fff;
+      background: var(--pink-300);
+      display: flex;
+      align-items: center;
+      column-gap: 4px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex: 0 0 48px;
+    }
+
+    .brand-name {
+      display: grid;
+      justify-items: start;
+      line-height: 1;
+    }
+
+    .brand-name strong {
+      color: #FFF;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 108%;
+      letter-spacing: -0.32px;
+    }
+
+    .brand-name span {
+      color: #FFF;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: 16px;
+      font-weight: 350;
+      line-height: 108%;
+      letter-spacing: -0.32px;
+    }
+
+    .nav {
+      flex: 1;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      padding: 0 240px 0 34px;
+      overflow: hidden;
+    }
+
+    .nav a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 50px;
+      padding: 0 15px;
+      color: var(--gray-800);
+      text-decoration: none;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.32px;
+      white-space: nowrap;
+    }
+
+    .nav a.active { color: var(--pink-400); }
+
+    .nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 0;
+      height: 2px;
+      background: var(--pink-400);
+    }
+
+    .nav .icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .nav-select {
+      position: relative;
+      display: none;
+      width: 360px;
+    }
+
+    .nav-select-trigger {
+      width: 100%;
+      height: 52px;
+      padding: 0 20px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #FFF;
+      color: var(--pink-400);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, sans-serif;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      letter-spacing: -0.32px;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.15s;
+    }
+
+    .nav-select-trigger:hover {
+      background-color: #F7F7F7;
+    }
+
+    .nav-select-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .nav-select-chevron {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+    }
+
+    .nav-select-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 50;
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #E5E5EA;
+      border-radius: 4px;
+      background: #FFF;
+      box-shadow: 0 14px 32px rgba(42, 53, 57, 0.14);
+    }
+
+    .nav-select-menu[hidden] {
+      display: none;
+    }
+
+    .nav-select-menu a {
+      height: auto;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      color: var(--gray-800);
+    }
+
+    .nav-select-menu a::after {
+      display: none;
+    }
+
+    .nav-select-menu a.active {
+      color: var(--pink-400);
+      background: var(--pink-100);
+    }
+
+    main {
+      width: 1184px;
+      margin: 62px auto 0;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      column-gap: 4px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .breadcrumb-link {
+      color: var(--gray-500);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .breadcrumb-link:hover { color: var(--pink-400); }
+    .breadcrumb-current { color: var(--gray-900); }
+
+    .breadcrumb-arrow {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 16px;
+    }
+
+    .breadcrumb-arrow img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-icon {
+      width: 40px;
+      height: 40px;
+      display: block;
+      flex: 0 0 40px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--gray-900);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 130%;
+      letter-spacing: -0.32px;
+    }
+
+    .outline-button {
+      display: inline-flex;
+      box-sizing: border-box;
+      padding: 14px 24px 16px 20px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      max-width: 100%;
+      border-radius: 4px;
+      border: 1px solid var(--color-pink-400, var(--pink-400));
+      background: var(--color-supportive-full-white, #FFF);
+      color: var(--color-pink-400, var(--pink-400));
+      box-shadow: 0 -3px 0 0 #F96073 inset;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .outline-button img {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      display: block;
+      transition: filter 150ms ease;
+    }
+
+    .outline-button:hover {
+      border-color: var(--color-pink-400, var(--pink-400));
+      background: var(--color-pink-400, var(--pink-400));
+      color: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 -3px 0 0 #E6213A inset;
+    }
+
+    .outline-button:hover img,
+    .outline-button:active img {
+      filter: brightness(0) invert(1);
+    }
+
+    .outline-button:active {
+      padding: 15px 24px 15px 20px;
+      border-color: var(--color-pink-400, var(--pink-400));
+      background: var(--color-pink-400, var(--pink-400));
+      color: var(--color-supportive-full-white, #FFF);
+      box-shadow: none;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--color-supportive-full-white, #FFF);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover {
+      width: 256px;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:focus-visible {
+      width: 256px;
+      outline: none;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .profile-card,
+    .conversation-scroll,
+    .message-composer {
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: #FFF;
+      overflow: hidden;
+    }
+
+    .conversation-card {
+      display: grid;
+      gap: 20px;
+      background: #FFF;
+    }
+
+    .profile-card {
+      position: relative;
+      padding: 20px 16px 16px;
+      overflow: visible;
+    }
+
+    .profile-loading {
+      position: absolute;
+      inset: 148px 16px 16px;
+      z-index: 10;
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(1px);
+    }
+
+    .profile-loading[hidden] {
+      display: none;
+    }
+
+    .profile-loading-line {
+      border-radius: 999px;
+      background: linear-gradient(90deg, #eef3f9 0%, #e3e9f0 50%, #eef3f9 100%);
+      background-size: 200% 100%;
+      animation: profile-loading-shimmer 900ms linear infinite;
+    }
+
+    .profile-loading-line.title {
+      width: 42%;
+      height: 18px;
+      margin-top: 8px;
+    }
+
+    .profile-loading-line.text {
+      width: 100%;
+      height: 72px;
+      border-radius: 16px;
+    }
+
+    .profile-loading-line.text.short {
+      width: 76%;
+      height: 44px;
+    }
+
+    .profile-loading-line.pills {
+      width: 52%;
+      height: 18px;
+    }
+
+    @keyframes profile-loading-shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .profile-switch {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      min-height: 52px;
+      margin-bottom: 20px;
+      padding: 4px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: #FFF;
+    }
+
+    .profile-switch-item {
+      min-width: 0;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      background: transparent;
+      color: var(--gray-700);
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      padding: 3px 4px 5px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 450;
+      line-height: 14px;
+      cursor: pointer;
+    }
+
+    .profile-switch-item strong {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: inherit;
+    }
+
+    .profile-switch-icon {
+      height: 18px;
+      display: grid;
+      place-items: center;
+    }
+
+    .profile-switch-icon img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .profile-switch-item.is-active {
+      border-color: #D7EFD8;
+      background: var(--green-100);
+      color: var(--green-500);
+    }
+
+    .profile-view[hidden] {
+      display: none;
+    }
+
+    .avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 20px;
+    }
+
+    .avatar {
+      display: flex;
+      width: 84px;
+      height: 84px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 42px;
+      border: 2px solid var(--Supportive-Full-White, #FFF);
+      background: url("../assets/avatars/avatar-01.jpg") lightgray 50% / cover no-repeat;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.20);
+      transition: filter 150ms ease;
+    }
+
+    .avatar.is-desaturated {
+      filter: grayscale(1);
+    }
+
+    .profile-identity {
+      min-width: 0;
+      display: grid;
+      gap: 0;
+      padding-left: 0;
+    }
+
+    .profile-name {
+      margin: 0;
+      padding-left: 10px;
+      color: var(--Gray-Gray-900, #212529);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 132%;
+      letter-spacing: -0.2px;
+    }
+
+    .profile-count {
+      color: var(--color-gray-500, var(--gray-500));
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.2px;
+    }
+
+    .profile-count-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      max-width: 100%;
+      padding-left: 8px;
+    }
+
+    .profile-language {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .profile-language-flag {
+      width: 21px;
+      height: 14px;
+      display: block;
+      border-radius: 2px;
+      box-shadow: 0 0 0 1px rgba(42, 53, 57, 0.08);
+    }
+
+    .profile-language-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%) translateY(4px);
+      z-index: 120;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--gray-800);
+      color: #FFF;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(42, 53, 57, 0.18);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    }
+
+    .profile-language-tooltip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 8px;
+      height: 8px;
+      background: var(--gray-800);
+      transform: translate(-50%, -4px) rotate(45deg);
+    }
+
+    .profile-language:hover .profile-language-tooltip,
+    .profile-language:focus-within .profile-language-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .profile-status-badge {
+      margin-top: 4px;
+      display: inline-flex;
+      width: max-content;
+      max-width: 100%;
+      padding: 2px 8px;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-radius: 64px;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      white-space: nowrap;
+    }
+
+    .profile-status-badge.waiting {
+      background: var(--color-indigo-400, var(--indigo-400));
+      color: var(--color-supportive-full-white, #FFF);
+    }
+
+    .profile-status-badge.waiting img {
+      filter: brightness(0) invert(1);
+    }
+
+    .profile-status-badge.approved {
+      background: var(--green-100);
+      color: var(--green-500);
+    }
+
+    .profile-status-badge.not-submitted {
+      background: var(--gray-200);
+      color: var(--gray-600);
+    }
+
+    .empty-profile-state {
+      min-height: 466px;
+      margin-top: 0;
+      padding-top: 8px;
+    }
+
+    .empty-profile-panel {
+      min-height: 418px;
+      border-radius: 4px;
+      background: #EEF3F9;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .empty-profile-message {
+      margin: 0;
+      max-width: 280px;
+      color: #8B91A3;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.08px;
+    }
+
+    .profile-overview {
+      display: grid;
+    }
+
+    .profile-row {
+      min-height: 52px;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) 116px 90px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      background: var(--gray-100);
+    }
+
+    .profile-overview .profile-row:nth-child(even) { background: #FFF; }
+
+    .profile-row.info-row {
+      grid-template-columns: 40px minmax(0, 1fr) minmax(180px, auto);
+    }
+
+    .profile-row.info-row .row-value {
+      white-space: nowrap;
+      justify-self: end;
+    }
+
+    .row-icon {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      border: 1px solid var(--Slate-Slate-200, #E3E9F0);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: 0 8px 24px -4px rgba(42, 53, 57, 0.20);
+    }
+
+    .row-icon img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .row-label,
+    .row-value {
+      color: var(--gray-700);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: 0.07px;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 2px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 140%;
+      white-space: nowrap;
+    }
+
+    .status.yes {
+      color: var(--green-500);
+      background: var(--green-100);
+    }
+
+    .status.waiting {
+      color: var(--indigo-500);
+      background: var(--indigo-100);
+    }
+
+    .status.no {
+      color: var(--gray-600);
+      background: var(--gray-200);
+    }
+
+    .status-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex: 0 0 14px;
+    }
+
+    .profile-row > .status {
+      justify-self: start;
+    }
+
+    .profile-row > .status:last-child {
+      grid-column: 4;
+    }
+
+    .row-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .mini-approve {
+      display: inline-flex;
+      height: 32px;
+      padding: 4px 10px 6px 10px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--color-green-500, var(--green-500));
+      color: #FFF;
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 450;
+    }
+
+    .mini-approve:hover {
+      display: inline-flex;
+      height: 32px;
+      padding: 4px 10px 6px 10px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      background: var(--color-green-600, #078E1D);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .mini-approve:active {
+      display: inline-flex;
+      height: 32px;
+      padding: 5px 10px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: none;
+    }
+
+    .mini-approve[disabled] {
+      background: #7FD398;
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.08) inset;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .mini-next {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      padding: 6px 8px 8px 8px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--Gray-Gray-300, #E5E5EA);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: 0 -3px 0 0 #E5E5EA inset;
+      cursor: pointer;
+    }
+
+    .mini-next:hover {
+      border: 1px solid var(--Gray-Gray-400, #BEC2CE);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: 0 -3px 0 0 #BDC1CB inset;
+    }
+
+    .mini-next:active {
+      width: 32px;
+      height: 32px;
+      padding: 7px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--Gray-Gray-400, #BEC2CE);
+      background: var(--Supportive-Full-White, #FFF);
+      box-shadow: none;
+    }
+
+    .mini-next img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .profile-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 0 6px;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 140%;
+      transition: background-color 150ms ease;
+    }
+
+    .tag.babysitting {
+      color: var(--pink-500);
+      background: var(--pink-100);
+    }
+
+    .tag.cleaning {
+      color: #009CB8;
+      background: #E7F9FC;
+    }
+
+    .tag.pet {
+      color: var(--color-teal-500);
+      background: var(--color-teal-100);
+    }
+
+    .tag.senior {
+      color: var(--color-orange-500);
+      background: var(--color-orange-100);
+    }
+
+    .tag.tutoring {
+      color: var(--color-violet-500);
+      background: var(--color-violet-100);
+    }
+
+    .tag.tone-blue {
+      color: var(--color-blue-500);
+      background: var(--color-blue-100);
+    }
+
+    .tag[data-tag-key] {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tag[data-tag-key]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 120;
+      min-width: 220px;
+      max-width: 300px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-gray-300, #E5E5EA);
+      border-radius: 6px;
+      background: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 12px 28px rgba(42, 53, 57, 0.16);
+      color: var(--color-gray-800, #2A3539);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 140%;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, 4px);
+      transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+      pointer-events: none;
+    }
+
+    .tag[data-tag-key]::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 3px);
+      z-index: 121;
+      width: 10px;
+      height: 10px;
+      border-right: 1px solid var(--color-gray-300, #E5E5EA);
+      border-bottom: 1px solid var(--color-gray-300, #E5E5EA);
+      background: #FFF;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) rotate(45deg);
+      transition: opacity 150ms ease, visibility 150ms ease;
+      pointer-events: none;
+    }
+
+    .tag[data-tag-key]:hover::after,
+    .tag[data-tag-key]:hover::before,
+    .tag[data-tag-key]:focus-visible::after,
+    .tag[data-tag-key]:focus-visible::before {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tag[data-tag-key]:hover::after,
+    .tag[data-tag-key]:focus-visible::after {
+      transform: translate(-50%, 0);
+    }
+
+    .tag.babysitting:hover {
+      background: var(--color-pink-200);
+    }
+
+    .tag.cleaning:hover {
+      background: var(--color-cyan-200);
+    }
+
+    .tag.pet:hover {
+      background: var(--color-teal-200);
+    }
+
+    .tag.senior:hover {
+      background: var(--color-orange-200);
+    }
+
+    .tag.tutoring:hover {
+      background: var(--color-violet-200);
+    }
+
+    .tag.tone-blue:hover {
+      background: var(--color-blue-200);
+    }
+
+    .profile-tags .tag {
+      display: flex;
+      padding: 2px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 140%;
+    }
+
+    .profile-tags .tag.babysitting {
+      color: var(--color-pink-500);
+      background: var(--color-pink-100);
+    }
+
+    .profile-tags .tag.babysitting:hover {
+      background: var(--color-pink-200);
+    }
+
+    .profile-tags .tag.cleaning {
+      color: var(--color-cyan-500);
+      background: var(--color-cyan-100);
+    }
+
+    .profile-tags .tag.cleaning:hover {
+      background: var(--color-cyan-200);
+    }
+
+    .profile-tags .tag.pet {
+      color: var(--color-teal-500);
+      background: var(--color-teal-100);
+    }
+
+    .profile-tags .tag.pet:hover {
+      background: var(--color-teal-200);
+    }
+
+    .profile-tags .tag.senior {
+      color: var(--color-orange-500);
+      background: var(--color-orange-100);
+    }
+
+    .profile-tags .tag.senior:hover {
+      background: var(--color-orange-200);
+    }
+
+    .profile-tags .tag.tutoring {
+      color: var(--color-violet-500);
+      background: var(--color-violet-100);
+    }
+
+    .profile-tags .tag.tone-blue {
+      color: var(--color-blue-500);
+      background: var(--color-blue-100);
+    }
+
+    .profile-tags .tag.tutoring:hover {
+      background: var(--color-violet-200);
+    }
+
+    .profile-tags .tag.tone-blue:hover {
+      background: var(--color-blue-200);
+    }
+
+    .tag-remove {
+      width: 12px;
+      height: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 12px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .tag-remove img {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+
+    .review-accordion {
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      overflow: visible;
+      background: #FFF;
+    }
+
+    .review-section {
+      position: relative;
+      background: #FFF;
+    }
+
+    .review-section.is-open {
+      z-index: 5;
+    }
+
+    .review-section.has-open-menu {
+      z-index: 60;
+    }
+
+    .review-section + .review-section {
+      border-top: 1px solid var(--gray-300);
+    }
+
+    .review-summary {
+      width: 100%;
+      min-height: 52px;
+      display: grid;
+      grid-template-columns: 20px 1fr auto 20px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border: 0;
+      background: #FFF;
+      color: var(--Gray-Gray-800, #2A3539);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .review-summary strong {
+      font: inherit;
+    }
+
+    .review-summary-icon,
+    .review-chevron {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .review-summary-icon {
+      grid-column: 1;
+    }
+
+    .review-summary strong {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .review-issue-count {
+      grid-column: 3;
+      justify-self: end;
+    }
+
+    .review-chevron {
+      grid-column: 4;
+      justify-self: end;
+    }
+
+    .review-summary-icon img,
+    .review-chevron img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .review-section.is-open .review-summary {
+      background: var(--gray-100);
+    }
+
+    .review-issue-count {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--pink-100);
+      color: var(--pink-500);
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .review-chevron {
+      transform: rotate(0deg);
+      transition: transform 0.15s ease;
+    }
+
+    .review-section.is-open .review-chevron {
+      transform: rotate(180deg);
+    }
+
+    .review-panel {
+      display: none;
+      padding: 4px 16px 16px;
+      background: var(--gray-100);
+    }
+
+    .review-section.is-open .review-panel {
+      display: block;
+    }
+
+    .review-textarea {
+      width: 100%;
+      min-height: 132px;
+      resize: vertical;
+      padding: 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: #FFF;
+      color: var(--gray-800);
+      font: inherit;
+      font-size: 15px;
+      line-height: 140%;
+    }
+
+    .location-block {
+      display: grid;
+      gap: 20px;
+    }
+
+    .personal-info-block {
+      display: grid;
+      gap: 20px;
+    }
+
+    .location-field-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-field-group {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .location-field-label,
+    .personal-field-label,
+    .review-field-label {
+      color: var(--gray-800);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+    }
+
+    .location-field-label .required {
+      color: var(--color-pink-500, var(--pink-500));
+    }
+
+    .location-input,
+    .location-note,
+    .personal-input,
+    .personal-select,
+    .personal-phone-number,
+    .personal-phone-prefix {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: #FFF;
+      color: var(--gray-800);
+      font: inherit;
+      font-size: 15px;
+      line-height: 140%;
+    }
+
+    .location-input {
+      min-height: 52px;
+      padding: 14px;
+    }
+
+    .location-input::placeholder,
+    .location-note::placeholder,
+    .personal-input::placeholder {
+      color: #8B91A3;
+    }
+
+    .location-note {
+      min-height: 132px;
+      padding: 14px;
+      resize: vertical;
+    }
+
+    .personal-input,
+    .personal-select,
+    .personal-phone-number,
+    .personal-phone-prefix {
+      min-height: 52px;
+      padding: 14px;
+    }
+
+    .personal-dob-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) 128px;
+      gap: 12px;
+    }
+
+    .personal-select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--gray-800);
+    }
+
+    .personal-select img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .personal-phone-row {
+      display: grid;
+      grid-template-columns: 168px minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .personal-phone-prefix {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-right: 0;
+      border-radius: 4px 0 0 4px;
+      color: #8B91A3;
+    }
+
+    .personal-phone-prefix img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .personal-phone-flag {
+      width: 28px;
+      height: 20px;
+      border-radius: 2px;
+      border: 1px solid var(--gray-300);
+      background: #FFF url("../assets/country-flag-cze.svg") center/cover no-repeat;
+      flex: 0 0 28px;
+    }
+
+    .personal-phone-number {
+      border-radius: 0 4px 4px 0;
+    }
+
+    .profile-photo-preview {
+      width: 160px;
+      height: 160px;
+      border: 4px solid #FFF;
+      border-radius: 8px;
+      background: url("../assets/avatars/avatar-01.jpg") center/cover no-repeat;
+      box-shadow: 0 8px 18px rgba(42, 53, 57, 0.14);
+    }
+
+    .profile-photo-preview.cleaning {
+      background-image: url("../assets/avatars/avatar-03.jpg");
+    }
+
+    .profile-photo-preview.pet {
+      background-image: url("../assets/avatars/avatar-05.jpg");
+    }
+
+    .problem-picker {
+      position: relative;
+      width: max-content;
+      margin-top: 12px;
+    }
+
+    .problem-trigger {
+      display: inline-flex;
+      height: 40px;
+      padding: 8px 14px 10px 18px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: #FFF;
+      box-shadow: 0 -3px 0 0 var(--pink-500) inset;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .problem-trigger:hover {
+      display: inline-flex;
+      padding: 8px 14px 10px 18px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      background: var(--color-pink-500, var(--pink-500));
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .problem-trigger:active,
+    .problem-trigger.is-open {
+      display: inline-flex;
+      padding: 9px 14px 9px 18px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      background: var(--color-pink-500, var(--pink-500));
+    }
+
+    .problem-trigger img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      filter: brightness(0) invert(1);
+      transition: transform 0.15s ease;
+    }
+
+    .problem-trigger.is-open img {
+      transform: rotate(180deg);
+    }
+
+    .problem-menu {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 2px);
+      z-index: 50;
+      width: 330px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: #FFF;
+      box-shadow: 0 8px 18px rgba(42, 53, 57, 0.16);
+    }
+
+    .problem-menu[hidden] {
+      display: none;
+    }
+
+    .problem-option {
+      position: relative;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: 30px;
+      color: var(--gray-700);
+      font-size: 14px;
+      line-height: 20px;
+      cursor: pointer;
+    }
+
+    .problem-option input {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      opacity: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      pointer-events: none;
+    }
+
+    .problem-option::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--gray-400);
+      border-radius: 4px;
+      background: #FFF;
+      transform: translateY(-50%);
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .problem-option:has(input:checked)::before {
+      border-color: var(--pink-400);
+      background: var(--pink-400) url("../assets/checkbox-small.svg") center / 12px 9px no-repeat;
+    }
+
+    .problem-option:hover::before {
+      border-color: #AEB5C4;
+    }
+
+    .problem-option:has(input:focus-visible)::before {
+      border-color: var(--color-blue-300);
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .profile-approve {
+      display: flex;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px 24px 16px 20px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--color-green-500, var(--green-500));
+      color: var(--color-supportive-full-white, #FFF);
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+      cursor: pointer;
+    }
+
+    .profile-approve:hover {
+      border-radius: 4px;
+      background: var(--color-green-600, #078E1D);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .profile-approve:active {
+      padding: 15px 24px 15px 20px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      background: var(--color-green-600, #078E1D);
+      box-shadow: none;
+    }
+
+    .profile-approve[disabled] {
+      background: #7FD398;
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.08) inset;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .conversation-card {
+      background: #FFF;
+    }
+
+    .conversation-scroll {
+      max-height: 480px;
+      min-height: 600px;
+      overflow-y: auto;
+      padding: 24px 36px 20px;
+      display: grid;
+      align-content: start;
+      gap: 20px;
+      background: #EEF3F9;
+    }
+
+    .date-line {
+      color: var(--gray-500);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .message-row.out { justify-content: flex-end; }
+    .message-row.in { justify-content: flex-start; }
+
+    .message-row.in .mini-avatar {
+      margin-bottom: 18px;
+    }
+
+    .mini-avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 42px;
+      border: 1px solid var(--Supportive-Full-White, #FFF);
+      background: url("../assets/avatars/avatar-01.jpg") lightgray 50% / cover no-repeat;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.20);
+    }
+
+    .bubble {
+      min-width: 390px;
+      max-width: 390px;
+      padding: 14px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 12px;
+      background: #FFF;
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.08px;
+    }
+
+    .bubble.system {
+      background: #DCF8E7;
+      border: 0;
+      font-weight: 450;
+    }
+
+    .bubble.note {
+      background: #E3E9F0;
+      border: 0;
+    }
+
+    .bubble-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      max-width: 390px;
+      margin-top: 8px;
+    }
+
+    .time-label {
+      margin-top: 4px;
+      color: var(--gray-500);
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .conversation-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px;
+      border-top: 1px solid var(--gray-300);
+      background: #EEF3F9;
+    }
+
+    .message-composer {
+      margin: 0;
+      padding: 20px;
+      background: #EEF3F9;
+      overflow: visible;
+    }
+
+    .message-composer-title {
+      margin: 0 0 16px;
+      color: var(--gray-900);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 150%;
+      letter-spacing: -0.32px;
+    }
+
+    .generated-message-box {
+      padding: 16px;
+      border-radius: 16px;
+      background: #DDE5EF;
+      color: var(--gray-800);
+    }
+
+    .generated-message-box[hidden] {
+      display: none;
+    }
+
+    .generated-message-intro {
+      margin: 0;
+      font-size: 16px;
+      line-height: 140%;
+      letter-spacing: -0.08px;
+    }
+
+    .generated-message-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      font-size: 16px;
+      line-height: 140%;
+      letter-spacing: -0.08px;
+    }
+
+    .generated-message-list li + li {
+      margin-top: 4px;
+    }
+
+    .message-composer-textarea {
+      width: 100%;
+      height: 76px;
+      min-height: 76px;
+      margin-top: 12px;
+      overflow-y: hidden;
+      resize: none;
+      padding: 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      background: #FFF;
+      color: var(--gray-800);
+      font: inherit;
+      font-size: 16px;
+      line-height: 140%;
+      letter-spacing: -0.08px;
+    }
+
+    textarea:focus,
+    input:focus {
+      outline: none;
+      border: 1px solid var(--color-blue-300, #8FB1F6);
+      background: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .message-composer-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .message-composer-pills[hidden] {
+      display: none;
+    }
+
+    .message-composer-pills .tag {
+      padding: 4px 10px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .message-composer-pills .tag.babysitting {
+      color: var(--color-pink-500);
+      background: var(--color-pink-100);
+    }
+
+    .message-composer-pills .tag.babysitting:hover {
+      background: var(--color-pink-200);
+    }
+
+    .message-composer-pills .tag.cleaning {
+      color: var(--color-cyan-500);
+      background: var(--color-cyan-100);
+    }
+
+    .message-composer-pills .tag.cleaning:hover {
+      background: var(--color-cyan-200);
+    }
+
+    .message-composer-pills .tag.pet {
+      color: var(--color-teal-500);
+      background: var(--color-teal-100);
+    }
+
+    .message-composer-pills .tag.pet:hover {
+      background: var(--color-teal-200);
+    }
+
+    .message-composer-pills .tag.senior {
+      color: var(--color-orange-500);
+      background: var(--color-orange-100);
+    }
+
+    .message-composer-pills .tag.senior:hover {
+      background: var(--color-orange-200);
+    }
+
+    .message-composer-pills .tag.tutoring {
+      color: var(--color-violet-500);
+      background: var(--color-violet-100);
+    }
+
+    .message-composer-pills .tag.tutoring:hover {
+      background: var(--color-violet-200);
+    }
+
+    .message-composer-pills .tag.tone-blue {
+      color: var(--color-blue-500);
+      background: var(--color-blue-100);
+    }
+
+    .message-composer-pills .tag.tone-blue:hover {
+      background: var(--color-blue-200);
+    }
+
+    .message-composer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .message-composer-upload {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      opacity: 0.8;
+      transition: opacity 150ms ease;
+    }
+
+    .message-composer-upload img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex: 0 0 20px;
+    }
+
+    .message-composer-upload:hover {
+      opacity: 1;
+    }
+
+    .reply-button {
+      display: inline-flex;
+      height: 52px;
+      min-width: 220px;
+      padding: 14px 24px 16px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: #FFF;
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      cursor: pointer;
+      transition: background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .reply-button img {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .reply-button:hover {
+      background: var(--color-pink-500, var(--pink-500));
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .reply-button:active {
+      padding: 15px 24px 15px;
+      background: var(--color-pink-500, var(--pink-500));
+      box-shadow: none;
+    }
+
+    .approval-toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 9999;
+      display: flex;
+      width: 352px;
+      padding: 16px 32px 16px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--color-pink-200);
+      background: var(--color-pink-100);
+      box-shadow: 0 6px 16px -4px rgba(42, 53, 57, 0.20);
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+
+    .approval-toast[hidden] {
+      display: none;
+    }
+
+    .approval-toast.is-entering,
+    .approval-toast.is-exiting {
+      display: flex;
+    }
+
+    .approval-toast.is-entering {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .approval-toast.is-entering.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .approval-toast.is-exiting {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .approval-toast-figure {
+      width: 72px;
+      flex: 0 0 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .approval-toast-figure img {
+      width: 72px;
+      height: 72px;
+      display: block;
+    }
+
+    .approval-toast-body {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .approval-toast-heading {
+      margin: 0;
+      color: var(--color-gray-800, var(--gray-800));
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+    }
+
+    .message-toast .approval-toast-body {
+      display: flex;
+      align-items: center;
+      min-height: 72px;
+    }
+
+    .message-toast .approval-toast-heading,
+    .approval-toast .approval-toast-heading {
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 140%;
+    }
+
+    .approval-toast-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font: inherit;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .approval-toast-undo {
+      display: inline-flex;
+      width: max-content;
+      max-width: 100%;
+      padding: 6px 12px 8px 10px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: var(--color-supportive-full-white, #FFF);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .approval-toast-undo img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex: 0 0 20px;
+    }
+
+    @media (max-width: 1560px) {
+      .nav { padding: 0 180px 0 24px; }
+      .nav a { gap: 6px; padding: 0 9px; font-size: 14px; letter-spacing: -0.2px; }
+      .nav .icon { width: 14px; height: 14px; flex-basis: 14px; }
+    }
+
+    @media (max-width: 1220px) {
+      .brand {
+        width: 184px;
+        padding-inline: 14px;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+      }
+
+      .brand-name strong {
+        font-size: 31px;
+      }
+
+      .brand-name span {
+        font-size: 14px;
+      }
+
+      .nav {
+        padding: 0 150px 0 18px;
+      }
+
+      .nav a {
+        gap: 5px;
+        padding: 0 7px;
+        font-size: 13px;
+      }
+
+      .nav .icon {
+        width: 13px;
+        height: 13px;
+        flex-basis: 13px;
+      }
+    }
+
+    @media (max-width: 976px) {
+      .admin-shell {
+        min-width: 0;
+      }
+
+      .brand-bar {
+        min-width: 760px;
+      }
+
+      .nav {
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px 0 18px;
+        overflow: visible;
+      }
+
+      .nav > a {
+        display: none;
+      }
+
+      .nav-select {
+        display: block;
+      }
+
+      main {
+        width: calc(100% - 48px);
+        min-width: 760px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="brand-bar">
+      <div class="brand" aria-label="admin KIRA">
+        <img class="brand-mark" src="../assets/hlidacky-symbol.svg" alt="">
+        <div class="brand-name">
+          <strong>admin</strong>
+          <span>KIRA</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Admin sections">
+        <a href="#"><img class="icon" src="../assets/fa-dashboard.svg" alt="">Dashboard</a>
+        <a href="#"><img class="icon" src="../assets/fa-email.svg" alt="">By e-mail</a>
+        <a href="#"><img class="icon" src="../assets/fa-family.svg" alt="">Parents</a>
+        <a class="active" href="#"><img class="icon" src="../assets/fa-sitters.svg" alt="">Sitters</a>
+        <a href="#"><img class="icon" src="../assets/fa-jobs.svg" alt="">Jobs</a>
+        <a href="#"><img class="icon" src="../assets/fa-parents.svg" alt="">Parents CRM</a>
+        <a href="#"><img class="icon" src="../assets/fa-campaigns.svg" alt="">Campaigns</a>
+        <a href="#"><img class="icon" src="../assets/fa-blog.svg" alt="">Blog</a>
+        <a href="#"><img class="icon" src="../assets/fa-cms.svg" alt="">CMS</a>
+        <a href="#"><img class="icon" src="../assets/fa-forum.svg" alt="">Forum</a>
+        <a href="#"><img class="icon" src="../assets/fa-web.svg" alt="">Web</a>
+        <div class="nav-select">
+          <button class="nav-select-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-select-label"><img class="icon" src="../assets/fa-sitters.svg" alt="">Sitters</span>
+            <img class="nav-select-chevron" src="../assets/icon-chevron-down.svg" alt="">
+          </button>
+          <div class="nav-select-menu" hidden>
+            <a href="#"><img class="icon" src="../assets/fa-dashboard.svg" alt="">Dashboard</a>
+            <a href="#"><img class="icon" src="../assets/fa-email.svg" alt="">By e-mail</a>
+            <a href="#"><img class="icon" src="../assets/fa-family.svg" alt="">Parents</a>
+            <a class="active" href="#"><img class="icon" src="../assets/fa-sitters.svg" alt="">Sitters</a>
+            <a href="#"><img class="icon" src="../assets/fa-jobs.svg" alt="">Jobs</a>
+            <a href="#"><img class="icon" src="../assets/fa-parents.svg" alt="">Parents CRM</a>
+            <a href="#"><img class="icon" src="../assets/fa-campaigns.svg" alt="">Campaigns</a>
+            <a href="#"><img class="icon" src="../assets/fa-blog.svg" alt="">Blog</a>
+            <a href="#"><img class="icon" src="../assets/fa-cms.svg" alt="">CMS</a>
+            <a href="#"><img class="icon" src="../assets/fa-forum.svg" alt="">Forum</a>
+            <a href="#"><img class="icon" src="../assets/fa-web.svg" alt="">Web</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="breadcrumbs">
+        <a class="breadcrumb-link" href="../">Sitters</a>
+        <span class="breadcrumb-arrow" aria-hidden="true"><img src="../assets/icon-arrow-right.svg" alt=""></span>
+        <a class="breadcrumb-link" href="../index.html">Sitter Approval</a>
+        <span class="breadcrumb-arrow" aria-hidden="true"><img src="../assets/icon-arrow-right.svg" alt=""></span>
+        <span class="breadcrumb-current">Johana Mrkvičková</span>
+      </div>
+
+      <a class="switch-view-button" href="../sitter/index.html" aria-label="Switch to sitter’s view">
+        <img class="switch-view-button-icon" src="../assets/icon-people.svg" alt="">
+        <span class="switch-view-button-label">Switch to sitter’s view</span>
+      </a>
+
+      <div class="detail-header">
+        <div class="page-title">
+          <img class="title-icon" src="../assets/fa-icon-sitters-big.svg" alt="">
+          <h1>Johana Mrkvičková (approval page)</h1>
+        </div>
+        <a class="outline-button" href="#">
+          <img src="../assets/icon-profile.svg" alt="">
+          Open sitter profile
+        </a>
+      </div>
+
+      <section class="detail-grid">
+        <aside class="profile-card">
+          <div class="profile-switch" role="tablist" aria-label="Sitter profile sections">
+            <button class="profile-switch-item is-active" type="button" role="tab" aria-selected="true" data-profile-tab="all">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-star.svg" alt=""></span>
+              <strong>All</strong>
+            </button>
+            <button class="profile-switch-item" type="button" role="tab" aria-selected="false" data-profile-tab="babysitting">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-hourglass.svg" alt=""></span>
+              <strong>Babysitt...</strong>
+            </button>
+            <button class="profile-switch-item" type="button" role="tab" aria-selected="false" data-profile-tab="cleaning">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-hourglass.svg" alt=""></span>
+              <strong>Cleaning</strong>
+            </button>
+            <button class="profile-switch-item" type="button" role="tab" aria-selected="false" data-profile-tab="pet">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-checkmark.svg" alt=""></span>
+              <strong>Pet care</strong>
+            </button>
+            <button class="profile-switch-item" type="button" role="tab" aria-selected="false" data-profile-tab="senior">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-x-mark.svg" alt=""></span>
+              <strong>Senior care</strong>
+            </button>
+            <button class="profile-switch-item" type="button" role="tab" aria-selected="false" data-profile-tab="tutoring">
+              <span class="profile-switch-icon"><img src="../assets/profile-toggle-x-mark.svg" alt=""></span>
+              <strong>Tutoring</strong>
+            </button>
+          </div>
+
+          <div class="avatar-wrap">
+            <div class="avatar" aria-label="Sitter avatar"></div>
+            <div class="profile-identity">
+              <h2 class="profile-name">Johana Mrkvičková</h2>
+              <div class="profile-count-row">
+                <span class="profile-language" tabindex="0" aria-label="Sitter's account language is Czech">
+                  <img class="profile-language-flag" src="../assets/country-flag-cz.svg" alt="Czech flag">
+                  <span class="profile-language-tooltip">Sitter's account language is Czech</span>
+                </span>
+                <div class="profile-count" data-profile-count>3 profiles in total</div>
+              </div>
+              <div class="profile-status-badge waiting" data-profile-status>
+                <img class="status-icon" src="../assets/waiting-icon.svg" alt="">
+                <span>2 profiles waiting for approval</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-loading" data-profile-loading hidden aria-hidden="true">
+            <div class="profile-loading-line title"></div>
+            <div class="profile-loading-line text"></div>
+            <div class="profile-loading-line pills"></div>
+            <div class="profile-loading-line text short"></div>
+          </div>
+
+          <div class="profile-view" data-profile-view="all">
+            <div class="profile-overview">
+              <div class="profile-row info-row">
+                <span class="row-icon"><img src="../assets/profile-row-registered.svg" alt=""></span>
+                <span class="row-label">Registered</span>
+                <span class="row-value">Nov 17, 2025, 14:44</span>
+              </div>
+              <div class="profile-row info-row">
+                <span class="row-icon"><img src="../assets/profile-row-last-time-active.svg" alt=""></span>
+                <span class="row-label">Last time active</span>
+                <span class="row-value">Nov 21, 2025, 13:22</span>
+              </div>
+              <div class="profile-row" data-profile-row="babysitting">
+                <span class="row-icon"><img src="../assets/profile-row-babysitting.svg" alt=""></span>
+                <span class="row-label">Babysitting</span>
+                <span class="status waiting"><img class="status-icon" src="../assets/waiting-icon.svg" alt="">Waiting</span>
+                <span class="row-actions"><button class="mini-approve" type="button" data-approve-profile="babysitting">Approve</button><button class="mini-next" type="button" data-profile-tab="babysitting"><img src="../assets/button-chevron-right.svg" alt=""></button></span>
+              </div>
+              <div class="profile-row" data-profile-row="cleaning">
+                <span class="row-icon"><img src="../assets/profile-row-cleaning.svg" alt=""></span>
+                <span class="row-label">Cleaning</span>
+                <span class="status waiting"><img class="status-icon" src="../assets/waiting-icon.svg" alt="">Waiting</span>
+                <span class="row-actions"><button class="mini-approve" type="button" data-approve-profile="cleaning">Approve</button><button class="mini-next" type="button" data-profile-tab="cleaning"><img src="../assets/button-chevron-right.svg" alt=""></button></span>
+              </div>
+              <div class="profile-row" data-profile-row="pet">
+                <span class="row-icon"><img src="../assets/profile-row-pet-care.svg" alt=""></span>
+                <span class="row-label">Pet care</span>
+                <span class="status yes"><img class="status-icon" src="../assets/checkmark.svg" alt="">Yes</span>
+                <span class="row-actions"><button class="mini-approve" type="button" data-approve-profile="pet" disabled>Approve</button><button class="mini-next" type="button" data-profile-tab="pet"><img src="../assets/button-chevron-right.svg" alt=""></button></span>
+              </div>
+              <div class="profile-row">
+                <span class="row-icon"><img src="../assets/profile-row-senior-care.svg" alt=""></span>
+                <span class="row-label">Senior care</span>
+                <span class="status no"><img class="status-icon" src="../assets/x-mark.svg" alt="">No</span>
+                <span></span>
+              </div>
+              <div class="profile-row">
+                <span class="row-icon"><img src="../assets/profile-row-tutoring.svg" alt=""></span>
+                <span class="row-label">Tutoring</span>
+                <span class="status no"><img class="status-icon" src="../assets/x-mark.svg" alt="">No</span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="profile-tags"></div>
+          </div>
+
+          <div class="profile-view" data-profile-view="babysitting" hidden>
+            <div class="review-accordion">
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/icon-personal-info.svg" alt=""></span><strong>Personal information</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="personal-info-block">
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="babysitting-full-name">Full name</label>
+                      <input class="personal-input" id="babysitting-full-name" type="text" value="Johana Mrkvičková">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label">Date of birth</label>
+                      <div class="personal-dob-row">
+                        <div class="personal-select">31 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">January <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">1980 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                      </div>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="babysitting-phone-number">Phone number</label>
+                      <div class="personal-phone-row">
+                        <div class="personal-phone-prefix">
+                          <span class="personal-phone-flag" aria-hidden="true"></span>
+                          <img src="../assets/icon-chevron-down.svg" alt="">
+                          <span>(+420)</span>
+                        </div>
+                        <input class="personal-phone-number" id="babysitting-phone-number" type="text" value="777 123 456">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-real"> Write your real name (not a nickname or diminutive)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-diacritics"> Enter your full name with diacritics – exactly as it appears on your ID card</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/location-dot.svg" alt=""></span><strong>Location</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="location-block">
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="babysitting-primary-address">Primary address <span class="required">*</span></label>
+                      <input class="location-input" id="babysitting-primary-address" type="text" value="Americká 362/11, 123 00 Praha 4" required>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="babysitting-secondary-address">Secondary address</label>
+                      <input class="location-input" id="babysitting-secondary-address" type="text" placeholder="no information submitted">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="babysitting-location-note">When and where is sitter available</label>
+                      <textarea class="location-note" id="babysitting-location-note" placeholder="no information submitted"></textarea>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-address-missing"> Fill in the Location, including the street</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-note-missing"> Add a note about your Locations in the appropriate field – specify when you are available at each location</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-profile-photo.svg" alt=""></span><strong>Profile photo</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="profile-photo-preview" aria-label="Profile photo preview"></div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-photo-black-white"> Upload your colored profile photo (unfortunately, black-and-white cannot be used)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-photo-too-narrow"> Upload a colored profile photo that has the correct size (the current one is too narrow)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-photo-face-unclear"> Upload a colored profile photo – one where you're more clearly visible (mainly your face), so families can easily recognize you</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-photo-filters"> Upload a photo without filters, special effects, images, etc.</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section is-open">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-about-me.svg" alt=""></span><strong>About me</strong><span class="review-issue-count" data-issue-count>2 issues</span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="review-field-group">
+                    <label class="review-field-label" for="babysitting-about-czech">In Czech</label>
+                    <textarea class="review-textarea" id="babysitting-about-czech">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lobortis ipsum nec quam rutrum, eget auctor diam aliquet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed vestibulum euismod orci id gravida. Integer egestas pharetr...</textarea>
+                  </div>
+                  <div class="review-field-group">
+                    <label class="review-field-label" for="babysitting-about-english">In English</label>
+                    <textarea class="review-textarea" id="babysitting-about-english">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lobortis ipsum nec quam rutrum, eget auctor diam aliquet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed vestibulum euismod orci id gravida. Integer egestas pharetr...</textarea>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-about-grammar"> Correct any typos in the text</label>
+                      <label class="problem-option"><input type="checkbox" checked data-tag-key="babysitting-about-sensitive-info"> Remove organization names, your surname, and contact details from the text</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-about-side-income"> Remove words like "side job", "extra income", "earn a bit" from your text</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-about-language"> Write the text in English</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-about-inconsistent"> Differentiate between individual texts</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-about-missing"> Elaborate the text</label>
+                      <label class="problem-option"><input type="checkbox" checked data-tag-key="babysitting-about-not-specific"> Expand the Childcare section – describe your experience with children, what exactly you offer to parents, why they should choose you, etc.</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-experience.svg" alt=""></span><strong>Experience & Availability</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <textarea class="review-textarea">Available on weekdays and has occasional babysitting experience with preschool children.</textarea>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-experience-not-specific"> Experience is not specific enough</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-availability-conflict"> Availability conflicts with profile settings</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-age-group-missing"> Missing age group details</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-qualifications.svg" alt=""></span><strong>Qualifications</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <textarea class="review-textarea">First aid certificate is mentioned but not attached.</textarea>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-certificate-missing"> Certificate is missing</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-qualification-verify"> Qualification claim needs verification</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-other.svg" alt=""></span><strong>Other</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <textarea class="review-textarea">No additional notes.</textarea>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-other-inconsistent"> Other profile inconsistency</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="babysitting-support-manual-review"> Needs manual support review</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-tags"></div>
+            <button class="profile-approve" type="button" data-approve-profile="babysitting">✓ Approve babysitting</button>
+          </div>
+
+          <div class="profile-view" data-profile-view="cleaning" hidden>
+            <div class="review-accordion">
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/icon-personal-info.svg" alt=""></span><strong>Personal information</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="personal-info-block">
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="cleaning-full-name">Full name</label>
+                      <input class="personal-input" id="cleaning-full-name" type="text" value="Johana Mrkvičková">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label">Date of birth</label>
+                      <div class="personal-dob-row">
+                        <div class="personal-select">31 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">January <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">1980 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                      </div>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="cleaning-phone-number">Phone number</label>
+                      <div class="personal-phone-row">
+                        <div class="personal-phone-prefix">
+                          <span class="personal-phone-flag" aria-hidden="true"></span>
+                          <img src="../assets/icon-chevron-down.svg" alt="">
+                          <span>(+420)</span>
+                        </div>
+                        <input class="personal-phone-number" id="cleaning-phone-number" type="text" value="777 123 456">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-real"> Write your real name (not a nickname or diminutive)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-diacritics"> Enter your full name with diacritics – exactly as it appears on your ID card</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/location-dot.svg" alt=""></span><strong>Location</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="location-block">
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="cleaning-primary-address">Primary address <span class="required">*</span></label>
+                      <input class="location-input" id="cleaning-primary-address" type="text" value="Americká 362/11, 123 00 Praha 4" required>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="cleaning-secondary-address">Secondary address</label>
+                      <input class="location-input" id="cleaning-secondary-address" type="text" placeholder="no information submitted">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="cleaning-location-note">When and where is sitter available</label>
+                      <textarea class="location-note" id="cleaning-location-note" placeholder="no information submitted"></textarea>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-address-missing"> Fill in the Location, including the street</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-note-missing"> Add a note about your Locations in the appropriate field – specify when you are available at each location</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-profile-photo.svg" alt=""></span><strong>Profile photo</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="profile-photo-preview cleaning" aria-label="Cleaning profile photo preview"></div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-photo-black-white"> Upload your colored profile photo (unfortunately, black-and-white cannot be used)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-photo-too-narrow"> Upload a colored profile photo that has the correct size (the current one is too narrow)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-photo-face-unclear"> Upload a colored profile photo – one where you're more clearly visible (mainly your face), so families can easily recognize you</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-photo-filters"> Upload a photo without filters, special effects, images, etc.</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section is-open">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-about-me.svg" alt=""></span><strong>About cleaning</strong><span class="review-issue-count" data-issue-count>1 issue</span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="review-field-group">
+                    <label class="review-field-label" for="cleaning-about-czech">About me (in Czech)</label>
+                    <textarea class="review-textarea" id="cleaning-about-czech">Cleaning profile describes general help, but the scope of services is not specific enough for approval.</textarea>
+                  </div>
+                  <div class="review-field-group">
+                    <label class="review-field-label" for="cleaning-about-english">About me (in English)</label>
+                    <textarea class="review-textarea" id="cleaning-about-english">Cleaning profile describes general help, but the scope of services is not specific enough for approval.</textarea>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-typo"> Correct any typos in the text</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-contact"> Remove organization names, your surname, and contact details from the text</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-side-income"> Remove words like "side job", "extra income", "earn a bit" from your text</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-language"> Write the text in English</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-differentiate"> Differentiate between individual texts</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="cleaning-about-brief"> Elaborate the text</label>
+                      <label class="problem-option"><input type="checkbox" checked data-tag-key="cleaning-about-not-specific"> Expand the Cleaning section – describe your experience with cleaning, what exactly you offer, why families should choose you, etc.</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="profile-tags"></div>
+            <button class="profile-approve" type="button" data-approve-profile="cleaning">✓ Approve cleaning</button>
+          </div>
+
+          <div class="profile-view" data-profile-view="pet" hidden>
+            <div class="review-accordion">
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/icon-personal-info.svg" alt=""></span><strong>Personal information</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="personal-info-block">
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="pet-full-name">Full name</label>
+                      <input class="personal-input" id="pet-full-name" type="text" value="Johana Mrkvičková">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label">Date of birth</label>
+                      <div class="personal-dob-row">
+                        <div class="personal-select">31 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">January <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                        <div class="personal-select">1980 <img src="../assets/icon-chevron-down.svg" alt=""></div>
+                      </div>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="personal-field-label" for="pet-phone-number">Phone number</label>
+                      <div class="personal-phone-row">
+                        <div class="personal-phone-prefix">
+                          <span class="personal-phone-flag" aria-hidden="true"></span>
+                          <img src="../assets/icon-chevron-down.svg" alt="">
+                          <span>(+420)</span>
+                        </div>
+                        <input class="personal-phone-number" id="pet-phone-number" type="text" value="777 123 456">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-real"> Write your real name (not a nickname or diminutive)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="personal-name-diacritics"> Enter your full name with diacritics – exactly as it appears on your ID card</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/location-dot.svg" alt=""></span><strong>Location</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="location-block">
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="pet-primary-address">Primary address <span class="required">*</span></label>
+                      <input class="location-input" id="pet-primary-address" type="text" value="Americká 362/11, 123 00 Praha 4" required>
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="pet-secondary-address">Secondary address</label>
+                      <input class="location-input" id="pet-secondary-address" type="text" placeholder="no information submitted">
+                    </div>
+                    <div class="location-field-group">
+                      <label class="location-field-label" for="pet-location-note">When and where is sitter available</label>
+                      <textarea class="location-note" id="pet-location-note" placeholder="no information submitted"></textarea>
+                    </div>
+                  </div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-address-missing"> Fill in the Location, including the street</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="location-note-missing"> Add a note about your Locations in the appropriate field – specify when you are available at each location</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <button class="review-summary" type="button">
+                  <span class="review-summary-icon"><img src="../assets/accordion-profile-photo.svg" alt=""></span><strong>Profile photo</strong><span class="review-issue-count" data-issue-count hidden></span><span class="review-chevron"><img src="../assets/accordion-chevron-down.svg" alt=""></span>
+                </button>
+                <div class="review-panel">
+                  <div class="profile-photo-preview pet" aria-label="Pet care profile photo preview"></div>
+                  <div class="problem-picker">
+                    <button class="problem-trigger" type="button">Mark problems <img src="../assets/accordion-chevron-down.svg" alt=""></button>
+                    <div class="problem-menu" hidden>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="pet-photo-black-white"> Upload your colored profile photo (unfortunately, black-and-white cannot be used)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="pet-photo-too-narrow"> Upload a colored profile photo that has the correct size (the current one is too narrow)</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="pet-photo-face-unclear"> Upload a colored profile photo – one where you're more clearly visible (mainly your face), so families can easily recognize you</label>
+                      <label class="problem-option"><input type="checkbox" data-tag-key="pet-photo-filters"> Upload a photo without filters, special effects, images, etc.</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="profile-tags"></div>
+            <button class="profile-approve" type="button" data-approve-profile="pet" disabled>✓ Approved pet care</button>
+          </div>
+
+          <div class="profile-view" data-profile-view="senior" hidden>
+            <div class="empty-profile-state">
+              <div class="empty-profile-panel">
+                <p class="empty-profile-message">Johana hasn’t set up her senior care profile yet</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-view" data-profile-view="tutoring" hidden>
+            <div class="empty-profile-state">
+              <div class="empty-profile-panel">
+                <p class="empty-profile-message">Johana hasn’t set up her tutoring profile yet</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="conversation-card" aria-label="Approval conversation">
+          <div class="conversation-scroll">
+            <div class="date-line">November 18, 2025</div>
+            <div class="message-row out">
+              <div>
+                <div class="bubble system">✅ 🐾 Pet care profile was approved</div>
+                <div class="time-label" style="text-align:right;">17:06</div>
+              </div>
+            </div>
+
+            <div class="date-line">November 19, 2025</div>
+            <div class="message-row in">
+              <div class="mini-avatar"></div>
+              <div>
+                <div class="bubble">I have just updated my profile according the requirements</div>
+                <div class="time-label">12:40</div>
+              </div>
+            </div>
+
+            <div class="date-line">November 20, 2025</div>
+            <div class="message-row out">
+              <div>
+                <div class="bubble note">
+                  Please update “About me” section in the babysitting and cleaning profile to be more specific
+                </div>
+                <div class="bubble-tags">
+                  <span class="tag babysitting" data-tag-key="babysitting-about-not-specific">👶 About me: Not Specific</span>
+                  <span class="tag cleaning" data-tag-key="cleaning-about-not-specific">🧹 About me: Not Specific</span>
+                </div>
+                <div class="time-label" style="text-align:right;">17:06</div>
+              </div>
+            </div>
+
+            <div class="date-line">November 21, 2025</div>
+            <div class="message-row in">
+              <div class="mini-avatar"></div>
+              <div>
+                <div class="bubble">Ok thanks for the information</div>
+                <div class="bubble" style="margin-top:10px;">Maecenas sit amet eros non ipsum lacinia vestibulum in quis neque. Sed scelerisque erat id suscipit rhoncus. Suspendisse blandit</div>
+                <div class="time-label">12:40</div>
+              </div>
+            </div>
+          </div>
+          <section class="message-composer" data-message-composer aria-label="Reply composer">
+            <h3 class="message-composer-title">Your message</h3>
+            <div class="generated-message-box" data-generated-message-box hidden>
+              <p class="generated-message-intro" data-generated-message-intro></p>
+              <ul class="generated-message-list" data-generated-message-list></ul>
+            </div>
+            <textarea
+              class="message-composer-textarea"
+              data-extra-message
+              placeholder="You can write your extra message here..."
+            ></textarea>
+            <div class="message-composer-pills" data-selected-tags></div>
+            <div class="message-composer-actions">
+              <button class="message-composer-upload" type="button"><img src="../assets/icon-attachment.svg" alt="">Upload attachments</button>
+              <button class="reply-button" type="button" data-submit-reply><img src="../assets/icon-paperplane.svg" alt="">Submit your reply</button>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+  </div>
+  <aside class="approval-toast" data-approval-toast hidden aria-live="polite" aria-atomic="true">
+    <div class="approval-toast-figure">
+      <img src="../assets/sitter-approve-doodle.svg" alt="">
+    </div>
+    <div class="approval-toast-body">
+      <p class="approval-toast-heading" data-approval-toast-heading>Sitter's profile has been successfully approved</p>
+      <button class="approval-toast-undo" type="button" data-approval-toast-undo><img src="../assets/icon-undo.svg" alt="">Undo approval</button>
+    </div>
+    <button class="approval-toast-close" type="button" aria-label="Close notification" data-approval-toast-close>×</button>
+  </aside>
+  <aside class="approval-toast message-toast" data-message-toast hidden aria-live="polite" aria-atomic="true">
+    <div class="approval-toast-figure">
+      <img src="../assets/doodle-paperplane-checked.svg" alt="">
+    </div>
+    <div class="approval-toast-body">
+      <p class="approval-toast-heading">Message has been delivered successfully</p>
+    </div>
+    <button class="approval-toast-close" type="button" aria-label="Close notification" data-message-toast-close>×</button>
+  </aside>
+  <script>
+    (function() {
+      var trigger = document.querySelector('.nav-select-trigger');
+      var menu = document.querySelector('.nav-select-menu');
+      if (!trigger || !menu) return;
+
+      function closeMenu() {
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+
+      trigger.addEventListener('click', function() {
+        var shouldOpen = menu.hidden;
+        menu.hidden = !shouldOpen;
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-select')) closeMenu();
+      });
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closeMenu();
+      });
+    })();
+
+    (function() {
+      var profileCard = document.querySelector('.profile-card');
+      if (!profileCard) return;
+
+      var profileButtons = Array.prototype.slice.call(profileCard.querySelectorAll('[data-profile-tab]'));
+      var switchButtons = Array.prototype.slice.call(profileCard.querySelectorAll('.profile-switch-item[data-profile-tab]'));
+      var views = Array.prototype.slice.call(profileCard.querySelectorAll('[data-profile-view]'));
+      var profileCount = profileCard.querySelector('[data-profile-count]');
+      var profileStatus = profileCard.querySelector('[data-profile-status]');
+      var profileStatusText = profileStatus ? profileStatus.querySelector('span') : null;
+      var profileStatusIcon = profileStatus ? profileStatus.querySelector('img') : null;
+      var avatar = profileCard.querySelector('.avatar');
+      var profileLoading = profileCard.querySelector('[data-profile-loading]');
+      var approvalToast = document.querySelector('[data-approval-toast]');
+      var approvalToastHeading = approvalToast ? approvalToast.querySelector('[data-approval-toast-heading]') : null;
+      var approvalToastTimer = null;
+      var approvalToastHideTimer = null;
+      var messageToast = document.querySelector('[data-message-toast]');
+      var messageToastTimer = null;
+      var messageToastHideTimer = null;
+      var profileLoadingTimer = null;
+      var lastApprovalSnapshot = null;
+      var currentProfile = 'all';
+      var profileLabels = {
+        babysitting: 'Babysitting',
+        cleaning: 'Cleaning',
+        pet: 'Pet care',
+        senior: 'Senior care',
+        tutoring: 'Tutoring'
+      };
+      var profileState = {
+        babysitting: 'waiting',
+        cleaning: 'waiting',
+        pet: 'approved',
+        senior: 'not-submitted',
+        tutoring: 'not-submitted'
+      };
+      var profileStateMeta = {
+        waiting: { badgeState: 'waiting', badgeText: 'Waiting for approval', badgeIcon: '../assets/waiting-icon.svg', switchIcon: '../assets/profile-toggle-hourglass.svg', rowClass: 'waiting', rowText: 'Waiting', rowIcon: '../assets/waiting-icon.svg' },
+        approved: { badgeState: 'approved', badgeText: 'Approved', badgeIcon: '../assets/checkmark.svg', switchIcon: '../assets/profile-toggle-checkmark.svg', rowClass: 'yes', rowText: 'Yes', rowIcon: '../assets/checkmark.svg' },
+        'not-submitted': { badgeState: 'not-submitted', badgeText: 'No submitted yet', badgeIcon: '../assets/x-mark.svg', switchIcon: '../assets/profile-toggle-x-mark.svg', rowClass: 'no', rowText: 'No', rowIcon: '../assets/x-mark.svg' }
+      };
+      var profileTagMeta = {
+        'personal-name-real': { profile: 'babysitting', label: '👤 Full name: Real name', removeLabel: 'Remove Full name: Real name', tone: 'blue', shared: true, sharedProfiles: ['babysitting', 'cleaning', 'pet'] },
+        'personal-name-diacritics': { profile: 'babysitting', label: '👤 Full name: Add diacritics', removeLabel: 'Remove Full name: Add diacritics', tone: 'blue', shared: true, sharedProfiles: ['babysitting', 'cleaning', 'pet'] },
+        'location-address-missing': { profile: 'babysitting', label: '📍 Location: Fill in address', removeLabel: 'Remove Location: Fill in address', tone: 'blue', shared: true, sharedProfiles: ['babysitting', 'cleaning', 'pet'] },
+        'location-note-missing': { profile: 'babysitting', label: '📍 Location note: Missing', removeLabel: 'Remove Location note: Missing', tone: 'blue', shared: true, sharedProfiles: ['babysitting', 'cleaning', 'pet'] },
+        'babysitting-photo-black-white': { profile: 'babysitting', label: '👶 Photo: Black & white', removeLabel: 'Remove Photo: Black & white' },
+        'babysitting-photo-too-narrow': { profile: 'babysitting', label: '👶 Photo: Too narrow', removeLabel: 'Remove Photo: Too narrow' },
+        'babysitting-photo-face-unclear': { profile: 'babysitting', label: '👶 Photo: Face unclear', removeLabel: 'Remove Photo: Face unclear' },
+        'babysitting-photo-filters': { profile: 'babysitting', label: '👶 Photo: Filters/effects', removeLabel: 'Remove Photo: Filters/effects' },
+        'babysitting-about-missing': { profile: 'babysitting', label: '👶 About: Too brief', removeLabel: 'Remove About: Too brief' },
+        'babysitting-about-sensitive-info': { profile: 'babysitting', label: '👶 About: Contact info', removeLabel: 'Remove About: Contact info' },
+        'babysitting-about-not-specific': { profile: 'babysitting', label: '👶 About: Childcare', removeLabel: 'Remove About: Childcare' },
+        'babysitting-about-language': { profile: 'babysitting', label: '👶 About: English', removeLabel: 'Remove About: English' },
+        'babysitting-about-grammar': { profile: 'babysitting', label: '👶 About: Typo', removeLabel: 'Remove About: Typo' },
+        'babysitting-about-inconsistent': { profile: 'babysitting', label: '👶 About: Texts differ', removeLabel: 'Remove About: Texts differ' },
+        'babysitting-about-side-income': { profile: 'babysitting', label: '👶 About: Side income', removeLabel: 'Remove About: Side income' },
+        'babysitting-experience-not-specific': { profile: 'babysitting', label: '👶 Experience: Not Specific', removeLabel: 'Remove Experience: Not Specific' },
+        'babysitting-availability-conflict': { profile: 'babysitting', label: '👶 Availability: Conflict', removeLabel: 'Remove Availability: Conflict' },
+        'babysitting-age-group-missing': { profile: 'babysitting', label: '👶 Age group: Missing', removeLabel: 'Remove Age group: Missing' },
+        'babysitting-certificate-missing': { profile: 'babysitting', label: '👶 Certificate: Missing', removeLabel: 'Remove Certificate: Missing' },
+        'babysitting-qualification-verify': { profile: 'babysitting', label: '👶 Qualification: Verify', removeLabel: 'Remove Qualification: Verify' },
+        'babysitting-other-inconsistent': { profile: 'babysitting', label: '👶 Other: Inconsistent', removeLabel: 'Remove Other: Inconsistent' },
+        'babysitting-support-manual-review': { profile: 'babysitting', label: '👶 Support: Manual review', removeLabel: 'Remove Support: Manual review' },
+        'cleaning-photo-black-white': { profile: 'cleaning', label: '🧹 Photo: Black & white', removeLabel: 'Remove Photo: Black & white' },
+        'cleaning-photo-too-narrow': { profile: 'cleaning', label: '🧹 Photo: Too narrow', removeLabel: 'Remove Photo: Too narrow' },
+        'cleaning-photo-face-unclear': { profile: 'cleaning', label: '🧹 Photo: Face unclear', removeLabel: 'Remove Photo: Face unclear' },
+        'cleaning-photo-filters': { profile: 'cleaning', label: '🧹 Photo: Filters/effects', removeLabel: 'Remove Photo: Filters/effects' },
+        'cleaning-about-not-specific': { profile: 'cleaning', label: '🧹 About: Cleaning', removeLabel: 'Remove About: Cleaning' },
+        'cleaning-price-availability-unclear': { profile: 'cleaning', label: '🧹 Price/Avail.: Unclear', removeLabel: 'Remove Price/Avail.: Unclear' },
+        'cleaning-about-language': { profile: 'cleaning', label: '🧹 About: English', removeLabel: 'Remove About: English' },
+        'cleaning-about-typo': { profile: 'cleaning', label: '🧹 About: Typo', removeLabel: 'Remove About: Typo' },
+        'cleaning-about-contact': { profile: 'cleaning', label: '🧹 About: Contact info', removeLabel: 'Remove About: Contact info' },
+        'cleaning-about-side-income': { profile: 'cleaning', label: '🧹 About: Side income', removeLabel: 'Remove About: Side income' },
+        'cleaning-about-differentiate': { profile: 'cleaning', label: '🧹 About: Texts differ', removeLabel: 'Remove About: Texts differ' },
+        'cleaning-about-brief': { profile: 'cleaning', label: '🧹 About: Too brief', removeLabel: 'Remove About: Too brief' },
+        'pet-photo-black-white': { profile: 'pet', label: '🐾 Photo: Black & white', removeLabel: 'Remove Photo: Black & white' },
+        'pet-photo-too-narrow': { profile: 'pet', label: '🐾 Photo: Too narrow', removeLabel: 'Remove Photo: Too narrow' },
+        'pet-photo-face-unclear': { profile: 'pet', label: '🐾 Photo: Face unclear', removeLabel: 'Remove Photo: Face unclear' },
+        'pet-photo-filters': { profile: 'pet', label: '🐾 Photo: Filters/effects', removeLabel: 'Remove Photo: Filters/effects' },
+        'pet-about-typo': { profile: 'pet', label: '🐾 About: Typo', removeLabel: 'Remove About: Typo' },
+        'pet-about-contact': { profile: 'pet', label: '🐾 About: Contact info', removeLabel: 'Remove About: Contact info' },
+        'pet-about-side-income': { profile: 'pet', label: '🐾 About: Side income', removeLabel: 'Remove About: Side income' },
+        'pet-about-language': { profile: 'pet', label: '🐾 About: English', removeLabel: 'Remove About: English' },
+        'pet-about-differentiate': { profile: 'pet', label: '🐾 About: Texts differ', removeLabel: 'Remove About: Texts differ' },
+        'pet-about-brief': { profile: 'pet', label: '🐾 About: Too brief', removeLabel: 'Remove About: Too brief' },
+        'pet-about-pet-sitting': { profile: 'pet', label: '🐾 About: Pet sitting', removeLabel: 'Remove About: Pet sitting' },
+        'pet-about-about-pet': { profile: 'pet', label: '🐾 About: About pet', removeLabel: 'Remove About: About pet' }
+      };
+      var tagAssets = {
+        babysitting: '../assets/x-tag-babysitting.svg',
+        cleaning: '../assets/x-tag-cleaning.svg',
+        pet: '../assets/x-tag-pet-care.svg',
+        senior: '../assets/x-tag-senior-care.svg',
+        tutoring: '../assets/x-tag-tutoring.svg'
+      };
+      var DASHBOARD_MESSAGE_KEY = 'sitter-approval-dashboard-message';
+      var SUPPORT_REQUEST_KEY = 'sitter-approval-support-request';
+      var SUPPORT_STATUS_KEY = 'sitter-approval-support-status';
+      var DASHBOARD_SITTER_ID = '567891';
+      var toneTagAssets = {
+        blue: '../assets/x-tag-blue.svg'
+      };
+      var composer = document.querySelector('[data-message-composer]');
+      var conversationScroll = document.querySelector('.conversation-scroll');
+      var generatedMessageBox = composer ? composer.querySelector('[data-generated-message-box]') : null;
+      var generatedMessageIntro = composer ? composer.querySelector('[data-generated-message-intro]') : null;
+      var generatedMessageList = composer ? composer.querySelector('[data-generated-message-list]') : null;
+      var selectedTagsContainer = composer ? composer.querySelector('[data-selected-tags]') : null;
+      var extraMessageTextarea = composer ? composer.querySelector('[data-extra-message]') : null;
+      var submitReplyButton = composer ? composer.querySelector('[data-submit-reply]') : null;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function formatList(values) {
+        if (values.length <= 1) return values[0] || '';
+        if (values.length === 2) return values[0] + ' and ' + values[1];
+        return values.slice(0, -1).join(', ') + ', and ' + values[values.length - 1];
+      }
+
+      function formatDateLine(date) {
+        return date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+
+      function formatTimeLabel(date) {
+        return date.toLocaleTimeString('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function getLastDateLineText() {
+        if (!conversationScroll) return '';
+        var dateLines = conversationScroll.querySelectorAll('.date-line');
+        var lastDateLine = dateLines[dateLines.length - 1];
+        return lastDateLine ? lastDateLine.textContent.trim() : '';
+      }
+
+      function createParagraphHtml(text) {
+        return text
+          .split(/\n\s*\n/)
+          .map(function(part) { return part.trim(); })
+          .filter(Boolean)
+          .map(function(part) {
+            return '<p style="margin:0;">' + escapeHtml(part).replace(/\n/g, '<br>') + '</p>';
+          })
+          .join('<div style="height:10px"></div>');
+      }
+
+      function autoGrowComposerTextarea() {
+        if (!extraMessageTextarea) return;
+        extraMessageTextarea.style.height = '76px';
+        extraMessageTextarea.style.height = Math.max(76, extraMessageTextarea.scrollHeight) + 'px';
+      }
+
+      function scrollConversationToBottom() {
+        if (!conversationScroll) return;
+        conversationScroll.scrollTop = conversationScroll.scrollHeight;
+      }
+
+      function readDashboardSubmittedMessage() {
+        try {
+          var raw = localStorage.getItem(DASHBOARD_MESSAGE_KEY);
+          if (!raw) return null;
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== DASHBOARD_SITTER_ID || !parsed.timestamp) return null;
+
+          return {
+            sitterId: parsed.sitterId,
+            timestamp: parsed.timestamp,
+            intro: typeof parsed.intro === 'string' ? parsed.intro.trim() : '',
+            notes: typeof parsed.notes === 'string' ? parsed.notes.trim() : '',
+            resolvedTasks: Array.isArray(parsed.resolvedTasks) ? parsed.resolvedTasks.filter(Boolean) : []
+          };
+        } catch (error) {
+          console.warn('Failed to read sitter dashboard message.', error);
+          return null;
+        }
+      }
+
+      function readSupportRequest() {
+        try {
+          var raw = localStorage.getItem(SUPPORT_REQUEST_KEY);
+          if (!raw) return null;
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== DASHBOARD_SITTER_ID || !Array.isArray(parsed.issues)) return null;
+
+          return parsed;
+        } catch (error) {
+          console.warn('Failed to read support request.', error);
+          return null;
+        }
+      }
+
+      function applySupportRequestIssues() {
+        var supportRequest = readSupportRequest();
+        if (!supportRequest) return;
+
+        profileCard.querySelectorAll('input[type="checkbox"][data-tag-key]').forEach(function(input) {
+          input.checked = false;
+        });
+
+        supportRequest.issues.forEach(function(issue) {
+          if (!issue || !issue.key) return;
+          syncSharedIssue(issue.key, true);
+          profileCard.querySelectorAll('input[type="checkbox"][data-tag-key="' + issue.key + '"]').forEach(function(input) {
+            input.checked = true;
+          });
+        });
+      }
+
+      function appendDashboardSubmittedMessage() {
+        if (!conversationScroll) return;
+
+        var payload = readDashboardSubmittedMessage();
+        if (!payload) return;
+
+        var messageId = 'dashboard-' + payload.timestamp;
+        if (conversationScroll.querySelector('[data-dashboard-message-id="' + messageId + '"]')) return;
+
+        var messageParts = [];
+        if (payload.intro) {
+          messageParts.push(payload.intro);
+        }
+        if (payload.notes) {
+          messageParts.push(payload.notes);
+        }
+
+        if (!messageParts.length) {
+          messageParts.push('I updated the requested items and I’m sending my profile for review again.');
+        }
+
+        var submittedAt = new Date(payload.timestamp);
+        if (isNaN(submittedAt.getTime())) {
+          submittedAt = new Date();
+        }
+
+        var dateLineText = formatDateLine(submittedAt);
+        var timeLabelText = formatTimeLabel(submittedAt);
+
+        if (getLastDateLineText() !== dateLineText) {
+          var dateLine = document.createElement('div');
+          dateLine.className = 'date-line';
+          dateLine.textContent = dateLineText;
+          conversationScroll.appendChild(dateLine);
+        }
+
+        var messageRow = document.createElement('div');
+        messageRow.className = 'message-row in';
+        messageRow.setAttribute('data-dashboard-message-id', messageId);
+
+        var miniAvatar = document.createElement('div');
+        miniAvatar.className = 'mini-avatar';
+        messageRow.appendChild(miniAvatar);
+
+        var messageContent = document.createElement('div');
+
+        messageParts.forEach(function(part, index) {
+          var bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          if (index > 0) {
+            bubble.style.marginTop = '10px';
+          }
+          bubble.innerHTML = createParagraphHtml(part);
+          messageContent.appendChild(bubble);
+        });
+
+        var timeLabel = document.createElement('div');
+        timeLabel.className = 'time-label';
+        timeLabel.textContent = timeLabelText;
+        messageContent.appendChild(timeLabel);
+
+        messageRow.appendChild(messageContent);
+        conversationScroll.appendChild(messageRow);
+      }
+
+      function renderStaticTagMarkup(key) {
+        var meta = profileTagMeta[key];
+        if (!meta) return '';
+        var toneClass = meta.tone ? ' tone-' + meta.tone : '';
+        return '<span class="tag ' + meta.profile + toneClass + '" data-tag-key="' + key + '" data-tooltip="' + escapeHtml(getTagTooltip(key)) + '">' + meta.label + '</span>';
+      }
+
+      function getTagTooltip(key) {
+        var meta = profileTagMeta[key];
+        if (!meta) return '';
+
+        var input = profileCard.querySelector('input[type="checkbox"][data-tag-key="' + key + '"]');
+        if (!input) return meta.label;
+
+        var option = input.closest('.problem-option');
+        var section = input.closest('.review-section');
+        var summaryLabel = section ? section.querySelector('.review-summary strong') : null;
+        var description = option ? option.textContent.trim().replace(/\s+/g, ' ') : meta.label;
+        var sectionLabel = summaryLabel ? summaryLabel.textContent.trim() : 'Profile';
+
+        if (meta.shared) {
+          return sectionLabel + ': ' + description;
+        }
+
+        return profileLabels[meta.profile] + ' / ' + sectionLabel + ': ' + description;
+      }
+
+      function applyTagTooltips() {
+        document.querySelectorAll('.tag[data-tag-key]').forEach(function(tag) {
+          var key = tag.getAttribute('data-tag-key');
+          if (!key) return;
+          tag.setAttribute('data-tooltip', getTagTooltip(key));
+        });
+      }
+
+      function getSelectedComposerIssues() {
+        var issues = [];
+
+        Object.keys(profileState).forEach(function(profile) {
+          var view = getProfileView(profile);
+          if (!view) return;
+
+          view.querySelectorAll('input[type="checkbox"][data-tag-key]:checked').forEach(function(input) {
+            var key = input.getAttribute('data-tag-key');
+            var meta = profileTagMeta[key];
+            if (!meta) return;
+
+            var option = input.closest('.problem-option');
+            var section = input.closest('.review-section');
+            var summaryLabel = section ? section.querySelector('.review-summary strong') : null;
+            var description = option ? option.textContent.trim().replace(/\s+/g, ' ') : meta.label;
+
+            issues.push({
+              key: key,
+              profile: profile,
+              profileLabel: meta.shared ? '' : profileLabels[profile],
+              sectionLabel: summaryLabel ? summaryLabel.textContent.trim() : 'Profile',
+              description: description,
+              tagLabel: meta.label,
+              shared: !!meta.shared
+            });
+          });
+        });
+
+        return issues.filter(function(issue, index, list) {
+          return list.findIndex(function(candidate) {
+            return candidate.key === issue.key;
+          }) === index;
+        });
+      }
+
+      function buildGeneratedIntro(issues) {
+        if (!issues.length) return '';
+
+        var sectionLabels = issues.map(function(issue) { return issue.sectionLabel; }).filter(function(label, index, list) {
+          return list.indexOf(label) === index;
+        });
+        var profileLabelsList = issues.map(function(issue) { return issue.profileLabel ? issue.profileLabel.toLowerCase() : ''; }).filter(function(label) {
+          return !!label;
+        }).filter(function(label, index, list) {
+          return list.indexOf(label) === index;
+        });
+        var issueCount = issues.length;
+        var issueLabel = issueCount === 1 ? 'issue' : 'issues';
+
+        if (sectionLabels.length === 1 && profileLabelsList.length === 1) {
+          return 'Please fix ' + issueCount + ' remaining ' + issueLabel + ' in the ' + sectionLabels[0] + ' section of your ' + profileLabelsList[0] + ' profile.';
+        }
+
+        if (sectionLabels.length === 1) {
+          return 'Please fix ' + issueCount + ' remaining ' + issueLabel + ' in the ' + sectionLabels[0] + ' section of your ' + formatList(profileLabelsList) + ' profiles.';
+        }
+
+        return 'Please fix ' + issueCount + ' remaining ' + issueLabel + ' in your profile before approval.';
+      }
+
+      function renderComposer() {
+        if (!composer || !generatedMessageBox || !generatedMessageIntro || !generatedMessageList || !selectedTagsContainer) return;
+
+        var issues = getSelectedComposerIssues();
+
+        if (!issues.length) {
+          generatedMessageBox.hidden = true;
+          generatedMessageIntro.textContent = '';
+          generatedMessageList.innerHTML = '';
+          selectedTagsContainer.hidden = true;
+          selectedTagsContainer.innerHTML = '';
+          if (extraMessageTextarea) {
+            extraMessageTextarea.placeholder = 'Select issue pills above to generate the reply summary, then add any extra message here...';
+          }
+          return;
+        }
+
+        generatedMessageBox.hidden = false;
+        generatedMessageIntro.textContent = buildGeneratedIntro(issues);
+        generatedMessageList.innerHTML = issues.map(function(issue) {
+          var issueLine = issue.shared
+            ? issue.sectionLabel + ': ' + issue.description
+            : issue.profileLabel + ' / ' + issue.sectionLabel + ': ' + issue.description;
+          return '<li>' + escapeHtml(issueLine) + '</li>';
+        }).join('');
+
+        selectedTagsContainer.hidden = false;
+        selectedTagsContainer.innerHTML = issues.map(function(issue) {
+          return renderTagMarkup(issue.key);
+        }).join('');
+
+        if (extraMessageTextarea) {
+          extraMessageTextarea.placeholder = 'You can write your extra message here...';
+        }
+      }
+
+      function submitReply() {
+        if (!conversationScroll || !submitReplyButton) return;
+
+        var issues = getSelectedComposerIssues();
+        var intro = buildGeneratedIntro(issues);
+        var bulletLines = issues.map(function(issue) {
+          return '• ' + (issue.shared
+            ? issue.sectionLabel + ': ' + issue.description
+            : issue.profileLabel + ' / ' + issue.sectionLabel + ': ' + issue.description);
+        });
+        var extraMessage = extraMessageTextarea ? extraMessageTextarea.value.trim() : '';
+        var messageParts = [];
+
+        if (intro) {
+          messageParts.push(intro);
+        }
+
+        if (bulletLines.length) {
+          messageParts.push(bulletLines.join('\n'));
+        }
+
+        if (extraMessage) {
+          messageParts.push(extraMessage);
+        }
+
+        if (!messageParts.length) {
+          window.alert('Please select at least one issue or write a message before submitting.');
+          return;
+        }
+
+        var now = new Date();
+        var dateLineText = formatDateLine(now);
+        var timeLabelText = formatTimeLabel(now);
+        var selectedKeys = issues.map(function(issue) { return issue.key; });
+
+        try {
+          localStorage.setItem(SUPPORT_REQUEST_KEY, JSON.stringify({
+            sitterId: DASHBOARD_SITTER_ID,
+            timestamp: now.toISOString(),
+            intro: intro,
+            issues: issues.map(function(issue) {
+              return {
+                key: issue.key,
+                profile: issue.profile,
+                profileLabel: issue.profileLabel,
+                sectionLabel: issue.sectionLabel,
+                description: issue.description,
+                tagLabel: issue.tagLabel,
+                shared: issue.shared
+              };
+            })
+          }));
+        } catch (error) {
+          console.warn('Failed to save support request issues.', error);
+        }
+
+        if (getLastDateLineText() !== dateLineText) {
+          var dateLine = document.createElement('div');
+          dateLine.className = 'date-line';
+          dateLine.textContent = dateLineText;
+          conversationScroll.appendChild(dateLine);
+        }
+
+        var messageRow = document.createElement('div');
+        messageRow.className = 'message-row out';
+
+        var messageContent = document.createElement('div');
+
+        var bubble = document.createElement('div');
+        bubble.className = 'bubble note';
+        bubble.innerHTML = createParagraphHtml(messageParts.join('\n\n'));
+        messageContent.appendChild(bubble);
+
+        if (selectedKeys.length) {
+          var bubbleTags = document.createElement('div');
+          bubbleTags.className = 'bubble-tags';
+          bubbleTags.innerHTML = selectedKeys.map(renderStaticTagMarkup).join('');
+          messageContent.appendChild(bubbleTags);
+        }
+
+        var timeLabel = document.createElement('div');
+        timeLabel.className = 'time-label';
+        timeLabel.style.textAlign = 'right';
+        timeLabel.textContent = timeLabelText;
+        messageContent.appendChild(timeLabel);
+
+        messageRow.appendChild(messageContent);
+        conversationScroll.appendChild(messageRow);
+
+        if (extraMessageTextarea) {
+          extraMessageTextarea.value = '';
+          autoGrowComposerTextarea();
+        }
+
+        renderProfileTags();
+        refreshProfileStateUI();
+        scrollConversationToBottom();
+        showMessageToast();
+      }
+
+      function closeProblemMenus() {
+        profileCard.querySelectorAll('.problem-menu').forEach(function(menu) {
+          menu.hidden = true;
+        });
+
+        profileCard.querySelectorAll('.problem-trigger').forEach(function(trigger) {
+          trigger.classList.remove('is-open');
+        });
+
+        profileCard.querySelectorAll('.review-section.has-open-menu').forEach(function(section) {
+          section.classList.remove('has-open-menu');
+        });
+      }
+
+      function showToast(toast, hideTimerRef) {
+        if (!toast) return;
+        if (hideTimerRef && hideTimerRef.value) {
+          window.clearTimeout(hideTimerRef.value);
+          hideTimerRef.value = null;
+        }
+        toast.hidden = false;
+        toast.classList.remove('is-exiting');
+        toast.classList.add('is-entering');
+        requestAnimationFrame(function() {
+          toast.classList.add('is-visible');
+        });
+      }
+
+      function hideToast(toast, hideTimerRef) {
+        if (!toast) return;
+        if (hideTimerRef && hideTimerRef.value) {
+          window.clearTimeout(hideTimerRef.value);
+          hideTimerRef.value = null;
+        }
+        toast.classList.remove('is-entering', 'is-visible');
+        toast.classList.add('is-exiting');
+        var timerId = window.setTimeout(function() {
+          toast.hidden = true;
+          toast.classList.remove('is-exiting');
+          if (hideTimerRef) {
+            hideTimerRef.value = null;
+          }
+        }, 300);
+        if (hideTimerRef) {
+          hideTimerRef.value = timerId;
+        }
+      }
+
+      function hideApprovalToast() {
+        if (!approvalToast) return;
+        if (approvalToastTimer) {
+          window.clearTimeout(approvalToastTimer);
+          approvalToastTimer = null;
+        }
+        hideToast(approvalToast, {
+          get value() { return approvalToastHideTimer; },
+          set value(next) { approvalToastHideTimer = next; }
+        });
+      }
+
+      function showApprovalToast(profile) {
+        if (!approvalToast || !approvalToastHeading) return;
+        if (approvalToastTimer) {
+          window.clearTimeout(approvalToastTimer);
+        }
+        approvalToastHeading.textContent = 'Sitter’s ' + profileLabels[profile].toLowerCase() + ' profile has been successfully approved';
+        showToast(approvalToast, {
+          get value() { return approvalToastHideTimer; },
+          set value(next) { approvalToastHideTimer = next; }
+        });
+        approvalToastTimer = window.setTimeout(function() {
+          hideApprovalToast();
+        }, 5000);
+      }
+
+      function hideMessageToast() {
+        if (!messageToast) return;
+        if (messageToastTimer) {
+          window.clearTimeout(messageToastTimer);
+          messageToastTimer = null;
+        }
+        hideToast(messageToast, {
+          get value() { return messageToastHideTimer; },
+          set value(next) { messageToastHideTimer = next; }
+        });
+      }
+
+      function showMessageToast() {
+        if (!messageToast) return;
+        if (messageToastTimer) {
+          window.clearTimeout(messageToastTimer);
+        }
+        showToast(messageToast, {
+          get value() { return messageToastHideTimer; },
+          set value(next) { messageToastHideTimer = next; }
+        });
+        messageToastTimer = window.setTimeout(function() {
+          hideMessageToast();
+        }, 5000);
+      }
+
+      function getProfileMeta(profile) {
+        if (profile === 'all') {
+          var submittedProfiles = Object.keys(profileState).filter(function(key) {
+            return profileState[key] !== 'not-submitted';
+          }).length;
+          var waitingProfiles = Object.keys(profileState).filter(function(key) {
+            return profileState[key] === 'waiting';
+          }).length;
+
+          return {
+            subline: submittedProfiles + ' profiles in total',
+            state: waitingProfiles > 0 ? 'waiting' : 'approved',
+            text: waitingProfiles === 0
+              ? 'No profile waiting for approval'
+              : waitingProfiles === 1
+                ? '1 profile waiting for approval'
+                : waitingProfiles + ' profiles waiting for approval',
+            icon: waitingProfiles > 0 ? '../assets/waiting-icon.svg' : '../assets/checkmark.svg'
+          };
+        }
+
+        var stateMeta = profileStateMeta[profileState[profile]];
+        return {
+          subline: profileLabels[profile],
+          state: stateMeta.badgeState,
+          text: stateMeta.badgeText,
+          icon: stateMeta.badgeIcon
+        };
+      }
+
+      function getProfileView(profile) {
+        return profileCard.querySelector('[data-profile-view="' + profile + '"]');
+      }
+
+      function renderTagMarkup(key) {
+        var meta = profileTagMeta[key];
+        if (!meta) return '';
+        var toneClass = meta.tone ? ' tone-' + meta.tone : '';
+        var removeIcon = meta.tone && toneTagAssets[meta.tone] ? toneTagAssets[meta.tone] : tagAssets[meta.profile];
+
+        return '<span class="tag ' + meta.profile + toneClass + '" data-tag-key="' + key + '" data-tooltip="' + escapeHtml(getTagTooltip(key)) + '">' +
+          meta.label +
+          ' <button class="tag-remove" type="button" aria-label="' + meta.removeLabel + '">' +
+          '<img src="' + removeIcon + '" alt="">' +
+          '</button></span>';
+      }
+
+      function getCheckedTagKeys(view) {
+        if (!view) return [];
+
+        return Array.prototype.slice.call(
+          view.querySelectorAll('input[type="checkbox"][data-tag-key]:checked')
+        ).map(function(input) {
+          return input.getAttribute('data-tag-key');
+        }).filter(function(key, index, list) {
+          return !!profileTagMeta[key] && list.indexOf(key) === index;
+        });
+      }
+
+      function openTagContext(key) {
+        var meta = profileTagMeta[key];
+        if (!meta) return;
+
+        var targetProfile = meta.profile;
+        if (meta.shared) {
+          var preferredProfile = currentProfile !== 'all' ? currentProfile : (meta.sharedProfiles && meta.sharedProfiles[0]);
+          var hasTargetInCurrent = preferredProfile && profileCard.querySelector('.profile-view[data-profile-view="' + preferredProfile + '"] input[type="checkbox"][data-tag-key="' + key + '"]');
+          targetProfile = hasTargetInCurrent ? preferredProfile : (meta.sharedProfiles && meta.sharedProfiles[0]) || meta.profile;
+        }
+
+        showProfile(targetProfile);
+
+        var targetInput = profileCard.querySelector('.profile-view[data-profile-view="' + targetProfile + '"] input[type="checkbox"][data-tag-key="' + key + '"]');
+        if (!targetInput) return;
+
+        var targetSection = targetInput.closest('.review-section');
+        var targetView = targetInput.closest('[data-profile-view]');
+        if (!targetSection || !targetView) return;
+
+        targetView.querySelectorAll('.review-section').forEach(function(section) {
+          section.classList.toggle('is-open', section === targetSection);
+        });
+
+        closeProblemMenus();
+
+        var targetTextarea = targetSection.querySelector('.review-textarea, .location-input, .location-note');
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (targetTextarea) {
+          window.setTimeout(function() {
+            targetTextarea.focus({ preventScroll: true });
+          }, 120);
+        }
+      }
+
+      function syncSharedIssue(key, checked) {
+        var meta = profileTagMeta[key];
+        if (!meta || !meta.shared) return;
+
+        profileCard.querySelectorAll('input[type="checkbox"][data-tag-key="' + key + '"]').forEach(function(input) {
+          input.checked = checked;
+        });
+      }
+
+      function getProfileIssueCount(profile) {
+        return getCheckedTagKeys(getProfileView(profile)).length;
+      }
+
+      function updateIssueCounts() {
+        profileCard.querySelectorAll('[data-profile-view]').forEach(function(view) {
+          view.querySelectorAll('.review-section').forEach(function(section) {
+            var issueCount = section.querySelector('[data-issue-count]');
+            if (!issueCount) return;
+
+            var count = section.querySelectorAll('input[type="checkbox"][data-tag-key]:checked').length;
+            issueCount.hidden = count === 0;
+            issueCount.textContent = count === 1 ? '1 issue' : count + ' issues';
+          });
+        });
+      }
+
+      function renderProfileTags() {
+        views.forEach(function(view) {
+          var tagsContainer = view.querySelector('.profile-tags');
+          if (!tagsContainer) return;
+
+          var profile = view.getAttribute('data-profile-view');
+          var keys = [];
+
+          if (profile === 'all') {
+            ['babysitting', 'cleaning', 'pet', 'senior', 'tutoring'].forEach(function(profileKey) {
+              var sourceView = profileCard.querySelector('[data-profile-view="' + profileKey + '"]');
+              keys = keys.concat(getCheckedTagKeys(sourceView));
+            });
+          } else {
+            keys = getCheckedTagKeys(view);
+          }
+
+          keys = keys.filter(function(key, index, list) {
+            return list.indexOf(key) === index;
+          });
+
+          tagsContainer.innerHTML = keys.map(renderTagMarkup).join('');
+        });
+      }
+
+      function updateOverviewRow(profile) {
+        var row = profileCard.querySelector('[data-profile-row="' + profile + '"]');
+        if (!row) return;
+
+        var stateMeta = profileStateMeta[profileState[profile]];
+        var status = row.querySelector('.status');
+        var approveButton = row.querySelector('.mini-approve');
+
+        if (status) {
+          status.className = 'status ' + stateMeta.rowClass;
+          status.innerHTML = '<img class="status-icon" src="' + stateMeta.rowIcon + '" alt="">' + stateMeta.rowText;
+        }
+
+        if (approveButton) {
+          approveButton.disabled = profileState[profile] === 'approved';
+        }
+      }
+
+      function updateProfileApproveButton(profile) {
+        var button = profileCard.querySelector('.profile-view[data-profile-view="' + profile + '"] .profile-approve');
+        if (!button) return;
+
+        var label = profileLabels[profile].toLowerCase();
+        var isApproved = profileState[profile] === 'approved';
+        button.disabled = isApproved;
+        button.textContent = isApproved ? '✓ Approved ' + label : '✓ Approve ' + label;
+      }
+
+      function updateSwitchState(profile) {
+        var button = profileCard.querySelector('.profile-switch-item[data-profile-tab="' + profile + '"]');
+        if (!button) return;
+
+        var icon = button.querySelector('.profile-switch-icon img');
+        if (icon) icon.src = profileStateMeta[profileState[profile]].switchIcon;
+      }
+
+      function refreshProfileStateUI() {
+        try {
+          var waitingProfiles = Object.keys(profileState).filter(function(profile) {
+            return profileState[profile] === 'waiting';
+          });
+
+          localStorage.setItem(SUPPORT_STATUS_KEY, JSON.stringify({
+            sitterId: DASHBOARD_SITTER_ID,
+            waitingProfiles: waitingProfiles,
+            waitingCount: waitingProfiles.length,
+            timestamp: new Date().toISOString()
+          }));
+        } catch (error) {
+          console.warn('Failed to save support status.', error);
+        }
+
+        Object.keys(profileState).forEach(function(profile) {
+          updateOverviewRow(profile);
+          updateProfileApproveButton(profile);
+          updateSwitchState(profile);
+        });
+        updateIssueCounts();
+        showProfile(currentProfile);
+        renderComposer();
+        applyTagTooltips();
+      }
+
+      function restoreApprovalSnapshot() {
+        if (!lastApprovalSnapshot) return;
+
+        profileState[lastApprovalSnapshot.profile] = lastApprovalSnapshot.previousState;
+
+        Object.keys(lastApprovalSnapshot.checkedMap).forEach(function(key) {
+          profileCard.querySelectorAll('input[type="checkbox"][data-tag-key="' + key + '"]').forEach(function(input) {
+            input.checked = !!lastApprovalSnapshot.checkedMap[key];
+          });
+        });
+
+        closeProblemMenus();
+        renderProfileTags();
+        refreshProfileStateUI();
+        hideApprovalToast();
+        lastApprovalSnapshot = null;
+      }
+
+      function approveProfile(profile) {
+        if (!profileState[profile] || profileState[profile] === 'approved') return;
+
+        var issuesCount = getProfileIssueCount(profile);
+        if (issuesCount > 0) {
+          var confirmed = window.confirm(
+            'There are still ' + issuesCount + ' unresolved issues in sitter\'s ' + profileLabels[profile] + ' profile. Are you sure you want to approve it?'
+          );
+          if (!confirmed) return;
+        }
+
+        var view = getProfileView(profile);
+        var checkedMap = {};
+        if (view) {
+          view.querySelectorAll('input[type="checkbox"][data-tag-key]').forEach(function(input) {
+            checkedMap[input.getAttribute('data-tag-key')] = input.checked;
+            input.checked = false;
+          });
+        }
+
+        lastApprovalSnapshot = {
+          profile: profile,
+          previousState: profileState[profile],
+          checkedMap: checkedMap
+        };
+        profileState[profile] = 'approved';
+        closeProblemMenus();
+        renderProfileTags();
+        refreshProfileStateUI();
+        showApprovalToast(profile);
+      }
+
+      function showProfile(profile) {
+        currentProfile = profile;
+        var meta = getProfileMeta(profile);
+
+        switchButtons.forEach(function(button) {
+          var isActive = button.getAttribute('data-profile-tab') === profile;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-selected', String(isActive));
+        });
+
+        views.forEach(function(view) {
+          view.hidden = view.getAttribute('data-profile-view') !== profile;
+        });
+
+        if (profileCount) profileCount.textContent = meta.subline;
+        if (profileStatus) {
+          profileStatus.classList.remove('waiting', 'approved', 'not-submitted');
+          profileStatus.classList.add(meta.state);
+        }
+        if (profileStatusText) profileStatusText.textContent = meta.text;
+        if (profileStatusIcon) profileStatusIcon.src = meta.icon;
+        if (avatar) {
+          avatar.classList.toggle('is-desaturated', profile !== 'all' && profileState[profile] === 'not-submitted');
+        }
+      }
+
+      function transitionToProfile(profile) {
+        if (!profileLoading) {
+          showProfile(profile);
+          return;
+        }
+
+        if (profileLoadingTimer) {
+          window.clearTimeout(profileLoadingTimer);
+          profileLoadingTimer = null;
+        }
+
+        profileLoading.hidden = false;
+        profileCard.setAttribute('aria-busy', 'true');
+
+        profileLoadingTimer = window.setTimeout(function() {
+          showProfile(profile);
+          profileLoading.hidden = true;
+          profileCard.removeAttribute('aria-busy');
+          profileLoadingTimer = null;
+        }, 180);
+      }
+
+      profileButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          transitionToProfile(button.getAttribute('data-profile-tab'));
+        });
+      });
+
+      applySupportRequestIssues();
+      showProfile('all');
+      renderProfileTags();
+      refreshProfileStateUI();
+      applyTagTooltips();
+      appendDashboardSubmittedMessage();
+
+      profileCard.addEventListener('click', function(event) {
+        var approveButton = event.target.closest('[data-approve-profile]');
+        if (approveButton && profileCard.contains(approveButton)) {
+          approveProfile(approveButton.getAttribute('data-approve-profile'));
+          return;
+        }
+
+        var tagLink = event.target.closest('.tag[data-tag-key]');
+        if (tagLink && profileCard.contains(tagLink) && !event.target.closest('.tag-remove')) {
+          openTagContext(tagLink.getAttribute('data-tag-key'));
+          return;
+        }
+
+        var tagRemove = event.target.closest('.tag-remove');
+        if (tagRemove && profileCard.contains(tagRemove)) {
+          event.stopPropagation();
+          var tag = tagRemove.closest('[data-tag-key]');
+          if (!tag) return;
+          var key = tag.getAttribute('data-tag-key');
+
+          profileCard.querySelectorAll('input[type="checkbox"][data-tag-key="' + key + '"]').forEach(function(input) {
+            input.checked = false;
+          });
+          renderProfileTags();
+          refreshProfileStateUI();
+          return;
+        }
+
+        var summary = event.target.closest('.review-summary');
+        if (summary && profileCard.contains(summary)) {
+          summary.closest('.review-section').classList.toggle('is-open');
+          return;
+        }
+
+        var problemTrigger = event.target.closest('.problem-trigger');
+        if (problemTrigger && profileCard.contains(problemTrigger)) {
+          var menu = problemTrigger.nextElementSibling;
+          if (!menu) return;
+          var willOpen = menu.hidden;
+
+          closeProblemMenus();
+
+          menu.hidden = !willOpen;
+          problemTrigger.classList.toggle('is-open', willOpen);
+          problemTrigger.closest('.review-section').classList.toggle('has-open-menu', willOpen);
+          return;
+        }
+      });
+
+      profileCard.addEventListener('change', function(event) {
+        var checkbox = event.target.closest('input[type="checkbox"][data-tag-key]');
+        if (!checkbox) return;
+        syncSharedIssue(checkbox.getAttribute('data-tag-key'), checkbox.checked);
+        renderProfileTags();
+        refreshProfileStateUI();
+      });
+
+      if (selectedTagsContainer) {
+        selectedTagsContainer.addEventListener('click', function(event) {
+          var tagLink = event.target.closest('.tag[data-tag-key]');
+          if (tagLink && !event.target.closest('.tag-remove')) {
+            openTagContext(tagLink.getAttribute('data-tag-key'));
+            return;
+          }
+
+          var tagRemove = event.target.closest('.tag-remove');
+          if (!tagRemove) return;
+
+          event.preventDefault();
+          var tag = tagRemove.closest('[data-tag-key]');
+          if (!tag) return;
+          var key = tag.getAttribute('data-tag-key');
+
+          profileCard.querySelectorAll('input[type="checkbox"][data-tag-key="' + key + '"]').forEach(function(input) {
+            input.checked = false;
+          });
+
+          renderProfileTags();
+          refreshProfileStateUI();
+        });
+      }
+
+      if (conversationScroll) {
+        conversationScroll.addEventListener('click', function(event) {
+          var tagLink = event.target.closest('.tag[data-tag-key]');
+          if (!tagLink) return;
+          openTagContext(tagLink.getAttribute('data-tag-key'));
+        });
+      }
+
+      if (submitReplyButton) {
+        submitReplyButton.addEventListener('click', submitReply);
+      }
+
+      if (extraMessageTextarea) {
+        extraMessageTextarea.addEventListener('input', autoGrowComposerTextarea);
+        autoGrowComposerTextarea();
+      }
+
+      scrollConversationToBottom();
+
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('.problem-picker')) return;
+        closeProblemMenus();
+      });
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') return;
+        closeProblemMenus();
+        hideApprovalToast();
+        hideMessageToast();
+      });
+
+      if (approvalToast) {
+        approvalToast.addEventListener('click', function(event) {
+          if (event.target.closest('[data-approval-toast-close]')) {
+            hideApprovalToast();
+            return;
+          }
+
+          if (event.target.closest('[data-approval-toast-undo]')) {
+            restoreApprovalSnapshot();
+          }
+        });
+      }
+
+      if (messageToast) {
+        messageToast.addEventListener('click', function(event) {
+          if (event.target.closest('[data-message-toast-close]')) {
+            hideMessageToast();
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

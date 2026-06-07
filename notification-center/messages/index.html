@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlidačky.cz - Messages</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --green-500: #0BA825;
+      --green-600: #078E1D;
+      --gray-100: #F7F9FC;
+      --gray-150: #F7F7F7;
+      --gray-200: #EEF2F7;
+      --gray-300: #E5E5EA;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --violet-100: #F4EAFE;
+      --violet-300: #BF7BFF;
+      --white: #FFF;
+      --shadow-card: 0 10px 24px rgba(42, 53, 57, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white);
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a,
+    button,
+    select {
+      cursor: pointer;
+      font: inherit;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    .app-shell {
+      width: 100%;
+      min-width: 1180px;
+    }
+
+    .topbar {
+      position: relative;
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(229, 229, 234, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 148px;
+      height: auto;
+      display: block;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-800);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .mobile-nav-toggle-close {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-menu {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-close {
+      display: inline-flex;
+    }
+
+    .main-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .main-nav a {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 96px;
+      padding: 12px 14px 8px;
+      border-bottom: 6px solid transparent;
+      color: var(--gray-800);
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.3px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .main-nav a.active {
+      color: var(--pink-400);
+    }
+
+    .main-nav a:hover,
+    .main-nav a:focus-visible {
+      border-bottom-color: var(--pink-400);
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .main-nav-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 26px;
+      color: var(--gray-800);
+    }
+
+    .main-nav a.active .main-nav-icon {
+      color: var(--pink-400);
+    }
+
+    .main-nav-icon img,
+    .main-nav-icon svg {
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+
+    .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(15%) sepia(10%) saturate(1152%) hue-rotate(157deg) brightness(95%) contrast(88%);
+      transition: filter 0.15s ease;
+    }
+
+    .main-nav a.active .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(3600%) hue-rotate(309deg) brightness(101%) contrast(95%);
+    }
+
+    .main-nav-icon svg {
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .main-nav-notification {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      display: flex;
+      min-width: 16px;
+      padding: 2px 4px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 64px;
+      background: var(--pink-400);
+      color: var(--white);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 100%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.96);
+    }
+
+    .main-nav-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      justify-content: flex-start;
+      min-height: 18px;
+    }
+
+    .main-nav-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--gray-300);
+      margin: 0 2px 0 4px;
+    }
+
+    .mobile-topbar,
+    .mobile-bottom-nav {
+      display: none;
+    }
+
+    .mobile-nav-backdrop {
+      display: none;
+    }
+
+    .mobile-nav-header {
+      display: none;
+    }
+
+    .mobile-nav-close {
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #A3AAB2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-close svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover,
+    .switch-view-button:focus-visible {
+      width: 256px;
+      filter: brightness(1.03);
+      outline: none;
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    body.settings-modal-open {
+      overflow: hidden;
+    }
+
+    .settings-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 260;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 270;
+      width: min(1120px, calc(100vw - 32px));
+      max-height: min(80vh, 860px);
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.24);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .settings-modal-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .settings-modal-header-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .settings-modal-header-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .settings-modal-header-action:hover,
+    .settings-modal-header-action:focus-visible {
+      color: var(--pink-500);
+      outline: none;
+    }
+
+    .settings-modal-close {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-modal-close img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .settings-modal-close:hover,
+    .settings-modal-close:focus-visible {
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .settings-modal-body {
+      padding: 16px 24px 24px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .settings-matrix {
+      min-width: 960px;
+      display: grid;
+      grid-template-columns: minmax(280px, 1.8fr) repeat(6, minmax(88px, 1fr));
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .settings-cell {
+      min-width: 0;
+      padding: 16px 14px;
+      border-right: 1px solid var(--gray-300);
+      border-bottom: 1px solid var(--gray-300);
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .settings-cell--head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--white);
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .settings-cell--label {
+      justify-content: flex-start;
+      padding-inline: 18px;
+    }
+
+    .settings-item-label {
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 1.35;
+      letter-spacing: -0.16px;
+    }
+
+    .settings-toggle {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 1px solid #D8DDE7;
+      border-radius: 6px;
+      background: var(--white);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .settings-toggle[aria-pressed="true"] {
+      border-color: var(--pink-400);
+      background: var(--pink-400);
+    }
+
+    .settings-toggle[aria-pressed="true"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 11px;
+      height: 6px;
+      border-left: 2px solid var(--white);
+      border-bottom: 2px solid var(--white);
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    main {
+      width: 100%;
+      min-height: calc(100vh - 91px);
+    }
+
+    .messages-layout {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      min-height: calc(100vh - 91px);
+    }
+
+    .messages-sidebar {
+      border-right: 1px solid var(--gray-300);
+      background: var(--white);
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .messages-feed-slot {
+      padding: 16px 12px 10px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .messages-list {
+      min-width: 0;
+      overflow-y: auto;
+      padding-bottom: 18px;
+    }
+
+    .message-list-item {
+      display: grid;
+      grid-template-columns: 28px 48px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px 12px 10px;
+      border-top: 1px solid rgba(229, 229, 234, 0.8);
+      text-decoration: none;
+      color: inherit;
+      background: var(--white);
+    }
+
+    .message-list-item.is-active {
+      background: #F8FBFF;
+      border-left: 6px solid var(--pink-400);
+      padding-left: 4px;
+    }
+
+    .message-list-star {
+      width: 22px;
+      height: 22px;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .message-list-star svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+    }
+
+    .message-list-item.is-favorite .message-list-star {
+      color: var(--pink-400);
+    }
+
+    .message-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #F7D4DB 0%, #DCE6F3 100%);
+      color: var(--gray-800);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      overflow: hidden;
+    }
+
+    .message-avatar--small {
+      width: 38px;
+      height: 38px;
+      font-size: 14px;
+      position: absolute;
+      left: 28px;
+      bottom: 0;
+      border: 2px solid var(--white);
+      background: linear-gradient(135deg, #F9E6BA 0%, #DCE6F3 100%);
+    }
+
+    .message-list-copy {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .message-list-topline {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .message-list-name {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 1.15;
+      letter-spacing: -0.2px;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .message-list-time {
+      color: var(--pink-400);
+      font-size: 14px;
+      font-weight: 350;
+      line-height: 1.2;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .message-list-preview,
+    .message-list-subline {
+      color: var(--gray-800);
+      font-size: 14px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .message-list-subline {
+      color: var(--gray-600);
+    }
+
+    .message-list-badge {
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--pink-400);
+      color: var(--white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1;
+    }
+
+    .messages-content {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: var(--white);
+    }
+
+    .conversation-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .conversation-back {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex: 0 0 32px;
+    }
+
+    .conversation-back svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .conversation-title {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .conversation-title h1 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .conversation-title p {
+      margin: 0;
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .conversation-actions {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .book-button {
+      min-height: 40px;
+      padding: 8px 20px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--green-500);
+      background: var(--white);
+      color: var(--green-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-decoration: none;
+      box-shadow: inset 0 -3px 0 rgba(11, 168, 37, 0.08);
+    }
+
+    .book-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .more-button {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .more-button span {
+      font-size: 28px;
+      line-height: 0;
+      transform: translateY(-2px);
+    }
+
+    .conversation-body {
+      min-height: 0;
+      overflow-y: auto;
+      padding: 24px 28px 28px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      background: linear-gradient(180deg, #FFF 0%, #FFF 72%, #FBFCFF 100%);
+    }
+
+    .date-divider {
+      justify-self: center;
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .bubble-row {
+      display: grid;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .bubble-row--incoming {
+      justify-items: start;
+    }
+
+    .bubble-row--outgoing {
+      justify-items: end;
+    }
+
+    .bubble-row--with-avatar {
+      grid-template-columns: 52px minmax(0, 1fr);
+      align-items: end;
+      justify-items: start;
+    }
+
+    .bubble-stack {
+      max-width: min(520px, 100%);
+      display: grid;
+      gap: 8px;
+    }
+
+    .bubble {
+      max-width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      color: var(--gray-900);
+      font-size: 16px;
+      font-weight: 350;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .bubble--outgoing {
+      background: #EEF3F9;
+      border-radius: 20px;
+    }
+
+    .bubble--incoming {
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+    }
+
+    .bubble-meta {
+      color: var(--gray-600);
+      font-size: 13px;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bubble-meta--seen {
+      justify-self: end;
+    }
+
+    .composer {
+      padding: 14px 28px 22px;
+      border-top: 1px solid rgba(229, 229, 234, 0.8);
+      background: var(--white);
+    }
+
+    .composer-bar {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 999px;
+      background: var(--white);
+    }
+
+    .composer-input {
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 350;
+      line-height: 1.4;
+      min-width: 0;
+    }
+
+    .composer-input::placeholder {
+      color: var(--gray-500);
+    }
+
+    .composer-icon-button,
+    .composer-send {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+    }
+
+    .composer-icon-button img {
+      width: 22px;
+      height: 22px;
+      display: block;
+      filter: brightness(0) saturate(100%) invert(60%) sepia(12%) saturate(490%) hue-rotate(179deg) brightness(92%) contrast(87%);
+    }
+
+    .composer-send img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+
+    .action-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 0;
+      padding: 14px 14px 16px 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+    }
+
+    .action-item--priority-urgent {
+      border-color: var(--pink-300);
+      background: var(--pink-100);
+    }
+
+    .action-item--priority-normal {
+      border-color: var(--violet-300);
+      background: var(--violet-100);
+    }
+
+    .action-item--priority-low {
+      border-color: rgba(229, 229, 234, 0.9);
+      background: var(--white);
+    }
+
+    .action-item__media {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+    }
+
+    .action-item__media img {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+
+    .action-item__body {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      align-self: center;
+    }
+
+    .action-item__title {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 145%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description a {
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .action-item__aside {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 0;
+      align-self: start;
+      transform: translate(8px, -8px);
+    }
+
+    .action-item__aside--button {
+      grid-column: 2 / -1;
+      justify-content: flex-start;
+      margin-top: 4px;
+      transform: none;
+      align-self: center;
+    }
+
+    .action-item__button {
+      min-width: 100px;
+      display: flex;
+      padding: 6px 12px 8px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      border: 0;
+      background: var(--pink-400);
+      box-shadow: 0 -3px 0 0 #E6213A inset;
+      color: var(--white);
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      text-decoration: none;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .action-item__button:hover {
+      background: var(--pink-500);
+    }
+
+    .action-item__button--grow {
+      background: var(--green-500);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .action-item__button--grow:hover {
+      background: var(--green-600);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .action-item__control {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.9;
+      transition: opacity 0.15s ease;
+    }
+
+    .action-item__control:hover {
+      opacity: 1;
+    }
+
+    .action-item__control img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    @media (max-width: 1180px) {
+      .app-shell {
+        min-width: 0;
+      }
+
+      .topbar {
+        padding-inline: 16px;
+      }
+
+      .messages-layout {
+        grid-template-columns: 340px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        background: var(--white);
+      }
+
+      .app-shell {
+        min-width: 0;
+      }
+
+      .switch-view-button {
+        display: none;
+      }
+
+      body.mobile-nav-open {
+        overflow: hidden;
+      }
+
+      .topbar {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        padding: 12px 16px 10px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand img {
+        width: 140px;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+
+      .main-nav {
+        position: fixed;
+        top: 84px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: none;
+        padding: 0 0 24px;
+        min-height: calc(100dvh - 84px);
+        background: var(--white);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        overflow-y: auto;
+      }
+
+      .main-nav.is-open {
+        display: flex;
+      }
+
+      .mobile-nav-header {
+        display: none;
+      }
+
+      .main-nav a {
+        min-width: 0;
+        min-height: 76px;
+        padding: 20px;
+        border-bottom-width: 0;
+        border-radius: 0;
+        border-bottom: 1px solid var(--gray-300);
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 14px;
+        text-align: left;
+        background: var(--white);
+      }
+
+      .main-nav a.active {
+        background: var(--gray-100);
+        box-shadow: inset 6px 0 0 var(--pink-400);
+      }
+
+      .main-nav a:hover,
+      .main-nav a:focus-visible {
+        border-bottom-color: var(--gray-300);
+        background: var(--gray-100);
+      }
+
+      .main-nav-icon {
+        flex: 0 0 26px;
+      }
+
+      .main-nav-label {
+        height: auto;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .main-nav-divider {
+        display: none;
+      }
+
+      .mobile-nav-backdrop {
+        position: fixed;
+        inset: 84px 0 0;
+        z-index: 180;
+        display: block;
+        background: rgba(33, 37, 41, 0.14);
+      }
+
+      main {
+        min-height: auto;
+      }
+
+      .messages-layout {
+        display: block;
+        min-height: auto;
+      }
+
+      .messages-content {
+        display: none;
+      }
+
+      .messages-sidebar {
+        border-right: 0;
+      }
+
+      .messages-feed-slot {
+        padding: 14px 12px 10px;
+      }
+
+      .message-list-item {
+        grid-template-columns: 24px 48px minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 12px 12px 12px 8px;
+      }
+
+      .message-list-item.is-active {
+        border-left-width: 0;
+        padding-left: 8px;
+        background: var(--white);
+      }
+
+      .message-list-name {
+        font-size: 18px;
+      }
+
+      .message-list-preview,
+      .message-list-subline {
+        font-size: 12px;
+      }
+
+      .message-list-time {
+        font-size: 12px;
+      }
+
+      .settings-modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+      }
+
+      .settings-modal-header {
+        padding: 18px 16px 16px;
+        flex-wrap: wrap;
+      }
+
+      .settings-modal-header h2 {
+        font-size: 20px;
+      }
+
+      .settings-modal-header-actions {
+        order: 2;
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .settings-modal-body {
+        padding: 12px 16px 16px;
+      }
+
+      .settings-matrix {
+        min-width: 760px;
+        grid-template-columns: minmax(220px, 1.5fr) repeat(6, minmax(72px, 1fr));
+      }
+
+      .settings-cell {
+        padding: 12px 10px;
+      }
+
+      .settings-item-label {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/notification-center/">
+        <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+      </a>
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-nav" data-mobile-nav-toggle>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-menu" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+            <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+            <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+          </svg>
+        </span>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-close" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+            <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+          </svg>
+        </span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Sitter navigation" data-mobile-nav>
+        <div class="mobile-nav-header">
+          <a class="brand" href="/notification-center/">
+            <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+          </a>
+          <button class="mobile-nav-close" type="button" aria-label="Close navigation menu" data-mobile-nav-close>
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+              <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+            </svg>
+          </button>
+        </div>
+        <a href="/notification-center/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/dashboard.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Dashboard</span></span>
+        </a>
+        <a href="/notification-center/calendar/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/ico-calendar.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Calendar</span></span>
+        </a>
+        <a class="active" href="/notification-center/messages/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-messages.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Messages</span></span>
+        </a>
+        <a href="/notification-center/bookings/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Bookings</span></span>
+        </a>
+        <a href="/notification-center/jobs/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/jobs.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Jobs</span></span>
+        </a>
+        <span class="main-nav-divider" aria-hidden="true"></span>
+        <a href="/notification-center/profile/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/profile.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Profile</span></span>
+        </a>
+      </nav>
+      <div class="mobile-nav-backdrop" data-mobile-nav-backdrop hidden></div>
+    </header>
+
+    <a class="switch-view-button" href="#" aria-label="Notification settings">
+      <img class="switch-view-button-icon" src="/notification-center/assets/icon-gear.svg" alt="">
+      <span class="switch-view-button-label">Notification settings</span>
+    </a>
+
+    <div class="settings-modal-backdrop" data-settings-modal-backdrop hidden></div>
+    <section class="settings-modal" aria-labelledby="notification-settings-title" aria-modal="true" role="dialog" data-settings-modal hidden>
+      <div class="settings-modal-header">
+        <h2 id="notification-settings-title">Notification settings</h2>
+        <div class="settings-modal-header-actions">
+          <button class="settings-modal-header-action" type="button" data-settings-show-all>Show all</button>
+          <button class="settings-modal-header-action" type="button" data-settings-show-none>Show none</button>
+        </div>
+        <button class="settings-modal-close" type="button" aria-label="Close notification settings" data-settings-modal-close>
+          <img src="/notification-center/assets/xicon.svg" alt="">
+        </button>
+      </div>
+      <div class="settings-modal-body" data-settings-modal-list></div>
+    </section>
+
+    <main>
+      <section class="messages-layout">
+        <aside class="messages-sidebar" aria-label="Conversation list">
+          <section class="messages-feed-slot" aria-label="Messages action items feed"></section>
+          <section class="messages-list">
+            <a class="message-list-item is-active" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">A</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Alice Masopustová</strong>
+                  <span class="message-list-time">12:40</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli...</span>
+              </span>
+              <span class="message-list-badge">2</span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">M</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Marie Srníčková</strong>
+                  <span class="message-list-time">5 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli...</span>
+              </span>
+              <span class="message-list-badge">5</span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar" style="position:relative;">E<span class="message-avatar message-avatar--small">M</span></span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Eva, Marie, Jiřina, An...</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">2 days ago</span>
+                </span>
+                <span class="message-list-subline">Marie: Dobrý den, dnes jsme s dět...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">Š</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Sára Ostrčilová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">yesterday</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item is-favorite" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">E</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Eva Dvořáková</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">7:44</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">S</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Simona Balabánová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">3 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s... <span style="color:var(--pink-400); text-decoration:underline;">Reply?</span></span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">D</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Dana Floriánová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">5 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+          </section>
+        </aside>
+
+        <section class="messages-content" aria-label="Conversation detail">
+          <header class="conversation-header">
+            <button class="conversation-back" type="button" aria-label="Back to messages">
+              <svg viewBox="0 0 24 24"><path d="M15 5L8 12L15 19"></path></svg>
+            </button>
+            <div class="conversation-title">
+              <h1>Alice Masopustová</h1>
+              <p>No booking yet</p>
+            </div>
+            <div class="conversation-actions">
+              <a class="book-button" href="#">
+                <svg viewBox="0 0 24 24"><rect x="4.5" y="6.5" width="15" height="13" rx="2"></rect><path d="M8 4.5V8"></path><path d="M16 4.5V8"></path><path d="M4.5 10.5H19.5"></path><path d="M12 13V17"></path><path d="M10 15H14"></path></svg>
+                <span>Book</span>
+              </a>
+              <button class="more-button" type="button" aria-label="More actions"><span>···</span></button>
+            </div>
+          </header>
+
+          <div class="conversation-body">
+            <div class="date-divider">November 20, 2025</div>
+            <div class="bubble-row bubble-row--outgoing">
+              <div class="bubble-stack">
+                <div class="bubble bubble--outgoing">Mauris quis porttitor libero. Mauris tristique dolor eget libero dignissim semper. Pellentesque habitant morbi tristique senectus et netus.</div>
+                <div class="bubble-meta bubble-meta--seen">Seen <span>17:06</span></div>
+              </div>
+            </div>
+
+            <div class="date-divider">November 21, 2025</div>
+            <div class="bubble-row bubble-row--incoming">
+              <div class="bubble bubble--incoming">Nullam vulputate et arcu.</div>
+            </div>
+
+            <div class="bubble-row bubble-row--with-avatar">
+              <span class="message-avatar" style="width:42px;height:42px;font-size:16px;">A</span>
+              <div class="bubble-stack">
+                <div class="bubble bubble--incoming">Maecenas sit amet eros non ipsum lacinia vestibulum in quis neque. Sed scelerisque erat id suscipit rhoncus. Suspendisse blandit⭐</div>
+                <div class="bubble-meta">12:40</div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="composer">
+            <div class="composer-bar">
+              <input class="composer-input" type="text" placeholder="Your message...">
+              <button class="composer-icon-button" type="button" aria-label="Attach image">
+                <img src="/sitter-approval-workflow/assets/icon-attachment.svg" alt="">
+              </button>
+              <button class="composer-send" type="button" aria-label="Send message">
+                <img src="/sitter-approval-workflow/assets/icon-paperplane.svg" alt="">
+              </button>
+            </div>
+          </footer>
+        </section>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    (function() {
+      var ACTION_ITEM_SETTINGS_KEY = 'notification-center-action-item-settings';
+      var ACTION_ITEM_DISMISSED_KEY = 'notification-center-dismissed-items';
+      var ACTION_ITEM_PAGES = ['dashboard', 'calendar', 'messages', 'bookings', 'jobs', 'profile'];
+      var ACTION_ITEM_PAGE_LABELS = {
+        dashboard: 'Dashboard',
+        calendar: 'Calendar',
+        messages: 'Messages',
+        bookings: 'Bookings',
+        jobs: 'Jobs',
+        profile: 'Profile'
+      };
+      var CURRENT_ACTION_ITEM_PAGE = 'messages';
+      var mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
+      var mobileNav = document.querySelector('[data-mobile-nav]');
+      var mobileNavBackdrop = document.querySelector('[data-mobile-nav-backdrop]');
+      var mobileNavClose = document.querySelector('[data-mobile-nav-close]');
+      var settingsButton = document.querySelector('.switch-view-button');
+      var settingsModalBackdrop = document.querySelector('[data-settings-modal-backdrop]');
+      var settingsModal = document.querySelector('[data-settings-modal]');
+      var settingsModalClose = document.querySelector('[data-settings-modal-close]');
+      var settingsModalList = document.querySelector('[data-settings-modal-list]');
+      var settingsShowAllButton = document.querySelector('[data-settings-show-all]');
+      var settingsShowNoneButton = document.querySelector('[data-settings-show-none]');
+      var messagesFeedSlot = document.querySelector('.messages-feed-slot');
+
+      function closeMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.remove('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavBackdrop.hidden = true;
+        document.body.classList.remove('mobile-nav-open');
+      }
+
+      function openMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.add('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'true');
+        mobileNavBackdrop.hidden = false;
+        document.body.classList.add('mobile-nav-open');
+      }
+
+      if (mobileNavToggle && mobileNav && mobileNavBackdrop) {
+        mobileNavToggle.addEventListener('click', function() {
+          if (mobileNav.classList.contains('is-open')) {
+            closeMobileNav();
+            return;
+          }
+
+          openMobileNav();
+        });
+
+        mobileNavBackdrop.addEventListener('click', closeMobileNav);
+
+        if (mobileNavClose) {
+          mobileNavClose.addEventListener('click', closeMobileNav);
+        }
+
+        mobileNav.addEventListener('click', function(event) {
+          if (event.target.closest('a')) {
+            closeMobileNav();
+          }
+        });
+
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 900) {
+            closeMobileNav();
+          }
+        });
+
+        document.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') {
+            closeMobileNav();
+          }
+        });
+      }
+
+      var ACTION_ITEMS = [
+        { label: 'Complete these steps for approval', priority: 'urgent', icon: '/notification-center/assets/Complete these steps for approval.svg', description: 'Complete all before submitting' },
+        { label: 'We are currently reviewing your submission', priority: 'normal', icon: '/notification-center/assets/We are currently reviewing your submission.svg', description: 'We will get back to you soon', buttonLabel: 'Reply' },
+        { label: 'You have 2 unanswered bookings', priority: 'urgent', icon: '/notification-center/assets/You have unanswered bookings.svg', description: 'Please don\'t let families wait for too long.', buttonLabel: 'Go to bookings' },
+        { label: 'You have 4 unanswered messages', priority: 'urgent', icon: '/notification-center/assets/You have unanswered messages.svg', description: 'Please don\'t let families wait for too long.', buttonLabel: 'Go to messages' },
+        { label: 'Identity verification required', priority: 'urgent', icon: '/notification-center/assets/Identity verification required.svg', description: 'Please upload your ID document to complete your profile and start applying for help offers.', buttonLabel: 'Go to settings' },
+        { label: 'Check your entered e-mail address', priority: 'urgent', icon: '/notification-center/assets/Check your entered e-mail address.svg', description: 'There might be a typo in your email address your.email@gmail.com. You can update it in your <a href="#">email settings</a>.', dismissible: true },
+        { label: 'Check your entered e-mail address', priority: 'urgent', icon: '/notification-center/assets/Check your entered e-mail address-1.svg', description: 'We tried to reach you, but the email couldn\'t be delivered. Please check if your inbox is full or update your address in your <a href="#">email settings</a>.', dismissible: true },
+        { label: 'Minimum age requirement not met', priority: 'urgent', icon: '/notification-center/assets/Minimum age requirement not met.svg', description: 'According to your date of birth, you are below the minimum age required to offer help on our platform. Your profile has been limited. Please <a href="#">contact our support</a> if you believe this is a mistake.' },
+        { label: 'Get paid directly to your bank account', priority: 'low', icon: '/notification-center/assets/Get paid directly to your bank account.svg', description: 'Activate online payments so families can book you easily and pay you securely through the platform. <a href="#">Add your bank details</a> in your profile settings.' },
+        { label: 'High demand for cleaning in Prague!', priority: 'low', icon: '/notification-center/assets/High demand for cleaning.svg', description: 'There is currently a high demand for household help in Prague. Create or update your <a href="#">cleaning profile</a> now to get more bookings and boost your income.' },
+        { label: 'Get verified in person in Bratislava!', priority: 'low', icon: '/notification-center/assets/Get verified in person in Bratislava!.svg', description: 'Boost your profile\'s credibility and get more job offers. <a href="#">Schedule your appointment</a> in our new Verification Center.' },
+        { label: 'Get more bookings with GROW', priority: 'low', icon: '/notification-center/assets/Get more bookings with GROW.svg', description: 'Show up higher in search and see if your message was read.', buttonLabel: 'Upgrade to GROW', buttonClassName: 'action-item__button action-item__button--grow' },
+        { label: 'We are launching a new FORUM! 🚀', priority: 'low', icon: '/notification-center/assets/We are launching a new FORUM!.svg', description: 'Share experiences and find the support you are looking for. <a href="#">Explore trending topics</a> and build a community.' },
+        { label: 'Bank iD', priority: 'low', icon: '/notification-center/assets/Bank iD.svg', description: '<a href="#">Verify your identity</a> via Bank iD.' },
+        { label: 'Video verification', priority: 'low', icon: '/notification-center/assets/Video verification.svg', description: 'Register for a session through <a href="#">Video verification</a>.' },
+        { label: 'mojeID', priority: 'low', icon: '/notification-center/assets/mojeID.svg', description: 'Verify your phone number and email address via <a href="#">mojeID</a>.' },
+        { label: 'Verification center', priority: 'low', icon: '/notification-center/assets/Verification center.svg', description: 'Schedule an appointment at the <a href="#">Verification Center</a>.' },
+        { label: 'Present calendar', priority: 'low', icon: '/notification-center/assets/Present calendar.svg', description: 'Fill out your <a href="#">availability calendar</a> to show when you\'re free.' },
+        { label: 'Boost your profile with a First Aid certificate', priority: 'low', icon: '/notification-center/assets/Boost your profile with a First Aid certificate.svg', description: 'Families value safety. Schedule your session <a href="#">here</a>.' },
+        { label: 'Hosts need help with Airbnb/apartment cleaning.', priority: 'low', icon: '/notification-center/assets/apartment cleaning..svg', description: 'You can now offer Airbnb turnovers in your profile. <a href="#">Update your settings</a> to start receiving requests for holiday rentals.' },
+        { label: 'Join our WhatsApp channel', priority: 'low', icon: '/notification-center/assets/Join our WhatsApp channel.svg', description: 'Click the bell 🔔 and <a href="#">subscribe to channel</a> to be the first to get the latest updates.', dismissible: true },
+        { label: 'Show that families keep coming back to you', priority: 'low', icon: '/notification-center/assets/Show that families keep coming back to you.svg', description: 'You will earn points and a profile badge for completing multiple bookings with the same family.', dismissible: true },
+        { label: 'Enter information about your COVID-19 vaccine', priority: 'low', icon: '/notification-center/assets/Enter information about your COVID-19 vaccine.svg', description: 'Covid is currently the top concern for families. <a href="#">Select</a> whether you haven\'t had the vaccine yet or if you have and are willing to provide a certificate to the family.', dismissible: true },
+        { label: 'Families choose sitters who reply fast', priority: 'low', icon: '/notification-center/assets/Families choose sitters who reply fast.svg', description: 'Check your messages now and don\'t miss your next great job. <a href="#">Find jobs</a> near you.', dismissible: true }
+      ];
+
+      function readJSON(key, fallbackValue) {
+        try {
+          var value = window.localStorage.getItem(key);
+          return value ? JSON.parse(value) : fallbackValue;
+        } catch (error) {
+          return fallbackValue;
+        }
+      }
+
+      function writeJSON(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {}
+      }
+
+      function slugify(value) {
+        return (value || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      ACTION_ITEMS.forEach(function(item, index) {
+        item.id = (slugify(item.label) || 'action-item') + '-' + (index + 1);
+      });
+
+      function normalizeActionItemSettings(settingsValue) {
+        var normalizedSettings = {};
+
+        ACTION_ITEMS.forEach(function(item) {
+          var currentValue = settingsValue ? settingsValue[item.id] : null;
+          var pageSettings = {};
+
+          ACTION_ITEM_PAGES.forEach(function(pageKey) {
+            if (currentValue && typeof currentValue === 'object' && !Array.isArray(currentValue)) {
+              pageSettings[pageKey] = currentValue[pageKey] === true;
+            } else if (pageKey === 'dashboard') {
+              pageSettings[pageKey] = currentValue !== false;
+            } else {
+              pageSettings[pageKey] = false;
+            }
+          });
+
+          normalizedSettings[item.id] = pageSettings;
+        });
+
+        return normalizedSettings;
+      }
+
+      var actionItemSettings = normalizeActionItemSettings(readJSON(ACTION_ITEM_SETTINGS_KEY, {}));
+      var dismissedActionItems = readJSON(ACTION_ITEM_DISMISSED_KEY, {});
+
+      writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+
+      function isActionItemEnabled(item) {
+        return actionItemSettings[item.id] && actionItemSettings[item.id][CURRENT_ACTION_ITEM_PAGE] === true;
+      }
+
+      function updateSettingsToggleStates() {
+        if (!settingsModalList) return;
+
+        Array.prototype.slice.call(settingsModalList.querySelectorAll('[data-settings-toggle-id]')).forEach(function(toggle) {
+          var actionItemId = toggle.getAttribute('data-settings-toggle-id');
+          var pageKey = toggle.getAttribute('data-settings-page');
+          var isEnabled = actionItemSettings[actionItemId] && actionItemSettings[actionItemId][pageKey] === true;
+          toggle.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
+        });
+      }
+
+      function buildSettingsModalList() {
+        if (!settingsModalList) return;
+        settingsModalList.innerHTML = '';
+
+        var matrix = document.createElement('div');
+        matrix.className = 'settings-matrix';
+
+        var cornerCell = document.createElement('div');
+        cornerCell.className = 'settings-cell settings-cell--head settings-cell--label';
+        cornerCell.textContent = 'Action item';
+        matrix.appendChild(cornerCell);
+
+        ACTION_ITEM_PAGES.forEach(function(pageKey) {
+          var headCell = document.createElement('div');
+          headCell.className = 'settings-cell settings-cell--head';
+          headCell.textContent = ACTION_ITEM_PAGE_LABELS[pageKey];
+          matrix.appendChild(headCell);
+        });
+
+        ACTION_ITEMS.forEach(function(item) {
+          var labelCell = document.createElement('div');
+          labelCell.className = 'settings-cell settings-cell--label';
+          labelCell.innerHTML = '<div class="settings-item-label">' + item.label + '</div>';
+          matrix.appendChild(labelCell);
+
+          ACTION_ITEM_PAGES.forEach(function(pageKey) {
+            var toggleCell = document.createElement('div');
+            toggleCell.className = 'settings-cell';
+            var toggle = document.createElement('button');
+            toggle.className = 'settings-toggle';
+            toggle.type = 'button';
+            toggle.setAttribute('aria-label', 'Toggle ' + item.label + ' on ' + ACTION_ITEM_PAGE_LABELS[pageKey]);
+            toggle.setAttribute('data-settings-toggle-id', item.id);
+            toggle.setAttribute('data-settings-page', pageKey);
+            toggleCell.appendChild(toggle);
+            matrix.appendChild(toggleCell);
+          });
+        });
+
+        settingsModalList.appendChild(matrix);
+        updateSettingsToggleStates();
+      }
+
+      function openSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+        if (!settingsModalList || !settingsModalList.children.length) {
+          buildSettingsModalList();
+        } else {
+          updateSettingsToggleStates();
+        }
+        settingsModal.hidden = false;
+        settingsModalBackdrop.hidden = false;
+        document.body.classList.add('settings-modal-open');
+      }
+
+      function closeSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+        settingsModal.hidden = true;
+        settingsModalBackdrop.hidden = true;
+        document.body.classList.remove('settings-modal-open');
+      }
+
+      function getActionItemMarkup(item) {
+        var classes = ['action-item', 'action-item--priority-' + item.priority];
+        var aside = '';
+
+        if (item.buttonLabel) {
+          aside =
+            '<div class="action-item__aside action-item__aside--button">' +
+              '<a class="' + (item.buttonClassName || 'action-item__button') + '" href="#">' + item.buttonLabel + '</a>' +
+            '</div>';
+        } else if (item.dismissible) {
+          aside =
+            '<div class="action-item__aside">' +
+              '<button class="action-item__control" type="button" aria-label="Dismiss" data-dismiss-action-item="' + item.id + '">' +
+                '<img src="/notification-center/assets/xicon.svg" alt="">' +
+              '</button>' +
+            '</div>';
+        }
+
+        return (
+          '<article class="' + classes.join(' ') + '" data-action-item-id="' + item.id + '">' +
+            '<div class="action-item__media"><img src="' + item.icon + '" alt=""></div>' +
+            '<div class="action-item__body">' +
+              '<h3 class="action-item__title">' + item.label + '</h3>' +
+              '<p class="action-item__description">' + item.description + '</p>' +
+            '</div>' +
+            aside +
+          '</article>'
+        );
+      }
+
+      function renderMessagesFeed() {
+        if (!messagesFeedSlot) return;
+        var visibleItems = ACTION_ITEMS.filter(function(item) {
+          return isActionItemEnabled(item) && dismissedActionItems[item.id] !== true;
+        });
+
+        if (!visibleItems.length) {
+          messagesFeedSlot.hidden = true;
+          messagesFeedSlot.innerHTML = '';
+          return;
+        }
+
+        messagesFeedSlot.hidden = false;
+        messagesFeedSlot.innerHTML = visibleItems.map(getActionItemMarkup).join('');
+      }
+
+      if (settingsButton) {
+        settingsButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          openSettingsModal();
+        });
+      }
+
+      if (settingsModalBackdrop) {
+        settingsModalBackdrop.addEventListener('click', closeSettingsModal);
+      }
+
+      if (settingsModalClose) {
+        settingsModalClose.addEventListener('click', closeSettingsModal);
+      }
+
+      if (settingsModalList) {
+        settingsModalList.addEventListener('click', function(event) {
+          var toggle = event.target.closest('[data-settings-toggle-id]');
+          if (!toggle) return;
+
+          var actionItemId = toggle.getAttribute('data-settings-toggle-id');
+          var pageKey = toggle.getAttribute('data-settings-page');
+          var nextEnabledState = !(actionItemSettings[actionItemId] && actionItemSettings[actionItemId][pageKey] === true);
+
+          actionItemSettings[actionItemId][pageKey] = nextEnabledState;
+
+          if (pageKey === CURRENT_ACTION_ITEM_PAGE && nextEnabledState) {
+            delete dismissedActionItems[actionItemId];
+            writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+          }
+
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          updateSettingsToggleStates();
+          renderMessagesFeed();
+        });
+      }
+
+      if (settingsShowAllButton) {
+        settingsShowAllButton.addEventListener('click', function() {
+          ACTION_ITEMS.forEach(function(item) {
+            ACTION_ITEM_PAGES.forEach(function(pageKey) {
+              actionItemSettings[item.id][pageKey] = true;
+            });
+          });
+          dismissedActionItems = {};
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+          updateSettingsToggleStates();
+          renderMessagesFeed();
+        });
+      }
+
+      if (settingsShowNoneButton) {
+        settingsShowNoneButton.addEventListener('click', function() {
+          ACTION_ITEMS.forEach(function(item) {
+            ACTION_ITEM_PAGES.forEach(function(pageKey) {
+              actionItemSettings[item.id][pageKey] = false;
+            });
+          });
+          writeJSON(ACTION_ITEM_SETTINGS_KEY, actionItemSettings);
+          updateSettingsToggleStates();
+          renderMessagesFeed();
+        });
+      }
+
+      if (messagesFeedSlot) {
+        messagesFeedSlot.addEventListener('click', function(event) {
+          var dismissButton = event.target.closest('[data-dismiss-action-item]');
+          if (!dismissButton) return;
+          var actionItemId = dismissButton.getAttribute('data-dismiss-action-item');
+          dismissedActionItems[actionItemId] = true;
+          writeJSON(ACTION_ITEM_DISMISSED_KEY, dismissedActionItems);
+          renderMessagesFeed();
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && settingsModal && !settingsModal.hidden) {
+          closeSettingsModal();
+        }
+      });
+
+      renderMessagesFeed();
+    })();
+  </script>
+</body>
+</html>

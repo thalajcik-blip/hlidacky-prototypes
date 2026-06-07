@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlídačky.cz - Sitter Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="../../hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-200: #FFD0D6;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --pink-600: #D91B34;
+      --green-100: #EFF9EF;
+      --green-500: #0BA825;
+      --green-600: #078E1D;
+      --blue-100: #EEF3F9;
+      --blue-200: #DCE6F3;
+      --gray-100: #F7F9FC;
+      --gray-200: #EEF2F7;
+      --gray-300: #E5E5EA;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --white: #FFF;
+      --shadow-card: 0 10px 24px rgba(42, 53, 57, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white, #FFF);
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a,
+    button,
+    [role="button"],
+    [tabindex]:not([tabindex="-1"]) {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      min-width: 1180px;
+    }
+
+    .topbar {
+      height: 84px;
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(229, 229, 234, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--pink-400);
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 148px;
+      height: auto;
+      display: block;
+    }
+
+    .main-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .main-nav a {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 72px;
+      padding-top: 12px;
+      padding-bottom: 8px;
+      color: var(--gray-800, #2A3539);
+      text-decoration: none;
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.3px;
+    }
+
+    .main-nav a.active {
+      color: var(--pink-400);
+    }
+
+    .main-nav-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      flex: 0 0 26px;
+    }
+
+    .main-nav-icon img {
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+
+    .main-nav-notification {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      display: flex;
+      min-width: 16px;
+      padding: 2px 4px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      background: var(--pink-20-pink-400, #F96073);
+      color: var(--supportive-20-full-white, #FFF);
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 100%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.96);
+    }
+
+    .main-nav-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-height: 31px;
+      justify-content: flex-start;
+    }
+
+    .main-nav-text {
+      display: block;
+    }
+
+    .main-nav-chevron {
+      width: 12px;
+      height: 12px;
+      display: block;
+      flex: 0 0 12px;
+      visibility: hidden;
+    }
+
+    .main-nav-label.is-dropdown .main-nav-chevron {
+      visibility: visible;
+    }
+
+    .main-nav-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--gray-300, #E5E5EA);
+      margin: 0 2px 0 4px;
+    }
+
+    main {
+      width: 980px;
+      margin: 34px auto 60px;
+    }
+
+    .hero {
+      width: 856px;
+      padding-top: 60px;
+      padding-bottom: 20px;
+      margin-bottom: 26px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      color: var(--color-gray-800, #2A3539);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 48px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.32px;
+    }
+
+    .hero p {
+      margin: 0 0 20px;
+      color: var(--gray-700, #4A5A61);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.32px;
+    }
+
+    .hero p span {
+      color: var(--pink-400);
+    }
+
+    .hero-progress {
+      width: 856px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero-progress-bar {
+      height: 16px;
+      border-radius: 999px;
+      background: #E0E8F3;
+      overflow: hidden;
+    }
+
+    .hero-progress-fill {
+      width: 25%;
+      height: 100%;
+      border-radius: 999px 0 0 999px;
+      background: var(--pink-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-supportive-full-white, #FFF);
+      text-align: center;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 14px;
+      transition: width 180ms ease;
+    }
+
+    .dashboard-column {
+      width: 856px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .issues-card {
+      border: 1px solid #F8C9D0;
+      border-radius: 8px;
+      background: #FFF7F8;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: background-color 300ms ease, border-color 300ms ease;
+    }
+
+    .issues-card:not(.is-collapsed) {
+      border-color: rgba(229, 229, 234, 0.9);
+      background: var(--slate-100, #EEF3F9);
+    }
+
+    .review-status-banner {
+      border: 1px solid #4ED4FF;
+      border-radius: 4px;
+      background: #E6F8FF;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      width: 856px;
+      min-height: 56px;
+      padding: 16px;
+      gap: 10px;
+    }
+
+    .review-status-banner[hidden] {
+      display: none;
+    }
+
+    .review-status-icon {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+    }
+
+    .review-status-icon img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .review-status-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+      color: var(--color-gray-800, var(--gray-800));
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+    }
+
+    .review-status-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex: 0 0 auto;
+    }
+
+    .review-status-reply {
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--pink-400);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .review-status-reply:hover {
+      background: var(--pink-500);
+    }
+
+    .review-status-close {
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font: inherit;
+      font-size: 30px;
+      line-height: 1;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .issues-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .issues-card-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .issues-card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 48px;
+    }
+
+    .issues-card-icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+
+    .issues-card-copy h2 {
+      margin: 0 0 4px;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .issues-card-copy p {
+      margin: 0;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .issues-toggle {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+      pointer-events: none;
+    }
+
+    .issues-toggle img {
+      width: 24px;
+      height: 24px;
+      display: block;
+      transform: rotate(0deg);
+      transition: transform 180ms ease;
+    }
+
+    .issues-card:not(.is-collapsed) .issues-toggle img {
+      transform: rotate(180deg);
+    }
+
+    .issues-card-body {
+      padding: 0 20px 20px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .issues-card.is-collapsed .issues-card-body {
+      display: none;
+    }
+
+    .issues-card-body-wrap {
+      display: grid;
+      gap: 22px;
+      padding: 0 56px;
+    }
+
+    .task-list {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .task-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .task-status {
+      width: 24px;
+      height: 24px;
+      margin-top: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+    }
+
+    .task-status img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .task-content h3 {
+      margin: 0 0 3px;
+      color: var(--color-gray-800, #2A3539);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 150%;
+      letter-spacing: -0.24px;
+    }
+
+    .task-content p {
+      margin: 0 0 4px;
+      color: var(--color-gray-800, #2A3539);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .task-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pink-400);
+      text-decoration-line: underline;
+      text-decoration-thickness: 8%;
+      text-underline-offset: 12%;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .task-edit img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+    }
+
+    .task-progress {
+      display: grid;
+      gap: 8px;
+    }
+
+    .task-progress-bars {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .task-progress-bars span {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--gray-200);
+      transition: background-color 0.15s ease;
+    }
+
+    .task-progress-bars span.is-complete {
+      background: var(--pink-400);
+    }
+
+    .task-progress-note {
+      color: var(--gray-500);
+      text-align: center;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .review-notes {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-notes label {
+      color: var(--gray-700);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .review-notes textarea {
+      width: 100%;
+      min-height: 64px;
+      padding: 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--gray-800);
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+
+    .review-notes textarea:focus {
+      border-color: #8FB1F6;
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .submit-review {
+      width: 100%;
+      max-width: 560px;
+      min-height: 48px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      font: inherit;
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .submit-review:hover:not(:disabled) {
+      background: var(--green-600);
+    }
+
+    .submit-review:disabled {
+      background: #7FD398;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+      cursor: default;
+    }
+
+    .review-hint {
+      width: 100%;
+      max-width: 560px;
+      color: var(--color-gray-600, #6C757D);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .info-card {
+      border: 1px solid rgba(229, 229, 234, 0.9);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .info-card-content {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .info-card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 48px;
+    }
+
+    .info-card-icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+
+    .info-card-body {
+      min-width: 0;
+    }
+
+    .info-card-body h3 {
+      margin: 0 0 4px;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .info-card-body p {
+      margin: 0;
+      color: var(--gray-700, #4A5A61);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+    }
+
+    .info-card-body a {
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .info-card-action {
+      flex: 0 0 auto;
+      align-self: center;
+    }
+
+    .info-card-button {
+      min-width: 154px;
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .status-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 32px;
+      transform: translateX(-50%);
+      z-index: 130;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: rgba(42, 53, 57, 0.94);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 20px;
+      box-shadow: 0 10px 24px rgba(42, 53, 57, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .status-toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    .switch-kira-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #F96073 0%, #FF8DA0 100%);
+      box-shadow: inset 0 -6px 0 rgba(230, 33, 58, 0.85);
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-kira-button:hover,
+    .switch-kira-button:focus-visible {
+      width: 204px;
+      filter: brightness(1.03);
+      outline: none;
+    }
+
+    .switch-kira-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(230, 33, 58, 0.85);
+    }
+
+    .switch-kira-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-kira-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-kira-button:hover .switch-kira-button-label,
+    .switch-kira-button:focus-visible .switch-kira-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#">
+        <img src="../assets/logo_hlidacky.svg" alt="">
+      </a>
+      <nav class="main-nav" aria-label="Sitter navigation">
+        <a class="active" href="#">
+          <span class="main-nav-icon"><img src="../assets/dashboard.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Dashboard</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="../assets/ico-calendar.svg" alt=""></span>
+          <span class="main-nav-label is-dropdown"><span class="main-nav-text">Calendar</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="../assets/icon-messages.svg" alt=""><span class="main-nav-notification">5</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Messages</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="../assets/icon-bookings.svg" alt=""><span class="main-nav-notification">5</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Bookings</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="../assets/jobs.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Jobs</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+        <span class="main-nav-divider" aria-hidden="true"></span>
+        <a href="#">
+          <span class="main-nav-icon"><img src="../assets/profile.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Profile</span><img class="main-nav-chevron" src="../assets/ico-chevron-down.svg" alt=""></span>
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Dashboard</h1>
+        <p>You are improving through fulfilling the tasks <span>move up</span></p>
+        <div class="hero-progress" aria-hidden="true">
+          <div class="hero-progress-bar">
+            <div class="hero-progress-fill" data-progress-fill>25%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-column">
+        <article class="issues-card" data-issues-card>
+          <div class="issues-card-header" data-issues-card-header role="button" tabindex="0" aria-expanded="true">
+            <div class="issues-card-heading">
+              <div class="issues-card-icon"><img src="../assets/approve-profile.svg" alt=""></div>
+              <div class="issues-card-copy">
+              <h2>Complete these steps for approval</h2>
+              <p>Complete all before submitting</p>
+              </div>
+            </div>
+            <button class="issues-toggle" type="button" data-issues-toggle aria-label="Toggle issues list">
+              <img src="../assets/chevron-down-pink.svg" alt="">
+            </button>
+          </div>
+
+          <div class="issues-card-body">
+            <div class="issues-card-body-wrap">
+              <div class="task-list" data-task-list></div>
+
+              <div class="review-notes">
+                <label for="review-notes">Optional note for our review team</label>
+                <textarea id="review-notes" data-review-notes placeholder="Write your message here..."></textarea>
+              </div>
+
+              <button class="submit-review" type="button" data-submit-review disabled>Submit for review</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-status-banner" data-review-status-banner hidden>
+          <div class="review-status-icon" aria-hidden="true"><img src="../assets/fa-hourglass.svg" alt=""></div>
+          <div class="review-status-copy">We are currently reviewing your submission. We will get back to you soon</div>
+          <div class="review-status-actions">
+            <a class="review-status-reply" href="../detail/index.html" data-review-status-reply>Reply</a>
+            <button class="review-status-close" type="button" data-review-status-close aria-label="Close review status message">×</button>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/new-jobs-go-fast.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>New jobs go fast!</h3>
+              <p><a href="#">Turn on mobile alerts to reply first 🎉</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/get-more-bookings-with-grow.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Get more bookings with GROW</h3>
+              <p>Show up higher in search and see if your message was read.</p>
+            </div>
+            <div class="info-card-action">
+              <a class="info-card-button" href="#">Upgrade to GROW</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/forum-launch.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>🚀 We are launching a new FORUM!</h3>
+              <p>Share experiences and find the support you are looking for. Explore trending topics and build a community <a href="#">View all topics</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/join-whatsapp-channel.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Join our WhatsApp channel</h3>
+              <p>Click the bell 🔔 and <a href="#">subscribe to channel</a> to be the first to get the latest updates.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/bank-id.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Bank iD</h3>
+              <p><a href="#">Verify your identity</a> via Bank iD.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/video-verification.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Video verification</h3>
+              <p>Register for a session through <a href="#">Video verification.</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/mojeid.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>mojeID</h3>
+              <p>Verify your phone number and email address via <a href="#">mojeID.</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/verification-center.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Verification center</h3>
+              <p>Schedule an appointment at the <a href="#">Verification Center.</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="info-card-icon"><img src="../assets/present-calendar.svg" alt=""></div>
+          <div class="info-card-content">
+            <div class="info-card-body">
+              <h3>Present calendar</h3>
+              <p>Fill out your <a href="#">availability calendar</a> to show when you’re free.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <a class="switch-kira-button" href="../detail/index.html" aria-label="Switch to KIRA">
+    <img class="switch-kira-button-icon" src="../assets/icon-people.svg" alt="">
+    <span class="switch-kira-button-label">Switch to KIRA</span>
+  </a>
+
+  <div class="status-toast" data-status-toast>Sent to support for review</div>
+
+  <script>
+    (function() {
+      var STORAGE_KEY = 'sitter-approval-dashboard-state';
+      var ACTIVITY_KEY = 'sitter-approval-dashboard-activity';
+      var MESSAGE_KEY = 'sitter-approval-dashboard-message';
+      var SUPPORT_REQUEST_KEY = 'sitter-approval-support-request';
+      var SUPPORT_STATUS_KEY = 'sitter-approval-support-status';
+      var sitterId = '567891';
+
+      var defaultState = {
+        expanded: true,
+        notes: '',
+        submittedAt: '',
+        sourceRequestTimestamp: '',
+        tasks: []
+      };
+
+      var TASK_COPY = {
+        'personal-name-real': {
+          title: 'Use your real name',
+          description: 'Replace nicknames or diminutives with your real first name.'
+        },
+        'personal-name-diacritics': {
+          title: 'Add the correct diacritics',
+          description: 'Match the full name on your ID, including accents and special characters.'
+        },
+        'location-address-missing': {
+          title: 'Add your full address',
+          description: 'Fill in the location field with the street and the rest of the address.'
+        },
+        'location-note-missing': {
+          title: 'Explain availability by location',
+          description: 'Add when you are available at each location.'
+        },
+        'babysitting-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'babysitting-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'babysitting-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'babysitting-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'cleaning-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'cleaning-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'cleaning-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'cleaning-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'pet-photo-black-white': {
+          title: 'Use a color photo',
+          description: 'Upload a profile photo in color instead of black and white.'
+        },
+        'pet-photo-too-narrow': {
+          title: 'Use a wider photo',
+          description: 'Upload a profile photo with a better crop and size.'
+        },
+        'pet-photo-face-unclear': {
+          title: 'Make your face more visible',
+          description: 'Choose a clearer profile photo where your face is easy to recognize.'
+        },
+        'pet-photo-filters': {
+          title: 'Remove filters and effects',
+          description: 'Upload a natural profile photo without filters, overlays, or special effects.'
+        },
+        'babysitting-about-grammar': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'babysitting-about-sensitive-info': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'babysitting-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'babysitting-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'babysitting-about-inconsistent': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'babysitting-about-missing': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your experience and offer better.'
+        },
+        'babysitting-about-not-specific': {
+          title: 'Describe your childcare experience',
+          description: 'Explain your experience with children, what you offer, and why parents should choose you.'
+        },
+        'babysitting-experience-not-specific': {
+          title: 'Be more specific about experience',
+          description: 'Add concrete details about the type and length of your childcare experience.'
+        },
+        'babysitting-availability-conflict': {
+          title: 'Fix availability mismatch',
+          description: 'Update the profile text so it matches your current availability settings.'
+        },
+        'babysitting-age-group-missing': {
+          title: 'Add age group details',
+          description: 'Mention which age groups of children you usually care for.'
+        },
+        'babysitting-certificate-missing': {
+          title: 'Add the missing certificate',
+          description: 'Upload or complete the qualification document mentioned in your profile.'
+        },
+        'babysitting-qualification-verify': {
+          title: 'Verify your qualification',
+          description: 'Provide enough proof or detail so support can verify this qualification.'
+        },
+        'babysitting-other-inconsistent': {
+          title: 'Fix profile inconsistency',
+          description: 'There is a mismatch in the profile that needs to be corrected before approval.'
+        },
+        'babysitting-support-manual-review': {
+          title: 'Needs manual review',
+          description: 'This item still needs clarification before support can approve it.'
+        },
+        'pet-about-typo': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'pet-about-contact': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'pet-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'pet-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'pet-about-differentiate': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'pet-about-brief': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your pet care offer better.'
+        },
+        'pet-about-pet-sitting': {
+          title: 'Describe your pet sitting',
+          description: 'Explain your experience with animals, what you offer, and why families should choose you.'
+        },
+        'pet-about-about-pet': {
+          title: 'Explain pet requirements',
+          description: 'Add what you need to know in advance and which animals you do not sit.'
+        },
+        'cleaning-about-typo': {
+          title: 'Fix typos',
+          description: 'Review the text and correct spelling or grammar mistakes.'
+        },
+        'cleaning-about-contact': {
+          title: 'Remove private contact details',
+          description: 'Delete surnames, organization names, and contact details from the text.'
+        },
+        'cleaning-about-side-income': {
+          title: 'Remove side-income wording',
+          description: 'Avoid phrases about side jobs, extra income, or earning a bit.'
+        },
+        'cleaning-about-language': {
+          title: 'Write it in English',
+          description: 'Add an English version of the text so it is understandable to more families.'
+        },
+        'cleaning-about-differentiate': {
+          title: 'Make each text unique',
+          description: 'Different profile texts should not repeat the same wording.'
+        },
+        'cleaning-about-brief': {
+          title: 'Add more detail',
+          description: 'Expand the text so families understand your cleaning offer better.'
+        },
+        'cleaning-about-not-specific': {
+          title: 'Describe your cleaning services',
+          description: 'Explain your cleaning experience, what you offer, and why families should choose you.'
+        }
+      };
+
+      var issuesCard = document.querySelector('[data-issues-card]');
+      var issuesCardHeader = document.querySelector('[data-issues-card-header]');
+      var reviewStatusBanner = document.querySelector('[data-review-status-banner]');
+      var reviewStatusReply = document.querySelector('[data-review-status-reply]');
+      var reviewStatusClose = document.querySelector('[data-review-status-close]');
+      var taskList = document.querySelector('[data-task-list]');
+      var toggleButton = document.querySelector('[data-issues-toggle]');
+      var notesTextarea = document.querySelector('[data-review-notes]');
+      var submitButton = document.querySelector('[data-submit-review]');
+      var toast = document.querySelector('[data-status-toast]');
+      var progressFill = document.querySelector('[data-progress-fill]');
+      var toastTimer = null;
+      var isReplyMode = false;
+
+      if (!issuesCard || !issuesCardHeader || !reviewStatusBanner || !taskList || !toggleButton || !notesTextarea || !submitButton) return;
+
+      function formatProfilePath(issue) {
+        if (issue.shared) {
+          return issue.sectionLabel || 'Profile';
+        }
+
+        if (issue.profileLabel && issue.sectionLabel) {
+          return issue.profileLabel + ' / ' + issue.sectionLabel;
+        }
+
+        return issue.profileLabel || issue.sectionLabel || 'Profile';
+      }
+
+      function buildTaskFromIssue(issue) {
+        var profilePath = formatProfilePath(issue);
+        var taskCopy = TASK_COPY[issue.key] || {
+          title: issue.tagLabel || issue.description || 'Update this section',
+          description: issue.description || 'Update this section before approval.'
+        };
+
+        return {
+          id: issue.key,
+          checked: false,
+          title: taskCopy.title,
+          description: taskCopy.description,
+          profile: profilePath
+        };
+      }
+
+      function getSupportRequestData() {
+        try {
+          var raw = localStorage.getItem(SUPPORT_REQUEST_KEY);
+          if (!raw) {
+            return {
+              timestamp: '',
+              tasks: []
+            };
+          }
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== sitterId || !Array.isArray(parsed.issues)) {
+            return {
+              timestamp: '',
+              tasks: []
+            };
+          }
+
+          return {
+            timestamp: typeof parsed.timestamp === 'string' ? parsed.timestamp : '',
+            tasks: parsed.issues
+              .filter(function(issue) { return issue && issue.key; })
+              .map(buildTaskFromIssue)
+          };
+        } catch (error) {
+          console.warn('Failed to read support request issues.', error);
+          return {
+            timestamp: '',
+            tasks: []
+          };
+        }
+      }
+
+      function getSupportWaitingCount() {
+        try {
+          var raw = localStorage.getItem(SUPPORT_STATUS_KEY);
+          if (!raw) return null;
+
+          var parsed = JSON.parse(raw);
+          if (!parsed || parsed.sitterId !== sitterId || typeof parsed.waitingCount !== 'number') return null;
+
+          return parsed.waitingCount;
+        } catch (error) {
+          console.warn('Failed to read support status.', error);
+          return null;
+        }
+      }
+
+      function mergeTasksWithSavedState(sourceTasks, savedTasks) {
+        return sourceTasks.map(function(task) {
+          var savedTask = Array.isArray(savedTasks)
+            ? savedTasks.find(function(item) { return item.id === task.id; })
+            : null;
+
+          return Object.assign({}, task, {
+            checked: !!(savedTask && savedTask.checked)
+          });
+        });
+      }
+
+      function loadState() {
+        var supportRequest = getSupportRequestData();
+        var requestTasks = supportRequest.tasks;
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            return Object.assign({}, defaultState, {
+              sourceRequestTimestamp: supportRequest.timestamp,
+              tasks: requestTasks
+            });
+          }
+
+          var parsed = JSON.parse(raw);
+          var savedRequestTimestamp = typeof parsed.sourceRequestTimestamp === 'string' ? parsed.sourceRequestTimestamp : '';
+          var hasSameRequest = savedRequestTimestamp && supportRequest.timestamp && savedRequestTimestamp === supportRequest.timestamp;
+
+          return {
+            expanded: typeof parsed.expanded === 'boolean' ? parsed.expanded : defaultState.expanded,
+            notes: typeof parsed.notes === 'string' ? parsed.notes : '',
+            submittedAt: typeof parsed.submittedAt === 'string' ? parsed.submittedAt : '',
+            sourceRequestTimestamp: supportRequest.timestamp,
+            tasks: hasSameRequest ? mergeTasksWithSavedState(requestTasks, parsed.tasks) : requestTasks
+          };
+        } catch (error) {
+          console.warn('Failed to load sitter dashboard state.', error);
+          return Object.assign({}, defaultState, {
+            sourceRequestTimestamp: supportRequest.timestamp,
+            tasks: requestTasks
+          });
+        }
+      }
+
+      var state = loadState();
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function getCheckedCount() {
+        return state.tasks.filter(function(task) { return task.checked; }).length;
+      }
+
+      function renderTasks() {
+        var checkedCount = getCheckedCount();
+        var total = state.tasks.length;
+
+        if (!total) {
+          taskList.innerHTML = '' +
+            '<div class="task-item" style="display:block;">' +
+              '<div class="task-content">' +
+                '<h3>No issues from support right now</h3>' +
+                '<p>Once support sends you requested changes from KIRA, they will appear here as tasks to resolve.</p>' +
+              '</div>' +
+            '</div>';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Submit for review';
+          return;
+        }
+
+        taskList.innerHTML = state.tasks.map(function(task) {
+          return '' +
+            '<div class="task-item">' +
+              '<div class="task-status" aria-hidden="true"><img src="' + (task.checked ? '../assets/circle-check-icon.svg' : '../assets/hourglass-icon-pink.svg') + '" alt=""></div>' +
+              '<div class="task-content">' +
+                '<h3>' + task.title + '</h3>' +
+                '<p>' + task.description + '</p>' +
+                '<a class="task-edit" href="#" data-task-edit="' + task.id + '"><img src="../assets/pen-to-square-icon.svg" alt="">Edit</a>' +
+              '</div>' +
+            '</div>';
+        }).join('') +
+        '<div class="task-progress">' +
+          '<div class="task-progress-bars">' +
+            state.tasks.map(function(task, index) {
+              return '<span class="' + (index < checkedCount ? 'is-complete' : '') + '"></span>';
+            }).join('') +
+          '</div>' +
+          '<div class="task-progress-note">' + checkedCount + ' of ' + total + ' fixed</div>' +
+        '</div>';
+
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit for review';
+      }
+
+      function renderExpandedState() {
+        issuesCard.classList.toggle('is-collapsed', !state.expanded);
+        issuesCardHeader.setAttribute('aria-expanded', state.expanded ? 'true' : 'false');
+        toggleButton.setAttribute('aria-label', state.expanded ? 'Hide the issues' : 'Show the issues');
+      }
+
+      function renderNotes() {
+        notesTextarea.value = state.notes;
+        autoGrowReviewNotes();
+      }
+
+      function autoGrowReviewNotes() {
+        if (!notesTextarea) return;
+        notesTextarea.style.height = '64px';
+        notesTextarea.style.height = Math.max(64, notesTextarea.scrollHeight) + 'px';
+      }
+
+      function isSitterSubmissionAwaitingReview(supportRequestTimestamp) {
+        if (!state.submittedAt) return false;
+        if (!supportRequestTimestamp) return true;
+
+        var submittedAt = new Date(state.submittedAt).getTime();
+        var supportRequestAt = new Date(supportRequestTimestamp).getTime();
+
+        if (isNaN(submittedAt)) return false;
+        if (isNaN(supportRequestAt)) return true;
+
+        return submittedAt >= supportRequestAt;
+      }
+
+      function render() {
+        var waitingCount = getSupportWaitingCount();
+        var supportRequest = getSupportRequestData();
+        var hasSameRequest = state.sourceRequestTimestamp && supportRequest.timestamp && state.sourceRequestTimestamp === supportRequest.timestamp;
+        var hasSupportIssues = supportRequest.tasks.length > 0;
+        var shouldShowReviewStatus = !isReplyMode && waitingCount !== 0 && (!hasSupportIssues || isSitterSubmissionAwaitingReview(supportRequest.timestamp));
+
+        state.sourceRequestTimestamp = supportRequest.timestamp;
+        state.tasks = hasSameRequest ? mergeTasksWithSavedState(supportRequest.tasks, state.tasks) : supportRequest.tasks;
+        issuesCard.hidden = waitingCount === 0 || shouldShowReviewStatus;
+        reviewStatusBanner.hidden = !shouldShowReviewStatus;
+        renderExpandedState();
+        if (!issuesCard.hidden) {
+          renderTasks();
+          renderNotes();
+        }
+        saveState();
+      }
+
+      function showToast() {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+
+        toast.classList.add('is-visible');
+        toastTimer = setTimeout(function() {
+          toast.classList.remove('is-visible');
+        }, 2600);
+      }
+
+      function buildSubmittedMessagePayload(timestamp) {
+        return {
+          sitterId: sitterId,
+          timestamp: timestamp,
+          intro: 'I updated the requested items and I’m sending my profile for review again.',
+          notes: state.notes.trim(),
+          resolvedTasks: state.tasks.filter(function(task) { return task.checked; }).map(function(task) {
+            return task.title;
+          })
+        };
+      }
+
+      function toggleIssuesCard() {
+        state.expanded = !state.expanded;
+        saveState();
+        renderExpandedState();
+      }
+
+      issuesCardHeader.addEventListener('click', function() {
+        toggleIssuesCard();
+      });
+
+      issuesCardHeader.addEventListener('keydown', function(event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        toggleIssuesCard();
+      });
+
+      taskList.addEventListener('click', function(event) {
+        var editLink = event.target.closest('[data-task-edit]');
+        if (!editLink) return;
+        event.preventDefault();
+
+        var task = state.tasks.find(function(item) {
+          return item.id === editLink.getAttribute('data-task-edit');
+        });
+        if (!task) return;
+
+        task.checked = !task.checked;
+        saveState();
+        renderTasks();
+      });
+
+      notesTextarea.addEventListener('input', function() {
+        state.notes = notesTextarea.value;
+        autoGrowReviewNotes();
+        saveState();
+      });
+
+      submitButton.addEventListener('click', function() {
+        if (submitButton.disabled) return;
+
+        isReplyMode = false;
+        state.submittedAt = new Date().toISOString();
+        var messagePayload = buildSubmittedMessagePayload(state.submittedAt);
+
+        localStorage.setItem(ACTIVITY_KEY, JSON.stringify({
+          sitterId: sitterId,
+          timestamp: state.submittedAt
+        }));
+
+        localStorage.setItem(MESSAGE_KEY, JSON.stringify(messagePayload));
+
+        state.notes = '';
+        saveState();
+
+        showToast();
+        render();
+      });
+
+      if (reviewStatusReply) {
+        reviewStatusReply.addEventListener('click', function(event) {
+          event.preventDefault();
+          isReplyMode = true;
+          state.expanded = true;
+          saveState();
+          render();
+        });
+      }
+
+      if (reviewStatusClose) {
+        reviewStatusClose.addEventListener('click', function() {
+          isReplyMode = false;
+          reviewStatusBanner.hidden = true;
+        });
+      }
+
+      render();
+      autoGrowReviewNotes();
+    })();
+  </script>
+</body>
+</html>
