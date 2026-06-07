@@ -1541,6 +1541,25 @@
               </label>
             </div>
           </div>
+          <div class="settings-group">
+            <h3 class="settings-group-title">Page state</h3>
+            <div class="settings-option-list">
+              <label class="settings-option">
+                <input type="radio" name="prototype-view-state" value="normal" checked data-view-state-input>
+                <span>
+                  <strong>Normal</strong>
+                  <span>Shows the booking in Waiting to confirm state.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-view-state" value="rejected" data-view-state-input>
+                <span>
+                  <strong>Booking rejected</strong>
+                  <span>Shows the family alert, rejected booking card, and potential replacements.</span>
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1810,6 +1829,27 @@
         settingsModal.hidden = true;
         settingsModalBackdrop.hidden = true;
         document.body.classList.remove('settings-modal-open');
+      }
+
+      var VIEW_STATE_STORAGE_KEY = 'bookings-rejection-flow-view-state';
+      var PAGE_AUDIENCE_STORAGE_KEY = 'bookings-rejection-flow-page-audience';
+      var BOOKINGS_URL = '/bookings-rejection-flow/';
+
+      function redirectToBookings() {
+        window.location.href = BOOKINGS_URL;
+      }
+
+      if (settingsModal) {
+        settingsModal.addEventListener('change', function(event) {
+          var input = event.target;
+          if (input.name === 'prototype-page-audience') {
+            try { window.localStorage.setItem(PAGE_AUDIENCE_STORAGE_KEY, input.value); } catch(e) {}
+            redirectToBookings();
+          } else if (input.name === 'prototype-view-state') {
+            try { window.localStorage.setItem(VIEW_STATE_STORAGE_KEY, input.value); } catch(e) {}
+            redirectToBookings();
+          }
+        });
       }
 
       if (settingsButton) {
