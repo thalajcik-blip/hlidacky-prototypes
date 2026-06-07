@@ -419,88 +419,67 @@
     }
 
     .settings-modal-body {
+      min-height: 280px;
       padding: 16px 24px 24px;
       overflow-y: auto;
       overflow-x: auto;
     }
 
-    .settings-matrix {
-      min-width: 960px;
+    .settings-panel {
       display: grid;
-      grid-template-columns: minmax(280px, 1.8fr) repeat(6, minmax(88px, 1fr));
+      gap: 18px;
+      max-width: 520px;
+    }
+
+    .settings-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .settings-group-title {
+      margin: 0;
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .settings-option-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .settings-option {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      padding: 14px 16px;
       border: 1px solid var(--gray-300);
-      border-radius: 16px;
-      overflow: hidden;
-      background: var(--white);
-    }
-
-    .settings-cell {
-      min-width: 0;
-      padding: 16px 14px;
-      border-right: 1px solid var(--gray-300);
-      border-bottom: 1px solid var(--gray-300);
+      border-radius: 12px;
       background: var(--gray-100);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      cursor: pointer;
     }
 
-    .settings-cell:nth-child(7n) {
-      border-right: 0;
+    .settings-option input {
+      margin: 4px 0 0;
+      accent-color: #6c4ef8;
     }
 
-    .settings-cell--head {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: var(--white);
-      color: var(--gray-700);
-      font-size: 13px;
-      font-weight: 450;
-      line-height: 1.2;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .settings-cell--label {
-      justify-content: flex-start;
-      padding-inline: 18px;
-    }
-
-    .settings-item-label {
-      color: var(--gray-900);
+    .settings-option strong {
+      display: block;
+      color: var(--gray-800);
       font-size: 15px;
-      font-weight: 450;
-      line-height: 1.35;
-      letter-spacing: -0.16px;
+      line-height: 140%;
     }
 
-    .settings-toggle {
-      position: relative;
-      width: 24px;
-      height: 24px;
-      padding: 0;
-      border: 1px solid #D8DDE7;
-      border-radius: 6px;
-      background: var(--white);
-      transition: border-color 0.15s ease, background-color 0.15s ease;
-    }
-
-    .settings-toggle[aria-pressed="true"] {
-      border-color: var(--pink-400);
-      background: var(--pink-400);
-    }
-
-    .settings-toggle[aria-pressed="true"]::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      width: 11px;
-      height: 6px;
-      border-left: 2px solid var(--white);
-      border-bottom: 2px solid var(--white);
-      transform: rotate(-45deg) translate(1px, -1px);
+    .settings-option span {
+      display: block;
+      margin-top: 2px;
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 145%;
     }
 
     main {
