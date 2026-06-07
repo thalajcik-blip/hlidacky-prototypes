@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlidačky.cz - Messages</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --green-500: #0BA825;
+      --green-600: #078E1D;
+      --gray-100: #F7F9FC;
+      --gray-150: #F7F7F7;
+      --gray-200: #EEF2F7;
+      --gray-300: #E5E5EA;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --violet-100: #F4EAFE;
+      --violet-300: #BF7BFF;
+      --white: #FFF;
+      --shadow-card: 0 10px 24px rgba(42, 53, 57, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white);
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a,
+    button,
+    select {
+      cursor: pointer;
+      font: inherit;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    .app-shell {
+      width: 100%;
+      min-width: 1180px;
+    }
+
+    .topbar {
+      position: relative;
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(229, 229, 234, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 148px;
+      height: auto;
+      display: block;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-800);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .mobile-nav-toggle-close {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-menu {
+      display: none;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] .mobile-nav-toggle-close {
+      display: inline-flex;
+    }
+
+    .main-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .main-nav a {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 96px;
+      padding: 12px 14px 8px;
+      border-bottom: 6px solid transparent;
+      color: var(--gray-800);
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.3px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .main-nav a.active {
+      color: var(--pink-400);
+    }
+
+    .main-nav a:hover,
+    .main-nav a:focus-visible {
+      border-bottom-color: var(--pink-400);
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .main-nav-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 26px;
+      color: var(--gray-800);
+    }
+
+    .main-nav a.active .main-nav-icon {
+      color: var(--pink-400);
+    }
+
+    .main-nav-icon img,
+    .main-nav-icon svg {
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+
+    .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(15%) sepia(10%) saturate(1152%) hue-rotate(157deg) brightness(95%) contrast(88%);
+      transition: filter 0.15s ease;
+    }
+
+    .main-nav a.active .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(3600%) hue-rotate(309deg) brightness(101%) contrast(95%);
+    }
+
+    .main-nav-icon svg {
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .main-nav-notification {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      display: flex;
+      min-width: 16px;
+      padding: 2px 4px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 64px;
+      background: var(--pink-400);
+      color: var(--white);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 100%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.96);
+    }
+
+    .main-nav-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      justify-content: flex-start;
+      min-height: 18px;
+    }
+
+    .main-nav-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--gray-300);
+      margin: 0 2px 0 4px;
+    }
+
+    .mobile-topbar,
+    .mobile-bottom-nav {
+      display: none;
+    }
+
+    .mobile-nav-backdrop {
+      display: none;
+    }
+
+    .mobile-nav-header {
+      display: none;
+    }
+
+    .mobile-nav-close {
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #A3AAB2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-close svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover,
+    .switch-view-button:focus-visible {
+      width: 256px;
+      filter: brightness(1.03);
+      outline: none;
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    body.settings-modal-open {
+      overflow: hidden;
+    }
+
+    .settings-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 260;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 270;
+      width: min(1120px, calc(100vw - 32px));
+      max-height: min(80vh, 860px);
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.24);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .settings-modal-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .settings-modal-header-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .settings-modal-header-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .settings-modal-header-action:hover,
+    .settings-modal-header-action:focus-visible {
+      color: var(--pink-500);
+      outline: none;
+    }
+
+    .settings-modal-close {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-modal-close img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .settings-modal-close:hover,
+    .settings-modal-close:focus-visible {
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .settings-modal-body {
+      padding: 16px 24px 24px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .settings-matrix {
+      min-width: 960px;
+      display: grid;
+      grid-template-columns: minmax(280px, 1.8fr) repeat(6, minmax(88px, 1fr));
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .settings-cell {
+      min-width: 0;
+      padding: 16px 14px;
+      border-right: 1px solid var(--gray-300);
+      border-bottom: 1px solid var(--gray-300);
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .settings-cell--head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--white);
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .settings-cell--label {
+      justify-content: flex-start;
+      padding-inline: 18px;
+    }
+
+    .settings-item-label {
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 1.35;
+      letter-spacing: -0.16px;
+    }
+
+    .settings-toggle {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 1px solid #D8DDE7;
+      border-radius: 6px;
+      background: var(--white);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .settings-toggle[aria-pressed="true"] {
+      border-color: var(--pink-400);
+      background: var(--pink-400);
+    }
+
+    .settings-toggle[aria-pressed="true"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 11px;
+      height: 6px;
+      border-left: 2px solid var(--white);
+      border-bottom: 2px solid var(--white);
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    main {
+      width: 100%;
+      height: calc(100vh - 91px);
+      min-height: calc(100vh - 91px);
+      overflow: hidden;
+    }
+
+    .messages-layout {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      height: 100%;
+      min-height: calc(100vh - 91px);
+      overflow: hidden;
+    }
+
+    .messages-sidebar {
+      border-right: 1px solid var(--gray-300);
+      background: var(--white);
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    .messages-feed-slot {
+      padding: 16px 12px 10px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .messages-list {
+      min-width: 0;
+      overflow-y: auto;
+      padding-bottom: 18px;
+    }
+
+    .message-list-item {
+      display: grid;
+      grid-template-columns: 28px 48px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px 12px 10px;
+      border-top: 1px solid rgba(229, 229, 234, 0.8);
+      text-decoration: none;
+      color: inherit;
+      background: var(--white);
+    }
+
+    .message-list-item.is-active {
+      background: #F8FBFF;
+      border-left: 6px solid var(--pink-400);
+      padding-left: 4px;
+    }
+
+    .message-list-star {
+      width: 22px;
+      height: 22px;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .message-list-star svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+    }
+
+    .message-list-item.is-favorite .message-list-star {
+      color: var(--pink-400);
+    }
+
+    .message-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #F7D4DB 0%, #DCE6F3 100%);
+      color: var(--gray-800);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      overflow: hidden;
+    }
+
+    .message-avatar--small {
+      width: 38px;
+      height: 38px;
+      font-size: 14px;
+      position: absolute;
+      left: 28px;
+      bottom: 0;
+      border: 2px solid var(--white);
+      background: linear-gradient(135deg, #F9E6BA 0%, #DCE6F3 100%);
+    }
+
+    .message-list-copy {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .message-list-topline {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .message-list-name {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 1.15;
+      letter-spacing: -0.2px;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .message-list-time {
+      color: var(--pink-400);
+      font-size: 14px;
+      font-weight: 350;
+      line-height: 1.2;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .message-list-preview,
+    .message-list-subline {
+      color: var(--gray-800);
+      font-size: 14px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .message-list-subline {
+      color: var(--gray-600);
+    }
+
+    .message-list-badge {
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--pink-400);
+      color: var(--white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1;
+    }
+
+    .messages-content {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .conversation-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .conversation-back {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex: 0 0 32px;
+    }
+
+    .conversation-back svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .conversation-title {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .conversation-title h1 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 18px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .conversation-title p {
+      margin: 0;
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .conversation-actions {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .book-button {
+      min-height: 40px;
+      padding: 8px 20px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--green-500);
+      background: var(--white);
+      color: var(--green-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.2;
+      text-decoration: none;
+      box-shadow: inset 0 -3px 0 rgba(11, 168, 37, 0.08);
+    }
+
+    .book-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .more-button {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .more-button span {
+      font-size: 28px;
+      line-height: 0;
+      transform: translateY(-2px);
+    }
+
+    .conversation-body {
+      min-height: 0;
+      overflow-y: auto;
+      padding: 24px 28px 28px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      background: linear-gradient(180deg, #FFF 0%, #FFF 72%, #FBFCFF 100%);
+    }
+
+    .date-divider {
+      justify-self: center;
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .bubble-row {
+      display: grid;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .bubble-row--incoming {
+      justify-items: start;
+    }
+
+    .bubble-row--outgoing {
+      justify-items: end;
+    }
+
+    .bubble-row--with-avatar {
+      grid-template-columns: 52px minmax(0, 1fr);
+      align-items: end;
+      justify-items: start;
+    }
+
+    .bubble-stack {
+      max-width: min(520px, 100%);
+      display: grid;
+      gap: 8px;
+    }
+
+    .bubble {
+      max-width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      color: var(--gray-900);
+      font-size: 16px;
+      font-weight: 350;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .bubble--outgoing {
+      background: #EEF3F9;
+      border-radius: 20px;
+    }
+
+    .bubble--incoming {
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+    }
+
+    .bubble-meta {
+      color: var(--gray-600);
+      font-size: 13px;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bubble-meta--seen {
+      justify-self: end;
+    }
+
+    .composer {
+      padding: 14px 28px 22px;
+      border-top: 1px solid rgba(229, 229, 234, 0.8);
+      background: var(--white);
+    }
+
+    .composer-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 14px;
+    }
+
+    .composer-card {
+      min-width: 0;
+      border: 1px solid var(--gray-300);
+      border-radius: 18px;
+      background: var(--white);
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(42, 53, 57, 0.04);
+    }
+
+    .composer-bar {
+      display: block;
+      min-height: 52px;
+      padding: 20px 22px 18px;
+      background: var(--white);
+    }
+
+    .composer-input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--gray-800);
+      font-size: 17px;
+      font-weight: 350;
+      line-height: 1.46;
+      min-width: 0;
+      min-height: 30px;
+      max-height: 224px;
+      padding: 0;
+      resize: none;
+      overflow-y: auto;
+      field-sizing: content;
+      letter-spacing: -0.18px;
+    }
+
+    .composer-input::placeholder {
+      color: var(--gray-500);
+    }
+
+    .composer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 18px 14px;
+      border-top: 1px solid var(--gray-300);
+      background: #F1F4FA;
+    }
+
+    .composer-template-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      color: var(--gray-500);
+    }
+
+    .composer-template-nav.is-disabled {
+      opacity: 0.42;
+    }
+
+    .composer-template-nav.is-disabled .composer-template-button {
+      color: var(--gray-400);
+      pointer-events: none;
+    }
+
+    .composer-template-nav.is-disabled .composer-template-label {
+      color: var(--gray-400);
+    }
+
+    .composer-template-button {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 24px;
+    }
+
+    .composer-template-button svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .composer-template-label {
+      min-width: 0;
+      color: var(--gray-500);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .composer-tools {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .composer-tool-button,
+    .composer-send {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      flex: 0 0 34px;
+    }
+
+    .composer-tool-button svg,
+    .composer-send svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .composer-tool-button {
+      color: #7E5EFF;
+    }
+
+    .composer-tool-button.is-disabled {
+      color: var(--gray-500);
+      opacity: 0.72;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .composer-send {
+      width: 48px;
+      height: 48px;
+      color: var(--pink-400);
+      flex-basis: 48px;
+      align-self: end;
+    }
+
+    .composer-send:hover,
+    .composer-template-button:hover {
+      opacity: 0.9;
+    }
+
+    .action-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 0;
+      padding: 14px 14px 16px 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+    }
+
+    .action-item--priority-urgent {
+      border-color: var(--pink-300);
+      background: var(--pink-100);
+    }
+
+    .action-item--priority-normal {
+      border-color: var(--violet-300);
+      background: var(--violet-100);
+    }
+
+    .action-item--priority-low {
+      border-color: rgba(229, 229, 234, 0.9);
+      background: var(--white);
+    }
+
+    .action-item__media {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+    }
+
+    .action-item__media img {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+
+    .action-item__body {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      align-self: center;
+    }
+
+    .action-item__title {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 145%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description a {
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .action-item__aside {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 0;
+      align-self: start;
+      transform: translate(8px, -8px);
+    }
+
+    .action-item__aside--button {
+      grid-column: 2 / -1;
+      justify-content: flex-start;
+      margin-top: 4px;
+      transform: none;
+      align-self: center;
+    }
+
+    .action-item__button {
+      min-width: 100px;
+      display: flex;
+      padding: 6px 12px 8px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      border: 0;
+      background: var(--pink-400);
+      box-shadow: 0 -3px 0 0 #E6213A inset;
+      color: var(--white);
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      text-decoration: none;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .action-item__button:hover {
+      background: var(--pink-500);
+    }
+
+    .action-item__button--grow {
+      background: var(--green-500);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .action-item__button--grow:hover {
+      background: var(--green-600);
+      box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.16) inset;
+    }
+
+    .action-item__control {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.9;
+      transition: opacity 0.15s ease;
+    }
+
+    .action-item__control:hover {
+      opacity: 1;
+    }
+
+    .action-item__control img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    @media (max-width: 1180px) {
+      .app-shell {
+        min-width: 0;
+      }
+
+      .topbar {
+        padding-inline: 16px;
+      }
+
+      .messages-layout {
+        grid-template-columns: 340px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        background: var(--white);
+      }
+
+      .app-shell {
+        min-width: 0;
+      }
+
+      .switch-view-button {
+        display: none;
+      }
+
+      body.mobile-nav-open {
+        overflow: hidden;
+      }
+
+      .topbar {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        padding: 12px 16px 10px;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand img {
+        width: 140px;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+
+      .main-nav {
+        position: fixed;
+        top: 84px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: none;
+        padding: 0 0 24px;
+        min-height: calc(100dvh - 84px);
+        background: var(--white);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        overflow-y: auto;
+      }
+
+      .main-nav.is-open {
+        display: flex;
+      }
+
+      .mobile-nav-header {
+        display: none;
+      }
+
+      .main-nav a {
+        min-width: 0;
+        min-height: 76px;
+        padding: 20px;
+        border-bottom-width: 0;
+        border-radius: 0;
+        border-bottom: 1px solid var(--gray-300);
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 14px;
+        text-align: left;
+        background: var(--white);
+      }
+
+      .main-nav a.active {
+        background: var(--gray-100);
+        box-shadow: inset 6px 0 0 var(--pink-400);
+      }
+
+      .main-nav a:hover,
+      .main-nav a:focus-visible {
+        border-bottom-color: var(--gray-300);
+        background: var(--gray-100);
+      }
+
+      .main-nav-icon {
+        flex: 0 0 26px;
+      }
+
+      .main-nav-label {
+        height: auto;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .main-nav-divider {
+        display: none;
+      }
+
+      .mobile-nav-backdrop {
+        position: fixed;
+        inset: 84px 0 0;
+        z-index: 180;
+        display: block;
+        background: rgba(33, 37, 41, 0.14);
+      }
+
+      main {
+        height: auto;
+        min-height: auto;
+        overflow: visible;
+      }
+
+      .messages-layout {
+        display: block;
+        height: auto;
+        min-height: auto;
+        overflow: visible;
+      }
+
+      .messages-content {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: calc(100dvh - 84px);
+      }
+
+      .messages-sidebar {
+        display: none;
+        border-right: 0;
+      }
+
+      .messages-feed-slot {
+        padding: 14px 12px 10px;
+      }
+
+      .message-list-item {
+        grid-template-columns: 24px 48px minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 12px 12px 12px 8px;
+      }
+
+      .message-list-item.is-active {
+        border-left-width: 0;
+        padding-left: 8px;
+        background: var(--white);
+      }
+
+      .message-list-name {
+        font-size: 18px;
+      }
+
+      .message-list-preview,
+      .message-list-subline {
+        font-size: 12px;
+      }
+
+      .message-list-time {
+        font-size: 12px;
+      }
+
+      .composer {
+        padding: 12px 16px 18px;
+      }
+
+      .composer-shell {
+        gap: 10px;
+      }
+
+      .composer-bar {
+        padding: 18px 18px 16px;
+      }
+
+      .composer-input {
+        font-size: 16px;
+      }
+
+      .composer-footer {
+        padding: 10px 14px 12px;
+        gap: 12px;
+      }
+
+      .composer-template-nav {
+        gap: 6px;
+      }
+
+      .composer-template-label {
+        font-size: 14px;
+      }
+
+      .composer-tools {
+        gap: 8px;
+      }
+
+      .composer-tool-button,
+      .composer-send {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+      }
+
+      .composer-tool-button svg,
+      .composer-send svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .composer-send {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+      }
+
+      .settings-modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+      }
+
+      .settings-modal-header {
+        padding: 18px 16px 16px;
+        flex-wrap: wrap;
+      }
+
+      .settings-modal-header h2 {
+        font-size: 20px;
+      }
+
+      .settings-modal-header-actions {
+        order: 2;
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .settings-modal-body {
+        padding: 12px 16px 16px;
+      }
+
+      .settings-matrix {
+        min-width: 760px;
+        grid-template-columns: minmax(220px, 1.5fr) repeat(6, minmax(72px, 1fr));
+      }
+
+      .settings-cell {
+        padding: 12px 10px;
+      }
+
+      .settings-item-label {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/bookings-rejection-flow/">
+        <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+      </a>
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-nav" data-mobile-nav-toggle>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-menu" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+            <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+            <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+          </svg>
+        </span>
+        <span class="mobile-nav-toggle-icon mobile-nav-toggle-close" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+            <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+          </svg>
+        </span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Sitter navigation" data-mobile-nav>
+        <div class="mobile-nav-header">
+          <a class="brand" href="/bookings-rejection-flow/">
+            <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="">
+          </a>
+          <button class="mobile-nav-close" type="button" aria-label="Close navigation menu" data-mobile-nav-close>
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10.3431 9.28249L22.7177 21.6571C23.1082 22.0476 23.1082 22.6808 22.7177 23.0713C22.3272 23.4618 21.694 23.4618 21.3035 23.0713L8.92888 10.6967C8.53835 10.3062 8.53835 9.67299 8.92888 9.28249C9.3194 8.89196 9.95257 8.89196 10.3431 9.28249Z" fill="#A3AAB2"/>
+              <path d="M8.92896 21.6571L21.3036 9.28249C21.6941 8.89196 22.3272 8.89196 22.7178 9.28249C23.1083 9.67299 23.1083 10.3062 22.7178 10.6967L10.3432 23.0713C9.95266 23.4618 9.31949 23.4618 8.92896 23.0713C8.53844 22.6808 8.53844 22.0476 8.92896 21.6571Z" fill="#A3AAB2"/>
+            </svg>
+          </button>
+        </div>
+        <a href="/bookings-rejection-flow/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/dashboard.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Dashboard</span></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/ico-calendar.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Calendar</span></span>
+        </a>
+        <a class="active" href="/bookings-rejection-flow/messages/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-messages.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Messages</span></span>
+        </a>
+        <a href="/bookings-rejection-flow/">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""><span class="main-nav-notification">2</span></span>
+          <span class="main-nav-label"><span class="main-nav-text">Bookings</span></span>
+        </a>
+        <a href="#">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/jobs.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Jobs</span></span>
+        </a>
+        <span class="main-nav-divider" aria-hidden="true"></span>
+        <a href="#">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/profile.svg" alt=""></span>
+          <span class="main-nav-label"><span class="main-nav-text">Profile</span></span>
+        </a>
+      </nav>
+      <div class="mobile-nav-backdrop" data-mobile-nav-backdrop hidden></div>
+    </header>
+
+    <a class="switch-view-button" href="#" aria-label="Prototype settings">
+      <img class="switch-view-button-icon" src="/notification-center/assets/icon-gear.svg" alt="">
+      <span class="switch-view-button-label">Prototype settings</span>
+    </a>
+
+    <div class="settings-modal-backdrop" data-settings-modal-backdrop hidden></div>
+    <section class="settings-modal" aria-labelledby="prototype-settings-title" aria-modal="true" role="dialog" data-settings-modal hidden>
+      <div class="settings-modal-header">
+        <h2 id="prototype-settings-title">Prototype settings</h2>
+        <button class="settings-modal-close" type="button" aria-label="Close prototype settings" data-settings-modal-close>
+          <img src="/notification-center/assets/xicon.svg" alt="">
+        </button>
+      </div>
+      <div class="settings-modal-body">
+        <div class="settings-panel">
+          <div class="settings-group">
+            <h3 class="settings-group-title">Booking page version</h3>
+            <div class="settings-option-list">
+              <label class="settings-option">
+                <input type="radio" name="prototype-page-audience" value="families" checked data-page-audience-input>
+                <span>
+                  <strong>For families</strong>
+                  <span>Includes credits and quick booking shortcuts.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-page-audience" value="sitters" data-page-audience-input>
+                <span>
+                  <strong>For sitters</strong>
+                  <span>Hides credits and quick booking shortcuts, and changes the waiting booking actions.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="messages-layout">
+        <aside class="messages-sidebar" aria-label="Conversation list">
+          <section class="messages-feed-slot" aria-label="Messages action items feed"></section>
+          <section class="messages-list">
+          <a class="message-list-item is-active" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar" data-thread-avatar>A</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name" data-thread-name>Alice Masopustová</strong>
+                  <span class="message-list-time">12:40</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli...</span>
+              </span>
+              <span class="message-list-badge">2</span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">M</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Marie Srníčková</strong>
+                  <span class="message-list-time">5 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli...</span>
+              </span>
+              <span class="message-list-badge">5</span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar" style="position:relative;">E<span class="message-avatar message-avatar--small">M</span></span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Eva, Marie, Jiřina, An...</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">2 days ago</span>
+                </span>
+                <span class="message-list-subline">Marie: Dobrý den, dnes jsme s dět...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">Š</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Sára Ostrčilová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">yesterday</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item is-favorite" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">E</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Eva Dvořáková</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">7:44</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">S</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Simona Balabánová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">3 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s... <span style="color:var(--pink-400); text-decoration:underline;">Reply?</span></span>
+              </span>
+            </a>
+
+            <a class="message-list-item" href="#">
+              <span class="message-list-star" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3.8L14.6 9.2L20.6 10.1L16.3 14.2L17.4 20L12 17.1L6.6 20L7.7 14.2L3.4 10.1L9.4 9.2L12 3.8Z"></path></svg>
+              </span>
+              <span class="message-avatar">D</span>
+              <span class="message-list-copy">
+                <span class="message-list-topline">
+                  <strong class="message-list-name">Dana Floriánová</strong>
+                  <span class="message-list-time" style="color:var(--gray-600);">5 days ago</span>
+                </span>
+                <span class="message-list-preview">Dobrý den, dnes jsme s dětmi byli n...</span>
+              </span>
+            </a>
+          </section>
+        </aside>
+
+        <section class="messages-content" aria-label="Conversation detail">
+          <header class="conversation-header">
+            <button class="conversation-back" type="button" aria-label="Back to bookings" data-conversation-back>
+              <svg viewBox="0 0 24 24"><path d="M15 5L8 12L15 19"></path></svg>
+            </button>
+            <div class="conversation-title">
+              <h1 data-thread-name>Alice Masopustová</h1>
+              <p>No booking yet</p>
+            </div>
+            <div class="conversation-actions">
+              <a class="book-button" href="#">
+                <svg viewBox="0 0 24 24"><rect x="4.5" y="6.5" width="15" height="13" rx="2"></rect><path d="M8 4.5V8"></path><path d="M16 4.5V8"></path><path d="M4.5 10.5H19.5"></path><path d="M12 13V17"></path><path d="M10 15H14"></path></svg>
+                <span>Book</span>
+              </a>
+              <button class="more-button" type="button" aria-label="More actions"><span>···</span></button>
+            </div>
+          </header>
+
+          <div class="conversation-body">
+            <div class="date-divider">November 20, 2025</div>
+            <div class="bubble-row bubble-row--outgoing">
+              <div class="bubble-stack">
+                <div class="bubble bubble--outgoing">Mauris quis porttitor libero. Mauris tristique dolor eget libero dignissim semper. Pellentesque habitant morbi tristique senectus et netus.</div>
+                <div class="bubble-meta bubble-meta--seen">Seen <span>17:06</span></div>
+              </div>
+            </div>
+
+            <div class="date-divider">November 21, 2025</div>
+            <div class="bubble-row bubble-row--incoming">
+              <div class="bubble bubble--incoming">Nullam vulputate et arcu.</div>
+            </div>
+
+            <div class="bubble-row bubble-row--with-avatar">
+              <span class="message-avatar" data-thread-avatar style="width:42px;height:42px;font-size:16px;">A</span>
+              <div class="bubble-stack">
+                <div class="bubble bubble--incoming">Maecenas sit amet eros non ipsum lacinia vestibulum in quis neque. Sed scelerisque erat id suscipit rhoncus. Suspendisse blandit⭐</div>
+                <div class="bubble-meta">12:40</div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="composer">
+            <div class="composer-shell">
+              <div class="composer-card">
+                <div class="composer-bar">
+                  <textarea class="composer-input" data-draft-input rows="1" placeholder="Your message..."></textarea>
+                </div>
+                <div class="composer-footer">
+                  <div class="composer-template-nav" aria-label="Draft templates">
+                    <button class="composer-template-button" type="button" aria-label="Previous template" data-template-prev>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12L14.5 18.5"></path></svg>
+                    </button>
+                    <span class="composer-template-label" data-template-label>template 1 / 3</span>
+                    <button class="composer-template-button" type="button" aria-label="Next template" data-template-next>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12L9.5 18.5"></path></svg>
+                    </button>
+                  </div>
+                  <div class="composer-tools">
+                    <button class="composer-tool-button is-disabled" type="button" aria-label="Re-generate by AI" disabled>
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M18.875 3C19.1875 3 19.5 3.3125 19.5 3.625V5.5H21.375C21.6875 5.5 22 5.8125 22 6.125C22 6.47656 21.6875 6.75 21.375 6.75H19.5V8.625C19.5 8.97656 19.1875 9.25 18.875 9.25C18.5234 9.25 18.25 8.97656 18.25 8.625V6.75H16.375C16.0234 6.75 15.75 6.47656 15.75 6.125C15.75 5.8125 16.0234 5.5 16.375 5.5H18.25V3.625C18.25 3.3125 18.5234 3 18.875 3ZM18.875 14.25C19.1875 14.25 19.5 14.5625 19.5 14.875V16.75H21.375C21.6875 16.75 22 17.0625 22 17.375C22 17.7266 21.6875 18 21.375 18H19.5V19.875C19.5 20.2266 19.1875 20.5 18.875 20.5C18.5234 20.5 18.25 20.2266 18.25 19.875V18H16.375C16.0234 18 15.75 17.7266 15.75 17.375C15.75 17.0625 16.0234 16.75 16.375 16.75H18.25V14.875C18.25 14.5625 18.5234 14.25 18.875 14.25ZM7.3125 10.2266L4.10938 11.7109L7.3125 13.1953C7.58594 13.3125 7.82031 13.5469 7.9375 13.8203L9.42188 17.0234L10.9062 13.8203C11.0234 13.5469 11.2578 13.3125 11.5312 13.1953L14.7344 11.7109L11.5312 10.2266C11.2578 10.1094 11.0234 9.875 10.9062 9.60156L9.42188 6.39844L7.9375 9.60156C7.82031 9.875 7.58594 10.1094 7.3125 10.2266ZM6.80469 14.3281L2.35156 12.2969C2.11719 12.1797 2 11.9453 2 11.7109C2 11.4766 2.11719 11.2422 2.35156 11.1641L6.80469 9.09375L8.875 4.64062C8.95312 4.40625 9.1875 4.25 9.42188 4.25C9.65625 4.25 9.89062 4.40625 10.0078 4.64062L12.0391 9.09375L16.4922 11.125C16.7266 11.2422 16.8828 11.4766 16.8828 11.7109C16.8828 11.9453 16.7266 12.1797 16.4922 12.2578L12.0391 14.3281L10.0078 18.7812C9.89062 19.0156 9.65625 19.1719 9.42188 19.1719C9.1875 19.1719 8.95312 19.0156 8.875 18.7812L6.80469 14.3281Z" fill="currentColor"/>
+                      </svg>
+                    </button>
+                    <button class="composer-tool-button is-disabled" type="button" aria-label="Upload picture" disabled>
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4.5 4.25C3.79688 4.25 3.25 4.83594 3.25 5.5V14.6406L5.86719 11.9844C6.49219 11.3984 7.46875 11.3984 8.09375 11.9844L10.75 14.6406L15.8672 9.48438C16.4922 8.89844 17.4688 8.89844 18.0938 9.48438L20.75 12.1406V5.5C20.75 4.83594 20.1641 4.25 19.5 4.25H4.5ZM3.25 16.3984V18C3.25 18.7031 3.79688 19.25 4.5 19.25H6.10156L9.85156 15.5L7.19531 12.8828C7.07812 12.7656 6.88281 12.7656 6.76562 12.8828L3.25 16.3984ZM17.1953 10.3828C17.0781 10.2656 16.8828 10.2656 16.7656 10.3828L7.85938 19.25H19.5C20.1641 19.25 20.75 18.7031 20.75 18V13.8984L17.1953 10.3828ZM2 5.5C2 4.13281 3.09375 3 4.5 3H19.5C20.8672 3 22 4.13281 22 5.5V18C22 19.4062 20.8672 20.5 19.5 20.5H4.5C3.09375 20.5 2 19.4062 2 18V5.5ZM8.25 7.375C8.25 7.0625 7.9375 6.75 7.625 6.75C7.27344 6.75 7 7.0625 7 7.375C7 7.72656 7.27344 8 7.625 8C7.9375 8 8.25 7.72656 8.25 7.375ZM5.75 7.375C5.75 6.71094 6.10156 6.125 6.6875 5.77344C7.23438 5.42188 7.97656 5.42188 8.5625 5.77344C9.10938 6.125 9.5 6.71094 9.5 7.375C9.5 8.07812 9.10938 8.66406 8.5625 9.01562C7.97656 9.36719 7.23438 9.36719 6.6875 9.01562C6.10156 8.66406 5.75 8.07812 5.75 7.375Z" fill="currentColor"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button class="composer-send" type="button" aria-label="Send message">
+                <svg viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M2.6199 1.31256L23.3386 10.3126C24.8386 10.9688 24.8386 13.0782 23.3386 13.7344L2.6199 22.7344C1.02615 23.4376 -0.614479 21.6563 0.229271 20.1094L3.51052 14.0626C3.69802 13.6876 4.07302 13.4063 4.54177 13.3594L12.7918 12.3282C12.9324 12.3282 13.073 12.1876 13.073 12.0001C13.073 11.8594 12.9324 11.7188 12.7918 11.7188L4.54177 10.6876C4.07302 10.5938 3.69802 10.3594 3.51052 9.98443L0.229271 3.93756C-0.614479 2.39068 1.02615 0.609433 2.6199 1.31256Z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+          </footer>
+        </section>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    (function() {
+      var mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
+      var mobileNav = document.querySelector('[data-mobile-nav]');
+      var mobileNavBackdrop = document.querySelector('[data-mobile-nav-backdrop]');
+      var mobileNavClose = document.querySelector('[data-mobile-nav-close]');
+      var settingsButton = document.querySelector('.switch-view-button');
+      var settingsModalBackdrop = document.querySelector('[data-settings-modal-backdrop]');
+      var settingsModal = document.querySelector('[data-settings-modal]');
+      var settingsModalClose = document.querySelector('[data-settings-modal-close]');
+
+      function closeMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.remove('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavBackdrop.hidden = true;
+        document.body.classList.remove('mobile-nav-open');
+      }
+
+      function openMobileNav() {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.add('is-open');
+        mobileNavToggle.setAttribute('aria-expanded', 'true');
+        mobileNavBackdrop.hidden = false;
+        document.body.classList.add('mobile-nav-open');
+      }
+
+      if (mobileNavToggle && mobileNav && mobileNavBackdrop) {
+        mobileNavToggle.addEventListener('click', function() {
+          if (mobileNav.classList.contains('is-open')) {
+            closeMobileNav();
+            return;
+          }
+
+          openMobileNav();
+        });
+
+        mobileNavBackdrop.addEventListener('click', closeMobileNav);
+
+        if (mobileNavClose) {
+          mobileNavClose.addEventListener('click', closeMobileNav);
+        }
+
+        mobileNav.addEventListener('click', function(event) {
+          if (event.target.closest('a')) {
+            closeMobileNav();
+          }
+        });
+
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 900) {
+            closeMobileNav();
+          }
+        });
+
+        document.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') {
+            closeMobileNav();
+          }
+        });
+      }
+
+      function openSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+        settingsModal.hidden = false;
+        settingsModalBackdrop.hidden = false;
+        document.body.classList.add('settings-modal-open');
+      }
+
+      function closeSettingsModal() {
+        if (!settingsModal || !settingsModalBackdrop) return;
+        settingsModal.hidden = true;
+        settingsModalBackdrop.hidden = true;
+        document.body.classList.remove('settings-modal-open');
+      }
+
+      if (settingsButton) {
+        settingsButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          openSettingsModal();
+        });
+      }
+
+      if (settingsModalBackdrop) {
+        settingsModalBackdrop.addEventListener('click', closeSettingsModal);
+      }
+
+      if (settingsModalClose) {
+        settingsModalClose.addEventListener('click', closeSettingsModal);
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && settingsModal && !settingsModal.hidden) {
+          closeSettingsModal();
+        }
+      });
+
+    })();
+  </script>
+
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var sitterName = (params.get('sitter') || 'Markéta').trim();
+      var draftText = params.get('draft') || "Hello, I'm looking for a babysitter for Mon, 27.11. from 6:00 PM to 10:00 PM for 2 children (3 and 6 years old). Are you available?";
+      var draftTemplateTwo = params.get('template2');
+      var draftTemplateThree = params.get('template3');
+      var conversationBody = document.querySelector('.conversation-body');
+      var messagesList = document.querySelector('.messages-list');
+      var draftInput = document.querySelector('[data-draft-input]');
+      var sendButton = document.querySelector('.composer-send');
+      var backButton = document.querySelector('[data-conversation-back]');
+      var templateNav = document.querySelector('.composer-template-nav');
+      var templatePrevButton = document.querySelector('[data-template-prev]');
+      var templateNextButton = document.querySelector('[data-template-next]');
+      var templateLabel = document.querySelector('[data-template-label]');
+      var threadNameEls = Array.prototype.slice.call(document.querySelectorAll('[data-thread-name]'));
+      var threadAvatarEls = Array.prototype.slice.call(document.querySelectorAll('[data-thread-avatar]'));
+      var templateIndex = 0;
+      var typingTimer = null;
+
+      var draftTemplates = [
+        draftText,
+        draftTemplateTwo || ('Hi ' + sitterName + ', would you be available on Mon, 27.11. from 6:00 PM to 10:00 PM to babysit 2 children aged 3 and 6?'),
+        draftTemplateThree || ('Hello ' + sitterName + ', I am looking for babysitting help on Monday 27.11. between 6:00 PM and 10:00 PM for my 2 children (3 and 6 years old). Would that work for you?')
+      ];
+
+      if (backButton) {
+        backButton.addEventListener('click', function() {
+          window.location.href = '/bookings-rejection-flow/#';
+        });
+      }
+
+      function getInitials(value) {
+        return (value || 'S').trim().charAt(0).toUpperCase() || 'S';
+      }
+
+      function formatCurrentTime() {
+        return new Intl.DateTimeFormat('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date());
+      }
+
+      function scrollConversationToBottom() {
+        if (!conversationBody) return;
+        conversationBody.scrollTop = conversationBody.scrollHeight;
+      }
+
+      function resetSidebarScroll() {
+        if (!messagesList) return;
+        messagesList.scrollTop = 0;
+      }
+
+      function sendCurrentMessage() {
+        if (!conversationBody || !draftInput) return;
+
+        var message = draftInput.value.trim();
+        if (!message) return;
+
+        stopTyping();
+
+        var row = document.createElement('div');
+        row.className = 'bubble-row bubble-row--outgoing';
+        row.innerHTML =
+          '<div class="bubble-stack">' +
+            '<div class="bubble bubble--outgoing"></div>' +
+            '<div class="bubble-meta bubble-meta--seen">Sent <span>' + formatCurrentTime() + '</span></div>' +
+          '</div>';
+
+        row.querySelector('.bubble').textContent = message;
+        conversationBody.appendChild(row);
+
+        draftInput.value = '';
+        syncDraftHeight();
+        setTemplateNavEnabled(false);
+        scrollConversationToBottom();
+      }
+
+      threadNameEls.forEach(function(el) {
+        el.textContent = sitterName;
+      });
+
+      threadAvatarEls.forEach(function(el) {
+        el.textContent = getInitials(sitterName);
+      });
+
+      if (!draftInput) return;
+
+      function syncDraftHeight() {
+        draftInput.style.height = '0px';
+        draftInput.style.height = Math.min(draftInput.scrollHeight, 168) + 'px';
+      }
+
+      function updateTemplateLabel() {
+        if (!templateLabel) return;
+        templateLabel.textContent = 'template ' + (templateIndex + 1) + ' / ' + draftTemplates.length;
+      }
+
+      function setTemplateNavEnabled(isEnabled) {
+        if (!templateNav) return;
+        templateNav.classList.toggle('is-disabled', !isEnabled);
+        if (templatePrevButton) templatePrevButton.disabled = !isEnabled;
+        if (templateNextButton) templateNextButton.disabled = !isEnabled;
+      }
+
+      function stopTyping() {
+        if (typingTimer) {
+          window.clearTimeout(typingTimer);
+          typingTimer = null;
+        }
+      }
+
+      function startTypewriter(text) {
+        stopTyping();
+        draftInput.value = '';
+        syncDraftHeight();
+        setTemplateNavEnabled(true);
+
+        var draftIndex = 0;
+
+        function typeNextCharacter() {
+          if (draftIndex > text.length) {
+            typingTimer = null;
+            return;
+          }
+          draftInput.value = text.slice(0, draftIndex);
+          syncDraftHeight();
+          draftInput.scrollTop = draftInput.scrollHeight;
+          draftIndex += 1;
+          typingTimer = window.setTimeout(typeNextCharacter, draftIndex < 18 ? 22 : 18);
+        }
+
+        typingTimer = window.setTimeout(typeNextCharacter, 260);
+      }
+
+      draftInput.value = '';
+      syncDraftHeight();
+      updateTemplateLabel();
+      setTemplateNavEnabled(true);
+
+      try {
+        draftInput.focus({ preventScroll: true });
+      } catch (error) {
+        draftInput.focus();
+      }
+
+      if (templatePrevButton) {
+        templatePrevButton.addEventListener('click', function() {
+          templateIndex = (templateIndex - 1 + draftTemplates.length) % draftTemplates.length;
+          updateTemplateLabel();
+          startTypewriter(draftTemplates[templateIndex]);
+        });
+      }
+
+      draftInput.addEventListener('input', syncDraftHeight);
+
+      draftInput.addEventListener('keydown', function(event) {
+        if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+          event.preventDefault();
+          sendCurrentMessage();
+        }
+      });
+
+      if (templateNextButton) {
+        templateNextButton.addEventListener('click', function() {
+          templateIndex = (templateIndex + 1) % draftTemplates.length;
+          updateTemplateLabel();
+          startTypewriter(draftTemplates[templateIndex]);
+        });
+      }
+
+      if (sendButton) {
+        sendButton.addEventListener('click', sendCurrentMessage);
+      }
+
+      startTypewriter(draftTemplates[templateIndex]);
+      resetSidebarScroll();
+      window.setTimeout(scrollConversationToBottom, 80);
+    })();
+  </script>
+</body>
+</html>
