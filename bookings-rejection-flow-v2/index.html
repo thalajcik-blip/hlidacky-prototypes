@@ -2827,6 +2827,540 @@
         font-size: 16px;
       }
     }
+
+    /* ===== Replacement wizard ===== */
+    .rw-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(33, 37, 41, 0.45);
+    }
+
+    .rw-overlay[hidden] { display: none; }
+
+    .rw-panel {
+      position: relative;
+      width: 100%;
+      max-width: 412px;
+      height: min(780px, 94vh);
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .rw-progress {
+      height: 4px;
+      flex: 0 0 4px;
+      background: var(--gray-200);
+    }
+
+    .rw-progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--pink-400);
+      border-radius: 0 4px 4px 0;
+      transition: width 280ms ease;
+    }
+
+    .rw-header {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 28px 1fr 28px;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 16px 14px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .rw-header-logo {
+      width: 28px;
+      height: 28px;
+    }
+
+    .rw-header-title {
+      margin: 0;
+      text-align: center;
+      color: var(--gray-900);
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+    }
+
+    .rw-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rw-close:hover { color: var(--gray-800); }
+
+    .rw-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .rw-footer {
+      flex: 0 0 auto;
+      padding: 14px 20px 20px;
+      border-top: 1px solid var(--gray-200);
+      background: var(--white);
+    }
+
+    /* card step */
+    .rw-suggestion-label {
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 13px;
+      letter-spacing: 0.01em;
+    }
+
+    .rw-suggestion-label strong {
+      color: var(--gray-800);
+      font-weight: 600;
+    }
+
+    .rw-sitter-photo {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 14px auto 0;
+    }
+
+    .rw-sitter-photo img {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 3px solid #C9F0D2;
+    }
+
+    .rw-verified-badge {
+      position: absolute;
+      right: -2px;
+      bottom: -2px;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+    }
+
+    .rw-sitter-name {
+      margin: 14px 0 0;
+      text-align: center;
+      color: var(--gray-900);
+      font-size: 22px;
+      font-weight: 450;
+      letter-spacing: -0.3px;
+    }
+
+    .rw-sitter-sub {
+      margin-top: 4px;
+      text-align: center;
+      color: var(--gray-600);
+      font-size: 15px;
+    }
+
+    .rw-sitter-rating {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    .rw-stars {
+      position: relative;
+      display: inline-block;
+      font-size: 16px;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+
+    .rw-stars-base { color: #E2E5EC; }
+
+    .rw-stars-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #FFB400;
+      overflow: hidden;
+      white-space: nowrap;
+      width: var(--pct, 0%);
+    }
+
+    .rw-tags {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .rw-tag {
+      color: var(--gray-700);
+      font-size: 13px;
+      line-height: 1.2;
+      padding: 2px 0;
+    }
+
+    .rw-tag::after {
+      content: "·";
+      margin-left: 8px;
+      color: var(--gray-400);
+    }
+
+    .rw-tag:last-child::after { content: ""; margin: 0; }
+
+    .rw-tag--more { color: var(--pink-400); }
+
+    .rw-about {
+      margin-top: 18px;
+    }
+
+    .rw-about h3 {
+      margin: 0 0 6px;
+      color: var(--gray-900);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .rw-about p {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .rw-card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .rw-btn {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      cursor: pointer;
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .rw-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .rw-btn--no {
+      background: var(--pink-400);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 var(--pink-500);
+    }
+
+    .rw-btn--no:hover { background: var(--pink-500); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.16); }
+
+    .rw-btn--yes {
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 var(--green-600);
+    }
+
+    .rw-btn--yes:hover { background: var(--green-600); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.16); }
+
+    .rw-skip-link {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 4px;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font-family: inherit;
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .rw-skip-link:hover { color: var(--gray-700); }
+
+    /* hero (overview + message) */
+    .rw-hero {
+      text-align: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .rw-avatar-stack {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .rw-avatar-stack img {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 3px solid var(--white);
+      margin-left: -14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    .rw-avatar-stack img:first-child { margin-left: 0; }
+
+    .rw-hero h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 20px;
+      font-weight: 450;
+    }
+
+    .rw-hero p {
+      margin: 4px auto 0;
+      max-width: 260px;
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .rw-list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 8px;
+    }
+
+    .rw-list-head span {
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .rw-link {
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .rw-link:hover { text-decoration: underline; }
+
+    .rw-selected-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .rw-selected-item {
+      display: grid;
+      grid-template-columns: 22px 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .rw-checkbox {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--pink-400);
+      cursor: pointer;
+    }
+
+    .rw-selected-item img {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      object-fit: cover;
+    }
+
+    .rw-selected-copy { min-width: 0; }
+
+    .rw-selected-copy strong {
+      display: block;
+      color: var(--gray-900);
+      font-size: 15px;
+      font-weight: 450;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rw-selected-copy span {
+      display: block;
+      color: var(--gray-500);
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rw-selected-time {
+      color: var(--gray-400);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .rw-empty {
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 14px;
+      padding: 24px 0;
+    }
+
+    /* message step */
+    .rw-message-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 8px;
+    }
+
+    .rw-message-head-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gray-700);
+      font-size: 14px;
+      font-weight: 450;
+    }
+
+    .rw-message-input {
+      width: 100%;
+      min-height: 150px;
+      padding: 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 10px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--gray-800);
+    }
+
+    .rw-message-input:focus {
+      outline: none;
+      border-color: var(--pink-400);
+    }
+
+    .rw-template-nav {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    .rw-template-nav button {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--pink-400);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rw-template-nav button:hover { background: var(--gray-100); }
+
+    /* footer nav (overview + message) */
+    .rw-footer-nav {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 12px;
+    }
+
+    .rw-back {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--gray-700);
+      font-size: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rw-back:hover { background: var(--gray-100); }
+
+    .rw-btn-green {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 var(--green-600);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .rw-btn-green svg { width: 18px; height: 18px; }
+
+    .rw-btn-green:hover { background: var(--green-600); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.16); }
+
+    .rw-btn-green[disabled] {
+      background: var(--gray-300);
+      color: var(--gray-500);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+      .rw-overlay { padding: 0; background: var(--white); }
+      .rw-panel {
+        max-width: none;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3478,6 +4012,19 @@
 
   <div class="toast" aria-live="polite" data-toast>
     <span>Booking rejected and moved to history.</span>
+  </div>
+
+  <div class="rw-overlay" data-rw-overlay role="dialog" aria-modal="true" aria-labelledby="rw-title" hidden>
+    <div class="rw-panel">
+      <div class="rw-progress"><div class="rw-progress-fill" data-rw-progress></div></div>
+      <div class="rw-header">
+        <img class="rw-header-logo" src="/sitter-approval-workflow/assets/hlidacky-symbol.svg" alt="" data-rw-logo>
+        <h2 class="rw-header-title" id="rw-title" data-rw-title>Find a replacement</h2>
+        <button class="rw-close" type="button" aria-label="Close" data-rw-close>×</button>
+      </div>
+      <div class="rw-body" data-rw-body></div>
+      <div class="rw-footer" data-rw-footer></div>
+    </div>
   </div>
 
   <script>
@@ -4688,6 +5235,225 @@
           return;
         }
         closeBookingCtxMenu();
+      });
+    })();
+  </script>
+
+  <script>
+    (function() {
+      var overlay = document.querySelector('[data-rw-overlay]');
+      if (!overlay) return;
+      var titleEl = overlay.querySelector('[data-rw-title]');
+      var logoEl = overlay.querySelector('[data-rw-logo]');
+      var progressEl = overlay.querySelector('[data-rw-progress]');
+      var bodyEl = overlay.querySelector('[data-rw-body]');
+      var footerEl = overlay.querySelector('[data-rw-footer]');
+      var toastEl = document.querySelector('[data-toast]');
+      var AV = '/sitter-approval-workflow/assets/avatars/';
+
+      var RW_SITTERS = [
+        { name: 'Eva Dvořáková', loc: 'Nové Město na Moravě', age: 56, rating: 4.5, reviews: 8, avatar: 'avatar-01.jpg', preview: 'Dobrý den, mám vystudovanou andragogiku a…', time: 'yesterday' },
+        { name: 'Milada Zelníčková', loc: 'Nové Město na Moravě', age: 29, rating: 4.5, reviews: 8, avatar: 'avatar-05.jpg', preview: 'Zdravím, mám zájem o hlídání vašich dětí…', time: '2 days ago' },
+        { name: 'Nina Kramplová-Apolenářová', loc: 'Nové Město na Moravě', age: 36, rating: 4.5, reviews: 8, avatar: 'avatar-09.jpg', preview: 'Dobrý den, reaguji na váš inzerát hlídání…', time: '2 days ago' },
+        { name: 'Alice Břicháčková', loc: 'Nové Město na Moravě', age: 16, rating: 4.5, reviews: 8, avatar: 'avatar-10.jpg', preview: 'Dobrý den, je vaše nabídka hlídání aktuální…', time: '2 days ago' }
+      ];
+      var RW_TAGS = ['Overnight sitting', 'Speaks English', 'Can drive', 'Experience with diabetes', 'Plays guitar'];
+      var RW_ABOUT = 'My name is Růžena. I graduated from the Faculty of Education, Charles University in Prague. Now I am on maternity leave, I have a little girl 1,5 years old and I am currently babysitting with her, if it is not a problem for you, I will…';
+      var RW_TEMPLATES = [
+        "Hello, I'm looking for a babysitter for Mon. 27.11. from 6:00 PM to 10:00 PM for 2 children (3 and 6 years old). Are you interested and available?\n\nThanks in advance, Ida",
+        "Hi! Our previous sitter cancelled, so I'm looking for a replacement for Mon. 27.11. (6:00 PM–10:00 PM), 2 kids aged 3 and 6. Would you be available?\n\nThank you, Ida",
+        "Dobrý den, sháním hlídání na pondělí 27.11. od 18:00 do 22:00 pro 2 děti (3 a 6 let). Měla byste čas a zájem?\n\nDěkuji, Ida"
+      ];
+      var ORD = ['1st', '2nd', '3rd', '4th'];
+
+      var SHIELD = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V5l7-3z" fill="#19B36B"/><path d="M8.5 12l2.2 2.2 4.3-4.4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var IC_X = '<svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+      var IC_CHECK = '<svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var IC_CHEV = '<svg viewBox="0 0 20 20" fill="none"><path d="M7 4l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var IC_PLANE = '<svg viewBox="0 0 20 20" fill="none"><path d="M18 2L9 11M18 2l-6 16-3-7-7-3 16-6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var IC_SPARK = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 2l1.6 4.4L16 8l-4.4 1.6L10 14l-1.6-4.4L4 8l4.4-1.6L10 2z" fill="#F96073"/></svg>';
+
+      var rw = { step: 'cards', index: 0, interested: [null, null, null, null], selected: [false, false, false, false], tpl: 0 };
+
+      function rwStars(rating) {
+        var pct = Math.round(rating / 5 * 100);
+        return '<span class="rw-stars"><span class="rw-stars-base">★★★★★</span><span class="rw-stars-fill" style="width:' + pct + '%">★★★★★</span></span>';
+      }
+
+      function selectedIdx() {
+        return RW_SITTERS.map(function(s, i) { return i; }).filter(function(i) { return rw.interested[i] === true && rw.selected[i]; });
+      }
+
+      function interestedIdx() {
+        return RW_SITTERS.map(function(s, i) { return i; }).filter(function(i) { return rw.interested[i] === true; });
+      }
+
+      function avatarStack(idx) {
+        return '<div class="rw-avatar-stack">' + idx.slice(0, 4).map(function(i) {
+          return '<img src="' + AV + RW_SITTERS[i].avatar + '" alt="">';
+        }).join('') + '</div>';
+      }
+
+      /* ---- card step ---- */
+      function cardBody() {
+        var i = rw.index;
+        var s = RW_SITTERS[i];
+        var tags = RW_TAGS.map(function(t) { return '<span class="rw-tag">' + t + '</span>'; }).join('') + '<span class="rw-tag rw-tag--more">+ more</span>';
+        return '' +
+          '<div class="rw-suggestion-label"><strong>' + ORD[i] + '</strong> of 4 suggestions</div>' +
+          '<div class="rw-sitter-photo"><img src="' + AV + s.avatar + '" alt=""><span class="rw-verified-badge">' + SHIELD + '</span></div>' +
+          '<h2 class="rw-sitter-name">' + s.name + '</h2>' +
+          '<div class="rw-sitter-sub">' + s.loc + ' · ' + s.age + ' years</div>' +
+          '<div class="rw-sitter-rating">' + rwStars(s.rating) + '<span>' + s.rating.toFixed(1) + ' (' + s.reviews + ')</span></div>' +
+          '<div class="rw-tags">' + tags + '</div>' +
+          '<div class="rw-about"><h3>About me</h3><p>' + RW_ABOUT + '</p></div>';
+      }
+
+      function cardFooter() {
+        return '' +
+          '<div class="rw-card-actions">' +
+            '<button class="rw-btn rw-btn--no" type="button" data-rw-no>' + IC_X + 'Not interested</button>' +
+            '<button class="rw-btn rw-btn--yes" type="button" data-rw-yes>' + IC_CHECK + 'Interested</button>' +
+          '</div>' +
+          '<button class="rw-skip-link" type="button" data-rw-skip>Skip this and further recommendations</button>';
+      }
+
+      function advanceCard() {
+        if (rw.index < RW_SITTERS.length - 1) {
+          rw.index++;
+        } else {
+          rw.step = 'overview';
+          rw.selected = rw.interested.map(function(v) { return v === true; });
+        }
+        render();
+      }
+
+      /* ---- overview step ---- */
+      function overviewBody() {
+        var idx = interestedIdx();
+        var hero = '<div class="rw-hero">' + (idx.length ? avatarStack(idx) : '') +
+          '<h2>Select sitters</h2><p>Message all sitters you\'ve shown your interest for</p></div>';
+        if (!idx.length) {
+          return hero + '<div class="rw-empty">You haven\'t marked any sitter as interested.</div>';
+        }
+        var checked = idx.filter(function(i) { return rw.selected[i]; }).length;
+        var head = '<div class="rw-list-head"><span>Selected sitters (' + checked + '/' + idx.length + ')</span>' +
+          '<button class="rw-link" type="button" data-rw-select-none>Select none</button></div>';
+        var list = '<ul class="rw-selected-list">' + idx.map(function(i) {
+          var s = RW_SITTERS[i];
+          return '<li class="rw-selected-item">' +
+            '<input type="checkbox" class="rw-checkbox" data-rw-check="' + i + '"' + (rw.selected[i] ? ' checked' : '') + '>' +
+            '<img src="' + AV + s.avatar + '" alt="">' +
+            '<div class="rw-selected-copy"><strong>' + s.name + '</strong><span>' + s.preview + '</span></div>' +
+            '<span class="rw-selected-time">' + s.time + '</span>' +
+          '</li>';
+        }).join('') + '</ul>';
+        return hero + head + list;
+      }
+
+      function overviewFooter() {
+        var n = selectedIdx().length;
+        return '<div class="rw-footer-nav">' +
+          '<button class="rw-back" type="button" data-rw-back-cards>‹</button>' +
+          '<button class="rw-btn-green" type="button" data-rw-generate' + (n ? '' : ' disabled') + '>Generate reply ' + IC_CHEV + '</button>' +
+        '</div>';
+      }
+
+      /* ---- message step ---- */
+      function messageBody() {
+        var idx = selectedIdx();
+        return '<div class="rw-hero">' + avatarStack(idx) +
+            '<h2>Write your message</h2><p>Message all sitters you\'ve shown your interest for</p></div>' +
+          '<div class="rw-message-head"><span class="rw-message-head-label">' + IC_SPARK + 'Automatic reply</span>' +
+            '<button class="rw-link" type="button" data-rw-clear>Clear</button></div>' +
+          '<textarea class="rw-message-input" data-rw-message>' + RW_TEMPLATES[rw.tpl] + '</textarea>' +
+          '<div class="rw-template-nav"><button type="button" data-rw-tpl-prev>‹</button><span>template ' + (rw.tpl + 1) + ' / ' + RW_TEMPLATES.length + '</span><button type="button" data-rw-tpl-next>›</button></div>';
+      }
+
+      function messageFooter() {
+        var n = selectedIdx().length;
+        return '<div class="rw-footer-nav">' +
+          '<button class="rw-back" type="button" data-rw-back-overview>‹</button>' +
+          '<button class="rw-btn-green" type="button" data-rw-send>' + IC_PLANE + 'Send to ' + n + ' sitter' + (n === 1 ? '' : 's') + '</button>' +
+        '</div>';
+      }
+
+      /* ---- render + handlers ---- */
+      function render() {
+        titleEl.textContent = rw.step === 'message' ? 'Create a booking' : 'Find a replacement';
+        var frac = rw.step === 'cards' ? (rw.index + 1) / 6 : (rw.step === 'overview' ? 5 / 6 : 1);
+        progressEl.style.width = Math.round(frac * 100) + '%';
+        if (rw.step === 'cards') { bodyEl.innerHTML = cardBody(); footerEl.innerHTML = cardFooter(); }
+        else if (rw.step === 'overview') { bodyEl.innerHTML = overviewBody(); footerEl.innerHTML = overviewFooter(); }
+        else { bodyEl.innerHTML = messageBody(); footerEl.innerHTML = messageFooter(); }
+        bodyEl.scrollTop = 0;
+        attach();
+      }
+
+      function on(sel, evt, fn) {
+        var el = overlay.querySelector(sel);
+        if (el) el.addEventListener(evt, fn);
+      }
+
+      function attach() {
+        if (rw.step === 'cards') {
+          on('[data-rw-no]', 'click', function() { rw.interested[rw.index] = false; advanceCard(); });
+          on('[data-rw-yes]', 'click', function() { rw.interested[rw.index] = true; advanceCard(); });
+          on('[data-rw-skip]', 'click', function() { rw.interested[rw.index] = false; advanceCard(); });
+        } else if (rw.step === 'overview') {
+          Array.prototype.slice.call(overlay.querySelectorAll('[data-rw-check]')).forEach(function(cb) {
+            cb.addEventListener('change', function() {
+              rw.selected[parseInt(cb.getAttribute('data-rw-check'), 10)] = cb.checked;
+              render();
+            });
+          });
+          on('[data-rw-select-none]', 'click', function() {
+            interestedIdx().forEach(function(i) { rw.selected[i] = false; });
+            render();
+          });
+          on('[data-rw-back-cards]', 'click', function() { rw.step = 'cards'; rw.index = RW_SITTERS.length - 1; render(); });
+          on('[data-rw-generate]', 'click', function() { if (selectedIdx().length) { rw.step = 'message'; render(); } });
+        } else {
+          var ta = overlay.querySelector('[data-rw-message]');
+          if (ta) ta.addEventListener('input', function() { RW_TEMPLATES[rw.tpl] = ta.value; });
+          on('[data-rw-clear]', 'click', function() { RW_TEMPLATES[rw.tpl] = ''; render(); });
+          on('[data-rw-tpl-prev]', 'click', function() { rw.tpl = (rw.tpl - 1 + RW_TEMPLATES.length) % RW_TEMPLATES.length; render(); });
+          on('[data-rw-tpl-next]', 'click', function() { rw.tpl = (rw.tpl + 1) % RW_TEMPLATES.length; render(); });
+          on('[data-rw-back-overview]', 'click', function() { rw.step = 'overview'; render(); });
+          on('[data-rw-send]', 'click', sendMessages);
+        }
+      }
+
+      function sendMessages() {
+        var n = selectedIdx().length;
+        closeWizard();
+        if (toastEl) {
+          toastEl.querySelector('span').textContent = 'Message has been successfully delivered to ' + n + ' sitter' + (n === 1 ? '' : 's') + '.';
+          toastEl.classList.add('is-visible');
+          window.setTimeout(function() { toastEl.classList.remove('is-visible'); }, 4200);
+        }
+      }
+
+      function openWizard() {
+        rw = { step: 'cards', index: 0, interested: [null, null, null, null], selected: [false, false, false, false], tpl: 0 };
+        overlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+        render();
+      }
+
+      function closeWizard() {
+        overlay.hidden = true;
+        document.body.style.overflow = '';
+      }
+
+      overlay.querySelector('[data-rw-close]').addEventListener('click', closeWizard);
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) closeWizard(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && !overlay.hidden) closeWizard(); });
+
+      // entry points: rejected banner CTA + rejected card button
+      document.addEventListener('click', function(e) {
+        var trigger = e.target.closest('.rejected-banner-cta, .view-replacements-btn');
+        if (trigger) { e.preventDefault(); openWizard(); }
       });
     })();
   </script>
