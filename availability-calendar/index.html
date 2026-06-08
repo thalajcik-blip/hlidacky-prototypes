@@ -1,0 +1,2940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hlídačky.cz - Availability</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --pink-100: #FEECEE;
+      --pink-300: #FF9BA7;
+      --pink-400: #F96073;
+      --pink-500: #E6213A;
+      --green-500: #0BA825;
+      --green-600: #078E1D;
+      --orange-100: #FFF0E4;
+      --orange-500: #F28A2E;
+      --gray-100: #F7F9FC;
+      --gray-150: #F8F8F8;
+      --gray-200: #EEF2F7;
+      --gray-250: #F1F2F4;
+      --gray-300: #E5E5EA;
+      --gray-350: #D8DCE5;
+      --gray-400: #BEC2CE;
+      --gray-500: #8B91A3;
+      --gray-600: #6C757D;
+      --gray-700: #4A5A61;
+      --gray-800: #2A3539;
+      --gray-900: #212529;
+      --white: #FFF;
+      --shell-width: 1280px;
+      --content-width: 640px;
+      --shadow-card: 0 10px 24px rgba(42, 53, 57, 0.08);
+      --action-item-icon-size: 56px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--white);
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a,
+    button,
+    select {
+      font: inherit;
+    }
+
+    button,
+    select {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #ffffff 0%, #fcfcfd 100%);
+    }
+
+    .topbar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(229, 229, 234, 0.9);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .brand img {
+      width: 148px;
+      height: auto;
+      display: block;
+    }
+
+    .main-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-left: auto;
+    }
+
+    .main-nav-item {
+      appearance: none;
+      -webkit-appearance: none;
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 96px;
+      padding: 12px 14px 8px;
+      border: 0;
+      border-bottom: 6px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: var(--gray-800);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 120%;
+      letter-spacing: -0.3px;
+      box-shadow: none;
+      cursor: default;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .main-nav-item.active {
+      color: var(--pink-400);
+    }
+
+    .main-nav-item:hover,
+    .main-nav-item:focus-visible {
+      border-bottom-color: var(--pink-400);
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .main-nav-icon {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 26px;
+    }
+
+    .main-nav-icon img {
+      width: 26px;
+      height: 26px;
+      display: block;
+      filter: brightness(0) saturate(100%) invert(15%) sepia(10%) saturate(1152%) hue-rotate(157deg) brightness(95%) contrast(88%);
+      transition: filter 0.15s ease;
+    }
+
+    .main-nav-item.active .main-nav-icon img {
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(3600%) hue-rotate(309deg) brightness(101%) contrast(95%);
+    }
+
+    .main-nav-notification {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      display: inline-flex;
+      min-width: 16px;
+      padding: 2px 4px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 64px;
+      background: var(--pink-400);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 100%;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.96);
+    }
+
+    .main-nav-divider {
+      width: 1px;
+      height: 48px;
+      margin: 0 2px 0 4px;
+      background: var(--gray-300);
+    }
+
+    .profile-nav-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-nav-label::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg) translateY(-1px);
+      transform-origin: center;
+      opacity: 0.8;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-800);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-toggle svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+
+    .mobile-nav-backdrop {
+      display: none;
+    }
+
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      width: 72px;
+      min-height: 64px;
+      padding: 14px 8px 18px 18px;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      background: linear-gradient(90deg, #6C4EF8 0%, #7A57FF 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      font-family: Soleil, soleil, Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: block;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+      pointer-events: none;
+    }
+
+    .switch-view-button:hover {
+      width: 250px;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:focus-visible {
+      width: 250px;
+      outline: none;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    body.settings-modal-open {
+      overflow: hidden;
+    }
+
+    .settings-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 260;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .settings-modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 270;
+      width: min(560px, calc(100vw - 32px));
+      max-height: min(80vh, 860px);
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.24);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .settings-modal[hidden] {
+      display: none;
+    }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .settings-modal-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .settings-modal-close {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-modal-close img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .settings-modal-close:hover,
+    .settings-modal-close:focus-visible {
+      background: var(--gray-200);
+      outline: none;
+    }
+
+    .settings-modal-body {
+      padding: 18px 24px 24px;
+      display: grid;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .profile-settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 64px;
+      padding: 12px 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .profile-settings-copy {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .profile-settings-title {
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.3;
+    }
+
+    .profile-settings-caption {
+      color: var(--gray-700);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .settings-modal-footer {
+      padding: 0 24px 24px;
+    }
+
+    .settings-modal-save {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.2;
+    }
+
+    .settings-modal-save:hover {
+      background: var(--green-600);
+    }
+
+    .page {
+      width: min(var(--shell-width), 100%);
+      margin: 0 auto;
+      padding: 72px 24px 80px;
+    }
+
+    .hero {
+      margin-bottom: 54px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      margin: 0;
+      color: var(--gray-800);
+      font-size: clamp(56px, 6vw, 68px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -1.8px;
+    }
+
+    .content-column {
+      width: min(var(--content-width), 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .action-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      align-items: start;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      max-height: 180px;
+    }
+
+    .action-item[hidden] {
+      display: none;
+    }
+
+    .action-item--is-entering {
+      animation: actionItemReveal 360ms ease-out both;
+    }
+
+    .action-item--is-dismissing {
+      pointer-events: none;
+      animation: actionItemDismiss 360ms ease-in both;
+    }
+
+    .action-item--warning {
+      border-color: var(--pink-300);
+      background: var(--pink-100);
+    }
+
+    @keyframes actionItemReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-top-width: 0;
+        border-bottom-width: 0;
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 180px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+      }
+    }
+
+    @keyframes actionItemDismiss {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 180px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-8px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-top-width: 0;
+        border-bottom-width: 0;
+      }
+    }
+
+    .action-item__media {
+      width: var(--action-item-icon-size);
+      height: var(--action-item-icon-size);
+      display: grid;
+      place-items: center;
+      flex: 0 0 var(--action-item-icon-size);
+    }
+
+    .action-item__media img {
+      width: var(--action-item-icon-size);
+      height: var(--action-item-icon-size);
+      display: block;
+    }
+
+    .action-item__body {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      align-self: center;
+    }
+
+    .action-item__title {
+      margin: 0;
+      color: var(--gray-900);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .action-item__description {
+      margin: 0;
+      color: var(--gray-700);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 145%;
+      letter-spacing: -0.16px;
+      overflow-wrap: anywhere;
+    }
+
+    .card {
+      position: relative;
+      border: 1px solid var(--gray-300);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: 0 4px 14px rgba(42, 53, 57, 0.03);
+      overflow: visible;
+    }
+
+    .card.is-raised {
+      z-index: 20;
+    }
+
+    .card-header,
+    .card-body,
+    .availability-legend {
+      position: relative;
+      z-index: 1;
+    }
+
+    .availability-dropdown {
+      z-index: 3;
+    }
+
+    .card-header {
+      padding: 18px 18px 16px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .card-header h2 {
+      margin: 0;
+      color: var(--gray-800);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 140%;
+    }
+
+    .card-body {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .availability-dropdown {
+      position: relative;
+    }
+
+    .availability-trigger {
+      width: 100%;
+      min-height: 54px;
+      padding: 14px 52px 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--gray-800);
+      text-align: left;
+      font-size: 17px;
+      line-height: 24px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .availability-trigger-leading {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .availability-trigger-icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      display: block;
+    }
+
+    .availability-trigger-label {
+      min-width: 0;
+      flex: 1 1 auto;
+      font-size: 17px;
+      line-height: 24px;
+    }
+
+    .availability-dropdown::after,
+    .select-shell::after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid var(--pink-400);
+      border-bottom: 2px solid var(--pink-400);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+      transition: transform 0.18s ease;
+    }
+
+    .availability-dropdown.is-open::after {
+      transform: translateY(-15%) rotate(225deg);
+    }
+
+    .availability-menu {
+      position: absolute;
+      top: calc(100% - 2px);
+      left: 0;
+      right: 0;
+      z-index: 10;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 18px 40px rgba(42, 53, 57, 0.16);
+      overflow: hidden;
+    }
+
+    .availability-menu[hidden] {
+      display: none;
+    }
+
+    .availability-option {
+      width: 100%;
+      padding: 12px 16px;
+      border: 0;
+      background: var(--white);
+      color: var(--gray-800);
+      text-align: left;
+      display: grid;
+      gap: 0;
+      cursor: pointer;
+    }
+
+    .availability-option-leading {
+      display: block;
+      min-width: 0;
+    }
+
+    .availability-option-icon {
+      display: none;
+    }
+
+    .availability-option + .availability-option {
+      border-top: 1px solid rgba(229, 229, 234, 0.4);
+    }
+
+    .availability-option:hover,
+    .availability-option:focus-visible {
+      background: #fafafb;
+      outline: none;
+    }
+
+    .availability-trigger:focus-visible,
+    .select-shell select:focus,
+    .select-shell select:focus-visible,
+    .availability-option:focus-visible {
+      outline: none;
+      border-color: #8FB1F6;
+      background: var(--white);
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .availability-option.is-selected {
+      background: #f6f6f7;
+    }
+
+    .availability-option-title {
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.24px;
+    }
+
+    .availability-option-copy {
+      color: var(--gray-700);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.24px;
+    }
+
+    .toggle-row,
+    .profile-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 56px;
+      padding: 12px 12px;
+      border-radius: 4px;
+      background: var(--gray-150);
+    }
+
+    .toggle-row.is-disabled {
+      color: var(--gray-700);
+    }
+
+    .toggle-row.is-disabled .toggle-copy {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      text-align: left;
+    }
+
+    .toggle-copy-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      width: 48px;
+      height: 28px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1px var(--gray-350);
+      transition: background-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(190, 194, 206, 0.95);
+      border-radius: 50%;
+      background: #CDD3DE;
+      box-shadow: 0 1px 2px rgba(42, 53, 57, 0.18);
+      transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
+    }
+
+    .toggle.is-on {
+      background: var(--green-500);
+      box-shadow: inset 0 0 0 1px rgba(11, 168, 37, 0.9);
+    }
+
+    .toggle.is-on::after {
+      transform: translateX(20px);
+      background: var(--white);
+      border-color: rgba(255, 255, 255, 0.96);
+    }
+
+    .toggle.copy-muted {
+      opacity: 0.88;
+    }
+
+    .grow-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px 3px;
+      border-radius: 999px;
+      background: var(--orange-100);
+      color: var(--orange-500);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .grow-pill-shield {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: 0 0 16px;
+    }
+
+    .holiday-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 56px;
+      padding: 14px 18px;
+      border-radius: 4px;
+      background: var(--gray-150);
+      color: var(--gray-700);
+    }
+
+    .holiday-summary[hidden] {
+      display: none;
+    }
+
+    .holiday-summary-copy {
+      min-width: 0;
+      display: block;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .holiday-summary-copy > * {
+      display: inline;
+    }
+
+    .holiday-summary-copy strong {
+      color: var(--gray-800);
+      font-weight: 700;
+    }
+
+    .holiday-summary-remove {
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-size: 16px;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .holiday-summary-remove-icon {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+    }
+
+    .time-off-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .time-off-modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .time-off-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 130;
+      width: min(640px, calc(100vw - 32px));
+      min-height: 340px;
+      transform: translate(-50%, -50%);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.2);
+      padding: 44px 56px 56px;
+      display: grid;
+      align-content: start;
+      gap: 30px;
+    }
+
+    .time-off-modal[hidden] {
+      display: none;
+    }
+
+    .confirm-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 140;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .confirm-modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .confirm-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 150;
+      width: min(520px, calc(100vw - 32px));
+      transform: translate(-50%, -50%);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.2);
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .confirm-modal[hidden] {
+      display: none;
+    }
+
+    .confirm-modal h3 {
+      margin: 0;
+      color: var(--gray-800);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .confirm-modal p {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .confirm-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .confirm-modal-cancel,
+    .confirm-modal-confirm {
+      min-height: 52px;
+      padding: 14px 24px 16px;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .confirm-modal-cancel {
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--gray-800);
+      box-shadow: inset 0 -3px 0 rgba(229, 229, 234, 1);
+    }
+
+    .confirm-modal-confirm {
+      border: 0;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .time-off-modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      background: transparent;
+      color: #B0B4BD;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .time-off-modal-close::before,
+    .time-off-modal-close::after {
+      content: "";
+      position: absolute;
+      width: 34px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 999px;
+    }
+
+    .time-off-modal-close::before {
+      transform: rotate(45deg);
+    }
+
+    .time-off-modal-close::after {
+      transform: rotate(-45deg);
+    }
+
+    .time-off-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-right: 48px;
+    }
+
+    .time-off-modal-header img {
+      width: 56px;
+      height: 56px;
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    .time-off-modal-header h3 {
+      margin: 0;
+      color: var(--gray-800);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 32px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 120%;
+      letter-spacing: -0.2px;
+    }
+
+    .time-off-modal-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .time-off-field {
+      display: grid;
+      gap: 12px;
+    }
+
+    .time-off-field-label {
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .time-off-date {
+      position: relative;
+    }
+
+    .time-off-date input[type="date"] {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .time-off-date-display {
+      min-height: 52px;
+      padding: 13px 52px 13px 48px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      color: var(--gray-800);
+      font-size: 16px;
+      line-height: 24px;
+      pointer-events: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .time-off-date::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      background: center / contain no-repeat url("/sitter-approval-workflow/assets/ico-calendar.svg");
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .time-off-date::after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid var(--pink-400);
+      border-bottom: 2px solid var(--pink-400);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    .time-off-date input[type="date"]:focus + .time-off-date-display,
+    .time-off-date input[type="date"]:focus-visible + .time-off-date-display {
+      outline: none;
+      border-color: #8FB1F6;
+      box-shadow: 0 0 0 2px #CBDAFC;
+    }
+
+    .time-off-modal-actions {
+      padding-top: 8px;
+    }
+
+    .time-off-save {
+      min-width: 0;
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 24px 16px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      color: var(--white);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 22px;
+      transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .time-off-save:hover {
+      background: var(--green-600);
+    }
+
+    .time-off-save:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .time-off-save::before {
+      content: "✓";
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .profile-grid.is-single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .profile-grid.is-double {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-option span {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .timetable-card .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+
+    .select-shell {
+      position: relative;
+      width: 300px;
+      max-width: 100%;
+      flex: 0 0 auto;
+    }
+
+    .select-shell select {
+      width: 100%;
+      min-height: 52px;
+      padding: 13px 52px 13px 48px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--gray-800);
+      font-size: 16px;
+      line-height: 24px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .select-shell::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      background: center / contain no-repeat url("/sitter-approval-workflow/assets/ico-calendar.svg");
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .timetable-card .card-body {
+      padding: 12px 14px 0;
+    }
+
+    .availability-grid {
+      display: grid;
+      grid-template-columns: 92px repeat(7, minmax(38px, 1fr));
+      align-items: center;
+      align-content: start;
+      gap: 4px;
+      padding: 0 8px 20px;
+    }
+
+    .availability-grid.is-animating {
+      overflow: hidden;
+      will-change: height, opacity, transform;
+    }
+
+    .availability-grid.is-hours {
+      grid-template-columns: 72px repeat(7, minmax(38px, 1fr));
+    }
+
+    .corner-spacer {
+      height: 28px;
+    }
+
+    .day-label {
+      justify-self: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--gray-500);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-decoration-color: rgba(190, 194, 206, 0.9);
+      text-underline-offset: 4px;
+      cursor: pointer;
+    }
+
+    .day-label:focus-visible {
+      outline: none;
+      color: var(--gray-800);
+      box-shadow: 0 0 0 2px #CBDAFC;
+      border-radius: 4px;
+    }
+
+    .period-label {
+      color: var(--gray-700);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+      padding-right: 6px;
+    }
+
+    .availability-grid.is-hours .period-label {
+      text-align: right;
+      padding-right: 12px;
+    }
+
+    .slot-cell {
+      display: grid;
+      place-items: center;
+      min-height: 40px;
+      padding: 2px;
+      border-radius: 2px;
+      background: #FAFAFB;
+    }
+
+    .slot {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #BBC3D0;
+      border-radius: 4px;
+      background: var(--white);
+      position: relative;
+      transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .slot:hover {
+      transform: translateY(-1px);
+      border-color: var(--pink-300);
+    }
+
+    .slot.is-active {
+      border-color: var(--pink-400);
+      background: var(--pink-400);
+    }
+
+    .slot.is-active::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 11px;
+      height: 6px;
+      border-left: 2px solid var(--white);
+      border-bottom: 2px solid var(--white);
+      transform: rotate(-45deg) translate(1px, -2px);
+    }
+
+    .availability-legend {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+      padding: 14px 18px 16px;
+      border-top: 1px solid var(--gray-300);
+      background: #FCFCFD;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gray-700);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .legend-square {
+      width: 28px;
+      height: 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: 2px;
+      background: var(--white);
+    }
+
+    .legend-square.is-active {
+      border-color: var(--pink-400);
+      background: var(--pink-400);
+    }
+
+    @media (max-width: 900px) {
+      .main-nav {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 16px;
+        left: 16px;
+        z-index: 40;
+        display: none;
+        padding: 12px;
+        border: 1px solid var(--gray-300);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 18px 40px rgba(42, 53, 57, 0.14);
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .main-nav.is-open {
+        display: flex;
+      }
+
+      .main-nav-item {
+        min-width: 0;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 12px 14px;
+        border-bottom: 0;
+        border-radius: 12px;
+      }
+
+      .main-nav-item.active {
+        background: var(--pink-100);
+      }
+
+      .main-nav-divider {
+        width: 100%;
+        height: 1px;
+        margin: 6px 0;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+
+      .mobile-nav-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        display: block;
+        background: rgba(42, 53, 57, 0.16);
+      }
+
+      .mobile-nav-backdrop[hidden] {
+        display: none;
+      }
+
+      .page {
+        padding-top: 52px;
+      }
+
+      .hero {
+        margin-bottom: 34px;
+      }
+
+      .hero h1 {
+        font-size: clamp(42px, 12vw, 58px);
+        letter-spacing: -1.2px;
+      }
+
+      .content-column {
+        width: min(680px, 100%);
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timetable-card .card-header {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .select-shell {
+        width: 100%;
+      }
+
+      .availability-grid {
+        grid-template-columns: 78px repeat(7, minmax(28px, 1fr));
+      }
+
+      .availability-grid.is-hours {
+        grid-template-columns: 72px repeat(7, minmax(28px, 1fr));
+      }
+
+      .time-off-modal {
+        width: min(640px, calc(100vw - 32px));
+        min-height: 0;
+        padding: 36px 28px 36px;
+      }
+
+      .time-off-modal-fields {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        background: var(--white);
+      }
+
+      .topbar {
+        padding: 12px 16px 14px;
+        border-bottom: 0;
+        background: var(--white);
+        backdrop-filter: none;
+      }
+
+      .brand img {
+        width: 128px;
+      }
+
+      .page {
+        padding: 24px 0 20px;
+      }
+
+      .hero {
+        margin-bottom: 26px;
+        padding: 0 20px;
+      }
+
+      .hero h1 {
+        color: var(--gray-800);
+        text-align: center;
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 132%;
+        letter-spacing: -0.32px;
+      }
+
+      .content-column {
+        gap: 18px;
+      }
+
+      .action-item {
+        width: calc(100% - 40px);
+        margin: 0 auto;
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 0;
+        padding: 14px 14px 16px 8px;
+      }
+
+      .action-item__media {
+        width: 40px;
+        height: 40px;
+      }
+
+      .action-item__media img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .action-item__title {
+        font-size: 15px;
+      }
+
+      .action-item__description {
+        font-size: 13px;
+      }
+
+      .holiday-summary-copy {
+        font-size: 14px;
+      }
+
+      .switch-view-button {
+        top: 108px;
+        bottom: auto;
+        right: 0;
+        width: 72px;
+        min-height: 64px;
+        padding: 14px 8px 18px 18px;
+        border-radius: 999px 0 0 999px;
+        gap: 14px;
+        box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+        font-size: 16px;
+        line-height: 20px;
+        white-space: nowrap;
+        text-align: left;
+      }
+
+      .switch-view-button-label {
+        opacity: 0;
+        transform: translateX(16px);
+      }
+
+      .switch-view-button:hover,
+      .switch-view-button:focus-visible {
+        width: 250px;
+      }
+
+      .switch-view-button-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+      }
+
+      .settings-modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+      }
+
+      .settings-modal-header {
+        padding: 18px 16px 16px;
+      }
+
+      .settings-modal-header h2 {
+        font-size: 20px;
+      }
+
+      .settings-modal-body {
+        padding: 12px 16px 16px;
+      }
+
+      .profile-settings-row {
+        min-height: 58px;
+        padding: 12px;
+      }
+
+      .profile-settings-title {
+        font-size: 15px;
+      }
+
+      .profile-settings-caption {
+        font-size: 12px;
+      }
+
+      .settings-modal-footer {
+        padding: 0 16px 16px;
+      }
+
+      .card {
+        margin: 0 0;
+        border-radius: 12px;
+        box-shadow: none;
+      }
+
+      .content-column > .card {
+        width: calc(100% - 40px);
+        margin: 0 auto;
+      }
+
+      .card-header {
+        padding: 16px 14px 14px;
+      }
+
+      .card-header h2 {
+        font-size: 17px;
+      }
+
+      .card-body {
+        padding: 12px;
+      }
+
+      .availability-trigger {
+        min-height: 52px;
+        padding-left: 16px;
+        font-size: 16px;
+      }
+
+      .availability-trigger-label {
+        font-size: 16px;
+      }
+
+      .availability-option {
+        padding: 6px 16px;
+      }
+
+      .availability-option-title {
+        font-size: 18px;
+        line-height: 1.22;
+      }
+
+      .availability-option-copy {
+        font-size: 15px;
+        line-height: 1.28;
+      }
+
+      .toggle-row,
+      .profile-option {
+        min-height: 54px;
+        gap: 10px;
+      }
+
+      .toggle-row {
+        align-items: flex-start;
+      }
+
+      .toggle-row.is-disabled {
+        align-items: center;
+        gap: 14px;
+        padding: 16px 14px;
+      }
+
+      .toggle-row.is-disabled .toggle-copy {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding-top: 0;
+        justify-content: flex-start;
+        text-align: left;
+      }
+
+      .toggle-copy {
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .grow-pill {
+        margin-left: 0;
+      }
+
+      .timetable-card .card-body {
+        padding: 10px 10px 0;
+      }
+
+      .availability-grid {
+        grid-template-columns: 70px repeat(7, minmax(24px, 1fr));
+        gap: 4px 2px;
+        padding: 0 4px 16px;
+      }
+
+      .availability-grid.is-hours {
+        grid-template-columns: 72px repeat(7, minmax(24px, 1fr));
+      }
+
+      .day-label {
+        font-size: 12px;
+      }
+
+      .period-label {
+        font-size: 14px;
+      }
+
+      .slot-cell {
+        min-height: 34px;
+      }
+
+      .slot {
+        width: 24px;
+        height: 24px;
+      }
+
+      .availability-legend {
+        justify-content: flex-end;
+        gap: 18px;
+        padding: 12px 14px 14px;
+      }
+
+      .holiday-summary {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 14px;
+      }
+
+      .holiday-summary-copy {
+        flex: 1 1 auto;
+        min-width: 0;
+        line-height: 1.35;
+      }
+
+      .holiday-summary-remove {
+        align-self: center;
+        flex: 0 0 auto;
+        font-size: 14px;
+        gap: 2px;
+      }
+
+      .time-off-modal {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        min-height: 100dvh;
+        height: 100dvh;
+        transform: none;
+        border-radius: 0;
+        padding: 26px 18px 34px;
+        box-shadow: none;
+      }
+
+      .time-off-modal-close {
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+      }
+
+      .time-off-modal-close::before,
+      .time-off-modal-close::after {
+        width: 28px;
+      }
+
+      .time-off-modal-header {
+        align-items: center;
+        gap: 14px;
+        padding-right: 28px;
+      }
+
+      .time-off-modal-header img {
+        width: 42px;
+        height: 42px;
+      }
+
+      .time-off-modal-header h3 {
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 132%;
+        letter-spacing: -0.2px;
+      }
+
+      .time-off-field {
+        gap: 8px;
+      }
+
+      .time-off-date-display {
+        min-height: 62px;
+        padding: 0 48px 0 52px;
+        font-size: 16px;
+      }
+
+      .time-off-date::before {
+        left: 16px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .time-off-date::after {
+        right: 18px;
+        width: 10px;
+        height: 10px;
+        border-right-width: 2px;
+        border-bottom-width: 2px;
+      }
+
+      .time-off-modal-actions {
+        padding-top: 12px;
+      }
+
+      .time-off-save {
+        width: 100%;
+        min-width: 0;
+        min-height: 52px;
+        font-size: 16px;
+      }
+
+      .confirm-modal {
+        width: min(420px, calc(100vw - 24px));
+        padding: 22px 18px;
+      }
+
+      .confirm-modal h3 {
+        font-size: 22px;
+      }
+
+      .confirm-modal-actions {
+        flex-direction: column-reverse;
+      }
+
+      .confirm-modal-cancel,
+      .confirm-modal-confirm {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Hlídačky.cz">
+        <img src="/sitter-approval-workflow/assets/logo_hlidacky.svg" alt="Hlídačky.cz">
+      </div>
+      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-nav" data-mobile-nav-toggle>
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+          <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+          <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+        </svg>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Sitter navigation" data-mobile-nav>
+        <button class="main-nav-item" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/dashboard.svg" alt=""></span>
+          <span>Dashboard</span>
+        </button>
+        <button class="main-nav-item active" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/ico-calendar.svg" alt=""></span>
+          <span>Availability</span>
+        </button>
+        <button class="main-nav-item" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-messages.svg" alt=""><span class="main-nav-notification">5</span></span>
+          <span>Messages</span>
+        </button>
+        <button class="main-nav-item" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""><span class="main-nav-notification">5</span></span>
+          <span>Bookings</span>
+        </button>
+        <button class="main-nav-item" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/jobs.svg" alt=""></span>
+          <span>Jobs</span>
+        </button>
+        <span class="main-nav-divider" aria-hidden="true"></span>
+        <button class="main-nav-item" type="button">
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/profile.svg" alt=""></span>
+          <span class="profile-nav-label">Profile</span>
+        </button>
+      </nav>
+      <div class="mobile-nav-backdrop" data-mobile-nav-backdrop hidden></div>
+    </header>
+
+    <button class="switch-view-button" type="button" aria-label="Availability settings" data-availability-settings-open>
+      <img class="switch-view-button-icon" src="/notification-center/assets/icon-gear.svg" alt="">
+      <span class="switch-view-button-label">Availability settings</span>
+    </button>
+
+    <main class="page">
+      <section class="hero">
+        <h1>Availability</h1>
+      </section>
+
+      <section class="content-column">
+        <article class="action-item action-item--warning" hidden data-profile-warning>
+          <div class="action-item__media">
+            <img src="/availability-calendar/assets/doodle-cal-warning.svg" alt="">
+          </div>
+          <div class="action-item__body">
+            <h2 class="action-item__title">No profile service is currently turned on</h2>
+            <p class="action-item__description">Turn on at least one profile availability option so families can see which services you currently offer.</p>
+          </div>
+        </article>
+
+        <article class="card" data-availability-card>
+          <div class="card-header">
+            <h2>General availability</h2>
+          </div>
+          <div class="card-body">
+            <div class="availability-dropdown" data-availability-dropdown>
+              <button class="availability-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="General availability status" data-availability-trigger>
+                <span class="availability-trigger-leading">
+                  <img class="availability-trigger-icon" src="/availability-calendar/assets/check.svg" alt="" data-availability-icon>
+                  <span class="availability-trigger-label" data-availability-value>Active</span>
+                </span>
+              </button>
+              <div class="availability-menu" role="listbox" hidden data-availability-menu>
+                <button class="availability-option is-selected" type="button" role="option" aria-selected="true" data-value="Active" data-copy="I need more jobs, looking" data-icon="/availability-calendar/assets/check.svg" data-availability-option>
+                  <span class="availability-option-leading">
+                    <img class="availability-option-icon" src="/availability-calendar/assets/check.svg" alt="">
+                    <span class="availability-option-title">Active</span>
+                  </span>
+                  <span class="availability-option-copy">I need more jobs, looking</span>
+                </button>
+                <button class="availability-option" type="button" role="option" aria-selected="false" data-value="I have just a few stable families" data-copy="Doing some bookings with my stable clients only" data-icon="/availability-calendar/assets/selected-familes.svg" data-availability-option>
+                  <span class="availability-option-leading">
+                    <img class="availability-option-icon" src="/availability-calendar/assets/selected-familes.svg" alt="">
+                    <span class="availability-option-title">I have just a few stable families</span>
+                  </span>
+                  <span class="availability-option-copy">Doing some bookings with my stable clients only</span>
+                </button>
+                <button class="availability-option" type="button" role="option" aria-selected="false" data-value="Off - for a longer time" data-copy="Travelling" data-icon="/availability-calendar/assets/holiday.svg" data-availability-option>
+                  <span class="availability-option-leading">
+                    <img class="availability-option-icon" src="/availability-calendar/assets/holiday.svg" alt="">
+                    <span class="availability-option-title">Off - for a longer time</span>
+                  </span>
+                  <span class="availability-option-copy">Travelling</span>
+                </button>
+                <button class="availability-option" type="button" role="option" aria-selected="false" data-value="Hidden for now" data-copy="I'm super busy right now, but I will return" data-icon="/availability-calendar/assets/off.svg" data-availability-option>
+                  <span class="availability-option-leading">
+                    <img class="availability-option-icon" src="/availability-calendar/assets/off.svg" alt="">
+                    <span class="availability-option-title">Hidden for now</span>
+                  </span>
+                  <span class="availability-option-copy">I'm super busy right now, but I will return</span>
+                </button>
+              </div>
+            </div>
+            <div class="toggle-row is-disabled">
+              <button class="toggle copy-muted" type="button" aria-pressed="false" data-toggle></button>
+              <div class="toggle-copy">
+                <span>Available also last minute,&nbsp;</span>
+                <span class="toggle-copy-group">
+                  <span>only for</span>
+                  <span class="grow-pill"><img class="grow-pill-shield" src="/availability-calendar/assets/grow-shield.svg" alt=""><span>GROW</span></span>
+                </span>
+              </div>
+            </div>
+            <div class="holiday-summary" hidden data-holiday-summary>
+              <div class="holiday-summary-copy">
+                <span>You have scheduled vacation</span>
+                <strong data-holiday-summary-range>from May 26 to June 7</strong>
+              </div>
+              <button class="holiday-summary-remove" type="button" data-holiday-remove>
+                <img class="holiday-summary-remove-icon" src="/availability-calendar/assets/icon-trash-bin.svg" alt="">
+                <span>Remove</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <h2>Profile availability</h2>
+          </div>
+          <div class="card-body">
+            <div class="profile-grid" data-profile-grid></div>
+          </div>
+        </article>
+
+        <article class="card timetable-card">
+          <div class="card-header">
+            <h2>Set your timetable</h2>
+            <label class="select-shell" aria-label="Timetable display mode">
+              <select data-timetable-mode>
+                <option selected>by parts of the day</option>
+                <option>by hours</option>
+              </select>
+            </label>
+          </div>
+          <div class="card-body">
+            <div class="availability-grid" aria-label="Weekly availability by parts of the day" data-timetable-grid></div>
+          </div>
+          <div class="availability-legend" aria-hidden="true">
+            <span class="legend-item"><span class="legend-square is-active"></span>Available</span>
+            <span class="legend-item"><span class="legend-square"></span>Unavailable</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="time-off-modal-backdrop" data-time-off-backdrop hidden></div>
+  <section class="time-off-modal" aria-labelledby="time-off-modal-title" aria-modal="true" role="dialog" data-time-off-modal hidden>
+    <button class="time-off-modal-close" type="button" aria-label="Close time off modal" data-time-off-close></button>
+    <div class="time-off-modal-header">
+      <img src="/availability-calendar/assets/doodle-vacation.svg" alt="">
+      <h3 id="time-off-modal-title">Set your time off</h3>
+    </div>
+    <div class="time-off-modal-fields">
+      <label class="time-off-field">
+        <span class="time-off-field-label">From</span>
+        <span class="time-off-date">
+          <input type="date" data-time-off-from>
+          <span class="time-off-date-display" data-time-off-from-label>Today</span>
+        </span>
+      </label>
+      <label class="time-off-field">
+        <span class="time-off-field-label">To</span>
+        <span class="time-off-date">
+          <input type="date" data-time-off-to>
+          <span class="time-off-date-display" data-time-off-to-label>Sat, 09. 12.</span>
+        </span>
+      </label>
+    </div>
+    <div class="time-off-modal-actions">
+      <button class="time-off-save" type="button" data-time-off-save>Save</button>
+    </div>
+  </section>
+
+  <div class="confirm-modal-backdrop" data-end-vacation-backdrop hidden></div>
+  <section class="confirm-modal" aria-labelledby="end-vacation-title" aria-modal="true" role="dialog" data-end-vacation-modal hidden>
+    <h3 id="end-vacation-title">End of Vacation</h3>
+    <p>By switching to a different state, you will automatically reset your vacation status.</p>
+    <div class="confirm-modal-actions">
+      <button class="confirm-modal-cancel" type="button" data-end-vacation-cancel>Cancel</button>
+      <button class="confirm-modal-confirm" type="button" data-end-vacation-confirm>Yes</button>
+    </div>
+  </section>
+
+  <div class="settings-modal-backdrop" data-availability-settings-backdrop hidden></div>
+  <section class="settings-modal" aria-labelledby="availability-settings-title" aria-modal="true" role="dialog" data-availability-settings-modal hidden>
+    <div class="settings-modal-header">
+      <h2 id="availability-settings-title">Availability settings</h2>
+      <button class="settings-modal-close" type="button" aria-label="Close availability settings" data-availability-settings-close>
+        <img src="/notification-center/assets/xicon.svg" alt="">
+      </button>
+    </div>
+    <div class="settings-modal-body" data-availability-settings-list></div>
+    <div class="settings-modal-footer">
+      <button class="settings-modal-save" type="button" data-availability-settings-save>Save</button>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      var mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
+      var mobileNav = document.querySelector('[data-mobile-nav]');
+      var mobileNavBackdrop = document.querySelector('[data-mobile-nav-backdrop]');
+      var availabilitySettingsOpenButton = document.querySelector('[data-availability-settings-open]');
+      var availabilitySettingsBackdrop = document.querySelector('[data-availability-settings-backdrop]');
+      var availabilitySettingsModal = document.querySelector('[data-availability-settings-modal]');
+      var availabilitySettingsCloseButton = document.querySelector('[data-availability-settings-close]');
+      var availabilitySettingsList = document.querySelector('[data-availability-settings-list]');
+      var availabilitySettingsSaveButton = document.querySelector('[data-availability-settings-save]');
+      var availabilityCard = document.querySelector('[data-availability-card]');
+      var availabilityDropdown = document.querySelector('[data-availability-dropdown]');
+      var availabilityTrigger = document.querySelector('[data-availability-trigger]');
+      var availabilityMenu = document.querySelector('[data-availability-menu]');
+      var availabilityValue = document.querySelector('[data-availability-value]');
+      var availabilityIcon = document.querySelector('[data-availability-icon]');
+      var availabilityOptions = document.querySelectorAll('[data-availability-option]');
+      var profileWarning = document.querySelector('[data-profile-warning]');
+      var profileGrid = document.querySelector('[data-profile-grid]');
+      var holidaySummary = document.querySelector('[data-holiday-summary]');
+      var holidaySummaryRange = document.querySelector('[data-holiday-summary-range]');
+      var holidayRemoveButton = document.querySelector('[data-holiday-remove]');
+      var timeOffBackdrop = document.querySelector('[data-time-off-backdrop]');
+      var timeOffModal = document.querySelector('[data-time-off-modal]');
+      var timeOffCloseButton = document.querySelector('[data-time-off-close]');
+      var timeOffDateWrappers = document.querySelectorAll('.time-off-date');
+      var timeOffFromInput = document.querySelector('[data-time-off-from]');
+      var timeOffToInput = document.querySelector('[data-time-off-to]');
+      var timeOffFromLabel = document.querySelector('[data-time-off-from-label]');
+      var timeOffToLabel = document.querySelector('[data-time-off-to-label]');
+      var timeOffSaveButton = document.querySelector('[data-time-off-save]');
+      var endVacationBackdrop = document.querySelector('[data-end-vacation-backdrop]');
+      var endVacationModal = document.querySelector('[data-end-vacation-modal]');
+      var endVacationCancelButton = document.querySelector('[data-end-vacation-cancel]');
+      var endVacationConfirmButton = document.querySelector('[data-end-vacation-confirm]');
+      var timetableCard = document.querySelector('.timetable-card');
+      var timetableModeSelect = document.querySelector('[data-timetable-mode]');
+      var timetableGrid = document.querySelector('[data-timetable-grid]');
+      var toggleButtons = document.querySelectorAll('[data-toggle]:not([data-profile-toggle])');
+      var DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+      var DAY_LABELS = {
+        mo: 'MO',
+        tu: 'TU',
+        we: 'WE',
+        th: 'TH',
+        fr: 'FR',
+        sa: 'SA',
+        su: 'SU'
+      };
+      var PART_ROWS = [
+        { key: 'morning', label: 'morning', hours: ['07-08', '08-09', '09-10', '10-11', '11-12'] },
+        { key: 'afternoon', label: 'afternoon', hours: ['12-13', '13-14', '14-15', '15-16', '16-17', '17-18'] },
+        { key: 'evening', label: 'evening', hours: ['18-19', '19-20', '20-21', '21-22'] },
+        { key: 'night', label: 'night', hours: ['after-22'] }
+      ];
+      var HOUR_ROWS = [
+        { key: '07-08', label: '07–08' },
+        { key: '08-09', label: '08–09' },
+        { key: '09-10', label: '09–10' },
+        { key: '10-11', label: '10–11' },
+        { key: '11-12', label: '11–12' },
+        { key: '12-13', label: '12–13' },
+        { key: '13-14', label: '13–14' },
+        { key: '14-15', label: '14–15' },
+        { key: '15-16', label: '15–16' },
+        { key: '16-17', label: '16–17' },
+        { key: '17-18', label: '17–18' },
+        { key: '18-19', label: '18–19' },
+        { key: '19-20', label: '19–20' },
+        { key: '20-21', label: '20–21' },
+        { key: '21-22', label: '21–22' },
+        { key: 'after-22', label: 'after 22' }
+      ];
+      var initialPartsState = {
+        mo: { morning: false, afternoon: false, evening: false, night: false },
+        tu: { morning: false, afternoon: false, evening: false, night: false },
+        we: { morning: true, afternoon: true, evening: true, night: true },
+        th: { morning: true, afternoon: true, evening: true, night: true },
+        fr: { morning: true, afternoon: true, evening: true, night: true },
+        sa: { morning: false, afternoon: false, evening: false, night: false },
+        su: { morning: false, afternoon: false, evening: false, night: false }
+      };
+      var timetableMode = 'parts';
+      var timetableTransitionCleanupId = null;
+      var timetableTransitionSwapId = null;
+      var hourlyState = buildHourlyState(initialPartsState);
+      var availabilityOptionsConfig = [
+        { value: 'Active', title: 'Active 🔥', copy: 'I need more jobs, looking', icon: '/availability-calendar/assets/check.svg' },
+        { value: 'I have just a few stable families', title: 'I have just a few stable families 👨‍👩‍👧‍👦', copy: 'Doing some bookings with my stable clients only', icon: '/availability-calendar/assets/selected-familes.svg' },
+        { value: 'Off - for a longer time', title: 'Off - for a longer time 🌴', copy: 'Travelling', icon: '/availability-calendar/assets/holiday.svg' },
+        { value: 'Hidden for now', title: 'Hidden for now 🥷', copy: 'I\'m super busy right now, but I will return', icon: '/availability-calendar/assets/off.svg' }
+      ];
+      var currentAvailabilityValue = 'Active';
+      var timeOffSelectionValue = 'Off - for a longer time';
+      var scheduledHoliday = null;
+      var pendingAvailabilityValue = null;
+      var profileWarningHideTimer = null;
+      var profileSettingsDraft = null;
+      var profilesState = [
+        { key: 'babysitting', label: 'Babysitting', enabled: true, available: true },
+        { key: 'cleaning', label: 'Cleaning', enabled: false, available: false },
+        { key: 'pet-care', label: 'Pet care', enabled: true, available: true },
+        { key: 'senior-care', label: 'Senior care', enabled: true, available: false },
+        { key: 'tutoring', label: 'Tutoring', enabled: false, available: false }
+      ];
+      var todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+
+      function toDateInputValue(date) {
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, '0');
+        var day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+      }
+
+      function fromDateInputValue(value) {
+        var parts = value.split('-');
+        return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      }
+
+      function addDays(date, days) {
+        var next = new Date(date);
+        next.setDate(next.getDate() + days);
+        return next;
+      }
+
+      function isSameDay(a, b) {
+        return a.getFullYear() === b.getFullYear() &&
+          a.getMonth() === b.getMonth() &&
+          a.getDate() === b.getDate();
+      }
+
+      function formatDateLabel(date, useToday) {
+        if (useToday && isSameDay(date, todayDate)) {
+          return 'Today';
+        }
+
+        var weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+        var day = String(date.getDate()).padStart(2, '0');
+        var month = String(date.getMonth() + 1).padStart(2, '0');
+        return weekday + ', ' + day + '. ' + month + '.';
+      }
+
+      function formatHolidayRange(fromDate, toDate) {
+        var fromMonth = fromDate.toLocaleDateString('en-US', { month: 'long' });
+        var toMonth = toDate.toLocaleDateString('en-US', { month: 'long' });
+        return 'from ' + fromMonth + ' ' + fromDate.getDate() + ' to ' + toMonth + ' ' + toDate.getDate();
+      }
+
+      function setAvailabilityValue(nextValue) {
+        currentAvailabilityValue = nextValue;
+        var selectedOption = availabilityOptionsConfig.find(function(option) {
+          return option.value === nextValue;
+        });
+
+        if (availabilityValue) {
+          availabilityValue.textContent = selectedOption ? selectedOption.title : nextValue;
+        }
+
+        if (availabilityIcon && selectedOption && selectedOption.icon) {
+          availabilityIcon.setAttribute('src', selectedOption.icon);
+        }
+
+        availabilityOptions.forEach(function(option) {
+          var isSelected = option.getAttribute('data-value') === nextValue;
+          option.classList.toggle('is-selected', isSelected);
+          option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        });
+
+        renderProfileWarning();
+      }
+
+      function hasAnyActiveProfileToggle() {
+        return profilesState.some(function(profile) {
+          return profile.enabled && profile.available;
+        });
+      }
+
+      function renderProfileGrid() {
+        if (!profileGrid) return;
+
+        var visibleProfiles = profilesState.filter(function(profile) {
+          return profile.enabled;
+        });
+
+        profileGrid.classList.toggle('is-single', visibleProfiles.length === 1);
+        profileGrid.classList.toggle('is-double', visibleProfiles.length === 2);
+
+        profileGrid.innerHTML = visibleProfiles
+          .map(function(profile) {
+            return (
+              '<label class="profile-option">' +
+                '<button class="toggle' + (profile.available ? ' is-on' : '') + '" type="button" aria-pressed="' + (profile.available ? 'true' : 'false') + '" data-toggle data-profile-toggle data-profile-key="' + profile.key + '"></button>' +
+                '<span>' + profile.label + '</span>' +
+              '</label>'
+            );
+          })
+          .join('');
+      }
+
+      function renderAvailabilitySettingsList() {
+        if (!availabilitySettingsList || !profileSettingsDraft) return;
+
+        availabilitySettingsList.innerHTML = profileSettingsDraft.map(function(profile) {
+          return (
+            '<div class="profile-settings-row">' +
+              '<div class="profile-settings-copy">' +
+                '<div class="profile-settings-title">' + profile.label + '</div>' +
+                '<div class="profile-settings-caption">' + (profile.enabled ? 'Visible in profile availability' : 'Hidden from profile availability') + '</div>' +
+              '</div>' +
+              '<button class="toggle' + (profile.enabled ? ' is-on' : '') + '" type="button" aria-pressed="' + (profile.enabled ? 'true' : 'false') + '" data-profile-config-toggle data-profile-key="' + profile.key + '"></button>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      function updateToggleVisual(button, isOn) {
+        if (!button) return;
+        button.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+        button.classList.toggle('is-on', isOn);
+      }
+
+      function ensureProfileWarningInView() {
+        if (!profileWarning || profileWarning.hidden) return;
+
+        var rect = profileWarning.getBoundingClientRect();
+        var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        var isAboveViewport = rect.top < 0;
+        var isBelowViewport = rect.bottom > viewportHeight;
+
+        if (!isAboveViewport && !isBelowViewport) return;
+
+        profileWarning.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+
+      function renderProfileWarning() {
+        if (!profileWarning) return;
+        var shouldShow = (
+          currentAvailabilityValue === 'Active' ||
+          currentAvailabilityValue === 'I have just a few stable families' ||
+          currentAvailabilityValue === 'Off - for a longer time'
+        ) && !hasAnyActiveProfileToggle();
+
+        if (profileWarningHideTimer) {
+          clearTimeout(profileWarningHideTimer);
+          profileWarningHideTimer = null;
+        }
+
+        if (shouldShow) {
+          if (!profileWarning.hidden && !profileWarning.classList.contains('action-item--is-dismissing')) {
+            return;
+          }
+
+          profileWarning.hidden = false;
+          profileWarning.classList.remove('action-item--is-dismissing');
+          profileWarning.classList.remove('action-item--is-entering');
+          void profileWarning.offsetWidth;
+          profileWarning.classList.add('action-item--is-entering');
+          window.setTimeout(ensureProfileWarningInView, 40);
+          return;
+        }
+
+        if (profileWarning.hidden) return;
+        if (profileWarning.classList.contains('action-item--is-dismissing')) return;
+
+        profileWarning.classList.remove('action-item--is-entering');
+        profileWarning.classList.add('action-item--is-dismissing');
+        profileWarningHideTimer = window.setTimeout(function() {
+          profileWarning.hidden = true;
+          profileWarning.classList.remove('action-item--is-dismissing');
+          profileWarningHideTimer = null;
+        }, 360);
+      }
+
+      function renderHolidaySummary() {
+        if (!holidaySummary || !holidaySummaryRange) return;
+
+        if (!scheduledHoliday) {
+          holidaySummary.hidden = true;
+          holidaySummaryRange.textContent = '';
+          return;
+        }
+
+        holidaySummary.hidden = false;
+        holidaySummaryRange.textContent = formatHolidayRange(scheduledHoliday.from, scheduledHoliday.to);
+      }
+
+      function syncTimeOffLabels() {
+        if (timeOffFromInput && timeOffFromLabel) {
+          timeOffFromLabel.textContent = formatDateLabel(fromDateInputValue(timeOffFromInput.value), true);
+        }
+
+        if (timeOffToInput && timeOffToLabel) {
+          timeOffToLabel.textContent = formatDateLabel(fromDateInputValue(timeOffToInput.value), false);
+        }
+      }
+
+      function setTimeOffDefaults() {
+        var from = scheduledHoliday ? new Date(scheduledHoliday.from) : new Date(todayDate);
+        var to = scheduledHoliday ? new Date(scheduledHoliday.to) : addDays(todayDate, 7);
+
+        if (timeOffFromInput) {
+          timeOffFromInput.value = toDateInputValue(from);
+        }
+
+        if (timeOffToInput) {
+          timeOffToInput.value = toDateInputValue(to);
+          timeOffToInput.min = toDateInputValue(from);
+        }
+
+        syncTimeOffLabels();
+      }
+
+      function setTimeOffModal(open) {
+        if (!timeOffBackdrop || !timeOffModal) return;
+        timeOffBackdrop.hidden = !open;
+        timeOffModal.hidden = !open;
+      }
+
+      function setAvailabilitySettingsModal(open) {
+        if (!availabilitySettingsBackdrop || !availabilitySettingsModal) return;
+        availabilitySettingsBackdrop.hidden = !open;
+        availabilitySettingsModal.hidden = !open;
+        document.body.classList.toggle('settings-modal-open', open);
+      }
+
+      function setEndVacationModal(open) {
+        if (!endVacationBackdrop || !endVacationModal) return;
+        endVacationBackdrop.hidden = !open;
+        endVacationModal.hidden = !open;
+      }
+
+      function buildHourlyState(partsState) {
+        var state = {};
+
+        DAYS.forEach(function(day) {
+          state[day] = {};
+
+          HOUR_ROWS.forEach(function(row) {
+            state[day][row.key] = false;
+          });
+
+          PART_ROWS.forEach(function(part) {
+            var isActive = !!(partsState[day] && partsState[day][part.key]);
+
+            part.hours.forEach(function(hourKey) {
+              state[day][hourKey] = isActive;
+            });
+          });
+        });
+
+        return state;
+      }
+
+      function isPartActive(day, partKey) {
+        var part = PART_ROWS.find(function(item) { return item.key === partKey; });
+        if (!part) return false;
+
+        return part.hours.every(function(hourKey) {
+          return !!(hourlyState[day] && hourlyState[day][hourKey]);
+        });
+      }
+
+      function renderTimetable() {
+        if (!timetableGrid) return;
+
+        var rows = timetableMode === 'hours' ? HOUR_ROWS : PART_ROWS;
+        timetableGrid.classList.toggle('is-hours', timetableMode === 'hours');
+        timetableGrid.setAttribute('aria-label', timetableMode === 'hours'
+          ? 'Weekly availability by hours'
+          : 'Weekly availability by parts of the day');
+
+        var html = '<div class="corner-spacer"></div>' +
+          DAYS.map(function(day) {
+            return '<button class="day-label" type="button" data-day-column="' + day + '">' + DAY_LABELS[day] + '</button>';
+          }).join('');
+
+        rows.forEach(function(row) {
+          html += '<div class="period-label">' + row.label + '</div>';
+
+          DAYS.forEach(function(day) {
+            var isActive = timetableMode === 'hours'
+              ? !!hourlyState[day][row.key]
+              : isPartActive(day, row.key);
+
+            html += '<div class="slot-cell"><button class="slot' +
+              (isActive ? ' is-active' : '') +
+              '" type="button" aria-pressed="' +
+              (isActive ? 'true' : 'false') +
+              '" data-slot data-day="' + day +
+              '" data-row-key="' + row.key +
+              '" data-mode="' + timetableMode + '"></button></div>';
+          });
+        });
+
+        timetableGrid.innerHTML = html;
+      }
+
+      function cleanupTimetableModeAnimation() {
+        if (!timetableGrid) return;
+
+        if (timetableTransitionCleanupId) {
+          window.clearTimeout(timetableTransitionCleanupId);
+          timetableTransitionCleanupId = null;
+        }
+
+        if (timetableTransitionSwapId) {
+          window.clearTimeout(timetableTransitionSwapId);
+          timetableTransitionSwapId = null;
+        }
+
+        timetableGrid.classList.remove('is-animating');
+        timetableGrid.style.height = '';
+        timetableGrid.style.overflow = '';
+        timetableGrid.style.transition = '';
+        timetableGrid.style.opacity = '';
+        timetableGrid.style.transform = '';
+      }
+
+      function animateTimetableModeChange(nextMode) {
+        if (!timetableGrid) {
+          timetableMode = nextMode;
+          renderTimetable();
+          return;
+        }
+
+        cleanupTimetableModeAnimation();
+
+        var previousMode = timetableMode;
+        var previousHtml = timetableGrid.innerHTML;
+        var previousAriaLabel = timetableGrid.getAttribute('aria-label');
+        var previousIsHours = timetableGrid.classList.contains('is-hours');
+        var startHeight = timetableGrid.getBoundingClientRect().height;
+
+        timetableMode = nextMode;
+        renderTimetable();
+
+        var endHeight = timetableGrid.scrollHeight;
+        var nextHtml = timetableGrid.innerHTML;
+        var nextAriaLabel = timetableGrid.getAttribute('aria-label');
+        var nextIsHours = timetableGrid.classList.contains('is-hours');
+
+        timetableMode = previousMode;
+        timetableGrid.innerHTML = previousHtml;
+        timetableGrid.setAttribute('aria-label', previousAriaLabel || '');
+        timetableGrid.classList.toggle('is-hours', previousIsHours);
+
+        timetableGrid.style.height = startHeight + 'px';
+        timetableGrid.style.transition = 'none';
+        timetableGrid.style.overflow = 'hidden';
+        timetableGrid.style.opacity = '1';
+        timetableGrid.style.transform = 'translateY(0)';
+        timetableGrid.classList.add('is-animating');
+        timetableGrid.offsetHeight;
+        timetableGrid.style.transition = 'height 360ms ease, opacity 140ms ease, transform 140ms ease';
+
+        window.requestAnimationFrame(function() {
+          timetableGrid.style.height = endHeight + 'px';
+          timetableGrid.style.opacity = '0';
+          timetableGrid.style.transform = 'translateY(-6px)';
+        });
+
+        timetableTransitionSwapId = window.setTimeout(function() {
+          timetableTransitionSwapId = null;
+          timetableMode = nextMode;
+          timetableGrid.innerHTML = nextHtml;
+          timetableGrid.setAttribute('aria-label', nextAriaLabel || '');
+          timetableGrid.classList.toggle('is-hours', nextIsHours);
+          timetableGrid.style.transition = 'none';
+          timetableGrid.style.opacity = '0';
+          timetableGrid.style.transform = 'translateY(6px)';
+          timetableGrid.offsetHeight;
+          timetableGrid.style.transition = 'opacity 180ms ease, transform 180ms ease';
+
+          window.requestAnimationFrame(function() {
+            timetableGrid.style.opacity = '1';
+            timetableGrid.style.transform = 'translateY(0)';
+          });
+        }, 150);
+
+        timetableTransitionCleanupId = window.setTimeout(function() {
+          cleanupTimetableModeAnimation();
+        }, 380);
+      }
+
+      function scrollTimetableCardIntoView() {
+        if (!timetableCard) return;
+
+        timetableCard.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+
+      function setPartState(day, partKey, isActive) {
+        var part = PART_ROWS.find(function(item) { return item.key === partKey; });
+        if (!part) return;
+
+        part.hours.forEach(function(hourKey) {
+          hourlyState[day][hourKey] = isActive;
+        });
+      }
+
+      function setMobileNav(open) {
+        if (!mobileNavToggle || !mobileNav || !mobileNavBackdrop) return;
+        mobileNav.classList.toggle('is-open', open);
+        mobileNavToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        mobileNavBackdrop.hidden = !open;
+      }
+
+      function setAvailabilityDropdown(open) {
+        if (!availabilityDropdown || !availabilityTrigger || !availabilityMenu) return;
+        if (availabilityCard) {
+          availabilityCard.classList.toggle('is-raised', open);
+        }
+        availabilityDropdown.classList.toggle('is-open', open);
+        availabilityTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        availabilityMenu.hidden = !open;
+      }
+
+      if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function() {
+          setMobileNav(mobileNavToggle.getAttribute('aria-expanded') !== 'true');
+        });
+      }
+
+      if (mobileNavBackdrop) {
+        mobileNavBackdrop.addEventListener('click', function() {
+          setMobileNav(false);
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          setMobileNav(false);
+          setAvailabilityDropdown(false);
+          setTimeOffModal(false);
+          setEndVacationModal(false);
+          setAvailabilitySettingsModal(false);
+          profileSettingsDraft = null;
+        }
+      });
+
+      if (timeOffFromInput) {
+        timeOffFromInput.addEventListener('input', function() {
+          if (timeOffToInput && timeOffFromInput.value && timeOffToInput.value < timeOffFromInput.value) {
+            timeOffToInput.value = timeOffFromInput.value;
+          }
+          if (timeOffToInput && timeOffFromInput.value) {
+            timeOffToInput.min = timeOffFromInput.value;
+          }
+          syncTimeOffLabels();
+        });
+      }
+
+      if (timeOffToInput) {
+        timeOffToInput.addEventListener('input', syncTimeOffLabels);
+      }
+
+      timeOffDateWrappers.forEach(function(wrapper) {
+        var input = wrapper.querySelector('input[type="date"]');
+        if (!input) return;
+
+        wrapper.addEventListener('click', function() {
+          input.focus();
+          if (typeof input.showPicker === 'function') {
+            input.showPicker();
+          } else {
+            input.click();
+          }
+        });
+      });
+
+      if (timeOffCloseButton) {
+        timeOffCloseButton.addEventListener('click', function() {
+          setTimeOffModal(false);
+        });
+      }
+
+      if (timeOffBackdrop) {
+        timeOffBackdrop.addEventListener('click', function() {
+          setTimeOffModal(false);
+        });
+      }
+
+      if (endVacationBackdrop) {
+        endVacationBackdrop.addEventListener('click', function() {
+          setEndVacationModal(false);
+          pendingAvailabilityValue = null;
+        });
+      }
+
+      if (availabilitySettingsOpenButton) {
+        availabilitySettingsOpenButton.addEventListener('click', function() {
+          profileSettingsDraft = profilesState.map(function(profile) {
+            return {
+              key: profile.key,
+              label: profile.label,
+              enabled: profile.enabled,
+              available: profile.available
+            };
+          });
+          renderAvailabilitySettingsList();
+          setAvailabilitySettingsModal(true);
+        });
+      }
+
+      if (availabilitySettingsCloseButton) {
+        availabilitySettingsCloseButton.addEventListener('click', function() {
+          setAvailabilitySettingsModal(false);
+          profileSettingsDraft = null;
+        });
+      }
+
+      if (availabilitySettingsBackdrop) {
+        availabilitySettingsBackdrop.addEventListener('click', function() {
+          setAvailabilitySettingsModal(false);
+          profileSettingsDraft = null;
+        });
+      }
+
+      if (availabilitySettingsList) {
+        availabilitySettingsList.addEventListener('click', function(event) {
+          var configToggle = event.target.closest('[data-profile-config-toggle]');
+          if (!configToggle || !profileSettingsDraft) return;
+
+          var profileKey = configToggle.getAttribute('data-profile-key');
+          var profile = profileSettingsDraft.find(function(item) {
+            return item.key === profileKey;
+          });
+          if (!profile) return;
+
+          profile.enabled = !profile.enabled;
+          updateToggleVisual(configToggle, profile.enabled);
+
+          var settingsRow = configToggle.closest('.profile-settings-row');
+          var settingsCaption = settingsRow ? settingsRow.querySelector('.profile-settings-caption') : null;
+          if (settingsCaption) {
+            settingsCaption.textContent = profile.enabled
+              ? 'Visible in profile availability'
+              : 'Hidden from profile availability';
+          }
+        });
+      }
+
+      if (availabilitySettingsSaveButton) {
+        availabilitySettingsSaveButton.addEventListener('click', function() {
+          if (!profileSettingsDraft) return;
+
+          profilesState = profileSettingsDraft.map(function(profile) {
+            return {
+              key: profile.key,
+              label: profile.label,
+              enabled: profile.enabled,
+              available: profile.available
+            };
+          });
+
+          renderProfileGrid();
+          renderProfileWarning();
+          setAvailabilitySettingsModal(false);
+          profileSettingsDraft = null;
+        });
+      }
+
+      if (endVacationCancelButton) {
+        endVacationCancelButton.addEventListener('click', function() {
+          setEndVacationModal(false);
+          pendingAvailabilityValue = null;
+        });
+      }
+
+      if (endVacationConfirmButton) {
+        endVacationConfirmButton.addEventListener('click', function() {
+          if (!pendingAvailabilityValue) {
+            setEndVacationModal(false);
+            return;
+          }
+
+          scheduledHoliday = null;
+          renderHolidaySummary();
+          setAvailabilityValue(pendingAvailabilityValue);
+          pendingAvailabilityValue = null;
+          setEndVacationModal(false);
+        });
+      }
+
+      if (timeOffSaveButton) {
+        timeOffSaveButton.addEventListener('click', function() {
+          if (!timeOffFromInput || !timeOffToInput || !timeOffFromInput.value || !timeOffToInput.value) return;
+
+          var from = fromDateInputValue(timeOffFromInput.value);
+          var to = fromDateInputValue(timeOffToInput.value);
+          scheduledHoliday = { from: from, to: to };
+          renderHolidaySummary();
+
+          if (isSameDay(from, todayDate)) {
+            setAvailabilityValue(timeOffSelectionValue);
+          }
+
+          setTimeOffModal(false);
+        });
+      }
+
+      if (availabilityTrigger) {
+        availabilityTrigger.addEventListener('click', function(event) {
+          event.stopPropagation();
+          setAvailabilityDropdown(availabilityTrigger.getAttribute('aria-expanded') !== 'true');
+        });
+      }
+
+      availabilityOptions.forEach(function(option) {
+        option.addEventListener('click', function() {
+          var optionValue = option.getAttribute('data-value') || option.textContent || '';
+
+          if (optionValue === 'Off - for a longer time') {
+            timeOffSelectionValue = optionValue;
+            setAvailabilityDropdown(false);
+            setTimeOffDefaults();
+            setTimeOffModal(true);
+            return;
+          }
+
+          if (currentAvailabilityValue === 'Off - for a longer time' && optionValue !== currentAvailabilityValue) {
+            pendingAvailabilityValue = optionValue;
+            setAvailabilityDropdown(false);
+            setEndVacationModal(true);
+            return;
+          }
+
+          setAvailabilityValue(optionValue);
+          setAvailabilityDropdown(false);
+        });
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!availabilityDropdown) return;
+        if (!availabilityDropdown.contains(event.target)) {
+          setAvailabilityDropdown(false);
+        }
+      });
+
+      toggleButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var isOn = button.getAttribute('aria-pressed') === 'true';
+          button.setAttribute('aria-pressed', isOn ? 'false' : 'true');
+          button.classList.toggle('is-on', !isOn);
+          renderProfileWarning();
+        });
+      });
+
+      if (profileGrid) {
+        profileGrid.addEventListener('click', function(event) {
+          var profileToggle = event.target.closest('[data-profile-toggle]');
+          if (!profileToggle) return;
+
+          var profileKey = profileToggle.getAttribute('data-profile-key');
+          var profile = profilesState.find(function(item) {
+            return item.key === profileKey;
+          });
+          if (!profile) return;
+
+          profile.available = !profile.available;
+          updateToggleVisual(profileToggle, profile.available);
+          renderProfileWarning();
+        });
+      }
+
+      if (timetableModeSelect) {
+        timetableModeSelect.addEventListener('change', function() {
+          var nextMode = timetableModeSelect.value === 'by hours' ? 'hours' : 'parts';
+          if (nextMode === timetableMode) return;
+
+          animateTimetableModeChange(nextMode);
+          if (nextMode === 'hours') {
+            window.setTimeout(scrollTimetableCardIntoView, 40);
+          }
+        });
+      }
+
+      if (timetableGrid) {
+        timetableGrid.addEventListener('click', function(event) {
+          var dayButton = event.target.closest('[data-day-column]');
+          if (dayButton) {
+            var day = dayButton.getAttribute('data-day-column');
+            if (!day) return;
+
+            var shouldActivateDay = HOUR_ROWS.some(function(row) {
+              return !hourlyState[day][row.key];
+            });
+
+            HOUR_ROWS.forEach(function(row) {
+              hourlyState[day][row.key] = shouldActivateDay;
+            });
+
+            renderTimetable();
+            return;
+          }
+
+          var slotButton = event.target.closest('[data-slot]');
+          if (!slotButton) return;
+
+          var slotDay = slotButton.getAttribute('data-day');
+          var slotKey = slotButton.getAttribute('data-row-key');
+          var mode = slotButton.getAttribute('data-mode');
+          if (!slotDay || !slotKey) return;
+
+          if (mode === 'hours') {
+            hourlyState[slotDay][slotKey] = !hourlyState[slotDay][slotKey];
+          } else {
+            setPartState(slotDay, slotKey, !isPartActive(slotDay, slotKey));
+          }
+
+          renderTimetable();
+        });
+      }
+
+      if (holidayRemoveButton) {
+        holidayRemoveButton.addEventListener('click', function() {
+          scheduledHoliday = null;
+          renderHolidaySummary();
+          if (currentAvailabilityValue === 'Off - for a longer time') {
+            setAvailabilityValue('Active');
+          }
+        });
+      }
+
+      renderProfileGrid();
+      setAvailabilityValue(currentAvailabilityValue);
+      renderProfileWarning();
+      renderHolidaySummary();
+      setTimeOffDefaults();
+      renderTimetable();
+    })();
+  </script>
+</body>
+</html>
