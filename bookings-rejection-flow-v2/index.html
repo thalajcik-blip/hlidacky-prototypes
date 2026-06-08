@@ -3283,26 +3283,54 @@
       font-weight: 450;
     }
 
-    .rw-message-input {
-      width: 100%;
-      min-height: 150px;
-      padding: 14px;
+    .rw-composer-card {
       border: 1px solid var(--gray-300);
-      border-radius: 10px;
-      resize: vertical;
-      font-family: inherit;
-      font-size: 15px;
-      line-height: 1.5;
-      color: var(--gray-800);
+      border-radius: 18px;
+      background: var(--white);
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(42, 53, 57, 0.04);
     }
 
-    .rw-message-input:focus {
+    .rw-composer-bar {
+      display: block;
+      min-height: 52px;
+      padding: 20px 22px 18px;
+      background: var(--white);
+    }
+
+    .rw-message-input {
+      width: 100%;
+      border: 0;
       outline: none;
-      border-color: var(--pink-400);
+      background: transparent;
+      color: var(--gray-800);
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 350;
+      line-height: 1.46;
+      letter-spacing: -0.18px;
+      min-width: 0;
+      min-height: 30px;
+      max-height: 224px;
+      padding: 0;
+      resize: none;
+      overflow-y: auto;
+      field-sizing: content;
+    }
+
+    .rw-message-input::placeholder {
+      color: var(--gray-500);
+    }
+
+    .rw-composer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 14px;
+      border-top: 1px solid var(--gray-200);
     }
 
     .rw-template-nav {
-      margin-top: 12px;
       display: inline-flex;
       align-items: center;
       gap: 12px;
@@ -5392,9 +5420,12 @@
         return '<div class="rw-hero">' + avatarStack(idx) +
             '<h2>Write your message</h2><p>Message all sitters you\'ve shown your interest for</p></div>' +
           '<div class="rw-message-head"><span class="rw-message-head-label">' + IC_SPARK + 'Automatic reply</span>' +
-            '<button class="rw-link" type="button" data-rw-clear>Clear</button></div>' +
-          '<textarea class="rw-message-input" data-rw-message>' + RW_TEMPLATES[rw.tpl] + '</textarea>' +
-          '<div class="rw-template-nav"><button type="button" data-rw-tpl-prev>‹</button><span>template ' + (rw.tpl + 1) + ' / ' + RW_TEMPLATES.length + '</span><button type="button" data-rw-tpl-next>›</button></div>';
+            '<button class="rw-link" style="text-decoration:underline" type="button" data-rw-clear>Clear</button></div>' +
+          '<div class="rw-composer-card"><div class="rw-composer-bar">' +
+            '<textarea class="rw-message-input" data-rw-message rows="1" placeholder="Your message..."></textarea>' +
+          '</div><div class="rw-composer-footer">' +
+            '<div class="rw-template-nav"><button type="button" data-rw-tpl-prev>‹</button><span>template ' + (rw.tpl + 1) + ' / ' + RW_TEMPLATES.length + '</span><button type="button" data-rw-tpl-next>›</button></div>' +
+          '</div></div>';
       }
 
       function messageFooter() {
@@ -5406,6 +5437,34 @@
       }
 
       /* ---- render + handlers ---- */
+      /* typewriter */
+      var rwTypingTimer = null;
+
+      function rwSyncHeight(ta) {
+        ta.style.height = '0px';
+        ta.style.height = Math.min(ta.scrollHeight, 224) + 'px';
+      }
+
+      function rwStopTyping() {
+        if (rwTypingTimer) { window.clearTimeout(rwTypingTimer); rwTypingTimer = null; }
+      }
+
+      function rwStartTypewriter(ta, text) {
+        rwStopTyping();
+        ta.value = '';
+        rwSyncHeight(ta);
+        var idx = 0;
+        function tick() {
+          if (idx > text.length) { rwTypingTimer = null; return; }
+          ta.value = text.slice(0, idx);
+          rwSyncHeight(ta);
+          ta.scrollTop = ta.scrollHeight;
+          idx++;
+          rwTypingTimer = window.setTimeout(tick, idx < 18 ? 22 : 18);
+        }
+        rwTypingTimer = window.setTimeout(tick, 260);
+      }
+
       function render() {
         titleEl.textContent = rw.step === 'message' ? 'Create a booking' : 'Find a replacement';
         var frac = rw.step === 'cards' ? (rw.index + 1) / 6 : (rw.step === 'overview' ? 5 / 6 : 1);
@@ -5444,12 +5503,19 @@
           on('[data-rw-generate]', 'click', function() { if (selectedIdx().length) { rw.step = 'message'; render(); } });
         } else {
           var ta = overlay.querySelector('[data-rw-message]');
-          if (ta) ta.addEventListener('input', function() { RW_TEMPLATES[rw.tpl] = ta.value; });
-          on('[data-rw-clear]', 'click', function() { RW_TEMPLATES[rw.tpl] = ''; render(); });
-          on('[data-rw-tpl-prev]', 'click', function() { rw.tpl = (rw.tpl - 1 + RW_TEMPLATES.length) % RW_TEMPLATES.length; render(); });
-          on('[data-rw-tpl-next]', 'click', function() { rw.tpl = (rw.tpl + 1) % RW_TEMPLATES.length; render(); });
-          on('[data-rw-back-overview]', 'click', function() { rw.step = 'overview'; render(); });
-          on('[data-rw-send]', 'click', sendMessages);
+          if (ta) {
+            ta.addEventListener('input', function() {
+              rwStopTyping();
+              RW_TEMPLATES[rw.tpl] = ta.value;
+              rwSyncHeight(ta);
+            });
+            rwStartTypewriter(ta, RW_TEMPLATES[rw.tpl]);
+          }
+          on('[data-rw-clear]', 'click', function() { rwStopTyping(); RW_TEMPLATES[rw.tpl] = ''; render(); });
+          on('[data-rw-tpl-prev]', 'click', function() { rwStopTyping(); rw.tpl = (rw.tpl - 1 + RW_TEMPLATES.length) % RW_TEMPLATES.length; render(); });
+          on('[data-rw-tpl-next]', 'click', function() { rwStopTyping(); rw.tpl = (rw.tpl + 1) % RW_TEMPLATES.length; render(); });
+          on('[data-rw-back-overview]', 'click', function() { rwStopTyping(); rw.step = 'overview'; render(); });
+          on('[data-rw-send]', 'click', function() { rwStopTyping(); sendMessages(); });
         }
       }
 
