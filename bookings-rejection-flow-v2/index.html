@@ -1241,6 +1241,27 @@
       font-weight: 450;
     }
 
+    .view-replacements-btn {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #E8706C;
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .view-replacements-btn:hover {
+      background: #d45f5b;
+    }
+
     .replacement-group {
       display: grid;
       margin-top: 4px;
@@ -3078,27 +3099,7 @@
                 </div>
               </div>
               <div class="booking-reason-box"><strong>Reason:</strong> <span data-rejected-reason> Sitter has scheduled another booking</span></div>
-              <div class="replacement-group">
-                <div class="replacement-title">Potential replacements</div>
-                <div class="replacement-strip">
-                  <article class="replacement-card">
-                    <img class="replacement-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-05.jpg" alt="Markéta">
-                    <div class="replacement-name"><span>Markéta</span><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.66853 9.70215L1.65067 5.7959C1.44978 5.62012 1.44978 5.32715 1.65067 5.13184C1.83147 4.95605 2.13281 4.95605 2.33371 5.13184L6.01004 8.70605L9.68638 5.13184C9.86719 4.95605 10.1685 4.95605 10.3493 5.13184C10.5502 5.30762 10.5502 5.62012 10.3493 5.7959L6.33147 9.70215C6.15067 9.87793 5.84933 9.87793 5.66853 9.70215Z" fill="#F96073"/></svg></div>
-                  </article>
-                  <article class="replacement-card">
-                    <img class="replacement-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-10.jpg" alt="Elena">
-                    <div class="replacement-name"><span>Elena</span><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.66853 9.70215L1.65067 5.7959C1.44978 5.62012 1.44978 5.32715 1.65067 5.13184C1.83147 4.95605 2.13281 4.95605 2.33371 5.13184L6.01004 8.70605L9.68638 5.13184C9.86719 4.95605 10.1685 4.95605 10.3493 5.13184C10.5502 5.30762 10.5502 5.62012 10.3493 5.7959L6.33147 9.70215C6.15067 9.87793 5.84933 9.87793 5.66853 9.70215Z" fill="#F96073"/></svg></div>
-                  </article>
-                  <article class="replacement-card">
-                    <img class="replacement-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-01.jpg" alt="Marianna">
-                    <div class="replacement-name"><span>Marianna</span><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.66853 9.70215L1.65067 5.7959C1.44978 5.62012 1.44978 5.32715 1.65067 5.13184C1.83147 4.95605 2.13281 4.95605 2.33371 5.13184L6.01004 8.70605L9.68638 5.13184C9.86719 4.95605 10.1685 4.95605 10.3493 5.13184C10.5502 5.30762 10.5502 5.62012 10.3493 5.7959L6.33147 9.70215C6.15067 9.87793 5.84933 9.87793 5.66853 9.70215Z" fill="#F96073"/></svg></div>
-                  </article>
-                  <article class="replacement-card">
-                    <img class="replacement-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-06.jpg" alt="Alex">
-                    <div class="replacement-name"><span>Alex</span><svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.66853 9.70215L1.65067 5.7959C1.44978 5.62012 1.44978 5.32715 1.65067 5.13184C1.83147 4.95605 2.13281 4.95605 2.33371 5.13184L6.01004 8.70605L9.68638 5.13184C9.86719 4.95605 10.1685 4.95605 10.3493 5.13184C10.5502 5.30762 10.5502 5.62012 10.3493 5.7959L6.33147 9.70215C6.15067 9.87793 5.84933 9.87793 5.66853 9.70215Z" fill="#F96073"/></svg></div>
-                  </article>
-                </div>
-              </div>
+              <button type="button" class="view-replacements-btn">View potential replacements</button>
             </article>
 
             <article class="booking-card status-accepted">
