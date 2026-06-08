@@ -5337,8 +5337,10 @@
           return hero + '<div class="rw-empty">You haven\'t marked any sitter as interested.</div>';
         }
         var checked = idx.filter(function(i) { return rw.selected[i]; }).length;
+        var allSelected = checked === idx.length;
+        var toggleLabel = allSelected ? 'Select none' : 'Select all';
         var head = '<div class="rw-list-head"><span>Selected sitters (' + checked + '/' + idx.length + ')</span>' +
-          '<button class="rw-link" type="button" data-rw-select-none>Select none</button></div>';
+          '<button class="rw-link" style="text-decoration:underline" type="button" data-rw-toggle-select>' + toggleLabel + '</button></div>';
         var list = '<ul class="rw-selected-list">' + idx.map(function(i) {
           var s = RW_SITTERS[i];
           return '<li class="rw-selected-item">' +
@@ -5407,8 +5409,10 @@
               render();
             });
           });
-          on('[data-rw-select-none]', 'click', function() {
-            interestedIdx().forEach(function(i) { rw.selected[i] = false; });
+          on('[data-rw-toggle-select]', 'click', function() {
+            var idx = interestedIdx();
+            var allSelected = idx.every(function(i) { return rw.selected[i]; });
+            idx.forEach(function(i) { rw.selected[i] = !allSelected; });
             render();
           });
           on('[data-rw-back-cards]', 'click', function() { rw.step = 'cards'; rw.index = RW_SITTERS.length - 1; render(); });
