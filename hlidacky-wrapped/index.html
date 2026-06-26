@@ -1001,5 +1001,49 @@
       slides.forEach(function(s) { io.observe(s); });
     })();
   </script>
+
+  <script>
+    (function() {
+      var SHARE_URL = 'https://hlidacky-prototypes.vercel.app/hlidacky-wrapped/';
+
+      function flashLabel(btn, message) {
+        if (btn.dataset.busy) return;
+        btn.dataset.busy = '1';
+        var original = btn.innerHTML;
+        btn.innerHTML = message;
+        setTimeout(function() {
+          btn.innerHTML = original;
+          delete btn.dataset.busy;
+        }, 1700);
+      }
+
+      document.querySelectorAll('.share-button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var slide = btn.closest('.slide');
+          var headline = slide && slide.querySelector('.headline');
+          var line = headline ? headline.textContent.replace(/\s+/g, ' ').trim() : '';
+          var text = (line ? line + ' ' : '') + 'See my year on Hlídačky.cz! 🎉';
+
+          if (navigator.share) {
+            navigator.share({
+              title: 'Hlídačky Wrapped 2025',
+              text: text,
+              url: SHARE_URL
+            }).catch(function() { /* user cancelled / not allowed */ });
+            return;
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(SHARE_URL)
+              .then(function() { flashLabel(btn, 'Link copied!'); })
+              .catch(function() { flashLabel(btn, 'Copy this page link'); });
+            return;
+          }
+
+          flashLabel(btn, 'Copy this page link');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
