@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky Wrapped</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <script>
+    (function(d) {
+      var config = { kitId: 'ciu2vdq', scriptTimeout: 3000, async: true },
+      h = d.documentElement, t = setTimeout(function() {
+        h.className = h.className.replace(/\bwf-loading\b/g, '') + ' wf-inactive';
+      }, config.scriptTimeout), tk = d.createElement('script'), f = false,
+      s = d.getElementsByTagName('script')[0], a;
+      h.className += ' wf-loading';
+      tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+      tk.async = true;
+      tk.onload = tk.onreadystatechange = function() {
+        a = this.readyState;
+        if (f || a && a != 'complete' && a != 'loaded') return;
+        f = true; clearTimeout(t);
+        try { Typekit.load(config); } catch(e) {}
+      };
+      s.parentNode.insertBefore(tk, s);
+    })(document);
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --pink: #F96073;
+      --green: #22BF1E;
+      --text: #ffffff;
+      --gradient-fade: 0;
+      --screen-gradient-a: linear-gradient(160deg, #7257ff 0%, #c553df 48%, #f85d72 100%);
+      --screen-gradient-b: linear-gradient(160deg, #7257ff 0%, #c553df 48%, #f85d72 100%);
+      --page-gradient-a: radial-gradient(circle at 18% 18%, rgba(255,255,255,.22), transparent 28%),
+        linear-gradient(135deg, #31246f 0%, #6734b8 45%, #e55776 100%);
+      --page-gradient-b: radial-gradient(circle at 18% 18%, rgba(255,255,255,.22), transparent 28%),
+        linear-gradient(135deg, #31246f 0%, #6734b8 45%, #e55776 100%);
+    }
+
+    html {
+      min-height: 100%;
+      background: #2f3436;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--text);
+      font-family: 'soleil', Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #2f3436;
+      position: relative;
+      isolation: isolate;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 300ms ease;
+    }
+
+    body::before {
+      background: var(--page-gradient-a);
+      opacity: calc(1 - var(--gradient-fade));
+    }
+
+    body::after {
+      background: var(--page-gradient-b);
+      opacity: var(--gradient-fade);
+    }
+
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      max-height: calc(100vh - 48px);
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.24), 0 8px 24px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    .phone-notch {
+      height: 44px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .notch-pill {
+      width: 120px;
+      height: 34px;
+      background: #000000;
+      border-radius: 20px;
+    }
+
+    .story {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: #7257ff;
+      isolation: isolate;
+    }
+
+    .story::before,
+    .story::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      transition: opacity 300ms ease;
+    }
+
+    .story::before {
+      background: var(--screen-gradient-a);
+      opacity: calc(1 - var(--gradient-fade));
+    }
+
+    .story::after {
+      background: var(--screen-gradient-b);
+      opacity: var(--gradient-fade);
+    }
+
+    .story-scroll {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+      overscroll-behavior: contain;
+      position: relative;
+      z-index: 1;
+    }
+
+    .story-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .story-progress {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 5px;
+      pointer-events: none;
+    }
+
+    .story-progress span {
+      min-width: 0;
+      height: 3px;
+      border-radius: 99px;
+      background: rgba(255,255,255,.28);
+      overflow: hidden;
+    }
+
+    .story-progress span::before {
+      content: "";
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: #ffffff;
+      transition: width 240ms ease;
+    }
+
+    .story-progress span.is-active::before {
+      width: var(--fill, 100%);
+    }
+
+    .slide {
+      min-height: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+      padding: 62px 28px 72px;
+      text-align: center;
+    }
+
+    .intro-slide {
+      gap: 20px;
+    }
+
+    .slide-logo {
+      display: grid;
+      justify-items: center;
+      margin: -6px 0 -2px;
+    }
+
+    .wrapped-logo {
+      width: min(202px, 68vw);
+      height: auto;
+      display: block;
+    }
+
+    .headline {
+      max-width: 320px;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 750;
+      line-height: 1.16;
+      letter-spacing: 0;
+      text-wrap: balance;
+      text-shadow: 0 2px 14px rgba(0,0,0,.08);
+    }
+
+    .subcopy {
+      max-width: 286px;
+      margin: -4px 0 0;
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.42;
+      color: rgba(255,255,255,.9);
+    }
+
+    .intro-headline {
+      color: #fff;
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
+    }
+
+    .intro-greeting {
+      color: #fff;
+      text-align: center;
+      font-size: 42px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 64px;
+      letter-spacing: -0.32px;
+    }
+
+    .intro-subcopy {
+      color: #fff;
+      text-align: center;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.32px;
+    }
+
+    .profile-orbit {
+      position: relative;
+      width: min(356px, 100%);
+      height: 272px;
+      margin: 2px 0 6px;
+      display: grid;
+      place-items: center;
+    }
+
+    .intro-slide .profile-orbit {
+      margin-top: -22px;
+      margin-bottom: -2px;
+    }
+
+    .intro-cloud {
+      position: absolute;
+      display: block;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+      filter: drop-shadow(0 12px 24px rgba(31,35,38,.12));
+    }
+
+    .intro-cloud-left {
+      width: 278px;
+      left: -142px;
+      top: 8px;
+    }
+
+    .intro-cloud-right {
+      width: 356px;
+      right: -122px;
+      top: 92px;
+    }
+
+    .profile-photo {
+      position: absolute;
+      left: 50%;
+      top: 132px;
+      transform: translateX(-50%);
+      width: 122px;
+      height: 122px;
+      border: 2px solid #ffffff;
+      border-radius: 999px;
+      object-fit: cover;
+      box-shadow: 0 12px 28px rgba(31,35,38,.18);
+      z-index: 3;
+    }
+
+    .profile-badge {
+      position: absolute;
+      left: calc(50% + 10px);
+      top: 194px;
+      width: 88px;
+      height: 88px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      z-index: 4;
+    }
+
+    .profile-badge img {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+    }
+
+    .doodle {
+      width: 144px;
+      height: 144px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 18px rgba(25,31,36,.12));
+    }
+
+    .big-number {
+      margin: -4px 0 -12px;
+      font-size: 96px;
+      font-weight: 850;
+      line-height: .92;
+      letter-spacing: 0;
+    }
+
+    .rating-number {
+      font-size: 80px;
+    }
+
+    .number-label {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.06;
+    }
+
+    .rank-line {
+      max-width: 280px;
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.36;
+      color: rgba(255,255,255,.92);
+    }
+
+    .star-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0 0 -4px;
+      color: #ffd75d;
+      font-size: 44px;
+      line-height: 1;
+      text-shadow: 0 4px 10px rgba(68,42,8,.18);
+    }
+
+    .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin: 4px 0 2px;
+    }
+
+    .stat-card {
+      min-height: 62px;
+      padding: 10px 8px;
+      border: 2px solid rgba(255,255,255,.74);
+      border-radius: 7px;
+      display: grid;
+      align-content: center;
+      gap: 3px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .stat-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      line-height: 1.2;
+      color: rgba(255,255,255,.85);
+    }
+
+    .stat-value {
+      font-size: 19px;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .stats-footnote {
+      margin: -2px 0 0;
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+    }
+
+    .stats-slide {
+      gap: 11px;
+      padding-top: 62px;
+      padding-bottom: 88px;
+    }
+
+    .stats-slide .big-number {
+      margin: -8px 0 -7px;
+      font-size: 64px;
+    }
+
+    .stats-slide .rank-line {
+      font-size: 16px;
+    }
+
+    .stats-slide .share-button {
+      min-height: 50px;
+      padding-top: 12px;
+      padding-bottom: 14px;
+    }
+
+    .grow-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 -2px;
+      padding: 10px 22px 12px;
+      border-radius: 999px;
+      color: #f47a00;
+      background: rgba(255,255,255,.88);
+      font-size: 28px;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .grow-badge img {
+      width: 38px;
+      height: 38px;
+    }
+
+    .share-button,
+    .grow-button {
+      appearance: none;
+      border: 0;
+      border-radius: 4px;
+      min-height: 54px;
+      padding: 14px 22px 16px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 22px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .share-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      color: #3f4b51;
+      background: #ffffff;
+      box-shadow: inset 0 -3px 0 #e5e5ea, 0 10px 22px rgba(31,35,38,.12);
+    }
+
+    .share-icon {
+      color: var(--pink);
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    .grow-button {
+      min-width: 220px;
+      color: #ffffff;
+      background: #0ba825;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.16), 0 10px 24px rgba(0,122,36,.18);
+    }
+
+    .bottom-hint {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18px;
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,.9);
+      font-size: 15px;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .arrow {
+      width: 18px;
+      height: 18px;
+      border-right: 3px solid currentColor;
+      border-bottom: 3px solid currentColor;
+      transform: rotate(45deg);
+      animation: nudge 1.25s ease-in-out infinite;
+    }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateY(0) rotate(45deg); opacity: .72; }
+      50% { transform: translateY(5px) rotate(45deg); opacity: 1; }
+    }
+
+    /* ---- Entrance / life animations ---- */
+    @media (prefers-reduced-motion: no-preference) {
+      .slide .reveal,
+      .slide .reveal-fade { opacity: 0; }
+
+      .slide.in-view .reveal {
+        animation: reveal-up .6s cubic-bezier(.22,.68,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+      }
+
+      .slide.in-view .reveal-fade {
+        animation: fade-in .7s ease both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+      }
+
+      .slide.in-view .big-number {
+        animation: number-pop .7s cubic-bezier(.2,.8,.25,1.3) both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+      }
+
+      .slide.in-view .doodle {
+        animation:
+          doodle-pop .72s cubic-bezier(.2,.85,.3,1.25) both,
+          doodle-float 4.5s ease-in-out infinite;
+        animation-delay:
+          calc(var(--i, 0) * 70ms),
+          calc(var(--i, 0) * 70ms + .72s);
+      }
+
+      .slide.in-view .reveal-pop {
+        animation: pop-in .55s cubic-bezier(.2,.8,.3,1.6) both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+      }
+
+      .intro-cloud { animation: cloud-float 6s ease-in-out infinite; }
+      .intro-cloud-right { animation-duration: 7.5s; animation-direction: reverse; }
+    }
+
+    @keyframes reveal-up {
+      from { opacity: 0; transform: translateY(22px) scale(.97); filter: blur(3px); }
+      to { opacity: 1; transform: none; filter: blur(0); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes number-pop {
+      0% { opacity: 0; transform: scale(.45); }
+      60% { opacity: 1; transform: scale(1.1); }
+      100% { opacity: 1; transform: none; }
+    }
+
+    @keyframes doodle-pop {
+      0% { opacity: 0; transform: translateY(16px) scale(.5) rotate(-8deg); }
+      55% { opacity: 1; transform: translateY(0) scale(1.08) rotate(3deg); }
+      100% { opacity: 1; transform: none; }
+    }
+
+    @keyframes doodle-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes pop-in {
+      0% { opacity: 0; transform: scale(0) rotate(-25deg); }
+      70% { opacity: 1; transform: scale(1.2) rotate(6deg); }
+      100% { opacity: 1; transform: none; }
+    }
+
+    @keyframes cloud-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .final-slide {
+      justify-content: space-between;
+      padding-top: 62px;
+      padding-bottom: 34px;
+    }
+
+    .final-content {
+      display: grid;
+      justify-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    @media (pointer: coarse) and (max-width: 768px), (max-width: 480px) {
+      body {
+        background: #ffffff;
+        padding: 0;
+        align-items: stretch;
+        overflow: hidden;
+      }
+
+      .phone-frame {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .phone-notch {
+        display: none;
+      }
+    }
+
+    @media (max-height: 760px) {
+      .slide {
+        gap: 15px;
+        padding-top: 46px;
+        padding-bottom: 66px;
+      }
+
+      .headline { font-size: 25px; }
+      .big-number { font-size: 78px; }
+      .rating-number { font-size: 66px; }
+      .doodle { width: 116px; height: 116px; }
+      .intro-slide { gap: 15px; }
+      .profile-orbit { height: 238px; }
+      .intro-cloud-left { width: 226px; left: -98px; top: 32px; }
+      .intro-cloud-right { width: 286px; right: -110px; top: 104px; }
+      .profile-photo { width: 108px; height: 108px; top: 132px; }
+      .profile-badge { left: calc(50% + 3px); top: 184px; width: 78px; height: 78px; }
+      .profile-badge img { width: 78px; height: 78px; }
+      .bottom-hint { bottom: 12px; font-size: 13px; }
+      .stats-grid { gap: 7px; }
+      .stat-card { min-height: 52px; padding: 8px 7px; }
+      .stat-label { font-size: 11px; }
+      .stat-value { font-size: 17px; }
+      .stats-slide { gap: 8px; padding-top: 46px; padding-bottom: 82px; }
+      .stats-slide .big-number { font-size: 54px; }
+    }
+
+    @media (max-width: 360px) {
+      .slide {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .story-progress {
+        left: 14px;
+        right: 14px;
+        gap: 4px;
+      }
+
+      .headline { font-size: 24px; }
+      .wrapped-logo { width: min(188px, 72vw); }
+      .intro-slide { padding-top: 42px; padding-bottom: 64px; }
+      .stats-slide,
+      .final-slide { padding-top: 42px; }
+      .profile-orbit { height: 226px; }
+      .intro-cloud-left { width: 210px; left: -106px; top: 42px; }
+      .intro-cloud-right { width: 256px; right: -108px; top: 112px; }
+      .profile-photo { width: 100px; height: 100px; top: 136px; }
+      .profile-badge { left: calc(50% - 2px); top: 182px; width: 72px; height: 72px; }
+      .profile-badge img { width: 72px; height: 72px; }
+      .doodle { width: 108px; height: 108px; }
+      .share-button, .grow-button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone-frame" aria-label="Hlídačky Wrapped prototype">
+    <div class="phone-notch" aria-hidden="true"><div class="notch-pill"></div></div>
+    <section class="story" id="story">
+      <div class="story-progress" aria-hidden="true">
+        <span class="is-active"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="story-scroll" id="story-scroll">
+        <article class="slide intro-slide" data-gradient="linear-gradient(160deg, #7257ff 0%, #c553df 48%, #f85d72 100%)" data-page="radial-gradient(circle at 18% 18%, rgba(255,255,255,.22), transparent 28%), linear-gradient(135deg, #31246f 0%, #6734b8 45%, #e55776 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h1 class="headline intro-headline">🎉Your year on Hlídačky.cz is here!</h1>
+          <div class="profile-orbit" aria-hidden="true">
+            <img class="intro-cloud intro-cloud-left" src="/hlidacky-wrapped/cloud-left.svg" alt="">
+            <img class="intro-cloud intro-cloud-right" src="/hlidacky-wrapped/cloud-right.svg" alt="">
+            <img class="profile-photo" src="/doodles/sitter-01.jpg" alt="">
+            <span class="profile-badge"><img src="/hlidacky-wrapped/shield_in_circle.svg" alt=""></span>
+          </div>
+          <h2 class="headline intro-greeting">Hi Marie,</h2>
+          <p class="subcopy intro-subcopy">Ready to see all the amazing things you achieved this year?</p>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #6d57ff 0%, #0ba9d7 50%, #04bd7a 100%)" data-page="radial-gradient(circle at 82% 18%, rgba(255,255,255,.2), transparent 30%), linear-gradient(135deg, #2d2778 0%, #087fb5 52%, #00a86b 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Families Love You!</h2>
+          <img class="doodle" src="/hlidacky-wrapped/slide-02.svg" alt="">
+          <div class="big-number" data-count="92">92</div>
+          <p class="number-label">families</p>
+          <p class="rank-line">reached out to you this year. That is more than <strong>85% of sitters</strong>.</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #b45cff 0%, #d75ac4 43%, #f65d72 100%)" data-page="radial-gradient(circle at 26% 24%, rgba(255,255,255,.2), transparent 28%), linear-gradient(135deg, #6430b5 0%, #c146b2 48%, #ed4f68 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Chat Queen!</h2>
+          <img class="doodle" src="/hlidacky-wrapped/slide-03.svg" alt="">
+          <p class="subcopy">You replied to</p>
+          <div class="big-number" data-count="320">320</div>
+          <p class="number-label">messages</p>
+          <p class="rank-line">That is more than <strong>95% of sitters</strong>. You are on fire.</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #129bad 0%, #00a989 48%, #00c878 100%)" data-page="radial-gradient(circle at 76% 18%, rgba(255,255,255,.22), transparent 28%), linear-gradient(135deg, #0d6f80 0%, #008f85 45%, #00b96d 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Quick as Lightning!</h2>
+          <img class="doodle" src="/hlidacky-wrapped/slide-04.svg" alt="">
+          <p class="subcopy">Your average response time is</p>
+          <div class="big-number" data-count="6">6</div>
+          <p class="number-label">minutes</p>
+          <p class="rank-line">Faster than <strong>85% of sitters</strong>.</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #f65f73 0%, #ff7443 52%, #ff931e 100%)" data-page="radial-gradient(circle at 18% 72%, rgba(255,255,255,.2), transparent 28%), linear-gradient(135deg, #b73a56 0%, #ef5e3d 48%, #fa8500 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Emoji Enthusiast!</h2>
+          <p class="subcopy">Your 3 most used emojis</p>
+          <img class="doodle" src="/hlidacky-wrapped/slide-05.svg" alt="">
+          <p class="rank-line">You used them more often than <strong>85% of sitters</strong>.</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #7555ff 0%, #9e54f2 50%, #b85cff 100%)" data-page="radial-gradient(circle at 76% 18%, rgba(255,255,255,.2), transparent 28%), linear-gradient(135deg, #3f2a98 0%, #793ad1 46%, #a24be8 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Booking Master!</h2>
+          <img class="doodle" src="/hlidacky-wrapped/slide-06.svg" alt="">
+          <p class="subcopy">You completed</p>
+          <div class="big-number" data-count="42">42</div>
+          <p class="number-label">bookings</p>
+          <p class="rank-line">more than <strong>95% of sitters</strong>. Incredible!</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide" data-gradient="linear-gradient(160deg, #7555ff 0%, #04b3c4 46%, #00c978 100%)" data-page="radial-gradient(circle at 24% 18%, rgba(255,255,255,.2), transparent 28%), linear-gradient(135deg, #3f2a98 0%, #008eb5 46%, #00a868 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <h2 class="headline">Star Quality!</h2>
+          <img class="doodle" src="/hlidacky-wrapped/slide-07.svg" alt="">
+          <p class="subcopy">You earned</p>
+          <div class="big-number rating-number" data-count="4.8" data-decimals="1" data-suffix="/5">4.8/5</div>
+          <div class="star-row" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <p class="rank-line">from families. That is the <strong>top 5%</strong> of all rated sitters.</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide stats-slide" data-gradient="linear-gradient(160deg, #7a58ff 0%, #cf57b8 46%, #f85d72 100%)" data-page="radial-gradient(circle at 20% 18%, rgba(255,255,255,.2), transparent 28%), linear-gradient(135deg, #3d2a98 0%, #bc4aa2 48%, #ee5269 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <img class="doodle" src="/hlidacky-wrapped/slide-08.svg" alt="">
+          <p class="subcopy">You are in the</p>
+          <div class="big-number">Top 5%</div>
+          <p class="rank-line">Congrats! Here is your year in numbers:</p>
+          <div class="stats-grid" aria-label="Year in numbers">
+            <div class="stat-card"><span class="stat-label">Families contacted:</span><span class="stat-value">92</span></div>
+            <div class="stat-card"><span class="stat-label">Messages replied:</span><span class="stat-value">320</span></div>
+            <div class="stat-card"><span class="stat-label">Avg. response time:</span><span class="stat-value">6 minutes</span></div>
+            <div class="stat-card"><span class="stat-label">Bookings completed:</span><span class="stat-value">42</span></div>
+            <div class="stat-card wide"><span class="stat-label">Reviews received:</span><span class="stat-value">8 (★ 4,8/5)</span></div>
+          </div>
+          <p class="stats-footnote">Your Hlídačky.cz stats as of Dec. 31, 2026</p>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+          <div class="bottom-hint"><span>Scroll to continue</span><span class="arrow"></span></div>
+        </article>
+
+        <article class="slide final-slide" data-gradient="linear-gradient(160deg, #f45f71 0%, #ff7541 46%, #ff8d16 100%)" data-page="radial-gradient(circle at 78% 22%, rgba(255,255,255,.2), transparent 30%), linear-gradient(135deg, #b93b58 0%, #ef6535 50%, #fb8200 100%)">
+          <div class="slide-logo">
+            <img class="wrapped-logo" src="/hlidacky-wrapped/logo-wrapper.svg" alt="Your Year 2025 on hlídačky.cz">
+          </div>
+          <div class="final-content">
+            <h2 class="headline">Earn even more next year</h2>
+            <img class="doodle" src="/hlidacky-wrapped/slide-09.svg" alt="">
+            <div class="grow-badge"><img src="/availability-calendar/assets/grow-shield.svg" alt=""> GROW</div>
+            <p class="rank-line">Upgrade to GROW to rank first in search and fill your calendar with more bookings.</p>
+            <button class="grow-button" type="button">Boost My Earnings</button>
+          </div>
+          <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function() {
+      var story = document.getElementById('story');
+      var scroller = document.getElementById('story-scroll');
+      var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+      var bars = Array.prototype.slice.call(document.querySelectorAll('.story-progress span'));
+      var activeIndex = 0;
+      var root = document.documentElement;
+      var visibleGradientLayer = 'a';
+      var themeReady = false;
+
+      function setTheme(index) {
+        var slide = slides[index];
+        if (!slide) return;
+        var screenGradient = slide.dataset.gradient;
+        var pageGradient = slide.dataset.page;
+
+        if (!themeReady) {
+          root.style.setProperty('--screen-gradient-a', screenGradient);
+          root.style.setProperty('--screen-gradient-b', screenGradient);
+          root.style.setProperty('--page-gradient-a', pageGradient);
+          root.style.setProperty('--page-gradient-b', pageGradient);
+          root.style.setProperty('--gradient-fade', '0');
+          themeReady = true;
+          return;
+        }
+
+        var nextLayer = visibleGradientLayer === 'a' ? 'b' : 'a';
+        root.style.setProperty('--screen-gradient-' + nextLayer, screenGradient);
+        root.style.setProperty('--page-gradient-' + nextLayer, pageGradient);
+        window.requestAnimationFrame(function() {
+          root.style.setProperty('--gradient-fade', nextLayer === 'b' ? '1' : '0');
+        });
+        visibleGradientLayer = nextLayer;
+      }
+
+      function updateProgress() {
+        var height = Math.max(scroller.clientHeight, 1);
+        var maxScrollTop = Math.max(scroller.scrollHeight - scroller.clientHeight, 0);
+        var atEnd = maxScrollTop > 0 && scroller.scrollTop >= maxScrollTop - 1;
+        var raw = scroller.scrollTop / height;
+        var index = Math.max(0, Math.min(slides.length - 1, Math.round(raw)));
+        var fill = Math.max(0, Math.min(1, raw - Math.floor(raw)));
+
+        if (index !== activeIndex) {
+          activeIndex = index;
+          setTheme(index);
+        }
+
+        bars.forEach(function(bar, barIndex) {
+          bar.classList.toggle('is-active', barIndex <= index);
+          var amount = barIndex < index ? 100 : (barIndex === index ? Math.max(fill * 100, 8) : 0);
+          if (atEnd && barIndex === slides.length - 1) amount = 100;
+          bar.style.setProperty('--fill', amount + '%');
+        });
+      }
+
+      scroller.addEventListener('scroll', function() {
+        window.requestAnimationFrame(updateProgress);
+      }, { passive: true });
+
+      document.querySelectorAll('button').forEach(function(button) {
+        button.addEventListener('click', function() {
+          button.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(.96)' },
+            { transform: 'scale(1)' }
+          ], { duration: 180, easing: 'ease-out' });
+        });
+      });
+
+      setTheme(0);
+      updateProgress();
+    })();
+  </script>
+
+  <script>
+    (function() {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var scroller = document.getElementById('story-scroll');
+      var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+      var revealSelector = '.headline, .subcopy, .number-label, .rank-line, .share-button, .grow-button, .grow-badge, .stats-footnote, .doodle, .big-number';
+
+      // Tag elements for staggered reveal, top-to-bottom.
+      slides.forEach(function(slide) {
+        var order = 0;
+
+        // Intro photo + badge appear before the surrounding copy.
+        var photo = slide.querySelector('.profile-photo');
+        if (photo) { photo.classList.add('reveal-fade'); photo.style.setProperty('--i', order++); }
+        var badge = slide.querySelector('.profile-badge');
+        if (badge) { badge.classList.add('reveal-pop'); badge.style.setProperty('--i', order++); }
+
+        slide.querySelectorAll(revealSelector).forEach(function(el) {
+          el.classList.add('reveal');
+          el.style.setProperty('--i', order++);
+        });
+        slide.querySelectorAll('.stat-card').forEach(function(el) {
+          el.classList.add('reveal');
+          el.style.setProperty('--i', order++);
+        });
+        slide.querySelectorAll('.star-row span').forEach(function(el) {
+          el.classList.add('reveal-pop');
+          el.style.setProperty('--i', order++);
+        });
+      });
+
+      function runCount(slide) {
+        if (prefersReduced) return;
+        slide.querySelectorAll('[data-count]').forEach(function(el) {
+          if (el.dataset.counted) return;
+          el.dataset.counted = '1';
+          var to = parseFloat(el.dataset.count);
+          var dec = parseInt(el.dataset.decimals || '0', 10);
+          var suffix = el.dataset.suffix || '';
+          var i = parseFloat(getComputedStyle(el).getPropertyValue('--i')) || 0;
+          el.textContent = (0).toFixed(dec) + suffix;
+          setTimeout(function() {
+            var dur = 1000, start = performance.now();
+            (function frame(now) {
+              var p = Math.min(1, (now - start) / dur);
+              var eased = 1 - Math.pow(1 - p, 3);
+              el.textContent = (to * eased).toFixed(dec) + suffix;
+              if (p < 1) requestAnimationFrame(frame);
+              else el.textContent = to.toFixed(dec) + suffix;
+            })(performance.now());
+          }, i * 70 + 100);
+        });
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        slides.forEach(function(s) { s.classList.add('in-view'); runCount(s); });
+        return;
+      }
+
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
+            entry.target.classList.add('in-view');
+            runCount(entry.target);
+          } else if (entry.intersectionRatio < 0.2) {
+            entry.target.classList.remove('in-view');
+            entry.target.querySelectorAll('[data-count]').forEach(function(el) {
+              el.dataset.counted = '';
+            });
+          }
+        });
+      }, { root: scroller, threshold: [0, 0.2, 0.55, 1] });
+
+      slides.forEach(function(s) { io.observe(s); });
+    })();
+  </script>
+</body>
+</html>
