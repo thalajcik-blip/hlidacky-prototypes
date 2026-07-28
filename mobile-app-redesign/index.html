@@ -322,7 +322,12 @@
       flex-direction: column;
       gap: 4px;
       padding-bottom: 8px;
+      transition: opacity 200ms ease;
     }
+
+    /* While a finger is down the copy opacity is driven directly from the drag
+       offset, so it must not lag behind through a transition. */
+    .welcome-copy.is-dragging { transition: none; }
 
     .carousel-dots {
       height: 44px;
@@ -770,6 +775,17 @@
       var FADE_MS = 560;
       var COPY_SWAP_MS = 180;
 
+      var DRAG_START_PX = 8;        // movement before a press becomes a drag
+      var DRAG_DAMPING = 0.35;      // how far the current photo trails the finger
+      var DRAG_ENTER_RATIO = 0.18;  // how far the next photo starts off-centre
+      var DRAG_COMMIT_RATIO = 0.18; // fraction of the width that commits the slide
+      var DRAG_COMMIT_VELOCITY = 0.4; // px/ms flick that commits regardless of distance
+
+      var isDragging = false;
+      var dragDirection = 0;
+      var dragTarget = 0;
+      var dragWidth = 1;
+
       var currentSlide = 0;
       var activeLayer = 0;
       var renderToken = 0;
@@ -864,6 +880,14 @@
         verifyLogo.hidden = slide.trustLogo !== 'verify';
       }
 
+      function enterCopy() {
+        [title, subtitle, trustLogoSlot].forEach(function(el) {
+          el.classList.remove('is-entering');
+          void el.offsetWidth; // restart the animation on repeat slides
+          el.classList.add('is-entering');
+        });
+      }
+
       function swapCopy(slide, token) {
         window.clearTimeout(copySwapTimer);
 
@@ -880,11 +904,7 @@
           if (token !== renderToken) return;
           welcomeCopy.classList.remove('is-leaving');
           applyCopy(slide);
-          [title, subtitle, trustLogoSlot].forEach(function(el) {
-            el.classList.remove('is-entering');
-            void el.offsetWidth; // restart the animation on repeat slides
-            el.classList.add('is-entering');
-          });
+          enterCopy();
         }, COPY_SWAP_MS);
       }
 
@@ -954,6 +974,100 @@
         }
       });
 
+      // The drag drives the same two layers the autoplay cross-fade uses: the
+      // current photo trails the finger while the neighbour fades in over it,
+      // so both gestures speak the same visual language.
+      function beginDrag() {
+        isDragging = true;
+        dragDirection = 0;
+        dragWidth = carousel.offsetWidth || 1;
+
+        renderToken++; // strand any in-flight cross-fade reveal
+        window.clearTimeout(hideOutgoingTimer);
+        window.clearTimeout(copySwapTimer);
+        welcomeCopy.classList.remove('is-leaving');
+        welcomeCopy.classList.add('is-dragging');
+
+        var active = photoLayers[activeLayer];
+        var preview = photoLayers[1 - activeLayer];
+
+        photoLayers.forEach(function(layer) {
+          layer.el.classList.add('is-instant');
+          layer.el.classList.remove('enter-from-left', 'enter-from-right');
+        });
+        active.el.classList.add('is-visible');
+        active.el.classList.remove('is-incoming');
+        preview.el.classList.remove('is-visible');
+        preview.el.classList.add('is-incoming');
+        preview.el.style.opacity = '0';
+      }
+
+      function updateDrag(dx) {
+        var active = photoLayers[activeLayer];
+        var preview = photoLayers[1 - activeLayer];
+        var dir = dx < 0 ? 1 : -1;
+
+        // Reversing direction mid-gesture swaps in the other neighbour.
+        if (dir !== dragDirection) {
+          dragDirection = dir;
+          dragTarget = (currentSlide + dir + slides.length) % slides.length;
+          applyPhoto(preview, slides[dragTarget]);
+        }
+
+        var progress = Math.min(Math.abs(dx) / dragWidth, 1);
+        active.el.style.transform = 'translateX(' + (dx * DRAG_DAMPING) + 'px)';
+        preview.el.style.transform =
+          'translateX(' + (dir * dragWidth * DRAG_ENTER_RATIO * (1 - progress)) + 'px)';
+        preview.el.style.opacity = String(progress);
+        welcomeCopy.style.opacity = String(1 - progress * 0.85);
+      }
+
+      function endDrag(dx, duration) {
+        var active = photoLayers[activeLayer];
+        var preview = photoLayers[1 - activeLayer];
+        var progress = Math.abs(dx) / dragWidth;
+        var velocity = duration > 0 ? Math.abs(dx) / duration : 0;
+        var commit = dragDirection !== 0 &&
+          (progress > DRAG_COMMIT_RATIO || velocity > DRAG_COMMIT_VELOCITY);
+
+        isDragging = false;
+        welcomeCopy.classList.remove('is-dragging');
+        photoLayers.forEach(function(layer) { layer.el.classList.remove('is-instant'); });
+        void carousel.offsetWidth; // re-arm transitions before retargeting
+
+        // Clearing the inline values lets the classes take over; each property
+        // transitions from wherever the finger left it.
+        active.el.style.transform = '';
+        preview.el.style.transform = '';
+        preview.el.style.opacity = '';
+        welcomeCopy.style.opacity = '';
+
+        if (dragDirection !== 0) lastSwipeTime = Date.now();
+
+        if (!commit) {
+          preview.el.classList.remove('is-visible', 'is-incoming');
+          active.el.classList.add('is-incoming');
+          return;
+        }
+
+        preview.el.classList.add('is-visible');
+        preview.el.removeAttribute('aria-hidden');
+        active.el.setAttribute('aria-hidden', 'true');
+        activeLayer = 1 - activeLayer;
+        currentSlide = dragTarget;
+        carousel.setAttribute('data-figma-node', slides[currentSlide].nodeId);
+
+        window.clearTimeout(hideOutgoingTimer);
+        hideOutgoingTimer = window.setTimeout(function() {
+          active.el.classList.remove('is-visible');
+        }, FADE_MS);
+
+        // The copy is already faded out by the drag, so skip the leave phase.
+        applyCopy(slides[currentSlide]);
+        enterCopy();
+        renderDots(currentSlide);
+      }
+
       carousel.addEventListener('pointerdown', function(event) {
         if (!event.isPrimary || event.button !== 0) return;
         swipePointerId = event.pointerId;
@@ -970,30 +1084,38 @@
         if (event.pointerId !== swipePointerId) return;
         swipeLastX = event.clientX;
         swipeLastY = event.clientY;
+
+        var dx = swipeLastX - swipeStartX;
+        var dy = swipeLastY - swipeStartY;
+
+        if (!isDragging) {
+          // Stay out of the way until the gesture is clearly horizontal, so
+          // vertical scrolling still works.
+          if (Math.abs(dx) < DRAG_START_PX || Math.abs(dx) <= Math.abs(dy)) return;
+          // Throws if the pointer is already gone; the drag still works without
+          // capture, it just stops tracking outside the element.
+          try { carousel.setPointerCapture(event.pointerId); } catch (e) {}
+          beginDrag();
+        }
+
+        updateDrag(dx);
       });
 
       carousel.addEventListener('pointerup', function(event) {
         if (event.pointerId !== swipePointerId) return;
-
-        var deltaX = swipeLastX - swipeStartX;
-        var deltaY = swipeLastY - swipeStartY;
-        var swipeDuration = Date.now() - swipeStartTime;
-        var isHorizontalSwipe = Math.abs(deltaX) >= 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25;
-
+        var dx = swipeLastX - swipeStartX;
+        var duration = Date.now() - swipeStartTime;
         swipePointerId = null;
         isPointerDown = false;
+        if (isDragging) endDrag(dx, duration);
         updatePaused();
-
-        if (!isHorizontalSwipe || swipeDuration > 1000) return;
-
-        goToSlide(currentSlide + (deltaX < 0 ? 1 : -1), deltaX < 0 ? 1 : -1);
-        lastSwipeTime = Date.now();
       });
 
       carousel.addEventListener('pointercancel', function(event) {
         if (event.pointerId !== swipePointerId) return;
         swipePointerId = null;
         isPointerDown = false;
+        if (isDragging) endDrag(0, 0); // treated as below threshold, so it snaps back
         updatePaused();
       });
 
