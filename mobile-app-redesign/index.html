@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#22BF1E">
+  <title>Mobile App Redesign · Hlídačky.cz</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <style>
+    :root {
+      --text: #2a3539;
+      --muted: #6b7176;
+      --bg: #dce2e8;
+      --panel: #ffffff;
+      --border: #dde2e5;
+      --green: #22bf1e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+    }
+
+    .phone-frame {
+      width: 390px;
+      max-width: 100%;
+      height: min(844px, calc(100vh - 48px));
+      position: relative;
+      background: var(--panel);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 18px 60px rgba(49, 72, 87, 0.18);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 52px;
+      padding: 14px 21px 10px 23px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      background: #fff;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .notch-pill {
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .status-time {
+      color: #2A3539;
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -0.165px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-icons img {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .top-navbar {
+      display: flex;
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #E5E5EA;
+      background: #FFF;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 4;
+    }
+
+    .top-navbar-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-navbar img {
+      display: block;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .top-navbar-title {
+      color: #2A3539;
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.051px;
+    }
+
+    .welcome-active .status-bar,
+    .welcome-active .top-navbar {
+      display: none;
+    }
+
+    .screen-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--panel);
+    }
+
+    .welcome-screen {
+      /* Both are overwritten from JS so the timings have a single source of
+         truth; the values here are only a fallback. */
+      --slide-duration: 5000ms;
+      --fade-duration: 560ms;
+      position: relative;
+      min-height: 100%;
+      padding: 80px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      gap: 16px;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    /* Two stacked layers so slides can cross-fade. The incoming layer is raised
+       and fades in over the outgoing one, which stays opaque underneath — that
+       avoids the dip to black a symmetric fade would produce. */
+    .welcome-photo-layer {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity var(--fade-duration) ease,
+        transform var(--fade-duration) cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .welcome-photo-layer.is-incoming { z-index: 1; }
+
+    /* Applied while the start state is committed. Without it the transition on
+       transform animates *into* the enter offset, and retargeting to the
+       resting state immediately after cancels the movement out entirely. */
+    .welcome-photo-layer.is-instant { transition: none; }
+
+    /* Start offsets for a directional swipe. Must stay above the .is-visible
+       rule: same specificity, so source order decides the resting state. */
+    .welcome-photo-layer.enter-from-right { transform: translateX(24px) scale(1.03); }
+    .welcome-photo-layer.enter-from-left { transform: translateX(-24px) scale(1.03); }
+
+    .welcome-photo-layer.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .welcome-photo {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+      object-position: 48% center;
+    }
+
+    .welcome-photo.is-width-locked {
+      bottom: auto;
+      height: auto;
+      min-height: 0;
+      object-fit: contain;
+      object-position: center top;
+    }
+
+    .welcome-overlay {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.8) 60%);
+      pointer-events: none;
+    }
+
+    .welcome-tint {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.1);
+      pointer-events: none;
+    }
+
+    .welcome-logo {
+      position: absolute;
+      z-index: 2;
+      top: 20px;
+      left: 20px;
+      width: 172px;
+      height: 65px;
+    }
+
+    .welcome-logo-mark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 44px;
+      height: 44px;
+    }
+
+    .welcome-logo-wordmark {
+      position: absolute;
+      top: 37px;
+      left: 47px;
+      width: 124px;
+      height: 27px;
+    }
+
+    .language-link {
+      position: absolute;
+      z-index: 2;
+      top: 20px;
+      right: 20px;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .flag {
+      position: relative;
+      width: 22px;
+      height: 16px;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .flag-base {
+      position: absolute;
+      top: -1.9px;
+      left: -1.6px;
+      width: 25.2px;
+      height: 19.8px;
+    }
+
+    .flag-overlay {
+      position: absolute;
+      inset: 0;
+      width: 22px;
+      height: 16px;
+    }
+
+    .language-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .language-copy span:first-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+      line-height: 20px;
+    }
+
+    .language-chevron {
+      font-size: 13px;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+
+    .welcome-copy,
+    .login-actions {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 380px);
+      margin-inline: auto;
+    }
+
+    .welcome-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 8px;
+    }
+
+    .carousel-dots {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .carousel-dot {
+      position: relative;
+      width: 32px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: width 420ms cubic-bezier(0.16, 1, 0.3, 1);
+      /* The overlay gradient is fully transparent at this height, so on bright
+         photos a light dot blends into the background. A shadow separates it
+         without committing to either a light or a dark treatment. */
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+    }
+
+    /* The active dot stretches into a pill that doubles as the autoplay
+       progress bar, so the slide timing is visible instead of implicit. */
+    .carousel-dot.is-active { width: 56px; }
+
+    /* ::before is the track, ::after the fill. Both span the button minus the
+       6px hit-area padding: 20px wide (circle) idle, 44px (pill) when active. */
+    .carousel-dot::before,
+    .carousel-dot::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 6px;
+      right: 6px;
+      height: 20px;
+      transform: translateY(-50%);
+      border-radius: 10px;
+    }
+
+    .carousel-dot::before { background: rgba(229, 229, 234, 0.75); }
+
+    .carousel-dot::after {
+      background: #f96073;
+      clip-path: inset(0 100% 0 0);
+    }
+
+    /* clip-path keeps the pill's end caps intact while it fills, which a
+       scaleX() would squash. */
+    @keyframes dot-progress {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
+    }
+
+    .carousel-dot.is-progressing::after {
+      animation: dot-progress var(--slide-duration) linear forwards;
+    }
+
+    /* Autoplay is driven by this animation ending, so pausing it pauses the
+       carousel — the bar and the timer cannot drift apart. */
+    .carousel-dots.is-paused .carousel-dot.is-progressing::after {
+      animation-play-state: paused;
+    }
+
+    /* No animation to ride on when autoplay is off; show the state statically. */
+    .carousel-dots.is-static .carousel-dot.is-active::after {
+      clip-path: inset(0 0 0 0);
+    }
+
+    .carousel-dot:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: -4px;
+      border-radius: 12px;
+    }
+
+    .welcome-title {
+      color: #fff;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.2px;
+      text-shadow: 0 6px 16px rgba(42, 53, 57, 0.2);
+    }
+
+    .welcome-subtitle {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 350;
+      line-height: 1.5;
+      letter-spacing: -0.24px;
+    }
+
+    .trust-logo-slot {
+      padding-top: 8px;
+    }
+
+    /* Copy leaves quickly, then re-enters staggered behind the photo fade, so
+       the two changes read as one movement rather than a simultaneous cut. */
+    .welcome-title,
+    .welcome-subtitle,
+    .trust-logo-slot {
+      transition: opacity 170ms ease, transform 170ms ease;
+    }
+
+    .welcome-copy.is-leaving .welcome-title,
+    .welcome-copy.is-leaving .welcome-subtitle,
+    .welcome-copy.is-leaving .trust-logo-slot {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    @keyframes copy-enter {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome-title.is-entering,
+    .welcome-subtitle.is-entering,
+    .trust-logo-slot.is-entering {
+      animation: copy-enter 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .welcome-subtitle.is-entering { animation-delay: 70ms; }
+    .trust-logo-slot.is-entering { animation-delay: 140ms; }
+
+    .trust-logo {
+      position: relative;
+      height: 32px;
+    }
+
+    .trust-logo[hidden],
+    .trust-logo-slot[hidden] { display: none; }
+
+    .trust-logo img {
+      position: absolute;
+      display: block;
+    }
+
+    .protect-logo { width: 177.951px; }
+    .protect-wordmark { left: 21.32%; top: 24.96%; width: 74.53%; height: 58.27%; }
+    .protect-trademark { left: 96.31%; top: 34.15%; width: 3.69%; height: 10.73%; }
+    .protect-shield { left: 0; top: 0; width: 16.54%; height: 100%; }
+    .protect-shield-detail { left: 1.5%; top: 8.1%; width: 13.55%; height: 82.17%; }
+    .protect-shield-fill { left: 8.16%; top: 12.18%; width: 6.27%; height: 73.43%; }
+    .protect-shield-check { left: 4.98%; top: 32.98%; width: 7.28%; height: 28.6%; }
+
+    .verify-logo { width: 166.284px; }
+    .verify-wordmark { left: 22.88%; top: 27%; width: 72.76%; height: 58.75%; }
+    .verify-trademark { left: 96.06%; top: 34.07%; width: 3.94%; height: 10.71%; }
+    .verify-shield { left: 0; top: 0; width: 17.65%; height: 100%; }
+    .verify-shield-check { left: 5.32%; top: 32.98%; width: 7.77%; height: 28.6%; }
+
+    .login-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      max-width: 380px;
+    }
+
+    .login-button {
+      position: relative;
+      width: 100%;
+      min-height: 54px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: center;
+      gap: 48px;
+      padding: 14px 32px 16px 16px;
+      overflow: hidden;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      line-height: 22px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .login-button:hover { background: #f7f7f7; }
+
+    .extra-login-options {
+      width: 100%;
+      display: grid;
+      grid-template-rows: 0fr;
+      margin-block: -6px;
+      opacity: 0;
+      transition: grid-template-rows 240ms ease, margin 240ms ease, opacity 180ms ease;
+    }
+
+    .extra-login-options.is-expanded {
+      grid-template-rows: 1fr;
+      margin-block: 0;
+      opacity: 1;
+    }
+
+    .extra-login-options-inner {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .login-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .login-icon img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .other-login {
+      border: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    /* Autoplay is also switched off from JS here — an auto-advancing carousel
+       is the motion problem, not just the transition between slides. */
+    @media (prefers-reduced-motion: reduce) {
+      .welcome-screen { --fade-duration: 120ms; }
+
+      .welcome-photo-layer.enter-from-right,
+      .welcome-photo-layer.enter-from-left { transform: none; }
+
+      .carousel-dot { transition: none; }
+      .carousel-dot.is-progressing::after { animation: none; }
+
+      .welcome-title,
+      .welcome-subtitle,
+      .trust-logo-slot { transition: none; }
+
+      .welcome-title.is-entering,
+      .welcome-subtitle.is-entering,
+      .trust-logo-slot.is-entering { animation: none; }
+    }
+
+    @media (pointer: coarse) and (max-width: 768px) {
+      body {
+        min-height: 100dvh;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 0;
+        background: #fff;
+      }
+
+      .status-bar { display: none; }
+      .top-navbar { display: flex; }
+      .welcome-active .top-navbar { display: none; }
+
+      .phone-frame {
+        width: 100%;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body class="welcome-active">
+  <main class="phone-frame">
+    <div class="status-bar">
+      <div class="notch-pill"></div>
+      <div class="status-time">9:41</div>
+      <div class="status-icons" aria-label="Phone status">
+        <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
+        <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
+      </div>
+    </div>
+    <div class="top-navbar">
+      <div class="top-navbar-inner">
+        <img src="/jobs/jobs-for-sitters/assets/icon-paperplane-pink.svg" alt="">
+        <div class="top-navbar-title">Inzeráty</div>
+      </div>
+    </div>
+    <section class="screen-scroll">
+      <div class="welcome-screen" id="welcome-carousel" data-figma-node="2072:3168">
+        <div class="welcome-photo-layer is-visible is-incoming" data-photo-layer>
+          <img class="welcome-photo" src="/mobile-app-redesign/assets/welcome-background.jpg" alt="Family spending time together with their dog">
+        </div>
+        <div class="welcome-photo-layer" data-photo-layer aria-hidden="true">
+          <img class="welcome-photo" alt="">
+        </div>
+        <div class="welcome-tint" aria-hidden="true"></div>
+        <div class="welcome-overlay" aria-hidden="true"></div>
+        <div class="welcome-logo" aria-label="Hlídačky.cz">
+          <img class="welcome-logo-mark" src="/mobile-app-redesign/assets/logo-mark.svg" alt="">
+          <img class="welcome-logo-wordmark" src="/mobile-app-redesign/assets/logo-wordmark.svg" alt="">
+        </div>
+        <button class="language-link" type="button" aria-label="Choose language, currently English">
+          <span class="flag" aria-hidden="true">
+            <img class="flag-base" src="/mobile-app-redesign/assets/flag-base.svg" alt="">
+            <img class="flag-overlay" src="/mobile-app-redesign/assets/flag-overlay.svg" alt="">
+          </span>
+          <span class="language-copy"><span>English</span><span class="language-chevron">⌄</span></span>
+        </button>
+        <div class="welcome-copy" id="welcome-copy">
+          <div class="carousel-dots" id="carousel-dots" role="group" aria-label="Carousel navigation, slide 1 of 7">
+            <button class="carousel-dot is-active" type="button" data-slide-index="0" aria-label="Show slide 1" aria-current="true"></button>
+            <button class="carousel-dot" type="button" data-slide-index="1" aria-label="Show slide 2"></button>
+            <button class="carousel-dot" type="button" data-slide-index="2" aria-label="Show slide 3"></button>
+            <button class="carousel-dot" type="button" data-slide-index="3" aria-label="Show slide 4"></button>
+            <button class="carousel-dot" type="button" data-slide-index="4" aria-label="Show slide 5"></button>
+            <button class="carousel-dot" type="button" data-slide-index="5" aria-label="Show slide 6"></button>
+            <button class="carousel-dot" type="button" data-slide-index="6" aria-label="Show slide 7"></button>
+          </div>
+          <h1 class="welcome-title" id="welcome-title">Connecting families<br>with reliable care</h1>
+          <p class="welcome-subtitle" id="welcome-subtitle">288 760+ households use Hlídačky.cz</p>
+          <div class="trust-logo-slot" id="trust-logo-slot" hidden>
+            <div class="trust-logo protect-logo" id="protect-logo" hidden aria-label="Hlídačky Protect">
+              <img class="protect-wordmark" src="/mobile-app-redesign/assets/protect-wordmark.svg" alt="">
+              <img class="protect-trademark" src="/mobile-app-redesign/assets/protect-trademark.svg" alt="">
+              <img class="protect-shield" src="/mobile-app-redesign/assets/protect-shield.svg" alt="">
+              <img class="protect-shield-detail" src="/mobile-app-redesign/assets/protect-shield-detail.svg" alt="">
+              <img class="protect-shield-fill" src="/mobile-app-redesign/assets/protect-shield-fill.svg" alt="">
+              <img class="protect-shield-check" src="/mobile-app-redesign/assets/protect-shield-check.svg" alt="">
+            </div>
+            <div class="trust-logo verify-logo" id="verify-logo" hidden aria-label="Hlídačky Verify">
+              <img class="verify-wordmark" src="/mobile-app-redesign/assets/verify-wordmark.svg" alt="">
+              <img class="verify-trademark" src="/mobile-app-redesign/assets/verify-trademark.svg" alt="">
+              <img class="verify-shield" src="/mobile-app-redesign/assets/verify-shield.svg" alt="">
+              <img class="verify-shield-check" src="/mobile-app-redesign/assets/verify-shield-check.svg" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="login-actions">
+          <button class="login-button" type="button" data-login-provider="apple">
+            <span class="login-icon"><img src="/mobile-app-redesign/assets/apple-icon.svg" alt=""></span>
+            <span>Continue with Apple</span>
+          </button>
+          <button class="login-button" type="button" data-login-provider="facebook">
+            <span class="login-icon"><img src="/mobile-app-redesign/assets/facebook-icon.svg" alt=""></span>
+            <span>Continue with Facebook</span>
+          </button>
+          <div class="extra-login-options" id="extra-login-options" aria-hidden="true" inert>
+            <div class="extra-login-options-inner">
+              <button class="login-button" type="button" data-login-provider="google">
+                <span class="login-icon"><img src="/mobile-app-redesign/assets/google-icon.svg" alt=""></span>
+                <span>Continue with Google</span>
+              </button>
+              <button class="login-button" type="button" data-login-provider="moje-id">
+                <span class="login-icon"><img src="/mobile-app-redesign/assets/moje-id-icon.svg" alt=""></span>
+                <span>Continue with Moje ID</span>
+              </button>
+            </div>
+          </div>
+          <button class="login-button" type="button" data-login-provider="email">
+            <span class="login-icon"><img src="/mobile-app-redesign/assets/icon-mail.svg" alt=""></span>
+            <span>Continue with E-Mail</span>
+          </button>
+          <button class="other-login" id="other-login" type="button" aria-expanded="false" aria-controls="extra-login-options">Use other Log in/Sign up methods</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function() {
+      var SLIDE_DURATION_MS = 5000;
+      var slides = [
+        {
+          nodeId: '2072:3168',
+          image: '/mobile-app-redesign/assets/welcome-background.jpg',
+          imageAlt: 'Family spending time together with their dog',
+          objectPosition: '48% center',
+          title: 'Connecting families<br>with reliable care',
+          subtitle: '288 760+ households use Hlídačky.cz',
+          trustLogo: ''
+        },
+        {
+          nodeId: '2072:3213',
+          image: '/mobile-app-redesign/assets/slide-babysitting.jpg',
+          imageAlt: 'Babysitter playing with a child outdoors',
+          objectPosition: 'center',
+          title: 'Babysitting trusted<br>by parents',
+          subtitle: '288 760+ households use Hlídačky.cz',
+          trustLogo: ''
+        },
+        {
+          nodeId: '2072:3225',
+          image: '/mobile-app-redesign/assets/slide-pet-care.jpg',
+          imageAlt: 'Pet sitter with a dog in a park',
+          objectPosition: 'center top',
+          widthLocked: true,
+          title: 'Dog and cat care by<br>local sitters',
+          subtitle: '288 760+ households use Hlídačky.cz',
+          trustLogo: ''
+        },
+        {
+          nodeId: '2072:3237',
+          image: '/mobile-app-redesign/assets/slide-senior-care.jpg',
+          imageAlt: 'Caregiver helping a senior woman at home',
+          objectPosition: 'center',
+          title: 'Caring support for<br>seniors near you',
+          subtitle: '288 760+ households use Hlídačky.cz',
+          trustLogo: ''
+        },
+        {
+          nodeId: '2072:3249',
+          image: '/mobile-app-redesign/assets/slide-tutoring.jpg',
+          imageAlt: 'Tutor helping a child study',
+          objectPosition: 'center',
+          title: 'Personalised tutoring<br>for kids',
+          subtitle: '288 760+ households use Hlídačky.cz',
+          trustLogo: ''
+        },
+        {
+          nodeId: '2072:3261',
+          image: '/mobile-app-redesign/assets/slide-protect.jpg',
+          imageAlt: 'Babysitter reading with a small child',
+          objectPosition: 'center',
+          title: 'Peace of mind with<br>every booking',
+          subtitle: 'Enjoy insured, flexible booking with',
+          trustLogo: 'protect'
+        },
+        {
+          nodeId: '2072:3275',
+          image: '/mobile-app-redesign/assets/slide-verify.jpg',
+          imageAlt: 'Sitter completing an identity verification',
+          objectPosition: 'center',
+          title: 'Comprehensive<br>identity checks',
+          subtitle: 'Profiles list sitter checks completed via',
+          trustLogo: 'verify'
+        }
+      ];
+      var FADE_MS = 560;
+      var COPY_SWAP_MS = 180;
+
+      var currentSlide = 0;
+      var activeLayer = 0;
+      var renderToken = 0;
+      var copySwapTimer = null;
+      var hideOutgoingTimer = null;
+      var isPointerDown = false;
+      var swipePointerId = null;
+      var swipeStartX = 0;
+      var swipeStartY = 0;
+      var swipeLastX = 0;
+      var swipeLastY = 0;
+      var swipeStartTime = 0;
+      var lastSwipeTime = 0;
+      var carousel = document.getElementById('welcome-carousel');
+      var welcomeCopy = document.getElementById('welcome-copy');
+      var title = document.getElementById('welcome-title');
+      var subtitle = document.getElementById('welcome-subtitle');
+      var dotsGroup = document.getElementById('carousel-dots');
+      var dots = Array.prototype.slice.call(document.querySelectorAll('.carousel-dot'));
+      var otherLogin = document.getElementById('other-login');
+      var extraLoginOptions = document.getElementById('extra-login-options');
+      var trustLogoSlot = document.getElementById('trust-logo-slot');
+      var protectLogo = document.getElementById('protect-logo');
+      var verifyLogo = document.getElementById('verify-logo');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      var photoLayers = Array.prototype.slice.call(document.querySelectorAll('[data-photo-layer]')).map(function(el) {
+        return { el: el, img: el.querySelector('.welcome-photo') };
+      });
+
+      carousel.style.setProperty('--slide-duration', SLIDE_DURATION_MS + 'ms');
+      carousel.style.setProperty('--fade-duration', FADE_MS + 'ms');
+
+      function autoplayEnabled() {
+        return !reduceMotion.matches;
+      }
+
+      function applyPhoto(layer, slide) {
+        layer.img.classList.toggle('is-width-locked', slide.widthLocked === true);
+        layer.img.style.objectPosition = slide.objectPosition;
+        layer.img.alt = slide.imageAlt;
+        if (layer.img.getAttribute('src') !== slide.image) layer.img.src = slide.image;
+      }
+
+      function crossfadePhoto(slide, direction, token) {
+        var incoming = photoLayers[1 - activeLayer];
+        var outgoing = photoLayers[activeLayer];
+
+        incoming.el.classList.add('is-instant');
+        incoming.el.classList.remove('is-visible', 'enter-from-left', 'enter-from-right');
+        applyPhoto(incoming, slide);
+
+        if (direction > 0) incoming.el.classList.add('enter-from-right');
+        else if (direction < 0) incoming.el.classList.add('enter-from-left');
+
+        outgoing.el.classList.remove('is-incoming');
+        incoming.el.classList.add('is-incoming');
+        incoming.el.removeAttribute('aria-hidden');
+        outgoing.el.setAttribute('aria-hidden', 'true');
+
+        void incoming.el.offsetWidth; // snap to the start state, transitions off
+
+        activeLayer = 1 - activeLayer;
+
+        function reveal() {
+          if (token !== renderToken) return;
+          incoming.el.classList.remove('is-instant');
+          void incoming.el.offsetWidth; // re-arm the transitions before retargeting
+          incoming.el.classList.add('is-visible');
+
+          window.clearTimeout(hideOutgoingTimer);
+          hideOutgoingTimer = window.setTimeout(function() {
+            outgoing.el.classList.remove('is-visible', 'enter-from-left', 'enter-from-right');
+          }, FADE_MS);
+        }
+
+        // Slides are preloaded in the background rather than up front, so an
+        // image may not be decoded yet — fading in a blank layer would flash.
+        if (incoming.img.complete && incoming.img.naturalWidth > 0) {
+          reveal();
+        } else {
+          incoming.img.addEventListener('load', reveal, { once: true });
+          incoming.img.addEventListener('error', reveal, { once: true });
+        }
+      }
+
+      function applyCopy(slide) {
+        title.innerHTML = slide.title;
+        subtitle.textContent = slide.subtitle;
+        trustLogoSlot.hidden = !slide.trustLogo;
+        protectLogo.hidden = slide.trustLogo !== 'protect';
+        verifyLogo.hidden = slide.trustLogo !== 'verify';
+      }
+
+      function swapCopy(slide, token) {
+        window.clearTimeout(copySwapTimer);
+
+        // The enter animation uses fill-mode: both, so it keeps pinning these
+        // properties after it ends and would override the leave transition.
+        [title, subtitle, trustLogoSlot].forEach(function(el) {
+          el.classList.remove('is-entering');
+        });
+        void welcomeCopy.offsetWidth; // settle the un-animated value, else the leave transition is skipped
+
+        welcomeCopy.classList.add('is-leaving');
+
+        copySwapTimer = window.setTimeout(function() {
+          if (token !== renderToken) return;
+          welcomeCopy.classList.remove('is-leaving');
+          applyCopy(slide);
+          [title, subtitle, trustLogoSlot].forEach(function(el) {
+            el.classList.remove('is-entering');
+            void el.offsetWidth; // restart the animation on repeat slides
+            el.classList.add('is-entering');
+          });
+        }, COPY_SWAP_MS);
+      }
+
+      function renderDots(index) {
+        dots.forEach(function(dot, dotIndex) {
+          var isActive = dotIndex === index;
+          dot.classList.toggle('is-active', isActive);
+          dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+          if (!isActive) dot.classList.remove('is-progressing');
+        });
+
+        dotsGroup.classList.toggle('is-static', !autoplayEnabled());
+        dotsGroup.setAttribute('aria-label', 'Carousel navigation, slide ' + (index + 1) + ' of ' + slides.length);
+
+        var activeDot = dots[index];
+        activeDot.classList.remove('is-progressing');
+        void activeDot.offsetWidth; // restart the progress fill
+        if (autoplayEnabled()) activeDot.classList.add('is-progressing');
+      }
+
+      function goToSlide(index, direction) {
+        var next = (index % slides.length + slides.length) % slides.length;
+        var slide = slides[next];
+        var token = ++renderToken;
+
+        if (typeof direction !== 'number') {
+          direction = next === currentSlide ? 0 : (next > currentSlide ? 1 : -1);
+        }
+
+        currentSlide = next;
+        carousel.setAttribute('data-figma-node', slide.nodeId);
+        crossfadePhoto(slide, direction, token);
+        swapCopy(slide, token);
+        renderDots(next);
+      }
+
+      function updatePaused() {
+        dotsGroup.classList.toggle('is-paused', isPointerDown || document.hidden);
+      }
+
+      // The progress fill *is* the timer: when it finishes, the slide advances.
+      dotsGroup.addEventListener('animationend', function(event) {
+        if (event.animationName !== 'dot-progress') return;
+        if (!event.target.classList.contains('is-progressing')) return;
+        goToSlide(currentSlide + 1, 1);
+      });
+
+      document.addEventListener('visibilitychange', updatePaused);
+
+      reduceMotion.addEventListener('change', function() {
+        renderDots(currentSlide);
+      });
+
+      dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          goToSlide(Number(dot.getAttribute('data-slide-index')));
+        });
+      });
+
+      carousel.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goToSlide(currentSlide + 1, 1);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goToSlide(currentSlide - 1, -1);
+        }
+      });
+
+      carousel.addEventListener('pointerdown', function(event) {
+        if (!event.isPrimary || event.button !== 0) return;
+        swipePointerId = event.pointerId;
+        swipeStartX = event.clientX;
+        swipeStartY = event.clientY;
+        swipeLastX = event.clientX;
+        swipeLastY = event.clientY;
+        swipeStartTime = Date.now();
+        isPointerDown = true;
+        updatePaused();
+      });
+
+      carousel.addEventListener('pointermove', function(event) {
+        if (event.pointerId !== swipePointerId) return;
+        swipeLastX = event.clientX;
+        swipeLastY = event.clientY;
+      });
+
+      carousel.addEventListener('pointerup', function(event) {
+        if (event.pointerId !== swipePointerId) return;
+
+        var deltaX = swipeLastX - swipeStartX;
+        var deltaY = swipeLastY - swipeStartY;
+        var swipeDuration = Date.now() - swipeStartTime;
+        var isHorizontalSwipe = Math.abs(deltaX) >= 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25;
+
+        swipePointerId = null;
+        isPointerDown = false;
+        updatePaused();
+
+        if (!isHorizontalSwipe || swipeDuration > 1000) return;
+
+        goToSlide(currentSlide + (deltaX < 0 ? 1 : -1), deltaX < 0 ? 1 : -1);
+        lastSwipeTime = Date.now();
+      });
+
+      carousel.addEventListener('pointercancel', function(event) {
+        if (event.pointerId !== swipePointerId) return;
+        swipePointerId = null;
+        isPointerDown = false;
+        updatePaused();
+      });
+
+      carousel.addEventListener('click', function(event) {
+        if (Date.now() - lastSwipeTime < 400) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }, true);
+
+      otherLogin.addEventListener('click', function() {
+        var isExpanded = extraLoginOptions.classList.toggle('is-expanded');
+        extraLoginOptions.setAttribute('aria-hidden', String(!isExpanded));
+        extraLoginOptions.inert = !isExpanded;
+        otherLogin.setAttribute('aria-expanded', String(isExpanded));
+        otherLogin.textContent = isExpanded
+          ? 'Show fewer Log in/Sign up methods'
+          : 'Use other Log in/Sign up methods';
+      });
+
+      function preloadSlideImage(slide) {
+        return new Promise(function(resolve) {
+          var image = new Image();
+          image.onload = function() {
+            if (typeof image.decode === 'function') {
+              image.decode().catch(function() {}).then(resolve);
+            } else {
+              resolve();
+            }
+          };
+          image.onerror = resolve;
+          image.src = slide.image;
+        });
+      }
+
+      // Start on the first slide instead of blocking autoplay until every image
+      // has decoded; the rest stream in sequentially so the nearest slide gets
+      // the bandwidth first.
+      function begin() {
+        renderDots(0);
+        slides.slice(1).reduce(function(chain, slide) {
+          return chain.then(function() { return preloadSlideImage(slide); });
+        }, Promise.resolve());
+      }
+
+      var firstImage = photoLayers[0].img;
+      if (firstImage.complete && firstImage.naturalWidth > 0) {
+        begin();
+      } else {
+        firstImage.addEventListener('load', begin, { once: true });
+        firstImage.addEventListener('error', begin, { once: true });
+      }
+    })();
+  </script>
+</body>
+</html>
