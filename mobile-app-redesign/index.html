@@ -2700,9 +2700,28 @@
       .ai-panel.open { max-height: 1100px; }
     }
 
+    /* Reduced motion -------------------------------------------------------
+       Only the assistant's question swap and the profile panel used to honour
+       this setting. Everything else kept moving, including three loops that
+       never stop on their own — the feed shimmer, the assistant's thinking
+       dots and the blinking cursor — which is exactly what someone turning
+       the setting on is trying to get away from. Killing motion wholesale
+       beats listing fifteen animations and forgetting the sixteenth; the
+       rule for .ai-stage-question above still pins its end state, since a
+       keyframe that starts at opacity 0 needs somewhere to land.
+
+       Durations stay non-zero rather than 0 so transitionend and
+       animationend still fire for anything that comes to rely on them. */
     @media (prefers-reduced-motion: reduce) {
-      .family-profile-screen {
-        transition-duration: 1ms;
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
@@ -3737,6 +3756,19 @@
         renderResults(step);
       }
 
+      // The CSS media query cannot reach a scroll started from script, so the
+      // smooth scrolls have to ask as well.
+      var reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+
+      function prefersReducedMotion() {
+        return Boolean(reducedMotionQuery && reducedMotionQuery.matches);
+      }
+
+      function scrollResultsToTop() {
+        if (!resultsView) return;
+        resultsView.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+      }
+
       function playFeedReload() {
         if (!feedGrid) return;
 
@@ -3799,9 +3831,7 @@
           renderCurrentStep();
         });
         state.suppressAutoCollapse = true;
-        if (resultsView) {
-          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        scrollResultsToTop();
         setTimeout(function () {
           state.suppressAutoCollapse = false;
         }, 700);
@@ -3828,9 +3858,7 @@
           state.criteria = [];
           renderCurrentStep(true);
         }
-        if (resultsView) {
-          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        scrollResultsToTop();
         syncBackEntry();
       }
       function closePanel() {
@@ -4127,7 +4155,7 @@
         var placeholder = 'Where do you need help?';
         var characterIndex = 0;
 
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (prefersReducedMotion()) {
           locationInput.placeholder = placeholder;
           return;
         }
@@ -4362,7 +4390,7 @@
         // results back to the top so the expanded panel is visible.
         if (willExpand && resultsView && resultsView.scrollTop > 0) {
           state.suppressAutoCollapse = true;
-          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+          scrollResultsToTop();
           setTimeout(function () {
             state.suppressAutoCollapse = false;
           }, 700);
