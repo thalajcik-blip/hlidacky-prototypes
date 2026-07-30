@@ -207,6 +207,37 @@
       display: block;
     }
 
+    /* Hit areas ------------------------------------------------------------
+       Several controls are drawn far smaller than a fingertip — the clear
+       cross in the location field is 18px, the alert closes 24px, the header
+       buttons 32px tall. Rather than redraw them, each grows a centred,
+       invisible 44px hit area, the minimum comfortable touch target. The
+       visible box still takes clicks too, so the two simply union. */
+    .mobile-app-header__profile,
+    .family-profile-header__back,
+    .welcome-alert__close,
+    .logout-success-alert__close {
+      position: relative;
+    }
+
+    /* The nav item, the clear cross and the bookmark are positioned already,
+       so they are absent from the rule above and only need the pseudo. */
+    .mobile-app-header__profile::after,
+    .family-profile-header__back::after,
+    .welcome-alert__close::after,
+    .logout-success-alert__close::after,
+    .mobile-bottom-nav__item::after,
+    .hl-live .searches-filter-component__clear-location::after,
+    .hl-live .sitter-card__bookmark::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+    }
+
     /* Figma: Family Profile */
     /* Stays laid out and composited off-canvas so the slide-in is a pure
        transform — toggling display would force layout + first paint on the
