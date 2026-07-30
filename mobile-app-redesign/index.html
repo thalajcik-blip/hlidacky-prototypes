@@ -113,6 +113,11 @@
         linear-gradient(180deg, #ffffff 0%, #fbfcfd 18%, #f6f8fb 100%);
     }
 
+    .screen-scroll.is-hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     .results-inner { padding: 18px 16px 40px; }
 
     .hl-live {
@@ -510,6 +515,64 @@
       border-radius: 999px;
       background: #2a3539;
       content: '';
+    }
+
+    /* Placeholder screens for the remaining app navigation destinations. */
+    .app-placeholder-screen {
+      position: absolute;
+      z-index: 10;
+      inset: 100px 0 83px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 24px;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .app-placeholder-screen.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .app-placeholder-screen__content {
+      display: flex;
+      max-width: 260px;
+      flex-direction: column;
+      align-items: center;
+      color: #2a3539;
+      text-align: center;
+    }
+
+    .app-placeholder-screen__icon {
+      display: inline-flex;
+      width: 56px;
+      height: 56px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      border-radius: 50%;
+      background: #fff2f5;
+      color: #f96073;
+      font-size: 24px;
+    }
+
+    .app-placeholder-screen__title {
+      font-size: 24px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+    }
+
+    .app-placeholder-screen__copy {
+      margin-top: 8px;
+      color: #6b7176;
+      font-size: 16px;
+      line-height: 1.45;
     }
 
     /* Figma: Welcome alert */
@@ -2591,6 +2654,7 @@
       .status-bar { display: none; }
       .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
       .family-profile-screen { top: 0; }
+      .app-placeholder-screen { top: 48px; }
       .ai-panel.open { max-height: 1100px; }
     }
 
@@ -2860,6 +2924,13 @@
         </div>
       </div>
     </div>
+    <section class="app-placeholder-screen" id="appPlaceholderScreen" aria-live="polite" aria-hidden="true">
+      <div class="app-placeholder-screen__content">
+        <i class="app-placeholder-screen__icon fa-solid fa-heart" id="appPlaceholderIcon" aria-hidden="true"></i>
+        <h1 class="app-placeholder-screen__title" id="appPlaceholderTitle">Favourites</h1>
+        <p class="app-placeholder-screen__copy" id="appPlaceholderCopy">This page is being prepared.</p>
+      </div>
+    </section>
     <section class="family-profile-screen" id="familyProfileScreen" data-node-id="2284:67211">
       <header class="family-profile-header">
         <button class="family-profile-header__back" id="familyProfileBack" type="button" aria-label="Back to search"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
@@ -2886,25 +2957,25 @@
     </section>
     <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
       <div class="mobile-bottom-nav__items">
-        <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" aria-current="page">
-          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" data-app-screen="search" data-icon="fa-magnifying-glass" aria-current="page">
+          <i class="mobile-bottom-nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>
           <span>Search</span>
         </button>
-        <button class="mobile-bottom-nav__item" type="button">
-          <i class="fa-light fa-heart" aria-hidden="true"></i>
+        <button class="mobile-bottom-nav__item" id="favouritesNavItem" type="button" data-app-screen="favourites" data-icon="fa-heart">
+          <i class="mobile-bottom-nav__icon fa-light fa-heart" aria-hidden="true"></i>
           <span>Favourites</span>
         </button>
-        <button class="mobile-bottom-nav__item" id="messagesNavItem" type="button" aria-label="Messages">
-          <i class="fa-light fa-message" aria-hidden="true"></i>
+        <button class="mobile-bottom-nav__item" id="messagesNavItem" type="button" data-app-screen="messages" data-icon="fa-message" aria-label="Messages">
+          <i class="mobile-bottom-nav__icon fa-light fa-message" aria-hidden="true"></i>
           <span>Messages</span>
           <span class="mobile-bottom-nav__notification" id="messagesNavNotification" hidden aria-hidden="true">3</span>
         </button>
-        <button class="mobile-bottom-nav__item" type="button">
-          <i class="fa-light fa-paper-plane" aria-hidden="true"></i>
+        <button class="mobile-bottom-nav__item" id="jobsNavItem" type="button" data-app-screen="jobs" data-icon="fa-paper-plane">
+          <i class="mobile-bottom-nav__icon fa-light fa-paper-plane" aria-hidden="true"></i>
           <span>Jobs</span>
         </button>
-        <button class="mobile-bottom-nav__item" type="button">
-          <i class="fa-light fa-calendar-clock" aria-hidden="true"></i>
+        <button class="mobile-bottom-nav__item" id="bookingsNavItem" type="button" data-app-screen="bookings" data-icon="fa-calendar-clock">
+          <i class="mobile-bottom-nav__icon fa-light fa-calendar-clock" aria-hidden="true"></i>
           <span>Bookings</span>
         </button>
       </div>
@@ -3073,6 +3144,10 @@
       var liveRoot = document.querySelector('.hl-live');
       var headerComponent = document.querySelector('.searches-page-header-component');
       var verticalFilters = Array.prototype.slice.call(document.querySelectorAll('.searches-page-header-component__quick-filter'));
+      var appPlaceholderScreen = document.getElementById('appPlaceholderScreen');
+      var appPlaceholderIcon = document.getElementById('appPlaceholderIcon');
+      var appPlaceholderTitle = document.getElementById('appPlaceholderTitle');
+      var appPlaceholderCopy = document.getElementById('appPlaceholderCopy');
       var mobileHeaderTitle = document.getElementById('mobileAppHeaderTitle');
       var mobileHeaderIcon = document.getElementById('mobileAppHeaderIcon');
       var mobileAppHeader = document.querySelector('.mobile-app-header');
@@ -3088,6 +3163,7 @@
       var messagesNavItem = document.getElementById('messagesNavItem');
       var messagesNavNotification = document.getElementById('messagesNavNotification');
       var searchNavItem = document.getElementById('searchNavItem');
+      var navItems = Array.prototype.slice.call(document.querySelectorAll('.mobile-bottom-nav__item'));
       var familyProfileScreen = document.getElementById('familyProfileScreen');
       var familyProfileBack = document.getElementById('familyProfileBack');
       var familyProfileLogout = document.getElementById('familyProfileLogout');
@@ -3120,7 +3196,14 @@
       var logoutSuccessTimer = null;
       var dropdownBlurTimeout = null;
       var selectedLocation = '';
+      var currentAppScreen = 'search';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
+      var APP_PLACEHOLDERS = {
+        favourites: { title: 'Favourites', icon: 'fa-heart', copy: 'Your saved sitters will appear here.' },
+        messages: { title: 'Messages', icon: 'fa-message', copy: 'Your conversations will appear here.' },
+        jobs: { title: 'Jobs', icon: 'fa-paper-plane', copy: 'Your jobs will appear here.' },
+        bookings: { title: 'Bookings', icon: 'fa-calendar-clock', copy: 'Your bookings will appear here.' }
+      };
 
       var DEFAULT_QUERY_EXAMPLES = [
         'Babysitter next Thursday',
@@ -3755,13 +3838,59 @@
         loginTrigger.focus();
       }
 
+      function setActiveNavItem(screen) {
+        navItems.forEach(function (item) {
+          var isActive = item.getAttribute('data-app-screen') === screen;
+          var icon = item.querySelector('.mobile-bottom-nav__icon');
+          item.classList.toggle('mobile-bottom-nav__item--active', isActive);
+          if (isActive) item.setAttribute('aria-current', 'page');
+          else item.removeAttribute('aria-current');
+          if (icon) icon.className = 'mobile-bottom-nav__icon ' + (isActive ? 'fa-solid ' : 'fa-light ') + item.getAttribute('data-icon');
+        });
+      }
+
+      function restoreSearchHeader() {
+        var activeVertical = document.querySelector('.searches-page-header-component__quick-filter--active');
+        syncMobileHeaderTitle();
+        mobileHeaderIcon.className = 'fa-solid ' + (activeVertical ? activeVertical.getAttribute('data-header-icon') : 'fa-child-reaching');
+        mobileHeaderIcon.style.color = activeVertical ? activeVertical.getAttribute('data-header-color') : 'var(--color-pink-400)';
+      }
+
+      function selectAppScreen(screen) {
+        var placeholder = APP_PLACEHOLDERS[screen];
+        currentAppScreen = screen;
+        setActiveNavItem(screen);
+        familyProfileScreen.classList.remove('is-open');
+
+        if (screen === 'search') {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          resultsView.classList.remove('is-hidden');
+          restoreSearchHeader();
+          return;
+        }
+
+        welcomeAlert.classList.remove('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'true');
+        logoutSuccessAlert.classList.remove('is-visible');
+        logoutSuccessAlert.setAttribute('aria-hidden', 'true');
+        resultsView.classList.add('is-hidden');
+        appPlaceholderIcon.className = 'app-placeholder-screen__icon fa-solid ' + placeholder.icon;
+        appPlaceholderTitle.textContent = placeholder.title;
+        appPlaceholderCopy.textContent = placeholder.copy;
+        appPlaceholderScreen.classList.add('is-open');
+        appPlaceholderScreen.setAttribute('aria-hidden', 'false');
+        mobileHeaderIcon.className = 'fa-solid ' + placeholder.icon;
+        mobileHeaderIcon.style.color = '#f96073';
+        mobileHeaderTitle.textContent = placeholder.title;
+      }
+
       function openFamilyProfile() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
         welcomeAlert.classList.remove('is-visible');
         welcomeAlert.setAttribute('aria-hidden', 'true');
         familyProfileScreen.classList.add('is-open');
-        searchNavItem.classList.remove('mobile-bottom-nav__item--active');
-        searchNavItem.removeAttribute('aria-current');
+        setActiveNavItem(null);
         // The panel starts off-canvas, so a plain focus() scrolls the phone
         // frame sideways to reveal it and fights the slide-in transition.
         familyProfileBack.focus({ preventScroll: true });
@@ -3769,8 +3898,7 @@
 
       function closeFamilyProfile() {
         familyProfileScreen.classList.remove('is-open');
-        searchNavItem.classList.add('mobile-bottom-nav__item--active');
-        searchNavItem.setAttribute('aria-current', 'page');
+        setActiveNavItem(currentAppScreen);
         loginTrigger.focus({ preventScroll: true });
       }
 
@@ -3927,6 +4055,7 @@
 
       function simulateLogout() {
         closeFamilyProfile();
+        selectAppScreen('search');
         hideLogoutSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
@@ -3962,8 +4091,10 @@
       familyProfileBack.addEventListener('click', closeFamilyProfile);
       familyProfileLogout.addEventListener('click', simulateLogout);
       logoutSuccessAlertClose.addEventListener('click', hideLogoutSuccess);
-      searchNavItem.addEventListener('click', function () {
-        if (familyProfileScreen.classList.contains('is-open')) closeFamilyProfile();
+      navItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+          selectAppScreen(item.getAttribute('data-app-screen'));
+        });
       });
       loginSheetBackdrop.addEventListener('click', closeLoginSheet);
       loginActions.forEach(function (action) {
