@@ -483,7 +483,13 @@
     .booking-card.status-waiting::before { background: var(--orange-500); }
     .booking-card.status-accepted::before { background: var(--blue-400); }
     .booking-card.status-paid::before { background: var(--gray-300); }
+    .booking-card.status-cancelled::before { background: var(--gray-400); }
     .booking-card.status-declined::before { background: #EA2323; top: 22px; transform: none; }
+
+    /* audience-specific visibility */
+    body[data-page-audience="sitters"] .families-only { display: none !important; }
+    body[data-page-audience="families"] .sitters-only { display: none !important; }
+    body[data-page-audience="sitters"] .view-state-banner { display: none !important; }
 
     .booking-topline {
       display: flex;
@@ -498,6 +504,7 @@
     }
 
     .booking-status.waiting { color: var(--orange-500); }
+    .booking-status.cancelled { color: var(--gray-500); }
     .booking-status.accepted { color: var(--blue-400); }
     .booking-status.paid { color: var(--gray-500); }
     .booking-status.declined { color: var(--pink-500); }
@@ -537,7 +544,7 @@
       width: 220px;
       padding: 8px;
       border: 1px solid var(--gray-300);
-      border-radius: 16px;
+      border-radius: 8px;
       background: var(--white);
       box-shadow: 0 16px 40px rgba(42, 53, 57, 0.16);
     }
@@ -550,9 +557,10 @@
       gap: 12px;
       padding: 12px 14px;
       border: 0;
-      border-radius: 12px;
+      border-radius: 6px;
       background: transparent;
       color: var(--gray-800);
+      font-size: 16px;
       text-align: left;
     }
 
@@ -636,6 +644,17 @@
       max-width: 320px;
     }
 
+    .booking-meta.has-alternative-proposal {
+      display: grid;
+      gap: 8px;
+    }
+
+    .booking-meta-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .meta-chip {
       display: inline-flex;
       align-items: center;
@@ -659,6 +678,13 @@
       background: #f7f7f7;
       color: var(--gray-500);
       border: 0;
+    }
+
+    .meta-chip.previous-value {
+      background: #f7f7f7;
+      color: var(--gray-600);
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
     }
 
     .booking-footer {
@@ -874,28 +900,103 @@
       line-height: 1.55;
     }
 
-    .toast {
+    .toast-layer {
       position: fixed;
-      left: 50%;
-      bottom: 28px;
+      bottom: 24px;
+      left: 24px;
       z-index: 120;
-      transform: translateX(-50%) translateY(16px);
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
-      border-radius: 999px;
-      background: var(--gray-900);
-      color: var(--white);
-      box-shadow: 0 16px 32px rgba(33, 37, 41, 0.28);
-      opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      display: flex;
     }
 
-    .toast.is-visible {
+    .toast-card {
+      width: 380px;
+      border-radius: 4px;
+      border: 1px solid #FFC8CF;
+      background: #FFF1F3;
+      box-shadow: 0 16px 40px -20px rgba(42, 53, 57, 0.38);
+      padding: 8px 16px;
+      display: none;
+      grid-template-columns: 40px minmax(0, 1fr) 24px;
+      gap: 12px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+    }
+
+    .toast-card.is-visible {
+      display: grid;
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 480px) {
+      .toast-layer {
+        bottom: 24px;
+        left: 16px;
+        right: 16px;
+        z-index: 500;
+        justify-content: center;
+      }
+      .toast-card {
+        width: 100%;
+      }
+    }
+
+    .toast-illustration,
+    .toast-illustration svg,
+    .toast-illustration img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .toast-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .toast-title {
+      color: #2A3539;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.32px;
+      min-width: 0;
+    }
+
+    .toast-close {
+      width: 24px;
+      height: 24px;
+      border: 0;
+      background: none;
+      color: #8B91A3;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 200ms ease, color 200ms ease;
+      opacity: 0.8;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+      color: #6F7A86;
+    }
+
+    .toast-close svg {
+      width: 20px;
+      height: 20px;
+      display: block;
     }
 
     .switch-view-button {
@@ -1355,7 +1456,7 @@
       width: 220px;
       padding: 8px;
       border: 1px solid var(--gray-300);
-      border-radius: 16px;
+      border-radius: 8px;
       background: var(--white);
       box-shadow: 0 16px 40px rgba(42, 53, 57, 0.16);
     }
@@ -1367,11 +1468,11 @@
       gap: 12px;
       padding: 12px 14px;
       border: 0;
-      border-radius: 12px;
+      border-radius: 6px;
       background: transparent;
       color: var(--gray-800);
       font: inherit;
-      font-size: 15px;
+      font-size: 16px;
       text-align: left;
       cursor: pointer;
     }
@@ -1402,7 +1503,7 @@
       width: 248px;
       padding: 8px;
       border: 1px solid var(--gray-300);
-      border-radius: 16px;
+      border-radius: 8px;
       background: var(--white);
       box-shadow: 0 16px 40px rgba(42, 53, 57, 0.16);
     }
@@ -1414,11 +1515,11 @@
       gap: 12px;
       padding: 12px 14px;
       border: 0;
-      border-radius: 12px;
+      border-radius: 6px;
       background: transparent;
       color: var(--gray-800);
       font: inherit;
-      font-size: 15px;
+      font-size: 16px;
       line-height: 140%;
       text-align: left;
       cursor: pointer;
@@ -1789,6 +1890,70 @@
       margin-left: auto;
     }
 
+    .cancel-booking-modal {
+      width: min(620px, calc(100vw - 32px));
+    }
+
+    .cancel-booking-modal .modal-header {
+      align-items: center;
+    }
+
+    .cancel-booking-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cancel-booking-doodle {
+      width: 40px;
+      height: 40px;
+      display: block;
+      flex: 0 0 40px;
+    }
+
+    .cancel-booking-modal .modal-header h2 {
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .cancel-booking-modal .modal-close {
+      background: transparent;
+    }
+
+    .cancel-booking-modal .modal-body {
+      display: grid;
+      align-content: start;
+      gap: 22px;
+    }
+
+    .cancel-booking-copy {
+      margin: 0;
+      max-width: 420px;
+      color: var(--gray-800);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .cancel-booking-card-shell {
+      min-width: 0;
+    }
+
+    .cancel-booking-card-preview {
+      pointer-events: none;
+    }
+
+    .cancel-booking-card-preview .booking-main {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .cancel-booking-modal .modal-footer-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-left: 0;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -1852,7 +2017,7 @@
       max-height: min(88vh, 920px);
       transform: translate(-50%, -50%);
       border: 1px solid var(--gray-300);
-      border-radius: 24px;
+      border-radius: 16px;
       background: var(--white);
       box-shadow: var(--shadow-modal);
       overflow: hidden;
@@ -1903,7 +2068,7 @@
     .sitter-decline-section-title {
       margin: 0 0 14px;
       color: var(--gray-800);
-      font-size: 14px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 450;
       line-height: 140%;
@@ -1979,8 +2144,109 @@
       padding-top: 1px;
     }
 
+    .sitter-decline-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.18px;
+    }
+
+    .sitter-decline-switch input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sitter-decline-switch-track {
+      position: relative;
+      width: 56px;
+      height: 32px;
+      border-radius: 999px;
+      background: var(--gray-300);
+      flex: 0 0 56px;
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .sitter-decline-switch-track::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--white);
+      box-shadow: 0 2px 5px rgba(42, 53, 57, 0.22);
+      transition: transform 160ms ease;
+    }
+
+    .sitter-decline-switch input:checked + .sitter-decline-switch-track {
+      background: var(--green-500);
+    }
+
+    .sitter-decline-switch input:checked + .sitter-decline-switch-track::after {
+      transform: translateX(24px);
+    }
+
+    .sitter-decline-switch input:focus-visible + .sitter-decline-switch-track {
+      box-shadow: 0 0 0 3px rgba(118, 164, 255, 0.45);
+    }
+
     .sitter-decline-textarea-wrap {
       margin-top: 14px;
+    }
+
+    .sitter-decline-schedule-heading {
+      margin: 0 0 14px;
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .sitter-decline-schedule-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 14px;
+    }
+
+    .sitter-decline-schedule-header .sitter-decline-schedule-heading {
+      margin: 0;
+    }
+
+    .sitter-decline-overnight-toggle {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .sitter-decline-overnight-toggle svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .sitter-decline-overnight-toggle .is-hidden {
+      display: none;
+    }
+
+    .sitter-decline-schedule-mode[hidden] {
+      display: none;
     }
 
     .sitter-decline-textarea {
@@ -2007,13 +2273,35 @@
 
     .sitter-decline-schedule {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.2fr 1fr 1fr;
       gap: 0;
-      width: min(360px, 100%);
+      width: min(520px, 100%);
       border: 1px solid var(--gray-300);
       border-radius: 0;
       overflow: visible;
       background: var(--white);
+    }
+
+    .sitter-decline-schedule--overnight {
+      grid-template-columns: 56px minmax(0, 1.2fr) minmax(0, 1fr);
+      width: min(520px, 100%);
+    }
+
+    .sitter-decline-schedule-row-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 8px;
+      border-right: 1px solid var(--gray-300);
+      background: var(--gray-100);
+      color: var(--gray-500);
+      font-size: 13px;
+      line-height: 140%;
+    }
+
+    .sitter-decline-schedule-row-gap {
+      height: 6px;
     }
 
     .sitter-decline-schedule-cell {
@@ -2094,7 +2382,8 @@
       text-align: left;
       background: none;
       border: 0;
-      font-size: 15px;
+      border-radius: 6px;
+      font-size: 16px;
       color: var(--gray-800);
       cursor: pointer;
       white-space: nowrap;
@@ -2382,7 +2671,7 @@
 
       .booking-meta {
         width: auto;
-        min-width: 214px;
+        min-width: 180px;
         max-width: 214px;
         justify-content: flex-end;
         align-content: flex-start;
@@ -2572,6 +2861,39 @@
         width: 100%;
       }
 
+      .cancel-booking-modal {
+        top: 0;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        transform: none;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .cancel-booking-modal .modal-header {
+        padding: 20px 20px 14px;
+      }
+
+      .cancel-booking-modal .modal-header h2 {
+        font-size: 22px;
+      }
+
+      .cancel-booking-modal .modal-body {
+        padding: 18px 20px;
+      }
+
+      .cancel-booking-modal .modal-footer {
+        padding: 16px 20px max(20px, env(safe-area-inset-bottom));
+        flex-direction: row;
+      }
+
+      .cancel-booking-modal .modal-footer-actions {
+        grid-template-columns: 1fr 1.1fr;
+      }
+
       .sitter-decline-modal {
         top: 0;
         left: 0;
@@ -2630,9 +2952,18 @@
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
       }
+
+      .view-replacements-btn {
+        margin-top: 0;
+      }
     }
 
     @media (max-width: 480px) {
+      .rejected-banner {
+        gap: 2px 8px;
+        padding: 8px 12px 12px 12px;
+      }
+
       .topbar {
         height: var(--mobile-topbar-height);
         min-height: var(--mobile-topbar-height);
@@ -2767,7 +3098,7 @@
 
       .booking-meta {
         width: auto;
-        min-width: 214px;
+        min-width: 180px;
         max-width: 214px;
         justify-content: flex-end;
       }
@@ -2850,7 +3181,7 @@
       display: flex;
       flex-direction: column;
       background: var(--white);
-      border-radius: 22px;
+      border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
     }
@@ -2939,31 +3270,33 @@
 
     .rw-sitter-photo {
       position: relative;
-      width: 96px;
-      height: 96px;
+      width: 84px;
+      height: 84px;
       margin: 14px auto 0;
     }
 
     .rw-sitter-photo img {
-      width: 100%;
-      height: 100%;
-      border-radius: 999px;
+      width: 84px;
+      height: 84px;
+      border-radius: 60px;
       object-fit: cover;
-      border: 3px solid #C9F0D2;
+      border: 2px solid var(--white);
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.20);
     }
 
     .rw-verified-badge {
       position: absolute;
       right: -2px;
-      bottom: -2px;
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      background: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+      bottom: 2px;
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .rw-verified-badge .family-check {
+      position: static;
+      width: 100%;
+      height: 100%;
     }
 
     .rw-sitter-name {
@@ -2980,6 +3313,16 @@
       text-align: center;
       color: var(--gray-600);
       font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .rw-sitter-sub .rw-sub-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--gray-400);
     }
 
     .rw-sitter-rating {
@@ -3023,38 +3366,58 @@
     }
 
     .rw-tag {
-      color: var(--gray-700);
-      font-size: 13px;
-      line-height: 1.2;
-      padding: 2px 0;
+      display: inline-flex;
+      padding: 2px 8px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      background: var(--gray-200);
+      border: none;
+      color: var(--gray-600);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 140%;
     }
 
-    .rw-tag::after {
-      content: "·";
-      margin-left: 8px;
-      color: var(--gray-400);
-    }
+    .rw-tag::after { display: none; }
 
-    .rw-tag:last-child::after { content: ""; margin: 0; }
-
-    .rw-tag--more { color: var(--pink-400); }
+    .rw-tag--more { color: var(--pink-400); background: var(--pink-50, #FFF1F3); }
 
     .rw-about {
       margin-top: 18px;
+      display: flex;
+      padding: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      align-self: stretch;
+      border-radius: 8px;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
     }
 
     .rw-about h3 {
       margin: 0 0 6px;
-      color: var(--gray-900);
-      font-size: 16px;
-      font-weight: 600;
+      color: var(--gray-800);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 20px;
+      font-weight: 450;
+      line-height: 140%;
+      letter-spacing: -0.2px;
     }
 
     .rw-about p {
       margin: 0;
       color: var(--gray-700);
+      font-feature-settings: 'liga' off, 'clig' off;
       font-size: 14px;
-      line-height: 1.5;
+      font-weight: 300;
+      line-height: 150%;
+      letter-spacing: -0.16px;
+      max-height: 280px;
+      align-self: stretch;
+      overflow: hidden;
     }
 
     .rw-card-actions {
@@ -3066,7 +3429,7 @@
     .rw-btn {
       min-height: 48px;
       border: 0;
-      border-radius: 8px;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -3271,87 +3634,169 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       margin: 18px 0 8px;
     }
 
     .rw-message-head-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      color: var(--gray-700);
-      font-size: 14px;
+      gap: 4px;
+      color: #2A3539;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: 16px;
       font-weight: 450;
+      line-height: 140%;
+    }
+
+    .rw-message-head-label svg,
+    .rw-message-head-label img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .rw-link {
+      border: 0;
+      background: none;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #6C757D;
+      opacity: 0.8;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 140%;
+      text-decoration: underline;
+      text-decoration-color: #BEC2CE;
+      text-decoration-thickness: 8%;
+      text-underline-offset: 16%;
+      cursor: pointer;
+      transition: opacity 200ms ease, color 200ms ease;
+    }
+
+    .rw-link:hover { opacity: 1; }
+
+    .rw-link svg,
+    .rw-link img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex-shrink: 0;
     }
 
     .rw-composer-card {
-      border: 1px solid var(--gray-300);
-      border-radius: 18px;
-      background: var(--white);
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 4px 14px rgba(42, 53, 57, 0.04);
     }
 
     .rw-composer-bar {
       display: block;
-      min-height: 52px;
-      padding: 20px 22px 18px;
-      background: var(--white);
     }
 
     .rw-message-input {
       width: 100%;
-      border: 0;
-      outline: none;
-      background: transparent;
-      color: var(--gray-800);
-      font-family: inherit;
-      font-size: 17px;
-      font-weight: 350;
-      line-height: 1.46;
-      letter-spacing: -0.18px;
-      min-width: 0;
-      min-height: 30px;
-      max-height: 224px;
-      padding: 0;
+      min-height: 108px;
       resize: none;
-      overflow-y: auto;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      border-radius: 4px;
+      border: 1px solid #76A4FF;
+      background: #FFF;
+      box-shadow: inset 0 0 0 1px rgba(118, 164, 255, 0.08);
+      padding: 10px 12px;
+      color: #2A3539;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 132%;
+      letter-spacing: 0.2px;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      outline: none;
       field-sizing: content;
+      max-height: 224px;
+      overflow-y: auto;
     }
 
     .rw-message-input::placeholder {
-      color: var(--gray-500);
+      color: #8B91A3;
+      font-variant-numeric: lining-nums tabular-nums;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 132%;
+      letter-spacing: 0.2px;
+      opacity: 1;
+    }
+
+    .rw-message-input:focus-visible {
+      outline: 2px solid rgba(118, 164, 255, 0.8);
+      outline-offset: 2px;
+    }
+
+    .rw-message-input--template {
+      min-height: 144px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     .rw-composer-footer {
       display: flex;
-      align-items: center;
+      padding: 8px;
       justify-content: space-between;
-      padding: 12px 16px 14px;
-      border-top: 1px solid var(--gray-200);
+      align-items: center;
+      align-self: stretch;
+      margin-top: -1px;
+      border: 1px solid #CCD5E2;
+      border-top: 0;
+      border-radius: 0 0 4px 4px;
+      background: #F1F5FB;
+      color: #6C757D;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 140%;
     }
 
     .rw-template-nav {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      color: var(--gray-500);
+      gap: 6px;
+      min-width: 0;
       font-size: 14px;
+      line-height: 140%;
+    }
+
+    .rw-template-nav span {
+      min-width: 88px;
+      text-align: center;
+      white-space: nowrap;
     }
 
     .rw-template-nav button {
-      width: 26px;
-      height: 26px;
-      border: 1px solid var(--gray-300);
-      border-radius: 6px;
-      background: var(--white);
-      color: var(--pink-400);
+      border: 0;
+      background: none;
+      color: #F96073;
+      padding: 0;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .rw-template-nav button:hover { background: var(--gray-100); }
+    .rw-template-nav button:focus-visible {
+      outline: 2px solid rgba(118, 164, 255, 0.8);
+      outline-offset: 2px;
+    }
 
     /* footer nav (overview + message) */
     .rw-footer-nav {
@@ -3568,10 +4013,10 @@
         <section class="family-strip" aria-label="Quick booking shortcuts" data-page-audience-target="families">
           <article class="family-card">
             <div class="family-avatar-wrap">
-              <img class="family-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Suzanne">
+              <img class="family-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Alena">
               <svg class="family-check" viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#family-check-1)"><path d="M1.45055 8.05036L0.889313 5.24409L1.16027 2.34105L1.74087 1.76045L8.03079 0.212158L14.2239 1.76045L14.8045 2.34105L15.1916 3.21196L14.7078 7.37299L13.5466 11.1469L12.2886 12.792C11.7402 13.3403 10.6048 14.437 10.45 14.437C10.2565 14.437 8.51463 15.7918 8.41786 15.8886C8.32109 15.9853 7.54695 15.7918 7.45018 15.7918C7.37277 15.7918 6.12769 14.8886 5.51482 14.437L2.80532 11.534L1.45055 8.05036Z" fill="white"/><path d="M8.013 16C7.63315 16 7.25743 15.8927 6.92713 15.678C5.03203 14.4476 2.41852 12.4369 1.62992 9.20405C1.53496 8.80356 1.44413 8.41959 1.36568 8.05213C1.33678 7.92001 1.41936 7.78788 1.55148 7.76311C1.6836 7.73421 1.81572 7.81679 1.84049 7.94891C1.91894 8.31224 2.00564 8.69208 2.1006 9.08845C2.84378 12.152 5.36233 14.0843 7.18724 15.2692C7.68682 15.5913 8.33091 15.5913 8.82636 15.2692C10.6513 14.0843 13.1698 12.1561 13.913 9.08845C14.5364 6.52448 14.7677 4.60461 14.8544 3.44855C14.908 2.72602 14.4374 2.06542 13.7355 1.87549C13.24 1.74337 12.5877 1.56996 11.7537 1.35527C9.97003 0.896974 8.84288 0.636862 8.33091 0.525385C8.11622 0.479969 7.89739 0.479969 7.6827 0.525385C7.17073 0.636862 6.04358 0.896974 4.25995 1.35527C3.42594 1.56996 2.77359 1.74337 2.27814 1.87549C1.57625 2.06129 1.10557 2.72189 1.15925 3.44855C1.20053 4.04309 1.27485 4.68718 1.36981 5.36017C1.39046 5.49229 1.29549 5.61615 1.16337 5.6368C1.02712 5.65744 0.90739 5.56248 0.886746 5.43036C0.787656 4.74498 0.717467 4.08851 0.672051 3.48158C0.601861 2.52371 1.22531 1.64841 2.15015 1.40068C2.6456 1.26856 3.29795 1.09515 4.13609 0.880459C5.92797 0.418037 7.05925 0.157925 7.57535 0.0464486C7.86023 -0.0154829 8.14925 -0.0154829 8.43413 0.0464486C8.95023 0.162054 10.0815 0.418037 11.8734 0.880459C12.7074 1.09515 13.3597 1.26856 13.8593 1.40068C14.7883 1.64841 15.4076 2.52371 15.3374 3.48158C15.2507 4.65828 15.0154 6.60293 14.3837 9.19992C13.5992 12.4327 10.9857 14.4435 9.08648 15.6738C8.75618 15.8885 8.37633 15.9959 8.00061 15.9959L8.013 16Z" fill="#2A3539"/><path opacity="0.8" d="M12.9262 2.47831C12.5051 2.36683 11.9518 2.22232 11.2458 2.03653C9.74296 1.64843 8.79334 1.4296 8.33505 1.33051C8.12448 1.28509 7.90978 1.28509 7.69509 1.33051C7.24092 1.4296 6.28718 1.64843 4.78431 2.03653C4.07416 2.21819 3.52504 2.3627 3.1039 2.47831C2.41027 2.6641 1.95198 3.31232 2.00152 4.02659C2.07584 5.0464 2.27402 6.67313 2.8025 8.84074C3.45072 11.5038 5.59355 13.1594 7.20377 14.204C7.69509 14.5219 8.32679 14.5219 8.81811 14.204C10.4283 13.1594 12.5712 11.5038 13.2194 8.84074C13.7479 6.67313 13.946 5.04227 14.0204 4.02659C14.074 3.31232 13.6116 2.6641 12.918 2.47831H12.9262ZM11.4399 5.90518L7.60013 9.74494C7.52994 9.81512 7.43911 9.85228 7.34002 9.85228C7.24093 9.85228 7.15009 9.81512 7.0799 9.74494L5.19719 7.86222C5.05268 7.71771 5.05268 7.4865 5.19719 7.34199C5.34169 7.19749 5.5729 7.19749 5.71741 7.34199L7.34002 8.9646L10.9197 5.38496C11.0642 5.24045 11.2954 5.24045 11.4399 5.38496C11.5101 5.45515 11.5472 5.54598 11.5472 5.64507C11.5472 5.74416 11.5101 5.83499 11.4399 5.90518Z" fill="#03C499"/><path d="M13.1987 3.2421C12.823 3.14301 9.94938 2.34616 8.54973 1.96631C8.22769 1.87961 7.90978 2.12321 7.9139 2.46176C8.96261 3.58479 9.63973 4.95141 9.92461 6.39235L10.9279 5.38906C11.0724 5.24455 11.3036 5.24455 11.4481 5.38906C11.5183 5.45925 11.5555 5.55008 11.5555 5.64917C11.5555 5.74826 11.5183 5.8391 11.4481 5.90928L10.0485 7.30894C10.1723 8.88612 9.84204 10.5005 9.01628 11.9414L8.02951 13.6631C8.02951 13.6631 8.30201 13.7416 8.41761 13.6631C10.0732 12.5896 12.0509 11.0455 12.6372 8.61775C13.1905 6.33455 13.3969 4.64175 13.4712 3.62195C13.4836 3.44441 13.3721 3.29165 13.2029 3.24623L13.1987 3.2421Z" fill="#03C499"/></g><defs><clipPath id="family-check-1"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
             </div>
-            <div class="family-name">Suzanne</div>
+            <div class="family-name">Alena</div>
             <button class="family-book-btn" type="button">Book</button>
           </article>
           <article class="family-card">
@@ -3623,10 +4068,10 @@
           <div class="rejected-banner" data-rejected-banner>
             <div class="rejected-banner-copy">
               <div class="rejected-banner-media">
-                <img class="rejected-banner-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Suzanne Schwarzbacherová">
+                <img class="rejected-banner-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Alena Dvořáková">
               </div>
               <div class="rejected-banner-body">
-                <strong data-rejected-banner-copy>Suzanne declined your booking for Monday, November 27.</strong>
+                <strong data-rejected-banner-copy>Alena declined your booking for Monday, November 27.</strong>
               </div>
               <div class="rejected-banner-aside rejected-banner-aside--button">
                 <button class="rejected-banner-cta" type="button">Find a replacement</button>
@@ -3643,7 +4088,10 @@
           <div class="booking-list" data-upcoming-list>
             <article class="booking-card status-waiting" data-pending-booking data-view-state-target="normal">
               <div class="booking-topline">
-                <div class="booking-status waiting">Waiting to confirm</div>
+                <div class="booking-status waiting">
+                  <span class="families-only">Waiting to confirm by sitter</span>
+                  <span class="sitters-only">Waiting to confirm</span>
+                </div>
                 <div class="booking-actions">
                   <button class="actions-trigger" type="button" aria-haspopup="menu" aria-expanded="false" data-actions-trigger>Actions</button>
                 </div>
@@ -3651,9 +4099,9 @@
 
               <div class="booking-main">
                 <div class="booking-person">
-                  <img class="booking-person-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Suzanne Schwarzbacherová">
+                  <img class="booking-person-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Alena Dvořáková">
                   <div class="booking-person-copy">
-                    <h3><span>Suzanne</span><span>Schwarzbacherová</span></h3>
+                    <h3><span>Alena</span><span>Dvořáková</span></h3>
                     <p>Babysitting for 1 child • booking #123456</p>
                   </div>
                 </div>
@@ -3675,15 +4123,14 @@
 
             <article class="booking-card status-declined" data-view-state-target="rejected" hidden>
               <div class="booking-topline">
-                <div class="booking-status declined">Rejected</div>
+                <div class="booking-status declined">Declined by sitter</div>
                 <div class="booking-actions"><button class="actions-trigger" type="button" aria-haspopup="menu" aria-expanded="false" data-booking-ctx-trigger>Actions</button></div>
               </div>
               <div class="booking-main">
                 <div class="booking-person">
-                  <img class="booking-person-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Suzanne Schwarzbacherová">
+                  <img class="booking-person-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-08.jpg" alt="Alena Dvořáková">
                   <div class="booking-person-copy">
-                    <h3><span>Suzanne</span><span>Schwarzbacherová</span></h3>
-                    <p>Babysitting for 1 child • booking #123456</p>
+                    <h3><span>Alena</span><span>Dvořáková</span></h3>
                   </div>
                 </div>
                 <div class="booking-meta">
@@ -3691,8 +4138,16 @@
                   <span class="meta-chip">18:00–22:00</span>
                 </div>
               </div>
-              <div class="booking-reason-box"><strong>Reason:</strong> <span data-rejected-reason> Sitter has scheduled another booking</span></div>
-              <button type="button" class="view-replacements-btn">View potential replacements</button>
+              <div class="booking-reason-box families-only"><strong>Reason:</strong> <span data-rejected-reason> Sitter has scheduled another booking</span></div>
+              <button type="button" class="view-replacements-btn families-only">View potential replacements</button>
+              <div class="booking-footer sitters-only">
+                <div class="booking-reference">#123456</div>
+                <div class="booking-icons">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M8.76215 2.72949C8.76215 2.26465 8.352 1.85449 7.88715 1.85449C7.39497 1.85449 7.01215 2.26465 7.01215 2.72949C7.01215 3.22168 7.39497 3.60449 7.88715 3.60449C8.352 3.60449 8.76215 3.22168 8.76215 2.72949ZM6.13715 2.72949C6.13715 2.12793 6.46528 1.55371 7.01215 1.22559C7.53168 0.924805 8.21528 0.924805 8.76215 1.22559C9.28168 1.55371 9.63715 2.12793 9.63715 2.72949C9.63715 3.3584 9.28168 3.93262 8.76215 4.26074C8.21528 4.56152 7.53168 4.56152 7.01215 4.26074C6.46528 3.93262 6.13715 3.3584 6.13715 2.72949ZM5.69965 6.12012C4.93403 5.7373 4.27778 5.1084 3.84028 4.34277L3.56684 3.82324C3.43012 3.63184 3.51215 3.3584 3.7309 3.24902C3.92231 3.1123 4.19575 3.19434 4.30512 3.41309L4.6059 3.90527C5.26215 5.08105 6.51997 5.79199 7.85981 5.79199C9.19965 5.79199 10.4301 5.08105 11.1137 3.93262L11.4418 3.38574C11.5512 3.19434 11.8247 3.1123 12.0434 3.24902C12.2348 3.3584 12.3168 3.63184 12.1801 3.82324L11.8793 4.37012C11.4418 5.13574 10.8129 5.7373 10.0747 6.12012V14.542C10.0747 14.7881 9.8559 14.9795 9.63715 14.9795C9.39106 14.9795 9.19965 14.7881 9.19965 14.542V11.4795H6.57465V14.542C6.57465 14.7881 6.3559 14.9795 6.13715 14.9795C5.89106 14.9795 5.69965 14.7881 5.69965 14.542V6.12012ZM6.57465 6.50293V10.6045H9.19965V6.47559C8.76215 6.6123 8.32465 6.66699 7.85981 6.66699C7.42231 6.66699 6.98481 6.6123 6.57465 6.50293Z" fill="#8B91A3"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M6.38674 4.68751C6.46877 4.38673 6.49611 4.00392 6.35939 3.56642C6.22267 3.15626 5.97658 2.85548 5.70314 2.66407C5.45705 2.50001 5.26564 2.50001 5.15627 2.52735C5.01955 2.58204 4.88283 2.69142 4.77346 2.96485C4.69142 3.26564 4.66408 3.64845 4.8008 4.08595C4.96486 4.4961 5.21096 4.79689 5.45705 4.98829C5.70314 5.15235 5.89455 5.15235 6.03127 5.12501C6.14064 5.07032 6.27736 4.96095 6.38674 4.68751ZM6.27736 5.94532C5.40236 6.2461 4.3633 5.50782 3.98049 4.35939C3.59767 3.1836 3.98049 1.98048 4.88283 1.70704C5.75783 1.40626 6.79689 2.1172 7.17971 3.29298C7.56252 4.46876 7.17971 5.67189 6.27736 5.94532ZM3.16017 7.42189C3.18752 7.23048 3.16017 6.9297 2.96877 6.62892C2.80471 6.32814 2.58596 6.16407 2.36721 6.0547C2.1758 5.97267 2.06642 6.02735 2.01174 6.0547C1.98439 6.0547 1.90236 6.13673 1.87502 6.35548C1.84767 6.54689 1.90236 6.84767 2.06642 7.14845C2.23049 7.44923 2.47658 7.61329 2.66799 7.72267C2.85939 7.8047 2.96877 7.75001 3.02346 7.72267C3.0508 7.72267 3.13283 7.64064 3.16017 7.42189ZM3.46096 8.48829C2.77736 8.8711 1.82033 8.46095 1.3008 7.58595C0.781269 6.6836 0.917987 5.67189 1.57424 5.28907C2.25783 4.90626 3.21486 5.31642 3.73439 6.19142C4.25392 7.06642 4.11721 8.10548 3.46096 8.48829ZM8.00002 7.75001C7.28908 7.75001 5.01955 8.46095 3.70705 12.043C3.65236 12.1797 3.62502 12.3711 3.62502 12.5625V12.6992C3.62502 12.8633 3.76174 13 3.9258 13C4.19924 13 4.50002 12.9727 4.74611 12.8906L6.93361 12.207C7.61721 11.9883 8.35549 11.9883 9.03908 12.207L11.2266 12.8906C11.5 12.9727 11.7735 13 12.0469 13C12.211 13 12.375 12.8633 12.375 12.6992V12.5625C12.375 12.3711 12.3203 12.1797 12.2656 12.043C10.9531 8.46095 8.68361 7.75001 8.00002 7.75001ZM8.00002 6.87501C9.12111 6.87501 11.6641 7.85939 13.086 11.7422C13.1953 11.9883 13.25 12.2891 13.25 12.5625V12.6992C13.25 13.3555 12.7031 13.875 12.0469 13.875C11.6641 13.875 11.3086 13.8203 10.9531 13.7109L8.76564 13.0274C8.27346 12.8906 7.72658 12.8906 7.20705 13.0274L5.01955 13.7109C4.66408 13.8203 4.30861 13.875 3.9258 13.875C3.26955 13.875 2.75002 13.3555 2.75002 12.6992V12.5625C2.75002 12.2891 2.77736 11.9883 2.88674 11.7422C4.30861 7.85939 6.85158 6.87501 8.00002 6.87501ZM13.0039 6.62892C12.8399 6.9297 12.7852 7.20314 12.8125 7.42189C12.8399 7.64064 12.9219 7.72267 12.9492 7.72267C13.0039 7.75001 13.1133 7.8047 13.3047 7.72267C13.5235 7.61329 13.7422 7.44923 13.9063 7.14845C14.0977 6.84767 14.125 6.57423 14.0977 6.35548C14.0703 6.13673 13.9883 6.0547 13.961 6.0547C13.9063 6.02735 13.7969 5.97267 13.6055 6.0547C13.4141 6.16407 13.168 6.32814 13.0039 6.62892ZM12.2383 6.19142C12.7578 5.31642 13.7149 4.90626 14.3985 5.28907C15.0547 5.67189 15.1914 6.6836 14.6719 7.58595C14.1524 8.46095 13.1953 8.8711 12.5117 8.48829C11.8555 8.10548 11.7188 7.06642 12.2383 6.19142ZM9.39455 3.56642C9.25783 4.00392 9.28517 4.38673 9.36721 4.68751C9.47658 4.96095 9.6133 5.07032 9.75002 5.12501C9.85939 5.15235 10.0508 5.15235 10.2969 4.98829C10.5703 4.79689 10.8164 4.4961 10.9531 4.08595C11.0899 3.64845 11.0625 3.26564 10.9805 2.96485C10.8711 2.69142 10.7344 2.58204 10.625 2.52735C10.4883 2.50001 10.2969 2.50001 10.0508 2.66407C9.80471 2.85548 9.55861 3.15626 9.39455 3.56642ZM8.57424 3.29298C8.95705 2.1172 9.99611 1.40626 10.8711 1.70704C11.7735 1.98048 12.1563 3.1836 11.7735 4.35939C11.3906 5.53517 10.3516 6.2461 9.47658 5.94532C8.57424 5.67189 8.19142 4.46876 8.57424 3.29298Z" fill="#8B91A3"/></svg>
+                </div>
+                <div class="booking-price"><span>1 080</span><span class="booking-price-currency">Kč</span></div>
+              </div>
             </article>
 
             <article class="booking-card status-accepted">
@@ -3922,7 +4377,7 @@
         <div class="confirm-card">
           <div class="confirm-card-row">
             <span>Booking</span>
-            <strong>Suzanne Schwarzbacherová</strong>
+            <strong>Alena Dvořáková</strong>
           </div>
           <div class="confirm-card-row">
             <span>Date &amp; time</span>
@@ -3953,31 +4408,72 @@
     </div>
   </section>
 
+  <div class="modal-backdrop" data-cancel-booking-backdrop hidden></div>
+  <section class="modal cancel-booking-modal" aria-labelledby="cancel-booking-title" aria-modal="true" role="dialog" data-cancel-booking-modal hidden>
+    <div class="modal-header">
+      <div class="cancel-booking-heading">
+        <img class="cancel-booking-doodle" src="../availability-calendar/assets/doodle-cal-warning.svg" alt="" aria-hidden="true">
+        <h2 id="cancel-booking-title">Cancel booking</h2>
+      </div>
+      <button class="modal-close" type="button" aria-label="Close cancellation confirmation" data-close-cancel-booking>×</button>
+    </div>
+    <div class="modal-body">
+      <p class="cancel-booking-copy" data-cancel-booking-copy>Are you sure you want to cancel your following booking?</p>
+      <div class="cancel-booking-card-shell" data-cancel-booking-card-preview></div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn" type="button" data-close-cancel-booking>Keep booking</button>
+        <button class="btn danger" type="button" data-confirm-cancel-booking>Cancel booking</button>
+      </div>
+    </div>
+  </section>
+
   <div class="sitter-decline-backdrop" data-sitter-decline-backdrop hidden></div>
   <section class="sitter-decline-modal" aria-labelledby="sitter-decline-title" aria-modal="true" role="dialog" data-sitter-decline-modal hidden>
     <div class="sitter-decline-header">
       <div>
         <div class="sitter-decline-heading">
-          <svg viewBox="0 0 42 42" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M33.9993 20.043C33.3677 19.9323 35.5849 19.3105 35.5849 19.3105L33.4393 18.8774L35.2593 18.6039L36.9719 18.3467L37.0924 17.9723C35.4905 17.8063 33.0779 17.5556 33.0551 17.5556C33.0324 17.5556 35.3342 17.1453 37.4407 16.8718L37.5091 16.6602C38.1538 14.6351 36.9393 12.4928 34.8719 12.0077L13.5333 6.99696C11.5407 6.52813 9.55468 7.79138 9.13468 9.79371L8.03747 15.0193C9.90306 14.9574 11.6351 15.55 12.0779 15.5272C12.117 15.5239 12.1496 15.5207 12.1658 15.5207C12.2017 15.5207 12.1658 15.5207 12.0779 15.5272C11.57 15.576 9.35933 15.9277 7.79003 16.1816L7.71515 16.5398C8.49654 16.5886 8.96864 16.6407 9.10864 16.6374C13.5626 16.5365 8.20026 17.5295 7.43189 17.8779L5.68352 26.1932C5.23422 28.3258 6.74817 30.3737 8.9198 30.5723L29.4803 32.4412C31.1831 32.5974 32.7621 31.5458 33.2831 29.9179L36.3728 20.2286C35.4645 20.1732 34.3575 20.0984 34.0026 20.0365L33.9993 20.043Z" fill="#FFD5DA"/>
-            <path d="M30.4432 9.70899L7.1295 11.5111C6.50561 11.5593 6.03894 12.1042 6.08717 12.728L7.59868 32.2827C7.64691 32.9066 8.19177 33.3733 8.81566 33.3251L32.1294 31.523C32.7533 31.4748 33.2199 30.9299 33.1717 30.306L31.6602 10.7513C31.612 10.1274 31.0671 9.66077 30.4432 9.70899Z" fill="white"/>
-            <path d="M30.0499 15.7948L9.05005 17.6468C8.57359 17.6888 8.22141 18.1091 8.26343 18.5856L9.3735 31.1726C9.41552 31.649 9.83583 32.0012 10.3123 31.9592L31.3122 30.1071C31.7886 30.0651 32.1408 29.6448 32.0988 29.1684L30.9887 16.5814C30.9467 16.105 30.5264 15.7528 30.0499 15.7948Z" fill="#FFF3CD"/>
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M33.9993 20.0433C33.3677 19.9326 35.5849 19.3107 35.5849 19.3107L33.4393 18.8777L35.2593 18.6042L36.9719 18.347L37.0924 17.9726C35.4905 17.8065 33.0779 17.5558 33.0551 17.5558C33.0324 17.5558 35.3342 17.1456 37.4407 16.8721L37.5091 16.6605C38.1538 14.6353 36.9393 12.493 34.8719 12.0079L13.5333 6.99721C11.5407 6.52837 9.55468 7.79163 9.13468 9.79395L8.03747 15.0195C9.90306 14.9577 11.6351 15.5502 12.0779 15.5274C12.117 15.5242 12.1496 15.5209 12.1658 15.5209C12.2017 15.5209 12.1658 15.5209 12.0779 15.5274C11.57 15.5763 9.35933 15.9279 7.79003 16.1819L7.71515 16.54C8.49654 16.5888 8.96864 16.6409 9.10864 16.6377C13.5626 16.5367 8.20026 17.5298 7.43189 17.8781L5.68352 26.1935C5.23422 28.326 6.74817 30.374 8.9198 30.5726L29.4803 32.4414C31.1831 32.5977 32.7621 31.546 33.2831 29.9181L36.3728 20.2288C35.4645 20.1735 34.3575 20.0986 34.0026 20.0367L33.9993 20.0433Z" fill="#FFD5DA"/>
+            <path d="M30.4432 9.70924L7.1295 11.5113C6.50561 11.5595 6.03894 12.1044 6.08717 12.7283L7.59868 32.283C7.64691 32.9069 8.19177 33.3735 8.81566 33.3253L32.1294 31.5232C32.7533 31.475 33.2199 30.9302 33.1717 30.3063L31.6602 10.7516C31.612 10.1277 31.0671 9.66101 30.4432 9.70924Z" fill="white"/>
+            <path d="M30.0499 15.795L9.05005 17.6471C8.57359 17.6891 8.22141 18.1094 8.26343 18.5858L9.3735 31.1728C9.41552 31.6493 9.83583 32.0014 10.3123 31.9594L31.3122 30.1074C31.7886 30.0654 32.1408 29.6451 32.0988 29.1686L30.9887 16.5817C30.9467 16.1052 30.5264 15.753 30.0499 15.795Z" fill="#FFF3CD"/>
             <path d="M6.48875 12.6738L30.1692 10.7602C30.4451 10.7379 30.6873 10.9863 30.7135 11.3105L31.0004 14.8611L6.82338 16.8148L6.48843 12.6699L6.48875 12.6738Z" fill="#FF9BA7"/>
-            <path d="M30.5193 37.2076C35.4139 37.2076 39.3817 33.2398 39.3817 28.3452C39.3817 23.4507 35.4139 19.4829 30.5193 19.4829C25.6248 19.4829 21.657 23.4507 21.657 28.3452C21.657 33.2398 25.6248 37.2076 30.5193 37.2076Z" fill="white"/>
-            <path d="M30.594 36.1074C34.9257 36.1074 38.4373 32.5959 38.4373 28.2642C38.4373 23.9324 34.9257 20.4209 30.594 20.4209C26.2623 20.4209 22.7508 23.9324 22.7508 28.2642C22.7508 32.5959 26.2623 36.1074 30.594 36.1074Z" fill="#FF9BA7"/>
+            <path d="M12.6613 8.59921L10.2324 8.77588L10.5602 13.283L12.9892 13.1064L12.6613 8.59921Z" fill="white"/>
+            <path d="M11.4455 9.20583L12.7651 9.08527L13.1286 13.0636L11.4912 13.2132L11.1568 9.55261C11.1408 9.37752 11.2704 9.22183 11.4455 9.20583Z" fill="#FFF3CD"/>
+            <path d="M27.2998 7.61484L24.8708 7.7915L25.1987 12.2987L27.6276 12.122L27.2998 7.61484Z" fill="white"/>
+            <path d="M25.8817 7.96267L27.2014 7.84211L27.5648 11.8204L25.9275 11.97L25.593 8.30945C25.577 8.13436 25.7067 7.97867 25.8817 7.96267Z" fill="#FFF3CD"/>
+            <path d="M30.5193 37.208C35.4139 37.208 39.3817 33.2402 39.3817 28.3457C39.3817 23.4512 35.4139 19.4834 30.5193 19.4834C25.6248 19.4834 21.657 23.4512 21.657 28.3457C21.657 33.2402 25.6248 37.208 30.5193 37.208Z" fill="white"/>
+            <path d="M30.594 36.1079C34.9257 36.1079 38.4373 32.5964 38.4373 28.2646C38.4373 23.9329 34.9257 20.4214 30.594 20.4214C26.2623 20.4214 22.7508 23.9329 22.7508 28.2646C22.7508 32.5964 26.2623 36.1079 30.594 36.1079Z" fill="#FF9BA7"/>
             <rect x="26.2659" y="25.8516" width="2.7048" height="9.52636" transform="rotate(-45 26.2659 25.8516)" fill="white"/>
             <rect x="33.0022" y="23.939" width="2.7048" height="9.52636" transform="rotate(45 33.0022 23.939)" fill="white"/>
-            <path d="M6.5813 4.18091V6.81486" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.5813 4.18115V6.81511" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M5.26196 5.49609H7.89592" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M36.5604 8.48853L34.6981 10.3509" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M34.6981 8.48853L36.5604 10.3509" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M36.5604 8.48877L34.6981 10.3511" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M34.6981 8.48877L36.5604 10.3511" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M17.8077 35.5767L15.9454 37.439" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M15.9454 35.5767L17.8077 37.439" stroke="#F96073" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M32.3484 17.9429L31.7624 10.8908C31.7037 10.1875 31.0884 9.6666 30.3851 9.7252L28.7117 9.8652" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9.2058 11.4866L7.48021 11.6298C6.77696 11.6884 6.25603 12.3038 6.31463 13.007L7.95556 32.7275C8.01417 33.4308 8.62952 33.9517 9.33277 33.8931L21.2295 32.9033" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.767 6.01408C20.3765 6.01408 20.8707 5.51993 20.8707 4.91036C20.8707 4.30079 20.3765 3.80664 19.767 3.80664C19.1574 3.80664 18.6633 4.30079 18.6633 4.91036C18.6633 5.51993 19.1574 6.01408 19.767 6.01408Z" stroke="#FFDA6A" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.49801 32.4579C4.10758 32.4579 4.60173 31.9638 4.60173 31.3542C4.60173 30.7446 4.10758 30.2505 3.49801 30.2505C2.88844 30.2505 2.39429 30.7446 2.39429 31.3542C2.39429 31.9638 2.88844 32.4579 3.49801 32.4579Z" stroke="#FFDA6A" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M32.0781 14.7104L9.28743 16.6053" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.8705 10.2661L14.1063 11.0801" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M32.3484 17.9434L31.7624 10.8913C31.7037 10.188 31.0884 9.66708 30.3851 9.72569L28.7117 9.86569" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.2058 11.4868L7.48021 11.6301C6.77696 11.6887 6.25603 12.304 6.31463 13.0073L7.95556 32.7277C8.01417 33.431 8.62952 33.9519 9.33277 33.8933L21.2295 32.9036" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.3069 8.51291L10.6327 8.65232C10.4123 8.67067 10.2485 8.86422 10.2669 9.08463L10.6367 13.5265C10.6551 13.7469 10.8487 13.9107 11.0691 13.8923L12.7433 13.7529C12.9637 13.7346 13.1275 13.541 13.1091 13.3206L12.7392 8.87876C12.7209 8.65835 12.5273 8.49455 12.3069 8.51291Z" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26.8271 7.30636L25.1529 7.44577C24.9325 7.46413 24.7687 7.65768 24.787 7.87809L25.1569 12.3199C25.1753 12.5403 25.3688 12.7041 25.5892 12.6858L27.2634 12.5464C27.4838 12.528 27.6476 12.3345 27.6293 12.1141L27.2594 7.67222C27.2411 7.45181 27.0475 7.28801 26.8271 7.30636Z" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.0093 23.2663L13.5553 23.0547" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.0981 22.8435L18.6441 22.6318" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21.1903 22.4206L22.32 22.3262" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.8286 19.591L18.3747 19.3794" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.9168 19.1672L23.4629 18.9556" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26.009 18.7443L28.5518 18.5327" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.2793 26.5188L13.8253 26.3071" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.3687 26.0959L18.9147 25.8843" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.5499 29.7717L14.0959 29.5601" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.6421 29.3488L19.1849 29.1372" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M30.5831 37.3541C35.5585 37.3541 39.5919 33.3207 39.5919 28.3453C39.5919 23.3698 35.5585 19.3364 30.5831 19.3364C25.6076 19.3364 21.5742 23.3698 21.5742 28.3453C21.5742 33.3207 25.6076 37.3541 30.5831 37.3541Z" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M28.6806 28.2917L26.25 30.7223L28.1945 32.6667L30.625 30.2362M30.625 26.3473L33.0556 23.9167L35 25.8612L32.5695 28.2917" stroke="#2A3539" stroke-linejoin="round"/>
-            <path d="M30.625 30.2361L33.0556 32.6666L35 30.7222L32.5694 28.2916M28.6806 28.2916L26.25 25.8611L28.1944 23.9166L30.625 26.3472" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M28.6806 28.292L26.25 30.7225L28.1945 32.667L30.625 30.2364M30.625 26.3475L33.0556 23.917L35 25.8614L32.5695 28.292" stroke="#2A3539" stroke-linejoin="round"/>
+            <path d="M30.625 30.2363L33.0556 32.6669L35 30.7224L32.5694 28.2919M28.6806 28.2919L26.25 25.8613L28.1944 23.9169L30.625 26.3474" stroke="#2A3539" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <h2 id="sitter-decline-title">Why are you declining?</h2>
         </div>
@@ -3985,11 +4481,17 @@
       <button class="modal-close" type="button" aria-label="Close sitter decline flow" data-close-sitter-decline>×</button>
     </div>
     <div class="sitter-decline-body">
+      <div data-sitter-decline-step="1">
       <div class="sitter-decline-section">
         <p class="sitter-decline-section-title">Please specify reason</p>
         <div class="sitter-decline-radio-list">
           <label class="sitter-decline-choice">
-            <input type="radio" name="sitter-decline-reason" value="Already booked (not available)" checked>
+            <input type="radio" name="sitter-decline-reason" value="I don’t have a time" checked>
+            <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
+            <span class="sitter-decline-choice-copy">I don’t have a time</span>
+          </label>
+          <label class="sitter-decline-choice">
+            <input type="radio" name="sitter-decline-reason" value="Already booked (not available)">
             <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
             <span class="sitter-decline-choice-copy">Already booked (not available)</span>
           </label>
@@ -4009,6 +4511,11 @@
             <span class="sitter-decline-choice-copy">It’s too far from my place</span>
           </label>
           <label class="sitter-decline-choice">
+            <input type="radio" name="sitter-decline-reason" value="Prefer not to say">
+            <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
+            <span class="sitter-decline-choice-copy">Prefer not to say</span>
+          </label>
+          <label class="sitter-decline-choice">
             <input type="radio" name="sitter-decline-reason" value="Other reason" data-sitter-decline-other-radio>
             <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
             <span class="sitter-decline-choice-copy">Other reason</span>
@@ -4020,51 +4527,161 @@
       </div>
 
       <div class="sitter-decline-section">
-        <p class="sitter-decline-question">Do you want to suggest an alternative date and time?</p>
-        <div class="sitter-decline-radio-list">
-          <label class="sitter-decline-choice">
-            <input type="radio" name="sitter-decline-suggest" value="no" checked>
-            <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
-            <span class="sitter-decline-choice-copy">No</span>
-          </label>
-          <label class="sitter-decline-choice">
-            <input type="radio" name="sitter-decline-suggest" value="yes">
-            <span class="sitter-decline-choice-indicator" aria-hidden="true"></span>
-            <span class="sitter-decline-choice-copy">Yes</span>
-          </label>
-        </div>
+        <label class="sitter-decline-switch">
+          <input type="checkbox" data-sitter-decline-suggest-toggle>
+          <span class="sitter-decline-switch-track" aria-hidden="true"></span>
+          <span>Suggest an alternative time</span>
+        </label>
         <div class="sitter-decline-textarea-wrap" data-sitter-decline-schedule-wrap hidden>
-          <div class="sitter-decline-schedule">
-            <div class="sitter-decline-schedule-cell">
-              <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-date-trigger>
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V5H14V4C14 3.4375 13.5625 3 13 3ZM14 6H2V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V6Z" fill="#8B91A3"/></svg>
-                <span class="sitter-decline-schedule-value" data-sitter-decline-date-value>27.11.</span>
-                <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <input class="sitter-decline-native-input" type="date" value="2026-11-27" data-sitter-decline-date-input>
-              </button>
-              <div class="sitter-decline-picker-dropdown" data-sitter-decline-date-dropdown hidden></div>
+          <div class="sitter-decline-schedule-header">
+            <p class="sitter-decline-schedule-heading">Set date &amp; time</p>
+            <button class="sitter-decline-overnight-toggle" type="button" aria-label="Suggest multiple days" aria-pressed="false" data-sitter-decline-overnight-toggle>
+              <span data-sitter-decline-moon-icon>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C11.8281 18.125 13.5508 17.4922 14.8867 16.4375C10.8438 16.332 7.46875 12.957 7.46875 8.84375C7.46875 6.13672 8.875 3.78125 10.9844 2.44531C10.668 2.41016 10.3516 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C10.668 1.25 11.3359 1.32031 12.0039 1.46094C12.3555 1.56641 12.6016 1.84766 12.6367 2.19922C12.6719 2.55078 12.4961 2.90234 12.1797 3.04297C10.0703 4.09766 8.59375 6.3125 8.59375 8.84375C8.59375 12.5703 11.8633 15.5938 15.5898 15.2773C15.9414 15.2773 16.2578 15.4531 16.4336 15.8047C16.5742 16.1211 16.5039 16.5078 16.2227 16.7539C14.6055 18.3008 12.4258 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM15.625 5.75V8H17.875C18.1914 8 18.4375 8.24609 18.4375 8.5625C18.4375 8.87891 18.1914 9.125 17.875 9.125H15.625V11.375C15.625 11.6914 15.3789 11.9375 15.0625 11.9375C14.7461 11.9375 14.5 11.6914 14.5 11.375V9.125H12.25C11.9336 9.125 11.6875 8.87891 11.6875 8.5625C11.6875 8.24609 11.9336 8 12.25 8H14.5V5.75C14.5 5.43359 14.7461 5.1875 15.0625 5.1875C15.3789 5.1875 15.625 5.43359 15.625 5.75Z" fill="currentColor"/></svg>
+              </span>
+              <span class="is-hidden" data-sitter-decline-sun-icon>
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M10 1.25C10.3107 1.25 10.5625 1.50184 10.5625 1.8125V3.5C10.5625 3.81066 10.3107 4.0625 10 4.0625C9.68934 4.0625 9.4375 3.81066 9.4375 3.5V1.8125C9.4375 1.50184 9.68934 1.25 10 1.25ZM10 5.5C12.6234 5.5 14.75 7.62665 14.75 10.25C14.75 12.8734 12.6234 15 10 15C7.37665 15 5.25 12.8734 5.25 10.25C5.25 7.62665 7.37665 5.5 10 5.5ZM10 6.625C7.99897 6.625 6.375 8.24897 6.375 10.25C6.375 12.251 7.99897 13.875 10 13.875C12.001 13.875 13.625 12.251 13.625 10.25C13.625 8.24897 12.001 6.625 10 6.625ZM3.82322 3.27773C4.04289 3.05806 4.39904 3.05806 4.61872 3.27773L5.8125 4.47151C6.03217 4.69118 6.03217 5.04734 5.8125 5.26701C5.59283 5.48668 5.23667 5.48668 5.017 5.26701L3.82322 4.07323C3.60355 3.85356 3.60355 3.4974 3.82322 3.27773ZM16.1768 3.27773C16.3965 3.4974 16.3965 3.85356 16.1768 4.07323L14.983 5.26701C14.7633 5.48668 14.4072 5.48668 14.1875 5.26701C13.9678 5.04734 13.9678 4.69118 14.1875 4.47151L15.3813 3.27773C15.601 3.05806 15.9571 3.05806 16.1768 3.27773ZM1 10.25C1 9.93934 1.25184 9.6875 1.5625 9.6875H3.25C3.56066 9.6875 3.8125 9.93934 3.8125 10.25C3.8125 10.5607 3.56066 10.8125 3.25 10.8125H1.5625C1.25184 10.8125 1 10.5607 1 10.25ZM16.1875 10.25C16.1875 9.93934 16.4393 9.6875 16.75 9.6875H18.4375C18.7482 9.6875 19 9.93934 19 10.25C19 10.5607 18.7482 10.8125 18.4375 10.8125H16.75C16.4393 10.8125 16.1875 10.5607 16.1875 10.25ZM5.8125 15.233C6.03217 15.4527 6.03217 15.8088 5.8125 16.0285L4.61872 17.2223C4.39904 17.4419 4.04289 17.4419 3.82322 17.2223C3.60355 17.0026 3.60355 16.6464 3.82322 16.4268L5.017 15.233C5.23667 15.0133 5.59283 15.0133 5.8125 15.233ZM14.1875 15.233C14.4072 15.0133 14.7633 15.0133 14.983 15.233L16.1768 16.4268C16.3965 16.6464 16.3965 17.0026 16.1768 17.2223C15.9571 17.4419 15.601 17.4419 15.3813 17.2223L14.1875 16.0285C13.9678 15.8088 13.9678 15.4527 14.1875 15.233ZM10 16.4375C10.3107 16.4375 10.5625 16.6893 10.5625 17V18.6875C10.5625 18.9982 10.3107 19.25 10 19.25C9.68934 19.25 9.4375 18.9982 9.4375 18.6875V17C9.4375 16.6893 9.68934 16.4375 10 16.4375Z" fill="currentColor"/></svg>
+              </span>
+            </button>
+          </div>
+          <div class="sitter-decline-schedule-mode" data-sitter-decline-day-mode>
+            <div class="sitter-decline-schedule">
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-date-trigger>
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V5H14V4C14 3.4375 13.5625 3 13 3ZM14 6H2V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V6Z" fill="#8B91A3"/></svg>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-date-value>27.11.</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="date" value="2026-11-27" data-sitter-decline-date-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-date-dropdown hidden></div>
+              </div>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-time-trigger>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-time-value>16:00</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="time" value="16:00" data-sitter-decline-time-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-time-dropdown hidden></div>
+              </div>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-time-to-trigger>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-time-to-value>18:00</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="time" value="18:00" data-sitter-decline-time-to-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-time-to-dropdown hidden></div>
+              </div>
             </div>
-            <div class="sitter-decline-schedule-cell">
-              <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-time-trigger>
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M8 15C4.125 15 1 11.875 1 8C1 4.15625 4.125 1 8 1C11.8438 1 15 4.15625 15 8C15 11.875 11.8438 15 8 15ZM8 0C3.5625 0 0 3.59375 0 8C0 12.4375 3.5625 16 8 16C12.4062 16 16 12.4375 16 8C16 3.59375 12.4062 0 8 0ZM8.5 3.5C8.5 3.21875 8.25 3 8 3C7.71875 3 7.5 3.21875 7.5 3.5V8C7.5 8.15625 7.5625 8.28125 7.65625 8.375L10.1562 10.875C10.3438 11.0625 10.6562 11.0625 10.8438 10.875C11.0312 10.6875 11.0312 10.375 10.8438 10.1875L8.5 7.84375V3.5Z" fill="#8B91A3"/></svg>
-                <span class="sitter-decline-schedule-value" data-sitter-decline-time-value>16:00</span>
-                <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <input class="sitter-decline-native-input" type="time" value="16:00" data-sitter-decline-time-input>
-              </button>
-              <div class="sitter-decline-picker-dropdown" data-sitter-decline-time-dropdown hidden></div>
+          </div>
+          <div class="sitter-decline-schedule-mode" data-sitter-decline-overnight-mode hidden>
+            <div class="sitter-decline-schedule sitter-decline-schedule--overnight">
+              <span class="sitter-decline-schedule-row-label">From</span>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-overnight-date-from-trigger>
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V5H14V4C14 3.4375 13.5625 3 13 3ZM14 6H2V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V6Z" fill="#8B91A3"/></svg>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-overnight-date-from-value>27.11.</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="date" value="2026-11-27" data-sitter-decline-overnight-date-from-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-overnight-date-from-dropdown hidden></div>
+              </div>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-overnight-time-from-trigger>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-overnight-time-from-value>16:00</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="time" value="16:00" data-sitter-decline-overnight-time-from-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-overnight-time-from-dropdown hidden></div>
+              </div>
+            </div>
+            <div class="sitter-decline-schedule-row-gap" aria-hidden="true"></div>
+            <div class="sitter-decline-schedule sitter-decline-schedule--overnight">
+              <span class="sitter-decline-schedule-row-label">To</span>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-overnight-date-to-trigger>
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V5H14V4C14 3.4375 13.5625 3 13 3ZM14 6H2V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V6Z" fill="#8B91A3"/></svg>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-overnight-date-to-value>28.11.</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="date" value="2026-11-28" data-sitter-decline-overnight-date-to-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-overnight-date-to-dropdown hidden></div>
+              </div>
+              <div class="sitter-decline-schedule-cell">
+                <button type="button" class="sitter-decline-schedule-field" data-sitter-decline-overnight-time-to-trigger>
+                  <span class="sitter-decline-schedule-value" data-sitter-decline-overnight-time-to-value>18:00</span>
+                  <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="#F96073" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input class="sitter-decline-native-input" type="time" value="18:00" data-sitter-decline-overnight-time-to-input>
+                </button>
+                <div class="sitter-decline-picker-dropdown" data-sitter-decline-overnight-time-to-dropdown hidden></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div data-sitter-decline-step="2" hidden>
+        <div class="rw-message-head">
+          <span class="rw-message-head-label"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.6 4.4L16 8l-4.4 1.6L10 14l-1.6-4.4L4 8l4.4-1.6L10 2z" fill="#F96073"/></svg>Automatic reply</span>
+          <button class="rw-link" style="text-decoration:underline" type="button" data-sitter-decline-clear>Clear</button>
+        </div>
+        <div class="rw-composer-card">
+          <textarea class="rw-message-input rw-message-input--template" data-sitter-decline-message rows="1" placeholder="Your message..."></textarea>
+          <div class="rw-composer-footer">
+            <div class="rw-template-nav">
+              <button type="button" data-sitter-decline-tpl-prev aria-label="Previous template">‹</button>
+              <span data-sitter-decline-tpl-label>template 1 / 3</span>
+              <button type="button" data-sitter-decline-tpl-next aria-label="Next template">›</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="sitter-decline-footer">
+    <div class="sitter-decline-footer" data-sitter-decline-footer-step="1">
       <button class="btn" type="button" data-close-sitter-decline>Cancel</button>
-      <button class="btn danger" type="button" data-sitter-decline-primary>Decline booking</button>
+      <button class="btn primary" type="button" data-sitter-decline-continue>Continue to message <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="margin-left:8px"><path d="M6.75 4.5L11.25 9L6.75 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="sitter-decline-footer" data-sitter-decline-footer-step="2" hidden style="justify-content:space-between">
+      <button class="btn" type="button" data-sitter-decline-back aria-label="Back to reason">‹</button>
+      <button class="btn primary" type="button" data-sitter-decline-send><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="margin-right:8px"><path d="M15 1L7.5 8.5M15 1l-4.8 14-2.7-6.5L1 5.8 15 1z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Send a message</button>
     </div>
   </section>
 
-  <div class="toast" aria-live="polite" data-toast>
-    <span>Booking rejected and moved to history.</span>
+  <div class="toast-layer" aria-live="polite" aria-atomic="true">
+    <div class="toast-card" id="msg-toast" role="status" data-toast>
+      <div class="toast-illustration" aria-hidden="true">
+        <svg data-toast-default-illustration width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M52.1066 28.9352C51.1366 28.7652 54.5416 27.8102 54.5416 27.8102L51.2466 27.1452L54.0416 26.7252L56.6716 26.3302L56.8566 25.7552C54.3966 25.5002 50.6916 25.1152 50.6566 25.1152C50.6216 25.1152 54.1566 24.4852 57.3916 24.0652L57.4966 23.7402C58.4866 20.6302 56.6216 17.3402 53.4466 16.5952L20.6766 8.90018C17.6166 8.18018 14.5666 10.1202 13.9216 13.1952L12.2366 21.2202C15.1016 21.1252 17.7616 22.0352 18.4416 22.0002C18.5016 21.9952 18.5516 21.9902 18.5766 21.9902C18.6316 21.9902 18.5766 21.9902 18.4416 22.0002C17.6616 22.0752 14.2666 22.6152 11.8566 23.0052L11.7416 23.5552C12.9416 23.6302 13.6666 23.7102 13.8816 23.7052C20.7216 23.5502 12.4866 25.0752 11.3066 25.6102L8.62162 38.3802C7.93162 41.6552 10.2566 44.8002 13.5916 45.1052L45.1666 47.9752C47.7816 48.2152 50.2066 46.6002 51.0066 44.1002L55.7516 29.2202C54.3566 29.1352 52.6566 29.0202 52.1116 28.9252L52.1066 28.9352Z" fill="#FFD5DA"/>
+          <path d="M6.94531 37.3553L46.5203 11.8203L45.8403 27.1653C40.5703 27.7303 36.5553 34.4553 38.6353 38.8253C40.7153 43.1953 44.5553 44.7303 44.5553 44.7303L43.7703 52.2653L31.7453 47.3903C31.7453 47.3903 25.3953 53.8903 25.4153 53.4603C25.4353 53.0303 18.9303 42.2953 18.9303 42.2953L6.95031 37.3503L6.94531 37.3553Z" fill="white"/>
+          <path d="M9.58203 37.7102L46.357 13.9902L45.512 26.5552C45.512 26.5552 38.807 28.8852 38.452 34.3902C38.097 39.8952 44.552 44.7302 44.552 44.7302L43.767 52.2652L31.742 47.3902C31.742 47.3902 25.292 54.0352 25.412 53.4602C25.532 52.8852 18.927 42.2952 18.927 42.2952L9.58203 37.7052V37.7102Z" fill="#FFF3CD"/>
+          <path d="M30.0045 4.68945L27.1445 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M27.1445 4.68945L30.0045 7.54945" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.8717 50.1592L11.0117 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11.0117 50.1592L13.8717 53.0242" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M53.9297 50.7793V54.8243" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M51.9023 52.8047H55.9523" stroke="#F96073" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M52.7145 12.1439C53.6507 12.1439 54.4095 11.385 54.4095 10.4489C54.4095 9.51278 53.6507 8.75391 52.7145 8.75391C51.7784 8.75391 51.0195 9.51278 51.0195 10.4489C51.0195 11.385 51.7784 12.1439 52.7145 12.1439Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.1325 17.7543C10.0686 17.7543 10.8275 16.9954 10.8275 16.0593C10.8275 15.1231 10.0686 14.3643 9.1325 14.3643C8.19638 14.3643 7.4375 15.1231 7.4375 16.0593C7.4375 16.9954 8.19638 17.7543 9.1325 17.7543Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M35.4372 57.0541C36.3733 57.0541 37.1322 56.2952 37.1322 55.3591C37.1322 54.4229 36.3733 53.6641 35.4372 53.6641C34.5011 53.6641 33.7422 54.4229 33.7422 55.3591C33.7422 56.2952 34.5011 57.0541 35.4372 57.0541Z" stroke="#FFDA6A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M44.0253 48.4843L43.9503 49.5393L43.7653 52.2643L25.8153 44.9893L39.7453 21.5193L18.9253 42.5243L6.94531 37.3543L46.5203 11.8193L45.6503 24.5543" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18.9219 42.5244L25.4069 53.4594L25.8119 44.9894" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M25.4102 53.459L31.7402 47.499" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7.26844 31.5088L4.27344 33.4038" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28.575 18.0439L10.625 29.3889" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" fill="white"/>
+          <path d="M46.5175 44.8641C50.98 44.8641 54.5975 41.2466 54.5975 36.7841C54.5975 32.3216 50.98 28.7041 46.5175 28.7041C42.055 28.7041 38.4375 32.3216 38.4375 36.7841C38.4375 41.2466 42.055 44.8641 46.5175 44.8641Z" fill="#FF9BA7"/>
+          <path d="M42.6328 36.8996L45.3228 39.5896L50.9378 33.9746" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M46.5186 46.8692C52.0884 46.8692 56.6036 42.354 56.6036 36.7842C56.6036 31.2144 52.0884 26.6992 46.5186 26.6992C40.9488 26.6992 36.4336 31.2144 36.4336 36.7842C36.4336 42.354 40.9488 46.8692 46.5186 46.8692Z" stroke="#2A3539" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <img src="./assets/doodle-reply.svg" alt="" data-toast-reply-illustration hidden>
+      </div>
+      <div class="toast-copy">
+        <div class="toast-title" id="msg-toast-title"></div>
+      </div>
+      <button class="toast-close" id="msg-toast-close" type="button" aria-label="Close toast">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.25 5.28125C3.9375 5 3.9375 4.5 4.25 4.21875C4.53125 3.9375 5 3.9375 5.3125 4.21875L12.0312 10.9375L18.75 4.21875C19.0312 3.9375 19.5 3.9375 19.7812 4.21875C20.0938 4.5 20.0938 5 19.7812 5.28125L13.0625 12L19.7812 18.7188C20.0938 19 20.0938 19.5 19.7812 19.7812C19.5 20.0625 19.0312 20.0625 18.75 19.7812L12.0312 13.0625L5.3125 19.7812C5 20.0625 4.53125 20.0625 4.25 19.7812C3.9375 19.4688 3.9375 19 4.25 18.7188L10.9688 12L4.25 5.28125Z" fill="#8B91A3"/></svg>
+      </button>
+    </div>
   </div>
 
   <div class="rw-overlay" data-rw-overlay role="dialog" aria-modal="true" aria-labelledby="rw-title" hidden>
@@ -4105,22 +4722,63 @@
       var modal = document.querySelector('[data-reject-modal]');
       var modalBackdrop = document.querySelector('[data-modal-backdrop]');
       var closeModalButtons = Array.prototype.slice.call(document.querySelectorAll('[data-close-modal]'));
+      var cancelBookingModal = document.querySelector('[data-cancel-booking-modal]');
+      var cancelBookingBackdrop = document.querySelector('[data-cancel-booking-backdrop]');
+      var closeCancelBookingButtons = Array.prototype.slice.call(document.querySelectorAll('[data-close-cancel-booking]'));
+      var confirmCancelBookingButton = document.querySelector('[data-confirm-cancel-booking]');
+      var cancelBookingCopy = document.querySelector('[data-cancel-booking-copy]');
+      var cancelBookingCardPreview = document.querySelector('[data-cancel-booking-card-preview]');
+      var cancelBookingTargetCard = null;
       var sitterDeclineModal = document.querySelector('[data-sitter-decline-modal]');
       var sitterDeclineBackdrop = document.querySelector('[data-sitter-decline-backdrop]');
       var closeSitterDeclineButtons = Array.prototype.slice.call(document.querySelectorAll('[data-close-sitter-decline]'));
-      var sitterDeclinePrimaryButton = document.querySelector('[data-sitter-decline-primary]');
+      var sitterDeclineContinueButton = document.querySelector('[data-sitter-decline-continue]');
+      var sitterDeclineBackButton = document.querySelector('[data-sitter-decline-back]');
+      var sitterDeclineSendButton = document.querySelector('[data-sitter-decline-send]');
+      var sitterDeclineStepEls = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-decline-step]'));
+      var sitterDeclineFooter1 = document.querySelector('[data-sitter-decline-footer-step="1"]');
+      var sitterDeclineFooter2 = document.querySelector('[data-sitter-decline-footer-step="2"]');
+      var sitterDeclineMessageInput = document.querySelector('[data-sitter-decline-message]');
+      var sitterDeclineTplLabel = document.querySelector('[data-sitter-decline-tpl-label]');
+      var sitterDeclineClearButton = document.querySelector('[data-sitter-decline-clear]');
+      var sitterDeclineTplPrev = document.querySelector('[data-sitter-decline-tpl-prev]');
+      var sitterDeclineTplNext = document.querySelector('[data-sitter-decline-tpl-next]');
+      var sitterDeclineTemplates = [];
+      var sitterDeclineTpl = 0;
+      var sitterDeclineTypingTimer = null;
       var sitterDeclineReasonInputs = Array.prototype.slice.call(document.querySelectorAll('input[name="sitter-decline-reason"]'));
-      var sitterDeclineSuggestInputs = Array.prototype.slice.call(document.querySelectorAll('input[name="sitter-decline-suggest"]'));
+      var sitterDeclineSuggestToggle = document.querySelector('[data-sitter-decline-suggest-toggle]');
       var sitterDeclineOtherRadio = document.querySelector('[data-sitter-decline-other-radio]');
       var sitterDeclineOtherWrap = document.querySelector('[data-sitter-decline-other-wrap]');
       var sitterDeclineOtherInput = document.querySelector('[data-sitter-decline-other-input]');
       var sitterDeclineScheduleWrap = document.querySelector('[data-sitter-decline-schedule-wrap]');
       var sitterDeclineDateInput = document.querySelector('[data-sitter-decline-date-input]');
       var sitterDeclineTimeInput = document.querySelector('[data-sitter-decline-time-input]');
+      var sitterDeclineTimeToInput = document.querySelector('[data-sitter-decline-time-to-input]');
       var sitterDeclineDateTrigger = document.querySelector('[data-sitter-decline-date-trigger]');
       var sitterDeclineTimeTrigger = document.querySelector('[data-sitter-decline-time-trigger]');
+      var sitterDeclineTimeToTrigger = document.querySelector('[data-sitter-decline-time-to-trigger]');
       var sitterDeclineDateValue = document.querySelector('[data-sitter-decline-date-value]');
       var sitterDeclineTimeValue = document.querySelector('[data-sitter-decline-time-value]');
+      var sitterDeclineTimeToValue = document.querySelector('[data-sitter-decline-time-to-value]');
+      var sitterDeclineOvernightToggle = document.querySelector('[data-sitter-decline-overnight-toggle]');
+      var sitterDeclineDayMode = document.querySelector('[data-sitter-decline-day-mode]');
+      var sitterDeclineOvernightMode = document.querySelector('[data-sitter-decline-overnight-mode]');
+      var sitterDeclineMoonIcon = document.querySelector('[data-sitter-decline-moon-icon]');
+      var sitterDeclineSunIcon = document.querySelector('[data-sitter-decline-sun-icon]');
+      var sitterDeclineOvernightDateFromInput = document.querySelector('[data-sitter-decline-overnight-date-from-input]');
+      var sitterDeclineOvernightDateToInput = document.querySelector('[data-sitter-decline-overnight-date-to-input]');
+      var sitterDeclineOvernightTimeFromInput = document.querySelector('[data-sitter-decline-overnight-time-from-input]');
+      var sitterDeclineOvernightTimeToInput = document.querySelector('[data-sitter-decline-overnight-time-to-input]');
+      var sitterDeclineOvernightDateFromTrigger = document.querySelector('[data-sitter-decline-overnight-date-from-trigger]');
+      var sitterDeclineOvernightDateToTrigger = document.querySelector('[data-sitter-decline-overnight-date-to-trigger]');
+      var sitterDeclineOvernightTimeFromTrigger = document.querySelector('[data-sitter-decline-overnight-time-from-trigger]');
+      var sitterDeclineOvernightTimeToTrigger = document.querySelector('[data-sitter-decline-overnight-time-to-trigger]');
+      var sitterDeclineOvernightDateFromValue = document.querySelector('[data-sitter-decline-overnight-date-from-value]');
+      var sitterDeclineOvernightDateToValue = document.querySelector('[data-sitter-decline-overnight-date-to-value]');
+      var sitterDeclineOvernightTimeFromValue = document.querySelector('[data-sitter-decline-overnight-time-from-value]');
+      var sitterDeclineOvernightTimeToValue = document.querySelector('[data-sitter-decline-overnight-time-to-value]');
+      var sitterDeclineIsOvernight = false;
       var primaryAction = document.querySelector('[data-primary-action]');
       var secondaryAction = document.querySelector('[data-secondary-action]');
       var stepOne = document.querySelector('[data-step-one]');
@@ -4133,7 +4791,18 @@
       var confirmMessage = document.querySelector('[data-confirm-message]');
       var pendingBooking = document.querySelector('[data-pending-booking]');
       var pastList = document.querySelector('[data-past-list]');
-      var toast = document.querySelector('[data-toast]');
+      var toast = document.getElementById('msg-toast');
+      var toastTitle = document.getElementById('msg-toast-title');
+      var toastClose = document.getElementById('msg-toast-close');
+      var toastDefaultIllustration = document.querySelector('[data-toast-default-illustration]');
+      var toastReplyIllustration = document.querySelector('[data-toast-reply-illustration]');
+      var toastTimer = null;
+      if (toastClose) {
+        toastClose.addEventListener('click', function() {
+          if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+          toast.classList.remove('is-visible');
+        });
+      }
       var liveRegion = document.querySelector('[data-modal-live]');
       var currentStep = 1;
       var currentViewState = 'normal';
@@ -4189,7 +4858,7 @@
         }
 
         if (rejectedBannerCopy) {
-          rejectedBannerCopy.textContent = 'Suzanne declined your booking for Monday, November 27.';
+          rejectedBannerCopy.textContent = 'Alena declined your booking for Monday, November 27.';
         }
       }
 
@@ -4306,6 +4975,7 @@
       var activeBookingMenu = null;
       var activeBookingMenuAnchor = null;
       var bookingMenuRafId = null;
+      var ACTIONS_MENU_GUTTER = 8;
 
       var ICON_CANCEL = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V4C14 3.4375 13.5625 3 13 3ZM5.90625 6.40625C6.09375 6.21875 6.40625 6.21875 6.59375 6.40625L8 7.78125L9.40625 6.40625C9.59375 6.21875 9.90625 6.21875 10.0938 6.40625C10.3125 6.59375 10.3125 6.90625 10.0938 7.09375L8.71875 8.5L10.0938 9.90625C10.3125 10.0938 10.3125 10.4062 10.0938 10.5938C9.90625 10.8125 9.59375 10.8125 9.40625 10.5938L8 9.21875L6.59375 10.5938C6.40625 10.8125 6.09375 10.8125 5.90625 10.5938C5.71875 10.4062 5.71875 10.0938 5.90625 9.90625L7.28125 8.5L5.90625 7.09375C5.71875 6.90625 5.71875 6.59375 5.90625 6.40625Z" fill="#F96073"/></svg>';
       var ICON_ACCEPT = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 3.5C14.7812 3.78125 14.7812 4.25 14.5 4.53125L6.5 12.5312C6.21875 12.8125 5.78125 12.8125 5.5 12.5312L1.5 8.53125C1.1875 8.25 1.1875 7.78125 1.5 7.5C1.78125 7.1875 2.25 7.1875 2.53125 7.5L6 10.9688L13.4688 3.5C13.75 3.1875 14.2188 3.1875 14.5 3.5Z" fill="#F96073"/></svg>';
@@ -4317,9 +4987,11 @@
         if (!activeBookingMenu || !activeBookingMenuAnchor) return;
         var rect = activeBookingMenuAnchor.getBoundingClientRect();
         if (rect.width === 0) { closeActionsMenu(); return; }
+        var menuWidth = activeBookingMenu.offsetWidth || 220;
         activeBookingMenu.style.top = (rect.bottom + 6) + 'px';
-        var left = rect.right - 220;
-        activeBookingMenu.style.left = Math.max(8, left) + 'px';
+        var left = rect.right - menuWidth;
+        var maxLeft = Math.max(ACTIONS_MENU_GUTTER, window.innerWidth - menuWidth - ACTIONS_MENU_GUTTER);
+        activeBookingMenu.style.left = Math.min(Math.max(ACTIONS_MENU_GUTTER, left), maxLeft) + 'px';
         bookingMenuRafId = requestAnimationFrame(positionBookingMenu);
       }
 
@@ -4338,63 +5010,89 @@
         var bsBookBtn2 = document.querySelector('[data-bs-book]');
         var bsMessageBtn2 = document.querySelector('[data-bs-message]');
         var bsThirdActionBtn = document.querySelector('[data-bs-third-action]');
+        var bsFourthActionBtn = document.querySelector('[data-bs-fourth-action]');
         var btns = bs.querySelectorAll('button');
+        if (bs._hideTimer) {
+          window.clearTimeout(bs._hideTimer);
+          bs._hideTimer = null;
+        }
+        if (bs._openRaf) {
+          cancelAnimationFrame(bs._openRaf);
+          bs._openRaf = null;
+        }
         bs.dataset.mode = currentPageAudience === 'sitters' ? 'waiting-sitters' : 'waiting-families';
-        bsTitleEl.textContent = 'Suzanne Schwarzbacherová';
+        bsTitleEl.textContent = 'Alena Dvořáková';
         if (currentPageAudience === 'sitters') {
-          bsBookLabelEl.textContent = 'Accept booking';
-          btns[0].innerHTML = ICON_ACCEPT + '<span>Accept booking</span>';
-          btns[1].innerHTML = ICON_MSG_BOOKING + '<span>Message family</span>';
-          btns[2].innerHTML = ICON_DECLINE + '<span style="color:#EA2323;">Decline booking</span>';
+          if (bsBookLabelEl) bsBookLabelEl.textContent = 'Accept booking';
+          btns[0].innerHTML = ICON_ACCEPT + '<span data-bs-book-label>Accept booking</span>';
+          btns[1].innerHTML = ICON_MSG_BOOKING + '<span>Send a message</span>';
+          btns[2].innerHTML = ICON_PROFILE_BOOKING + '<span>View profile</span>';
+          btns[3].innerHTML = ICON_DECLINE + '<span style="color:#EA2323;">Decline booking</span>';
           bs.querySelector('.bs-separator').hidden = false;
-          btns[3].hidden = true;
+          btns[3].hidden = false;
           if (bsBookBtn2) {
             bsBookBtn2.onclick = function() {
-              bs.classList.remove('is-open');
-              bsBackdrop.hidden = true;
-              document.body.style.overflow = '';
-              window.setTimeout(function() { bs.hidden = true; }, 280);
-              if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
-              liveRegion.textContent = 'Booking accepted.';
+              closeBookingActionsSheet(bs, bsBackdrop);
+              acceptPendingBooking();
               showToast('Booking accepted.');
             };
           }
           if (bsMessageBtn2) {
             bsMessageBtn2.onclick = function() {
-              bs.classList.remove('is-open');
-              bsBackdrop.hidden = true;
-              document.body.style.overflow = '';
-              window.setTimeout(function() { bs.hidden = true; }, 280);
-              if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
-              liveRegion.textContent = 'Message family action opened.';
-              showToast('Message family action is ready.');
+              closeBookingActionsSheet(bs, bsBackdrop);
+              liveRegion.textContent = 'Send a message action opened.';
+              showToast('Send a message action is ready.');
             };
           }
-          if (bsThirdActionBtn) {
-            bsThirdActionBtn.onclick = function() {
-              bs.classList.remove('is-open');
-              bsBackdrop.hidden = true;
-              document.body.style.overflow = '';
-              window.setTimeout(function() { bs.hidden = true; }, 280);
-              if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
+          if (bsThirdActionBtn) bsThirdActionBtn.onclick = null;
+          if (bsFourthActionBtn) {
+            bsFourthActionBtn.onclick = function() {
+              closeBookingActionsSheet(bs, bsBackdrop);
               openSitterDeclineModal();
             };
           }
         } else {
-          bsBookLabelEl.textContent = 'Cancel booking';
-          btns[0].innerHTML = ICON_CANCEL + '<span>Cancel booking</span>';
+          if (bsBookLabelEl) bsBookLabelEl.textContent = 'Cancel booking';
+          btns[0].innerHTML = ICON_CANCEL + '<span data-bs-book-label>Cancel booking</span>';
           btns[1].innerHTML = ICON_MSG_BOOKING + '<span>Send a message</span>';
           btns[2].innerHTML = ICON_PROFILE_BOOKING + '<span>View profile</span>';
           bs.querySelector('.bs-separator').hidden = true;
           btns[3].hidden = true;
-          if (bsBookBtn2) bsBookBtn2.onclick = null;
+          if (bsBookBtn2) {
+            bsBookBtn2.onclick = function() {
+              closeBookingActionsSheet(bs, bsBackdrop, function() {
+                openCancelBookingDialog();
+              });
+            };
+          }
           if (bsMessageBtn2) bsMessageBtn2.onclick = null;
           if (bsThirdActionBtn) bsThirdActionBtn.onclick = null;
+          if (bsFourthActionBtn) bsFourthActionBtn.onclick = null;
         }
         bs.hidden = false;
         bsBackdrop.hidden = false;
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(function() { bs.classList.add('is-open'); });
+        bs._openRaf = requestAnimationFrame(function() {
+          bs._openRaf = null;
+          bs.classList.add('is-open');
+        });
+      }
+
+      function closeBookingActionsSheet(bs, bsBackdrop, onHidden) {
+        if (bs._openRaf) {
+          cancelAnimationFrame(bs._openRaf);
+          bs._openRaf = null;
+        }
+        if (bs._hideTimer) window.clearTimeout(bs._hideTimer);
+        bs.classList.remove('is-open');
+        bsBackdrop.hidden = true;
+        document.body.style.overflow = '';
+        if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
+        bs._hideTimer = window.setTimeout(function() {
+          bs.hidden = true;
+          bs._hideTimer = null;
+          if (onHidden) onHidden();
+        }, 280);
       }
 
       function openActionsMenu() {
@@ -4411,7 +5109,8 @@
         if (currentPageAudience === 'sitters') {
           menu.innerHTML =
             '<button type="button" data-waiting-action="accept">' + ICON_ACCEPT + '<span>Accept booking</span></button>' +
-            '<button type="button" data-waiting-action="message">' + ICON_MSG_BOOKING + '<span>Message family</span></button>' +
+            '<button type="button" data-waiting-action="message">' + ICON_MSG_BOOKING + '<span>Send a message</span></button>' +
+            '<button type="button" data-waiting-action="profile">' + ICON_PROFILE_BOOKING + '<span>View profile</span></button>' +
             '<div class="ctx-separator"></div>' +
             '<button type="button" class="danger" data-waiting-action="decline">' + ICON_DECLINE + '<span>Decline booking</span></button>';
         } else {
@@ -4440,13 +5139,17 @@
             return;
           }
           if (action === 'accept') {
-            liveRegion.textContent = 'Booking accepted.';
+            acceptPendingBooking();
             showToast('Booking accepted.');
             return;
           }
+          if (action === 'cancel' && currentPageAudience === 'families') {
+            openCancelBookingDialog();
+            return;
+          }
           if (action === 'message') {
-            liveRegion.textContent = 'Message family action opened.';
-            showToast('Message family action is ready.');
+            liveRegion.textContent = 'Send a message action opened.';
+            showToast('Send a message action is ready.');
           }
         });
         document.body.appendChild(menu);
@@ -4456,9 +5159,87 @@
         positionBookingMenu();
       }
 
+      function cancelPendingBooking(card) {
+        var targetCard = card || pendingBooking;
+        if (!targetCard) return;
+        var status = targetCard.querySelector('.booking-status');
+        targetCard.classList.remove('status-waiting', 'status-accepted');
+        targetCard.classList.add('status-cancelled');
+        if (status) {
+          status.classList.remove('waiting', 'accepted');
+          status.classList.add('cancelled');
+          status.textContent = 'Cancelled';
+        }
+        liveRegion.textContent = 'Booking cancelled.';
+      }
+
+      function acceptPendingBooking() {
+        if (!pendingBooking) return;
+        var status = pendingBooking.querySelector('.booking-status');
+        pendingBooking.classList.remove('status-waiting', 'status-cancelled');
+        pendingBooking.classList.add('status-accepted');
+        if (status) {
+          status.classList.remove('waiting', 'cancelled');
+          status.classList.add('accepted');
+          status.textContent = 'Accepted';
+        }
+        liveRegion.textContent = 'Booking accepted.';
+      }
+
+      function renderCancelBookingPreview(card) {
+        if (!cancelBookingCardPreview || !card) return;
+        var preview = card.cloneNode(true);
+        var actions = preview.querySelector('.booking-actions');
+        if (actions) actions.remove();
+        preview.hidden = false;
+        preview.removeAttribute('data-pending-booking');
+        preview.removeAttribute('data-view-state-target');
+        preview.classList.add('cancel-booking-card-preview');
+        cancelBookingCardPreview.replaceChildren(preview);
+      }
+
+      function openCancelBookingDialog(card) {
+        if (!cancelBookingModal || !cancelBookingBackdrop) return;
+        cancelBookingTargetCard = card || pendingBooking;
+        if (!cancelBookingTargetCard) return;
+        var recipientName = getBookingCardPersonName(cancelBookingTargetCard);
+        if (cancelBookingCopy) {
+          cancelBookingCopy.textContent = 'Are you sure you want to cancel your following booking with ' + recipientName + '?';
+        }
+        renderCancelBookingPreview(cancelBookingTargetCard);
+        cancelBookingModal.hidden = false;
+        cancelBookingBackdrop.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeCancelBookingDialog() {
+        if (!cancelBookingModal || !cancelBookingBackdrop) return;
+        cancelBookingModal.hidden = true;
+        cancelBookingBackdrop.hidden = true;
+        cancelBookingTargetCard = null;
+        document.body.style.overflow = '';
+      }
+
+      function getBookingCardPersonName(card) {
+        if (!card) return 'this sitter';
+        var heading = card.querySelector('.booking-person-copy h3');
+        if (!heading) return 'this sitter';
+        return heading.textContent.replace(/\s+/g, ' ').trim() || 'this sitter';
+      }
+
       if (actionsTrigger) {
         actionsTrigger.addEventListener('click', function(event) {
           event.stopPropagation();
+          if (pendingBooking && (
+            pendingBooking.classList.contains('status-cancelled') ||
+            pendingBooking.classList.contains('status-accepted')
+          )) {
+            closeActionsMenu();
+            document.dispatchEvent(new CustomEvent('open-pending-booking-context-actions', {
+              detail: { trigger: actionsTrigger }
+            }));
+            return;
+          }
           if (activeBookingMenu) {
             closeActionsMenu();
           } else {
@@ -4471,6 +5252,11 @@
         if (activeBookingMenu && !event.target.closest('.actions-menu') && !event.target.closest('[data-actions-trigger]')) {
           closeActionsMenu();
         }
+      });
+
+      window.addEventListener('resize', function() {
+        if (!activeBookingMenu) return;
+        closeActionsMenu();
       });
 
       function syncPrimaryButton() {
@@ -4502,26 +5288,197 @@
       }
 
       function isSitterSuggestEnabled() {
-        var selected = sitterDeclineSuggestInputs.find(function(input) {
+        return !!(sitterDeclineSuggestToggle && sitterDeclineSuggestToggle.checked);
+      }
+
+      function isSitterPreferNotToSaySelected() {
+        var selected = sitterDeclineReasonInputs.find(function(input) {
           return input.checked;
         });
-        return !!selected && selected.value === 'yes';
+        return !!selected && selected.value === 'Prefer not to say';
       }
 
       function syncSitterDeclineModal() {
-        if (!sitterDeclinePrimaryButton) return;
         var isOtherSelected = !!(sitterDeclineOtherRadio && sitterDeclineOtherRadio.checked);
         var isSuggestingAlternative = isSitterSuggestEnabled();
+        var isPreferNotToSay = isSitterPreferNotToSaySelected();
         if (sitterDeclineOtherWrap) {
           sitterDeclineOtherWrap.hidden = !isOtherSelected;
         }
         if (sitterDeclineScheduleWrap) {
           sitterDeclineScheduleWrap.hidden = !isSuggestingAlternative;
         }
-        sitterDeclinePrimaryButton.textContent = isSuggestingAlternative ? 'Suggest new time' : 'Decline booking';
-        sitterDeclinePrimaryButton.classList.toggle('primary', isSuggestingAlternative);
-        sitterDeclinePrimaryButton.classList.toggle('danger', !isSuggestingAlternative);
-        sitterDeclinePrimaryButton.disabled = isOtherSelected && !(sitterDeclineOtherInput && sitterDeclineOtherInput.value.trim());
+        if (sitterDeclineContinueButton) {
+          sitterDeclineContinueButton.disabled = isOtherSelected && !(sitterDeclineOtherInput && sitterDeclineOtherInput.value.trim());
+          sitterDeclineContinueButton.classList.toggle('primary', !isPreferNotToSay);
+          sitterDeclineContinueButton.classList.toggle('danger', isPreferNotToSay);
+          sitterDeclineContinueButton.innerHTML = isPreferNotToSay
+            ? 'Decline booking'
+            : 'Continue to message <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="margin-left:8px"><path d="M6.75 4.5L11.25 9L6.75 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+      }
+
+      function sitterDeclineShowStep(step) {
+        sitterDeclineStepEls.forEach(function(node) {
+          node.hidden = node.getAttribute('data-sitter-decline-step') !== String(step);
+        });
+        if (sitterDeclineFooter1) sitterDeclineFooter1.hidden = step !== 1;
+        if (sitterDeclineFooter2) sitterDeclineFooter2.hidden = step !== 2;
+      }
+
+      function sitterDeclineSyncHeight(ta) {
+        ta.style.height = '0px';
+        ta.style.height = Math.min(ta.scrollHeight, 224) + 'px';
+      }
+
+      function sitterDeclineStopTyping() {
+        if (sitterDeclineTypingTimer) { window.clearTimeout(sitterDeclineTypingTimer); sitterDeclineTypingTimer = null; }
+      }
+
+      function sitterDeclineStartTypewriter(ta, text) {
+        sitterDeclineStopTyping();
+        ta.value = '';
+        sitterDeclineSyncHeight(ta);
+        var idx = 0;
+        function tick() {
+          if (idx > text.length) { sitterDeclineTypingTimer = null; return; }
+          ta.value = text.slice(0, idx);
+          sitterDeclineSyncHeight(ta);
+          ta.scrollTop = ta.scrollHeight;
+          idx++;
+          sitterDeclineTypingTimer = window.setTimeout(tick, idx < 18 ? 22 : 18);
+        }
+        sitterDeclineTypingTimer = window.setTimeout(tick, 260);
+      }
+
+      function renderSitterDeclineComposer() {
+        if (sitterDeclineTplLabel) {
+          sitterDeclineTplLabel.textContent = 'template ' + (sitterDeclineTpl + 1) + ' / ' + sitterDeclineTemplates.length;
+        }
+        if (sitterDeclineMessageInput) {
+          sitterDeclineStartTypewriter(sitterDeclineMessageInput, sitterDeclineTemplates[sitterDeclineTpl] || '');
+        }
+      }
+
+      function goToSitterDeclineStep2() {
+        if (sitterDeclineContinueButton && sitterDeclineContinueButton.disabled) return;
+        if (isSitterPreferNotToSaySelected()) {
+          finishSitterDeclineDirectly();
+          return;
+        }
+        sitterDeclineTemplates = buildSitterDeclineTemplates();
+        sitterDeclineTpl = 0;
+        sitterDeclineShowStep(2);
+        renderSitterDeclineComposer();
+      }
+
+      function finishSitterDeclineDirectly() {
+        if (!pendingBooking) return;
+        var recipientName = getPendingBookingPersonName();
+        closeSitterDeclineModal();
+        setPrototypeViewState('rejected');
+        liveRegion.textContent = 'Booking declined.';
+        showToast('You have declined booking with ' + recipientName + '.');
+      }
+
+      function finishSitterDeclineSend() {
+        sitterDeclineStopTyping();
+        if (!pendingBooking) return;
+        var recipientName = getPendingBookingPersonName();
+        closeSitterDeclineModal();
+
+        if (isSitterSuggestEnabled()) {
+          applySitterAlternativeProposal();
+          setPrototypeViewState('normal');
+          liveRegion.textContent = 'Reply message sent. Waiting for the family to confirm.';
+          showToast('You have sent a reply message to ' + getFirstName(recipientName), 'reply');
+          return;
+        }
+
+        setPrototypeViewState('rejected');
+        liveRegion.textContent = 'Booking declined.';
+        showToast('You have declined booking with ' + recipientName + '.');
+      }
+
+      function getFirstName(fullName) {
+        return (fullName || 'Family').trim().split(/\s+/)[0] || 'Family';
+      }
+
+      function applySitterAlternativeProposal() {
+        if (!pendingBooking) return;
+        var status = pendingBooking.querySelector('.booking-status');
+        var meta = pendingBooking.querySelector('.booking-meta');
+        var chips = meta ? meta.querySelectorAll('.meta-chip') : [];
+        var originalDate = chips[0] ? chips[0].textContent.trim() : 'Mon, 27. 11.';
+        var originalTime = chips[1] ? chips[1].textContent.trim() : '18:00–22:00';
+        var proposedStart = sitterDeclineIsOvernight && sitterDeclineOvernightTimeFromInput
+          ? sitterDeclineOvernightTimeFromInput.value
+          : (sitterDeclineTimeInput && sitterDeclineTimeInput.value ? sitterDeclineTimeInput.value : '16:00');
+        var proposedEnd = sitterDeclineIsOvernight && sitterDeclineOvernightTimeToInput
+          ? sitterDeclineOvernightTimeToInput.value
+          : (sitterDeclineTimeToInput && sitterDeclineTimeToInput.value ? sitterDeclineTimeToInput.value : addHoursToTime(proposedStart, 2));
+        var dateValue = getSitterProposedDateLabel();
+        var timeValue = proposedStart + '–' + proposedEnd;
+
+        if (status) {
+          status.innerHTML = '<span class="families-only">Waiting to confirm</span>' +
+            '<span class="sitters-only">Waiting to confirm by family</span>';
+        }
+        if (meta) {
+          meta.classList.add('has-alternative-proposal');
+          meta.innerHTML = '';
+          meta.appendChild(createBookingMetaRow(originalDate, originalTime, true));
+          meta.appendChild(createBookingMetaRow(dateValue, timeValue, false));
+        }
+      }
+
+      function createBookingMetaRow(dateValue, timeValue, isPrevious) {
+        var row = document.createElement('div');
+        row.className = 'booking-meta-row';
+        [dateValue, timeValue].forEach(function(value) {
+          var chip = document.createElement('span');
+          chip.className = 'meta-chip' + (isPrevious ? ' previous-value' : '');
+          chip.textContent = value;
+          row.appendChild(chip);
+        });
+        return row;
+      }
+
+      function getSitterProposedDateLabel() {
+        if (sitterDeclineIsOvernight) {
+          var fromValue = sitterDeclineOvernightDateFromInput && sitterDeclineOvernightDateFromInput.value
+            ? formatSitterCardDateValue(sitterDeclineOvernightDateFromInput.value)
+            : '27.11.';
+          var toValue = sitterDeclineOvernightDateToInput && sitterDeclineOvernightDateToInput.value
+            ? formatSitterCardDateValue(sitterDeclineOvernightDateToInput.value)
+            : '28.11.';
+          return fromValue + ' – ' + toValue;
+        }
+        return sitterDeclineDateInput && sitterDeclineDateInput.value
+          ? formatSitterCardDateValue(sitterDeclineDateInput.value)
+          : '27.11.';
+      }
+
+      function formatSitterCardDateValue(value) {
+        if (!value) return '27.11.';
+        var date = new Date(value + 'T00:00:00');
+        if (Number.isNaN(date.getTime())) return formatSitterDateValue(value);
+        var weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+        return weekday + ', ' + date.getDate() + '. ' + (date.getMonth() + 1) + '.';
+      }
+
+      function addHoursToTime(value, hours) {
+        var parts = (value || '').split(':');
+        if (parts.length !== 2) return '18:00';
+        var total = (Number(parts[0]) * 60 + Number(parts[1]) + hours * 60) % 1440;
+        return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+      }
+
+      function addDaysToDateValue(value, days) {
+        var date = value ? new Date(value + 'T00:00:00') : new Date('2026-11-27T00:00:00');
+        if (Number.isNaN(date.getTime())) date = new Date('2026-11-27T00:00:00');
+        date.setDate(date.getDate() + days);
+        return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
       }
 
       function formatSitterDateValue(value) {
@@ -4531,28 +5488,71 @@
         return Number(parts[2]) + '.' + Number(parts[1]) + '.';
       }
 
-      function syncSitterDateTimeLabels() {
+      function syncSitterDateTimeLabels(syncEndTime) {
         if (sitterDeclineDateValue && sitterDeclineDateInput) {
           sitterDeclineDateValue.textContent = formatSitterDateValue(sitterDeclineDateInput.value);
         }
         if (sitterDeclineTimeValue && sitterDeclineTimeInput) {
           sitterDeclineTimeValue.textContent = sitterDeclineTimeInput.value || '16:00';
         }
+        if (syncEndTime && sitterDeclineTimeToInput && sitterDeclineTimeInput) {
+          sitterDeclineTimeToInput.value = addHoursToTime(sitterDeclineTimeInput.value || '16:00', 2);
+        }
+        if (sitterDeclineTimeToValue && sitterDeclineTimeToInput) {
+          sitterDeclineTimeToValue.textContent = sitterDeclineTimeToInput.value || '18:00';
+        }
+        if (syncEndTime && sitterDeclineOvernightTimeToInput && sitterDeclineOvernightTimeFromInput) {
+          sitterDeclineOvernightTimeToInput.value = addHoursToTime(sitterDeclineOvernightTimeFromInput.value || '16:00', 2);
+        }
+        if (sitterDeclineOvernightDateFromValue && sitterDeclineOvernightDateFromInput) {
+          sitterDeclineOvernightDateFromValue.textContent = formatSitterDateValue(sitterDeclineOvernightDateFromInput.value);
+        }
+        if (sitterDeclineOvernightDateToValue && sitterDeclineOvernightDateToInput) {
+          sitterDeclineOvernightDateToValue.textContent = formatSitterDateValue(sitterDeclineOvernightDateToInput.value);
+        }
+        if (sitterDeclineOvernightTimeFromValue && sitterDeclineOvernightTimeFromInput) {
+          sitterDeclineOvernightTimeFromValue.textContent = sitterDeclineOvernightTimeFromInput.value || '16:00';
+        }
+        if (sitterDeclineOvernightTimeToValue && sitterDeclineOvernightTimeToInput) {
+          sitterDeclineOvernightTimeToValue.textContent = sitterDeclineOvernightTimeToInput.value || '18:00';
+        }
+      }
+
+      function syncSitterDeclineScheduleMode() {
+        if (sitterDeclineDayMode) sitterDeclineDayMode.hidden = sitterDeclineIsOvernight;
+        if (sitterDeclineOvernightMode) sitterDeclineOvernightMode.hidden = !sitterDeclineIsOvernight;
+        if (sitterDeclineMoonIcon) sitterDeclineMoonIcon.classList.toggle('is-hidden', sitterDeclineIsOvernight);
+        if (sitterDeclineSunIcon) sitterDeclineSunIcon.classList.toggle('is-hidden', !sitterDeclineIsOvernight);
+        if (sitterDeclineOvernightToggle) {
+          sitterDeclineOvernightToggle.setAttribute('aria-pressed', sitterDeclineIsOvernight ? 'true' : 'false');
+        }
+        syncSitterDateTimeLabels(false);
       }
 
 
       function getPendingBookingPersonName() {
         if (!pendingBooking) return 'Family';
         var heading = pendingBooking.querySelector('.booking-person-copy h3');
-        return heading ? heading.textContent.replace(/\s+/g, ' ').trim() : 'Family';
+        if (!heading) return 'Family';
+        var spans = heading.querySelectorAll('span');
+        var raw = spans.length
+          ? Array.prototype.map.call(spans, function(s) { return s.textContent.trim(); }).filter(Boolean).join(' ')
+          : heading.textContent;
+        return raw.replace(/\s+/g, ' ').trim() || 'Family';
       }
 
       function buildSitterDeclineTemplates() {
         var recipientName = getPendingBookingPersonName();
         var selectedReason = getSelectedSitterReason() || 'Already booked (not available)';
         var isSuggestingAlternative = isSitterSuggestEnabled();
-        var dateValue = sitterDeclineDateInput && sitterDeclineDateInput.value ? formatSitterDateValue(sitterDeclineDateInput.value) : '27.11.';
-        var timeValue = sitterDeclineTimeInput && sitterDeclineTimeInput.value ? sitterDeclineTimeInput.value : '16:00';
+        var dateValue = getSitterProposedDateLabel();
+        var timeFromValue = sitterDeclineIsOvernight && sitterDeclineOvernightTimeFromInput
+          ? sitterDeclineOvernightTimeFromInput.value
+          : (sitterDeclineTimeInput && sitterDeclineTimeInput.value ? sitterDeclineTimeInput.value : '16:00');
+        var timeToValue = sitterDeclineIsOvernight && sitterDeclineOvernightTimeToInput
+          ? sitterDeclineOvernightTimeToInput.value
+          : (sitterDeclineTimeToInput && sitterDeclineTimeToInput.value ? sitterDeclineTimeToInput.value : addHoursToTime(timeFromValue, 2));
+        var slotValue = dateValue + ' from ' + timeFromValue + ' to ' + timeToValue;
         var reasonSentence = '';
 
         if (selectedReason === 'Already booked (not available)') {
@@ -4572,9 +5572,9 @@
 
         if (isSuggestingAlternative) {
           return [
-            'Hi ' + recipientName + ', thank you for your interest, but unfortunately I am not available at the requested time. ' + reasonSentence + ' Would ' + dateValue + ' at ' + timeValue + ' work for you instead?',
-            'Hello ' + recipientName + ', thank you for reaching out. I cannot take this booking as requested. ' + reasonSentence + ' If it helps, I could do ' + dateValue + ' at ' + timeValue + ' instead.',
-            'Hi ' + recipientName + ', I am sorry, but I am unavailable for the original time. ' + reasonSentence + ' I can offer an alternative slot on ' + dateValue + ' at ' + timeValue + ' if that suits you.'
+            'Hi ' + recipientName + ', thank you for your interest, but unfortunately I am not available at the requested time. ' + reasonSentence + ' Would ' + slotValue + ' work for you instead?',
+            'Hello ' + recipientName + ', thank you for reaching out. I cannot take this booking as requested. ' + reasonSentence + ' If it helps, I could do ' + slotValue + ' instead.',
+            'Hi ' + recipientName + ', I am sorry, but I am unavailable for the original time. ' + reasonSentence + ' I can offer an alternative slot on ' + slotValue + ' if that suits you.'
           ];
         }
 
@@ -4639,9 +5639,9 @@
         sitterDeclineReasonInputs.forEach(function(input, index) {
           input.checked = index === 0;
         });
-        sitterDeclineSuggestInputs.forEach(function(input) {
-          input.checked = input.value === 'no';
-        });
+        if (sitterDeclineSuggestToggle) {
+          sitterDeclineSuggestToggle.checked = false;
+        }
         if (sitterDeclineOtherInput) {
           sitterDeclineOtherInput.value = '';
         }
@@ -4651,27 +5651,61 @@
         if (sitterDeclineTimeInput) {
           sitterDeclineTimeInput.value = '16:00';
         }
-        syncSitterDateTimeLabels();
+        if (sitterDeclineTimeToInput) {
+          sitterDeclineTimeToInput.value = '18:00';
+        }
+        sitterDeclineIsOvernight = false;
+        if (sitterDeclineOvernightDateFromInput) {
+          sitterDeclineOvernightDateFromInput.value = '2026-11-27';
+        }
+        if (sitterDeclineOvernightDateToInput) {
+          sitterDeclineOvernightDateToInput.value = '2026-11-28';
+        }
+        if (sitterDeclineOvernightTimeFromInput) {
+          sitterDeclineOvernightTimeFromInput.value = '16:00';
+        }
+        if (sitterDeclineOvernightTimeToInput) {
+          sitterDeclineOvernightTimeToInput.value = '18:00';
+        }
+        syncSitterDeclineScheduleMode();
+        syncSitterDateTimeLabels(true);
         syncSitterDeclineModal();
+        sitterDeclineShowStep(1);
         sitterDeclineModal.hidden = false;
         sitterDeclineBackdrop.hidden = false;
         document.body.style.overflow = 'hidden';
+        var tb = document.querySelector('.topbar');
+        if (tb) tb.style.display = 'none';
       }
 
       function closeSitterDeclineModal() {
         if (!sitterDeclineModal || !sitterDeclineBackdrop) return;
+        sitterDeclineStopTyping();
         sitterDeclineModal.hidden = true;
         sitterDeclineBackdrop.hidden = true;
         document.body.style.overflow = '';
+        var tb = document.querySelector('.topbar');
+        if (tb) tb.style.display = '';
       }
 
-      function showToast(message) {
-        if (!toast) return;
-        toast.querySelector('span').textContent = message;
+      function showToast(message, variant) {
+        if (!toast || !toastTitle) return;
+        var isReply = variant === 'reply';
+        toastTitle.textContent = message;
+        if (toastDefaultIllustration) {
+          toastDefaultIllustration.hidden = isReply;
+          toastDefaultIllustration.style.display = isReply ? 'none' : 'block';
+        }
+        if (toastReplyIllustration) {
+          toastReplyIllustration.hidden = !isReply;
+          toastReplyIllustration.style.display = isReply ? 'block' : 'none';
+        }
         toast.classList.add('is-visible');
-        window.setTimeout(function() {
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function() {
           toast.classList.remove('is-visible');
-        }, 2600);
+          toastTimer = null;
+        }, 5000);
       }
 
       function finishRejection() {
@@ -4687,22 +5721,30 @@
         showToast('Booking rejected state is now active.');
       }
 
-      function finishSitterDecline() {
-        if (!pendingBooking) return;
-        var recipientName = getPendingBookingPersonName();
-        var templates = buildSitterDeclineTemplates();
-        var targetUrl = new URL('/bookings-rejection-flow/messages/', window.location.origin);
-        targetUrl.searchParams.set('sitter', recipientName);
-        targetUrl.searchParams.set('draft', templates[0]);
-        targetUrl.searchParams.set('template2', templates[1]);
-        targetUrl.searchParams.set('template3', templates[2]);
-        closeSitterDeclineModal();
-        window.location.href = targetUrl.toString();
-      }
-
       if (openRejectModalButton) {
         openRejectModalButton.addEventListener('click', openModal);
       }
+
+      closeCancelBookingButtons.forEach(function(button) {
+        button.addEventListener('click', closeCancelBookingDialog);
+      });
+
+      if (cancelBookingBackdrop) {
+        cancelBookingBackdrop.addEventListener('click', closeCancelBookingDialog);
+      }
+
+      if (confirmCancelBookingButton) {
+        confirmCancelBookingButton.addEventListener('click', function() {
+          cancelPendingBooking(cancelBookingTargetCard);
+          closeCancelBookingDialog();
+        });
+      }
+
+      document.addEventListener('request-cancel-booking-dialog', function(event) {
+        var trigger = event.detail && event.detail.trigger;
+        var card = trigger && trigger.closest('.booking-card');
+        openCancelBookingDialog(card || pendingBooking);
+      });
 
       closeModalButtons.forEach(function(button) {
         button.addEventListener('click', closeModal);
@@ -4724,9 +5766,9 @@
         input.addEventListener('change', syncSitterDeclineModal);
       });
 
-      sitterDeclineSuggestInputs.forEach(function(input) {
-        input.addEventListener('change', syncSitterDeclineModal);
-      });
+      if (sitterDeclineSuggestToggle) {
+        sitterDeclineSuggestToggle.addEventListener('change', syncSitterDeclineModal);
+      }
 
       if (sitterDeclineOtherInput) {
         sitterDeclineOtherInput.addEventListener('input', syncSitterDeclineModal);
@@ -4736,13 +5778,23 @@
       // Move dropdowns to body to escape modal's transform stacking context + overflow:hidden
       var sitterDeclineDateDropdown = document.querySelector('[data-sitter-decline-date-dropdown]');
       var sitterDeclineTimeDropdown = document.querySelector('[data-sitter-decline-time-dropdown]');
+      var sitterDeclineTimeToDropdown = document.querySelector('[data-sitter-decline-time-to-dropdown]');
+      var sitterDeclineOvernightDateFromDropdown = document.querySelector('[data-sitter-decline-overnight-date-from-dropdown]');
+      var sitterDeclineOvernightDateToDropdown = document.querySelector('[data-sitter-decline-overnight-date-to-dropdown]');
+      var sitterDeclineOvernightTimeFromDropdown = document.querySelector('[data-sitter-decline-overnight-time-from-dropdown]');
+      var sitterDeclineOvernightTimeToDropdown = document.querySelector('[data-sitter-decline-overnight-time-to-dropdown]');
       if (sitterDeclineDateDropdown) document.body.appendChild(sitterDeclineDateDropdown);
       if (sitterDeclineTimeDropdown) document.body.appendChild(sitterDeclineTimeDropdown);
+      if (sitterDeclineTimeToDropdown) document.body.appendChild(sitterDeclineTimeToDropdown);
+      if (sitterDeclineOvernightDateFromDropdown) document.body.appendChild(sitterDeclineOvernightDateFromDropdown);
+      if (sitterDeclineOvernightDateToDropdown) document.body.appendChild(sitterDeclineOvernightDateToDropdown);
+      if (sitterDeclineOvernightTimeFromDropdown) document.body.appendChild(sitterDeclineOvernightTimeFromDropdown);
+      if (sitterDeclineOvernightTimeToDropdown) document.body.appendChild(sitterDeclineOvernightTimeToDropdown);
 
-      function buildDateOptions() {
-        if (!sitterDeclineDateDropdown) return;
-        sitterDeclineDateDropdown.innerHTML = '';
-        var today = new Date();
+      function buildDateOptions(dropdown, input) {
+        if (!dropdown) return;
+        dropdown.innerHTML = '';
+        var today = new Date('2026-11-26T00:00:00');
         for (var i = 1; i <= 21; i++) {
           var d = new Date(today);
           d.setDate(today.getDate() + i);
@@ -4756,24 +5808,27 @@
           btn.className = 'sitter-decline-picker-option';
           btn.textContent = label;
           btn.dataset.value = val;
-          if (sitterDeclineDateInput && sitterDeclineDateInput.value === val) {
+          if (input && input.value === val) {
             btn.classList.add('is-selected');
           }
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
             var v = this.dataset.value;
-            if (sitterDeclineDateInput) sitterDeclineDateInput.value = v;
-            syncSitterDateTimeLabels();
+            if (input) input.value = v;
+            if (input === sitterDeclineOvernightDateFromInput && sitterDeclineOvernightDateToInput && sitterDeclineOvernightDateToInput.value < v) {
+              sitterDeclineOvernightDateToInput.value = addDaysToDateValue(v, 1);
+            }
+            syncSitterDateTimeLabels(false);
             closePickers();
           });
-          sitterDeclineDateDropdown.appendChild(btn);
+          dropdown.appendChild(btn);
         }
       }
 
-      function buildTimeOptions() {
-        if (!sitterDeclineTimeDropdown) return;
-        sitterDeclineTimeDropdown.innerHTML = '';
-        var times = ['7:00','8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
+      function buildTimeOptions(dropdown, input, syncEndTime) {
+        if (!dropdown) return;
+        dropdown.innerHTML = '';
+        var times = ['0:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
         times.forEach(function(t) {
           var padded = t.length === 4 ? '0' + t : t;
           var btn = document.createElement('button');
@@ -4781,22 +5836,27 @@
           btn.className = 'sitter-decline-picker-option';
           btn.textContent = t;
           btn.dataset.value = padded;
-          if (sitterDeclineTimeInput && (sitterDeclineTimeInput.value === padded || sitterDeclineTimeInput.value === t)) {
+          if (input && (input.value === padded || input.value === t)) {
             btn.classList.add('is-selected');
           }
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (sitterDeclineTimeInput) sitterDeclineTimeInput.value = this.dataset.value;
-            syncSitterDateTimeLabels();
+            if (input) input.value = this.dataset.value;
+            syncSitterDateTimeLabels(syncEndTime);
             closePickers();
           });
-          sitterDeclineTimeDropdown.appendChild(btn);
+          dropdown.appendChild(btn);
         });
       }
 
       function closePickers() {
         if (sitterDeclineDateDropdown) sitterDeclineDateDropdown.hidden = true;
         if (sitterDeclineTimeDropdown) sitterDeclineTimeDropdown.hidden = true;
+        if (sitterDeclineTimeToDropdown) sitterDeclineTimeToDropdown.hidden = true;
+        if (sitterDeclineOvernightDateFromDropdown) sitterDeclineOvernightDateFromDropdown.hidden = true;
+        if (sitterDeclineOvernightDateToDropdown) sitterDeclineOvernightDateToDropdown.hidden = true;
+        if (sitterDeclineOvernightTimeFromDropdown) sitterDeclineOvernightTimeFromDropdown.hidden = true;
+        if (sitterDeclineOvernightTimeToDropdown) sitterDeclineOvernightTimeToDropdown.hidden = true;
       }
 
       function positionDropdown(trigger, dropdown) {
@@ -4812,7 +5872,7 @@
           var isOpen = sitterDeclineDateDropdown && !sitterDeclineDateDropdown.hidden;
           closePickers();
           if (!isOpen) {
-            buildDateOptions();
+            buildDateOptions(sitterDeclineDateDropdown, sitterDeclineDateInput);
             if (sitterDeclineDateDropdown) {
               sitterDeclineDateDropdown.hidden = false;
               positionDropdown(sitterDeclineDateTrigger, sitterDeclineDateDropdown);
@@ -4827,7 +5887,7 @@
           var isOpen = sitterDeclineTimeDropdown && !sitterDeclineTimeDropdown.hidden;
           closePickers();
           if (!isOpen) {
-            buildTimeOptions();
+            buildTimeOptions(sitterDeclineTimeDropdown, sitterDeclineTimeInput, true);
             if (sitterDeclineTimeDropdown) {
               sitterDeclineTimeDropdown.hidden = false;
               positionDropdown(sitterDeclineTimeTrigger, sitterDeclineTimeDropdown);
@@ -4835,6 +5895,77 @@
           }
         });
       }
+
+      if (sitterDeclineTimeToTrigger) {
+        sitterDeclineTimeToTrigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = sitterDeclineTimeToDropdown && !sitterDeclineTimeToDropdown.hidden;
+          closePickers();
+          if (!isOpen) {
+            buildTimeOptions(sitterDeclineTimeToDropdown, sitterDeclineTimeToInput, false);
+            if (sitterDeclineTimeToDropdown) {
+              sitterDeclineTimeToDropdown.hidden = false;
+              positionDropdown(sitterDeclineTimeToTrigger, sitterDeclineTimeToDropdown);
+            }
+          }
+        });
+      }
+
+      function bindDatePicker(trigger, dropdown, input) {
+        if (!trigger) return;
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = dropdown && !dropdown.hidden;
+          closePickers();
+          if (!isOpen) {
+            buildDateOptions(dropdown, input);
+            if (dropdown) {
+              dropdown.hidden = false;
+              positionDropdown(trigger, dropdown);
+            }
+          }
+        });
+      }
+
+      function bindTimePicker(trigger, dropdown, input, syncEndTime) {
+        if (!trigger) return;
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = dropdown && !dropdown.hidden;
+          closePickers();
+          if (!isOpen) {
+            buildTimeOptions(dropdown, input, syncEndTime);
+            if (dropdown) {
+              dropdown.hidden = false;
+              positionDropdown(trigger, dropdown);
+            }
+          }
+        });
+      }
+
+      if (sitterDeclineOvernightToggle) {
+        sitterDeclineOvernightToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          closePickers();
+          if (!sitterDeclineIsOvernight) {
+            if (sitterDeclineOvernightDateFromInput && sitterDeclineDateInput) sitterDeclineOvernightDateFromInput.value = sitterDeclineDateInput.value;
+            if (sitterDeclineOvernightDateToInput && sitterDeclineDateInput) sitterDeclineOvernightDateToInput.value = addDaysToDateValue(sitterDeclineDateInput.value, 1);
+            if (sitterDeclineOvernightTimeFromInput && sitterDeclineTimeInput) sitterDeclineOvernightTimeFromInput.value = sitterDeclineTimeInput.value;
+            if (sitterDeclineOvernightTimeToInput && sitterDeclineTimeToInput) sitterDeclineOvernightTimeToInput.value = sitterDeclineTimeToInput.value;
+          } else {
+            if (sitterDeclineDateInput && sitterDeclineOvernightDateFromInput) sitterDeclineDateInput.value = sitterDeclineOvernightDateFromInput.value;
+            if (sitterDeclineTimeInput && sitterDeclineOvernightTimeFromInput) sitterDeclineTimeInput.value = sitterDeclineOvernightTimeFromInput.value;
+            if (sitterDeclineTimeToInput && sitterDeclineOvernightTimeToInput) sitterDeclineTimeToInput.value = sitterDeclineOvernightTimeToInput.value;
+          }
+          sitterDeclineIsOvernight = !sitterDeclineIsOvernight;
+          syncSitterDeclineScheduleMode();
+        });
+      }
+
+      bindDatePicker(sitterDeclineOvernightDateFromTrigger, sitterDeclineOvernightDateFromDropdown, sitterDeclineOvernightDateFromInput);
+      bindDatePicker(sitterDeclineOvernightDateToTrigger, sitterDeclineOvernightDateToDropdown, sitterDeclineOvernightDateToInput);
+      bindTimePicker(sitterDeclineOvernightTimeFromTrigger, sitterDeclineOvernightTimeFromDropdown, sitterDeclineOvernightTimeFromInput, true);
+      bindTimePicker(sitterDeclineOvernightTimeToTrigger, sitterDeclineOvernightTimeToDropdown, sitterDeclineOvernightTimeToInput, false);
 
       document.addEventListener('click', function() {
         closePickers();
@@ -4864,12 +5995,63 @@
         });
       }
 
-      if (sitterDeclinePrimaryButton) {
-        sitterDeclinePrimaryButton.addEventListener('click', finishSitterDecline);
+      if (sitterDeclineContinueButton) {
+        sitterDeclineContinueButton.addEventListener('click', goToSitterDeclineStep2);
+      }
+
+      if (sitterDeclineBackButton) {
+        sitterDeclineBackButton.addEventListener('click', function() {
+          sitterDeclineStopTyping();
+          sitterDeclineShowStep(1);
+        });
+      }
+
+      if (sitterDeclineSendButton) {
+        sitterDeclineSendButton.addEventListener('click', finishSitterDeclineSend);
+      }
+
+      if (sitterDeclineClearButton) {
+        sitterDeclineClearButton.addEventListener('click', function() {
+          sitterDeclineStopTyping();
+          sitterDeclineTemplates[sitterDeclineTpl] = '';
+          if (sitterDeclineMessageInput) {
+            sitterDeclineMessageInput.value = '';
+            sitterDeclineSyncHeight(sitterDeclineMessageInput);
+            sitterDeclineMessageInput.focus();
+          }
+        });
+      }
+
+      if (sitterDeclineTplPrev) {
+        sitterDeclineTplPrev.addEventListener('click', function() {
+          if (!sitterDeclineTemplates.length) return;
+          sitterDeclineTpl = (sitterDeclineTpl - 1 + sitterDeclineTemplates.length) % sitterDeclineTemplates.length;
+          renderSitterDeclineComposer();
+        });
+      }
+
+      if (sitterDeclineTplNext) {
+        sitterDeclineTplNext.addEventListener('click', function() {
+          if (!sitterDeclineTemplates.length) return;
+          sitterDeclineTpl = (sitterDeclineTpl + 1) % sitterDeclineTemplates.length;
+          renderSitterDeclineComposer();
+        });
+      }
+
+      if (sitterDeclineMessageInput) {
+        sitterDeclineMessageInput.addEventListener('input', function() {
+          sitterDeclineStopTyping();
+          sitterDeclineTemplates[sitterDeclineTpl] = sitterDeclineMessageInput.value;
+          sitterDeclineSyncHeight(sitterDeclineMessageInput);
+        });
       }
 
       document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
+          if (cancelBookingModal && !cancelBookingModal.hidden) {
+            closeCancelBookingDialog();
+            return;
+          }
           if (settingsModal && !settingsModal.hidden) {
             closeSettingsModal();
             return;
@@ -4914,7 +6096,7 @@
       View profile
     </button>
     <div class="bs-separator"></div>
-    <button type="button">
+    <button type="button" data-bs-fourth-action>
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 0.5V1.75L5.15625 0.96875C6.34375 0.65625 7.59375 0.8125 8.71875 1.34375C10.1562 2.0625 11.8438 2.0625 13.3125 1.34375L13.5938 1.1875C14.25 0.875 15 1.34375 15 2.0625V10.8125C15 11.2188 14.75 11.5938 14.3438 11.75L13.2812 12.1562C11.8125 12.6875 10.2188 12.5938 8.84375 11.9062C7.65625 11.3125 6.28125 11.1875 5 11.5L2 12.25V15.5C2 15.7812 1.78125 16 1.5 16C1.21875 16 1 15.7812 1 15.5V0.5C1 0.21875 1.21875 0 1.5 0C1.78125 0 2 0.21875 2 0.5ZM2 2.78125V11.2188L4.78125 10.5312C6.28125 10.1562 7.875 10.3125 9.28125 11.0312C10.4062 11.5938 11.7188 11.6562 12.9062 11.2188L14 10.8125V2.125L13.75 2.25C12.0312 3.125 9.96875 3.125 8.25 2.25C7.375 1.8125 6.34375 1.6875 5.40625 1.9375L2 2.78125Z" fill="#F96073"/></svg>
       Report
     </button>
@@ -4981,16 +6163,35 @@
       }
 
       function closeSheet() {
+        if (sheet._openRaf) {
+          cancelAnimationFrame(sheet._openRaf);
+          sheet._openRaf = null;
+        }
+        if (sheet._hideTimer) window.clearTimeout(sheet._hideTimer);
         sheet.classList.remove('is-open');
         backdrop.hidden = true;
         document.body.style.overflow = '';
-        setTimeout(function() { sheet.hidden = true; }, 280);
+        var waitingActionsTrigger = document.querySelector('[data-actions-trigger]');
+        if (waitingActionsTrigger) waitingActionsTrigger.setAttribute('aria-expanded', 'false');
+        sheet._hideTimer = window.setTimeout(function() {
+          sheet.hidden = true;
+          sheet._hideTimer = null;
+        }, 280);
       }
 
       function openSheet(name) {
+        if (sheet._hideTimer) {
+          window.clearTimeout(sheet._hideTimer);
+          sheet._hideTimer = null;
+        }
+        if (sheet._openRaf) {
+          cancelAnimationFrame(sheet._openRaf);
+          sheet._openRaf = null;
+        }
         sheet.dataset.mode = 'replacement';
         bsTitle.textContent = name;
-        bsBookLabel.textContent = 'Book ' + name;
+        bsBookLabel = sheet.querySelector('[data-bs-book-label]');
+        if (bsBookLabel) bsBookLabel.textContent = 'Book ' + name;
         bsBookBtn.setAttribute('data-replacement-name', name);
         if (bsMessageBtn) {
           bsMessageBtn.setAttribute('data-replacement-name', name);
@@ -4998,7 +6199,8 @@
         sheet.hidden = false;
         backdrop.hidden = false;
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(function() {
+        sheet._openRaf = requestAnimationFrame(function() {
+          sheet._openRaf = null;
           sheet.classList.add('is-open');
         });
       }
@@ -5100,6 +6302,7 @@
       var activeBookingCtxMenu = null;
       var activeBookingCtxTrigger = null;
       var bookingCtxRafId = null;
+      var BOOKING_CTX_MENU_GUTTER = 8;
 
       var ICON_CANCEL_BOOKING = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V4C14 3.4375 13.5625 3 13 3ZM5.90625 6.40625C6.09375 6.21875 6.40625 6.21875 6.59375 6.40625L8 7.78125L9.40625 6.40625C9.59375 6.21875 9.90625 6.21875 10.0938 6.40625C10.3125 6.59375 10.3125 6.90625 10.0938 7.09375L8.71875 8.5L10.0938 9.90625C10.3125 10.0938 10.3125 10.4062 10.0938 10.5938C9.90625 10.8125 9.59375 10.8125 9.40625 10.5938L8 9.21875L6.59375 10.5938C6.40625 10.8125 6.09375 10.8125 5.90625 10.5938C5.71875 10.4062 5.71875 10.0938 5.90625 9.90625L7.28125 8.5L5.90625 7.09375C5.71875 6.90625 5.71875 6.59375 5.90625 6.40625Z" fill="#F96073"/></svg>';
       var ICON_BOOK_AGAIN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 0C4.78125 0 5 0.21875 5 0.5V2H11V0.5C11 0.21875 11.2188 0 11.5 0C11.7812 0 12 0.21875 12 0.5V2H13C14.0938 2 15 2.90625 15 4V13C15 14.0938 14.0938 15 13 15H3C1.90625 15 1 14.0938 1 13V4C1 2.90625 1.90625 2 3 2H4V0.5C4 0.21875 4.21875 0 4.5 0ZM13 3H3C2.4375 3 2 3.4375 2 4V5H14V4C14 3.4375 13.5625 3 13 3ZM14 6H2V13C2 13.5625 2.4375 14 3 14H13C13.5625 14 14 13.5625 14 13V6Z" fill="#F96073"/></svg>';
@@ -5157,8 +6360,11 @@
           closeBookingCtxMenu();
           return;
         }
+        var menuWidth = activeBookingCtxMenu.offsetWidth || 248;
         activeBookingCtxMenu.style.top = (rect.bottom + 6) + 'px';
-        activeBookingCtxMenu.style.left = Math.max(8, Math.min(window.innerWidth - 256, rect.right - 248)) + 'px';
+        var left = rect.right - menuWidth;
+        var maxLeft = Math.max(BOOKING_CTX_MENU_GUTTER, window.innerWidth - menuWidth - BOOKING_CTX_MENU_GUTTER);
+        activeBookingCtxMenu.style.left = Math.min(Math.max(BOOKING_CTX_MENU_GUTTER, left), maxLeft) + 'px';
         bookingCtxRafId = requestAnimationFrame(positionBookingCtxMenu);
       }
 
@@ -5166,6 +6372,9 @@
         var card = trigger.closest('.booking-card');
         if (!card) return 'past';
         if (card.classList.contains('status-accepted')) return 'accepted';
+        if (card.classList.contains('status-declined') && document.body.dataset.pageAudience === 'sitters') {
+          return 'declined-sitter';
+        }
         return 'past';
       }
 
@@ -5176,8 +6385,10 @@
             '<button type="button" data-booking-ctx-action="message">' + ICON_MSG_BOOKING_CTX + '<span>Send a message</span></button>' +
             '<button type="button" data-booking-ctx-action="profile">' + ICON_PROFILE_BOOKING_CTX + '<span>View profile</span></button>';
         }
+        var firstActionLabel = type === 'declined-sitter' ? 'Create a new booking' : 'Book ' + firstName + ' again';
+        var firstAction = type === 'declined-sitter' ? 'create-new' : 'book-again';
         return '' +
-          '<button type="button" data-booking-ctx-action="book-again">' + ICON_BOOK_AGAIN + '<span>Book ' + firstName + ' again</span></button>' +
+          '<button type="button" data-booking-ctx-action="' + firstAction + '">' + ICON_BOOK_AGAIN + '<span>' + firstActionLabel + '</span></button>' +
           '<button type="button" data-booking-ctx-action="archive">' + ICON_ARCHIVE + '<span>Archive booking</span></button>' +
           '<button type="button" data-booking-ctx-action="message">' + ICON_MSG_BOOKING_CTX + '<span>Send a message</span></button>' +
           '<button type="button" data-booking-ctx-action="profile">' + ICON_PROFILE_BOOKING_CTX + '<span>View profile</span></button>' +
@@ -5201,8 +6412,15 @@
         trigger.setAttribute('aria-expanded', 'true');
         menu.addEventListener('click', function(event) {
           event.stopPropagation();
-          if (event.target.closest('button')) {
-            closeBookingCtxMenu();
+          var button = event.target.closest('button');
+          if (!button) return;
+          var action = button.getAttribute('data-booking-ctx-action');
+          var targetTrigger = activeBookingCtxTrigger;
+          closeBookingCtxMenu();
+          if (action === 'cancel') {
+            document.dispatchEvent(new CustomEvent('request-cancel-booking-dialog', {
+              detail: { trigger: targetTrigger }
+            }));
           }
         });
         positionBookingCtxMenu();
@@ -5218,7 +6436,8 @@
           bookingSheetReport.hidden = true;
           bookingSheet.querySelector('.bs-separator') && (bookingSheet.querySelector('.bs-separator').hidden = true);
         } else {
-          bookingSheetBookAgain.innerHTML = ICON_BOOK_AGAIN + '<span>Book ' + firstName + ' again</span>';
+          var firstActionLabel = type === 'declined-sitter' ? 'Create a new booking' : 'Book ' + firstName + ' again';
+          bookingSheetBookAgain.innerHTML = ICON_BOOK_AGAIN + '<span>' + firstActionLabel + '</span>';
           bookingSheetArchive.innerHTML = ICON_ARCHIVE + '<span>Archive booking</span>';
           bookingSheetArchive.hidden = false;
           bookingSheetReport.innerHTML = ICON_REPORT_BOOKING_CTX + '<span>Report</span>';
@@ -5260,7 +6479,42 @@
         });
       });
 
-      [bookingSheetBookAgain, bookingSheetArchive, bookingSheetMessage, bookingSheetProfile, bookingSheetReport].forEach(function(button) {
+      document.addEventListener('open-pending-booking-context-actions', function(event) {
+        var trigger = event.detail && event.detail.trigger;
+        if (!trigger) return;
+        if (isMobile()) {
+          if (!bookingSheet.hidden && activeBookingCtxTrigger === trigger) {
+            closeBookingCtxSheet();
+            return;
+          }
+          closeBookingCtxMenu();
+          openBookingCtxSheet(trigger);
+          return;
+        }
+        if (activeBookingCtxMenu && activeBookingCtxTrigger === trigger) {
+          closeBookingCtxMenu();
+          return;
+        }
+        closeBookingCtxSheet();
+        openBookingCtxMenu(trigger);
+      });
+
+      if (bookingSheetBookAgain) {
+        bookingSheetBookAgain.addEventListener('click', function() {
+          var targetTrigger = activeBookingCtxTrigger;
+          var isCancelAction = targetTrigger && getCardType(targetTrigger) === 'accepted';
+          closeBookingCtxSheet();
+          if (isCancelAction) {
+            window.setTimeout(function() {
+              document.dispatchEvent(new CustomEvent('request-cancel-booking-dialog', {
+                detail: { trigger: targetTrigger }
+              }));
+            }, 280);
+          }
+        });
+      }
+
+      [bookingSheetArchive, bookingSheetMessage, bookingSheetProfile, bookingSheetReport].forEach(function(button) {
         if (!button) return;
         button.addEventListener('click', closeBookingCtxSheet);
       });
@@ -5272,6 +6526,16 @@
       document.addEventListener('click', function(event) {
         if (activeBookingCtxMenu && !event.target.closest('.booking-ctx-menu') && !event.target.closest('[data-booking-ctx-trigger]')) {
           closeBookingCtxMenu();
+        }
+      });
+
+      window.addEventListener('resize', function() {
+        if (activeBookingCtxMenu) {
+          closeBookingCtxMenu();
+        }
+
+        if (activeBookingCtxTrigger && !bookingSheet.hidden && !isMobile()) {
+          closeBookingCtxSheet();
         }
       });
 
@@ -5301,7 +6565,8 @@
       var progressEl = overlay.querySelector('[data-rw-progress]');
       var bodyEl = overlay.querySelector('[data-rw-body]');
       var footerEl = overlay.querySelector('[data-rw-footer]');
-      var toastEl = document.querySelector('[data-toast]');
+      var toastEl = document.getElementById('msg-toast');
+      var toastTitleEl = document.getElementById('msg-toast-title');
       var AV = '/sitter-approval-workflow/assets/avatars/';
 
       var RW_SITTERS = [
@@ -5319,7 +6584,7 @@
       ];
       var ORD = ['1st', '2nd', '3rd', '4th'];
 
-      var SHIELD = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V5l7-3z" fill="#19B36B"/><path d="M8.5 12l2.2 2.2 4.3-4.4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var SHIELD = '<svg class="family-check" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fc-rw)"><path d="M1.45055 8.05036L0.889313 5.24409L1.16027 2.34105L1.74087 1.76045L8.03079 0.212158L14.2239 1.76045L14.8045 2.34105L15.1916 3.21196L14.7078 7.37299L13.5466 11.1469L12.2886 12.792C11.7402 13.3403 10.6048 14.437 10.45 14.437C10.2565 14.437 8.51463 15.7918 8.41786 15.8886C8.32109 15.9853 7.54695 15.7918 7.45018 15.7918C7.37277 15.7918 6.12769 14.8886 5.51482 14.437L2.80532 11.534L1.45055 8.05036Z" fill="white"/><path d="M8.013 16C7.63315 16 7.25743 15.8927 6.92713 15.678C5.03203 14.4476 2.41852 12.4369 1.62992 9.20405C1.53496 8.80356 1.44413 8.41959 1.36568 8.05213C1.33678 7.92001 1.41936 7.78788 1.55148 7.76311C1.6836 7.73421 1.81572 7.81679 1.84049 7.94891C1.91894 8.31224 2.00564 8.69208 2.1006 9.08845C2.84378 12.152 5.36233 14.0843 7.18724 15.2692C7.68682 15.5913 8.33091 15.5913 8.82636 15.2692C10.6513 14.0843 13.1698 12.1561 13.913 9.08845C14.5364 6.52448 14.7677 4.60461 14.8544 3.44855C14.908 2.72602 14.4374 2.06542 13.7355 1.87549C13.24 1.74337 12.5877 1.56996 11.7537 1.35527C9.97003 0.896974 8.84288 0.636862 8.33091 0.525385C8.11622 0.479969 7.89739 0.479969 7.6827 0.525385C7.17073 0.636862 6.04358 0.896974 4.25995 1.35527C3.42594 1.56996 2.77359 1.74337 2.27814 1.87549C1.57625 2.06129 1.10557 2.72189 1.15925 3.44855C1.20053 4.04309 1.27485 4.68718 1.36981 5.36017C1.39046 5.49229 1.29549 5.61615 1.16337 5.6368C1.02712 5.65744 0.90739 5.56248 0.886746 5.43036C0.787656 4.74498 0.717467 4.08851 0.672051 3.48158C0.601861 2.52371 1.22531 1.64841 2.15015 1.40068C2.6456 1.26856 3.29795 1.09515 4.13609 0.880459C5.92797 0.418037 7.05925 0.157925 7.57535 0.0464486C7.86023 -0.0154829 8.14925 -0.0154829 8.43413 0.0464486C8.95023 0.162054 10.0815 0.418037 11.8734 0.880459C12.7074 1.09515 13.3597 1.26856 13.8593 1.40068C14.7883 1.64841 15.4076 2.52371 15.3374 3.48158C15.2507 4.65828 15.0154 6.60293 14.3837 9.19992C13.5992 12.4327 10.9857 14.4435 9.08648 15.6738C8.75618 15.8885 8.37633 15.9959 8.00061 15.9959L8.013 16Z" fill="#2A3539"/><path opacity="0.8" d="M12.9262 2.47831C12.5051 2.36683 11.9518 2.22232 11.2458 2.03653C9.74296 1.64843 8.79334 1.4296 8.33505 1.33051C8.12448 1.28509 7.90978 1.28509 7.69509 1.33051C7.24092 1.4296 6.28718 1.64843 4.78431 2.03653C4.07416 2.21819 3.52504 2.3627 3.1039 2.47831C2.41027 2.6641 1.95198 3.31232 2.00152 4.02659C2.07584 5.0464 2.27402 6.67313 2.8025 8.84074C3.45072 11.5038 5.59355 13.1594 7.20377 14.204C7.69509 14.5219 8.32679 14.5219 8.81811 14.204C10.4283 13.1594 12.5712 11.5038 13.2194 8.84074C13.7479 6.67313 13.946 5.04227 14.0204 4.02659C14.074 3.31232 13.6116 2.6641 12.918 2.47831H12.9262ZM11.4399 5.90518L7.60013 9.74494C7.52994 9.81512 7.43911 9.85228 7.34002 9.85228C7.24093 9.85228 7.15009 9.81512 7.0799 9.74494L5.19719 7.86222C5.05268 7.71771 5.05268 7.4865 5.19719 7.34199C5.34169 7.19749 5.5729 7.19749 5.71741 7.34199L7.34002 8.9646L10.9197 5.38496C11.0642 5.24045 11.2954 5.24045 11.4399 5.38496C11.5101 5.45515 11.5472 5.54598 11.5472 5.64507C11.5472 5.74416 11.5101 5.83499 11.4399 5.90518Z" fill="#03C499"/><path d="M13.1987 3.2421C12.823 3.14301 9.94938 2.34616 8.54973 1.96631C8.22769 1.87961 7.90978 2.12321 7.9139 2.46176C8.96261 3.58479 9.63973 4.95141 9.92461 6.39235L10.9279 5.38906C11.0724 5.24455 11.3036 5.24455 11.4481 5.38906C11.5183 5.45925 11.5555 5.55008 11.5555 5.64917C11.5555 5.74826 11.5183 5.8391 11.4481 5.90928L10.0485 7.30894C10.1723 8.88612 9.84204 10.5005 9.01628 11.9414L8.02951 13.6631C8.02951 13.6631 8.30201 13.7416 8.41761 13.6631C10.0732 12.5896 12.0509 11.0455 12.6372 8.61775C13.1905 6.33455 13.3969 4.64175 13.4712 3.62195C13.4836 3.44441 13.3721 3.29165 13.2029 3.24623L13.1987 3.2421Z" fill="#03C499"/></g><defs><clipPath id="fc-rw"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>';
       var IC_X = '<svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
       var IC_CHECK = '<svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       var IC_CHEV = '<svg viewBox="0 0 20 20" fill="none"><path d="M7 4l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -5356,7 +6621,7 @@
           '<div class="rw-suggestion-label"><strong>' + ORD[i] + '</strong> of 4 suggestions</div>' +
           '<div class="rw-sitter-photo"><img src="' + AV + s.avatar + '" alt=""><span class="rw-verified-badge">' + SHIELD + '</span></div>' +
           '<h2 class="rw-sitter-name">' + s.name + '</h2>' +
-          '<div class="rw-sitter-sub">' + s.loc + ' · ' + s.age + ' years</div>' +
+          '<div class="rw-sitter-sub">' + s.loc + '<span class="rw-sub-divider"></span>' + s.age + ' years</div>' +
           '<div class="rw-sitter-rating">' + rwStars(s.rating) + '<span>' + s.rating.toFixed(1) + ' (' + s.reviews + ')</span></div>' +
           '<div class="rw-tags">' + tags + '</div>' +
           '<div class="rw-about"><h3>About me</h3><p>' + RW_ABOUT + '</p></div>';
@@ -5383,12 +6648,10 @@
 
       /* ---- overview step ---- */
       function overviewBody() {
-        var idx = interestedIdx();
-        var hero = '<div class="rw-hero">' + (idx.length ? avatarStack(idx) : '') +
+        var idx = RW_SITTERS.map(function(s, i) { return i; });
+        var intIdx = interestedIdx();
+        var hero = '<div class="rw-hero">' + (intIdx.length ? avatarStack(intIdx) : '') +
           '<h2>Select sitters</h2><p>Message all sitters you\'ve shown your interest for</p></div>';
-        if (!idx.length) {
-          return hero + '<div class="rw-empty">You haven\'t marked any sitter as interested.</div>';
-        }
         var checked = idx.filter(function(i) { return rw.selected[i]; }).length;
         var allSelected = checked === idx.length;
         var toggleLabel = allSelected ? 'Select none' : 'Select all';
@@ -5421,9 +6684,9 @@
             '<h2>Write your message</h2><p>Message all sitters you\'ve shown your interest for</p></div>' +
           '<div class="rw-message-head"><span class="rw-message-head-label">' + IC_SPARK + 'Automatic reply</span>' +
             '<button class="rw-link" style="text-decoration:underline" type="button" data-rw-clear>Clear</button></div>' +
-          '<div class="rw-composer-card"><div class="rw-composer-bar">' +
-            '<textarea class="rw-message-input" data-rw-message rows="1" placeholder="Your message..."></textarea>' +
-          '</div><div class="rw-composer-footer">' +
+          '<div class="rw-composer-card">' +
+            '<textarea class="rw-message-input rw-message-input--template" data-rw-message rows="1" placeholder="Your message..."></textarea>' +
+          '<div class="rw-composer-footer">' +
             '<div class="rw-template-nav"><button type="button" data-rw-tpl-prev>‹</button><span>template ' + (rw.tpl + 1) + ' / ' + RW_TEMPLATES.length + '</span><button type="button" data-rw-tpl-next>›</button></div>' +
           '</div></div>';
       }
@@ -5485,7 +6748,12 @@
         if (rw.step === 'cards') {
           on('[data-rw-no]', 'click', function() { rw.interested[rw.index] = false; advanceCard(); });
           on('[data-rw-yes]', 'click', function() { rw.interested[rw.index] = true; advanceCard(); });
-          on('[data-rw-skip]', 'click', function() { rw.interested[rw.index] = false; advanceCard(); });
+          on('[data-rw-skip]', 'click', function() {
+            for (var j = rw.index; j < RW_SITTERS.length; j++) { rw.interested[j] = false; }
+            rw.step = 'overview';
+            rw.selected = rw.interested.map(function(v) { return v === true; });
+            render();
+          });
         } else if (rw.step === 'overview') {
           Array.prototype.slice.call(overlay.querySelectorAll('[data-rw-check]')).forEach(function(cb) {
             cb.addEventListener('change', function() {
@@ -5494,7 +6762,7 @@
             });
           });
           on('[data-rw-toggle-select]', 'click', function() {
-            var idx = interestedIdx();
+            var idx = RW_SITTERS.map(function(s, i) { return i; });
             var allSelected = idx.every(function(i) { return rw.selected[i]; });
             idx.forEach(function(i) { rw.selected[i] = !allSelected; });
             render();
@@ -5522,10 +6790,10 @@
       function sendMessages() {
         var n = selectedIdx().length;
         closeWizard();
-        if (toastEl) {
-          toastEl.querySelector('span').textContent = 'Message has been successfully delivered to ' + n + ' sitter' + (n === 1 ? '' : 's') + '.';
+        if (toastEl && toastTitleEl) {
+          toastTitleEl.textContent = 'Message has been successfully delivered to ' + n + ' sitter' + (n === 1 ? '' : 's') + '.';
           toastEl.classList.add('is-visible');
-          window.setTimeout(function() { toastEl.classList.remove('is-visible'); }, 4200);
+          window.setTimeout(function() { toastEl.classList.remove('is-visible'); }, 5000);
         }
       }
 
