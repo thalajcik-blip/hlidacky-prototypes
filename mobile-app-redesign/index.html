@@ -225,6 +225,9 @@
       backface-visibility: hidden;
       visibility: hidden;
       pointer-events: none;
+      /* Vertical scrolling stays with the browser; horizontal drags come to
+         us, so the swipe-back gesture never fights the settings list. */
+      touch-action: pan-y;
     }
 
     .family-profile-screen.is-open {
@@ -232,6 +235,14 @@
       transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
       visibility: visible;
       pointer-events: auto;
+    }
+
+    /* While a finger is on the panel it follows the drag directly. This has to
+       stay below .is-open — both selectors weigh the same, so whichever comes
+       last wins, and a transition here leaves the panel easing after the thumb
+       instead of tracking it. */
+    .family-profile-screen.is-dragging {
+      transition: none;
     }
 
     .family-profile-header {
@@ -3787,6 +3798,7 @@
         if (resultsView) {
           resultsView.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        syncBackEntry();
       }
       function closePanel() {
         if (liveRoot) {
@@ -3796,6 +3808,7 @@
         stopRotatingExamples();
         panel.classList.remove('open');
         panel.setAttribute('aria-hidden', 'true');
+        syncBackEntry();
       }
 
       function resetSearch() {
@@ -3823,6 +3836,7 @@
         loginBottomSheet.setAttribute('aria-hidden', 'false');
         loginTrigger.setAttribute('aria-expanded', 'true');
         loginSheetDialog.focus({ preventScroll: true });
+        syncBackEntry();
       }
 
       function openLoginForGuest(event) {
@@ -3835,7 +3849,8 @@
         loginBottomSheet.classList.remove('is-open');
         loginBottomSheet.setAttribute('aria-hidden', 'true');
         loginTrigger.setAttribute('aria-expanded', 'false');
-        loginTrigger.focus();
+        loginTrigger.focus({ preventScroll: true });
+        syncBackEntry();
       }
 
       function setActiveNavItem(screen) {
@@ -3856,8 +3871,10 @@
         mobileHeaderIcon.style.color = activeVertical ? activeVertical.getAttribute('data-header-color') : 'var(--color-pink-400)';
       }
 
-      function selectAppScreen(screen) {
+      function selectAppScreen(screen, options) {
+        options = options || {};
         var placeholder = APP_PLACEHOLDERS[screen];
+        var shouldReloadSearch = screen === 'search' && currentAppScreen !== 'search' && !options.skipSearchReload;
         currentAppScreen = screen;
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
@@ -3867,6 +3884,8 @@
           appPlaceholderScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.remove('is-hidden');
           restoreSearchHeader();
+          if (shouldReloadSearch) playFeedReload();
+          syncBackEntry();
           return;
         }
 
@@ -3883,6 +3902,7 @@
         mobileHeaderIcon.className = 'fa-solid ' + placeholder.icon;
         mobileHeaderIcon.style.color = '#f96073';
         mobileHeaderTitle.textContent = placeholder.title;
+        syncBackEntry();
       }
 
       function openFamilyProfile() {
@@ -3891,6 +3911,7 @@
         welcomeAlert.setAttribute('aria-hidden', 'true');
         familyProfileScreen.classList.add('is-open');
         setActiveNavItem(null);
+        syncBackEntry();
         // The panel starts off-canvas, so a plain focus() scrolls the phone
         // frame sideways to reveal it and fights the slide-in transition.
         familyProfileBack.focus({ preventScroll: true });
@@ -3900,7 +3921,146 @@
         familyProfileScreen.classList.remove('is-open');
         setActiveNavItem(currentAppScreen);
         loginTrigger.focus({ preventScroll: true });
+        syncBackEntry();
       }
+
+      // --- System back ------------------------------------------------------
+      // These prototypes are handed out as a QR code and opened on a phone,
+      // where the system back gesture is how you leave a screen. With nothing
+      // in the history behind an overlay, Android back and the Safari back
+      // swipe drop out of the prototype entirely instead of closing whatever
+      // is on top of the feed.
+      //
+      // One history entry is kept alive for as long as anything is open. Each
+      // back press closes the topmost layer and re-arms the entry if something
+      // is still open underneath, so back unwinds the stack one step at a time
+      // and only leaves the prototype from the bare search feed.
+      var backEntryActive = false;
+      var closingFromHistory = false;
+
+      // Topmost first, matching the z-index order they stack in.
+      var BACK_LAYERS = [
+        { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
+        { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
+        { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
+        { isOpen: function () { return panel.classList.contains('open'); }, close: closePanel }
+      ];
+
+      function topOpenLayer() {
+        for (var i = 0; i < BACK_LAYERS.length; i += 1) {
+          if (BACK_LAYERS[i].isOpen()) return BACK_LAYERS[i];
+        }
+        return null;
+      }
+
+      // Called by every open and close path — it works out on its own whether
+      // the entry needs arming or releasing.
+      function syncBackEntry() {
+        if (closingFromHistory) return;
+
+        var anythingOpen = Boolean(topOpenLayer());
+
+        if (anythingOpen && !backEntryActive) {
+          backEntryActive = true;
+          history.pushState({ overlay: true }, '');
+        } else if (!anythingOpen && backEntryActive) {
+          backEntryActive = false;
+          history.back();
+        }
+      }
+
+      window.addEventListener('popstate', function () {
+        var layer = topOpenLayer();
+
+        if (!layer) {
+          backEntryActive = false;
+          return;
+        }
+
+        closingFromHistory = true;
+        layer.close();
+        closingFromHistory = false;
+
+        if (topOpenLayer()) history.pushState({ overlay: true }, '');
+        else backEntryActive = false;
+      });
+
+      // Reloading keeps the state of the history entry it happened on, so a
+      // refresh with a panel open would leave an armed entry behind nothing —
+      // and swallow the first back press.
+      if (history.state && history.state.overlay) history.replaceState(null, '');
+
+      // --- Swipe back on the profile panel ----------------------------------
+      // The panel slides in from the right like a native push, which promises
+      // a drag back out from the left edge. Vertical moves are handed back to
+      // the scroller so the settings list still scrolls normally.
+      (function enableProfileSwipeBack() {
+        var EDGE_ZONE = 32;
+        var DIRECTION_LOCK = 6;
+        var DISMISS_RATIO = 0.35;
+
+        var tracking = false;
+        var dragging = false;
+        var startX = 0;
+        var startY = 0;
+        var offset = 0;
+        var panelWidth = 0;
+
+        familyProfileScreen.addEventListener('pointerdown', function (event) {
+          if (!familyProfileScreen.classList.contains('is-open')) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+          var rect = familyProfileScreen.getBoundingClientRect();
+          if (event.clientX - rect.left > EDGE_ZONE) return;
+
+          tracking = true;
+          dragging = false;
+          offset = 0;
+          panelWidth = rect.width;
+          startX = event.clientX;
+          startY = event.clientY;
+        });
+
+        familyProfileScreen.addEventListener('pointermove', function (event) {
+          if (!tracking) return;
+
+          offset = event.clientX - startX;
+          var verticalOffset = event.clientY - startY;
+
+          if (!dragging) {
+            if (Math.abs(offset) < DIRECTION_LOCK && Math.abs(verticalOffset) < DIRECTION_LOCK) return;
+            // Scrolling the settings list wins over the gesture.
+            if (Math.abs(verticalOffset) > Math.abs(offset)) {
+              tracking = false;
+              return;
+            }
+            dragging = true;
+            familyProfileScreen.classList.add('is-dragging');
+            familyProfileScreen.setPointerCapture(event.pointerId);
+          }
+
+          familyProfileScreen.style.transform = 'translate3d(' + Math.max(0, offset) + 'px, 0, 0)';
+        });
+
+        function endDrag() {
+          if (!tracking) return;
+
+          var shouldDismiss = dragging && offset > panelWidth * DISMISS_RATIO;
+          tracking = false;
+          dragging = false;
+
+          // Dropping the inline transform and the class in the same task lets
+          // the panel carry on from where the thumb left it — either back to
+          // rest or out to the right — instead of snapping first.
+          familyProfileScreen.classList.remove('is-dragging');
+          familyProfileScreen.style.transform = '';
+
+          if (shouldDismiss) closeFamilyProfile();
+        }
+
+        familyProfileScreen.addEventListener('pointerup', endDrag);
+        familyProfileScreen.addEventListener('pointercancel', endDrag);
+      })();
 
       function setSitterDetails(detailsList) {
         var sitterCards = Array.prototype.slice.call(document.querySelectorAll('.sitter-card'));
@@ -4055,7 +4215,7 @@
 
       function simulateLogout() {
         closeFamilyProfile();
-        selectAppScreen('search');
+        selectAppScreen('search', { skipSearchReload: true });
         hideLogoutSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
@@ -4183,10 +4343,15 @@
       });
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return;
-        if (loginBottomSheet.classList.contains('is-open')) closeLoginSheet();
-        else if (familyProfileScreen.classList.contains('is-open')) closeFamilyProfile();
-        else if (!locationAutocomplete.hidden) closeLocationAutocomplete();
-        else if (panel.classList.contains('open')) closePanel();
+        // The autocomplete sits closest to whatever has focus, so it goes
+        // first; everything else unwinds in the same order as a back press,
+        // which now covers the placeholder screens too.
+        if (!locationAutocomplete.hidden) {
+          closeLocationAutocomplete();
+          return;
+        }
+        var layer = topOpenLayer();
+        if (layer) layer.close();
       });
       resultsEl.addEventListener('click', function (e) {
         var target = e.target.closest('.ai-result-card, .ai-result-name, .ai-result-link');
