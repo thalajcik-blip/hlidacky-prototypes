@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky.cz — AI-Assisted Search v2</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="preconnect" href="https://hlidacky-312899.c.cdn77.org">
+  <link rel="preconnect" href="https://kit-pro.fontawesome.com" crossorigin>
+  <link rel="stylesheet" href="./assets/application.css">
+  <script src="https://hlidacky-312899.c.cdn77.org/assets/legacy/font_awesome_kit-7ce04cdb91db74fcd7dc41244a48b1b17ef3b23df1d2497d66251a0daaa5a640.js" data-turbo-track="reload"></script>
+  <style>
+    :root {
+      --text: #2a3539;
+      --muted: #6b7176;
+      --bg: #e9edf1;
+      --panel: #ffffff;
+      --border: #dde2e5;
+      --surface: #f7f8fb;
+      --pink: #f96073;
+      --pink-strong: #ea4d62;
+      --pink-soft: #fff2f5;
+      --pink-line: #ffd5dc;
+      --green: #0ba825;
+      --green-shadow: rgba(0, 0, 0, 0.16);
+      --gold: #ffb400;
+      --purple-1: #8b5cf6;
+      --purple-2: #6132ff;
+      --gray-300: #e5e5ea;
+      --gray-500: #8b91a3;
+      --gray-600: #6b7176;
+      --gray-900: #2a3539;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+    }
+
+    /* ---------- Phone mockup container ---------- */
+    .phone-frame {
+      width: 390px;
+      max-width: 100%;
+      height: min(844px, calc(100vh - 48px));
+      position: relative;
+      background: var(--panel);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 18px 60px rgba(49, 72, 87, 0.18);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 52px;
+      padding: 14px 21px 10px 23px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      background: #fff;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .notch-pill {
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .status-time {
+      color: #2A3539;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -0.165px;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .status-icons img {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Top navbar ---------- */
+    .top-navbar {
+      display: flex;
+      width: 100%;
+      height: 56px;
+      padding: 0 18px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #E5E5EA;
+      background: #FFF;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 4;
+      transition: height 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+      overflow: hidden;
+    }
+    .keyboard-open .top-navbar {
+      height: 0;
+      opacity: 0;
+      border-color: transparent;
+    }
+
+    .top-navbar .brand img {
+      display: block;
+      width: 32px;
+      height: 32px;
+    }
+
+    .nav-burger {
+      width: 36px; height: 36px;
+      border: 0; background: transparent;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ---------- Search results screen ---------- */
+    .screen-scroll {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(249, 96, 115, 0.08), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcfd 18%, #f6f8fb 100%);
+    }
+
+    .results-inner { padding: 18px 16px 40px; }
+
+    .hl-live {
+      padding: 0 0 36px;
+    }
+
+    .hl-live .searches-page-header-component {
+      padding: 0;
+      width: 100%;
+      margin-top: 36px;
+    }
+
+    .hl-live .searches-page-header-component:empty {
+      margin-top: 0;
+      height: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .hl-live .heading__title {
+      letter-spacing: -0.04em;
+      font-size: 32px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .heading__title mark {
+      display: inline-block;
+      margin-bottom: -2px;
+    }
+
+    .hl-live .searches-page-header-component__description {
+      padding-top: 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+      color: var(--color-gray-700);
+      font-size: 14px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0;
+      margin-top: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 0;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter {
+      flex: 0 0 76px;
+      min-width: 76px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter i {
+      font-size: 18px;
+    }
+
+    .hl-live .searches-filter-component {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      padding: 8px 0 8px 0;
+      margin: 0;
+      background: #f1f5fb;
+      backdrop-filter: blur(16px);
+    }
+
+    .hl-live .searches-filter-component__container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hl-live.ai-assistant-open .heading__title,
+    .hl-live.ai-assistant-open .searches-page-header-component__description,
+    .hl-live.ai-assistant-open .searches-page-header-component__quick-filters,
+    .hl-live.ai-assistant-open .searches-filter-component {
+      display: none;
+    }
+
+    .hl-live.ai-assistant-open .searches-page-header-component {
+      margin-top: 0;
+      height: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .hl-live .searches-filter-component__input-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .hl-live .searches-filter-component__location-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      display: block;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .hl-live .searches-filter-component__input {
+      font-size: 16px;
+      border-radius: 8px;
+      height: 52px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: none;
+      padding-left: 46px;
+      padding-right: 138px;
+    }
+
+    .hl-live .searches-filter-component__input::-webkit-search-decoration,
+    .hl-live .searches-filter-component__input::-webkit-search-cancel-button,
+    .hl-live .searches-filter-component__input::-webkit-search-results-button,
+    .hl-live .searches-filter-component__input::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__container .searches-filter-component__input {
+      width: 100%;
+    }
+
+    .hl-live .searches-filter-component__filter-button {
+      width: 52px;
+      min-width: 52px;
+      height: 52px;
+      min-height: 52px;
+      flex: 0 0 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__label {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .searches-filter-component__filter-text {
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__icon {
+      display: block;
+      width: 20px;
+      line-height: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    .hl-live .searches-results-grid {
+      display: grid;
+      row-gap: 20px;
+      column-gap: 14px;
+      margin-top: 0;
+      padding-top: 16px;
+      padding-left: 16px;
+      padding-right: 8px;
+    }
+
+    .hl-live .sitter-card {
+      position: relative;
+      border: 1px solid #dde2e5;
+      box-shadow: none;
+      border-radius: 8px;
+      overflow: visible;
+      background: #fff;
+      margin-top: 0;
+    }
+
+    .hl-live .searches-results-grid.is-reloading {
+      pointer-events: none;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card {
+      overflow: hidden;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card > * {
+      opacity: 0;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      border-radius: inherit;
+      background:
+        linear-gradient(#eef2f7 0 0) 16px 16px / 96px 96px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px 112px / 96px 28px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 18px / 148px 18px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 48px / 74px 14px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 74px / 140px 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 102px / 86px 24px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 112px) / calc(100% - 40px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 86px) / calc(100% - 56px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 60px) / calc(100% - 84px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 28px) / calc(100% - 32px) 16px no-repeat,
+        #fff;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -45%;
+      width: 45%;
+      z-index: 5;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0));
+      animation: sitter-feed-shimmer 0.85s ease-in-out infinite;
+    }
+
+    @keyframes sitter-feed-shimmer {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(320%);
+      }
+    }
+
+    .hl-live .sitter-card__bookmark {
+      position: absolute;
+      top: 0;
+      right: 18px;
+      width: 36px;
+      height: 58px;
+      padding: 0;
+      border: 1px solid #dde2e5;
+      border-top: 0;
+      border-radius: 0 0 4px 4px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hl-live .sitter-card__bookmark img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"] {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .hl-live .sitter-card__bookmark:hover {
+      background: #fff7f9;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"]:hover {
+      background: #ff5d76;
+      border-color: #ff5d76;
+    }
+
+    .hl-live .sitter-card__main-part {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      column-gap: 0;
+      row-gap: 0;
+      align-items: start;
+      padding: 0;
+    }
+
+    .hl-live .sitter-card .profile-photo-component {
+      width: 96px;
+      position: relative;
+    }
+
+    .hl-live .profile-photo-component__photo a {
+      display: block;
+      width: 96px;
+    }
+
+    .hl-live .profile-photo-component__photo img {
+      width: 96px;
+      height: 96px;
+      display: block;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .hl-live .profile-photo-component__verified-badge {
+      width: 96px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: none;
+      justify-content: center;
+      border-radius: 0 0 4px 4px;
+      padding: 6px 8px;
+    }
+
+    .hl-live .sitter-card__content {
+      min-width: 0;
+      padding-left: 12px;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .sitter-card__name {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .hl-live .profile-card-basic-info-component {
+      display: grid;
+      gap: 0;
+      margin-top: 8px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter {
+      margin: 0;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--gray-500);
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel {
+      text-decoration: none;
+      padding-top: 2px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-text--disappearing {
+      text-decoration: underline;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-icon {
+      text-decoration: none;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating .profile-card-basic-info-component__parameter-content {
+      gap: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating {
+      padding-top: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-badges {
+      margin-top: 2px;
+    }
+
+    .hl-live .sitter-card__content-part {
+      grid-column: 1 / -1;
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-component,
+    .hl-live .profile-card-content-component__content {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-component__content {
+      display: grid;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .profile-card-content-component__description-wrapper {
+      margin-top: 2px;
+    }
+
+    .hl-live .profile-card-content-component__description {
+      font-size: 14px;
+      line-height: 1.48;
+      color: var(--text);
+    }
+
+    .hl-live .profile-card-content-component__description-link-wrapper {
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component > div {
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .btn {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--primary-variant .button-component__label {
+      color: var(--color-supportive-full-white);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--tertiary-variant .button-component__label {
+      color: var(--color-gray-800);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .locked-overlay-component {
+      display: none;
+    }
+
+    .hl-live .extra-content-pills-component {
+      margin-top: 8px;
+    }
+
+    .hl-live .extra-content-pills-component__overflow-container {
+      max-height: 58px;
+      overflow: hidden;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hl-live .extra-content-pills-component__pill {
+      margin: 0;
+    }
+
+    .hl-live .extra-content-review-component {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f5f6f8;
+      border-radius: 10px;
+    }
+
+    .hl-live .extra-content-review-component__text {
+      margin-top: 6px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      margin-top: 12px;
+    }
+
+    .hl-live .searches-page-footer-component {
+      padding: 0 4px 0;
+    }
+
+    .results-hero h1 {
+      font-size: 31px;
+      line-height: 1.06;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      text-align: left;
+      margin-bottom: 14px;
+    }
+    .results-hero h1 .hl {
+      background: linear-gradient(180deg, #ff7b8b 0%, var(--pink) 100%);
+      color: #fff;
+      padding: 1px 8px 2px;
+      border-radius: 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .results-hero .found {
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .results-hero .found strong { font-weight: 800; }
+    .results-hero .lede {
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 340px;
+      margin: 0;
+    }
+
+    /* category tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px -4px 0;
+      padding: 0 4px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 12px 11px;
+      min-width: 72px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.76);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(42, 53, 57, 0.04);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .cat-tab svg { width: 26px; height: 26px; }
+    .cat-tab.active {
+      color: var(--text);
+      font-weight: 700;
+      background: #fff;
+      border-color: var(--pink-line);
+      box-shadow: 0 14px 30px rgba(249, 96, 115, 0.14);
+    }
+
+    /* filter bar */
+    .filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 -16px;
+      padding: 12px 16px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(221, 226, 229, 0.8);
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--pink-soft);
+      color: var(--pink-strong);
+      border: 1px solid var(--pink-line);
+      border-radius: 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-spacer { flex: 1; }
+    .filter-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-icon-btn {
+      width: 42px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-badge {
+      position: absolute;
+      top: -7px; right: -7px;
+      min-width: 20px; height: 20px;
+      padding: 0 5px;
+      background: var(--pink);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    /* sitter card */
+    .sitter-card {
+      position: relative;
+      border: 1px solid rgba(221, 226, 229, 0.95);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow:
+        0 14px 32px rgba(49, 72, 87, 0.06),
+        0 2px 10px rgba(49, 72, 87, 0.03);
+      background: rgba(255, 255, 255, 0.96);
+    }
+    .sc-top { display: flex; gap: 14px; }
+    .sc-photo-wrap { position: relative; flex: 0 0 84px; }
+    .sc-photo {
+      width: 84px; height: 84px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+    }
+    .sc-verified {
+      position: absolute;
+      left: 50%; bottom: -10px;
+      transform: translateX(-50%);
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--green);
+      color: #fff;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 16px rgba(11, 168, 37, 0.18);
+    }
+    .sc-verified svg { width: 11px; height: 11px; }
+    .sc-info { min-width: 0; flex: 1; }
+    .sc-name { font-size: 20px; font-weight: 800; letter-spacing: -0.25px; }
+    .sc-meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14px; margin-top: 5px; }
+    .sc-meta svg { width: 14px; height: 14px; flex: 0 0 14px; }
+    .sc-rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .sc-stars { color: var(--gold); letter-spacing: 1px; font-size: 14px; }
+    .sc-rating-count { color: var(--muted); font-size: 14px; }
+    .sc-price { font-weight: 800; font-size: 15px; margin-top: 7px; }
+    .sc-bookmark {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .sc-desc {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.58;
+      color: var(--text);
+    }
+    .sc-link { color: var(--pink); text-decoration: underline; cursor: pointer; }
+
+    .sc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .sc-tag {
+      padding: 7px 11px;
+      background: #f8fafc;
+      border: 1px solid #e8edf1;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #51606a;
+    }
+
+    .sc-premium {
+      margin-top: 14px;
+      display: flex; gap: 12px;
+      padding: 14px;
+      background: linear-gradient(180deg, #fff5f7 0%, #fff0f3 100%);
+      border: 1px solid #ffd8df;
+      border-radius: 14px;
+    }
+    .sc-premium-icon { font-size: 22px; line-height: 1; }
+    .sc-premium-title { font-weight: 800; margin-bottom: 4px; }
+    .sc-premium-list { list-style: none; display: grid; gap: 3px; }
+    .sc-premium-list li { font-size: 13px; color: var(--text); display: flex; gap: 7px; }
+    .sc-premium-list li::before { content: "•"; color: var(--pink); }
+
+    .sc-quote {
+      margin-top: 14px;
+      padding: 14px 14px 4px;
+      border: 1px solid #edf1f4;
+      border-radius: 14px;
+      background: #fcfdfe;
+    }
+    .sc-quote-stars { color: var(--gold); letter-spacing: 2px; font-size: 15px; }
+    .sc-quote-text { font-style: italic; color: var(--text); font-size: 14px; line-height: 1.5; margin-top: 6px; }
+
+    .sc-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .sc-act-icon {
+      width: 50px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .sc-act-icon .dot { position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); border: 1.5px solid #fff; }
+    .sc-act-msg {
+      flex: 1;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .sc-act-book {
+      flex: 1.3;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+    .sc-gallery-label { display: flex; align-items: center; gap: 8px; margin-top: 26px; color: var(--muted); font-size: 13px; }
+
+    /* ---------- AI entry point inside location input ---------- */
+    .hl-live .searches-filter-component__ai-badge {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      width: fit-content;
+      max-width: calc(100% - 16px);
+      flex: 0 0 auto;
+      height: 28px;
+      min-height: 28px;
+      padding: 0 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 64px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+      z-index: 1;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .hl-live .searches-filter-component__ai-badge:hover {
+      border-radius: 64px;
+      background: var(--color-indigo-200, #c7d2fe);
+    }
+    .hl-live .searches-filter-component__ai-badge i,
+    .hl-live .searches-filter-component__ai-badge span {
+      color: inherit;
+    }
+    .hl-live .searches-filter-component__ai-badge i {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .hl-live .searches-filter-component__ai-badge span {
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+    @keyframes fab-ring {
+      0% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(124, 92, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0); }
+    }
+    @keyframes fab-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ---------- AI top panel ---------- */
+    .ai-panel {
+      width: 100%;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: max-height 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, margin-bottom 0.36s ease;
+      position: relative;
+      z-index: 7;
+      margin-bottom: 0;
+    }
+    .ai-panel.open {
+      max-height: 940px;
+      opacity: 1;
+      pointer-events: auto;
+      margin-bottom: 12px;
+    }
+
+    .ai-panel-top {
+      background: linear-gradient(135deg, #b85fff 0%, #7c5cff 58%, #6132ff 100%);
+      color: #fff;
+    }
+
+    .ai-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      flex-shrink: 0;
+    }
+    .ai-head-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .ai-avatar {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 28px;
+    }
+    .ai-avatar img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .ai-avatar--sm {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .ai-avatar--sm img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .ai-head-title {
+      color: var(--color-supportive-full-white, #fff);
+      font-family: Soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .ai-head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      flex: 0 0 auto;
+    }
+    .ai-head-icon-button {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-supportive-full-white, #fff);
+      flex: 0 0 28px;
+    }
+    .ai-head-icon-button img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+    .ai-collapse-toggle img {
+      transition: transform 0.2s ease;
+    }
+    .ai-panel.ai-panel--collapsed .ai-collapse-toggle img {
+      transform: rotate(180deg);
+    }
+
+    .ai-panel-body {
+      max-height: 720px;
+      overflow: hidden;
+      opacity: 1;
+      transition: max-height 0.28s ease, opacity 0.18s ease;
+    }
+    .ai-panel.ai-panel--collapsed .ai-panel-body {
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* When collapsed, pin the header bar to the top while results scroll under it. */
+    .ai-panel.ai-panel--collapsed {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-bottom: 0;
+    }
+
+    .ai-stage {
+      padding: 18px 16px 24px;
+    }
+
+    /* "AI thinking" typing indicator */
+    .ai-thinking {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 56px;
+      padding: 16px 0 8px;
+    }
+    .ai-thinking[hidden] { display: none; }
+    .ai-thinking span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      animation: aiThinkingBounce 1.2s ease-in-out infinite;
+    }
+    .ai-thinking span:nth-child(2) { animation-delay: 0.16s; }
+    .ai-thinking span:nth-child(3) { animation-delay: 0.32s; }
+    @keyframes aiThinkingBounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.45; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    .ai-stage.is-thinking .ai-stage-question,
+    .ai-stage.is-thinking .ai-stage-divider,
+    .ai-stage.is-thinking .ai-suggest,
+    .ai-stage.is-thinking .ai-inline-input-area,
+    .ai-stage.is-thinking .ai-stage-helper {
+      display: none;
+    }
+
+    .ai-stage-question {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.38;
+      font-weight: 400;
+      max-width: 320px;
+      margin: 0 auto;
+      opacity: 1;
+      transform: translateY(0);
+      will-change: opacity, transform;
+    }
+    .ai-stage-question.is-entering {
+      animation: aiStageQuestionIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .ai-stage-question.is-leaving {
+      animation: aiStageQuestionOut 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+    }
+    @keyframes aiStageQuestionIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes aiStageQuestionOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ai-stage-question,
+      .ai-stage-question.is-entering,
+      .ai-stage-question.is-leaving {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+    .ai-stage-divider {
+      width: 92px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.42);
+      margin: 14px auto 14px;
+    }
+    .ai-stage-helper {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.35;
+      margin-top: 10px;
+    }
+    .ai-inline-input-area {
+      margin-top: 2px;
+      position: relative;
+    }
+    .ai-inline-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ai-inline-input {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(46, 16, 101, 0.16);
+      border: 2px solid transparent;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+    .ai-inline-input:focus-within {
+      border-color: #58a6ff;
+      box-shadow: 0 10px 30px rgba(46, 16, 101, 0.16);
+    }
+    .ai-inline-input i {
+      color: #8f83ff;
+      font-size: 15px;
+      line-height: 1;
+    }
+    .ai-input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--gray-900);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      min-width: 0;
+      padding: 12px 0;
+    }
+    .ai-input::placeholder { color: #9da3b5; }
+    .ai-inline-send {
+      display: none;
+    }
+    .ai-query-examples {
+      margin-top: 12px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 18px;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .ai-query-examples.is-hidden {
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+    .ai-query-examples-track {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ai-query-examples-prefix {
+      margin-right: 4px;
+      opacity: 0.88;
+    }
+    .ai-query-example-text {
+      display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ai-query-example-text.is-typing::after {
+      content: '|';
+      display: inline-block;
+      margin-left: 1px;
+      animation: aiCursorBlink 0.7s step-start infinite;
+      opacity: 1;
+    }
+    @keyframes aiCursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes aiQueryExampleFade {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .ai-query-dropdown {
+      position: fixed;
+      background: #fff;
+      border: 1px solid rgba(215, 222, 238, 0.95);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(30, 41, 59, 0.16);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      z-index: 9000;
+    }
+    .ai-query-dropdown[hidden] {
+      display: none;
+    }
+    .ai-query-suggestion {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      text-align: left;
+      color: var(--gray-900);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      min-width: 0;
+    }
+    .ai-query-suggestion + .ai-query-suggestion {
+      border-top: 1px solid rgba(230, 235, 245, 0.9);
+    }
+    .ai-query-suggestion:hover {
+      background: rgba(244, 246, 255, 0.92);
+    }
+    .ai-query-suggestion i {
+      color: #8f83ff;
+      font-size: 16px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+    .ai-query-suggestion .ai-qs-icon {
+      color: #8f83ff;
+      flex: 0 0 auto;
+      display: block;
+    }
+    .ai-query-suggestion span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .ai-summary {
+      padding: 12px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--gray-300);
+      text-align: center;
+    }
+    .ai-summary-copy {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.35;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .ai-summary-copy strong {
+      color: var(--gray-900);
+      font-weight: 800;
+    }
+    .ai-summary-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .ai-summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .ai-summary-chip button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      line-height: 1;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .ai-reset {
+      margin-top: 8px;
+      border: 0;
+      background: transparent;
+      color: var(--pink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .ai-results-wrap {
+      padding: 10px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    /* result cards inside chat */
+    .ai-results {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+      margin: 2px 0 0 0;
+      min-height: 176px;
+      align-items: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 0 4px;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-results::-webkit-scrollbar {
+      height: 6px;
+    }
+    .ai-results::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 999px;
+    }
+    .ai-result-card {
+      flex: 0 0 228px;
+      width: 228px;
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 10px;
+      align-items: start;
+      background: #fff;
+      scroll-snap-align: start;
+    }
+    .ai-result-media {
+      position: relative;
+      width: 80px;
+    }
+    .ai-result-photo {
+      display: block;
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px 4px 0 0;
+    }
+    .ai-result-verified {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 80px;
+      min-height: 28px;
+      padding: 6px 8px;
+      border-radius: 0 0 4px 4px;
+      background: #15c39a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 450;
+      line-height: 1;
+    }
+    .ai-result-verified img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .ai-result-body {
+      min-width: 0;
+      display: grid;
+      row-gap: 6px;
+      align-content: start;
+    }
+    .ai-result-name {
+      color: var(--gray-900);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.15;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    .ai-result-location {
+      color: var(--gray-500);
+      font-size: 12px;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-result-location i {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .ai-result-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .ai-result-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: #f8b53a;
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-stars i {
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-price {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      width: fit-content;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f5f5f5;
+      color: var(--gray-900);
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1.2;
+    }
+    .ai-result-link {
+      color: var(--pink);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .ai-showmore {
+      align-self: center;
+      margin: 4px auto 8px;
+      padding: 13px 24px;
+      background: var(--green);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+
+    /* suggestion chips */
+    .ai-suggest {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .ai-suggest-chip {
+      display: inline-flex;
+      min-height: 32px;
+      padding: 6px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 64px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .ai-suggest-chip:hover {
+      border-radius: 64px;
+      background: var(--color-indigo-200, #c7d2fe);
+    }
+
+    /* ---------- Micro-interactions ---------- */
+    .ai-suggest-chip { transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease; }
+    .ai-suggest-chip:active { transform: scale(0.95); }
+    .ai-query-suggestion:active { background: rgba(236, 239, 255, 0.96); }
+    .ai-inline-send { transition: transform 0.12s ease, opacity 0.15s ease; }
+    .ai-inline-send:not(:disabled):active { transform: scale(0.88); }
+    .hl-live .sitter-card { transition: transform 0.16s ease, box-shadow 0.16s ease; }
+    .hl-live .sitter-card:active { transform: scale(0.985); }
+
+    /* Summary chip pop-in (only the freshly added one carries --new) */
+    .ai-summary-chip--new { animation: aiChipPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    @keyframes aiChipPop {
+      0% { opacity: 0; transform: scale(0.55); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Staggered card reveal after the skeleton shimmer clears */
+    .hl-live .searches-results-grid.is-revealing .sitter-card {
+      animation: aiCardReveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(1) { animation-delay: 0.02s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(2) { animation-delay: 0.10s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(3) { animation-delay: 0.18s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(4) { animation-delay: 0.26s; }
+    @keyframes aiCardReveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Mobile: drop the mockup chrome, go fullscreen ---------- */
+    @media (pointer: coarse) and (max-width: 768px) {
+      body { min-height: 100dvh; align-items: flex-start; justify-content: flex-start; padding: 0; background: #fff; }
+      .status-bar { display: none; }
+      .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
+      .ai-panel.open { max-height: 1100px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone-frame">
+    <div class="status-bar">
+      <div class="notch-pill"></div>
+      <div class="status-time">9:41</div>
+      <div class="status-icons" aria-label="Phone status">
+        <img src="./assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="./assets/wifi.svg" alt="" width="16" height="11">
+        <img src="./assets/battery.svg" alt="" width="25" height="12">
+      </div>
+    </div>
+
+    <div class="top-navbar">
+      <div class="brand"><img src="/ai-assisted-search-v2/assets/hlidacky-symbol.svg" alt="Hlídačky.cz"></div>
+      <button class="nav-burger" type="button" aria-label="Menu">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+          <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+          <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ============ SEARCH RESULTS ============ -->
+    <div class="screen-scroll">
+      <div class="hl-live">
+        <section class="searches-page-header-component">
+          <div class="heading heading--has-solid-line-reversed-highlight text-center">
+            <h1 class="heading__title text-balance heading-size-md heading-md-size-xl" style="--highlight-color: var(--color-pink-400)">
+              <mark>Babysitting</mark><br> in Praha 2
+            </h1>
+          </div>
+          <div class="typeset searches-page-header-component__description p-sm-size-sm p-md-size-lg">
+            Browse <strong>242 babysitters</strong> in Praha 2. Verified, experienced, and recommended by parents.
+          </div>
+          <div class="searches-page-header-component__quick-filters searches-page-header-component__quick-filters--guest">
+            <a class="searches-page-header-component__quick-filter searches-page-header-component__quick-filter--active" style="--vertical-color: var(--color-pink-400)" href="#">
+              <i class="fa-light fa-child-reaching"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Babysitting</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-cyan-400)" href="#">
+              <i class="fa-light fa-broom"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Household cleaning</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-teal-400)" href="#">
+              <i class="fa-light fa-paw"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Dog and cat care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-orange-400)" href="#">
+              <i class="fa-light fa-person-walking-with-cane"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Senior care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-violet-400)" href="#">
+              <i class="fa-light fa-user-graduate"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Tutoring</span></span>
+            </a>
+          </div>
+        </section>
+
+        <div class="searches-filter-component">
+          <div class="searches-filter-component__container">
+            <div class="searches-filter-component__input-wrap">
+              <img class="searches-filter-component__location-icon" src="/ai-assisted-search-v2/assets/icon-location-pin.svg" alt="" aria-hidden="true">
+              <input class="searches-filter-component__input search_place_form_autocomplete form-control form-control-lg" type="search" value="Praha 2">
+              <button class="searches-filter-component__ai-badge" type="button" id="aiFab" aria-label="Open AI search assistant">
+                <i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i>
+                <span>AI Search</span>
+              </button>
+            </div>
+            <button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md searches-filter-component__filter-button" type="button">
+              <span class="button-component__label">
+                <span class="fa-fwh fa-regular fa-sliders button-component__icon" aria-hidden="true"></span>
+                <span class="searches-filter-component__filter-text" aria-hidden="true"></span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="searches-results-grid">
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-01.jpg" width="128" height="128" loading="lazy" alt="Alexandra R."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Alexandra R.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">723 755 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">500 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Experienced babysitter for regular and one-time care. She most often helps with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Drawing/painting</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__icon fa-light fa-credit-card"></span><span class="badge-component__ellipsis-text">Accepts online payments</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Booked repeatedly</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="true" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-on.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-02.jpg" width="128" height="128" loading="lazy" alt="Klára S."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Klára S.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">604 943 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 4.5 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">300 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">She offers babysitting in a small group as well as individual care. A great fit for parents looking for regular weekday help and a gentle adaptation for younger children.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Children's groups</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sleep issues</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Support for special needs</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We especially appreciate her empathy, clear communication, and the short summary we get after each babysitting session about how the child did.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-03.jpg" width="128" height="128" loading="lazy" alt="Tereza M."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Tereza M.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">731 805 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(10)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">400 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Professional babysitter focused on preschool and kindergarten-aged children. Ideal for families looking for active time together, reliability, and experience with more demanding evening routines.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Celebrations</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Can drive children</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Experience with ADHD</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sport</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“Very reliable, punctual, and calm. She always prepares meaningful activities for the children while also keeping clear boundaries, which suits us as parents very well.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="searches-page-footer-component">
+          <div class="typeset p-size-lg">Total <strong>8,566 babysitters</strong> in Czechia</div>
+          <div class="searches-page-footer-component__about-search-results">
+            <a class="link-component link-component--muted-variant link-component--sm-size" href="#"><span class="link link-component__label">How search results work</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="ai-panel" id="aiPanel" aria-hidden="true">
+      <div class="ai-panel-top">
+        <div class="ai-head">
+          <div class="ai-head-brand">
+            <span class="ai-avatar">
+              <img src="/ai-assisted-search-v2/assets/ai-search-icon.svg" alt="" aria-hidden="true">
+            </span>
+            <div class="ai-head-title">AI Search Assistant</div>
+          </div>
+          <div class="ai-head-actions">
+            <button class="ai-head-icon-button ai-close" id="aiClose" type="button" aria-label="Close">
+              <img src="/ai-assisted-search-v2/assets/ai-search-close.svg" alt="" aria-hidden="true">
+            </button>
+            <button class="ai-head-icon-button ai-collapse-toggle" id="aiCollapseToggle" type="button" aria-label="Collapse panel" aria-expanded="true">
+              <img src="/ai-assisted-search-v2/assets/ai-search-chevron.svg" alt="" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+
+        <div class="ai-panel-body" id="aiPanelBody">
+          <div class="ai-stage" id="aiStage">
+            <div class="ai-thinking" id="aiThinking" hidden aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="ai-stage-question" id="aiQuestion"></div>
+            <div class="ai-stage-divider"></div>
+            <div class="ai-suggest" id="aiSuggest"></div>
+            <div style="height:16px"></div>
+            <div class="ai-inline-input-area" id="aiInputArea">
+              <div class="ai-inline-input-row" id="aiInputWrap">
+                <div class="ai-inline-input">
+                  <i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i>
+                  <input class="ai-input" id="aiInput" type="text" placeholder="You can specify your needs here..." autocomplete="off">
+                </div>
+                <button class="ai-inline-send" id="aiSend" type="button" aria-label="Send" disabled>
+                  <img src="/ai-assisted-search-v2/assets/icon-paperplane.svg" alt="" aria-hidden="true">
+                </button>
+              </div>
+              <div class="ai-query-examples" id="aiExamples">
+                <span class="ai-query-examples-track">
+                  <span class="ai-query-examples-prefix">eg.</span>
+                  <span class="ai-query-example-text" id="aiExampleText"></span>
+                </span>
+              </div>
+              <div class="ai-query-dropdown" id="aiQueryDropdown" hidden></div>
+            </div>
+            <div class="ai-stage-helper" id="aiHelper" hidden></div>
+          </div>
+
+          <div class="ai-summary" id="aiSummary" hidden>
+            <div class="ai-summary-copy" id="aiSummaryCopy"></div>
+            <div class="ai-summary-chips" id="aiSummaryChips"></div>
+            <button class="ai-reset" id="aiReset" type="button" hidden>Reset search</button>
+          </div>
+
+          <div class="ai-results-wrap" id="aiResultsWrap" hidden>
+            <div class="ai-results" id="aiResults"></div>
+            <button class="ai-showmore" id="aiShowMore" type="button" hidden></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var fab = document.getElementById('aiFab');
+      var panel = document.getElementById('aiPanel');
+      var closeBtn = document.getElementById('aiClose');
+      var collapseBtn = document.getElementById('aiCollapseToggle');
+      var panelBody = document.getElementById('aiPanelBody');
+      var stageEl = document.getElementById('aiStage');
+      var thinkingEl = document.getElementById('aiThinking');
+      var thinkingTimeout = null;
+      var questionEl = document.getElementById('aiQuestion');
+      var suggestEl = document.getElementById('aiSuggest');
+      var inputArea = document.getElementById('aiInputArea');
+      var inputWrap = document.getElementById('aiInputWrap');
+      var input = document.getElementById('aiInput');
+      var sendBtn = document.getElementById('aiSend');
+      var examplesEl = document.getElementById('aiExamples');
+      var exampleTextEl = document.getElementById('aiExampleText');
+      var queryDropdownEl = document.getElementById('aiQueryDropdown');
+      var helperEl = document.getElementById('aiHelper');
+      var summaryEl = document.getElementById('aiSummary');
+      var summaryCopyEl = document.getElementById('aiSummaryCopy');
+      var summaryChipsEl = document.getElementById('aiSummaryChips');
+      var resetBtn = document.getElementById('aiReset');
+      var resultsWrap = document.getElementById('aiResultsWrap');
+      var resultsEl = document.getElementById('aiResults');
+      var showMoreBtn = document.getElementById('aiShowMore');
+      var resultsView = document.querySelector('.screen-scroll');
+      var liveRoot = document.querySelector('.hl-live');
+      var headerComponent = document.querySelector('.searches-page-header-component');
+      var feedGrid = document.querySelector('.searches-results-grid');
+      var questionAnimationFrame = null;
+      var questionAnimationTimeout = null;
+      var feedReloadTimeout = null;
+      var queryExamplesTimer = null;
+      var typewriterTimer = null;
+      var dropdownBlurTimeout = null;
+
+      var DEFAULT_QUERY_EXAMPLES = [
+        'Babysitter next Thursday',
+        'English-speaking babysitter',
+        'Overnight babysitting nearby',
+        'ADHD-experienced babysitter'
+      ];
+
+      var SCRIPT = [
+        {
+          prompt: "Hi Alena, what kind of help do you need?",
+          suggest: [],
+          inputPlaceholder: "Please explain what you need...",
+          rotatingExamples: DEFAULT_QUERY_EXAMPLES,
+          dropdownExamples: [
+            'Babysitters available next Thursday',
+            'Babysitters offering also household cleaning',
+            'Babysitters with ADHD experience',
+            'English speaking babysitter nearby',
+            'German speaking babysitter nearby',
+            'Montessori babysitting in Praha 2',
+            'Overnight babysitting nearby',
+            'Top rated babysitters in Praha 2',
+            'Babysitter with driving licence',
+            'Babysitter experienced with newborns',
+            'French speaking babysitter in Praha 6',
+            'Babysitter available on weekends',
+            'Babysitter with first aid certificate',
+            'Experienced babysitter for twins',
+            'Pet-friendly babysitter nearby',
+            'Babysitter with Montessori training'
+          ],
+          count: 242
+        },
+        {
+          prompt: "Ok. Are you looking for a regular care or just a one-time care?",
+          suggest: ["A regular care", "One-time care"],
+          inputPlaceholder: "You can specify your preferred care type here...",
+          dropdownExamples: [
+            'Regular babysitting every weekday',
+            'One-time babysitting for next Thursday',
+            'Regular afternoon babysitting in Praha 2'
+          ],
+          count: 228
+        },
+        {
+          prompt: "Please specify when and where do you want to arrange the first meeting with your babysitter.",
+          suggest: [],
+          inputPlaceholder: "You can specify date and time here...",
+          dropdownExamples: [
+            'Next Monday between 18:00 and 20:00 in Praha 2',
+            'Tomorrow afternoon near Praha 2',
+            'This Friday at 17:30 in Praha 2'
+          ],
+          count: 164
+        },
+        {
+          prompt: "Do you have any other special requirements? Eg. languages, experience with autism, availability to sit overnight?",
+          suggest: [],
+          inputPlaceholder: "You can specify any special requirements here...",
+          dropdownExamples: [
+            'Speaks English',
+            'Experience with ADHD',
+            'Available overnight',
+            'Montessori experience'
+          ],
+          count: 141
+        },
+        {
+          prompt: "Alright, here's the list of potentially available english-speaking babysitters in Praha 2",
+          useFeedResults: true,
+          results: [
+            { name: "Augusta V.", img: "./assets/avatar-04.jpg", location: "Praha 2", rating: 5, reviews: 20, price: "500 Kč/h", verified: true },
+            { name: "Anna K.", img: "./assets/avatar-05.jpg", location: "Praha 2", rating: 4.5, reviews: 12, price: "500 Kč/h", verified: true },
+            { name: "Marianna T.", img: "./assets/avatar-06.jpg", location: "Praha 2", rating: 5, reviews: 18, price: "450 Kč/h", verified: true }
+          ],
+          showMore: "Show other 22 matches",
+          suggest: [],
+          inputPlaceholder: "Refine your search here...",
+          dropdownExamples: [
+            'Lives near Praha 2',
+            'Speaks English',
+            'Available next Thursday'
+          ],
+          count: 120
+        }
+      ];
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+
+      function renderStars(rating) {
+        var full = Math.floor(rating);
+        var half = rating % 1 >= 0.5;
+        var html = '';
+        for (var i = 0; i < full; i += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true"></i>';
+        if (half) html += '<i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh" aria-hidden="true"></i>';
+        for (var j = full + (half ? 1 : 0); j < 5; j += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true" style="opacity:.24"></i>';
+        return html;
+      }
+
+      function renderAiResultCard(r) {
+        return (
+          '<div class="ai-result-card">' +
+            '<div class="ai-result-media">' +
+              '<img class="ai-result-photo" src="' + r.img + '" alt="' + escapeHtml(r.name) + '">' +
+              (r.verified ? '<div class="ai-result-verified"><img src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg" alt="" aria-hidden="true"><span>Verified</span></div>' : '') +
+            '</div>' +
+            '<div class="ai-result-body">' +
+              '<a class="ai-result-name" href="#">' + escapeHtml(r.name) + '</a>' +
+              '<div class="ai-result-location"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>' + escapeHtml(r.location || '') + '</span></div>' +
+              '<div class="ai-result-rating"><span class="ai-result-stars">' + renderStars(r.rating || 0) + '</span><span>(' + escapeHtml(r.reviews || 0) + ')</span></div>' +
+              '<div class="ai-result-price">' + escapeHtml(r.price || '') + '</div>' +
+              '<a class="ai-result-link" href="#">Show profile</a>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
+      function syncSend() {
+        sendBtn.disabled = !input.value.trim();
+      }
+
+      function syncBookmarkIcon(button) {
+        var img = button.querySelector('img');
+        if (!img) return;
+        var isPressed = button.getAttribute('aria-pressed') === 'true';
+        img.src = isPressed ? button.getAttribute('data-src-on') : button.getAttribute('data-src-off');
+      }
+
+      function initBookmarks() {
+        document.querySelectorAll('.sitter-card__bookmark').forEach(function (button) {
+          syncBookmarkIcon(button);
+          button.addEventListener('click', function () {
+            var isPressed = button.getAttribute('aria-pressed') === 'true';
+            button.setAttribute('aria-pressed', String(!isPressed));
+            syncBookmarkIcon(button);
+          });
+        });
+      }
+
+      var state = {
+        started: false,
+        stepIndex: 0,
+        criteria: [],
+        expanded: true,
+        exampleIndex: 0,
+        queryDropdownOpen: false,
+        lastAddedCriterion: null,
+        suppressAutoCollapse: false
+      };
+
+      function setPanelExpanded(expanded) {
+        state.expanded = !!expanded;
+        panel.classList.toggle('ai-panel--collapsed', !state.expanded);
+        collapseBtn.setAttribute('aria-expanded', String(state.expanded));
+        collapseBtn.setAttribute('aria-label', state.expanded ? 'Collapse panel' : 'Expand panel');
+        if (panelBody) {
+          panelBody.setAttribute('aria-hidden', String(!state.expanded));
+        }
+      }
+
+      function ensurePanelPlacement() {
+        if (liveRoot && headerComponent && panel.parentNode !== liveRoot) {
+          liveRoot.insertBefore(panel, headerComponent);
+        }
+      }
+
+      function toCriterion(text) {
+        var value = String(text || '').trim();
+        if (!value) return null;
+
+        if (/regular/i.test(value)) return 'Regular help';
+        if (/one-time/i.test(value)) return 'One-time care';
+        if (/speak english|english-speaking|speak English/i.test(value)) return 'Speaks English';
+        if (/no special requirements/i.test(value)) return null;
+
+        var placeMatch = value.match(/Praha\s*\d+|Prague\s*\d+/i);
+        if (placeMatch) return 'Lives near ' + placeMatch[0];
+
+        return value;
+      }
+
+      function pushCriterion(text) {
+        var criterion = toCriterion(text);
+        if (!criterion) return;
+        if (state.criteria.indexOf(criterion) === -1) {
+          state.criteria.push(criterion);
+          state.lastAddedCriterion = criterion;
+        }
+      }
+
+      function renderSummary(step) {
+        summaryCopyEl.innerHTML = '';
+        summaryChipsEl.innerHTML = '';
+
+        state.criteria.forEach(function (criterion) {
+          var chip = document.createElement('div');
+          chip.className = 'ai-summary-chip';
+          if (criterion === state.lastAddedCriterion) {
+            chip.className += ' ai-summary-chip--new';
+          }
+          chip.innerHTML = '<span>' + escapeHtml(criterion) + '</span><button type="button" aria-label="Remove criterion">×</button>';
+          chip.querySelector('button').addEventListener('click', function () {
+            state.criteria = state.criteria.filter(function (item) { return item !== criterion; });
+            renderCurrentStep();
+          });
+          summaryChipsEl.appendChild(chip);
+        });
+
+        // Pop-in plays once; clear so unrelated re-renders don't re-trigger it.
+        state.lastAddedCriterion = null;
+
+        resetBtn.hidden = state.criteria.length === 0;
+        summaryEl.hidden = state.criteria.length === 0;
+      }
+
+      function getStepExamples(step) {
+        if (!step) return [];
+        if (step.dropdownExamples && step.dropdownExamples.length) return step.dropdownExamples;
+        if (step.rotatingExamples && step.rotatingExamples.length) return step.rotatingExamples;
+        return DEFAULT_QUERY_EXAMPLES;
+      }
+
+      function stopRotatingExamples() {
+        if (queryExamplesTimer) {
+          clearInterval(queryExamplesTimer);
+          queryExamplesTimer = null;
+        }
+        if (typewriterTimer) {
+          clearTimeout(typewriterTimer);
+          typewriterTimer = null;
+        }
+      }
+
+      function typewriteExampleText(text, onDone) {
+        if (!exampleTextEl) return;
+        var full = '“' + text + '”';
+        var i = 0;
+        exampleTextEl.textContent = '';
+        exampleTextEl.style.animation = 'none';
+        exampleTextEl.classList.add('is-typing');
+
+        function tick() {
+          if (i <= full.length) {
+            exampleTextEl.textContent = full.slice(0, i);
+            i++;
+            typewriterTimer = setTimeout(tick, 38);
+          } else {
+            exampleTextEl.classList.remove('is-typing');
+            if (onDone) typewriterTimer = setTimeout(onDone, 1800);
+          }
+        }
+        tick();
+      }
+
+      function renderExampleText(text) {
+        if (!exampleTextEl) return;
+        exampleTextEl.textContent = '"' + text + '"';
+      }
+
+      function startRotatingExamples(step) {
+        var examples = step && step.rotatingExamples ? step.rotatingExamples : [];
+        stopRotatingExamples();
+
+        if (!examples.length || state.queryDropdownOpen) {
+          examplesEl.hidden = true;
+          examplesEl.classList.add('is-hidden');
+          return;
+        }
+
+        examplesEl.hidden = false;
+        examplesEl.classList.remove('is-hidden');
+
+        function showNext() {
+          if (state.queryDropdownOpen) return;
+          state.exampleIndex = (state.exampleIndex + 1) % examples.length;
+          typewriteExampleText(examples[state.exampleIndex], showNext);
+        }
+
+        state.exampleIndex = state.exampleIndex % examples.length;
+        typewriteExampleText(examples[state.exampleIndex], showNext);
+      }
+
+      function closeQueryDropdown() {
+        state.queryDropdownOpen = false;
+        queryDropdownEl.hidden = true;
+        var currentStep = SCRIPT[state.stepIndex];
+        if (currentStep && currentStep.rotatingExamples && currentStep.rotatingExamples.length) {
+          examplesEl.hidden = false;
+          examplesEl.classList.remove('is-hidden');
+          startRotatingExamples(currentStep);
+        }
+      }
+
+      function positionQueryDropdown() {
+        var inputRow = document.getElementById('aiInputWrap');
+        if (!inputRow) return;
+        var rect = inputRow.getBoundingClientRect();
+        var vv = window.visualViewport;
+        // getBoundingClientRect() is relative to the visual viewport, but a
+        // position:fixed element is anchored to the layout viewport. On iOS the
+        // keyboard scrolls the page, making visualViewport.offsetTop non-zero;
+        // without adding it the dropdown renders too high and covers the input.
+        // On Android offsetTop stays 0, so this is a no-op there.
+        var offTop = vv ? vv.offsetTop : 0;
+        var offLeft = vv ? vv.offsetLeft : 0;
+        var top = rect.bottom + offTop + 8;
+        queryDropdownEl.style.left = (rect.left + offLeft) + 'px';
+        queryDropdownEl.style.width = rect.width + 'px';
+        queryDropdownEl.style.top = top + 'px';
+
+        // Limit height to the area visible above the keyboard so the list
+        // stays scrollable instead of disappearing under it.
+        var visibleBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+        var maxH = visibleBottom - top - 12;
+        queryDropdownEl.style.maxHeight = Math.max(140, maxH) + 'px';
+      }
+
+      // Keep the dropdown glued to the input while the navbar collapse/expand
+      // transition (0.2s) is moving the layout around.
+      function trackDropdownDuringTransition() {
+        var start = performance.now();
+        (function frame() {
+          if (!state.queryDropdownOpen) return;
+          positionQueryDropdown();
+          if (performance.now() - start < 360) requestAnimationFrame(frame);
+        })();
+      }
+
+      function onScrollReposition() {
+        if (state.queryDropdownOpen) positionQueryDropdown();
+      }
+
+      window.addEventListener('scroll', onScrollReposition, true);
+
+      // Auto-collapse the open panel once the user scrolls the results down, so
+      // the header bar pins to the top (collapsed state is sticky).
+      if (resultsView) {
+        resultsView.addEventListener('scroll', function () {
+          if (state.suppressAutoCollapse) return;
+          if (!panel.classList.contains('open')) return;
+          if (state.expanded && resultsView.scrollTop > 24) {
+            setPanelExpanded(false);
+          }
+        }, { passive: true });
+      }
+
+      if (window.visualViewport) {
+        var initialVVHeight = window.visualViewport.height;
+        window.visualViewport.addEventListener('resize', function () {
+          var shrunk = window.visualViewport.height < initialVVHeight * 0.85;
+          document.body.classList.toggle('keyboard-open', shrunk);
+          if (state.queryDropdownOpen) trackDropdownDuringTransition();
+        });
+        // iOS scrolls the page to reveal the focused input when the keyboard
+        // opens; that fires visualViewport 'scroll' (not window scroll), so keep
+        // the dropdown glued to the input through it.
+        window.visualViewport.addEventListener('scroll', onScrollReposition);
+      }
+
+      function openQueryDropdown() {
+        var step = SCRIPT[state.stepIndex];
+        var examples = getStepExamples(step);
+        queryDropdownEl.innerHTML = '';
+
+        if (!examples.length) {
+          closeQueryDropdown();
+          return;
+        }
+
+        state.queryDropdownOpen = true;
+        stopRotatingExamples();
+        examplesEl.classList.add('is-hidden');
+
+        examples.forEach(function (txt) {
+          var item = document.createElement('button');
+          item.className = 'ai-query-suggestion';
+          item.type = 'button';
+          // Inline SVG (not a FontAwesome <i>): injecting fa-* nodes here makes
+          // the FA kit's MutationObserver fire a DOM-replacement storm right as
+          // the input is focused, which suppresses the keyboard on iOS Safari.
+          item.innerHTML = '<svg class="ai-qs-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><line x1="11" y1="11" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>' + escapeHtml(txt) + '</span>';
+          item.addEventListener('click', function () {
+            input.value = txt;
+            syncSend();
+            closeQueryDropdown();
+            sendUser(txt);
+          });
+          queryDropdownEl.appendChild(item);
+        });
+
+        positionQueryDropdown();
+        queryDropdownEl.hidden = false;
+      }
+
+      function renderSuggestions(list) {
+        suggestEl.innerHTML = '';
+        (list || []).forEach(function (txt) {
+          var chip = document.createElement('button');
+          chip.className = 'ai-suggest-chip';
+          chip.type = 'button';
+          chip.textContent = txt;
+          chip.addEventListener('click', function () {
+            pushCriterion(txt);
+            advanceStep(txt);
+          });
+          suggestEl.appendChild(chip);
+        });
+      }
+
+      function renderResults(step) {
+        if (!step.results || step.useFeedResults) {
+          resultsWrap.hidden = true;
+          resultsEl.innerHTML = '';
+          showMoreBtn.hidden = true;
+          showMoreBtn.textContent = '';
+          return;
+        }
+
+        resultsWrap.hidden = false;
+        resultsEl.innerHTML = step.results.map(renderAiResultCard).join('');
+        showMoreBtn.hidden = !step.showMore;
+        showMoreBtn.textContent = step.showMore || '';
+      }
+
+      function clearQuestionAnimation() {
+        if (questionAnimationFrame) {
+          cancelAnimationFrame(questionAnimationFrame);
+          questionAnimationFrame = null;
+        }
+        if (questionAnimationTimeout) {
+          clearTimeout(questionAnimationTimeout);
+          questionAnimationTimeout = null;
+        }
+      }
+
+      function renderQuestion(prompt, immediate) {
+        clearQuestionAnimation();
+
+        if (immediate || !questionEl.textContent.trim()) {
+          questionEl.classList.remove('is-leaving', 'is-entering');
+          questionEl.textContent = prompt;
+          questionAnimationFrame = requestAnimationFrame(function () {
+            questionEl.classList.add('is-entering');
+            questionAnimationTimeout = setTimeout(function () {
+              questionEl.classList.remove('is-entering');
+              questionAnimationTimeout = null;
+            }, 340);
+          });
+          return;
+        }
+
+        questionEl.classList.remove('is-entering');
+        questionEl.classList.add('is-leaving');
+
+        questionAnimationTimeout = setTimeout(function () {
+          questionEl.classList.remove('is-leaving');
+          questionEl.textContent = prompt;
+
+          questionAnimationFrame = requestAnimationFrame(function () {
+            questionEl.classList.add('is-entering');
+            questionAnimationTimeout = setTimeout(function () {
+              questionEl.classList.remove('is-entering');
+              questionAnimationTimeout = null;
+            }, 340);
+          });
+        }, 220);
+      }
+
+      function renderCurrentStep(immediateQuestion) {
+        var step = SCRIPT[state.stepIndex];
+        renderQuestion(step.prompt, !!immediateQuestion);
+        inputWrap.hidden = false;
+        input.placeholder = step.inputPlaceholder || 'You can specify your needs here...';
+        helperEl.hidden = !step.helper;
+        helperEl.textContent = step.helper || '';
+        input.value = '';
+        syncSend();
+        closeQueryDropdown();
+        startRotatingExamples(step);
+        renderSuggestions(step.suggest);
+        renderSummary(step);
+        renderResults(step);
+      }
+
+      function playFeedReload() {
+        if (!feedGrid) return;
+
+        if (feedReloadTimeout) {
+          clearTimeout(feedReloadTimeout);
+          feedReloadTimeout = null;
+        }
+
+        feedGrid.classList.remove('is-reloading');
+        void feedGrid.offsetWidth;
+        feedGrid.classList.add('is-reloading');
+        feedGrid.setAttribute('aria-busy', 'true');
+
+        feedGrid.classList.remove('is-revealing');
+
+        feedReloadTimeout = setTimeout(function () {
+          feedGrid.classList.remove('is-reloading');
+          feedGrid.removeAttribute('aria-busy');
+          // Stagger the cards in once the skeleton clears.
+          void feedGrid.offsetWidth;
+          feedGrid.classList.add('is-revealing');
+          feedReloadTimeout = setTimeout(function () {
+            feedGrid.classList.remove('is-revealing');
+            feedReloadTimeout = null;
+          }, 720);
+        }, 520);
+      }
+
+      // Show the typing indicator briefly, then run `done` to reveal the answer.
+      function beginThinking(done) {
+        if (thinkingTimeout) {
+          clearTimeout(thinkingTimeout);
+          thinkingTimeout = null;
+        }
+        // Clear the current question so it fades in fresh after the dots.
+        questionEl.textContent = '';
+        thinkingEl.hidden = false;
+        if (stageEl) stageEl.classList.add('is-thinking');
+
+        thinkingTimeout = setTimeout(function () {
+          thinkingEl.hidden = true;
+          if (stageEl) stageEl.classList.remove('is-thinking');
+          thinkingTimeout = null;
+          if (done) done();
+        }, 850);
+      }
+
+      function advanceStep(userText) {
+        if (state.stepIndex < SCRIPT.length - 1) {
+          state.stepIndex += 1;
+        }
+        input.value = '';
+        syncSend();
+        closeQueryDropdown();
+        // Keep the panel expanded so the user sees the assistant's next reply,
+        // and suppress auto-collapse during the programmatic scroll-to-top.
+        setPanelExpanded(true);
+        playFeedReload();
+        beginThinking(function () {
+          renderCurrentStep();
+        });
+        state.suppressAutoCollapse = true;
+        if (resultsView) {
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        setTimeout(function () {
+          state.suppressAutoCollapse = false;
+        }, 700);
+      }
+
+      function sendUser(text) {
+        text = String(text || '').trim();
+        if (!text) return;
+        pushCriterion(text);
+        advanceStep(text);
+      }
+
+      function openPanel() {
+        ensurePanelPlacement();
+        if (liveRoot) {
+          liveRoot.classList.add('ai-assistant-open');
+        }
+        setPanelExpanded(true);
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        if (!state.started) {
+          state.started = true;
+          state.stepIndex = 0;
+          state.criteria = [];
+          renderCurrentStep(true);
+        }
+        if (resultsView) {
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+      function closePanel() {
+        if (liveRoot) {
+          liveRoot.classList.remove('ai-assistant-open');
+        }
+        closeQueryDropdown();
+        stopRotatingExamples();
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+      }
+
+      function resetSearch() {
+        state.stepIndex = 0;
+        state.criteria = [];
+        input.value = '';
+        syncSend();
+        renderCurrentStep();
+      }
+
+      fab.addEventListener('click', openPanel);
+      closeBtn.addEventListener('click', closePanel);
+      collapseBtn.addEventListener('click', function () {
+        var willExpand = !state.expanded;
+        setPanelExpanded(willExpand);
+        // When expanding while scrolled down, the panel leaves its sticky
+        // position and jumps to the top of the document (out of view). Bring the
+        // results back to the top so the expanded panel is visible.
+        if (willExpand && resultsView && resultsView.scrollTop > 0) {
+          state.suppressAutoCollapse = true;
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(function () {
+            state.suppressAutoCollapse = false;
+          }, 700);
+        }
+      });
+      sendBtn.addEventListener('click', function () { sendUser(input.value); });
+      input.addEventListener('input', syncSend);
+      // Move the dropdown to <body> ONCE at init. Reparenting it during the tap
+      // that focuses the input suppresses the keyboard on iOS Safari.
+      document.body.appendChild(queryDropdownEl);
+      // Open on focus AND on click. Defer the (heavy) dropdown build out of the
+      // tap gesture: building/positioning it synchronously inside the focus
+      // handler stops iOS Safari from raising the keyboard. `click` also covers
+      // the re-tap case where the input is already focused so `focus` won't fire.
+      function openQueryDropdownDeferred() {
+        setTimeout(openQueryDropdown, 0);
+      }
+      input.addEventListener('focus', openQueryDropdownDeferred);
+      input.addEventListener('click', openQueryDropdownDeferred);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); sendUser(input.value); }
+      });
+      // Close on an outside tap rather than on blur. The latest Android Chrome
+      // fires a transient blur while the keyboard animates open, which used to
+      // close the dropdown the instant it appeared.
+      document.addEventListener('pointerdown', function (e) {
+        if (!state.queryDropdownOpen) return;
+        if (input.contains(e.target) || queryDropdownEl.contains(e.target)) return;
+        closeQueryDropdown();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+      });
+      resultsEl.addEventListener('click', function (e) {
+        var target = e.target.closest('.ai-result-card, .ai-result-name, .ai-result-link');
+        if (!target) return;
+        e.preventDefault();
+        closePanel();
+      });
+      showMoreBtn.addEventListener('click', closePanel);
+      resetBtn.addEventListener('click', resetSearch);
+      ensurePanelPlacement();
+      setPanelExpanded(true);
+      initBookmarks();
+    })();
+  </script>
+</body>
+</html>
