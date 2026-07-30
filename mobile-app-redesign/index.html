@@ -3904,10 +3904,8 @@
         mobileHeaderIcon.style.color = activeVertical ? activeVertical.getAttribute('data-header-color') : 'var(--color-pink-400)';
       }
 
-      function selectAppScreen(screen, options) {
-        options = options || {};
+      function selectAppScreen(screen) {
         var placeholder = APP_PLACEHOLDERS[screen];
-        var shouldReloadSearch = screen === 'search' && currentAppScreen !== 'search' && !options.skipSearchReload;
         currentAppScreen = screen;
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
@@ -3917,7 +3915,11 @@
           appPlaceholderScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.remove('is-hidden');
           restoreSearchHeader();
-          if (shouldReloadSearch) playFeedReload();
+          // Coming back to a tab is not a new search. The feed keeps its
+          // scroll position, so replaying the skeleton here made cards the
+          // user had already read shimmer away under their thumb. The reload
+          // belongs to the things that actually change the results —
+          // logging in or out, and picking a location or a vertical.
           syncBackEntry();
           return;
         }
@@ -4269,7 +4271,7 @@
 
       function simulateLogout() {
         closeFamilyProfile();
-        selectAppScreen('search', { skipSearchReload: true });
+        selectAppScreen('search');
         hideLogoutSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
