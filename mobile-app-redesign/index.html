@@ -627,6 +627,104 @@
       cursor: pointer;
     }
 
+    /* Figma: Logged out success alert */
+    .logout-success-alert {
+      position: absolute;
+      right: 20px;
+      bottom: 99px;
+      left: 20px;
+      z-index: 25;
+      display: flex;
+      min-height: 68px;
+      align-items: center;
+      padding: 12px 12px 12px 8px;
+      border: 1px solid #7eea7c;
+      border-radius: 4px;
+      background: #eff9ef;
+      box-shadow: 0 24px 40px rgba(42, 53, 57, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .logout-success-alert.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .logout-success-alert__content {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .logout-success-alert__doodle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
+    }
+
+    .logout-success-alert__doodle-layer {
+      position: absolute;
+    }
+
+    .logout-success-alert__doodle-layer--2 {
+      top: 17.86%;
+      right: 9.74%;
+      bottom: 19.65%;
+      left: 13.28%;
+    }
+
+    .logout-success-alert__doodle-layer--3 {
+      top: 17.11%;
+      right: 10.26%;
+      bottom: 12.65%;
+      left: 25.65%;
+    }
+
+    .logout-success-alert__doodle-layer--1 {
+      top: 6.07%;
+      right: 10.25%;
+      bottom: 7.58%;
+      left: 9.07%;
+    }
+
+    .logout-success-alert__doodle-layer img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .logout-success-alert__message {
+      margin: 0;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 1.4;
+    }
+
+    .logout-success-alert__close {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #8b91a3;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
     /* ---------- Login bottom sheet placeholder ---------- */
     .login-bottom-sheet {
       position: absolute;
@@ -2825,6 +2923,17 @@
       </div>
       <button class="welcome-alert__close" id="welcomeAlertClose" type="button" aria-label="Close welcome alert"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
     </aside>
+    <aside class="logout-success-alert" id="logoutSuccessAlert" data-node-id="2284:69502" role="status" aria-live="polite" aria-hidden="true">
+      <div class="logout-success-alert__content">
+        <div class="logout-success-alert__doodle" aria-hidden="true">
+          <div class="logout-success-alert__doodle-layer logout-success-alert__doodle-layer--2"><img src="./assets/logout-alert-doodle-layer-2.svg" alt=""></div>
+          <div class="logout-success-alert__doodle-layer logout-success-alert__doodle-layer--3"><img src="./assets/logout-alert-doodle-layer-3.svg" alt=""></div>
+          <div class="logout-success-alert__doodle-layer logout-success-alert__doodle-layer--1"><img src="./assets/logout-alert-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <p class="logout-success-alert__message">You have been successfully logged out</p>
+      </div>
+      <button class="logout-success-alert__close" id="logoutSuccessAlertClose" type="button" aria-label="Close logged out alert"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+    </aside>
     <div class="login-bottom-sheet" id="loginBottomSheet" aria-hidden="true">
       <button class="login-bottom-sheet__backdrop" id="loginSheetBackdrop" type="button" aria-label="Close login sheet"></button>
       <section class="login-bottom-sheet__panel" id="loginSheetDialog" role="dialog" aria-modal="true" aria-label="Log in or sign up" tabindex="-1">
@@ -2974,6 +3083,8 @@
       var loginActions = Array.prototype.slice.call(document.querySelectorAll('.login-bottom-sheet__sso-button, .login-bottom-sheet__continue'));
       var welcomeAlert = document.getElementById('welcomeAlert');
       var welcomeAlertClose = document.getElementById('welcomeAlertClose');
+      var logoutSuccessAlert = document.getElementById('logoutSuccessAlert');
+      var logoutSuccessAlertClose = document.getElementById('logoutSuccessAlertClose');
       var messagesNavItem = document.getElementById('messagesNavItem');
       var messagesNavNotification = document.getElementById('messagesNavNotification');
       var searchNavItem = document.getElementById('searchNavItem');
@@ -3006,6 +3117,7 @@
       var typewriterTimer = null;
       var locationPlaceholderTimer = null;
       var locationAutocompleteBlurTimer = null;
+      var logoutSuccessTimer = null;
       var dropdownBlurTimeout = null;
       var selectedLocation = '';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
@@ -3783,7 +3895,23 @@
         closeLocationAutocomplete();
       }
 
+      function hideLogoutSuccess() {
+        if (logoutSuccessTimer) {
+          clearTimeout(logoutSuccessTimer);
+          logoutSuccessTimer = null;
+        }
+        logoutSuccessAlert.classList.remove('is-visible');
+        logoutSuccessAlert.setAttribute('aria-hidden', 'true');
+      }
+
+      function showLogoutSuccess() {
+        logoutSuccessTimer = null;
+        logoutSuccessAlert.classList.add('is-visible');
+        logoutSuccessAlert.setAttribute('aria-hidden', 'false');
+      }
+
       function simulateLogin() {
+        hideLogoutSuccess();
         loginTrigger.classList.add('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Open profile');
         closeLoginSheet();
@@ -3799,6 +3927,7 @@
 
       function simulateLogout() {
         closeFamilyProfile();
+        hideLogoutSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
         maskSitterDetails();
@@ -3814,6 +3943,8 @@
         messagesNavNotification.setAttribute('aria-hidden', 'true');
         welcomeAlert.classList.remove('is-visible');
         welcomeAlert.setAttribute('aria-hidden', 'true');
+        playFeedReload();
+        logoutSuccessTimer = setTimeout(showLogoutSuccess, 520);
       }
 
       verticalFilters.forEach(function (filter) {
@@ -3830,6 +3961,7 @@
       });
       familyProfileBack.addEventListener('click', closeFamilyProfile);
       familyProfileLogout.addEventListener('click', simulateLogout);
+      logoutSuccessAlertClose.addEventListener('click', hideLogoutSuccess);
       searchNavItem.addEventListener('click', function () {
         if (familyProfileScreen.classList.contains('is-open')) closeFamilyProfile();
       });
