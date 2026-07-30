@@ -5,3 +5,10 @@ mobile-app-redesign/assets/originals/
 # Superseded by slide-pet-care.jpg / welcome-background.jpg
 mobile-app-redesign/assets/slide-pet-care.png
 mobile-app-redesign/assets/register-login-background.png
+
+# macOS / stray files
+.DS_Store
+**/.DS_Store
+# Literal dir created by an unexpanded shell variable
+$CODEX_HOME/
+Confirmed
