@@ -2,34 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#22BF1E">
-  <title>Mobile App Redesign · Hlídačky.cz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky.cz — Mobile App redesign</title>
   <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="preconnect" href="https://hlidacky-312899.c.cdn77.org">
+  <link rel="preconnect" href="https://kit-pro.fontawesome.com" crossorigin>
+  <link rel="stylesheet" href="./assets/application.css">
+  <script src="https://hlidacky-312899.c.cdn77.org/assets/legacy/font_awesome_kit-7ce04cdb91db74fcd7dc41244a48b1b17ef3b23df1d2497d66251a0daaa5a640.js" data-turbo-track="reload"></script>
   <style>
     :root {
       --text: #2a3539;
       --muted: #6b7176;
-      --bg: #dce2e8;
+      --bg: #e9edf1;
       --panel: #ffffff;
       --border: #dde2e5;
-      --green: #22bf1e;
+      --surface: #f7f8fb;
+      --pink: #f96073;
+      --pink-strong: #ea4d62;
+      --pink-soft: #fff2f5;
+      --pink-line: #ffd5dc;
+      --green: #0ba825;
+      --green-shadow: rgba(0, 0, 0, 0.16);
+      --gold: #ffb400;
+      --purple-1: #8b5cf6;
+      --purple-2: #6132ff;
+      --gray-300: #e5e5ea;
+      --gray-500: #8b91a3;
+      --gray-600: #6b7176;
+      --gray-900: #2a3539;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      padding: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 24px;
       overflow-x: hidden;
       background: var(--bg);
       color: var(--text);
       font-family: 'soleil', Inter, system-ui, sans-serif;
     }
 
+    /* ---------- Phone mockup container ---------- */
     .phone-frame {
       width: 390px;
       max-width: 100%;
@@ -52,7 +69,7 @@
       background: #fff;
       flex-shrink: 0;
       position: relative;
-      z-index: 5;
+      z-index: 30;
     }
 
     .notch-pill {
@@ -69,437 +86,642 @@
 
     .status-time {
       color: #2A3539;
-      font-family: 'soleil', Inter, system-ui, sans-serif;
       font-size: 16px;
-      font-style: normal;
       font-weight: 400;
       line-height: 20px;
       letter-spacing: -0.165px;
     }
-
     .status-icons {
       display: flex;
       align-items: center;
       gap: 7px;
     }
-
     .status-icons img {
       display: block;
       flex-shrink: 0;
     }
 
-    .top-navbar {
-      display: flex;
-      width: 100%;
-      height: 48px;
-      padding: 0 16px;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid #E5E5EA;
-      background: #FFF;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 4;
-    }
-
-    .top-navbar-inner {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .top-navbar img {
-      display: block;
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-
-    .top-navbar-title {
-      color: #2A3539;
-      font-family: 'soleil', Inter, system-ui, sans-serif;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 24px;
-      letter-spacing: -0.051px;
-    }
-
-    .welcome-active .status-bar,
-    .welcome-active .top-navbar {
-      display: none;
-    }
-
+    /* ---------- Search results screen ---------- */
     .screen-scroll {
       flex: 1;
       min-height: 0;
+      position: relative;
       overflow-y: auto;
       overflow-x: hidden;
-      background: var(--panel);
+      background:
+        radial-gradient(circle at top left, rgba(249, 96, 115, 0.08), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcfd 18%, #f6f8fb 100%);
     }
 
-    .welcome-screen {
-      /* Both are overwritten from JS so the timings have a single source of
-         truth; the values here are only a fallback. */
-      --slide-duration: 5000ms;
-      --fade-duration: 560ms;
-      position: relative;
-      min-height: 100%;
-      padding: 80px 20px 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+    .results-inner { padding: 18px 16px 40px; }
+
+    .hl-live {
+      padding: 0 0 36px;
+    }
+
+    /* Figma: Desktop Mobile App UI Overview / Mobile App Header */
+    .mobile-app-header {
+      display: grid;
+      flex: 0 0 auto;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      height: 48px;
+      padding: 7px 12px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+    }
+
+    .mobile-app-header__placeholder {
+      width: 52px;
+      height: 24px;
+    }
+
+    .mobile-app-header__heading {
+      display: inline-flex;
+      width: 100%;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    .mobile-app-header__heading i {
+      flex: 0 0 auto;
+      color: #f96073;
+      font-size: 16px;
+    }
+
+    .mobile-app-header__heading span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-app-header__profile {
+      display: inline-flex;
+      width: 52px;
+      align-items: center;
       justify-content: flex-end;
-      gap: 16px;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      touch-action: pan-y;
-      user-select: none;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
     }
 
-    /* Two stacked layers so slides can cross-fade. The incoming layer is raised
-       and fades in over the outgoing one, which stays opaque underneath — that
-       avoids the dip to black a symmetric fade would produce. */
-    .welcome-photo-layer {
+    .mobile-app-header__profile img {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .mobile-app-header__profile .mobile-app-header__profile-avatar {
+      display: none;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.2);
+    }
+
+    .mobile-app-header__profile.is-logged-in .mobile-app-header__profile-icon {
+      display: none;
+    }
+
+    .mobile-app-header__profile.is-logged-in .mobile-app-header__profile-avatar {
+      display: block;
+    }
+
+    /* Figma: Family Profile */
+    /* Stays laid out and composited off-canvas so the slide-in is a pure
+       transform — toggling display would force layout + first paint on the
+       same frame the transition starts, which is what made it stutter. */
+    .family-profile-screen {
+      display: flex;
       position: absolute;
-      z-index: 0;
-      inset: 0;
+      z-index: 20;
+      inset: 52px 0 83px;
+      flex-direction: column;
       overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .family-profile-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .family-profile-header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      height: 48px;
+      padding: 0 12px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+    }
+
+    .family-profile-header__back,
+    .family-profile-header__placeholder {
+      display: inline-flex;
+      width: 52px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .family-profile-header__back {
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .family-profile-header__title {
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-profile-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px 20px 8px;
+      background: #fff;
+    }
+
+    .family-profile-user {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .family-profile-avatar {
+      display: block;
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.2);
+    }
+
+    .family-profile-user__details {
+      min-width: 0;
+    }
+
+    .family-profile-user__name {
+      margin: 0;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 24px;
+      font-weight: 450;
+      letter-spacing: -0.5px;
+      line-height: 1.32;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-profile-credit {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      background: #fff1e5;
+      padding: 2px 8px;
+      color: #ed7000;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .family-profile-credit i {
+      font-size: 12px;
+    }
+
+    .family-profile-settings {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .family-profile-settings__item {
+      display: grid;
+      width: 100%;
+      min-height: 52px;
+      grid-template-columns: 16px minmax(0, 1fr) 16px;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      padding: 14px 16px 16px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .family-profile-settings__item:hover {
+      background: #f7f7f7;
+    }
+
+    .family-profile-settings__item:active {
+      box-shadow: none;
+      padding-top: 16px;
+      padding-bottom: 14px;
+    }
+
+    .family-profile-settings__item > i:first-child {
+      color: #f96073;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .family-profile-settings__item > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-profile-settings__item > i:last-child {
+      color: #2a3539;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .family-profile-logout {
+      display: inline-flex;
+      align-items: center;
+      align-self: center;
+      gap: 6px;
+      margin-top: auto;
+      padding: 24px 0 8px;
+      border: 0;
+      background: transparent;
+      color: #8b91a3;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.6;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .family-profile-logout i {
+      font-size: 16px;
+    }
+
+    /* Figma: Mobile App Bottom Navbar - Family and Household */
+    .mobile-bottom-nav {
+      display: flex;
+      position: relative;
+      z-index: 30;
+      height: 83px;
+      flex: 0 0 83px;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: inset 0 1px 0 #e5e5ea;
+      padding-top: 4px;
+    }
+
+    .mobile-bottom-nav__items {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .mobile-bottom-nav__item {
+      display: flex;
+      position: relative;
+      width: 20%;
+      height: 42px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #2a3539;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .mobile-bottom-nav__item i {
+      display: inline-flex;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .mobile-bottom-nav__item span {
+      display: flex;
+      width: 75px;
+      height: 12px;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .mobile-bottom-nav__item--active {
+      color: #f96073;
+    }
+
+    .mobile-bottom-nav__item--active span {
+      font-weight: 450;
+    }
+
+    .mobile-bottom-nav__item .mobile-bottom-nav__notification {
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      display: flex;
+      width: 16px;
+      min-width: 16px;
+      height: 16px;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      border-radius: 64px;
+      background: #f96073;
+      padding: 0;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .mobile-bottom-nav__indicator {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 120px 12px;
+    }
+
+    .mobile-bottom-nav__indicator::after {
+      display: block;
+      width: 135px;
+      height: 5px;
+      border-radius: 999px;
+      background: #2a3539;
+      content: '';
+    }
+
+    /* Figma: Welcome alert */
+    .welcome-alert {
+      position: absolute;
+      right: 20px;
+      bottom: 99px;
+      left: 20px;
+      z-index: 25;
+      display: flex;
+      min-height: 64px;
+      align-items: center;
+      padding: 12px 12px 12px 8px;
+      border: 1px solid #7eea7c;
+      border-radius: 4px;
+      background: #eff9ef;
+      box-shadow: 0 24px 40px rgba(42, 53, 57, 0.2);
       opacity: 0;
       pointer-events: none;
-      transition:
-        opacity var(--fade-duration) ease,
-        transform var(--fade-duration) cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
-    .welcome-photo-layer.is-incoming { z-index: 1; }
-
-    /* Applied while the start state is committed. Without it the transition on
-       transform animates *into* the enter offset, and retargeting to the
-       resting state immediately after cancels the movement out entirely. */
-    .welcome-photo-layer.is-instant { transition: none; }
-
-    /* Start offsets for a directional swipe. Must stay above the .is-visible
-       rule: same specificity, so source order decides the resting state. */
-    .welcome-photo-layer.enter-from-right { transform: translateX(24px) scale(1.03); }
-    .welcome-photo-layer.enter-from-left { transform: translateX(-24px) scale(1.03); }
-
-    .welcome-photo-layer.is-visible {
+    .welcome-alert.is-visible {
       opacity: 1;
-      transform: none;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
-    .welcome-photo {
+    .welcome-alert__content {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .welcome-alert__doodle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
+    }
+
+    .welcome-alert__doodle-layer {
       position: absolute;
-      inset: 0;
+    }
+
+    .welcome-alert__doodle-layer--2 {
+      top: 13.67%;
+      right: 9.75%;
+      bottom: 21.48%;
+      left: 13.28%;
+    }
+
+    .welcome-alert__doodle-layer--1 {
+      top: 13.68%;
+      right: 12.53%;
+      bottom: 13.51%;
+      left: 11.62%;
+    }
+
+    .welcome-alert__doodle-layer img {
       display: block;
       width: 100%;
       height: 100%;
-      max-width: none;
-      object-fit: cover;
-      object-position: 48% center;
     }
 
-    .welcome-photo.is-width-locked {
-      bottom: auto;
-      height: auto;
-      min-height: 0;
-      object-fit: contain;
-      object-position: center top;
+    .welcome-alert__copy {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    .welcome-overlay {
+    .welcome-alert__title {
+      margin: 0;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.4;
+      letter-spacing: -0.2px;
+    }
+
+    .welcome-alert__message {
+      margin: 0;
+      color: #4a5a61;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.32;
+      letter-spacing: -0.16px;
+    }
+
+    .welcome-alert__message a {
+      color: #f96073;
+      font-weight: 450;
+      text-decoration: underline;
+      text-underline-offset: 1px;
+    }
+
+    .welcome-alert__close {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #8b91a3;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* ---------- Login bottom sheet placeholder ---------- */
+    .login-bottom-sheet {
       position: absolute;
-      z-index: 1;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.8) 60%);
+      z-index: 30;
+      display: flex;
+      align-items: flex-end;
       pointer-events: none;
     }
 
-    .welcome-tint {
+    .login-bottom-sheet__backdrop {
       position: absolute;
-      z-index: 1;
       inset: 0;
-      background: rgba(0, 0, 0, 0.1);
-      pointer-events: none;
+      border: 0;
+      padding: 0;
+      background: rgba(42, 53, 57, 0.32);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.24s ease;
     }
 
-    .welcome-logo {
-      position: absolute;
-      z-index: 2;
-      top: 20px;
-      left: 20px;
-      width: 172px;
-      height: 65px;
+    .login-bottom-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: min(573px, calc(100% - 90px));
+      padding: 0 20px 20px;
+      overflow-y: auto;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 32px rgba(42, 53, 57, 0.14);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .welcome-logo-mark {
+    .login-bottom-sheet__handle {
+      width: 135px;
+      height: 5px;
+      margin: 16px auto 12px;
+      border-radius: 999px;
+      background: #2a3539;
+    }
+
+    .login-bottom-sheet__content {
+      margin-top: 16px;
+    }
+
+    .login-bottom-sheet__logo {
+      position: relative;
+      width: 128px;
+      height: 48px;
+      margin: 0 auto;
+    }
+
+    .login-bottom-sheet__logo-mark {
       position: absolute;
       top: 0;
       left: 0;
-      width: 44px;
-      height: 44px;
+      width: 33px;
+      height: 33px;
     }
 
-    .welcome-logo-wordmark {
+    .login-bottom-sheet__logo-wordmark {
       position: absolute;
-      top: 37px;
-      left: 47px;
-      width: 124px;
-      height: 27px;
+      top: 27.7px;
+      left: 35.5px;
+      width: 92.9px;
+      height: 20.3px;
     }
 
-    .language-link {
-      position: absolute;
-      z-index: 2;
-      top: 20px;
-      right: 20px;
-      min-height: 28px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px;
-      border: 0;
-      border-radius: 4px;
-      background: transparent;
-      color: rgba(255, 255, 255, 0.8);
-      font: inherit;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .flag {
-      position: relative;
-      width: 22px;
-      height: 16px;
-      overflow: hidden;
-      border-radius: 2px;
-    }
-
-    .flag-base {
-      position: absolute;
-      top: -1.9px;
-      left: -1.6px;
-      width: 25.2px;
-      height: 19.8px;
-    }
-
-    .flag-overlay {
-      position: absolute;
-      inset: 0;
-      width: 22px;
-      height: 16px;
-    }
-
-    .language-copy {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .language-copy span:first-child {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-      line-height: 20px;
-    }
-
-    .language-chevron {
-      font-size: 13px;
-      line-height: 1;
-      transform: translateY(-1px);
-    }
-
-    .welcome-copy,
-    .login-actions {
-      position: relative;
-      z-index: 2;
-      width: min(100%, 380px);
-      margin-inline: auto;
-    }
-
-    .welcome-copy {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding-bottom: 8px;
-      transition: opacity 200ms ease;
-    }
-
-    /* While a finger is down the copy opacity is driven directly from the drag
-       offset, so it must not lag behind through a transition. */
-    .welcome-copy.is-dragging { transition: none; }
-
-    .carousel-dots {
-      height: 44px;
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-
-    .carousel-dot {
-      position: relative;
-      width: 32px;
-      height: 44px;
-      padding: 0;
-      border: 0;
-      appearance: none;
-      background: transparent;
-      cursor: pointer;
-      touch-action: manipulation;
-      transition: width 420ms cubic-bezier(0.16, 1, 0.3, 1);
-      /* The overlay gradient is fully transparent at this height, so on bright
-         photos a light dot blends into the background. A shadow separates it
-         without committing to either a light or a dark treatment. */
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
-    }
-
-    /* The active dot stretches into a pill that doubles as the autoplay
-       progress bar, so the slide timing is visible instead of implicit. */
-    .carousel-dot.is-active { width: 56px; }
-
-    /* ::before is the track, ::after the fill. Both span the button minus the
-       6px hit-area padding: 20px wide (circle) idle, 44px (pill) when active. */
-    .carousel-dot::before,
-    .carousel-dot::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 6px;
-      right: 6px;
-      height: 20px;
-      transform: translateY(-50%);
-      border-radius: 10px;
-    }
-
-    .carousel-dot::before { background: rgba(229, 229, 234, 0.75); }
-
-    .carousel-dot::after {
-      background: #f96073;
-      clip-path: inset(0 100% 0 0);
-    }
-
-    /* clip-path keeps the pill's end caps intact while it fills, which a
-       scaleX() would squash. */
-    @keyframes dot-progress {
-      from { clip-path: inset(0 100% 0 0); }
-      to { clip-path: inset(0 0 0 0); }
-    }
-
-    .carousel-dot.is-progressing::after {
-      animation: dot-progress var(--slide-duration) linear forwards;
-    }
-
-    /* Autoplay is driven by this animation ending, so pausing it pauses the
-       carousel — the bar and the timer cannot drift apart. */
-    .carousel-dots.is-paused .carousel-dot.is-progressing::after {
-      animation-play-state: paused;
-    }
-
-    /* No animation to ride on when autoplay is off; show the state statically. */
-    .carousel-dots.is-static .carousel-dot.is-active::after {
-      clip-path: inset(0 0 0 0);
-    }
-
-    .carousel-dot:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: -4px;
-      border-radius: 12px;
-    }
-
-    .welcome-title {
-      color: #fff;
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.3;
+    .login-bottom-sheet__heading {
+      margin: 28px 0;
+      color: #2a3539;
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.32;
       letter-spacing: -0.2px;
-      text-shadow: 0 6px 16px rgba(42, 53, 57, 0.2);
+      text-align: center;
     }
 
-    .welcome-subtitle {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 350;
-      line-height: 1.5;
-      letter-spacing: -0.24px;
+    .login-bottom-sheet__sso-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
     }
 
-    .trust-logo-slot {
-      padding-top: 8px;
-    }
-
-    /* Copy leaves quickly, then re-enters staggered behind the photo fade, so
-       the two changes read as one movement rather than a simultaneous cut. */
-    .welcome-title,
-    .welcome-subtitle,
-    .trust-logo-slot {
-      transition: opacity 170ms ease, transform 170ms ease;
-    }
-
-    .welcome-copy.is-leaving .welcome-title,
-    .welcome-copy.is-leaving .welcome-subtitle,
-    .welcome-copy.is-leaving .trust-logo-slot {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
-
-    @keyframes copy-enter {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .welcome-title.is-entering,
-    .welcome-subtitle.is-entering,
-    .trust-logo-slot.is-entering {
-      animation: copy-enter 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .welcome-subtitle.is-entering { animation-delay: 70ms; }
-    .trust-logo-slot.is-entering { animation-delay: 140ms; }
-
-    .trust-logo {
+    .login-bottom-sheet__sso-button {
       position: relative;
-      height: 32px;
-    }
-
-    .trust-logo[hidden],
-    .trust-logo-slot[hidden] { display: none; }
-
-    .trust-logo img {
-      position: absolute;
-      display: block;
-    }
-
-    .protect-logo { width: 177.951px; }
-    .protect-wordmark { left: 21.32%; top: 24.96%; width: 74.53%; height: 58.27%; }
-    .protect-trademark { left: 96.31%; top: 34.15%; width: 3.69%; height: 10.73%; }
-    .protect-shield { left: 0; top: 0; width: 16.54%; height: 100%; }
-    .protect-shield-detail { left: 1.5%; top: 8.1%; width: 13.55%; height: 82.17%; }
-    .protect-shield-fill { left: 8.16%; top: 12.18%; width: 6.27%; height: 73.43%; }
-    .protect-shield-check { left: 4.98%; top: 32.98%; width: 7.28%; height: 28.6%; }
-
-    .verify-logo { width: 166.284px; }
-    .verify-wordmark { left: 22.88%; top: 27%; width: 72.76%; height: 58.75%; }
-    .verify-trademark { left: 96.06%; top: 34.07%; width: 3.94%; height: 10.71%; }
-    .verify-shield { left: 0; top: 0; width: 17.65%; height: 100%; }
-    .verify-shield-check { left: 5.32%; top: 32.98%; width: 7.77%; height: 28.6%; }
-
-    .login-actions {
       display: flex;
+      height: 80px;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      max-width: 380px;
-    }
-
-    .login-button {
-      position: relative;
-      width: 100%;
-      min-height: 54px;
-      display: grid;
-      grid-template-columns: 24px 1fr;
-      align-items: center;
-      gap: 48px;
-      padding: 14px 32px 16px 16px;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 4px 14px;
       overflow: hidden;
       border: 1px solid #e5e5ea;
       border-radius: 4px;
@@ -507,667 +729,3214 @@
       box-shadow: inset 0 -3px 0 #e5e5ea;
       color: #2a3539;
       font: inherit;
+      font-size: 14px;
+      line-height: 22px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .login-bottom-sheet__sso-button img {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    @media (hover: hover) {
+      .login-bottom-sheet__sso-button:hover {
+        border-color: #bec2ce;
+        background: #f7f7f7;
+        box-shadow: inset 0 -3px 0 #bec2ce;
+      }
+    }
+
+    .login-bottom-sheet__sso-button:active {
+      padding-top: 13px;
+      padding-bottom: 13px;
+      border-color: #bec2ce;
+      background: #f7f7f7;
+      box-shadow: inset 0 0 0 #bec2ce;
+    }
+
+    .login-bottom-sheet__divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 30px;
+      margin: 10px 0;
+      color: #8b91a3;
       font-size: 16px;
       line-height: 22px;
+    }
+
+    .login-bottom-sheet__divider::before,
+    .login-bottom-sheet__divider::after {
+      height: 1px;
+      flex: 1;
+      background: #e5e5ea;
+      content: '';
+    }
+
+    .login-bottom-sheet__email {
+      width: 100%;
+      height: 52px;
+      padding: 0 20px;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      outline: none;
+      background: #fff;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .login-bottom-sheet__email::placeholder {
+      color: #8b91a3;
+      opacity: 1;
+    }
+
+    .login-bottom-sheet__email:focus {
+      border-color: #6aafff;
+      box-shadow: 0 0 0 2px #cbdafc;
+    }
+
+    .login-bottom-sheet__continue {
+      display: inline-flex;
+      width: 100%;
+      height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 14px 20px 16px 24px;
+      border: 0;
+      border-radius: 4px;
+      background: #22bf1e;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .login-bottom-sheet__continue-icon {
+      font-size: 22px;
+      line-height: 16px;
+    }
+
+    @media (hover: hover) {
+      .login-bottom-sheet__continue:hover {
+        background: #0ba825;
+      }
+    }
+
+    .login-bottom-sheet__continue:active {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      background: #0ba825;
+      box-shadow: none;
+    }
+
+    .login-bottom-sheet__social-proof {
+      display: flex;
+      width: 100%;
+      height: 108px;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #feecee;
+      color: #2a3539;
+      text-align: center;
+    }
+
+    .login-bottom-sheet__social-proof img {
+      display: block;
+      width: 84px;
+      height: 40px;
+    }
+
+    .login-bottom-sheet__social-proof-copy {
+      width: 264px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    .login-bottom-sheet__social-proof-copy p {
+      margin: 0;
+    }
+
+    .login-bottom-sheet__social-proof-copy strong {
+      font-weight: 450;
+    }
+
+    .login-bottom-sheet.is-open {
+      pointer-events: auto;
+    }
+
+    .login-bottom-sheet.is-open .login-bottom-sheet__backdrop {
+      opacity: 1;
+    }
+
+    .login-bottom-sheet.is-open .login-bottom-sheet__panel {
+      transform: translateY(0);
+    }
+
+    .hl-live .searches-page-header-component {
+      padding: 0;
+      width: 100%;
+      margin-top: 0;
+      background: #fff;
+    }
+
+    .hl-live .searches-page-header-component:empty {
+      margin-top: 0;
+      height: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .hl-live .heading__title {
+      letter-spacing: -0.04em;
+      font-size: 32px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .heading__title mark {
+      display: inline-block;
+      margin-bottom: -2px;
+    }
+
+    .hl-live .searches-page-header-component__description {
+      padding-top: 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+      color: var(--color-gray-700);
+      font-size: 14px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0;
+      margin-top: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 0;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter {
+      flex: 0 0 76px;
+      min-width: 76px;
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter i {
+      font-size: 18px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter--active,
+    .hl-live .searches-page-header-component__quick-filter--active > i,
+    .hl-live .searches-page-header-component__quick-filter--active .searches-page-header-component__quick-filter__text_container,
+    .hl-live .searches-page-header-component__quick-filter--active .searches-page-header-component__quick-filter__text_line {
+      color: var(--vertical-color);
+    }
+
+    .hl-live .searches-filter-component {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      padding: 8px 0 8px 0;
+      margin: 0;
+      background: #f1f5fb;
+      backdrop-filter: blur(16px);
+    }
+
+    .hl-live .searches-filter-component__container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hl-live.ai-assistant-open .heading__title,
+    .hl-live.ai-assistant-open .searches-page-header-component__description,
+    .hl-live.ai-assistant-open .searches-page-header-component__quick-filters,
+    .hl-live.ai-assistant-open .searches-filter-component {
+      display: none;
+    }
+
+    .hl-live.ai-assistant-open .searches-page-header-component {
+      margin-top: 0;
+      height: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .hl-live .searches-filter-component__input-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .hl-live .searches-filter-component__location-icon,
+    .hl-live .searches-filter-component__search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      display: block;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .hl-live .searches-filter-component__search-icon {
+      color: #8b91a3;
+      font-size: 18px;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .hl-live .searches-filter-component__location-icon[hidden],
+    .hl-live .searches-filter-component__search-icon[hidden] {
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__input {
+      font-size: 16px;
+      border-radius: 8px;
+      height: 52px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: none;
+      padding-left: 46px;
+      padding-right: 46px;
+    }
+
+    .hl-live .searches-filter-component__input:focus {
+      border-color: #6aafff;
+      box-shadow: 0 0 0 2px #cbdafc;
+    }
+
+    .hl-live .searches-filter-component__clear-location {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #f96073;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .hl-live .searches-filter-component__clear-location[hidden] {
+      display: none;
+    }
+
+    .hl-live .location-autocomplete {
+      position: absolute;
+      top: 70px;
+      right: 12px;
+      left: 16px;
+      z-index: 12;
+      overflow: hidden;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 10px 16px rgba(42, 53, 57, 0.2);
+      padding: 9px 1px 0;
+    }
+
+    .hl-live .location-autocomplete[hidden] {
+      display: none;
+    }
+
+    .hl-live .location-autocomplete__option {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px 16px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 350;
+      letter-spacing: -0.24px;
+      line-height: 1.5;
       text-align: left;
       cursor: pointer;
     }
 
-    .login-button:hover { background: #f7f7f7; }
-
-    .extra-login-options {
-      width: 100%;
-      display: grid;
-      grid-template-rows: 0fr;
-      margin-block: -6px;
-      opacity: 0;
-      transition: grid-template-rows 240ms ease, margin 240ms ease, opacity 180ms ease;
+    .hl-live .location-autocomplete__option:hover,
+    .hl-live .location-autocomplete__option:focus-visible {
+      background: #f7f7f7;
+      outline: 0;
     }
 
-    .extra-login-options.is-expanded {
-      grid-template-rows: 1fr;
-      margin-block: 0;
-      opacity: 1;
+    .hl-live .location-autocomplete__option i {
+      width: 12px;
+      flex: 0 0 12px;
+      color: #f96073;
+      font-size: 17px;
+      text-align: center;
     }
 
-    .extra-login-options-inner {
-      min-height: 0;
+    .hl-live .location-autocomplete__attribution {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow: hidden;
+      min-height: 18px;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+      color: #4a5a61;
+      font-size: 12px;
+      font-weight: 350;
+      letter-spacing: -0.16px;
+      line-height: 1.5;
     }
 
-    .login-icon {
-      width: 24px;
-      height: 24px;
+    .hl-live .searches-filter-component__input::-webkit-search-decoration,
+    .hl-live .searches-filter-component__input::-webkit-search-cancel-button,
+    .hl-live .searches-filter-component__input::-webkit-search-results-button,
+    .hl-live .searches-filter-component__input::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__container .searches-filter-component__input {
+      width: 100%;
+    }
+
+    .hl-live .searches-filter-component__filter-button {
+      width: 52px;
+      min-width: 52px;
+      height: 52px;
+      min-height: 52px;
+      flex: 0 0 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__label {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .searches-filter-component__filter-text {
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__icon {
+      display: block;
+      width: 20px;
+      line-height: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    .hl-live .searches-results-grid {
       display: grid;
-      place-items: center;
+      row-gap: 20px;
+      column-gap: 14px;
+      margin-top: 0;
+      padding-top: 16px;
+      padding-left: 16px;
+      padding-right: 8px;
+    }
+
+    .hl-live .sitter-card {
+      position: relative;
+      border: 1px solid #dde2e5;
+      box-shadow: none;
+      border-radius: 8px;
+      overflow: visible;
+      background: #fff;
+      margin-top: 0;
+    }
+
+    .hl-live .searches-results-grid.is-reloading {
+      pointer-events: none;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card {
       overflow: hidden;
     }
 
-    .login-icon img {
+    .hl-live .searches-results-grid.is-reloading .sitter-card > * {
+      opacity: 0;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      border-radius: inherit;
+      background:
+        linear-gradient(#eef2f7 0 0) 16px 16px / 96px 96px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px 112px / 96px 28px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 18px / 148px 18px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 48px / 74px 14px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 74px / 140px 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 124px 102px / 86px 24px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 112px) / calc(100% - 40px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 86px) / calc(100% - 56px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 60px) / calc(100% - 84px) 16px no-repeat,
+        linear-gradient(#eef2f7 0 0) 16px calc(100% - 28px) / calc(100% - 32px) 16px no-repeat,
+        #fff;
+    }
+
+    .hl-live .searches-results-grid.is-reloading .sitter-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -45%;
+      width: 45%;
+      z-index: 5;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0));
+      animation: sitter-feed-shimmer 0.85s ease-in-out infinite;
+    }
+
+    @keyframes sitter-feed-shimmer {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(320%);
+      }
+    }
+
+    .hl-live .sitter-card__bookmark {
+      position: absolute;
+      top: 0;
+      right: 18px;
+      width: 36px;
+      height: 58px;
+      padding: 0;
+      border: 1px solid #dde2e5;
+      border-top: 0;
+      border-radius: 0 0 4px 4px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hl-live .sitter-card__bookmark img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"] {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .hl-live .sitter-card__bookmark:hover {
+      background: #fff7f9;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"]:hover {
+      background: #ff5d76;
+      border-color: #ff5d76;
+    }
+
+    .hl-live .sitter-card__main-part {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      column-gap: 0;
+      row-gap: 0;
+      align-items: start;
+      padding: 0;
+    }
+
+    .hl-live .sitter-card .profile-photo-component {
+      width: 96px;
+      position: relative;
+    }
+
+    .hl-live .profile-photo-component__photo a {
+      display: block;
+      width: 96px;
+    }
+
+    .hl-live .profile-photo-component__photo img {
+      width: 96px;
+      height: 96px;
+      display: block;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .hl-live .profile-photo-component__verified-badge {
+      width: 96px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: none;
+      justify-content: center;
+      border-radius: 0 0 4px 4px;
+      padding: 6px 8px;
+    }
+
+    .hl-live .sitter-card__content {
+      min-width: 0;
+      padding-left: 12px;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .sitter-card__header,
+    .hl-live .sitter-card__name-wrapper {
+      min-width: 0;
+    }
+
+    .hl-live .sitter-card__header {
+      padding-right: 48px;
+    }
+
+    .hl-live .sitter-card__name {
       display: block;
       max-width: 100%;
-      max-height: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.15;
     }
 
-    .other-login {
-      border: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-      background: transparent;
-      color: rgba(255, 255, 255, 0.8);
-      font: inherit;
+    .hl-live .profile-card-basic-info-component {
+      display: grid;
+      gap: 0;
+      margin-top: 8px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter {
+      margin: 0;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.3;
+      color: var(--gray-500);
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel {
+      text-decoration: none;
+      padding-top: 2px;
       cursor: pointer;
     }
 
-    /* Autoplay is also switched off from JS here — an auto-advancing carousel
-       is the motion problem, not just the transition between slides. */
-    @media (prefers-reduced-motion: reduce) {
-      .welcome-screen { --fade-duration: 120ms; }
-
-      .welcome-photo-layer.enter-from-right,
-      .welcome-photo-layer.enter-from-left { transform: none; }
-
-      .carousel-dot { transition: none; }
-      .carousel-dot.is-progressing::after { animation: none; }
-
-      .welcome-title,
-      .welcome-subtitle,
-      .trust-logo-slot { transition: none; }
-
-      .welcome-title.is-entering,
-      .welcome-subtitle.is-entering,
-      .trust-logo-slot.is-entering { animation: none; }
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid #6aafff;
+      outline-offset: 2px;
     }
 
-    @media (pointer: coarse) and (max-width: 768px) {
-      body {
-        min-height: 100dvh;
-        align-items: flex-start;
-        justify-content: flex-start;
-        padding: 0;
-        background: #fff;
+    .hl-live .profile-card-basic-info-component__reviews-count {
+      cursor: pointer;
+    }
+
+    .hl-live .profile-card-basic-info-component__reviews-count:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid #6aafff;
+      outline-offset: 2px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-text--disappearing {
+      text-decoration: underline;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-icon {
+      text-decoration: none;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating .profile-card-basic-info-component__parameter-content {
+      gap: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating {
+      padding-top: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-badges {
+      margin-top: 2px;
+    }
+
+    .hl-live .sitter-card__content-part {
+      grid-column: 1 / -1;
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-component,
+    .hl-live .profile-card-content-component__content {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-component__content {
+      display: grid;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .profile-card-content-component__description-wrapper {
+      margin-top: 2px;
+    }
+
+    .hl-live .profile-card-content-component__description {
+      font-size: 14px;
+      line-height: 1.48;
+      color: var(--text);
+    }
+
+    .hl-live .profile-card-content-component__description-link-wrapper {
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component > div {
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .btn {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--primary-variant .button-component__label {
+      color: var(--color-supportive-full-white);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--tertiary-variant .button-component__label {
+      color: var(--color-gray-800);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .locked-overlay-component {
+      display: none;
+    }
+
+    .hl-live .extra-content-pills-component {
+      margin-top: 8px;
+    }
+
+    .hl-live .extra-content-pills-component__overflow-container {
+      max-height: 58px;
+      overflow: hidden;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hl-live .extra-content-pills-component__pill {
+      margin: 0;
+    }
+
+    .hl-live .extra-content-review-component {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f5f6f8;
+      border-radius: 10px;
+    }
+
+    .hl-live .extra-content-review-component__text {
+      margin-top: 6px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      margin-top: 12px;
+    }
+
+    .hl-live .searches-page-footer-component {
+      padding: 0 4px 0;
+    }
+
+    .results-hero h1 {
+      font-size: 31px;
+      line-height: 1.06;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      text-align: left;
+      margin-bottom: 14px;
+    }
+    .results-hero h1 .hl {
+      background: linear-gradient(180deg, #ff7b8b 0%, var(--pink) 100%);
+      color: #fff;
+      padding: 1px 8px 2px;
+      border-radius: 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .results-hero .found {
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .results-hero .found strong { font-weight: 800; }
+    .results-hero .lede {
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 340px;
+      margin: 0;
+    }
+
+    /* category tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px -4px 0;
+      padding: 0 4px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 12px 11px;
+      min-width: 72px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.76);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(42, 53, 57, 0.04);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .cat-tab svg { width: 26px; height: 26px; }
+    .cat-tab.active {
+      color: var(--text);
+      font-weight: 700;
+      background: #fff;
+      border-color: var(--pink-line);
+      box-shadow: 0 14px 30px rgba(249, 96, 115, 0.14);
+    }
+
+    /* filter bar */
+    .filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 -16px;
+      padding: 12px 16px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(221, 226, 229, 0.8);
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--pink-soft);
+      color: var(--pink-strong);
+      border: 1px solid var(--pink-line);
+      border-radius: 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-spacer { flex: 1; }
+    .filter-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-icon-btn {
+      width: 42px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-badge {
+      position: absolute;
+      top: -7px; right: -7px;
+      min-width: 20px; height: 20px;
+      padding: 0 5px;
+      background: var(--pink);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    /* sitter card */
+    .sitter-card {
+      position: relative;
+      border: 1px solid rgba(221, 226, 229, 0.95);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow:
+        0 14px 32px rgba(49, 72, 87, 0.06),
+        0 2px 10px rgba(49, 72, 87, 0.03);
+      background: rgba(255, 255, 255, 0.96);
+    }
+    .sc-top { display: flex; gap: 14px; }
+    .sc-photo-wrap { position: relative; flex: 0 0 84px; }
+    .sc-photo {
+      width: 84px; height: 84px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+    }
+    .sc-verified {
+      position: absolute;
+      left: 50%; bottom: -10px;
+      transform: translateX(-50%);
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--green);
+      color: #fff;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 16px rgba(11, 168, 37, 0.18);
+    }
+    .sc-verified svg { width: 11px; height: 11px; }
+    .sc-info { min-width: 0; flex: 1; }
+    .sc-name { font-size: 20px; font-weight: 800; letter-spacing: -0.25px; }
+    .sc-meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14px; margin-top: 5px; }
+    .sc-meta svg { width: 14px; height: 14px; flex: 0 0 14px; }
+    .sc-rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .sc-stars { color: var(--gold); letter-spacing: 1px; font-size: 14px; }
+    .sc-rating-count { color: var(--muted); font-size: 14px; }
+    .sc-price { font-weight: 800; font-size: 15px; margin-top: 7px; }
+    .sc-bookmark {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .sc-desc {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.58;
+      color: var(--text);
+    }
+    .sc-link { color: var(--pink); text-decoration: underline; cursor: pointer; }
+
+    .sc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .sc-tag {
+      padding: 7px 11px;
+      background: #f8fafc;
+      border: 1px solid #e8edf1;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #51606a;
+    }
+
+    .sc-premium {
+      margin-top: 14px;
+      display: flex; gap: 12px;
+      padding: 14px;
+      background: linear-gradient(180deg, #fff5f7 0%, #fff0f3 100%);
+      border: 1px solid #ffd8df;
+      border-radius: 14px;
+    }
+    .sc-premium-icon { font-size: 22px; line-height: 1; }
+    .sc-premium-title { font-weight: 800; margin-bottom: 4px; }
+    .sc-premium-list { list-style: none; display: grid; gap: 3px; }
+    .sc-premium-list li { font-size: 13px; color: var(--text); display: flex; gap: 7px; }
+    .sc-premium-list li::before { content: "•"; color: var(--pink); }
+
+    .sc-quote {
+      margin-top: 14px;
+      padding: 14px 14px 4px;
+      border: 1px solid #edf1f4;
+      border-radius: 14px;
+      background: #fcfdfe;
+    }
+    .sc-quote-stars { color: var(--gold); letter-spacing: 2px; font-size: 15px; }
+    .sc-quote-text { font-style: italic; color: var(--text); font-size: 14px; line-height: 1.5; margin-top: 6px; }
+
+    .sc-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .sc-act-icon {
+      width: 50px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .sc-act-icon .dot { position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); border: 1.5px solid #fff; }
+    .sc-act-msg {
+      flex: 1;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .sc-act-book {
+      flex: 1.3;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+    .sc-gallery-label { display: flex; align-items: center; gap: 8px; margin-top: 26px; color: var(--muted); font-size: 13px; }
+
+    /* ---------- AI entry point inside location input ---------- */
+    .hl-live .searches-filter-component__ai-badge {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      width: fit-content;
+      max-width: calc(100% - 16px);
+      flex: 0 0 auto;
+      height: 28px;
+      min-height: 28px;
+      padding: 0 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 64px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+      z-index: 1;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+
+    .hl-live .searches-filter-component__ai-badge {
+      display: none;
+    }
+    .hl-live .searches-filter-component__ai-badge:hover {
+      border-radius: 64px;
+      background: var(--color-indigo-200, #c7d2fe);
+    }
+    .hl-live .searches-filter-component__ai-badge i,
+    .hl-live .searches-filter-component__ai-badge span {
+      color: inherit;
+    }
+    .hl-live .searches-filter-component__ai-badge i {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .hl-live .searches-filter-component__ai-badge span {
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+    }
+    @keyframes fab-ring {
+      0% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(124, 92, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0); }
+    }
+    @keyframes fab-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ---------- AI top panel ---------- */
+    .ai-panel {
+      width: 100%;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: max-height 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, margin-bottom 0.36s ease;
+      position: relative;
+      z-index: 7;
+      margin-bottom: 0;
+    }
+    .ai-panel.open {
+      max-height: 940px;
+      opacity: 1;
+      pointer-events: auto;
+      margin-bottom: 12px;
+    }
+
+    .ai-panel-top {
+      background: linear-gradient(135deg, #b85fff 0%, #7c5cff 58%, #6132ff 100%);
+      color: #fff;
+    }
+
+    .ai-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      flex-shrink: 0;
+    }
+    .ai-head-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .ai-avatar {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 28px;
+    }
+    .ai-avatar img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .ai-avatar--sm {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .ai-avatar--sm img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .ai-head-title {
+      color: var(--color-supportive-full-white, #fff);
+      font-family: Soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .ai-head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      flex: 0 0 auto;
+    }
+    .ai-head-icon-button {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-supportive-full-white, #fff);
+      flex: 0 0 28px;
+    }
+    .ai-head-icon-button img {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+    .ai-collapse-toggle img {
+      transition: transform 0.2s ease;
+    }
+    .ai-panel.ai-panel--collapsed .ai-collapse-toggle img {
+      transform: rotate(180deg);
+    }
+
+    .ai-panel-body {
+      max-height: 720px;
+      overflow: hidden;
+      opacity: 1;
+      transition: max-height 0.28s ease, opacity 0.18s ease;
+    }
+    .ai-panel.ai-panel--collapsed .ai-panel-body {
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* When collapsed, pin the header bar to the top while results scroll under it. */
+    .ai-panel.ai-panel--collapsed {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-bottom: 0;
+    }
+
+    .ai-stage {
+      padding: 18px 16px 24px;
+    }
+
+    /* "AI thinking" typing indicator */
+    .ai-thinking {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 56px;
+      padding: 16px 0 8px;
+    }
+    .ai-thinking[hidden] { display: none; }
+    .ai-thinking span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      animation: aiThinkingBounce 1.2s ease-in-out infinite;
+    }
+    .ai-thinking span:nth-child(2) { animation-delay: 0.16s; }
+    .ai-thinking span:nth-child(3) { animation-delay: 0.32s; }
+    @keyframes aiThinkingBounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.45; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    .ai-stage.is-thinking .ai-stage-question,
+    .ai-stage.is-thinking .ai-stage-divider,
+    .ai-stage.is-thinking .ai-suggest,
+    .ai-stage.is-thinking .ai-inline-input-area,
+    .ai-stage.is-thinking .ai-stage-helper {
+      display: none;
+    }
+
+    .ai-stage-question {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.38;
+      font-weight: 400;
+      max-width: 320px;
+      margin: 0 auto;
+      opacity: 1;
+      transform: translateY(0);
+      will-change: opacity, transform;
+    }
+    .ai-stage-question.is-entering {
+      animation: aiStageQuestionIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .ai-stage-question.is-leaving {
+      animation: aiStageQuestionOut 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+    }
+    @keyframes aiStageQuestionIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
       }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes aiStageQuestionOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ai-stage-question,
+      .ai-stage-question.is-entering,
+      .ai-stage-question.is-leaving {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+    .ai-stage-divider {
+      width: 92px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.42);
+      margin: 14px auto 14px;
+    }
+    .ai-stage-helper {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.35;
+      margin-top: 10px;
+    }
+    .ai-inline-input-area {
+      margin-top: 2px;
+      position: relative;
+    }
+    .ai-inline-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ai-inline-input {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(46, 16, 101, 0.16);
+      border: 2px solid transparent;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+    .ai-inline-input:focus-within {
+      border-color: #58a6ff;
+      box-shadow: 0 10px 30px rgba(46, 16, 101, 0.16);
+    }
+    .ai-inline-input i {
+      color: #8f83ff;
+      font-size: 15px;
+      line-height: 1;
+    }
+    .ai-input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--gray-900);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      min-width: 0;
+      padding: 12px 0;
+    }
+    .ai-input::placeholder { color: #9da3b5; }
+    .ai-inline-send {
+      display: none;
+    }
+    .ai-query-examples {
+      margin-top: 12px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 18px;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .ai-query-examples.is-hidden {
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+    .ai-query-examples-track {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ai-query-examples-prefix {
+      margin-right: 4px;
+      opacity: 0.88;
+    }
+    .ai-query-example-text {
+      display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ai-query-example-text.is-typing::after {
+      content: '|';
+      display: inline-block;
+      margin-left: 1px;
+      animation: aiCursorBlink 0.7s step-start infinite;
+      opacity: 1;
+    }
+    @keyframes aiCursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes aiQueryExampleFade {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .ai-query-dropdown {
+      position: fixed;
+      background: #fff;
+      border: 1px solid rgba(215, 222, 238, 0.95);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(30, 41, 59, 0.16);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      z-index: 9000;
+    }
+    .ai-query-dropdown[hidden] {
+      display: none;
+    }
+    .ai-query-suggestion {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      text-align: left;
+      color: var(--gray-900);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      min-width: 0;
+    }
+    .ai-query-suggestion + .ai-query-suggestion {
+      border-top: 1px solid rgba(230, 235, 245, 0.9);
+    }
+    .ai-query-suggestion:hover {
+      background: rgba(244, 246, 255, 0.92);
+    }
+    .ai-query-suggestion i {
+      color: #8f83ff;
+      font-size: 16px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+    .ai-query-suggestion .ai-qs-icon {
+      color: #8f83ff;
+      flex: 0 0 auto;
+      display: block;
+    }
+    .ai-query-suggestion span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .ai-summary {
+      padding: 12px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--gray-300);
+      text-align: center;
+    }
+    .ai-summary-copy {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.35;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .ai-summary-copy strong {
+      color: var(--gray-900);
+      font-weight: 800;
+    }
+    .ai-summary-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .ai-summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .ai-summary-chip button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      line-height: 1;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .ai-reset {
+      margin-top: 8px;
+      border: 0;
+      background: transparent;
+      color: var(--pink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .ai-results-wrap {
+      padding: 10px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--gray-300);
+    }
 
+    /* result cards inside chat */
+    .ai-results {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+      margin: 2px 0 0 0;
+      min-height: 176px;
+      align-items: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 0 4px;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-results::-webkit-scrollbar {
+      height: 6px;
+    }
+    .ai-results::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 999px;
+    }
+    .ai-result-card {
+      flex: 0 0 228px;
+      width: 228px;
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 10px;
+      align-items: start;
+      background: #fff;
+      scroll-snap-align: start;
+    }
+    .ai-result-media {
+      position: relative;
+      width: 80px;
+    }
+    .ai-result-photo {
+      display: block;
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px 4px 0 0;
+    }
+    .ai-result-verified {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 80px;
+      min-height: 28px;
+      padding: 6px 8px;
+      border-radius: 0 0 4px 4px;
+      background: #15c39a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 450;
+      line-height: 1;
+    }
+    .ai-result-verified img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .ai-result-body {
+      min-width: 0;
+      display: grid;
+      row-gap: 6px;
+      align-content: start;
+    }
+    .ai-result-name {
+      color: var(--gray-900);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.15;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    .ai-result-location {
+      color: var(--gray-500);
+      font-size: 12px;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-result-location i {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .ai-result-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .ai-result-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: #f8b53a;
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-stars i {
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-price {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      width: fit-content;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f5f5f5;
+      color: var(--gray-900);
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1.2;
+    }
+    .ai-result-link {
+      color: var(--pink);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .ai-showmore {
+      align-self: center;
+      margin: 4px auto 8px;
+      padding: 13px 24px;
+      background: var(--green);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+
+    /* suggestion chips */
+    .ai-suggest {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .ai-suggest-chip {
+      display: inline-flex;
+      min-height: 32px;
+      padding: 6px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 64px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .ai-suggest-chip:hover {
+      border-radius: 64px;
+      background: var(--color-indigo-200, #c7d2fe);
+    }
+
+    /* ---------- Micro-interactions ---------- */
+    .ai-suggest-chip { transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease; }
+    .ai-suggest-chip:active { transform: scale(0.95); }
+    .ai-query-suggestion:active { background: rgba(236, 239, 255, 0.96); }
+    .ai-inline-send { transition: transform 0.12s ease, opacity 0.15s ease; }
+    .ai-inline-send:not(:disabled):active { transform: scale(0.88); }
+    .hl-live .sitter-card { transition: transform 0.16s ease, box-shadow 0.16s ease; }
+    .hl-live .sitter-card:active { transform: scale(0.985); }
+
+    /* Summary chip pop-in (only the freshly added one carries --new) */
+    .ai-summary-chip--new { animation: aiChipPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    @keyframes aiChipPop {
+      0% { opacity: 0; transform: scale(0.55); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Staggered card reveal after the skeleton shimmer clears */
+    .hl-live .searches-results-grid.is-revealing .sitter-card {
+      animation: aiCardReveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(1) { animation-delay: 0.02s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(2) { animation-delay: 0.10s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(3) { animation-delay: 0.18s; }
+    .hl-live .searches-results-grid.is-revealing .sitter-card:nth-child(4) { animation-delay: 0.26s; }
+    @keyframes aiCardReveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Mobile: drop the mockup chrome, go fullscreen ---------- */
+    @media (pointer: coarse) and (max-width: 768px) {
+      body { min-height: 100dvh; align-items: flex-start; justify-content: flex-start; padding: 0; background: #fff; }
       .status-bar { display: none; }
-      .top-navbar { display: flex; }
-      .welcome-active .top-navbar { display: none; }
+      .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
+      .family-profile-screen { top: 0; }
+      .ai-panel.open { max-height: 1100px; }
+    }
 
-      .phone-frame {
-        width: 100%;
-        height: 100dvh;
-        max-height: none;
-        border-radius: 0;
-        box-shadow: none;
+    @media (prefers-reduced-motion: reduce) {
+      .family-profile-screen {
+        transition-duration: 1ms;
       }
     }
   </style>
 </head>
-<body class="welcome-active">
+<body>
   <main class="phone-frame">
     <div class="status-bar">
       <div class="notch-pill"></div>
       <div class="status-time">9:41</div>
       <div class="status-icons" aria-label="Phone status">
-        <img src="/jobs/jobs-for-sitters/assets/mobile-signal.svg" alt="" width="17" height="11">
-        <img src="/jobs/jobs-for-sitters/assets/wifi.svg" alt="" width="16" height="11">
-        <img src="/jobs/jobs-for-sitters/assets/battery.svg" alt="" width="25" height="12">
+        <img src="./assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="./assets/wifi.svg" alt="" width="16" height="11">
+        <img src="./assets/battery.svg" alt="" width="25" height="12">
       </div>
     </div>
-    <div class="top-navbar">
-      <div class="top-navbar-inner">
-        <img src="/jobs/jobs-for-sitters/assets/icon-paperplane-pink.svg" alt="">
-        <div class="top-navbar-title">Inzeráty</div>
+
+    <header class="mobile-app-header" data-node-id="7:2753">
+      <div class="mobile-app-header__placeholder" aria-hidden="true"></div>
+      <div class="mobile-app-header__heading">
+        <i class="fa-solid fa-child-reaching" id="mobileAppHeaderIcon" aria-hidden="true"></i>
+        <span id="mobileAppHeaderTitle">Babysitting</span>
+      </div>
+      <button class="mobile-app-header__profile" id="loginTrigger" type="button" aria-label="Log in or sign up" aria-expanded="false" aria-controls="loginBottomSheet">
+        <img class="mobile-app-header__profile-icon" src="./assets/fa-circle-user.svg" alt="">
+        <img class="mobile-app-header__profile-avatar" src="./assets/mobile-app-header-avatar.png" alt="Profile">
+      </button>
+    </header>
+
+    <!-- ============ SEARCH RESULTS ============ -->
+    <div class="screen-scroll">
+      <div class="hl-live">
+        <section class="searches-page-header-component">
+          <div class="searches-page-header-component__quick-filters searches-page-header-component__quick-filters--guest">
+            <a class="searches-page-header-component__quick-filter searches-page-header-component__quick-filter--active" style="--vertical-color: var(--color-pink-400)" href="#" data-heading="Babysitting" data-header-icon="fa-child-reaching" data-header-color="var(--color-pink-400)" aria-current="page">
+              <i class="fa-light fa-child-reaching"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Babysitting</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-cyan-400)" href="#" data-heading="Household cleaning" data-header-icon="fa-broom" data-header-color="var(--color-cyan-400)">
+              <i class="fa-light fa-broom"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Household cleaning</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-teal-400)" href="#" data-heading="Dog and cat care" data-header-icon="fa-paw" data-header-color="var(--color-teal-400)">
+              <i class="fa-light fa-paw"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Dog and cat care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-orange-400)" href="#" data-heading="Senior care" data-header-icon="fa-person-walking-with-cane" data-header-color="var(--color-orange-400)">
+              <i class="fa-light fa-person-walking-with-cane"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Senior care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-violet-400)" href="#" data-heading="Tutoring" data-header-icon="fa-user-graduate" data-header-color="var(--color-violet-400)">
+              <i class="fa-light fa-user-graduate"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Tutoring</span></span>
+            </a>
+          </div>
+        </section>
+
+        <div class="searches-filter-component">
+          <div class="searches-filter-component__container">
+            <div class="searches-filter-component__input-wrap">
+              <img class="searches-filter-component__location-icon" id="locationPinIcon" src="/ai-assisted-search-v2/assets/icon-location-pin.svg" alt="" aria-hidden="true" hidden>
+              <i class="searches-filter-component__search-icon fa-regular fa-magnifying-glass" id="locationSearchIcon" aria-hidden="true"></i>
+              <input class="searches-filter-component__input search_place_form_autocomplete form-control form-control-lg" id="locationInput" type="search" placeholder="Where do you need help?" role="combobox" aria-autocomplete="list" aria-controls="locationAutocomplete" aria-expanded="false">
+              <button class="searches-filter-component__clear-location" id="locationClear" type="button" aria-label="Clear location" hidden><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+              <button class="searches-filter-component__ai-badge" type="button" id="aiFab" aria-label="Open AI search assistant">
+                <i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i>
+                <span>AI Search</span>
+              </button>
+            </div>
+            <button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md searches-filter-component__filter-button" type="button">
+              <span class="button-component__label">
+                <span class="fa-fwh fa-regular fa-sliders button-component__icon" aria-hidden="true"></span>
+                <span class="searches-filter-component__filter-text" aria-hidden="true"></span>
+              </span>
+            </button>
+          </div>
+          <div class="location-autocomplete" id="locationAutocomplete" role="listbox" aria-label="Location suggestions" hidden></div>
+        </div>
+
+        <div class="searches-results-grid">
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-01.jpg" width="128" height="128" loading="lazy" alt="Alexandra R."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Alexandra R.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">723 755 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">500 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Experienced babysitter for regular and one-time care. She most often helps with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Drawing/painting</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__icon fa-light fa-credit-card"></span><span class="badge-component__ellipsis-text">Accepts online payments</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Booked repeatedly</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="true" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-on.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-02.jpg" width="128" height="128" loading="lazy" alt="Klára S."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Klára S.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">604 943 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 4.5 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">300 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">She offers babysitting in a small group as well as individual care. A great fit for parents looking for regular weekday help and a gentle adaptation for younger children.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Children's groups</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sleep issues</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Support for special needs</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We especially appreciate her empathy, clear communication, and the short summary we get after each babysitting session about how the child did.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search-v2/assets/bookmark-off.svg" data-src-on="/ai-assisted-search-v2/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search-v2/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-03.jpg" width="128" height="128" loading="lazy" alt="Tereza M."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Tereza M.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 2</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">731 805 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(10)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">400 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Professional babysitter focused on preschool and kindergarten-aged children. Ideal for families looking for active time together, reliability, and experience with more demanding evening routines.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Celebrations</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Can drive children</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Experience with ADHD</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sport</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“Very reliable, punctual, and calm. She always prepares meaningful activities for the children while also keeping clear boundaries, which suits us as parents very well.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="searches-page-footer-component">
+          <div class="typeset p-size-lg">Total <strong>8,566 babysitters</strong> in Czechia</div>
+          <div class="searches-page-footer-component__about-search-results">
+            <a class="link-component link-component--muted-variant link-component--sm-size" href="#"><span class="link link-component__label">How search results work</span></a>
+          </div>
+        </div>
       </div>
     </div>
-    <section class="screen-scroll">
-      <div class="welcome-screen" id="welcome-carousel" data-figma-node="2072:3168">
-        <div class="welcome-photo-layer is-visible is-incoming" data-photo-layer>
-          <img class="welcome-photo" src="/mobile-app-redesign/assets/welcome-background.jpg" alt="Family spending time together with their dog">
+    <section class="family-profile-screen" id="familyProfileScreen" data-node-id="2284:67211">
+      <header class="family-profile-header">
+        <button class="family-profile-header__back" id="familyProfileBack" type="button" aria-label="Back to search"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-profile-header__title">Your Profile</div>
+        <div class="family-profile-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <div class="family-profile-content">
+        <div class="family-profile-user">
+          <img class="family-profile-avatar" src="./assets/mobile-app-header-avatar.png" alt="Alice Nováková">
+          <div class="family-profile-user__details">
+            <p class="family-profile-user__name">Alice Nováková</p>
+            <span class="family-profile-credit"><i class="fa-regular fa-coins" aria-hidden="true"></i>200 Kč in credits</span>
+          </div>
         </div>
-        <div class="welcome-photo-layer" data-photo-layer aria-hidden="true">
-          <img class="welcome-photo" alt="">
+        <div class="family-profile-settings" aria-label="Profile settings">
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Basic information</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Notifications</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-receipt" aria-hidden="true"></i><span>Billing information</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-gift" aria-hidden="true"></i><span>Get credits</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-star" aria-hidden="true"></i><span>Membership</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
         </div>
-        <div class="welcome-tint" aria-hidden="true"></div>
-        <div class="welcome-overlay" aria-hidden="true"></div>
-        <div class="welcome-logo" aria-label="Hlídačky.cz">
-          <img class="welcome-logo-mark" src="/mobile-app-redesign/assets/logo-mark.svg" alt="">
-          <img class="welcome-logo-wordmark" src="/mobile-app-redesign/assets/logo-wordmark.svg" alt="">
-        </div>
-        <button class="language-link" type="button" aria-label="Choose language, currently English">
-          <span class="flag" aria-hidden="true">
-            <img class="flag-base" src="/mobile-app-redesign/assets/flag-base.svg" alt="">
-            <img class="flag-overlay" src="/mobile-app-redesign/assets/flag-overlay.svg" alt="">
-          </span>
-          <span class="language-copy"><span>English</span><span class="language-chevron">⌄</span></span>
+        <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i>Log out</button>
+      </div>
+    </section>
+    <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
+      <div class="mobile-bottom-nav__items">
+        <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" aria-current="page">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <span>Search</span>
         </button>
-        <div class="welcome-copy" id="welcome-copy">
-          <div class="carousel-dots" id="carousel-dots" role="group" aria-label="Carousel navigation, slide 1 of 7">
-            <button class="carousel-dot is-active" type="button" data-slide-index="0" aria-label="Show slide 1" aria-current="true"></button>
-            <button class="carousel-dot" type="button" data-slide-index="1" aria-label="Show slide 2"></button>
-            <button class="carousel-dot" type="button" data-slide-index="2" aria-label="Show slide 3"></button>
-            <button class="carousel-dot" type="button" data-slide-index="3" aria-label="Show slide 4"></button>
-            <button class="carousel-dot" type="button" data-slide-index="4" aria-label="Show slide 5"></button>
-            <button class="carousel-dot" type="button" data-slide-index="5" aria-label="Show slide 6"></button>
-            <button class="carousel-dot" type="button" data-slide-index="6" aria-label="Show slide 7"></button>
+        <button class="mobile-bottom-nav__item" type="button">
+          <i class="fa-light fa-heart" aria-hidden="true"></i>
+          <span>Favourites</span>
+        </button>
+        <button class="mobile-bottom-nav__item" id="messagesNavItem" type="button" aria-label="Messages">
+          <i class="fa-light fa-message" aria-hidden="true"></i>
+          <span>Messages</span>
+          <span class="mobile-bottom-nav__notification" id="messagesNavNotification" hidden aria-hidden="true">3</span>
+        </button>
+        <button class="mobile-bottom-nav__item" type="button">
+          <i class="fa-light fa-paper-plane" aria-hidden="true"></i>
+          <span>Jobs</span>
+        </button>
+        <button class="mobile-bottom-nav__item" type="button">
+          <i class="fa-light fa-calendar-clock" aria-hidden="true"></i>
+          <span>Bookings</span>
+        </button>
+      </div>
+      <div class="mobile-bottom-nav__indicator" aria-hidden="true"></div>
+    </nav>
+    <aside class="welcome-alert" id="welcomeAlert" data-node-id="2284:56800" role="status" aria-live="polite" aria-hidden="true">
+      <div class="welcome-alert__content">
+        <div class="welcome-alert__doodle" aria-hidden="true">
+          <div class="welcome-alert__doodle-layer welcome-alert__doodle-layer--2"><img src="./assets/welcome-alert-doodle-layer-2.svg" alt=""></div>
+          <div class="welcome-alert__doodle-layer welcome-alert__doodle-layer--1"><img src="./assets/welcome-alert-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <div class="welcome-alert__copy">
+          <p class="welcome-alert__title">Welcome Alice!</p>
+          <p class="welcome-alert__message">You have <a href="#">3 new messages</a></p>
+        </div>
+      </div>
+      <button class="welcome-alert__close" id="welcomeAlertClose" type="button" aria-label="Close welcome alert"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+    </aside>
+    <div class="login-bottom-sheet" id="loginBottomSheet" aria-hidden="true">
+      <button class="login-bottom-sheet__backdrop" id="loginSheetBackdrop" type="button" aria-label="Close login sheet"></button>
+      <section class="login-bottom-sheet__panel" id="loginSheetDialog" role="dialog" aria-modal="true" aria-label="Log in or sign up" tabindex="-1">
+        <div class="login-bottom-sheet__handle" aria-hidden="true"></div>
+        <div class="login-bottom-sheet__content">
+          <div class="login-bottom-sheet__logo" aria-label="Hlídačky.cz">
+            <img class="login-bottom-sheet__logo-mark" src="./assets/login-logo-mark.svg" alt="">
+            <img class="login-bottom-sheet__logo-wordmark" src="./assets/login-logo-wordmark.svg" alt="">
           </div>
-          <h1 class="welcome-title" id="welcome-title">Connecting families<br>with reliable care</h1>
-          <p class="welcome-subtitle" id="welcome-subtitle">288 760+ households use Hlídačky.cz</p>
-          <div class="trust-logo-slot" id="trust-logo-slot" hidden>
-            <div class="trust-logo protect-logo" id="protect-logo" hidden aria-label="Hlídačky Protect">
-              <img class="protect-wordmark" src="/mobile-app-redesign/assets/protect-wordmark.svg" alt="">
-              <img class="protect-trademark" src="/mobile-app-redesign/assets/protect-trademark.svg" alt="">
-              <img class="protect-shield" src="/mobile-app-redesign/assets/protect-shield.svg" alt="">
-              <img class="protect-shield-detail" src="/mobile-app-redesign/assets/protect-shield-detail.svg" alt="">
-              <img class="protect-shield-fill" src="/mobile-app-redesign/assets/protect-shield-fill.svg" alt="">
-              <img class="protect-shield-check" src="/mobile-app-redesign/assets/protect-shield-check.svg" alt="">
-            </div>
-            <div class="trust-logo verify-logo" id="verify-logo" hidden aria-label="Hlídačky Verify">
-              <img class="verify-wordmark" src="/mobile-app-redesign/assets/verify-wordmark.svg" alt="">
-              <img class="verify-trademark" src="/mobile-app-redesign/assets/verify-trademark.svg" alt="">
-              <img class="verify-shield" src="/mobile-app-redesign/assets/verify-shield.svg" alt="">
-              <img class="verify-shield-check" src="/mobile-app-redesign/assets/verify-shield-check.svg" alt="">
+          <h2 class="login-bottom-sheet__heading">Register or Log in</h2>
+          <div class="login-bottom-sheet__sso-options" aria-label="Sign in with another provider">
+            <button class="login-bottom-sheet__sso-button" type="button" aria-label="Continue with Google">
+              <img src="./assets/login-google.svg" alt="">
+              <span>Google</span>
+            </button>
+            <button class="login-bottom-sheet__sso-button" type="button" aria-label="Continue with Facebook">
+              <img src="./assets/login-facebook.svg" alt="">
+              <span>Facebook</span>
+            </button>
+            <button class="login-bottom-sheet__sso-button" type="button" aria-label="Continue with Apple">
+              <img src="./assets/login-apple.svg" alt="">
+              <span>Apple</span>
+            </button>
+            <button class="login-bottom-sheet__sso-button" type="button" aria-label="Continue with Moje ID">
+              <img src="./assets/login-moje-id.svg" alt="">
+              <span>Moje ID</span>
+            </button>
+          </div>
+          <div class="login-bottom-sheet__divider" aria-label="or">or</div>
+          <input class="login-bottom-sheet__email" type="email" autocomplete="email" placeholder="Enter your E-mail" aria-label="E-mail">
+          <button class="login-bottom-sheet__continue" type="button">
+            <span>Continue</span>
+            <span class="login-bottom-sheet__continue-icon" aria-hidden="true">›</span>
+          </button>
+          <div class="login-bottom-sheet__social-proof">
+            <img src="./assets/login-social-proof-illustration.svg" alt="" aria-hidden="true">
+            <div class="login-bottom-sheet__social-proof-copy">
+              <p>Join <strong>238 347+ satisfied families</strong></p>
+              <p>in Czechia at Hlídačky.cz</p>
             </div>
           </div>
         </div>
-        <div class="login-actions">
-          <button class="login-button" type="button" data-login-provider="apple">
-            <span class="login-icon"><img src="/mobile-app-redesign/assets/apple-icon.svg" alt=""></span>
-            <span>Continue with Apple</span>
-          </button>
-          <button class="login-button" type="button" data-login-provider="facebook">
-            <span class="login-icon"><img src="/mobile-app-redesign/assets/facebook-icon.svg" alt=""></span>
-            <span>Continue with Facebook</span>
-          </button>
-          <div class="extra-login-options" id="extra-login-options" aria-hidden="true" inert>
-            <div class="extra-login-options-inner">
-              <button class="login-button" type="button" data-login-provider="google">
-                <span class="login-icon"><img src="/mobile-app-redesign/assets/google-icon.svg" alt=""></span>
-                <span>Continue with Google</span>
-              </button>
-              <button class="login-button" type="button" data-login-provider="moje-id">
-                <span class="login-icon"><img src="/mobile-app-redesign/assets/moje-id-icon.svg" alt=""></span>
-                <span>Continue with Moje ID</span>
-              </button>
-            </div>
+      </section>
+    </div>
+    <section class="ai-panel" id="aiPanel" aria-hidden="true">
+      <div class="ai-panel-top">
+        <div class="ai-head">
+          <div class="ai-head-brand">
+            <span class="ai-avatar">
+              <img src="/ai-assisted-search-v2/assets/ai-search-icon.svg" alt="" aria-hidden="true">
+            </span>
+            <div class="ai-head-title">AI Search Assistant</div>
           </div>
-          <button class="login-button" type="button" data-login-provider="email">
-            <span class="login-icon"><img src="/mobile-app-redesign/assets/icon-mail.svg" alt=""></span>
-            <span>Continue with E-Mail</span>
-          </button>
-          <button class="other-login" id="other-login" type="button" aria-expanded="false" aria-controls="extra-login-options">Use other Log in/Sign up methods</button>
+          <div class="ai-head-actions">
+            <button class="ai-head-icon-button ai-close" id="aiClose" type="button" aria-label="Close">
+              <img src="/ai-assisted-search-v2/assets/ai-search-close.svg" alt="" aria-hidden="true">
+            </button>
+            <button class="ai-head-icon-button ai-collapse-toggle" id="aiCollapseToggle" type="button" aria-label="Collapse panel" aria-expanded="true">
+              <img src="/ai-assisted-search-v2/assets/ai-search-chevron.svg" alt="" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+
+        <div class="ai-panel-body" id="aiPanelBody">
+          <div class="ai-stage" id="aiStage">
+            <div class="ai-thinking" id="aiThinking" hidden aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="ai-stage-question" id="aiQuestion"></div>
+            <div class="ai-stage-divider"></div>
+            <div class="ai-suggest" id="aiSuggest"></div>
+            <div style="height:16px"></div>
+            <div class="ai-inline-input-area" id="aiInputArea">
+              <div class="ai-inline-input-row" id="aiInputWrap">
+                <div class="ai-inline-input">
+                  <i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i>
+                  <input class="ai-input" id="aiInput" type="text" placeholder="You can specify your needs here..." autocomplete="off">
+                </div>
+                <button class="ai-inline-send" id="aiSend" type="button" aria-label="Send" disabled>
+                  <img src="/ai-assisted-search-v2/assets/icon-paperplane.svg" alt="" aria-hidden="true">
+                </button>
+              </div>
+              <div class="ai-query-examples" id="aiExamples">
+                <span class="ai-query-examples-track">
+                  <span class="ai-query-examples-prefix">eg.</span>
+                  <span class="ai-query-example-text" id="aiExampleText"></span>
+                </span>
+              </div>
+              <div class="ai-query-dropdown" id="aiQueryDropdown" hidden></div>
+            </div>
+            <div class="ai-stage-helper" id="aiHelper" hidden></div>
+          </div>
+
+          <div class="ai-summary" id="aiSummary" hidden>
+            <div class="ai-summary-copy" id="aiSummaryCopy"></div>
+            <div class="ai-summary-chips" id="aiSummaryChips"></div>
+            <button class="ai-reset" id="aiReset" type="button" hidden>Reset search</button>
+          </div>
+
+          <div class="ai-results-wrap" id="aiResultsWrap" hidden>
+            <div class="ai-results" id="aiResults"></div>
+            <button class="ai-showmore" id="aiShowMore" type="button" hidden></button>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
   <script>
-    (function() {
-      var SLIDE_DURATION_MS = 5000;
-      var slides = [
+    (function () {
+      var fab = document.getElementById('aiFab');
+      var panel = document.getElementById('aiPanel');
+      var closeBtn = document.getElementById('aiClose');
+      var collapseBtn = document.getElementById('aiCollapseToggle');
+      var panelBody = document.getElementById('aiPanelBody');
+      var stageEl = document.getElementById('aiStage');
+      var thinkingEl = document.getElementById('aiThinking');
+      var thinkingTimeout = null;
+      var questionEl = document.getElementById('aiQuestion');
+      var suggestEl = document.getElementById('aiSuggest');
+      var inputArea = document.getElementById('aiInputArea');
+      var inputWrap = document.getElementById('aiInputWrap');
+      var input = document.getElementById('aiInput');
+      var sendBtn = document.getElementById('aiSend');
+      var examplesEl = document.getElementById('aiExamples');
+      var exampleTextEl = document.getElementById('aiExampleText');
+      var queryDropdownEl = document.getElementById('aiQueryDropdown');
+      var helperEl = document.getElementById('aiHelper');
+      var summaryEl = document.getElementById('aiSummary');
+      var summaryCopyEl = document.getElementById('aiSummaryCopy');
+      var summaryChipsEl = document.getElementById('aiSummaryChips');
+      var resetBtn = document.getElementById('aiReset');
+      var resultsWrap = document.getElementById('aiResultsWrap');
+      var resultsEl = document.getElementById('aiResults');
+      var showMoreBtn = document.getElementById('aiShowMore');
+      var resultsView = document.querySelector('.screen-scroll');
+      var liveRoot = document.querySelector('.hl-live');
+      var headerComponent = document.querySelector('.searches-page-header-component');
+      var verticalFilters = Array.prototype.slice.call(document.querySelectorAll('.searches-page-header-component__quick-filter'));
+      var mobileHeaderTitle = document.getElementById('mobileAppHeaderTitle');
+      var mobileHeaderIcon = document.getElementById('mobileAppHeaderIcon');
+      var mobileAppHeader = document.querySelector('.mobile-app-header');
+      var loginTrigger = document.getElementById('loginTrigger');
+      var loginBottomSheet = document.getElementById('loginBottomSheet');
+      var loginSheetBackdrop = document.getElementById('loginSheetBackdrop');
+      var loginSheetDialog = document.getElementById('loginSheetDialog');
+      var loginActions = Array.prototype.slice.call(document.querySelectorAll('.login-bottom-sheet__sso-button, .login-bottom-sheet__continue'));
+      var welcomeAlert = document.getElementById('welcomeAlert');
+      var welcomeAlertClose = document.getElementById('welcomeAlertClose');
+      var messagesNavItem = document.getElementById('messagesNavItem');
+      var messagesNavNotification = document.getElementById('messagesNavNotification');
+      var searchNavItem = document.getElementById('searchNavItem');
+      var familyProfileScreen = document.getElementById('familyProfileScreen');
+      var familyProfileBack = document.getElementById('familyProfileBack');
+      var familyProfileLogout = document.getElementById('familyProfileLogout');
+      var locationInput = document.getElementById('locationInput');
+      var locationPinIcon = document.getElementById('locationPinIcon');
+      var locationSearchIcon = document.getElementById('locationSearchIcon');
+      var locationClear = document.getElementById('locationClear');
+      var locationAutocomplete = document.getElementById('locationAutocomplete');
+      var feedGrid = document.querySelector('.searches-results-grid');
+      var guestGatedCardActions = Array.prototype.slice.call(document.querySelectorAll(
+        '.sitter-card__name, .profile-card-basic-info-component__parameter-content.link--tel, .profile-card-basic-info-component__reviews-count, .profile-photo-component__verified-badge, .profile-card-content-component__description-link-wrapper .link, .profile-card-content-actions-bar-component .btn'
+      ));
+      var loggedInSitterDetails = [
+        { name: 'Alexandra Růžičková', phone: '723 755 184' },
+        { name: 'Klára Svobodová', phone: '604 943 618' },
+        { name: 'Tereza Malá', phone: '731 805 429' }
+      ];
+      var loggedOutSitterDetails = [
+        { name: 'Alexandra R.', phone: '723 755 ***' },
+        { name: 'Klára S.', phone: '604 943 ***' },
+        { name: 'Tereza M.', phone: '731 805 ***' }
+      ];
+      var questionAnimationFrame = null;
+      var questionAnimationTimeout = null;
+      var feedReloadTimeout = null;
+      var queryExamplesTimer = null;
+      var typewriterTimer = null;
+      var locationPlaceholderTimer = null;
+      var locationAutocompleteBlurTimer = null;
+      var dropdownBlurTimeout = null;
+      var selectedLocation = '';
+      var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
+
+      var DEFAULT_QUERY_EXAMPLES = [
+        'Babysitter next Thursday',
+        'English-speaking babysitter',
+        'Overnight babysitting nearby',
+        'ADHD-experienced babysitter'
+      ];
+
+      var SCRIPT = [
         {
-          nodeId: '2072:3168',
-          image: '/mobile-app-redesign/assets/welcome-background.jpg',
-          imageAlt: 'Family spending time together with their dog',
-          objectPosition: '48% center',
-          title: 'Connecting families<br>with reliable care',
-          subtitle: '288 760+ households use Hlídačky.cz',
-          trustLogo: ''
+          prompt: "Hi Alena, what kind of help do you need?",
+          suggest: [],
+          inputPlaceholder: "Please explain what you need...",
+          rotatingExamples: DEFAULT_QUERY_EXAMPLES,
+          dropdownExamples: [
+            'Babysitters available next Thursday',
+            'Babysitters offering also household cleaning',
+            'Babysitters with ADHD experience',
+            'English speaking babysitter nearby',
+            'German speaking babysitter nearby',
+            'Montessori babysitting in Praha 2',
+            'Overnight babysitting nearby',
+            'Top rated babysitters in Praha 2',
+            'Babysitter with driving licence',
+            'Babysitter experienced with newborns',
+            'French speaking babysitter in Praha 6',
+            'Babysitter available on weekends',
+            'Babysitter with first aid certificate',
+            'Experienced babysitter for twins',
+            'Pet-friendly babysitter nearby',
+            'Babysitter with Montessori training'
+          ],
+          count: 242
         },
         {
-          nodeId: '2072:3213',
-          image: '/mobile-app-redesign/assets/slide-babysitting.jpg',
-          imageAlt: 'Babysitter playing with a child outdoors',
-          objectPosition: 'center',
-          title: 'Babysitting trusted<br>by parents',
-          subtitle: '288 760+ households use Hlídačky.cz',
-          trustLogo: ''
+          prompt: "Ok. Are you looking for a regular care or just a one-time care?",
+          suggest: ["A regular care", "One-time care"],
+          inputPlaceholder: "You can specify your preferred care type here...",
+          dropdownExamples: [
+            'Regular babysitting every weekday',
+            'One-time babysitting for next Thursday',
+            'Regular afternoon babysitting in Praha 2'
+          ],
+          count: 228
         },
         {
-          nodeId: '2072:3225',
-          image: '/mobile-app-redesign/assets/slide-pet-care.jpg',
-          imageAlt: 'Pet sitter with a dog in a park',
-          objectPosition: 'center top',
-          widthLocked: true,
-          title: 'Dog and cat care by<br>local sitters',
-          subtitle: '288 760+ households use Hlídačky.cz',
-          trustLogo: ''
+          prompt: "Please specify when and where do you want to arrange the first meeting with your babysitter.",
+          suggest: [],
+          inputPlaceholder: "You can specify date and time here...",
+          dropdownExamples: [
+            'Next Monday between 18:00 and 20:00 in Praha 2',
+            'Tomorrow afternoon near Praha 2',
+            'This Friday at 17:30 in Praha 2'
+          ],
+          count: 164
         },
         {
-          nodeId: '2072:3237',
-          image: '/mobile-app-redesign/assets/slide-senior-care.jpg',
-          imageAlt: 'Caregiver helping a senior woman at home',
-          objectPosition: 'center',
-          title: 'Caring support for<br>seniors near you',
-          subtitle: '288 760+ households use Hlídačky.cz',
-          trustLogo: ''
+          prompt: "Do you have any other special requirements? Eg. languages, experience with autism, availability to sit overnight?",
+          suggest: [],
+          inputPlaceholder: "You can specify any special requirements here...",
+          dropdownExamples: [
+            'Speaks English',
+            'Experience with ADHD',
+            'Available overnight',
+            'Montessori experience'
+          ],
+          count: 141
         },
         {
-          nodeId: '2072:3249',
-          image: '/mobile-app-redesign/assets/slide-tutoring.jpg',
-          imageAlt: 'Tutor helping a child study',
-          objectPosition: 'center',
-          title: 'Personalised tutoring<br>for kids',
-          subtitle: '288 760+ households use Hlídačky.cz',
-          trustLogo: ''
-        },
-        {
-          nodeId: '2072:3261',
-          image: '/mobile-app-redesign/assets/slide-protect.jpg',
-          imageAlt: 'Babysitter reading with a small child',
-          objectPosition: 'center',
-          title: 'Peace of mind with<br>every booking',
-          subtitle: 'Enjoy insured, flexible booking with',
-          trustLogo: 'protect'
-        },
-        {
-          nodeId: '2072:3275',
-          image: '/mobile-app-redesign/assets/slide-verify.jpg',
-          imageAlt: 'Sitter completing an identity verification',
-          objectPosition: 'center',
-          title: 'Comprehensive<br>identity checks',
-          subtitle: 'Profiles list sitter checks completed via',
-          trustLogo: 'verify'
+          prompt: "Alright, here's the list of potentially available english-speaking babysitters in Praha 2",
+          useFeedResults: true,
+          results: [
+            { name: "Augusta V.", img: "./assets/avatar-04.jpg", location: "Praha 2", rating: 5, reviews: 20, price: "500 Kč/h", verified: true },
+            { name: "Anna K.", img: "./assets/avatar-05.jpg", location: "Praha 2", rating: 4.5, reviews: 12, price: "500 Kč/h", verified: true },
+            { name: "Marianna T.", img: "./assets/avatar-06.jpg", location: "Praha 2", rating: 5, reviews: 18, price: "450 Kč/h", verified: true }
+          ],
+          showMore: "Show other 22 matches",
+          suggest: [],
+          inputPlaceholder: "Refine your search here...",
+          dropdownExamples: [
+            'Lives near Praha 2',
+            'Speaks English',
+            'Available next Thursday'
+          ],
+          count: 120
         }
       ];
-      var FADE_MS = 560;
-      var COPY_SWAP_MS = 180;
 
-      var DRAG_START_PX = 8;        // movement before a press becomes a drag
-      var DRAG_DAMPING = 0.35;      // how far the current photo trails the finger
-      var DRAG_ENTER_RATIO = 0.18;  // how far the next photo starts off-centre
-      var DRAG_COMMIT_RATIO = 0.18; // fraction of the width that commits the slide
-      var DRAG_COMMIT_VELOCITY = 0.4; // px/ms flick that commits regardless of distance
-
-      var isDragging = false;
-      var dragDirection = 0;
-      var dragTarget = 0;
-      var dragWidth = 1;
-
-      var currentSlide = 0;
-      var activeLayer = 0;
-      var renderToken = 0;
-      var copySwapTimer = null;
-      var hideOutgoingTimer = null;
-      var isPointerDown = false;
-      var swipePointerId = null;
-      var swipeStartX = 0;
-      var swipeStartY = 0;
-      var swipeLastX = 0;
-      var swipeLastY = 0;
-      var swipeStartTime = 0;
-      var lastSwipeTime = 0;
-      var carousel = document.getElementById('welcome-carousel');
-      var welcomeCopy = document.getElementById('welcome-copy');
-      var title = document.getElementById('welcome-title');
-      var subtitle = document.getElementById('welcome-subtitle');
-      var dotsGroup = document.getElementById('carousel-dots');
-      var dots = Array.prototype.slice.call(document.querySelectorAll('.carousel-dot'));
-      var otherLogin = document.getElementById('other-login');
-      var extraLoginOptions = document.getElementById('extra-login-options');
-      var trustLogoSlot = document.getElementById('trust-logo-slot');
-      var protectLogo = document.getElementById('protect-logo');
-      var verifyLogo = document.getElementById('verify-logo');
-      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-      var photoLayers = Array.prototype.slice.call(document.querySelectorAll('[data-photo-layer]')).map(function(el) {
-        return { el: el, img: el.querySelector('.welcome-photo') };
-      });
-
-      carousel.style.setProperty('--slide-duration', SLIDE_DURATION_MS + 'ms');
-      carousel.style.setProperty('--fade-duration', FADE_MS + 'ms');
-
-      function autoplayEnabled() {
-        return !reduceMotion.matches;
-      }
-
-      function applyPhoto(layer, slide) {
-        layer.img.classList.toggle('is-width-locked', slide.widthLocked === true);
-        layer.img.style.objectPosition = slide.objectPosition;
-        layer.img.alt = slide.imageAlt;
-        if (layer.img.getAttribute('src') !== slide.image) layer.img.src = slide.image;
-      }
-
-      function crossfadePhoto(slide, direction, token) {
-        var incoming = photoLayers[1 - activeLayer];
-        var outgoing = photoLayers[activeLayer];
-
-        incoming.el.classList.add('is-instant');
-        incoming.el.classList.remove('is-visible', 'enter-from-left', 'enter-from-right');
-        applyPhoto(incoming, slide);
-
-        if (direction > 0) incoming.el.classList.add('enter-from-right');
-        else if (direction < 0) incoming.el.classList.add('enter-from-left');
-
-        outgoing.el.classList.remove('is-incoming');
-        incoming.el.classList.add('is-incoming');
-        incoming.el.removeAttribute('aria-hidden');
-        outgoing.el.setAttribute('aria-hidden', 'true');
-
-        void incoming.el.offsetWidth; // snap to the start state, transitions off
-
-        activeLayer = 1 - activeLayer;
-
-        function reveal() {
-          if (token !== renderToken) return;
-          incoming.el.classList.remove('is-instant');
-          void incoming.el.offsetWidth; // re-arm the transitions before retargeting
-          incoming.el.classList.add('is-visible');
-
-          window.clearTimeout(hideOutgoingTimer);
-          hideOutgoingTimer = window.setTimeout(function() {
-            outgoing.el.classList.remove('is-visible', 'enter-from-left', 'enter-from-right');
-          }, FADE_MS);
-        }
-
-        // Slides are preloaded in the background rather than up front, so an
-        // image may not be decoded yet — fading in a blank layer would flash.
-        if (incoming.img.complete && incoming.img.naturalWidth > 0) {
-          reveal();
-        } else {
-          incoming.img.addEventListener('load', reveal, { once: true });
-          incoming.img.addEventListener('error', reveal, { once: true });
-        }
-      }
-
-      function applyCopy(slide) {
-        title.innerHTML = slide.title;
-        subtitle.textContent = slide.subtitle;
-        trustLogoSlot.hidden = !slide.trustLogo;
-        protectLogo.hidden = slide.trustLogo !== 'protect';
-        verifyLogo.hidden = slide.trustLogo !== 'verify';
-      }
-
-      function enterCopy() {
-        [title, subtitle, trustLogoSlot].forEach(function(el) {
-          el.classList.remove('is-entering');
-          void el.offsetWidth; // restart the animation on repeat slides
-          el.classList.add('is-entering');
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
 
-      function swapCopy(slide, token) {
-        window.clearTimeout(copySwapTimer);
-
-        // The enter animation uses fill-mode: both, so it keeps pinning these
-        // properties after it ends and would override the leave transition.
-        [title, subtitle, trustLogoSlot].forEach(function(el) {
-          el.classList.remove('is-entering');
-        });
-        void welcomeCopy.offsetWidth; // settle the un-animated value, else the leave transition is skipped
-
-        welcomeCopy.classList.add('is-leaving');
-
-        copySwapTimer = window.setTimeout(function() {
-          if (token !== renderToken) return;
-          welcomeCopy.classList.remove('is-leaving');
-          applyCopy(slide);
-          enterCopy();
-        }, COPY_SWAP_MS);
+      function renderStars(rating) {
+        var full = Math.floor(rating);
+        var half = rating % 1 >= 0.5;
+        var html = '';
+        for (var i = 0; i < full; i += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true"></i>';
+        if (half) html += '<i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh" aria-hidden="true"></i>';
+        for (var j = full + (half ? 1 : 0); j < 5; j += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true" style="opacity:.24"></i>';
+        return html;
       }
 
-      function renderDots(index) {
-        dots.forEach(function(dot, dotIndex) {
-          var isActive = dotIndex === index;
-          dot.classList.toggle('is-active', isActive);
-          dot.setAttribute('aria-current', isActive ? 'true' : 'false');
-          if (!isActive) dot.classList.remove('is-progressing');
-        });
-
-        dotsGroup.classList.toggle('is-static', !autoplayEnabled());
-        dotsGroup.setAttribute('aria-label', 'Carousel navigation, slide ' + (index + 1) + ' of ' + slides.length);
-
-        var activeDot = dots[index];
-        activeDot.classList.remove('is-progressing');
-        void activeDot.offsetWidth; // restart the progress fill
-        if (autoplayEnabled()) activeDot.classList.add('is-progressing');
+      function renderAiResultCard(r) {
+        return (
+          '<div class="ai-result-card">' +
+            '<div class="ai-result-media">' +
+              '<img class="ai-result-photo" src="' + r.img + '" alt="' + escapeHtml(r.name) + '">' +
+              (r.verified ? '<div class="ai-result-verified"><img src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg" alt="" aria-hidden="true"><span>Verified</span></div>' : '') +
+            '</div>' +
+            '<div class="ai-result-body">' +
+              '<a class="ai-result-name" href="#">' + escapeHtml(r.name) + '</a>' +
+              '<div class="ai-result-location"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>' + escapeHtml(r.location || '') + '</span></div>' +
+              '<div class="ai-result-rating"><span class="ai-result-stars">' + renderStars(r.rating || 0) + '</span><span>(' + escapeHtml(r.reviews || 0) + ')</span></div>' +
+              '<div class="ai-result-price">' + escapeHtml(r.price || '') + '</div>' +
+              '<a class="ai-result-link" href="#">Show profile</a>' +
+            '</div>' +
+          '</div>'
+        );
       }
 
-      function goToSlide(index, direction) {
-        var next = (index % slides.length + slides.length) % slides.length;
-        var slide = slides[next];
-        var token = ++renderToken;
+      function syncSend() {
+        sendBtn.disabled = !input.value.trim();
+      }
 
-        if (typeof direction !== 'number') {
-          direction = next === currentSlide ? 0 : (next > currentSlide ? 1 : -1);
+      function syncBookmarkIcon(button) {
+        var img = button.querySelector('img');
+        if (!img) return;
+        var isPressed = button.getAttribute('aria-pressed') === 'true';
+        img.src = isPressed ? button.getAttribute('data-src-on') : button.getAttribute('data-src-off');
+      }
+
+      function initBookmarks() {
+        document.querySelectorAll('.sitter-card__bookmark').forEach(function (button) {
+          syncBookmarkIcon(button);
+          button.addEventListener('click', function () {
+            var isPressed = button.getAttribute('aria-pressed') === 'true';
+            button.setAttribute('aria-pressed', String(!isPressed));
+            syncBookmarkIcon(button);
+          });
+        });
+      }
+
+      var state = {
+        started: false,
+        stepIndex: 0,
+        criteria: [],
+        expanded: true,
+        exampleIndex: 0,
+        queryDropdownOpen: false,
+        lastAddedCriterion: null,
+        suppressAutoCollapse: false
+      };
+
+      function setPanelExpanded(expanded) {
+        state.expanded = !!expanded;
+        panel.classList.toggle('ai-panel--collapsed', !state.expanded);
+        collapseBtn.setAttribute('aria-expanded', String(state.expanded));
+        collapseBtn.setAttribute('aria-label', state.expanded ? 'Collapse panel' : 'Expand panel');
+        if (panelBody) {
+          panelBody.setAttribute('aria-hidden', String(!state.expanded));
         }
-
-        currentSlide = next;
-        carousel.setAttribute('data-figma-node', slide.nodeId);
-        crossfadePhoto(slide, direction, token);
-        swapCopy(slide, token);
-        renderDots(next);
       }
 
-      function updatePaused() {
-        dotsGroup.classList.toggle('is-paused', isPointerDown || document.hidden);
-      }
-
-      // The progress fill *is* the timer: when it finishes, the slide advances.
-      dotsGroup.addEventListener('animationend', function(event) {
-        if (event.animationName !== 'dot-progress') return;
-        if (!event.target.classList.contains('is-progressing')) return;
-        goToSlide(currentSlide + 1, 1);
-      });
-
-      document.addEventListener('visibilitychange', updatePaused);
-
-      reduceMotion.addEventListener('change', function() {
-        renderDots(currentSlide);
-      });
-
-      dots.forEach(function(dot) {
-        dot.addEventListener('click', function() {
-          goToSlide(Number(dot.getAttribute('data-slide-index')));
-        });
-      });
-
-      carousel.addEventListener('keydown', function(event) {
-        if (event.key === 'ArrowRight') {
-          event.preventDefault();
-          goToSlide(currentSlide + 1, 1);
-        } else if (event.key === 'ArrowLeft') {
-          event.preventDefault();
-          goToSlide(currentSlide - 1, -1);
+      function ensurePanelPlacement() {
+        if (liveRoot && headerComponent && panel.parentNode !== liveRoot) {
+          liveRoot.insertBefore(panel, headerComponent);
         }
-      });
-
-      // The drag drives the same two layers the autoplay cross-fade uses: the
-      // current photo trails the finger while the neighbour fades in over it,
-      // so both gestures speak the same visual language.
-      function beginDrag() {
-        isDragging = true;
-        dragDirection = 0;
-        dragWidth = carousel.offsetWidth || 1;
-
-        renderToken++; // strand any in-flight cross-fade reveal
-        window.clearTimeout(hideOutgoingTimer);
-        window.clearTimeout(copySwapTimer);
-        welcomeCopy.classList.remove('is-leaving');
-        welcomeCopy.classList.add('is-dragging');
-
-        var active = photoLayers[activeLayer];
-        var preview = photoLayers[1 - activeLayer];
-
-        photoLayers.forEach(function(layer) {
-          layer.el.classList.add('is-instant');
-          layer.el.classList.remove('enter-from-left', 'enter-from-right');
-        });
-        active.el.classList.add('is-visible');
-        active.el.classList.remove('is-incoming');
-        preview.el.classList.remove('is-visible');
-        preview.el.classList.add('is-incoming');
-        preview.el.style.opacity = '0';
       }
 
-      function updateDrag(dx) {
-        var active = photoLayers[activeLayer];
-        var preview = photoLayers[1 - activeLayer];
-        var dir = dx < 0 ? 1 : -1;
+      function toCriterion(text) {
+        var value = String(text || '').trim();
+        if (!value) return null;
 
-        // Reversing direction mid-gesture swaps in the other neighbour.
-        if (dir !== dragDirection) {
-          dragDirection = dir;
-          dragTarget = (currentSlide + dir + slides.length) % slides.length;
-          applyPhoto(preview, slides[dragTarget]);
+        if (/regular/i.test(value)) return 'Regular help';
+        if (/one-time/i.test(value)) return 'One-time care';
+        if (/speak english|english-speaking|speak English/i.test(value)) return 'Speaks English';
+        if (/no special requirements/i.test(value)) return null;
+
+        var placeMatch = value.match(/Praha\s*\d+|Prague\s*\d+/i);
+        if (placeMatch) return 'Lives near ' + placeMatch[0];
+
+        return value;
+      }
+
+      function pushCriterion(text) {
+        var criterion = toCriterion(text);
+        if (!criterion) return;
+        if (state.criteria.indexOf(criterion) === -1) {
+          state.criteria.push(criterion);
+          state.lastAddedCriterion = criterion;
         }
-
-        var progress = Math.min(Math.abs(dx) / dragWidth, 1);
-        active.el.style.transform = 'translateX(' + (dx * DRAG_DAMPING) + 'px)';
-        preview.el.style.transform =
-          'translateX(' + (dir * dragWidth * DRAG_ENTER_RATIO * (1 - progress)) + 'px)';
-        preview.el.style.opacity = String(progress);
-        welcomeCopy.style.opacity = String(1 - progress * 0.85);
       }
 
-      function endDrag(dx, duration) {
-        var active = photoLayers[activeLayer];
-        var preview = photoLayers[1 - activeLayer];
-        var progress = Math.abs(dx) / dragWidth;
-        var velocity = duration > 0 ? Math.abs(dx) / duration : 0;
-        var commit = dragDirection !== 0 &&
-          (progress > DRAG_COMMIT_RATIO || velocity > DRAG_COMMIT_VELOCITY);
+      function renderSummary(step) {
+        summaryCopyEl.innerHTML = '';
+        summaryChipsEl.innerHTML = '';
 
-        isDragging = false;
-        welcomeCopy.classList.remove('is-dragging');
-        photoLayers.forEach(function(layer) { layer.el.classList.remove('is-instant'); });
-        void carousel.offsetWidth; // re-arm transitions before retargeting
+        state.criteria.forEach(function (criterion) {
+          var chip = document.createElement('div');
+          chip.className = 'ai-summary-chip';
+          if (criterion === state.lastAddedCriterion) {
+            chip.className += ' ai-summary-chip--new';
+          }
+          chip.innerHTML = '<span>' + escapeHtml(criterion) + '</span><button type="button" aria-label="Remove criterion">×</button>';
+          chip.querySelector('button').addEventListener('click', function () {
+            state.criteria = state.criteria.filter(function (item) { return item !== criterion; });
+            renderCurrentStep();
+          });
+          summaryChipsEl.appendChild(chip);
+        });
 
-        // Clearing the inline values lets the classes take over; each property
-        // transitions from wherever the finger left it.
-        active.el.style.transform = '';
-        preview.el.style.transform = '';
-        preview.el.style.opacity = '';
-        welcomeCopy.style.opacity = '';
+        // Pop-in plays once; clear so unrelated re-renders don't re-trigger it.
+        state.lastAddedCriterion = null;
 
-        if (dragDirection !== 0) lastSwipeTime = Date.now();
+        resetBtn.hidden = state.criteria.length === 0;
+        summaryEl.hidden = state.criteria.length === 0;
+      }
 
-        if (!commit) {
-          preview.el.classList.remove('is-visible', 'is-incoming');
-          active.el.classList.add('is-incoming');
+      function getStepExamples(step) {
+        if (!step) return [];
+        if (step.dropdownExamples && step.dropdownExamples.length) return step.dropdownExamples;
+        if (step.rotatingExamples && step.rotatingExamples.length) return step.rotatingExamples;
+        return DEFAULT_QUERY_EXAMPLES;
+      }
+
+      function stopRotatingExamples() {
+        if (queryExamplesTimer) {
+          clearInterval(queryExamplesTimer);
+          queryExamplesTimer = null;
+        }
+        if (typewriterTimer) {
+          clearTimeout(typewriterTimer);
+          typewriterTimer = null;
+        }
+      }
+
+      function typewriteExampleText(text, onDone) {
+        if (!exampleTextEl) return;
+        var full = '“' + text + '”';
+        var i = 0;
+        exampleTextEl.textContent = '';
+        exampleTextEl.style.animation = 'none';
+        exampleTextEl.classList.add('is-typing');
+
+        function tick() {
+          if (i <= full.length) {
+            exampleTextEl.textContent = full.slice(0, i);
+            i++;
+            typewriterTimer = setTimeout(tick, 38);
+          } else {
+            exampleTextEl.classList.remove('is-typing');
+            if (onDone) typewriterTimer = setTimeout(onDone, 1800);
+          }
+        }
+        tick();
+      }
+
+      function renderExampleText(text) {
+        if (!exampleTextEl) return;
+        exampleTextEl.textContent = '"' + text + '"';
+      }
+
+      function startRotatingExamples(step) {
+        var examples = step && step.rotatingExamples ? step.rotatingExamples : [];
+        stopRotatingExamples();
+
+        if (!examples.length || state.queryDropdownOpen) {
+          examplesEl.hidden = true;
+          examplesEl.classList.add('is-hidden');
           return;
         }
 
-        preview.el.classList.add('is-visible');
-        preview.el.removeAttribute('aria-hidden');
-        active.el.setAttribute('aria-hidden', 'true');
-        activeLayer = 1 - activeLayer;
-        currentSlide = dragTarget;
-        carousel.setAttribute('data-figma-node', slides[currentSlide].nodeId);
+        examplesEl.hidden = false;
+        examplesEl.classList.remove('is-hidden');
 
-        window.clearTimeout(hideOutgoingTimer);
-        hideOutgoingTimer = window.setTimeout(function() {
-          active.el.classList.remove('is-visible');
-        }, FADE_MS);
+        function showNext() {
+          if (state.queryDropdownOpen) return;
+          state.exampleIndex = (state.exampleIndex + 1) % examples.length;
+          typewriteExampleText(examples[state.exampleIndex], showNext);
+        }
 
-        // The copy is already faded out by the drag, so skip the leave phase.
-        applyCopy(slides[currentSlide]);
-        enterCopy();
-        renderDots(currentSlide);
+        state.exampleIndex = state.exampleIndex % examples.length;
+        typewriteExampleText(examples[state.exampleIndex], showNext);
       }
 
-      carousel.addEventListener('pointerdown', function(event) {
-        if (!event.isPrimary || event.button !== 0) return;
-        swipePointerId = event.pointerId;
-        swipeStartX = event.clientX;
-        swipeStartY = event.clientY;
-        swipeLastX = event.clientX;
-        swipeLastY = event.clientY;
-        swipeStartTime = Date.now();
-        isPointerDown = true;
-        updatePaused();
-      });
+      function closeQueryDropdown() {
+        state.queryDropdownOpen = false;
+        queryDropdownEl.hidden = true;
+        var currentStep = SCRIPT[state.stepIndex];
+        if (currentStep && currentStep.rotatingExamples && currentStep.rotatingExamples.length) {
+          examplesEl.hidden = false;
+          examplesEl.classList.remove('is-hidden');
+          startRotatingExamples(currentStep);
+        }
+      }
 
-      carousel.addEventListener('pointermove', function(event) {
-        if (event.pointerId !== swipePointerId) return;
-        swipeLastX = event.clientX;
-        swipeLastY = event.clientY;
+      function positionQueryDropdown() {
+        var inputRow = document.getElementById('aiInputWrap');
+        if (!inputRow) return;
+        var rect = inputRow.getBoundingClientRect();
+        var vv = window.visualViewport;
+        // getBoundingClientRect() is relative to the visual viewport, but a
+        // position:fixed element is anchored to the layout viewport. On iOS the
+        // keyboard scrolls the page, making visualViewport.offsetTop non-zero;
+        // without adding it the dropdown renders too high and covers the input.
+        // On Android offsetTop stays 0, so this is a no-op there.
+        var offTop = vv ? vv.offsetTop : 0;
+        var offLeft = vv ? vv.offsetLeft : 0;
+        var top = rect.bottom + offTop + 8;
+        queryDropdownEl.style.left = (rect.left + offLeft) + 'px';
+        queryDropdownEl.style.width = rect.width + 'px';
+        queryDropdownEl.style.top = top + 'px';
 
-        var dx = swipeLastX - swipeStartX;
-        var dy = swipeLastY - swipeStartY;
+        // Limit height to the area visible above the keyboard so the list
+        // stays scrollable instead of disappearing under it.
+        var visibleBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+        var maxH = visibleBottom - top - 12;
+        queryDropdownEl.style.maxHeight = Math.max(140, maxH) + 'px';
+      }
 
-        if (!isDragging) {
-          // Stay out of the way until the gesture is clearly horizontal, so
-          // vertical scrolling still works.
-          if (Math.abs(dx) < DRAG_START_PX || Math.abs(dx) <= Math.abs(dy)) return;
-          // Throws if the pointer is already gone; the drag still works without
-          // capture, it just stops tracking outside the element.
-          try { carousel.setPointerCapture(event.pointerId); } catch (e) {}
-          beginDrag();
+      // Keep the dropdown glued to the input while the navbar collapse/expand
+      // transition (0.2s) is moving the layout around.
+      function trackDropdownDuringTransition() {
+        var start = performance.now();
+        (function frame() {
+          if (!state.queryDropdownOpen) return;
+          positionQueryDropdown();
+          if (performance.now() - start < 360) requestAnimationFrame(frame);
+        })();
+      }
+
+      function onScrollReposition() {
+        if (state.queryDropdownOpen) positionQueryDropdown();
+      }
+
+      window.addEventListener('scroll', onScrollReposition, true);
+
+      // Auto-collapse the open panel once the user scrolls the results down, so
+      // the header bar pins to the top (collapsed state is sticky).
+      if (resultsView) {
+        resultsView.addEventListener('scroll', function () {
+          if (state.suppressAutoCollapse) return;
+          if (!panel.classList.contains('open')) return;
+          if (state.expanded && resultsView.scrollTop > 24) {
+            setPanelExpanded(false);
+          }
+        }, { passive: true });
+      }
+
+      if (window.visualViewport) {
+        var initialVVHeight = window.visualViewport.height;
+        window.visualViewport.addEventListener('resize', function () {
+          var shrunk = window.visualViewport.height < initialVVHeight * 0.85;
+          document.body.classList.toggle('keyboard-open', shrunk);
+          if (state.queryDropdownOpen) trackDropdownDuringTransition();
+        });
+        // iOS scrolls the page to reveal the focused input when the keyboard
+        // opens; that fires visualViewport 'scroll' (not window scroll), so keep
+        // the dropdown glued to the input through it.
+        window.visualViewport.addEventListener('scroll', onScrollReposition);
+      }
+
+      function openQueryDropdown() {
+        var step = SCRIPT[state.stepIndex];
+        var examples = getStepExamples(step);
+        queryDropdownEl.innerHTML = '';
+
+        if (!examples.length) {
+          closeQueryDropdown();
+          return;
         }
 
-        updateDrag(dx);
-      });
+        state.queryDropdownOpen = true;
+        stopRotatingExamples();
+        examplesEl.classList.add('is-hidden');
 
-      carousel.addEventListener('pointerup', function(event) {
-        if (event.pointerId !== swipePointerId) return;
-        var dx = swipeLastX - swipeStartX;
-        var duration = Date.now() - swipeStartTime;
-        swipePointerId = null;
-        isPointerDown = false;
-        if (isDragging) endDrag(dx, duration);
-        updatePaused();
-      });
+        examples.forEach(function (txt) {
+          var item = document.createElement('button');
+          item.className = 'ai-query-suggestion';
+          item.type = 'button';
+          // Inline SVG (not a FontAwesome <i>): injecting fa-* nodes here makes
+          // the FA kit's MutationObserver fire a DOM-replacement storm right as
+          // the input is focused, which suppresses the keyboard on iOS Safari.
+          item.innerHTML = '<svg class="ai-qs-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><line x1="11" y1="11" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>' + escapeHtml(txt) + '</span>';
+          item.addEventListener('click', function () {
+            input.value = txt;
+            syncSend();
+            closeQueryDropdown();
+            sendUser(txt);
+          });
+          queryDropdownEl.appendChild(item);
+        });
 
-      carousel.addEventListener('pointercancel', function(event) {
-        if (event.pointerId !== swipePointerId) return;
-        swipePointerId = null;
-        isPointerDown = false;
-        if (isDragging) endDrag(0, 0); // treated as below threshold, so it snaps back
-        updatePaused();
-      });
+        positionQueryDropdown();
+        queryDropdownEl.hidden = false;
+      }
 
-      carousel.addEventListener('click', function(event) {
-        if (Date.now() - lastSwipeTime < 400) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      }, true);
-
-      otherLogin.addEventListener('click', function() {
-        var isExpanded = extraLoginOptions.classList.toggle('is-expanded');
-        extraLoginOptions.setAttribute('aria-hidden', String(!isExpanded));
-        extraLoginOptions.inert = !isExpanded;
-        otherLogin.setAttribute('aria-expanded', String(isExpanded));
-        otherLogin.textContent = isExpanded
-          ? 'Show fewer Log in/Sign up methods'
-          : 'Use other Log in/Sign up methods';
-      });
-
-      function preloadSlideImage(slide) {
-        return new Promise(function(resolve) {
-          var image = new Image();
-          image.onload = function() {
-            if (typeof image.decode === 'function') {
-              image.decode().catch(function() {}).then(resolve);
-            } else {
-              resolve();
-            }
-          };
-          image.onerror = resolve;
-          image.src = slide.image;
+      function renderSuggestions(list) {
+        suggestEl.innerHTML = '';
+        (list || []).forEach(function (txt) {
+          var chip = document.createElement('button');
+          chip.className = 'ai-suggest-chip';
+          chip.type = 'button';
+          chip.textContent = txt;
+          chip.addEventListener('click', function () {
+            pushCriterion(txt);
+            advanceStep(txt);
+          });
+          suggestEl.appendChild(chip);
         });
       }
 
-      // Start on the first slide instead of blocking autoplay until every image
-      // has decoded; the rest stream in sequentially so the nearest slide gets
-      // the bandwidth first.
-      function begin() {
-        renderDots(0);
-        slides.slice(1).reduce(function(chain, slide) {
-          return chain.then(function() { return preloadSlideImage(slide); });
-        }, Promise.resolve());
+      function renderResults(step) {
+        if (!step.results || step.useFeedResults) {
+          resultsWrap.hidden = true;
+          resultsEl.innerHTML = '';
+          showMoreBtn.hidden = true;
+          showMoreBtn.textContent = '';
+          return;
+        }
+
+        resultsWrap.hidden = false;
+        resultsEl.innerHTML = step.results.map(renderAiResultCard).join('');
+        showMoreBtn.hidden = !step.showMore;
+        showMoreBtn.textContent = step.showMore || '';
       }
 
-      var firstImage = photoLayers[0].img;
-      if (firstImage.complete && firstImage.naturalWidth > 0) {
-        begin();
-      } else {
-        firstImage.addEventListener('load', begin, { once: true });
-        firstImage.addEventListener('error', begin, { once: true });
+      function clearQuestionAnimation() {
+        if (questionAnimationFrame) {
+          cancelAnimationFrame(questionAnimationFrame);
+          questionAnimationFrame = null;
+        }
+        if (questionAnimationTimeout) {
+          clearTimeout(questionAnimationTimeout);
+          questionAnimationTimeout = null;
+        }
       }
+
+      function renderQuestion(prompt, immediate) {
+        clearQuestionAnimation();
+
+        if (immediate || !questionEl.textContent.trim()) {
+          questionEl.classList.remove('is-leaving', 'is-entering');
+          questionEl.textContent = prompt;
+          questionAnimationFrame = requestAnimationFrame(function () {
+            questionEl.classList.add('is-entering');
+            questionAnimationTimeout = setTimeout(function () {
+              questionEl.classList.remove('is-entering');
+              questionAnimationTimeout = null;
+            }, 340);
+          });
+          return;
+        }
+
+        questionEl.classList.remove('is-entering');
+        questionEl.classList.add('is-leaving');
+
+        questionAnimationTimeout = setTimeout(function () {
+          questionEl.classList.remove('is-leaving');
+          questionEl.textContent = prompt;
+
+          questionAnimationFrame = requestAnimationFrame(function () {
+            questionEl.classList.add('is-entering');
+            questionAnimationTimeout = setTimeout(function () {
+              questionEl.classList.remove('is-entering');
+              questionAnimationTimeout = null;
+            }, 340);
+          });
+        }, 220);
+      }
+
+      function renderCurrentStep(immediateQuestion) {
+        var step = SCRIPT[state.stepIndex];
+        renderQuestion(step.prompt, !!immediateQuestion);
+        inputWrap.hidden = false;
+        input.placeholder = step.inputPlaceholder || 'You can specify your needs here...';
+        helperEl.hidden = !step.helper;
+        helperEl.textContent = step.helper || '';
+        input.value = '';
+        syncSend();
+        closeQueryDropdown();
+        startRotatingExamples(step);
+        renderSuggestions(step.suggest);
+        renderSummary(step);
+        renderResults(step);
+      }
+
+      function playFeedReload() {
+        if (!feedGrid) return;
+
+        if (feedReloadTimeout) {
+          clearTimeout(feedReloadTimeout);
+          feedReloadTimeout = null;
+        }
+
+        feedGrid.classList.remove('is-reloading');
+        void feedGrid.offsetWidth;
+        feedGrid.classList.add('is-reloading');
+        feedGrid.setAttribute('aria-busy', 'true');
+
+        feedGrid.classList.remove('is-revealing');
+
+        feedReloadTimeout = setTimeout(function () {
+          feedGrid.classList.remove('is-reloading');
+          feedGrid.removeAttribute('aria-busy');
+          // Stagger the cards in once the skeleton clears.
+          void feedGrid.offsetWidth;
+          feedGrid.classList.add('is-revealing');
+          feedReloadTimeout = setTimeout(function () {
+            feedGrid.classList.remove('is-revealing');
+            feedReloadTimeout = null;
+          }, 720);
+        }, 520);
+      }
+
+      // Show the typing indicator briefly, then run `done` to reveal the answer.
+      function beginThinking(done) {
+        if (thinkingTimeout) {
+          clearTimeout(thinkingTimeout);
+          thinkingTimeout = null;
+        }
+        // Clear the current question so it fades in fresh after the dots.
+        questionEl.textContent = '';
+        thinkingEl.hidden = false;
+        if (stageEl) stageEl.classList.add('is-thinking');
+
+        thinkingTimeout = setTimeout(function () {
+          thinkingEl.hidden = true;
+          if (stageEl) stageEl.classList.remove('is-thinking');
+          thinkingTimeout = null;
+          if (done) done();
+        }, 850);
+      }
+
+      function advanceStep(userText) {
+        if (state.stepIndex < SCRIPT.length - 1) {
+          state.stepIndex += 1;
+        }
+        input.value = '';
+        syncSend();
+        closeQueryDropdown();
+        // Keep the panel expanded so the user sees the assistant's next reply,
+        // and suppress auto-collapse during the programmatic scroll-to-top.
+        setPanelExpanded(true);
+        playFeedReload();
+        beginThinking(function () {
+          renderCurrentStep();
+        });
+        state.suppressAutoCollapse = true;
+        if (resultsView) {
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        setTimeout(function () {
+          state.suppressAutoCollapse = false;
+        }, 700);
+      }
+
+      function sendUser(text) {
+        text = String(text || '').trim();
+        if (!text) return;
+        pushCriterion(text);
+        advanceStep(text);
+      }
+
+      function openPanel() {
+        ensurePanelPlacement();
+        if (liveRoot) {
+          liveRoot.classList.add('ai-assistant-open');
+        }
+        setPanelExpanded(true);
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        if (!state.started) {
+          state.started = true;
+          state.stepIndex = 0;
+          state.criteria = [];
+          renderCurrentStep(true);
+        }
+        if (resultsView) {
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+      function closePanel() {
+        if (liveRoot) {
+          liveRoot.classList.remove('ai-assistant-open');
+        }
+        closeQueryDropdown();
+        stopRotatingExamples();
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+      }
+
+      function resetSearch() {
+        state.stepIndex = 0;
+        state.criteria = [];
+        input.value = '';
+        syncSend();
+        renderCurrentStep();
+      }
+
+      function selectVertical(filter) {
+        verticalFilters.forEach(function (item) {
+          item.classList.toggle('searches-page-header-component__quick-filter--active', item === filter);
+          item.removeAttribute('aria-current');
+        });
+        filter.setAttribute('aria-current', 'page');
+        syncMobileHeaderTitle();
+        mobileHeaderIcon.className = 'fa-solid ' + filter.getAttribute('data-header-icon');
+        mobileHeaderIcon.style.color = filter.getAttribute('data-header-color');
+        playFeedReload();
+      }
+
+      function openLoginSheet() {
+        loginBottomSheet.classList.add('is-open');
+        loginBottomSheet.setAttribute('aria-hidden', 'false');
+        loginTrigger.setAttribute('aria-expanded', 'true');
+        loginSheetDialog.focus({ preventScroll: true });
+      }
+
+      function openLoginForGuest(event) {
+        if (loginTrigger.classList.contains('is-logged-in')) return;
+        event.preventDefault();
+        openLoginSheet();
+      }
+
+      function closeLoginSheet() {
+        loginBottomSheet.classList.remove('is-open');
+        loginBottomSheet.setAttribute('aria-hidden', 'true');
+        loginTrigger.setAttribute('aria-expanded', 'false');
+        loginTrigger.focus();
+      }
+
+      function openFamilyProfile() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        welcomeAlert.classList.remove('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'true');
+        familyProfileScreen.classList.add('is-open');
+        searchNavItem.classList.remove('mobile-bottom-nav__item--active');
+        searchNavItem.removeAttribute('aria-current');
+        // The panel starts off-canvas, so a plain focus() scrolls the phone
+        // frame sideways to reveal it and fights the slide-in transition.
+        familyProfileBack.focus({ preventScroll: true });
+      }
+
+      function closeFamilyProfile() {
+        familyProfileScreen.classList.remove('is-open');
+        searchNavItem.classList.add('mobile-bottom-nav__item--active');
+        searchNavItem.setAttribute('aria-current', 'page');
+        loginTrigger.focus({ preventScroll: true });
+      }
+
+      function setSitterDetails(detailsList) {
+        var sitterCards = Array.prototype.slice.call(document.querySelectorAll('.sitter-card'));
+
+        sitterCards.forEach(function (card, index) {
+          var details = detailsList[index];
+          if (!details) return;
+
+          var name = card.querySelector('.sitter-card__name');
+          var phone = card.querySelector('.profile-card-basic-info-component__parameter-text--disappearing');
+          if (name) name.textContent = details.name;
+          if (phone) phone.textContent = details.phone;
+        });
+      }
+
+      function revealSitterDetails() {
+        setSitterDetails(loggedInSitterDetails);
+      }
+
+      function maskSitterDetails() {
+        setSitterDetails(loggedOutSitterDetails);
+      }
+
+      function stopLocationPlaceholderTypewriter() {
+        if (locationPlaceholderTimer) {
+          clearTimeout(locationPlaceholderTimer);
+          locationPlaceholderTimer = null;
+        }
+      }
+
+      function startLocationPlaceholderTypewriter() {
+        var placeholder = 'Where do you need help?';
+        var characterIndex = 0;
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          locationInput.placeholder = placeholder;
+          return;
+        }
+
+        function tick() {
+          if (loginTrigger.classList.contains('is-logged-in')) return;
+
+          locationInput.placeholder = placeholder.slice(0, characterIndex);
+
+          if (characterIndex < placeholder.length) {
+            characterIndex += 1;
+            locationPlaceholderTimer = setTimeout(tick, 54);
+            return;
+          }
+
+          locationPlaceholderTimer = null;
+        }
+
+        tick();
+      }
+
+      function normaliseLocationText(value) {
+        return value.toLocaleLowerCase('cs-CZ').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+
+      function syncLocationInputState() {
+        var hasValue = Boolean(locationInput.value.trim());
+        locationPinIcon.hidden = !hasValue;
+        locationSearchIcon.hidden = hasValue;
+        locationClear.hidden = !hasValue;
+      }
+
+      function syncMobileHeaderTitle() {
+        var activeVertical = document.querySelector('.searches-page-header-component__quick-filter--active');
+        var verticalName = activeVertical ? activeVertical.getAttribute('data-heading') : 'Babysitting';
+        mobileHeaderTitle.textContent = selectedLocation ? verticalName + ' in ' + selectedLocation : verticalName;
+      }
+
+      function closeLocationAutocomplete() {
+        if (locationAutocompleteBlurTimer) {
+          clearTimeout(locationAutocompleteBlurTimer);
+          locationAutocompleteBlurTimer = null;
+        }
+        locationAutocomplete.hidden = true;
+        locationInput.setAttribute('aria-expanded', 'false');
+      }
+
+      function showLocationAutocomplete() {
+        var query = normaliseLocationText(locationInput.value.trim());
+        var suggestions = LOCATION_SUGGESTIONS.filter(function (suggestion) {
+          return normaliseLocationText(suggestion).indexOf(query) !== -1;
+        }).slice(0, 6);
+
+        if (!query || !suggestions.length) {
+          closeLocationAutocomplete();
+          return;
+        }
+
+        locationAutocomplete.innerHTML = suggestions.map(function (suggestion) {
+          return '<button class="location-autocomplete__option" type="button" role="option" data-location="' + escapeHtml(suggestion) + '"><i class="fa-regular fa-location-dot" aria-hidden="true"></i><span>' + escapeHtml(suggestion) + '</span></button>';
+        }).join('') + '<div class="location-autocomplete__attribution">Powered by Google</div>';
+        locationAutocomplete.hidden = false;
+        locationInput.setAttribute('aria-expanded', 'true');
+      }
+
+      function selectLocation(location) {
+        var locationChanged = selectedLocation !== location;
+        locationInput.value = location;
+        selectedLocation = location;
+        stopLocationPlaceholderTypewriter();
+        syncLocationInputState();
+        syncMobileHeaderTitle();
+        closeLocationAutocomplete();
+        locationInput.focus();
+        if (locationChanged) playFeedReload();
+      }
+
+      function revealSavedLocation() {
+        stopLocationPlaceholderTypewriter();
+        locationInput.value = 'Praha 2';
+        selectedLocation = 'Praha 2';
+        locationInput.placeholder = '';
+        syncLocationInputState();
+        syncMobileHeaderTitle();
+        closeLocationAutocomplete();
+      }
+
+      function simulateLogin() {
+        loginTrigger.classList.add('is-logged-in');
+        loginTrigger.setAttribute('aria-label', 'Open profile');
+        closeLoginSheet();
+        revealSitterDetails();
+        revealSavedLocation();
+        playFeedReload();
+        messagesNavItem.setAttribute('aria-label', 'Messages, 3 new');
+        messagesNavNotification.hidden = false;
+        messagesNavNotification.setAttribute('aria-hidden', 'false');
+        welcomeAlert.classList.add('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'false');
+      }
+
+      function simulateLogout() {
+        closeFamilyProfile();
+        loginTrigger.classList.remove('is-logged-in');
+        loginTrigger.setAttribute('aria-label', 'Log in or sign up');
+        maskSitterDetails();
+        stopLocationPlaceholderTypewriter();
+        locationInput.value = '';
+        locationInput.placeholder = 'Where do you need help?';
+        selectedLocation = '';
+        syncLocationInputState();
+        syncMobileHeaderTitle();
+        closeLocationAutocomplete();
+        messagesNavItem.setAttribute('aria-label', 'Messages');
+        messagesNavNotification.hidden = true;
+        messagesNavNotification.setAttribute('aria-hidden', 'true');
+        welcomeAlert.classList.remove('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'true');
+      }
+
+      verticalFilters.forEach(function (filter) {
+        filter.addEventListener('click', function (event) {
+          event.preventDefault();
+          if (filter.classList.contains('searches-page-header-component__quick-filter--active')) return;
+          selectVertical(filter);
+        });
+      });
+
+      loginTrigger.addEventListener('click', function () {
+        if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
+        else openFamilyProfile();
+      });
+      familyProfileBack.addEventListener('click', closeFamilyProfile);
+      familyProfileLogout.addEventListener('click', simulateLogout);
+      searchNavItem.addEventListener('click', function () {
+        if (familyProfileScreen.classList.contains('is-open')) closeFamilyProfile();
+      });
+      loginSheetBackdrop.addEventListener('click', closeLoginSheet);
+      loginActions.forEach(function (action) {
+        action.addEventListener('click', simulateLogin);
+      });
+      guestGatedCardActions.forEach(function (action) {
+        if (action.matches('.profile-card-basic-info-component__parameter-content.link--tel, .profile-card-basic-info-component__reviews-count')) {
+          action.setAttribute('role', 'button');
+          action.setAttribute('tabindex', '0');
+          action.setAttribute('aria-label', action.matches('.profile-card-basic-info-component__reviews-count') ? 'Show reviews after login' : 'Show phone number after login');
+          action.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') openLoginForGuest(event);
+          });
+        }
+        action.addEventListener('click', openLoginForGuest);
+      });
+      welcomeAlertClose.addEventListener('click', function () {
+        welcomeAlert.classList.remove('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'true');
+      });
+      locationInput.addEventListener('input', function () {
+        stopLocationPlaceholderTypewriter();
+        syncLocationInputState();
+        showLocationAutocomplete();
+      });
+      locationInput.addEventListener('focus', showLocationAutocomplete);
+      locationInput.addEventListener('blur', function () {
+        locationAutocompleteBlurTimer = setTimeout(closeLocationAutocomplete, 150);
+      });
+      locationClear.addEventListener('click', function () {
+        locationInput.value = '';
+        selectedLocation = '';
+        syncLocationInputState();
+        syncMobileHeaderTitle();
+        closeLocationAutocomplete();
+        locationInput.focus();
+      });
+      locationAutocomplete.addEventListener('pointerdown', function (event) {
+        event.preventDefault();
+      });
+      locationAutocomplete.addEventListener('click', function (event) {
+        var option = event.target.closest('.location-autocomplete__option');
+        if (option) selectLocation(option.getAttribute('data-location'));
+      });
+
+      fab.addEventListener('click', openPanel);
+      closeBtn.addEventListener('click', closePanel);
+      collapseBtn.addEventListener('click', function () {
+        var willExpand = !state.expanded;
+        setPanelExpanded(willExpand);
+        // When expanding while scrolled down, the panel leaves its sticky
+        // position and jumps to the top of the document (out of view). Bring the
+        // results back to the top so the expanded panel is visible.
+        if (willExpand && resultsView && resultsView.scrollTop > 0) {
+          state.suppressAutoCollapse = true;
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(function () {
+            state.suppressAutoCollapse = false;
+          }, 700);
+        }
+      });
+      sendBtn.addEventListener('click', function () { sendUser(input.value); });
+      input.addEventListener('input', syncSend);
+      // Move the dropdown to <body> ONCE at init. Reparenting it during the tap
+      // that focuses the input suppresses the keyboard on iOS Safari.
+      document.body.appendChild(queryDropdownEl);
+      // Open on focus AND on click. Defer the (heavy) dropdown build out of the
+      // tap gesture: building/positioning it synchronously inside the focus
+      // handler stops iOS Safari from raising the keyboard. `click` also covers
+      // the re-tap case where the input is already focused so `focus` won't fire.
+      function openQueryDropdownDeferred() {
+        setTimeout(openQueryDropdown, 0);
+      }
+      input.addEventListener('focus', openQueryDropdownDeferred);
+      input.addEventListener('click', openQueryDropdownDeferred);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); sendUser(input.value); }
+      });
+      // Close on an outside tap rather than on blur. The latest Android Chrome
+      // fires a transient blur while the keyboard animates open, which used to
+      // close the dropdown the instant it appeared.
+      document.addEventListener('pointerdown', function (e) {
+        if (!state.queryDropdownOpen) return;
+        if (input.contains(e.target) || queryDropdownEl.contains(e.target)) return;
+        closeQueryDropdown();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (loginBottomSheet.classList.contains('is-open')) closeLoginSheet();
+        else if (familyProfileScreen.classList.contains('is-open')) closeFamilyProfile();
+        else if (!locationAutocomplete.hidden) closeLocationAutocomplete();
+        else if (panel.classList.contains('open')) closePanel();
+      });
+      resultsEl.addEventListener('click', function (e) {
+        var target = e.target.closest('.ai-result-card, .ai-result-name, .ai-result-link');
+        if (!target) return;
+        e.preventDefault();
+        closePanel();
+      });
+      showMoreBtn.addEventListener('click', closePanel);
+      resetBtn.addEventListener('click', resetSearch);
+      ensurePanelPlacement();
+      setPanelExpanded(true);
+      initBookmarks();
+      startLocationPlaceholderTypewriter();
     })();
   </script>
 </body>
