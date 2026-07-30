@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky.cz — AI-Assisted Search</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="preconnect" href="https://hlidacky-312899.c.cdn77.org">
+  <link rel="preconnect" href="https://kit-pro.fontawesome.com" crossorigin>
+  <link rel="stylesheet" href="./assets/application.css">
+  <script src="https://hlidacky-312899.c.cdn77.org/assets/legacy/font_awesome_kit-7ce04cdb91db74fcd7dc41244a48b1b17ef3b23df1d2497d66251a0daaa5a640.js" data-turbo-track="reload"></script>
+  <style>
+    :root {
+      --text: #2a3539;
+      --muted: #6b7176;
+      --bg: #e9edf1;
+      --panel: #ffffff;
+      --border: #dde2e5;
+      --surface: #f7f8fb;
+      --pink: #f96073;
+      --pink-strong: #ea4d62;
+      --pink-soft: #fff2f5;
+      --pink-line: #ffd5dc;
+      --green: #0ba825;
+      --green-shadow: rgba(0, 0, 0, 0.16);
+      --gold: #ffb400;
+      --purple-1: #8b5cf6;
+      --purple-2: #6132ff;
+      --gray-300: #e5e5ea;
+      --gray-500: #8b91a3;
+      --gray-600: #6b7176;
+      --gray-900: #2a3539;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'soleil', Inter, system-ui, sans-serif;
+    }
+
+    /* ---------- Phone mockup container ---------- */
+    .phone-frame {
+      width: 390px;
+      max-width: 100%;
+      height: min(844px, calc(100vh - 48px));
+      position: relative;
+      background: var(--panel);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 18px 60px rgba(49, 72, 87, 0.18);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 52px;
+      padding: 14px 21px 10px 23px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      background: #fff;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .notch-pill {
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .status-time {
+      color: #2A3539;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -0.165px;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .status-icons img {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Top navbar ---------- */
+    .top-navbar {
+      display: flex;
+      width: 100%;
+      height: 56px;
+      padding: 0 18px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #E5E5EA;
+      background: #FFF;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 4;
+    }
+
+    .top-navbar .brand img {
+      display: block;
+      width: 32px;
+      height: 32px;
+    }
+
+    .nav-burger {
+      width: 36px; height: 36px;
+      border: 0; background: transparent;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ---------- Search results screen ---------- */
+    .screen-scroll {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(249, 96, 115, 0.08), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcfd 18%, #f6f8fb 100%);
+    }
+
+    .results-inner { padding: 18px 16px 40px; }
+
+    .hl-live {
+      padding: 0 0 36px;
+    }
+
+    .hl-live .searches-page-header-component {
+      padding: 0;
+      width: 100%;
+      margin-top: 36px;
+    }
+
+    .hl-live .heading__title {
+      letter-spacing: -0.04em;
+      font-size: 32px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .heading__title mark {
+      display: inline-block;
+      margin-bottom: -2px;
+    }
+
+    .hl-live .searches-page-header-component__description {
+      padding-top: 8px;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+      color: var(--color-gray-700);
+      font-size: 14px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0;
+      margin-top: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 0;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .hl-live .searches-page-header-component__quick-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter {
+      flex: 0 0 76px;
+      min-width: 76px;
+    }
+
+    .hl-live .searches-page-header-component__quick-filter i {
+      font-size: 18px;
+    }
+
+    .hl-live .searches-filter-component {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      padding: 8px 0 8px 4px;
+      margin: 0;
+      background: #f1f5fb;
+      backdrop-filter: blur(16px);
+    }
+
+    .hl-live .searches-filter-component__container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hl-live .searches-filter-component__input {
+      font-size: 16px;
+      border-radius: 8px;
+      height: 52px;
+    }
+
+    .hl-live .searches-filter-component__container .searches-filter-component__input {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button {
+      width: 52px;
+      min-width: 52px;
+      height: 52px;
+      min-height: 52px;
+      flex: 0 0 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__label {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hl-live .searches-filter-component__filter-button .searches-filter-component__filter-text {
+      display: none;
+    }
+
+    .hl-live .searches-filter-component__filter-button .button-component__icon {
+      display: block;
+      width: 20px;
+      line-height: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    .hl-live .searches-results-grid {
+      display: grid;
+      row-gap: 20px;
+      column-gap: 14px;
+      margin-top: 0;
+      padding-top: 16px;
+      padding-left: 16px;
+      padding-right: 8px;
+    }
+
+    .hl-live .sitter-card {
+      position: relative;
+      border: 1px solid #dde2e5;
+      box-shadow: none;
+      border-radius: 8px;
+      overflow: visible;
+      background: #fff;
+      margin-top: 0;
+    }
+
+    .hl-live .sitter-card__bookmark {
+      position: absolute;
+      top: 0;
+      right: 18px;
+      width: 36px;
+      height: 58px;
+      padding: 0;
+      border: 1px solid #dde2e5;
+      border-top: 0;
+      border-radius: 0 0 4px 4px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hl-live .sitter-card__bookmark img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"] {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .hl-live .sitter-card__bookmark:hover {
+      background: #fff7f9;
+    }
+
+    .hl-live .sitter-card__bookmark[aria-pressed="true"]:hover {
+      background: #ff5d76;
+      border-color: #ff5d76;
+    }
+
+    .hl-live .sitter-card__main-part {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      column-gap: 0;
+      row-gap: 0;
+      align-items: start;
+      padding: 0;
+    }
+
+    .hl-live .sitter-card .profile-photo-component {
+      width: 96px;
+      position: relative;
+    }
+
+    .hl-live .profile-photo-component__photo a {
+      display: block;
+      width: 96px;
+    }
+
+    .hl-live .profile-photo-component__photo img {
+      width: 96px;
+      height: 96px;
+      display: block;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .hl-live .profile-photo-component__verified-badge {
+      width: 96px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: none;
+      justify-content: center;
+      border-radius: 0 0 4px 4px;
+      padding: 6px 8px;
+    }
+
+    .hl-live .sitter-card__content {
+      min-width: 0;
+      padding-left: 12px;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .sitter-card__name {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .hl-live .profile-card-basic-info-component {
+      display: grid;
+      gap: 0;
+      margin-top: 8px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter {
+      margin: 0;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--gray-500);
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel {
+      text-decoration: none;
+      padding-top: 2px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-text--disappearing {
+      text-decoration: underline;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-icon {
+      text-decoration: none;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating .profile-card-basic-info-component__parameter-content {
+      gap: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter--rating {
+      padding-top: 4px;
+    }
+
+    .hl-live .profile-card-basic-info-component__parameter-badges {
+      margin-top: 2px;
+    }
+
+    .hl-live .sitter-card__content-part {
+      grid-column: 1 / -1;
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-component,
+    .hl-live .profile-card-content-component__content {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-component__content {
+      display: grid;
+      row-gap: 0;
+      column-gap: 0;
+    }
+
+    .hl-live .profile-card-content-component__description-wrapper {
+      margin-top: 2px;
+    }
+
+    .hl-live .profile-card-content-component__description {
+      font-size: 14px;
+      line-height: 1.48;
+      color: var(--text);
+    }
+
+    .hl-live .profile-card-content-component__description-link-wrapper {
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component > div {
+      min-width: 0;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .btn {
+      width: 100%;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--primary-variant .button-component__label {
+      color: var(--color-supportive-full-white);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component .button-component--tertiary-variant .button-component__label {
+      color: var(--color-gray-800);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .hl-live .locked-overlay-component {
+      display: none;
+    }
+
+    .hl-live .extra-content-pills-component {
+      margin-top: 8px;
+    }
+
+    .hl-live .extra-content-pills-component__overflow-container {
+      max-height: 58px;
+      overflow: hidden;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hl-live .extra-content-pills-component__pill {
+      margin: 0;
+    }
+
+    .hl-live .extra-content-review-component {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f5f6f8;
+      border-radius: 10px;
+    }
+
+    .hl-live .extra-content-review-component__text {
+      margin-top: 6px;
+    }
+
+    .hl-live .profile-card-content-actions-bar-component {
+      margin-top: 12px;
+    }
+
+    .hl-live .searches-page-footer-component {
+      padding: 0 4px 0;
+    }
+
+    .results-hero h1 {
+      font-size: 31px;
+      line-height: 1.06;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      text-align: left;
+      margin-bottom: 14px;
+    }
+    .results-hero h1 .hl {
+      background: linear-gradient(180deg, #ff7b8b 0%, var(--pink) 100%);
+      color: #fff;
+      padding: 1px 8px 2px;
+      border-radius: 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .results-hero .found {
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .results-hero .found strong { font-weight: 800; }
+    .results-hero .lede {
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 340px;
+      margin: 0;
+    }
+
+    /* category tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px -4px 0;
+      padding: 0 4px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 12px 11px;
+      min-width: 72px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.76);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(42, 53, 57, 0.04);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .cat-tab svg { width: 26px; height: 26px; }
+    .cat-tab.active {
+      color: var(--text);
+      font-weight: 700;
+      background: #fff;
+      border-color: var(--pink-line);
+      box-shadow: 0 14px 30px rgba(249, 96, 115, 0.14);
+    }
+
+    /* filter bar */
+    .filter-bar {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 -16px;
+      padding: 12px 16px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(221, 226, 229, 0.8);
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--pink-soft);
+      color: var(--pink-strong);
+      border: 1px solid var(--pink-line);
+      border-radius: 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-spacer { flex: 1; }
+    .filter-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-icon-btn {
+      width: 42px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(42, 53, 57, 0.05);
+    }
+    .filter-badge {
+      position: absolute;
+      top: -7px; right: -7px;
+      min-width: 20px; height: 20px;
+      padding: 0 5px;
+      background: var(--pink);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    /* sitter card */
+    .sitter-card {
+      position: relative;
+      border: 1px solid rgba(221, 226, 229, 0.95);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow:
+        0 14px 32px rgba(49, 72, 87, 0.06),
+        0 2px 10px rgba(49, 72, 87, 0.03);
+      background: rgba(255, 255, 255, 0.96);
+    }
+    .sc-top { display: flex; gap: 14px; }
+    .sc-photo-wrap { position: relative; flex: 0 0 84px; }
+    .sc-photo {
+      width: 84px; height: 84px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+    }
+    .sc-verified {
+      position: absolute;
+      left: 50%; bottom: -10px;
+      transform: translateX(-50%);
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--green);
+      color: #fff;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 16px rgba(11, 168, 37, 0.18);
+    }
+    .sc-verified svg { width: 11px; height: 11px; }
+    .sc-info { min-width: 0; flex: 1; }
+    .sc-name { font-size: 20px; font-weight: 800; letter-spacing: -0.25px; }
+    .sc-meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14px; margin-top: 5px; }
+    .sc-meta svg { width: 14px; height: 14px; flex: 0 0 14px; }
+    .sc-rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .sc-stars { color: var(--gold); letter-spacing: 1px; font-size: 14px; }
+    .sc-rating-count { color: var(--muted); font-size: 14px; }
+    .sc-price { font-weight: 800; font-size: 15px; margin-top: 7px; }
+    .sc-bookmark {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .sc-desc {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.58;
+      color: var(--text);
+    }
+    .sc-link { color: var(--pink); text-decoration: underline; cursor: pointer; }
+
+    .sc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .sc-tag {
+      padding: 7px 11px;
+      background: #f8fafc;
+      border: 1px solid #e8edf1;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #51606a;
+    }
+
+    .sc-premium {
+      margin-top: 14px;
+      display: flex; gap: 12px;
+      padding: 14px;
+      background: linear-gradient(180deg, #fff5f7 0%, #fff0f3 100%);
+      border: 1px solid #ffd8df;
+      border-radius: 14px;
+    }
+    .sc-premium-icon { font-size: 22px; line-height: 1; }
+    .sc-premium-title { font-weight: 800; margin-bottom: 4px; }
+    .sc-premium-list { list-style: none; display: grid; gap: 3px; }
+    .sc-premium-list li { font-size: 13px; color: var(--text); display: flex; gap: 7px; }
+    .sc-premium-list li::before { content: "•"; color: var(--pink); }
+
+    .sc-quote {
+      margin-top: 14px;
+      padding: 14px 14px 4px;
+      border: 1px solid #edf1f4;
+      border-radius: 14px;
+      background: #fcfdfe;
+    }
+    .sc-quote-stars { color: var(--gold); letter-spacing: 2px; font-size: 15px; }
+    .sc-quote-text { font-style: italic; color: var(--text); font-size: 14px; line-height: 1.5; margin-top: 6px; }
+
+    .sc-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .sc-act-icon {
+      width: 50px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .sc-act-icon .dot { position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); border: 1.5px solid #fff; }
+    .sc-act-msg {
+      flex: 1;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .sc-act-book {
+      flex: 1.3;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+    .sc-gallery-label { display: flex; align-items: center; gap: 8px; margin-top: 26px; color: var(--muted); font-size: 13px; }
+
+    /* ---------- AI entry point inside filter bar ---------- */
+    .hl-live .searches-filter-component .ai-fab {
+      position: relative;
+      right: auto;
+      bottom: auto;
+      width: 52px;
+      height: 52px;
+      flex: 0 0 52px;
+      border-radius: 4px;
+      border: 1px solid rgba(97, 50, 255, 0.2);
+      background-color: var(--purple-2);
+      box-shadow: inset 0 -3px 0 rgba(56, 29, 193, 0.28);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1;
+      overflow: hidden;
+      transition: background-color 0.2s ease, box-shadow 0.18s ease;
+      animation: none;
+      padding: 0;
+    }
+    .hl-live .searches-filter-component .ai-fab::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(150deg, var(--purple-1), var(--purple-2));
+      opacity: 1;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .hl-live .searches-filter-component .ai-fab:hover {
+      border-radius: 4px;
+      background-color: var(--color-indigo-500, #6366f1);
+      box-shadow: inset 0 -3px 0 0 var(--color-indigo-600, #4f46e5);
+    }
+    .hl-live .searches-filter-component .ai-fab:hover::before {
+      opacity: 0;
+    }
+    .hl-live .searches-filter-component .ai-fab:active {
+      box-shadow: inset 0 -1px 0 0 var(--color-indigo-600, #4f46e5);
+    }
+    .hl-live .searches-filter-component .ai-fab img {
+      position: relative;
+      z-index: 1;
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+    .ai-fab .fab-ring { display: none; }
+    @keyframes fab-ring {
+      0% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(124, 92, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0); }
+    }
+    @keyframes fab-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ---------- AI messenger panel ---------- */
+    .ai-panel {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 40;
+      will-change: transform;
+    }
+    .ai-panel.open { transform: translateX(0); }
+
+    .ai-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 16px 14px;
+      border-bottom: 1px solid var(--gray-300);
+      flex-shrink: 0;
+    }
+    .ai-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(150deg, var(--purple-1), var(--purple-2));
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 44px;
+    }
+    .ai-avatar svg { width: 26px; height: 26px; }
+    .ai-avatar img { width: 19.5px; height: 19.5px; display: block; }
+    .ai-avatar--sm { width: 36px; height: 36px; flex: 0 0 36px; }
+    .ai-avatar--sm svg { width: 21px; height: 21px; }
+    .ai-avatar--sm img { width: 21px; height: 21px; display: block; }
+    .ai-head-copy { flex: 1; min-width: 0; }
+    .ai-head-title { font-weight: 800; font-size: 16px; }
+    .ai-head-sub { color: var(--muted); font-size: 13px; }
+    .ai-close {
+      width: 36px; height: 36px;
+      border: 0; background: transparent;
+      font-size: 24px; color: var(--muted);
+      cursor: pointer; line-height: 1;
+    }
+
+    .ai-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 18px 16px 8px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ai-daydiv { text-align: center; color: var(--muted); font-size: 13px; margin: 4px 0; }
+
+    .bubble-row { display: grid; gap: 6px; max-width: 100%; }
+    .bubble-row--in { justify-items: start; grid-template-columns: 44px minmax(0, 1fr); align-items: end; }
+    .bubble-row--out { justify-items: end; }
+    .bubble-stack { max-width: 80%; display: grid; gap: 5px; }
+    .bubble {
+      padding: 13px 15px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.42;
+      color: var(--gray-900);
+    }
+    .bubble--in { border: 1px solid var(--gray-300); background: #fff; border-bottom-left-radius: 6px; }
+    .bubble--out { background: #EEF3F9; border-bottom-right-radius: 6px; }
+    .bubble-meta { color: var(--muted); font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+    .bubble-meta .seen { color: var(--green); display: inline-flex; align-items: center; gap: 4px; }
+    .bubble-time { color: var(--muted); font-size: 12px; margin-left: 2px; }
+
+    /* typing indicator */
+    .typing { display: inline-flex; gap: 5px; padding: 16px 16px; }
+    .typing span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--gray-500);
+      animation: typing 1.2s infinite ease-in-out;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.18s; }
+    .typing span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+
+    /* result cards inside chat */
+    .ai-results {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+      margin: 2px 0 0 0;
+      min-height: 176px;
+      align-items: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 0 4px;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-results::-webkit-scrollbar {
+      height: 6px;
+    }
+    .ai-results::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 999px;
+    }
+    .ai-result-card {
+      flex: 0 0 228px;
+      width: 228px;
+      border: 1px solid var(--gray-300);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 10px;
+      align-items: start;
+      background: #fff;
+      scroll-snap-align: start;
+    }
+    .ai-result-media {
+      position: relative;
+      width: 80px;
+    }
+    .ai-result-photo {
+      display: block;
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px 4px 0 0;
+    }
+    .ai-result-verified {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 80px;
+      min-height: 28px;
+      padding: 6px 8px;
+      border-radius: 0 0 4px 4px;
+      background: #15c39a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 450;
+      line-height: 1;
+    }
+    .ai-result-verified img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .ai-result-body {
+      min-width: 0;
+      display: grid;
+      row-gap: 6px;
+      align-content: start;
+    }
+    .ai-result-name {
+      color: var(--gray-900);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.15;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    .ai-result-location {
+      color: var(--gray-500);
+      font-size: 12px;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-result-location i {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .ai-result-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .ai-result-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: #f8b53a;
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-stars i {
+      font-size: 11.2px;
+      line-height: 1;
+    }
+    .ai-result-price {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      width: fit-content;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f5f5f5;
+      color: var(--gray-900);
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1.2;
+    }
+    .ai-result-link {
+      color: var(--pink);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .ai-showmore {
+      align-self: center;
+      margin: 4px auto 8px;
+      padding: 13px 24px;
+      background: var(--green);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: inset 0 -3px 0 var(--green-shadow);
+    }
+
+    /* suggestion chips */
+    .ai-suggest {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 0 16px 6px;
+      flex-shrink: 0;
+    }
+    .ai-suggest-chip {
+      display: inline-flex;
+      min-height: 32px;
+      padding: 6px 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 64px;
+      background: var(--color-indigo-100, #e0e7ff);
+      color: var(--color-indigo-500, #6366f1);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .ai-suggest-chip:hover {
+      border-radius: 64px;
+      background: var(--color-indigo-200, #c7d2fe);
+    }
+
+    /* composer */
+    .ai-composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px 16px 18px;
+      border-top: 1px solid var(--gray-300);
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .ai-composer-card {
+      flex: 1;
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 24px;
+      padding: 6px 8px 6px 18px;
+      min-width: 0;
+    }
+    .ai-input {
+      flex: 1;
+      border: 0; outline: none;
+      background: transparent;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--gray-900);
+      resize: none;
+      max-height: 96px;
+      line-height: 1.4;
+      padding: 8px 0;
+      min-width: 0;
+    }
+    .ai-input::placeholder { color: var(--gray-500); }
+    .ai-img-btn {
+      width: 34px; height: 34px; border: 0; background: transparent;
+      color: var(--gray-500); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; flex: 0 0 34px;
+    }
+    .ai-send {
+      width: 48px; height: 48px;
+      border: 0; border-radius: 50%;
+      background: transparent;
+      color: var(--pink);
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; flex: 0 0 48px;
+    }
+    .ai-send img { width: 26px; height: 26px; display: block; }
+    .ai-send:disabled { opacity: 0.4; cursor: default; }
+
+    .ai-backdrop {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(20, 28, 38, 0.32);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 30;
+    }
+    .ai-backdrop.show { opacity: 1; }
+
+    /* ---------- Mobile: drop the mockup chrome, go fullscreen ---------- */
+    @media (pointer: coarse) and (max-width: 768px) {
+      body { min-height: 100dvh; align-items: flex-start; justify-content: flex-start; padding: 0; background: #fff; }
+      .status-bar { display: none; }
+      .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
+      .ai-panel,
+      .ai-backdrop { top: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone-frame">
+    <div class="status-bar">
+      <div class="notch-pill"></div>
+      <div class="status-time">9:41</div>
+      <div class="status-icons" aria-label="Phone status">
+        <img src="./assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="./assets/wifi.svg" alt="" width="16" height="11">
+        <img src="./assets/battery.svg" alt="" width="25" height="12">
+      </div>
+    </div>
+
+    <div class="top-navbar">
+      <div class="brand"><img src="/ai-assisted-search/assets/hlidacky-symbol.svg" alt="Hlídačky.cz"></div>
+      <button class="nav-burger" type="button" aria-label="Menu">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 23H23C23.552 23 24 22.552 24 22C24 21.448 23.552 21 23 21H16C15.448 21 15 21.448 15 22C15 22.552 15.448 23 16 23Z" fill="#2A3539"/>
+          <path d="M9 11H23C23.552 11 24 10.552 24 10C24 9.448 23.552 9 23 9H9C8.448 9 8 9.448 8 10C8 10.552 8.448 11 9 11Z" fill="#2A3539"/>
+          <path d="M9 17H23C23.552 17 24 16.552 24 16C24 15.448 23.552 15 23 15H9C8.448 15 8 15.448 8 16C8 16.552 8.448 17 9 17Z" fill="#2A3539"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M23 13C25.2091 13 27 11.2091 27 9C27 6.79086 25.2091 5 23 5C20.7909 5 19 6.79086 19 9C19 11.2091 20.7909 13 23 13Z" fill="#F96073"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ============ SEARCH RESULTS ============ -->
+    <div class="screen-scroll">
+      <div class="hl-live">
+        <section class="searches-page-header-component">
+          <div class="heading heading--has-solid-line-reversed-highlight text-center">
+            <h1 class="heading__title text-balance heading-size-md heading-md-size-xl" style="--highlight-color: var(--color-pink-400)">
+              <mark>Babysitting</mark><br> in Praha 13
+            </h1>
+          </div>
+          <div class="typeset searches-page-header-component__description p-sm-size-sm p-md-size-lg">
+            Browse <strong>242 babysitters</strong> in Praha 13. Verified, experienced, and recommended by parents.
+          </div>
+          <div class="searches-page-header-component__quick-filters searches-page-header-component__quick-filters--guest">
+            <a class="searches-page-header-component__quick-filter searches-page-header-component__quick-filter--active" style="--vertical-color: var(--color-pink-400)" href="#">
+              <i class="fa-light fa-child-reaching"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Babysitting</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-cyan-400)" href="#">
+              <i class="fa-light fa-broom"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Household cleaning</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-teal-400)" href="#">
+              <i class="fa-light fa-paw"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Dog and cat care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-orange-400)" href="#">
+              <i class="fa-light fa-person-walking-with-cane"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Senior care</span></span>
+            </a>
+            <a class="searches-page-header-component__quick-filter" style="--vertical-color: var(--color-violet-400)" href="#">
+              <i class="fa-light fa-user-graduate"></i>
+              <span class="searches-page-header-component__quick-filter__text_container"><span class="searches-page-header-component__quick-filter__text_line">Tutoring</span></span>
+            </a>
+          </div>
+        </section>
+
+        <div class="searches-filter-component">
+          <div class="searches-filter-component__container">
+            <input class="searches-filter-component__input search_place_form_autocomplete form-control form-control-lg" type="search" value="Praha 13">
+            <button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md searches-filter-component__filter-button" type="button">
+              <span class="button-component__label">
+                <span class="fa-fwh fa-regular fa-sliders button-component__icon" aria-hidden="true"></span>
+                <span class="searches-filter-component__filter-text" aria-hidden="true"></span>
+              </span>
+            </button>
+            <button class="ai-fab" type="button" id="aiFab" aria-label="Open AI assistant">
+              <span class="fab-ring"></span>
+              <img src="/ai-assisted-search/assets/robot-icon.svg" alt="" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+
+        <div class="searches-results-grid">
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search/assets/bookmark-off.svg" data-src-on="/ai-assisted-search/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-01.jpg" width="128" height="128" loading="lazy" alt="Alexandra R."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Alexandra R.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 13</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">723 755 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">500 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Experienced babysitter for regular and one-time care. She most often helps with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Drawing/painting</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__icon fa-light fa-credit-card"></span><span class="badge-component__ellipsis-text">Accepts online payments</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Booked repeatedly</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="true" data-src-off="/ai-assisted-search/assets/bookmark-off.svg" data-src-on="/ai-assisted-search/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search/assets/bookmark-on.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-02.jpg" width="128" height="128" loading="lazy" alt="Klára S."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Klára S.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 13</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">604 943 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 4.5 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(20)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">300 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">She offers babysitting in a small group as well as individual care. A great fit for parents looking for regular weekday help and a gentle adaptation for younger children.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">First aid course</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Children's groups</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sleep issues</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Support for special needs</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Speaks English</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“We especially appreciate her empathy, clear communication, and the short summary we get after each babysitting session about how the child did.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sitter-card sitter-card--has-container profile-card-component profile-card-component--has-container" aria-label="Profil chůvy">
+            <button class="sitter-card__bookmark" type="button" aria-label="Save sitter" aria-pressed="false" data-src-off="/ai-assisted-search/assets/bookmark-off.svg" data-src-on="/ai-assisted-search/assets/bookmark-on.svg">
+              <img src="/ai-assisted-search/assets/bookmark-off.svg" alt="" aria-hidden="true">
+            </button>
+            <div class="sitter-card__main-part profile-card-component__main-part">
+              <div class="profile-photo-component">
+                <div class="profile-photo-component__photo">
+                  <a href="#"><img src="./assets/avatar-03.jpg" width="128" height="128" loading="lazy" alt="Tereza M."></a>
+                </div>
+                <a class="profile-photo-component__verified-badge profile-photo-component__verified-badge--is-verified" href="#">
+                  <div class="brand-symbol-component" style="--brand-symbol-default-size: 16px">
+                    <img alt="HlídačkyVerify" class="brand-symbol-component__image" height="16" loading="lazy" width="16" src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg">
+                  </div>
+                  <span class="profile-photo-component__verified-badge-text">Verified</span>
+                </a>
+              </div>
+              <div class="sitter-card__content profile-card-component__content">
+                <div class="sitter-card__header profile-card-component__header">
+                  <div class="sitter-card__name-wrapper profile-card-component__name-wrapper"><a class="sitter-card__name profile-card-component__name" style="--link-decoration: underline;" href="#">Tereza M.</a></div>
+                </div>
+                <div class="profile-card-basic-info-component">
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-location-dot"></i>Praha 13</div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-content link link--tel"><i class="profile-card-basic-info-component__parameter-icon fa-light fa-phone"></i><span class="profile-card-basic-info-component__parameter-text--disappearing">731 805 ***</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter profile-card-basic-info-component__parameter--rating"><div class="profile-card-basic-info-component__parameter-content"><div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div><span class="profile-card-basic-info-component__reviews-count">(10)</span></div></div>
+                  <div class="profile-card-basic-info-component__parameter"><div class="profile-card-basic-info-component__parameter-badges"><div class="badge-component badge-component--light_gray-variant badge-component--default-style badge-component--size-sm">400 Kč/h</div></div></div>
+                </div>
+              </div>
+              <div class="sitter-card__content-part profile-card-component__content-part">
+                <div class="profile-card-content-component">
+                  <div class="profile-card-content-component__content">
+                    <div class="profile-card-content-component__description-wrapper">
+                      <div class="typeset typeset--line-clamp profile-card-content-component__description p-size-sm" style="--text-line-clamp: 3">Professional babysitter focused on preschool and kindergarten-aged children. Ideal for families looking for active time together, reliability, and experience with more demanding evening routines.</div>
+                      <div class="profile-card-content-component__description-link-wrapper"><a class="link" href="#">view profile</a></div>
+                    </div>
+                    <div class="extra-content-pills-component">
+                      <ul class="extra-content-pills-component__overflow-container">
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Celebrations</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Overnight care</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Can drive children</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Experience with ADHD</span></div></li>
+                        <li class="extra-content-pills-component__pill"><div class="badge-component badge-component--light_gray-variant badge-component--pill-style badge-component--size-sm"><span class="badge-component__ellipsis-text">Sport</span></div></li>
+                      </ul>
+                    </div>
+                    <div class="extra-content-review-component">
+                      <div class="rating-stars" aria-label="Hodnocení: 5.0 z 5" role="img" style="font-size: 16px"><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div><div class="rating-stars__star" aria-hidden><i class="fa-sharp fa-solid fa-star fa-fwh"></i></div></div>
+                      <div class="typeset typeset--line-clamp extra-content-review-component__text p-size-sm" style="--text-line-clamp: 2"><em>“Very reliable, punctual, and calm. She always prepares meaningful activities for the children while also keeping clear boundaries, which suits us as parents very well.”</em></div>
+                    </div>
+                    <div class="profile-card-content-actions-bar-component">
+                      <div><button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" style="max-width: 50px;"><span class="fa-fwh fa-light fa-calendar-days button-component__icon"></span><span class="button-component__label"></span></button></div>
+                      <div><a class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-message button-component__icon"></span><span class="button-component__label">Message</span></a></div>
+                      <div><a class="btn button-component button-component--primary-variant button-component--green-color button-component-size-md button-component--full-width button-component--no-wrap" href="#"><span class="fa-fwh fa-light fa-calendar-clock button-component__icon"></span><span class="button-component__label">Booking</span></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="searches-page-footer-component">
+          <div class="typeset p-size-lg">Total <strong>8,566 babysitters</strong> in Czechia</div>
+          <div class="searches-page-footer-component__about-search-results">
+            <a class="link-component link-component--muted-variant link-component--sm-size" href="#"><span class="link link-component__label">How search results work</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ============ AI MESSENGER PANEL ============ -->
+    <div class="ai-backdrop" id="aiBackdrop"></div>
+    <section class="ai-panel" id="aiPanel" aria-hidden="true">
+      <div class="ai-head">
+        <span class="ai-avatar">
+          <img src="/ai-assisted-search/assets/robot-icon.svg" alt="" aria-hidden="true">
+        </span>
+        <div class="ai-head-copy">
+          <div class="ai-head-title">AI assistant</div>
+          <div class="ai-head-sub">Your ultimate search helper</div>
+        </div>
+        <button class="ai-close" id="aiClose" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="ai-scroll" id="aiScroll">
+        <div class="ai-daydiv">November 21, 2025</div>
+      </div>
+
+      <div class="ai-suggest" id="aiSuggest"></div>
+
+      <div class="ai-composer">
+        <div class="ai-composer-card">
+          <textarea class="ai-input" id="aiInput" rows="1" placeholder="Your message..."></textarea>
+          <button class="ai-img-btn" type="button" aria-label="Add image">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l5-4 4 3 3-2.5 4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <button class="ai-send" id="aiSend" type="button" aria-label="Send" disabled>
+          <img src="/ai-assisted-search/assets/icon-paperplane.svg" alt="" aria-hidden="true">
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var fab = document.getElementById('aiFab');
+      var panel = document.getElementById('aiPanel');
+      var backdrop = document.getElementById('aiBackdrop');
+      var closeBtn = document.getElementById('aiClose');
+      var scroll = document.getElementById('aiScroll');
+      var suggestEl = document.getElementById('aiSuggest');
+      var input = document.getElementById('aiInput');
+      var sendBtn = document.getElementById('aiSend');
+      var resultsView = document.querySelector('.screen-scroll');
+
+      var ROBOT_SVG = '<img src="/ai-assisted-search/assets/robot-icon.svg" alt="" aria-hidden="true">';
+
+      var TIME = '13:40';
+
+      // Scripted conversation. Each step = a bot turn + the suggested user replies
+      // that lead to the NEXT bot turn.
+      var SCRIPT = [
+        {
+          bot: ["Hi! 👋 I'm here to help you find the perfect babysitter. Are you looking for a regular care or just a one-time care?"],
+          suggest: ["A regular care", "One-time care"]
+        },
+        {
+          bot: ["Please specify when and where do you want to arrange the first meeting with your babysitter."],
+          suggest: []
+        },
+        {
+          bot: ["Ok, do you have any special requirements? Eg. languages, experience with autism, availability to sit overnight?"],
+          suggest: ["Yes. I need somebody who can speak English", "No special requirements"]
+        },
+        {
+          bot: ["Alright, here's the list of potentially available english-speaking babysitters in Prague 1"],
+          results: [
+            { name: "Augusta V.", img: "./assets/avatar-04.jpg", location: "Praha 1", rating: 5, reviews: 20, price: "500 Kč/h", verified: true },
+            { name: "Anna K.", img: "./assets/avatar-05.jpg", location: "Praha 1", rating: 4.5, reviews: 12, price: "500 Kč/h", verified: true },
+            { name: "Marianna T.", img: "./assets/avatar-06.jpg", location: "Praha 1", rating: 5, reviews: 18, price: "450 Kč/h", verified: true }
+          ],
+          showMore: "Show other 22 matches",
+          suggest: []
+        }
+      ];
+
+      var stepIndex = -1;   // index of the last bot turn shown
+      var started = false;
+      var busy = false;
+
+      function scrollDown() {
+        requestAnimationFrame(function () { scroll.scrollTop = scroll.scrollHeight; });
+      }
+
+      function addOutgoing(text) {
+        var row = document.createElement('div');
+        row.className = 'bubble-row bubble-row--out';
+        row.innerHTML =
+          '<div class="bubble-stack">' +
+            '<div class="bubble bubble--out">' + escapeHtml(text) + '</div>' +
+            '<div class="bubble-meta"><span class="seen">' +
+              '<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#0ba825" stroke-width="1.2"/><path d="M4.3 7.2l1.7 1.7L9.7 5" stroke="#0ba825" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              'Seen</span><span class="bubble-time">' + TIME + '</span></div>' +
+          '</div>';
+        scroll.appendChild(row);
+        scrollDown();
+      }
+
+      function makeIncomingRow(innerHtml) {
+        var row = document.createElement('div');
+        row.className = 'bubble-row bubble-row--in';
+        row.innerHTML =
+          '<span class="ai-avatar ai-avatar--sm">' + ROBOT_SVG + '</span>' +
+          '<div class="bubble-stack">' + innerHtml + '</div>';
+        return row;
+      }
+
+      function showTyping() {
+        var row = makeIncomingRow('<div class="bubble bubble--in" style="padding:4px 6px"><div class="typing"><span></span><span></span><span></span></div></div>');
+        row.setAttribute('data-typing', '1');
+        scroll.appendChild(row);
+        scrollDown();
+        return row;
+      }
+
+      function renderBotStep(step) {
+        var html = '';
+        step.bot.forEach(function (line) {
+          html += '<div class="bubble bubble--in">' + escapeHtml(line) + '</div>';
+        });
+        html += '<div class="bubble-meta">' + TIME + '</div>';
+
+        var row = makeIncomingRow(html);
+        scroll.appendChild(row);
+
+        // optional result cards + show-more, rendered full width under the message
+        if (step.results) {
+          var res = document.createElement('div');
+          res.className = 'ai-results';
+          res.innerHTML = step.results.map(renderAiResultCard).join('');
+          res.addEventListener('click', function (e) {
+            var target = e.target.closest('.ai-result-card, .ai-result-name, .ai-result-link');
+            if (!target) return;
+            e.preventDefault();
+            closePanel();
+          });
+          scroll.appendChild(res);
+        }
+        if (step.showMore) {
+          var more = document.createElement('button');
+          more.className = 'ai-showmore';
+          more.type = 'button';
+          more.textContent = step.showMore;
+          more.addEventListener('click', closePanel);
+          scroll.appendChild(more);
+        }
+        scrollDown();
+      }
+
+      function renderSuggestions(list) {
+        suggestEl.innerHTML = '';
+        (list || []).forEach(function (txt) {
+          var chip = document.createElement('button');
+          chip.className = 'ai-suggest-chip';
+          chip.type = 'button';
+          chip.textContent = txt;
+          chip.addEventListener('click', function () { sendUser(txt); });
+          suggestEl.appendChild(chip);
+        });
+      }
+
+      // advance to the next bot step (with typing delay)
+      function advanceBot() {
+        var next = stepIndex + 1;
+        if (next >= SCRIPT.length) { renderSuggestions([]); return; }
+        busy = true;
+        renderSuggestions([]);
+        var typingRow = showTyping();
+        var step = SCRIPT[next];
+        var delay = 850 + Math.min(step.bot.join(' ').length * 12, 1400);
+        setTimeout(function () {
+          if (typingRow && typingRow.parentNode) typingRow.parentNode.removeChild(typingRow);
+          stepIndex = next;
+          renderBotStep(step);
+          renderSuggestions(step.suggest);
+          busy = false;
+        }, delay);
+      }
+
+      function sendUser(text) {
+        text = (text || '').trim();
+        if (!text || busy) return;
+        addOutgoing(text);
+        input.value = '';
+        autosize();
+        syncSend();
+        advanceBot();
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+
+      function renderStars(rating) {
+        var full = Math.floor(rating);
+        var half = rating % 1 >= 0.5;
+        var html = '';
+        for (var i = 0; i < full; i += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true"></i>';
+        if (half) html += '<i class="fa-sharp fa-solid fa-star-half-stroke fa-fwh" aria-hidden="true"></i>';
+        for (var j = full + (half ? 1 : 0); j < 5; j += 1) html += '<i class="fa-sharp fa-solid fa-star fa-fwh" aria-hidden="true" style="opacity:.24"></i>';
+        return html;
+      }
+
+      function renderAiResultCard(r) {
+        return (
+          '<div class="ai-result-card">' +
+            '<div class="ai-result-media">' +
+              '<img class="ai-result-photo" src="' + r.img + '" alt="' + escapeHtml(r.name) + '">' +
+              (r.verified ? '<div class="ai-result-verified"><img src="https://hlidacky-312899.c.cdn77.org/assets/design/brand_symbols/symbol-care_verify-inverted-grayscale-68d70e4ca04e18d2031e2b2eafdccb2cee608600d3aaf51fe759608365f66f58.svg" alt="" aria-hidden="true"><span>Verified</span></div>' : '') +
+            '</div>' +
+            '<div class="ai-result-body">' +
+              '<a class="ai-result-name" href="#">' + escapeHtml(r.name) + '</a>' +
+              '<div class="ai-result-location"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>' + escapeHtml(r.location || '') + '</span></div>' +
+              '<div class="ai-result-rating"><span class="ai-result-stars">' + renderStars(r.rating || 0) + '</span><span>(' + escapeHtml(r.reviews || 0) + ')</span></div>' +
+              '<div class="ai-result-price">' + escapeHtml(r.price || '') + '</div>' +
+              '<a class="ai-result-link" href="#">Show profile</a>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
+      function autosize() {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 96) + 'px';
+      }
+      function syncSend() { sendBtn.disabled = !input.value.trim(); }
+
+      function syncBookmarkIcon(button) {
+        var img = button.querySelector('img');
+        if (!img) return;
+        var isPressed = button.getAttribute('aria-pressed') === 'true';
+        img.src = isPressed ? button.getAttribute('data-src-on') : button.getAttribute('data-src-off');
+      }
+
+      function initBookmarks() {
+        document.querySelectorAll('.sitter-card__bookmark').forEach(function (button) {
+          syncBookmarkIcon(button);
+          button.addEventListener('click', function () {
+            var isPressed = button.getAttribute('aria-pressed') === 'true';
+            button.setAttribute('aria-pressed', String(!isPressed));
+            syncBookmarkIcon(button);
+          });
+        });
+      }
+
+      function openPanel() {
+        backdrop.classList.add('show');
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        if (!started) {
+          started = true;
+          // kick off the first bot message
+          setTimeout(advanceBot, 350);
+        }
+        // Do not auto-focus the input — let the user tap it when ready.
+      }
+      function closePanel() {
+        panel.classList.remove('open');
+        backdrop.classList.remove('show');
+        panel.setAttribute('aria-hidden', 'true');
+        if (resultsView) {
+          resultsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      fab.addEventListener('click', openPanel);
+      closeBtn.addEventListener('click', closePanel);
+      backdrop.addEventListener('click', closePanel);
+      sendBtn.addEventListener('click', function () { sendUser(input.value); });
+      input.addEventListener('input', function () { autosize(); syncSend(); });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendUser(input.value); }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+      });
+      initBookmarks();
+    })();
+  </script>
+</body>
+</html>
