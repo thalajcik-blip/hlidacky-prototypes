@@ -3236,6 +3236,8 @@
       var locationPlaceholderTimer = null;
       var locationAutocompleteBlurTimer = null;
       var logoutSuccessTimer = null;
+      var welcomeAlertHideTimer = null;
+      var logoutAlertHideTimer = null;
       var dropdownBlurTimeout = null;
       var selectedLocation = '';
       var currentAppScreen = 'search';
@@ -3920,10 +3922,8 @@
           return;
         }
 
-        welcomeAlert.classList.remove('is-visible');
-        welcomeAlert.setAttribute('aria-hidden', 'true');
-        logoutSuccessAlert.classList.remove('is-visible');
-        logoutSuccessAlert.setAttribute('aria-hidden', 'true');
+        hideWelcomeAlert();
+        hideLogoutSuccess();
         resultsView.classList.add('is-hidden');
         appPlaceholderIcon.className = 'app-placeholder-screen__icon fa-solid ' + placeholder.icon;
         appPlaceholderTitle.textContent = placeholder.title;
@@ -3938,8 +3938,7 @@
 
       function openFamilyProfile() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
-        welcomeAlert.classList.remove('is-visible');
-        welcomeAlert.setAttribute('aria-hidden', 'true');
+        hideWelcomeAlert();
         familyProfileScreen.classList.add('is-open');
         setActiveNavItem(null);
         syncBackEntry();
@@ -4214,10 +4213,34 @@
         closeLocationAutocomplete();
       }
 
+      // Both alerts sit over the bottom of the feed, so they retire on their
+      // own instead of covering cards until someone hits the close cross.
+      var ALERT_AUTO_DISMISS_MS = 5000;
+
+      function hideWelcomeAlert() {
+        if (welcomeAlertHideTimer) {
+          clearTimeout(welcomeAlertHideTimer);
+          welcomeAlertHideTimer = null;
+        }
+        welcomeAlert.classList.remove('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'true');
+      }
+
+      function showWelcomeAlert() {
+        if (welcomeAlertHideTimer) clearTimeout(welcomeAlertHideTimer);
+        welcomeAlert.classList.add('is-visible');
+        welcomeAlert.setAttribute('aria-hidden', 'false');
+        welcomeAlertHideTimer = setTimeout(hideWelcomeAlert, ALERT_AUTO_DISMISS_MS);
+      }
+
       function hideLogoutSuccess() {
         if (logoutSuccessTimer) {
           clearTimeout(logoutSuccessTimer);
           logoutSuccessTimer = null;
+        }
+        if (logoutAlertHideTimer) {
+          clearTimeout(logoutAlertHideTimer);
+          logoutAlertHideTimer = null;
         }
         logoutSuccessAlert.classList.remove('is-visible');
         logoutSuccessAlert.setAttribute('aria-hidden', 'true');
@@ -4227,6 +4250,7 @@
         logoutSuccessTimer = null;
         logoutSuccessAlert.classList.add('is-visible');
         logoutSuccessAlert.setAttribute('aria-hidden', 'false');
+        logoutAlertHideTimer = setTimeout(hideLogoutSuccess, ALERT_AUTO_DISMISS_MS);
       }
 
       function simulateLogin() {
@@ -4240,8 +4264,7 @@
         messagesNavItem.setAttribute('aria-label', 'Messages, 3 new');
         messagesNavNotification.hidden = false;
         messagesNavNotification.setAttribute('aria-hidden', 'false');
-        welcomeAlert.classList.add('is-visible');
-        welcomeAlert.setAttribute('aria-hidden', 'false');
+        showWelcomeAlert();
       }
 
       function simulateLogout() {
@@ -4261,8 +4284,7 @@
         messagesNavItem.setAttribute('aria-label', 'Messages');
         messagesNavNotification.hidden = true;
         messagesNavNotification.setAttribute('aria-hidden', 'true');
-        welcomeAlert.classList.remove('is-visible');
-        welcomeAlert.setAttribute('aria-hidden', 'true');
+        hideWelcomeAlert();
         playFeedReload();
         logoutSuccessTimer = setTimeout(showLogoutSuccess, 520);
       }
@@ -4302,10 +4324,7 @@
         }
         action.addEventListener('click', openLoginForGuest);
       });
-      welcomeAlertClose.addEventListener('click', function () {
-        welcomeAlert.classList.remove('is-visible');
-        welcomeAlert.setAttribute('aria-hidden', 'true');
-      });
+      welcomeAlertClose.addEventListener('click', hideWelcomeAlert);
       locationInput.addEventListener('input', function () {
         stopLocationPlaceholderTypewriter();
         syncLocationInputState();
