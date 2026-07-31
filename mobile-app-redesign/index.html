@@ -2299,6 +2299,14 @@
       text-decoration: underline;
     }
 
+    /* application.css fades the number out to the right with a mask, which is
+       the teaser a guest sees over the truncated "723 755 ***". Signed in the
+       number is real and complete, so there is nothing left to tease. */
+    .hl-live.is-signed-in .profile-card-basic-info-component__parameter-text--disappearing {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
     .hl-live .profile-card-basic-info-component__parameter-content.link.link--tel .profile-card-basic-info-component__parameter-icon {
       text-decoration: none;
     }
@@ -5187,10 +5195,12 @@
 
       function revealSitterDetails() {
         setSitterDetails(loggedInSitterDetails);
+        if (liveRoot) liveRoot.classList.add('is-signed-in');
       }
 
       function maskSitterDetails() {
         setSitterDetails(loggedOutSitterDetails);
+        if (liveRoot) liveRoot.classList.remove('is-signed-in');
       }
 
       function stopLocationPlaceholderTypewriter() {
