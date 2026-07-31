@@ -3487,6 +3487,7 @@
       var prototypeSettingsBackdrop = document.getElementById('prototypeSettingsBackdrop');
       var prototypeSettingsModal = document.getElementById('prototypeSettingsModal');
       var prototypeSettingsClose = document.getElementById('prototypeSettingsClose');
+      var phoneFrame = document.querySelector('.phone-frame');
       var loginTrigger = document.getElementById('loginTrigger');
       var loginBottomSheet = document.getElementById('loginBottomSheet');
       var loginSheetBackdrop = document.getElementById('loginSheetBackdrop');
@@ -4188,10 +4189,23 @@
         syncBackEntry();
       }
 
+      // The sheet is modal — its backdrop covers the whole frame — but every
+      // control behind it stayed tabbable and readable, 58 of them. Marking
+      // the rest of the frame inert traps focus inside the sheet and hides
+      // the background from assistive tech, without hand-rolling a Tab cycle.
+      function setBackgroundInert(liveLayer) {
+        Array.prototype.forEach.call(phoneFrame.children, function (child) {
+          if (child === liveLayer) child.removeAttribute('inert');
+          else child.toggleAttribute('inert', Boolean(liveLayer));
+        });
+        if (prototypeSettingsButton) prototypeSettingsButton.toggleAttribute('inert', Boolean(liveLayer));
+      }
+
       function openLoginSheet() {
         loginBottomSheet.classList.add('is-open');
         loginBottomSheet.setAttribute('aria-hidden', 'false');
         loginTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(loginBottomSheet);
         loginSheetDialog.focus({ preventScroll: true });
         syncBackEntry();
       }
@@ -4206,6 +4220,8 @@
         loginBottomSheet.classList.remove('is-open');
         loginBottomSheet.setAttribute('aria-hidden', 'true');
         loginTrigger.setAttribute('aria-expanded', 'false');
+        // The trigger has to come back out of inert before it can take focus.
+        setBackgroundInert(null);
         loginTrigger.focus({ preventScroll: true });
         syncBackEntry();
       }
