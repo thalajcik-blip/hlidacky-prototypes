@@ -559,6 +559,227 @@
       content: '';
     }
 
+    /* Prototype settings switch, shared with bookings-rejection-flow-v3. */
+    .switch-view-button {
+      position: fixed;
+      top: 108px;
+      right: 0;
+      z-index: 120;
+      display: inline-flex;
+      width: 72px;
+      min-height: 64px;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 999px 0 0 999px;
+      padding: 14px 8px 18px 18px;
+      background: linear-gradient(90deg, #6c4ef8 0%, #7a57ff 100%);
+      box-shadow: inset 0 -6px 0 rgba(67, 25, 224, 0.9);
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: width 240ms ease, filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .switch-view-button-icon {
+      display: block;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+    }
+
+    .switch-view-button-label {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(16px);
+      transition: opacity 180ms ease, transform 240ms ease;
+    }
+
+    .switch-view-button:hover,
+    .switch-view-button:focus-visible {
+      width: 256px;
+      outline: none;
+      filter: brightness(1.03);
+    }
+
+    .switch-view-button:hover .switch-view-button-label,
+    .switch-view-button:focus-visible .switch-view-button-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-view-button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    body.prototype-settings-modal-open {
+      overflow: hidden;
+    }
+
+    .prototype-settings-modal-backdrop {
+      position: fixed;
+      z-index: 260;
+      inset: 0;
+      background: rgba(42, 53, 57, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+    .prototype-settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 270;
+      display: grid;
+      width: min(520px, calc(100vw - 32px));
+      max-height: min(80vh, 680px);
+      overflow: hidden;
+      transform: translate(-50%, -50%);
+      border: 1px solid #e5e5ea;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(42, 53, 57, 0.24);
+    }
+
+    .prototype-settings-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid #e5e5ea;
+    }
+
+    .prototype-settings-modal__header h2 {
+      margin: 0;
+      color: #2a3539;
+      font-size: 24px;
+      font-weight: 450;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .prototype-settings-modal__close {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .prototype-settings-modal__close img {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .prototype-settings-modal__close:hover,
+    .prototype-settings-modal__close:focus-visible {
+      outline: none;
+      background: #f2f3f5;
+    }
+
+    .prototype-settings-modal__body {
+      padding: 20px 24px 24px;
+      overflow-y: auto;
+    }
+
+    .prototype-settings-group {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      border: 0;
+      padding: 0;
+    }
+
+    .prototype-settings-group + .prototype-settings-group {
+      margin-top: 20px;
+    }
+
+    .prototype-settings-group legend {
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      line-height: 1.4;
+    }
+
+    .prototype-settings-option-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .prototype-settings-option {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      border: 1px solid #e5e5ea;
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #f7f7f8;
+    }
+
+    .prototype-settings-option:has(input:disabled) {
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+
+    .prototype-settings-option input {
+      margin: 4px 0 0;
+      accent-color: #6c4ef8;
+    }
+
+    .prototype-settings-option strong,
+    .prototype-settings-option small {
+      display: block;
+    }
+
+    .prototype-settings-option strong {
+      color: #2a3539;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .prototype-settings-option small {
+      margin-top: 2px;
+      color: #6b7176;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 600px) {
+      .prototype-settings-modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+      }
+
+      .prototype-settings-modal__header {
+        padding: 18px 16px 16px;
+      }
+
+      .prototype-settings-modal__header h2 {
+        font-size: 20px;
+      }
+
+      .prototype-settings-modal__body {
+        padding: 16px;
+      }
+    }
+
     /* Placeholder screens for the remaining app navigation destinations. */
     .app-placeholder-screen {
       position: absolute;
@@ -3174,6 +3395,49 @@
     </section>
   </main>
 
+  <button class="switch-view-button" id="prototypeSettingsButton" type="button" aria-label="Prototype settings" aria-controls="prototypeSettingsModal" aria-expanded="false">
+    <img class="switch-view-button-icon" src="../notification-center/assets/icon-gear.svg" alt="">
+    <span class="switch-view-button-label">Prototype settings</span>
+  </button>
+
+  <div class="prototype-settings-modal-backdrop" id="prototypeSettingsBackdrop" hidden></div>
+  <section class="prototype-settings-modal" id="prototypeSettingsModal" aria-labelledby="prototypeSettingsTitle" aria-modal="true" role="dialog" hidden>
+    <header class="prototype-settings-modal__header">
+      <h2 id="prototypeSettingsTitle">Prototype settings</h2>
+      <button class="prototype-settings-modal__close" id="prototypeSettingsClose" type="button" aria-label="Close prototype settings">
+        <img src="../notification-center/assets/xicon.svg" alt="">
+      </button>
+    </header>
+    <form class="prototype-settings-modal__body" aria-label="Prototype configuration">
+      <fieldset class="prototype-settings-group" disabled>
+        <legend>User role</legend>
+        <div class="prototype-settings-option-list">
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-user-role" value="family" checked disabled>
+            <span><strong>Parent / family</strong><small>Current experience shown in this prototype.</small></span>
+          </label>
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-user-role" value="sitter" disabled>
+            <span><strong>Sitter</strong><small>Will show the sitter version of the application.</small></span>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset class="prototype-settings-group" disabled>
+        <legend>Registration status</legend>
+        <div class="prototype-settings-option-list">
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-registration-status" value="registered" checked disabled>
+            <span><strong>Registered</strong><small>Shows the signed-in user experience.</small></span>
+          </label>
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-registration-status" value="not-registered" disabled>
+            <span><strong>Not registered</strong><small>Will show the guest user experience.</small></span>
+          </label>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
   <script>
     (function () {
       var fab = document.getElementById('aiFab');
@@ -3212,6 +3476,10 @@
       var mobileHeaderTitle = document.getElementById('mobileAppHeaderTitle');
       var mobileHeaderIcon = document.getElementById('mobileAppHeaderIcon');
       var mobileAppHeader = document.querySelector('.mobile-app-header');
+      var prototypeSettingsButton = document.getElementById('prototypeSettingsButton');
+      var prototypeSettingsBackdrop = document.getElementById('prototypeSettingsBackdrop');
+      var prototypeSettingsModal = document.getElementById('prototypeSettingsModal');
+      var prototypeSettingsClose = document.getElementById('prototypeSettingsClose');
       var loginTrigger = document.getElementById('loginTrigger');
       var loginBottomSheet = document.getElementById('loginBottomSheet');
       var loginSheetBackdrop = document.getElementById('loginSheetBackdrop');
@@ -3893,6 +4161,26 @@
         playFeedReload();
       }
 
+      function openPrototypeSettingsModal() {
+        prototypeSettingsModal.hidden = false;
+        prototypeSettingsBackdrop.hidden = false;
+        prototypeSettingsButton.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('prototype-settings-modal-open');
+        requestAnimationFrame(function () {
+          prototypeSettingsClose.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closePrototypeSettingsModal() {
+        prototypeSettingsModal.hidden = true;
+        prototypeSettingsBackdrop.hidden = true;
+        prototypeSettingsButton.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('prototype-settings-modal-open');
+        prototypeSettingsButton.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
       function openLoginSheet() {
         loginBottomSheet.classList.add('is-open');
         loginBottomSheet.setAttribute('aria-hidden', 'false');
@@ -4011,6 +4299,7 @@
 
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
+        { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
         { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
         { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
@@ -4343,6 +4632,9 @@
         });
       });
 
+      prototypeSettingsButton.addEventListener('click', openPrototypeSettingsModal);
+      prototypeSettingsBackdrop.addEventListener('click', closePrototypeSettingsModal);
+      prototypeSettingsClose.addEventListener('click', closePrototypeSettingsModal);
       loginTrigger.addEventListener('click', function () {
         if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
         else openFamilyProfile();
