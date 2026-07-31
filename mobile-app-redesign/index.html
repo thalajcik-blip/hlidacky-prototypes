@@ -1082,7 +1082,11 @@
 
     .search-filter-accordion.is-expanded .search-filter-accordion__panel {
       padding: 4px 4px 12px;
-      visibility: visible;
+      /* inherit, not visible: the filters screen hides itself with
+         visibility, and visibility is inherited, so an expanded panel that
+         insisted on being visible stayed painted over the feed once the modal
+         was closed. Inheriting keeps it tied to the screen it lives in. */
+      visibility: inherit;
       transition: max-height 220ms cubic-bezier(0.22, 1, 0.36, 1), padding 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
 
