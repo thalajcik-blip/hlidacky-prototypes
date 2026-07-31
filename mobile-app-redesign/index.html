@@ -1035,6 +1035,8 @@
     /* Seven collapsed rows all read alike, so nothing told you which ones you
        had already set without opening every one. */
     .search-filter-accordion__count {
+      grid-column: 3;
+      grid-row: 1;
       min-width: 20px;
       border-radius: 999px;
       background: #f96073;
@@ -1047,14 +1049,16 @@
       text-align: center;
     }
 
-    .search-filter-accordion__trigger > i:last-child {
+    .search-filter-accordion__trigger > .fa-chevron-down {
+      grid-column: 4;
+      grid-row: 1;
       color: #6b7176;
       font-size: 10px;
       text-align: center;
       transition: transform 180ms ease;
     }
 
-    .search-filter-accordion.is-expanded .search-filter-accordion__trigger > i:last-child {
+    .search-filter-accordion.is-expanded .search-filter-accordion__trigger > .fa-chevron-down {
       transform: rotate(180deg);
     }
 
