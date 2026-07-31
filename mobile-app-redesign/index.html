@@ -845,6 +845,435 @@
       line-height: 1.45;
     }
 
+    /* Filters are an application-level screen, rather than a desktop dialog.
+       It deliberately starts below the native status bar and covers the app's
+       navbar, so opening it does not move either fixed part of the phone UI. */
+    .search-filters-screen {
+      position: absolute;
+      z-index: 40;
+      inset: 52px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .search-filters-screen.is-open {
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .search-filters-screen__header {
+      display: grid;
+      min-height: 56px;
+      grid-template-columns: minmax(0, 1fr) 40px;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      padding: 12px 12px 8px 16px;
+    }
+
+    .search-filters-screen__close {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: #bec2ce;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .search-filters-screen__close:hover,
+    .search-filters-screen__close:focus-visible {
+      outline: 0;
+      background: #f2f3f5;
+    }
+
+    .search-filters-screen__title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 20px;
+      font-weight: 450;
+      letter-spacing: -0.5px;
+      line-height: 1.32;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .search-filters-screen__title i {
+      font-size: 15px;
+    }
+
+    .search-filters-screen__content {
+      min-height: 0;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      background: #fff;
+      padding: 0 12px 132px;
+    }
+
+    .search-filters-quick-list {
+      display: flex;
+      gap: 0;
+      width: calc(100% + 12px);
+      margin: 0 0 0 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .search-filters-quick-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .search-filters-quick-item {
+      position: relative;
+      display: flex;
+      width: 76px;
+      min-width: 76px;
+      min-height: 52px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+      border-bottom: 2px solid transparent;
+      background: #fff;
+      padding: 6px 0;
+      color: #4a5a61;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .search-filters-quick-item input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .search-filters-quick-item i {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      font-size: 16.2px;
+    }
+
+    .search-filters-quick-item span {
+      display: flex;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      max-width: 72px;
+      font-size: 10px;
+      letter-spacing: -0.32px;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .search-filters-quick-item:has(input:checked) {
+      border-color: #f96073;
+      color: #212529;
+    }
+
+    .search-filters-quick-item:hover {
+      background: #e5e5ea;
+    }
+
+    .search-filter-accordion {
+      overflow: hidden;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+    }
+
+    .search-filter-accordion__trigger {
+      display: grid;
+      width: 100%;
+      min-height: 48px;
+      grid-template-columns: 18px minmax(0, 1fr) 16px;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      background: #fff;
+      padding: 12px 4px 12px;
+      color: #2a3539;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .search-filter-accordion__trigger:hover,
+    .search-filter-accordion__trigger:focus-visible {
+      outline: 0;
+      background: #fcfcfd;
+    }
+
+    .search-filter-accordion__trigger > i:first-child {
+      color: #2a3539;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .search-filter-accordion__trigger > span {
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 450;
+      letter-spacing: -0.32px;
+      line-height: 1.4;
+    }
+
+    .search-filter-accordion__trigger > i:last-child {
+      color: #6b7176;
+      font-size: 10px;
+      text-align: center;
+      transition: transform 180ms ease;
+    }
+
+    .search-filter-accordion.is-expanded .search-filter-accordion__trigger > i:last-child {
+      transform: rotate(180deg);
+    }
+
+    .search-filter-accordion__panel {
+      display: grid;
+      gap: 8px;
+      padding: 4px 4px 12px;
+    }
+
+    .search-filter-accordion__panel[hidden] {
+      display: none;
+    }
+
+    .search-filter-option {
+      display: flex;
+      min-height: 20px;
+      align-items: center;
+      gap: 10px;
+      color: #4a5a61;
+      font-size: 14px;
+      letter-spacing: -0.32px;
+      line-height: 24px;
+      cursor: pointer;
+    }
+
+    .search-filter-option input,
+    .search-filter-tile input {
+      appearance: none;
+      -webkit-appearance: none;
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #bec2ce;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .search-filter-option input {
+      flex: 0 0 20px;
+      margin: 0;
+    }
+
+    .search-filter-option input[type="checkbox"],
+    .search-filter-tile input[type="checkbox"] {
+      border-radius: 4px;
+    }
+
+    .search-filter-option input[type="checkbox"]:checked,
+    .search-filter-tile input[type="checkbox"]:checked {
+      border-color: #f96073;
+      background: #f96073;
+    }
+
+    .search-filter-option input[type="checkbox"]:checked::after,
+    .search-filter-tile input[type="checkbox"]:checked::after {
+      display: block;
+      color: #fff;
+      content: "\f00c";
+      font-family: "Font Awesome 6 Pro";
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .search-filter-option input[type="radio"],
+    .search-filter-tile input[type="radio"] {
+      border-radius: 50%;
+    }
+
+    .search-filter-option input[type="radio"]:checked,
+    .search-filter-tile input[type="radio"]:checked {
+      border: 6px solid #f96073;
+    }
+
+    .search-filter-option input:focus-visible,
+    .search-filter-tile input:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 2px #cbdafc;
+    }
+
+    .search-filter-option span {
+      min-width: 0;
+    }
+
+    .search-filter-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .search-filter-tile {
+      position: relative;
+      display: grid;
+      box-sizing: border-box;
+      width: 88px;
+      min-width: 88px;
+      height: 80px;
+      grid-template-columns: 20px 1fr;
+      grid-template-rows: 24px minmax(0, 1fr);
+      gap: 0 6px;
+      border: 1px solid #bec2ce;
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px 8px 6px;
+      color: #4a5a61;
+      cursor: pointer;
+    }
+
+    .search-filter-tile input {
+      margin: 0;
+    }
+
+    .search-filter-tile i,
+    .search-filter-tile__flag {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      color: #4a5a61;
+      font-size: 17px;
+      line-height: 20px;
+    }
+
+    .search-filter-tile__flag {
+      font-size: 20px;
+    }
+
+    .search-filter-tile span:last-child {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: end;
+      overflow: hidden;
+      font-size: 12px;
+      letter-spacing: -0.3px;
+      line-height: 1.16;
+      text-overflow: ellipsis;
+    }
+
+    .search-filter-tile:has(input:checked) {
+      border-color: #f96073;
+      background: #f7f7f7;
+      box-shadow: inset 0 0 0 1px #f96073;
+      color: #f96073;
+    }
+
+    .search-filter-tile:has(input:checked) i,
+    .search-filter-tile:has(input:checked) .search-filter-tile__flag {
+      color: #f96073;
+    }
+
+    .search-filter-tile:hover {
+      background: #f7f7f7;
+    }
+
+    .search-filter-tile:focus-within {
+      outline: 2px solid #f96073;
+      outline-offset: 1px;
+    }
+
+    .search-filters-screen__cta {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+      background: #fff;
+      padding: 16px 16px 12px;
+      box-shadow: 0 -8px 24px rgba(42, 53, 57, 0.04);
+    }
+
+    .search-filters-screen__apply {
+      display: inline-flex;
+      width: 100%;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 1px solid #0ba825;
+      border-radius: 4px;
+      background: #0ba825;
+      box-shadow: inset 0 -4px 0 rgba(0, 94, 15, 0.25);
+      padding: 10px 18px 14px;
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+
+    .search-filters-screen__apply i {
+      margin-right: 6px;
+      font-size: 14px;
+    }
+
+    .search-filters-screen__reset {
+      display: block;
+      margin: 10px auto 0;
+      border: 0;
+      border-bottom: 1px solid currentColor;
+      background: transparent;
+      padding: 0;
+      color: #f96073;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .search-filters-screen__reset:disabled {
+      border-bottom-color: transparent;
+      color: #bec2ce;
+      cursor: default;
+    }
+
+    .search-filters-screen__apply:hover,
+    .search-filters-screen__apply:focus-visible {
+      outline: 0;
+      background: #079420;
+      border-color: #079420;
+    }
+
+    .search-filters-screen__apply:active {
+      box-shadow: none;
+      padding-top: 14px;
+      padding-bottom: 10px;
+    }
+
+    .hl-live .searches-filter-component__filter-button.is-filtered {
+      border-color: #f96073;
+      background: #fff2f5;
+      color: #ea4d62;
+    }
+
     /* Figma: Welcome alert */
     .welcome-alert {
       position: absolute;
@@ -3018,7 +3447,7 @@
                 <span>AI Search</span>
               </button>
             </div>
-            <button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md searches-filter-component__filter-button" type="button">
+            <button class="btn button-component button-component--tertiary-variant button-component--pink-color button-component-size-md searches-filter-component__filter-button" id="searchFiltersTrigger" type="button" aria-label="Open filters" aria-controls="searchFiltersScreen" aria-expanded="false">
               <span class="button-component__label">
                 <span class="fa-fwh fa-regular fa-sliders button-component__icon" aria-hidden="true"></span>
                 <span class="searches-filter-component__filter-text" aria-hidden="true"></span>
@@ -3243,6 +3672,123 @@
         </div>
         <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i>Log out</button>
       </div>
+    </section>
+    <section class="search-filters-screen" id="searchFiltersScreen" role="dialog" aria-modal="true" aria-labelledby="searchFiltersTitle" aria-hidden="true">
+      <header class="search-filters-screen__header">
+        <h1 class="search-filters-screen__title" id="searchFiltersTitle"><i class="fa-light fa-sliders" aria-hidden="true"></i>Filters</h1>
+        <button class="search-filters-screen__close" id="searchFiltersClose" type="button" aria-label="Close filters"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </header>
+      <form class="search-filters-screen__content" id="searchFiltersForm">
+        <div class="search-filters-quick-list" aria-label="Quick filters">
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="english" data-count-impact="1050"><i class="fa-light fa-globe" aria-hidden="true"></i><span>Speaks English</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="overnight" data-count-impact="1320"><i class="fa-light fa-house-night" aria-hidden="true"></i><span>Overnight</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="holidays" data-count-impact="840"><i class="fa-light fa-umbrella-beach" aria-hidden="true"></i><span>Holidays</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="first-aid" data-count-impact="910"><i class="fa-light fa-kit-medical" aria-hidden="true"></i><span>First aid course</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="drive" data-count-impact="760"><i class="fa-light fa-car" aria-hidden="true"></i><span>Drive with kids</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="cleaning" data-count-impact="680"><i class="fa-light fa-broom" aria-hidden="true"></i><span>Can clean</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="pets" data-count-impact="610"><i class="fa-light fa-paw" aria-hidden="true"></i><span>Help with pets</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="seniors" data-count-impact="580"><i class="fa-light fa-person-cane" aria-hidden="true"></i><span>Help with seniors</span></label>
+          <label class="search-filters-quick-item"><input type="radio" name="quick-filter" value="tutoring" data-count-impact="720"><i class="fa-light fa-graduation-cap" aria-hidden="true"></i><span>Can tutor kids</span></label>
+        </div>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterPricePanel">
+            <i class="fa-light fa-circle-dollar" aria-hidden="true"></i><span>Price</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterPricePanel" hidden>
+            <label class="search-filter-option"><input type="checkbox" name="price" value="60-120" data-count-impact="920"><span>60–120 Kč/hour</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="price" value="130-240" data-count-impact="660"><span>130–240 Kč/hour</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="price" value="250-350" data-count-impact="840"><span>250–350 Kč/hour</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="price" value="350-plus" data-count-impact="1240"><span>More than 350 Kč/hour</span></label>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterChildrenAgePanel">
+            <i class="fa-light fa-child-reaching" aria-hidden="true"></i><span>Children’s age</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterChildrenAgePanel" hidden>
+            <div class="search-filter-grid">
+              <label class="search-filter-tile"><input type="checkbox" name="children-age" value="infants" data-count-impact="800"><i class="fa-light fa-baby-carriage" aria-hidden="true"></i><span>Infants</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="children-age" value="toddlers" data-count-impact="720"><i class="fa-light fa-child" aria-hidden="true"></i><span>Toddlers</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="children-age" value="preschool" data-count-impact="650"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><span>Preschool age</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="children-age" value="school" data-count-impact="590"><i class="fa-light fa-person" aria-hidden="true"></i><span>School age</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="children-age" value="teenagers" data-count-impact="640"><i class="fa-light fa-person" aria-hidden="true"></i><span>Teenagers</span></label>
+            </div>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterSitterAgePanel">
+            <i class="fa-light fa-cake-candles" aria-hidden="true"></i><span>Sitter’s age</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterSitterAgePanel" hidden>
+            <label class="search-filter-option"><input type="checkbox" name="sitter-age" value="18-26" data-count-impact="610"><span>18–26</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="sitter-age" value="27-39" data-count-impact="540"><span>27–39</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="sitter-age" value="40-plus" data-count-impact="760"><span>40+</span></label>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterLanguagesPanel">
+            <i class="fa-light fa-globe" aria-hidden="true"></i><span>Languages</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterLanguagesPanel" hidden>
+            <div class="search-filter-grid">
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="english" data-count-impact="1050"><span class="search-filter-tile__flag" aria-hidden="true">🇬🇧</span><span>English</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="deutsch" data-count-impact="980"><span class="search-filter-tile__flag" aria-hidden="true">🇩🇪</span><span>Deutsch</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="espanol" data-count-impact="1120"><span class="search-filter-tile__flag" aria-hidden="true">🇪🇸</span><span>Español</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="francais" data-count-impact="1080"><span class="search-filter-tile__flag" aria-hidden="true">🇫🇷</span><span>Français</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="italiano" data-count-impact="1040"><span class="search-filter-tile__flag" aria-hidden="true">🇮🇹</span><span>Italiano</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="language" value="ukrainska" data-count-impact="900"><span class="search-filter-tile__flag" aria-hidden="true">🇺🇦</span><span>Українська</span></label>
+            </div>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterExperiencePanel">
+            <i class="fa-light fa-list-check" aria-hidden="true"></i><span>Experience with</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterExperiencePanel" hidden>
+            <div class="search-filter-grid">
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="autism" data-count-impact="720"><i class="fa-light fa-infinity" aria-hidden="true"></i><span>Autism spectrum</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="diabetes" data-count-impact="660"><i class="fa-light fa-droplet" aria-hidden="true"></i><span>Diabetes</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="asthma" data-count-impact="640"><i class="fa-light fa-lungs" aria-hidden="true"></i><span>Asthma</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="adhd" data-count-impact="690"><i class="fa-light fa-brain" aria-hidden="true"></i><span>ADHD</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="allergies" data-count-impact="580"><i class="fa-light fa-allergies" aria-hidden="true"></i><span>Food allergies</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="childhood-diseases" data-count-impact="620"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><span>Childhood diseases</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="sleep" data-count-impact="760"><i class="fa-light fa-bed" aria-hidden="true"></i><span>Sleep disorders</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="vision" data-count-impact="670"><i class="fa-light fa-glasses" aria-hidden="true"></i><span>Vision disorders</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="hearing" data-count-impact="620"><i class="fa-light fa-ear-listen" aria-hidden="true"></i><span>Hearing disorders</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="epilepsia" data-count-impact="700"><i class="fa-light fa-bolt" aria-hidden="true"></i><span>Epilepsia</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="experience" value="special-needs" data-count-impact="740"><i class="fa-light fa-hands-holding" aria-hidden="true"></i><span>Special needs</span></label>
+            </div>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterVerificationPanel">
+            <i class="fa-light fa-shield-check" aria-hidden="true"></i><span>Verification</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterVerificationPanel" hidden>
+            <label class="search-filter-option"><input type="checkbox" name="verification" value="verified" data-count-impact="630"><span>verified (personally, video or ID)</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="verification" value="reviews" data-count-impact="420"><span>with reviews</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="verification" value="first-aid" data-count-impact="910"><span>with completed first aid course</span></label>
+            <label class="search-filter-option"><input type="checkbox" name="verification" value="higher-education" data-count-impact="790"><span>with higher education</span></label>
+          </div>
+        </section>
+        <section class="search-filter-accordion">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="filterAdditionalPanel">
+            <i class="fa-light fa-square-plus" aria-hidden="true"></i><span>Can also do</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="filterAdditionalPanel" hidden>
+            <div class="search-filter-grid">
+              <label class="search-filter-tile"><input type="checkbox" name="additional" value="cleaning" data-count-impact="680"><i class="fa-light fa-broom" aria-hidden="true"></i><span>Household cleaning</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="additional" value="pet-care" data-count-impact="610"><i class="fa-light fa-paw" aria-hidden="true"></i><span>Pet care</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="additional" value="senior-care" data-count-impact="580"><i class="fa-light fa-person-cane" aria-hidden="true"></i><span>Senior care</span></label>
+              <label class="search-filter-tile"><input type="checkbox" name="additional" value="tutoring" data-count-impact="720"><i class="fa-light fa-graduation-cap" aria-hidden="true"></i><span>Tutoring</span></label>
+            </div>
+          </div>
+        </section>
+      </form>
+      <footer class="search-filters-screen__cta">
+        <button class="search-filters-screen__apply" id="searchFiltersApply" type="button"><i class="fa-solid fa-user" aria-hidden="true"></i><span>Show</span><span id="searchFiltersCount">8,566</span><span>sitters</span></button>
+        <button class="search-filters-screen__reset" id="searchFiltersReset" type="button" disabled>Clear all</button>
+      </footer>
     </section>
     <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
       <div class="mobile-bottom-nav__items">
@@ -3509,6 +4055,14 @@
       var locationSearchIcon = document.getElementById('locationSearchIcon');
       var locationClear = document.getElementById('locationClear');
       var locationAutocomplete = document.getElementById('locationAutocomplete');
+      var searchFiltersTrigger = document.getElementById('searchFiltersTrigger');
+      var searchFiltersScreen = document.getElementById('searchFiltersScreen');
+      var searchFiltersClose = document.getElementById('searchFiltersClose');
+      var searchFiltersForm = document.getElementById('searchFiltersForm');
+      var searchFiltersReset = document.getElementById('searchFiltersReset');
+      var searchFiltersApply = document.getElementById('searchFiltersApply');
+      var searchFiltersCount = document.getElementById('searchFiltersCount');
+      var searchFilterAccordions = Array.prototype.slice.call(document.querySelectorAll('.search-filter-accordion'));
       var feedGrid = document.querySelector('.searches-results-grid');
       var guestGatedCardActions = Array.prototype.slice.call(document.querySelectorAll(
         '.sitter-card__name, .profile-card-basic-info-component__parameter-content.link--tel, .profile-card-basic-info-component__reviews-count, .profile-photo-component__verified-badge, .profile-card-content-component__description-link-wrapper .link, .profile-card-content-actions-bar-component .btn'
@@ -3534,6 +4088,7 @@
       var welcomeAlertHideTimer = null;
       var logoutAlertHideTimer = null;
       var dropdownBlurTimeout = null;
+      var pageScrollPositionBeforeFilters = 0;
       var selectedLocation = '';
       var currentAppScreen = 'search';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
@@ -4169,6 +4724,65 @@
         playFeedReload();
       }
 
+      function getFilterResultTotal() {
+        var selectedInputs = searchFiltersForm.querySelectorAll('input:checked');
+        var impact = Array.prototype.reduce.call(selectedInputs, function (total, input) {
+          return total + Number(input.getAttribute('data-count-impact') || 0);
+        }, 0);
+        return Math.max(0, 8566 - impact);
+      }
+
+      function updateFilterResultCount() {
+        var total = getFilterResultTotal();
+        var hasFilters = Array.prototype.some.call(searchFiltersForm.querySelectorAll('input'), function (input) {
+          return input.checked && input.getAttribute('data-count-impact') !== '0';
+        });
+        searchFiltersCount.textContent = total.toLocaleString('en-US');
+        searchFiltersReset.disabled = !hasFilters;
+        searchFiltersTrigger.classList.toggle('is-filtered', hasFilters);
+        searchFiltersTrigger.setAttribute('aria-label', hasFilters ? 'Open filters, filters applied' : 'Open filters');
+      }
+
+      function setFilterAccordionExpanded(accordion, expanded) {
+        var trigger = accordion.querySelector('.search-filter-accordion__trigger');
+        var panel = accordion.querySelector('.search-filter-accordion__panel');
+        accordion.classList.toggle('is-expanded', expanded);
+        trigger.setAttribute('aria-expanded', String(expanded));
+        panel.hidden = !expanded;
+      }
+
+      function openSearchFilters() {
+        pageScrollPositionBeforeFilters = window.scrollY;
+        closeLocationAutocomplete();
+        searchFiltersScreen.classList.add('is-open');
+        searchFiltersScreen.setAttribute('aria-hidden', 'false');
+        searchFiltersTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(searchFiltersScreen);
+        requestAnimationFrame(function () {
+          searchFiltersClose.focus({ preventScroll: true });
+          // Safari can still scroll the document when an element becomes
+          // focusable after an inert change. Restore the phone's exact
+          // position so the fixed status bar does not jump out of view.
+          window.scrollTo(0, pageScrollPositionBeforeFilters);
+        });
+        syncBackEntry();
+      }
+
+      function closeSearchFilters() {
+        searchFiltersScreen.classList.remove('is-open');
+        searchFiltersScreen.setAttribute('aria-hidden', 'true');
+        searchFiltersTrigger.setAttribute('aria-expanded', 'false');
+        setBackgroundInert(null);
+        searchFiltersTrigger.focus({ preventScroll: true });
+        window.scrollTo(0, pageScrollPositionBeforeFilters);
+        syncBackEntry();
+      }
+
+      function resetSearchFilters() {
+        searchFiltersForm.reset();
+        updateFilterResultCount();
+      }
+
       function openPrototypeSettingsModal() {
         prototypeSettingsModal.hidden = false;
         prototypeSettingsBackdrop.hidden = false;
@@ -4323,6 +4937,7 @@
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
+        { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
         { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
         { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
@@ -4658,6 +5273,20 @@
       prototypeSettingsButton.addEventListener('click', openPrototypeSettingsModal);
       prototypeSettingsBackdrop.addEventListener('click', closePrototypeSettingsModal);
       prototypeSettingsClose.addEventListener('click', closePrototypeSettingsModal);
+      searchFiltersTrigger.addEventListener('click', openSearchFilters);
+      searchFiltersClose.addEventListener('click', closeSearchFilters);
+      searchFiltersApply.addEventListener('click', function () {
+        closeSearchFilters();
+        playFeedReload();
+      });
+      searchFiltersReset.addEventListener('click', resetSearchFilters);
+      searchFiltersForm.addEventListener('change', updateFilterResultCount);
+      searchFilterAccordions.forEach(function (accordion) {
+        var trigger = accordion.querySelector('.search-filter-accordion__trigger');
+        trigger.addEventListener('click', function () {
+          setFilterAccordionExpanded(accordion, trigger.getAttribute('aria-expanded') !== 'true');
+        });
+      });
       loginTrigger.addEventListener('click', function () {
         if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
         else openFamilyProfile();
@@ -4775,6 +5404,7 @@
       ensurePanelPlacement();
       setPanelExpanded(true);
       initBookmarks();
+      updateFilterResultCount();
       startLocationPlaceholderTypewriter();
     })();
   </script>
