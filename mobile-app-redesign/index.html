@@ -2042,6 +2042,8 @@
     }
 
     .hl-live .searches-filter-component__filter-button {
+      position: relative;
+      overflow: visible;
       width: 52px;
       min-width: 52px;
       height: 52px;
@@ -2061,6 +2063,26 @@
       gap: 0;
       padding: 0;
       margin: 0;
+    }
+
+    .searches-filter-component__filter-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      z-index: 1;
+      display: grid;
+      min-width: 24px;
+      height: 24px;
+      place-items: center;
+      box-sizing: border-box;
+      border-radius: 64px;
+      padding: 2px 4px;
+      background: #f96073;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1;
+      text-align: center;
     }
 
     .hl-live .searches-filter-component__filter-button .searches-filter-component__filter-text {
@@ -3505,6 +3527,7 @@
                 <span class="fa-fwh fa-regular fa-sliders button-component__icon" aria-hidden="true"></span>
                 <span class="searches-filter-component__filter-text" aria-hidden="true"></span>
               </span>
+              <span class="searches-filter-component__filter-count" id="searchFiltersActiveCount" aria-hidden="true" hidden>0</span>
             </button>
           </div>
           <div class="location-autocomplete" id="locationAutocomplete" role="listbox" aria-label="Location suggestions" hidden></div>
@@ -4115,6 +4138,7 @@
       var searchFiltersReset = document.getElementById('searchFiltersReset');
       var searchFiltersApply = document.getElementById('searchFiltersApply');
       var searchFiltersCount = document.getElementById('searchFiltersCount');
+      var searchFiltersActiveCount = document.getElementById('searchFiltersActiveCount');
       var searchFilterAccordions = Array.prototype.slice.call(document.querySelectorAll('.search-filter-accordion'));
       var quickFilterInputs = Array.prototype.slice.call(document.querySelectorAll('.search-filters-quick-item input'));
       var activeQuickFilter = null;
@@ -4789,14 +4813,17 @@
 
       function updateFilterResultCount() {
         var total = getFilterResultTotal();
-        var hasFilters = Array.prototype.some.call(searchFiltersForm.querySelectorAll('input'), function (input) {
-          return input.checked && input.getAttribute('data-count-impact') !== '0';
-        });
+        var activeFilterCount = searchFiltersForm.querySelectorAll('input:checked').length;
+        var hasFilters = activeFilterCount > 0;
         searchFiltersCount.textContent = total.toLocaleString('en-US');
+        searchFiltersActiveCount.textContent = String(activeFilterCount);
+        searchFiltersActiveCount.hidden = !hasFilters;
         updateFilterAccordionSummaries();
         searchFiltersReset.disabled = !hasFilters;
         searchFiltersTrigger.classList.toggle('is-filtered', hasFilters);
-        searchFiltersTrigger.setAttribute('aria-label', hasFilters ? 'Open filters, filters applied' : 'Open filters');
+        searchFiltersTrigger.setAttribute('aria-label', hasFilters
+          ? 'Open filters, ' + activeFilterCount + ' active ' + (activeFilterCount === 1 ? 'filter' : 'filters')
+          : 'Open filters');
       }
 
       // max-height needs a real number at both ends or there is nothing to
