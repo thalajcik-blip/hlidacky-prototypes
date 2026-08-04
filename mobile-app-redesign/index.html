@@ -442,27 +442,977 @@
       text-align: center;
     }
 
+    .family-profile-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+      padding: 24px 0 8px;
+    }
+
     .family-profile-logout {
       display: inline-flex;
       align-items: center;
-      align-self: center;
       gap: 6px;
-      margin-top: auto;
-      padding: 24px 0 8px;
+      padding: 0;
       border: 0;
       background: transparent;
       color: #8b91a3;
       font: inherit;
       font-size: 16px;
       line-height: 1.6;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      text-decoration: none;
       cursor: pointer;
     }
 
     .family-profile-logout i {
       font-size: 16px;
     }
+
+    .family-profile-logout span {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* Account stacks above the profile and only its own layer is animated. */
+    .family-account-screen {
+      display: flex;
+      position: absolute;
+      z-index: 25;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-account-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .family-account-header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      height: 48px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 0 12px;
+    }
+
+    .family-account-header__back,
+    .family-account-header__placeholder {
+      display: inline-flex;
+      width: 52px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .family-account-header__back {
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .family-account-header__title {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -.05px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-account-header__title i { color: #f96073; font-size: 16px; }
+
+    .family-account-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+    }
+
+    .family-account-screen.is-dirty .family-account-content { padding-bottom: 88px; }
+
+    .account-save-bar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 2;
+      display: flex;
+      border-top: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 4px 20px 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(100%);
+      transition: transform 180ms ease, opacity 180ms ease, visibility 0s linear 180ms;
+      visibility: hidden;
+    }
+
+    .family-account-screen.is-dirty .account-save-bar {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: transform 180ms ease, opacity 180ms ease, visibility 0s;
+      visibility: visible;
+    }
+
+    .account-photo-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e5e5ea;
+      border-radius: 8px;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+
+    .account-photo-panel__label,
+    .account-field__label {
+      margin: 0;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .account-photo-panel__avatar {
+      width: 84px;
+      height: 84px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2);
+    }
+
+    .account-photo-panel__actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding-top: 8px;
+    }
+
+    .account-upload-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      padding: 8px 18px 10px 14px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+      cursor: pointer;
+    }
+
+    .account-upload-button:active { box-shadow: none; transform: translateY(2px); }
+
+    .account-remove-photo,
+    .account-manage-login {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #f96073;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .account-remove-photo i,
+    .account-manage-login i { font-size: 14px; text-decoration: none; }
+
+    .account-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      padding-top: 8px;
+    }
+
+    .account-field__label { padding: 0 2px; }
+    .account-field__label--with-badge { display: flex; align-items: center; gap: 4px; }
+
+    .account-field__confirmation {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      border-radius: 64px;
+      background: #eff9ef;
+      padding: 1.5px 6px;
+      color: #0ba825;
+      font-size: 9px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .account-field__confirmation i { font-size: 7px; }
+
+    .account-field__input,
+    .account-field__select {
+      box-sizing: border-box;
+      width: 100%;
+      height: 52px;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      outline: 0;
+      background: #fff;
+      padding: 0 20px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      letter-spacing: .2px;
+      line-height: 1.4;
+    }
+
+    .account-field__input:focus,
+    .account-field__select:focus { border-color: #f96073; box-shadow: 0 0 0 2px rgba(249, 96, 115, .16); }
+
+    .account-field__select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #f96073 50%), linear-gradient(135deg, #f96073 50%, transparent 50%);
+      background-position: calc(100% - 20px) 22px, calc(100% - 15px) 22px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    .account-phone-field { display: flex; min-width: 0; }
+
+    .account-phone-field__prefix {
+      display: inline-flex;
+      width: 84px;
+      flex: 0 0 84px;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #e5e5ea;
+      border-right: 0;
+      border-radius: 4px 0 0 4px;
+      background: #fff;
+      padding: 0 8px 0 12px;
+      color: #8b91a3;
+      font-size: 14px;
+    }
+
+    .account-phone-field__prefix span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .account-phone-field__prefix i { color: #bec2ce; font-size: 10px; }
+    .account-phone-field .account-field__input { min-width: 0; border-radius: 0 4px 4px 0; padding-left: 16px; }
+
+    .account-services { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 12px; }
+
+    .account-service-tile {
+      display: flex;
+      width: 88px;
+      height: 80px;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #bec2ce;
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px 8px 6px;
+      color: #4a5a61;
+      cursor: pointer;
+    }
+
+    .account-service-tile__top { display: flex; align-items: flex-start; justify-content: space-between; }
+
+    .account-service-tile input {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      border: 1px solid #bec2ce;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .account-service-tile input:checked { border-color: #f96073; background: #f96073; }
+    .account-service-tile input:checked::after { display: block; color: #fff; content: "\f00c"; font-family: "Font Awesome 6 Pro"; font-size: 13px; font-weight: 900; line-height: 18px; text-align: center; }
+    .account-service-tile__icon { color: currentColor; font-size: 18px; line-height: 20px; }
+    .account-service-tile__label { overflow: hidden; font-size: 12px; font-weight: 400; letter-spacing: -.3px; line-height: 1.16; text-overflow: ellipsis; white-space: nowrap; }
+    .account-service-tile:has(input:checked) { border: 2px solid #f96073; padding: 7px 7px 5px; color: #f96073; }
+    .account-service-tile:focus-within { outline: 2px solid rgba(249, 96, 115, .3); outline-offset: 2px; }
+
+    .account-save-button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: #0ba825;
+      padding: 15px 24px;
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .account-save-button:disabled { cursor: not-allowed; opacity: .5; }
+
+    .account-save-button:not(:disabled) {
+      cursor: pointer;
+      box-shadow: inset 0 -4px 0 #07871e;
+    }
+
+    .account-save-button:not(:disabled):hover { background: #078f20; }
+    .account-save-button:not(:disabled):active { box-shadow: none; transform: translateY(3px); }
+
+    .account-save-success {
+      position: absolute;
+      right: 20px;
+      bottom: 16px;
+      left: 20px;
+      z-index: 3;
+      display: flex;
+      min-height: 64px;
+      align-items: flex-start;
+      gap: 8px;
+      border: 1px solid #7eea7c;
+      border-radius: 4px;
+      background: #eff9ef;
+      box-shadow: 0 24px 20px rgba(42, 53, 57, .2);
+      padding: 12px 12px 12px 8px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+      visibility: hidden;
+    }
+
+    .account-save-success.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: opacity .25s ease, transform .25s ease, visibility 0s;
+      visibility: visible;
+    }
+
+    .account-save-success__doodle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
+    }
+
+    .account-save-success__doodle-layer { position: absolute; }
+    .account-save-success__doodle-layer--2 { top: 14.33%; right: 10.28%; bottom: 14.69%; left: 13.35%; }
+    .account-save-success__doodle-layer--1 { top: 12.45%; right: 8.55%; bottom: 14.88%; left: 8.28%; }
+    .account-save-success__doodle-layer img { display: block; width: 100%; height: 100%; }
+
+    .account-save-success__message {
+      min-width: 0;
+      flex: 1 1 auto;
+      margin: 0;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -.2px;
+      line-height: 1.4;
+    }
+
+    .account-save-success__close {
+      position: relative;
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #8b91a3;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .account-save-success__close::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      content: '';
+      transform: translate(-50%, -50%);
+    }
+
+    .family-notifications-screen {
+      display: flex;
+      position: absolute;
+      z-index: 25;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-notifications-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .family-notifications-header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      height: 48px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 0 12px;
+    }
+
+    .family-notifications-header__back,
+    .family-notifications-header__placeholder {
+      display: inline-flex;
+      width: 52px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .family-notifications-header__back {
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .family-notifications-header__title {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -.05px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-notifications-header__title i { color: #f96073; font-size: 16px; }
+
+    .family-notifications-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+    }
+
+    .notification-settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      padding-top: 8px;
+    }
+
+    .notification-settings-group__title {
+      margin: 0;
+      padding: 0 2px;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .notification-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: #4a5a61;
+      font-size: 14px;
+      font-weight: 350;
+      letter-spacing: -.242px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .notification-option input {
+      appearance: none;
+      -webkit-appearance: none;
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      margin: 0;
+      border: 1px solid #bec2ce;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .notification-option input:checked { border-color: #f96073; background: #f96073; }
+    .notification-option input:checked::after { display: block; color: #fff; content: "\f00c"; font-family: "Font Awesome 6 Pro"; font-size: 13px; font-weight: 900; line-height: 18px; text-align: center; }
+    .notification-option input:focus-visible { outline: 0; box-shadow: 0 0 0 2px #cbdafc; }
+
+    .notification-save-bar {
+      display: flex;
+      flex: 0 0 auto;
+      border-top: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 4px 20px 12px;
+    }
+
+    .notification-save-button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: #0ba825;
+      padding: 15px 24px;
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .notification-save-button:disabled { cursor: not-allowed; opacity: .5; }
+    .notification-save-button:not(:disabled) { cursor: pointer; box-shadow: inset 0 -4px 0 #07871e; }
+    .notification-save-button:not(:disabled):hover { background: #078f20; }
+    .notification-save-button:not(:disabled):active { box-shadow: none; transform: translateY(3px); }
+
+    .family-billing-screen {
+      display: flex;
+      position: absolute;
+      z-index: 25;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-billing-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .family-billing-header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      height: 48px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 0 12px;
+    }
+
+    .family-billing-header__back,
+    .family-billing-header__placeholder {
+      display: inline-flex;
+      width: 52px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .family-billing-header__back {
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .family-billing-header__title {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -.05px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-billing-header__title i { color: #f96073; font-size: 16px; }
+
+    .family-billing-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+    }
+
+    .billing-vat-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .billing-vat-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .billing-vat-toggle__switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      flex: 0 0 48px;
+      border: 1px solid #bec2ce;
+      border-radius: 16px;
+      background: #fff;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .billing-vat-toggle__switch::after {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #bec2ce;
+      content: '';
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .billing-vat-toggle input:checked + .billing-vat-toggle__switch { border-color: #f96073; background: #f96073; }
+    .billing-vat-toggle input:checked + .billing-vat-toggle__switch::after { background: #fff; transform: translateX(24px); }
+    .billing-vat-toggle input:focus-visible + .billing-vat-toggle__switch { box-shadow: 0 0 0 2px #cbdafc; }
+    .billing-vat-toggle__help { color: #8b91a3; font-size: 14px; }
+
+    /* Referral follows the same right-hand panel transition as the other
+       profile settings, while its content remains independently scrollable. */
+    .family-credits-screen {
+      display: flex;
+      position: absolute;
+      z-index: 25;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-credits-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .family-credits-header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 52px minmax(0, 1fr) 52px;
+      align-items: center;
+      height: 48px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 0 12px;
+    }
+
+    .family-credits-header__back,
+    .family-credits-header__placeholder {
+      display: inline-flex;
+      width: 52px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .family-credits-header__back {
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .family-credits-header__title {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -.05px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-credits-header__title i { color: #f96073; font-size: 16px; }
+
+    .family-credits-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 20px;
+      background: #fff;
+    }
+
+    .family-credits-heading {
+      width: 100%;
+      margin: 0;
+      color: #212529;
+      font-size: 24px;
+      font-weight: 450;
+      letter-spacing: -.2px;
+      line-height: 1.32;
+    }
+
+    .credits-reward-card {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 0;
+      border: 1px solid #f96073;
+      border-radius: 8px;
+      background: linear-gradient(103deg, #ffd5da 0%, #fee7d1 100%);
+      box-shadow: 0 8px 24px -4px rgba(42, 53, 57, .2);
+      padding: 16px 16px 16px 8px;
+    }
+
+    .credits-reward-card__art {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      flex: 0 0 80px;
+    }
+
+    .credits-reward-card__gift {
+      position: absolute;
+      top: 24px;
+      left: 20px;
+      width: 44px;
+      height: 43px;
+      object-fit: contain;
+    }
+
+    .credits-reward-card__spark { position: absolute; display: block; }
+    .credits-reward-card__spark--left { top: 39px; left: 0; width: 18px; height: 18px; }
+    .credits-reward-card__spark--top { top: 0; left: 29px; width: 23px; height: 23px; }
+    .credits-reward-card__spark--middle { top: 14px; left: 9px; width: 18px; height: 18px; }
+
+    .credits-reward-card__content { min-width: 0; padding-bottom: 4px; }
+    .credits-reward-card__reward { display: flex; align-items: baseline; gap: 4px; margin: 0 0 2px; color: #212529; font-size: 18px; font-weight: 450; line-height: 1.32; }
+    .credits-reward-card__amount { background: linear-gradient(180deg, #fd8b25 0%, #f96073 100%); background-clip: text; -webkit-background-clip: text; color: transparent; font-size: 24px; font-weight: 700; letter-spacing: -.2px; }
+    .credits-reward-card__copy { margin: 0; color: #212529; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; }
+
+    .credits-share-button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 4px;
+      background: #f96073;
+      box-shadow: inset 0 -3px 0 #e6213a;
+      padding: 14px 24px 16px 20px;
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+      cursor: pointer;
+    }
+
+    .credits-share-button:hover { background: #e94e63; }
+    .credits-share-button:active { box-shadow: none; transform: translateY(3px); }
+    .credits-share-button i { margin-right: 8px; font-size: 14px; }
+
+    .family-credits-bottom { display: flex; width: 100%; flex-direction: column; gap: 16px; margin-top: auto; }
+    .family-credits-note { width: 100%; margin: 0; color: #4a5a61; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; text-align: center; }
+    .family-credits-divider { width: 100%; height: 1px; background: #e5e5ea; }
+    .family-credits-links { display: flex; align-items: center; justify-content: center; gap: 20px; color: #6c757d; font-size: 16px; line-height: 24px; }
+    .family-credits-links a, .family-credits-links__button { border: 0; background: transparent; padding: 0; color: inherit; font: inherit; opacity: .8; text-decoration: underline; text-decoration-color: #bec2ce; text-underline-offset: 2px; cursor: pointer; }
+    .family-credits-links a:hover, .family-credits-links__button:hover { opacity: 1; }
+    .family-credits-links__divider { width: 1px; height: 24px; background: #e5e5ea; }
+
+    .family-invites-screen {
+      display: flex;
+      position: absolute;
+      z-index: 26;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-invites-screen.is-open { transform: translate3d(0, 0, 0); transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s; visibility: visible; pointer-events: auto; }
+    .family-invites-header { display: grid; flex: 0 0 48px; grid-template-columns: 52px minmax(0, 1fr) 52px; align-items: center; height: 48px; border-bottom: 1px solid #e5e5ea; background: #fff; padding: 0 12px; }
+    .family-invites-header__back, .family-invites-header__placeholder { display: inline-flex; width: 52px; height: 32px; align-items: center; }
+    .family-invites-header__back { justify-content: flex-start; border: 0; background: transparent; padding: 0; color: #6c757d; font-size: 20px; cursor: pointer; }
+    .family-invites-header__title { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 8px; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 450; letter-spacing: -.05px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .family-invites-header__title i { color: #f96073; font-size: 16px; }
+    .family-invites-content { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; gap: 16px; overflow-y: auto; padding: 24px 20px 16px; background: #fff; }
+    .family-invites-heading { margin: 0; color: #212529; font-size: 24px; font-weight: 450; letter-spacing: -.2px; line-height: 1.32; }
+    .family-invites-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 4px 0; }
+    .family-invites-stat { display: flex; min-height: 96px; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #f96073; border-radius: 8px; background: linear-gradient(180deg, #ffd5da 0%, #fee7d1 100%); padding: 8px; text-align: center; }
+    .family-invites-stat strong { color: #f96073; font-size: 24px; font-weight: 700; letter-spacing: -.2px; line-height: 1; }
+    .family-invites-stat strong span { margin-left: 3px; color: #f96073; font-size: 14px; font-weight: 450; }
+    .family-invites-stat span { color: #212529; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; }
+    .family-invites-list { display: flex; flex-direction: column; width: 100%; }
+    .family-invites-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 57px; border-bottom: 1px solid #e5e5ea; padding: 10px; }
+    .family-invites-row__avatar { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 1px solid #ff9ba7; border-radius: 50%; background: #feecee; color: #f96073; font-size: 14px; font-weight: 400; }
+    .family-invites-row__avatar--pending { border-color: #ffa945; background: #fff1e5; color: #fd8b25; font-size: 12px; }
+    .family-invites-row__details { min-width: 0; }
+    .family-invites-row__name, .family-invites-row__copy { overflow: hidden; margin: 0; text-overflow: ellipsis; white-space: nowrap; }
+    .family-invites-row__name { color: #212529; font-size: 14px; font-weight: 450; line-height: 1.25; }
+    .family-invites-row__copy { color: #6c757d; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; }
+    .family-invites-row__status { display: flex; flex-direction: column; align-items: flex-end; min-width: 0; white-space: nowrap; }
+    .family-invites-row__status strong { color: #212529; font-size: 14px; font-weight: 700; line-height: 1.25; }
+    .family-invites-row__status span { color: #6c757d; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; }
+    .family-invites-row__status .family-invites-row__pending { color: #ed7000; font-weight: 400; letter-spacing: 0; }
+    .family-invites-row__pending { border-radius: 64px; background: #fff1e5; padding: 2px 8px; color: #ed7000; font-size: 12px; font-weight: 400; line-height: 1.4; }
+    .family-invites-share-bar { display: flex; flex: 0 0 auto; background: #fff; padding: 4px 20px 12px; }
+    .family-invites-share-button { width: 100%; min-height: 52px; border: 0; border-radius: 4px; background: #f96073; box-shadow: inset 0 -3px 0 #e6213a; padding: 14px 24px 16px 20px; color: #fff; font: inherit; font-size: 16px; font-weight: 450; line-height: 22px; cursor: pointer; }
+    .family-invites-share-button i { margin-right: 8px; font-size: 14px; }
+    .family-invites-share-button:hover { background: #e94e63; }
+    .family-invites-share-button:active { box-shadow: none; transform: translateY(3px); }
+
+    .family-referral-how-screen {
+      display: flex;
+      position: absolute;
+      z-index: 27;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .family-referral-how-screen.is-open { transform: translate3d(0, 0, 0); transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s; visibility: visible; pointer-events: auto; }
+    .family-referral-how-header { display: grid; flex: 0 0 48px; grid-template-columns: 52px minmax(0, 1fr) 52px; align-items: center; height: 48px; border-bottom: 1px solid #e5e5ea; background: #fff; padding: 0 12px; }
+    .family-referral-how-header__back, .family-referral-how-header__placeholder { display: inline-flex; width: 52px; height: 32px; align-items: center; }
+    .family-referral-how-header__back { justify-content: flex-start; border: 0; background: transparent; padding: 0; color: #6c757d; font-size: 20px; cursor: pointer; }
+    .family-referral-how-header__title { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 8px; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 450; letter-spacing: -.05px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .family-referral-how-header__title i { color: #f96073; font-size: 16px; }
+    .family-referral-how-content { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; gap: 16px; overflow-y: auto; padding: 24px 20px 16px; background: #fff; }
+    .family-referral-how-heading { margin: 0; color: #212529; font-size: 24px; font-weight: 450; letter-spacing: -.2px; line-height: 1.32; }
+    .family-referral-how-steps { display: flex; width: 100%; flex-direction: column; align-items: stretch; padding: 8px 0; }
+    .family-referral-how-step { display: flex; min-height: 64px; align-items: center; gap: 12px; border: 1px solid #f96073; border-radius: 8px; background: linear-gradient(100deg, #ffd5da 0%, #fee7d1 100%); padding: 8px; }
+    .family-referral-how-step__doodle { position: relative; display: inline-flex; width: 48px; height: 48px; flex: 0 0 48px; align-items: center; justify-content: center; color: #f96073; font-size: 26px; }
+    .family-referral-how-step__doodle img { display: block; width: 48px; height: 48px; object-fit: contain; }
+    .family-referral-how-step p { margin: 0; color: #212529; font-size: 16px; font-weight: 400; letter-spacing: -.24px; line-height: 1.5; }
+    .family-referral-how-connector { display: block; width: 1px; height: 12px; margin-left: 32px; background: #f96073; }
+    .family-referral-how-note { margin: 20px 0 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 1.5; }
+    .family-referral-how-share-bar { display: flex; flex: 0 0 auto; background: #fff; padding: 4px 20px 12px; }
+    .family-referral-how-share-button { width: 100%; min-height: 52px; border: 0; border-radius: 4px; background: #f96073; box-shadow: inset 0 -3px 0 #e6213a; padding: 14px 24px 16px 20px; color: #fff; font: inherit; font-size: 16px; font-weight: 450; line-height: 22px; cursor: pointer; }
+    .family-referral-how-share-button i { margin-right: 8px; font-size: 14px; }
+    .family-referral-how-share-button:hover { background: #e94e63; }
+    .family-referral-how-share-button:active { box-shadow: none; transform: translateY(3px); }
 
     /* Figma: Mobile App Bottom Navbar - Family and Household */
     .mobile-bottom-nav {
@@ -2987,6 +3937,32 @@
       transform: translateY(0);
     }
 
+    .referral-share-sheet { position: absolute; inset: 0; z-index: 40; display: flex; align-items: flex-end; pointer-events: none; }
+    .referral-share-sheet__backdrop { position: absolute; inset: 0; border: 0; background: rgba(42, 53, 57, .8); cursor: pointer; opacity: 0; transition: opacity .24s ease; }
+    .referral-share-sheet__panel { position: relative; z-index: 1; display: flex; width: 100%; flex-direction: column; border: 1px solid #e5e5ea; border-bottom: 0; border-radius: 12px 12px 0 0; background: #fff; padding: 9px 0 33px; transform: translateY(100%); transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
+    .referral-share-sheet__handle { width: 135px; height: 5px; margin: 0 auto 29px; border-radius: 999px; background: #2a3539; }
+    .referral-share-sheet__content { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+    .referral-share-sheet__heading { display: flex; align-items: flex-start; gap: 8px; }
+    .referral-share-sheet__doodle { position: relative; width: 42px; height: 42px; flex: 0 0 42px; overflow: hidden; }
+    .referral-share-sheet__doodle img { position: absolute; display: block; }
+    .referral-share-sheet__doodle .referral-share-sheet__doodle-layer--2 { top: 13.67%; right: 9.75%; bottom: 25%; left: 13.28%; width: 76.97%; height: 61.33%; }
+    .referral-share-sheet__doodle .referral-share-sheet__doodle-layer--3 { top: 18.47%; right: 27.31%; bottom: 16.41%; left: 10.85%; width: 61.84%; height: 65.12%; }
+    .referral-share-sheet__doodle .referral-share-sheet__doodle-layer--1 { top: 7.33%; right: 11.56%; bottom: 10.85%; left: 6.68%; width: 81.76%; height: 81.82%; }
+    .referral-share-sheet__title { margin: 4px 0 0; color: #2a3539; font-size: 24px; font-weight: 450; letter-spacing: -.2px; line-height: 1.32; }
+    .referral-share-sheet__label { margin: 0 0 8px; color: #2a3539; font-size: 16px; font-weight: 450; line-height: 1.4; }
+    .referral-share-sheet__preview { box-sizing: border-box; display: block; width: 100%; height: 106px; resize: none; border: 1px solid #e5e5ea; border-radius: 4px; outline: 0; background: #fff; padding: 10px 16px; color: #2a3539; font: inherit; font-size: 16px; font-weight: 350; letter-spacing: -.16px; line-height: 1.32; }
+    .referral-share-sheet__options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .referral-share-sheet__option { display: flex; min-height: 80px; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; padding: 8px; color: #2a3539; font: inherit; font-size: 16px; font-weight: 450; line-height: 1.4; cursor: pointer; }
+    .referral-share-sheet__option i { font-size: 20px; line-height: 20px; }
+    .referral-share-sheet__option--whatsapp i { color: #0ba825; }
+    .referral-share-sheet__option--messenger i { color: #1682ff; }
+    .referral-share-sheet__option--more i { color: #8b91a3; font-size: 21px; letter-spacing: 2px; }
+    .referral-share-sheet__option:hover { background: #f7f7f7; }
+    .referral-share-sheet__option:active { box-shadow: none; transform: translateY(3px); }
+    .referral-share-sheet.is-open { pointer-events: auto; }
+    .referral-share-sheet.is-open .referral-share-sheet__backdrop { opacity: 1; }
+    .referral-share-sheet.is-open .referral-share-sheet__panel { transform: translateY(0); }
+
     .hl-live .searches-page-header-component {
       padding: 0;
       width: 100%;
@@ -4622,6 +5598,12 @@
       .status-bar { display: none; }
       .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
       .family-profile-screen { top: 0; }
+      .family-account-screen { top: 0; }
+      .family-notifications-screen { top: 0; }
+      .family-billing-screen { top: 0; }
+      .family-credits-screen { top: 0; }
+      .family-invites-screen { top: 0; }
+      .family-referral-how-screen { top: 0; }
       .message-detail-screen { top: 0; }
       .app-placeholder-screen { top: 48px; }
       .favourites-screen { top: 48px; }
@@ -5179,14 +6161,181 @@
           </div>
         </div>
         <div class="family-profile-settings" aria-label="Profile settings">
-          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Basic information</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Notifications</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-receipt" aria-hidden="true"></i><span>Billing information</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-gift" aria-hidden="true"></i><span>Get credits</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="familyProfileAccountTrigger" type="button"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Account</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="familyProfileNotificationsTrigger" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Notifications</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="familyProfileBillingTrigger" type="button"><i class="fa-light fa-receipt" aria-hidden="true"></i><span>Billing information</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="familyProfileCreditsTrigger" type="button"><i class="fa-light fa-gift" aria-hidden="true"></i><span>Get credits</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
           <button class="family-profile-settings__item" type="button"><i class="fa-light fa-star" aria-hidden="true"></i><span>Membership</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
         </div>
-        <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i>Log out</button>
+        <div class="family-profile-actions">
+          <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button>
+        </div>
       </div>
+    </section>
+    <section class="family-account-screen" id="familyAccountScreen" aria-label="Basic information" aria-hidden="true">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="familyAccountBack" type="button" aria-label="Back to profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Account</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="family-account-content" id="familyAccountForm">
+        <section class="account-photo-panel" aria-label="Profile photo">
+          <p class="account-photo-panel__label">Profile photo</p>
+          <img class="account-photo-panel__avatar" src="./assets/mobile-app-header-avatar.png" alt="Alice Nováková">
+          <div class="account-photo-panel__actions">
+            <button class="account-upload-button" type="button" data-account-change><i class="fa-regular fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload photo</button>
+            <button class="account-remove-photo" type="button" data-account-change><i class="fa-regular fa-trash-can" aria-hidden="true"></i>Remove photo</button>
+          </div>
+        </section>
+        <label class="account-field"><span class="account-field__label">Full name</span><input class="account-field__input" type="text" value="Alice Nováková" autocomplete="name"></label>
+        <label class="account-field"><span class="account-field__label">E-mail</span><input class="account-field__input" type="email" value="alice.novakova@example.com" autocomplete="email"></label>
+        <button class="account-manage-login" type="button"><i class="fa-regular fa-gear" aria-hidden="true"></i>Manage password &amp; login settings</button>
+        <label class="account-field"><span class="account-field__label account-field__label--with-badge">Phone number <span class="account-field__confirmation"><i class="fa-solid fa-check" aria-hidden="true"></i>confirmed</span></span><span class="account-phone-field"><span class="account-phone-field__prefix" aria-hidden="true">🇨🇿 <span>(+420)</span><i class="fa-solid fa-caret-down"></i></span><input class="account-field__input" type="tel" value="777 123 456" autocomplete="tel"></span></label>
+        <label class="account-field"><span class="account-field__label">Interface language</span><select class="account-field__select"><option>English</option><option>Čeština</option><option>Slovenčina</option></select></label>
+        <section class="account-field" aria-labelledby="accountPreferredServices"><span class="account-field__label" id="accountPreferredServices">Preferred services</span><div class="account-services">
+          <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox" checked><i class="account-service-tile__icon fa-light fa-child-reaching" aria-hidden="true"></i></span><span class="account-service-tile__label">Babysitting</span></label>
+          <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox"><i class="account-service-tile__icon fa-light fa-broom" aria-hidden="true"></i></span><span class="account-service-tile__label">Household cleaning</span></label>
+          <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox"><i class="account-service-tile__icon fa-light fa-paw" aria-hidden="true"></i></span><span class="account-service-tile__label">Pet care</span></label>
+          <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox"><i class="account-service-tile__icon fa-light fa-person-walking-with-cane" aria-hidden="true"></i></span><span class="account-service-tile__label">Senior care</span></label>
+          <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox"><i class="account-service-tile__icon fa-light fa-user-graduate" aria-hidden="true"></i></span><span class="account-service-tile__label">Tutoring</span></label>
+        </div></section>
+      </form>
+      <footer class="account-save-bar" id="familyAccountSaveBar" aria-hidden="true">
+        <button class="account-save-button" id="familyAccountSaveButton" type="submit" form="familyAccountForm" disabled>Save changes</button>
+      </footer>
+      <aside class="account-save-success" id="familyAccountSaveSuccess" role="status" aria-live="polite" aria-hidden="true">
+        <div class="account-save-success__doodle" aria-hidden="true">
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div>
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <p class="account-save-success__message">Your configuration updates are saved</p>
+        <button class="account-save-success__close" id="familyAccountSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </aside>
+    </section>
+    <section class="family-notifications-screen" id="familyNotificationsScreen" aria-label="Notifications" aria-hidden="true">
+      <header class="family-notifications-header">
+        <button class="family-notifications-header__back" id="familyNotificationsBack" type="button" aria-label="Back to profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-notifications-header__title"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Notifications</span></div>
+        <div class="family-notifications-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="family-notifications-content" id="familyNotificationsForm">
+        <section class="notification-settings-group" aria-labelledby="emailNotificationsSettings"><h2 class="notification-settings-group__title" id="emailNotificationsSettings">Email notifications settings</h2>
+          <label class="notification-option"><input type="checkbox" checked><span>When sitter send me a new message</span></label>
+          <label class="notification-option"><input type="checkbox" checked><span>Tips and tricks how to get maximum from Hlídačky.cz platform</span></label>
+          <label class="notification-option"><input type="checkbox" checked><span>Monthly dose of inspiration in topics tailored to your interests 👶 🧹 🐶</span></label>
+          <label class="notification-option"><input type="checkbox" checked><span>Exclusive discounts and offers from Hlídačky.cz and our partners</span></label>
+        </section>
+      </form>
+      <footer class="notification-save-bar"><button class="notification-save-button" id="familyNotificationsSaveButton" type="submit" form="familyNotificationsForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="familyNotificationsSaveSuccess" role="status" aria-live="polite" aria-hidden="true">
+        <div class="account-save-success__doodle" aria-hidden="true">
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div>
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <p class="account-save-success__message">Your configuration updates are saved</p>
+        <button class="account-save-success__close" id="familyNotificationsSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </aside>
+    </section>
+    <section class="family-billing-screen" id="familyBillingScreen" aria-label="Billing information" aria-hidden="true">
+      <header class="family-billing-header">
+        <button class="family-billing-header__back" id="familyBillingBack" type="button" aria-label="Back to profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-billing-header__title"><i class="fa-light fa-receipt" aria-hidden="true"></i><span>Billing information</span></div>
+        <div class="family-billing-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="family-billing-content" id="familyBillingForm">
+        <label class="account-field"><span class="account-field__label">Name</span><input class="account-field__input" type="text" placeholder="Start typing your name or Identification number" autocomplete="organization"></label>
+        <label class="account-field"><span class="account-field__label">Business Identification Number</span><input class="account-field__input" type="text" placeholder="e.g. 01756117" inputmode="numeric"></label>
+        <label class="account-field"><span class="account-field__label">VAT ID</span><input class="account-field__input" type="text" placeholder="e.g. CZ27767680"></label>
+        <label class="account-field"><span class="account-field__label">Address</span><input class="account-field__input" type="text" placeholder="e.g. Americká 362/11, 120 00 Praha" autocomplete="street-address"></label>
+        <label class="billing-vat-toggle"><input type="checkbox"><span class="billing-vat-toggle__switch" aria-hidden="true"></span><span>VAT Payer</span><i class="billing-vat-toggle__help fa-regular fa-circle-question" aria-hidden="true"></i></label>
+      </form>
+      <footer class="notification-save-bar"><button class="notification-save-button" id="familyBillingSaveButton" type="submit" form="familyBillingForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="familyBillingSaveSuccess" role="status" aria-live="polite" aria-hidden="true">
+        <div class="account-save-success__doodle" aria-hidden="true">
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div>
+          <div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <p class="account-save-success__message">Your configuration updates are saved</p>
+        <button class="account-save-success__close" id="familyBillingSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </aside>
+    </section>
+    <section class="family-credits-screen" id="familyCreditsScreen" aria-label="Get credits" aria-hidden="true" data-node-id="2010:1305">
+      <header class="family-credits-header">
+        <button class="family-credits-header__back" id="familyCreditsBack" type="button" aria-label="Back to profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-credits-header__title"><i class="fa-light fa-gift" aria-hidden="true"></i><span>Get credits</span></div>
+        <div class="family-credits-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="family-credits-content">
+        <h1 class="family-credits-heading">Invite friends to Hlídačky.cz</h1>
+        <section class="credits-reward-card" aria-label="Referral reward">
+          <div class="credits-reward-card__art" aria-hidden="true">
+            <img class="credits-reward-card__gift" src="./assets/referral-gift.png" alt="">
+            <img class="credits-reward-card__spark credits-reward-card__spark--left" src="./assets/referral-confetti-left.svg" alt="">
+            <img class="credits-reward-card__spark credits-reward-card__spark--top" src="./assets/referral-confetti-top.svg" alt="">
+            <img class="credits-reward-card__spark credits-reward-card__spark--middle" src="./assets/referral-confetti-middle.svg" alt="">
+          </div>
+          <div class="credits-reward-card__content">
+            <p class="credits-reward-card__reward"><span>Get</span><span class="credits-reward-card__amount">200 Kč</span><span>in credits</span></p>
+            <p class="credits-reward-card__copy">for each friend who joins Hlídačky.cz and buys a membership. Your friends will get a reward too!</p>
+          </div>
+        </section>
+        <div class="family-credits-bottom">
+          <button class="credits-share-button" id="familyCreditsShare" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Share your invite</button>
+          <p class="family-credits-note">You can earn up to 10 000 Kč in total. Each credit is valid for 3 months from the day you receive it and can be used when paying for bookings online.</p>
+          <div class="family-credits-divider" aria-hidden="true"></div>
+          <nav class="family-credits-links" aria-label="Referral information"><button class="family-credits-links__button" id="familyCreditsInvitesTrigger" type="button">Your invites</button><span class="family-credits-links__divider" aria-hidden="true"></span><button class="family-credits-links__button" id="familyCreditsHowItWorksTrigger" type="button">How it works</button></nav>
+        </div>
+      </main>
+    </section>
+    <section class="family-invites-screen" id="familyInvitesScreen" aria-label="Your invites" aria-hidden="true" data-node-id="2010:1511">
+      <header class="family-invites-header">
+        <button class="family-invites-header__back" id="familyInvitesBack" type="button" aria-label="Back to get credits"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-invites-header__title"><i class="fa-regular fa-paper-plane" aria-hidden="true"></i><span>Your invites</span></div>
+        <div class="family-invites-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="family-invites-content">
+        <h1 class="family-invites-heading">Your invites</h1>
+        <section class="family-invites-stats" aria-label="Invite statistics">
+          <div class="family-invites-stat"><strong>4</strong><span>invited</span></div>
+          <div class="family-invites-stat"><strong>3</strong><span>joined</span></div>
+          <div class="family-invites-stat"><strong>600<span>Kč</span></strong><span>earned</span></div>
+        </section>
+        <section class="family-invites-list" aria-label="Invited friends">
+          <article class="family-invites-row"><span class="family-invites-row__avatar family-invites-row__avatar--pending"><i class="fa-regular fa-paper-plane" aria-hidden="true"></i></span><div class="family-invites-row__details"><p class="family-invites-row__name">zuzana.horvathova@example.com</p><p class="family-invites-row__copy">Invited 3 days ago</p></div><div class="family-invites-row__status"><span class="family-invites-row__pending">Waiting to join</span></div></article>
+          <article class="family-invites-row"><span class="family-invites-row__avatar">KN</span><div class="family-invites-row__details"><p class="family-invites-row__name">Kateřina Málková</p><p class="family-invites-row__copy">Joined and bought membership</p></div><div class="family-invites-row__status"><strong>+200 Kč</strong><span>valid until 15 Oct.</span></div></article>
+          <article class="family-invites-row"><span class="family-invites-row__avatar">MV</span><div class="family-invites-row__details"><p class="family-invites-row__name">Martin Vachoušek</p><p class="family-invites-row__copy">Joined and bought membership</p></div><div class="family-invites-row__status"><strong>+200 Kč</strong><span>valid until 2 Sep.</span></div></article>
+          <article class="family-invites-row"><span class="family-invites-row__avatar">PS</span><div class="family-invites-row__details"><p class="family-invites-row__name">Pavlína Satoranská</p><p class="family-invites-row__copy">Joined and bought membership</p></div><div class="family-invites-row__status"><strong>+200 Kč</strong><span>already used</span></div></article>
+        </section>
+      </main>
+      <footer class="family-invites-share-bar"><button class="family-invites-share-button" id="familyInvitesShare" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Share your invite</button></footer>
+    </section>
+    <section class="family-referral-how-screen" id="familyReferralHowScreen" aria-label="How it works" aria-hidden="true" data-node-id="2011:11752">
+      <header class="family-referral-how-header">
+        <button class="family-referral-how-header__back" id="familyReferralHowBack" type="button" aria-label="Back to get credits"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-referral-how-header__title"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>How it works</span></div>
+        <div class="family-referral-how-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="family-referral-how-content">
+        <h1 class="family-referral-how-heading">How it works</h1>
+        <section class="family-referral-how-steps" aria-label="Referral steps">
+          <article class="family-referral-how-step">
+            <span class="family-referral-how-step__doodle" aria-hidden="true"><img src="./assets/referral-how-step-1.svg" alt=""></span>
+            <p>Send your invite link</p>
+          </article>
+          <span class="family-referral-how-connector" aria-hidden="true"></span>
+          <article class="family-referral-how-step">
+            <span class="family-referral-how-step__doodle" aria-hidden="true"><img src="./assets/referral-how-step-2.svg" alt=""></span>
+            <p>Friend joins &amp; buys a membership</p>
+          </article>
+          <span class="family-referral-how-connector" aria-hidden="true"></span>
+          <article class="family-referral-how-step">
+            <span class="family-referral-how-step__doodle" aria-hidden="true"><img src="./assets/referral-how-step-3.svg" alt=""></span>
+            <p>You both get 200 Kč</p>
+          </article>
+          <p class="family-referral-how-note">*You can earn up to 10 000 Kč in total. Each credit is valid for 3 months from the day you receive it and can be used when paying for bookings online.</p>
+        </section>
+      </main>
+      <footer class="family-referral-how-share-bar"><button class="family-referral-how-share-button" id="familyReferralHowShare" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Share your invite</button></footer>
     </section>
     <section class="search-filters-screen" id="searchFiltersScreen" role="dialog" aria-modal="true" aria-labelledby="searchFiltersTitle" aria-hidden="true">
       <header class="search-filters-screen__header">
@@ -5399,6 +6548,31 @@
         </div>
       </section>
     </div>
+    <div class="referral-share-sheet" id="referralShareSheet" aria-hidden="true">
+      <button class="referral-share-sheet__backdrop" id="referralShareBackdrop" type="button" aria-label="Close share invite"></button>
+      <section class="referral-share-sheet__panel" id="referralShareDialog" role="dialog" aria-modal="true" aria-label="Share your invite" tabindex="-1">
+        <div class="referral-share-sheet__handle" aria-hidden="true"></div>
+        <div class="referral-share-sheet__content">
+          <header class="referral-share-sheet__heading">
+            <div class="referral-share-sheet__doodle" aria-hidden="true">
+              <img class="referral-share-sheet__doodle-layer--2" src="./assets/referral-share-doodle-layer-2.svg" alt="">
+              <img class="referral-share-sheet__doodle-layer--3" src="./assets/referral-share-doodle-layer-3.svg" alt="">
+              <img class="referral-share-sheet__doodle-layer--1" src="./assets/referral-share-doodle-layer-1.svg" alt="">
+            </div>
+            <h2 class="referral-share-sheet__title">Share your invite</h2>
+          </header>
+          <section aria-labelledby="referralSharePreviewLabel">
+            <p class="referral-share-sheet__label" id="referralSharePreviewLabel">Your message preview</p>
+            <textarea class="referral-share-sheet__preview" readonly>Hi! I'm using Hlídačky to find babysitters. Join with my link and we both get 200 Kč in credits 💖&#10;hlidacky.cz/invite/user123</textarea>
+          </section>
+          <div class="referral-share-sheet__options" aria-label="Share options">
+            <button class="referral-share-sheet__option referral-share-sheet__option--whatsapp" type="button" data-referral-share="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></button>
+            <button class="referral-share-sheet__option referral-share-sheet__option--messenger" type="button" data-referral-share="Messenger"><i class="fa-brands fa-facebook-messenger" aria-hidden="true"></i><span>Messenger</span></button>
+            <button class="referral-share-sheet__option referral-share-sheet__option--more" type="button" data-referral-share="More"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>
+          </div>
+        </div>
+      </section>
+    </div>
     <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
       <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
       <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
@@ -5601,6 +6775,10 @@
       var loginSheetBackdrop = document.getElementById('loginSheetBackdrop');
       var loginSheetDialog = document.getElementById('loginSheetDialog');
       var loginActions = Array.prototype.slice.call(document.querySelectorAll('.login-bottom-sheet__sso-button, .login-bottom-sheet__continue'));
+      var referralShareSheet = document.getElementById('referralShareSheet');
+      var referralShareBackdrop = document.getElementById('referralShareBackdrop');
+      var referralShareDialog = document.getElementById('referralShareDialog');
+      var referralShareOptions = Array.prototype.slice.call(document.querySelectorAll('[data-referral-share]'));
       var welcomeAlert = document.getElementById('welcomeAlert');
       var welcomeAlertClose = document.getElementById('welcomeAlertClose');
       var logoutSuccessAlert = document.getElementById('logoutSuccessAlert');
@@ -5612,6 +6790,42 @@
       var familyProfileScreen = document.getElementById('familyProfileScreen');
       var familyProfileBack = document.getElementById('familyProfileBack');
       var familyProfileLogout = document.getElementById('familyProfileLogout');
+      var familyProfileAccountTrigger = document.getElementById('familyProfileAccountTrigger');
+      var familyAccountScreen = document.getElementById('familyAccountScreen');
+      var familyAccountBack = document.getElementById('familyAccountBack');
+      var familyAccountForm = document.getElementById('familyAccountForm');
+      var familyAccountSaveBar = document.getElementById('familyAccountSaveBar');
+      var familyAccountSaveButton = document.getElementById('familyAccountSaveButton');
+      var familyAccountChangeActions = Array.prototype.slice.call(document.querySelectorAll('[data-account-change]'));
+      var familyAccountSaveSuccess = document.getElementById('familyAccountSaveSuccess');
+      var familyAccountSaveSuccessClose = document.getElementById('familyAccountSaveSuccessClose');
+      var familyProfileNotificationsTrigger = document.getElementById('familyProfileNotificationsTrigger');
+      var familyNotificationsScreen = document.getElementById('familyNotificationsScreen');
+      var familyNotificationsBack = document.getElementById('familyNotificationsBack');
+      var familyNotificationsForm = document.getElementById('familyNotificationsForm');
+      var familyNotificationsSaveButton = document.getElementById('familyNotificationsSaveButton');
+      var familyNotificationsSaveSuccess = document.getElementById('familyNotificationsSaveSuccess');
+      var familyNotificationsSaveSuccessClose = document.getElementById('familyNotificationsSaveSuccessClose');
+      var familyProfileBillingTrigger = document.getElementById('familyProfileBillingTrigger');
+      var familyBillingScreen = document.getElementById('familyBillingScreen');
+      var familyBillingBack = document.getElementById('familyBillingBack');
+      var familyBillingForm = document.getElementById('familyBillingForm');
+      var familyBillingSaveButton = document.getElementById('familyBillingSaveButton');
+      var familyBillingSaveSuccess = document.getElementById('familyBillingSaveSuccess');
+      var familyBillingSaveSuccessClose = document.getElementById('familyBillingSaveSuccessClose');
+      var familyProfileCreditsTrigger = document.getElementById('familyProfileCreditsTrigger');
+      var familyCreditsScreen = document.getElementById('familyCreditsScreen');
+      var familyCreditsBack = document.getElementById('familyCreditsBack');
+      var familyCreditsShare = document.getElementById('familyCreditsShare');
+      var familyCreditsInvitesTrigger = document.getElementById('familyCreditsInvitesTrigger');
+      var familyCreditsHowItWorksTrigger = document.getElementById('familyCreditsHowItWorksTrigger');
+      var familyInvitesScreen = document.getElementById('familyInvitesScreen');
+      var familyInvitesBack = document.getElementById('familyInvitesBack');
+      var familyInvitesShare = document.getElementById('familyInvitesShare');
+      var familyReferralHowScreen = document.getElementById('familyReferralHowScreen');
+      var familyReferralHowBack = document.getElementById('familyReferralHowBack');
+      var familyReferralHowShare = document.getElementById('familyReferralHowShare');
+      var referralShareTrigger = null;
       var locationInput = document.getElementById('locationInput');
       var locationPinIcon = document.getElementById('locationPinIcon');
       var locationSearchIcon = document.getElementById('locationSearchIcon');
@@ -5653,6 +6867,9 @@
       var logoutSuccessTimer = null;
       var welcomeAlertHideTimer = null;
       var logoutAlertHideTimer = null;
+      var accountSaveSuccessTimer = null;
+      var notificationsSaveSuccessTimer = null;
+      var billingSaveSuccessTimer = null;
       var dropdownBlurTimeout = null;
       var pageScrollPositionBeforeFilters = 0;
       var selectedLocation = '';
@@ -6482,6 +7699,23 @@
         syncBackEntry();
       }
 
+      function openReferralShareSheet(trigger) {
+        referralShareTrigger = trigger || familyCreditsShare;
+        referralShareSheet.classList.add('is-open');
+        referralShareSheet.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(referralShareSheet);
+        referralShareDialog.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeReferralShareSheet(restoreFocus) {
+        referralShareSheet.classList.remove('is-open');
+        referralShareSheet.setAttribute('aria-hidden', 'true');
+        setBackgroundInert(null);
+        if (restoreFocus !== false && referralShareTrigger) referralShareTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
       function setActiveNavItem(screen) {
         navItems.forEach(function (item) {
           var isActive = item.getAttribute('data-app-screen') === screen;
@@ -6594,6 +7828,22 @@
         currentAppScreen = screen;
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
+        familyAccountScreen.classList.remove('is-open');
+        familyAccountScreen.setAttribute('aria-hidden', 'true');
+        hideFamilyAccountSaveSuccess();
+        familyNotificationsScreen.classList.remove('is-open');
+        familyNotificationsScreen.setAttribute('aria-hidden', 'true');
+        hideFamilyNotificationsSaveSuccess();
+        familyBillingScreen.classList.remove('is-open');
+        familyBillingScreen.setAttribute('aria-hidden', 'true');
+        hideFamilyBillingSaveSuccess();
+        familyCreditsScreen.classList.remove('is-open');
+        familyCreditsScreen.setAttribute('aria-hidden', 'true');
+        familyInvitesScreen.classList.remove('is-open');
+        familyInvitesScreen.setAttribute('aria-hidden', 'true');
+        familyReferralHowScreen.classList.remove('is-open');
+        familyReferralHowScreen.setAttribute('aria-hidden', 'true');
+        closeReferralShareSheet(false);
         messageDetailScreen.classList.remove('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'true');
         if (screen === 'messages') clearMessagesBadge();
@@ -6731,9 +7981,184 @@
       }
 
       function closeFamilyProfile() {
+        hideFamilyAccountSaveSuccess();
+        familyAccountScreen.classList.remove('is-open');
+        familyAccountScreen.setAttribute('aria-hidden', 'true');
+        familyNotificationsScreen.classList.remove('is-open');
+        familyNotificationsScreen.setAttribute('aria-hidden', 'true');
+        hideFamilyNotificationsSaveSuccess();
+        familyBillingScreen.classList.remove('is-open');
+        familyBillingScreen.setAttribute('aria-hidden', 'true');
+        hideFamilyBillingSaveSuccess();
+        familyCreditsScreen.classList.remove('is-open');
+        familyCreditsScreen.setAttribute('aria-hidden', 'true');
+        familyInvitesScreen.classList.remove('is-open');
+        familyInvitesScreen.setAttribute('aria-hidden', 'true');
+        familyReferralHowScreen.classList.remove('is-open');
+        familyReferralHowScreen.setAttribute('aria-hidden', 'true');
+        closeReferralShareSheet(false);
         familyProfileScreen.classList.remove('is-open');
         setActiveNavItem(currentAppScreen);
         loginTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openFamilyAccount() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyAccountScreen.classList.add('is-open');
+        familyAccountScreen.setAttribute('aria-hidden', 'false');
+        familyAccountBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyAccount() {
+        hideFamilyAccountSaveSuccess();
+        familyAccountScreen.classList.remove('is-open');
+        familyAccountScreen.setAttribute('aria-hidden', 'true');
+        familyProfileAccountTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setFamilyAccountDirty(isDirty) {
+        familyAccountScreen.classList.toggle('is-dirty', isDirty);
+        familyAccountSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        familyAccountSaveButton.disabled = !isDirty;
+      }
+
+      function hideFamilyAccountSaveSuccess() {
+        if (accountSaveSuccessTimer) {
+          clearTimeout(accountSaveSuccessTimer);
+          accountSaveSuccessTimer = null;
+        }
+        familyAccountSaveSuccess.classList.remove('is-visible');
+        familyAccountSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showFamilyAccountSaveSuccess() {
+        hideFamilyAccountSaveSuccess();
+        familyAccountSaveSuccess.classList.add('is-visible');
+        familyAccountSaveSuccess.setAttribute('aria-hidden', 'false');
+        accountSaveSuccessTimer = setTimeout(hideFamilyAccountSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openFamilyNotifications() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyNotificationsScreen.classList.add('is-open');
+        familyNotificationsScreen.setAttribute('aria-hidden', 'false');
+        familyNotificationsBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyNotifications() {
+        hideFamilyNotificationsSaveSuccess();
+        familyNotificationsScreen.classList.remove('is-open');
+        familyNotificationsScreen.setAttribute('aria-hidden', 'true');
+        familyProfileNotificationsTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setFamilyNotificationsDirty(isDirty) {
+        familyNotificationsSaveButton.disabled = !isDirty;
+      }
+
+      function hideFamilyNotificationsSaveSuccess() {
+        if (notificationsSaveSuccessTimer) {
+          clearTimeout(notificationsSaveSuccessTimer);
+          notificationsSaveSuccessTimer = null;
+        }
+        familyNotificationsSaveSuccess.classList.remove('is-visible');
+        familyNotificationsSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showFamilyNotificationsSaveSuccess() {
+        hideFamilyNotificationsSaveSuccess();
+        familyNotificationsSaveSuccess.classList.add('is-visible');
+        familyNotificationsSaveSuccess.setAttribute('aria-hidden', 'false');
+        notificationsSaveSuccessTimer = setTimeout(hideFamilyNotificationsSaveSuccess, 3000);
+      }
+
+      function openFamilyBilling() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyBillingScreen.classList.add('is-open');
+        familyBillingScreen.setAttribute('aria-hidden', 'false');
+        familyBillingBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyBilling() {
+        hideFamilyBillingSaveSuccess();
+        familyBillingScreen.classList.remove('is-open');
+        familyBillingScreen.setAttribute('aria-hidden', 'true');
+        familyProfileBillingTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setFamilyBillingDirty(isDirty) {
+        familyBillingSaveButton.disabled = !isDirty;
+      }
+
+      function hideFamilyBillingSaveSuccess() {
+        if (billingSaveSuccessTimer) {
+          clearTimeout(billingSaveSuccessTimer);
+          billingSaveSuccessTimer = null;
+        }
+        familyBillingSaveSuccess.classList.remove('is-visible');
+        familyBillingSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showFamilyBillingSaveSuccess() {
+        hideFamilyBillingSaveSuccess();
+        familyBillingSaveSuccess.classList.add('is-visible');
+        familyBillingSaveSuccess.setAttribute('aria-hidden', 'false');
+        billingSaveSuccessTimer = setTimeout(hideFamilyBillingSaveSuccess, 3000);
+      }
+
+      function openFamilyCredits() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyCreditsScreen.classList.add('is-open');
+        familyCreditsScreen.setAttribute('aria-hidden', 'false');
+        familyCreditsBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyCredits() {
+        familyInvitesScreen.classList.remove('is-open');
+        familyInvitesScreen.setAttribute('aria-hidden', 'true');
+        familyReferralHowScreen.classList.remove('is-open');
+        familyReferralHowScreen.setAttribute('aria-hidden', 'true');
+        familyCreditsScreen.classList.remove('is-open');
+        familyCreditsScreen.setAttribute('aria-hidden', 'true');
+        familyProfileCreditsTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openFamilyInvites() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyInvitesScreen.classList.add('is-open');
+        familyInvitesScreen.setAttribute('aria-hidden', 'false');
+        familyInvitesBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyInvites() {
+        familyInvitesScreen.classList.remove('is-open');
+        familyInvitesScreen.setAttribute('aria-hidden', 'true');
+        familyCreditsInvitesTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openFamilyReferralHow() {
+        if (!loginTrigger.classList.contains('is-logged-in')) return;
+        familyReferralHowScreen.classList.add('is-open');
+        familyReferralHowScreen.setAttribute('aria-hidden', 'false');
+        familyReferralHowBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeFamilyReferralHow() {
+        familyReferralHowScreen.classList.remove('is-open');
+        familyReferralHowScreen.setAttribute('aria-hidden', 'true');
+        familyCreditsHowItWorksTrigger.focus({ preventScroll: true });
         syncBackEntry();
       }
 
@@ -6782,8 +8207,15 @@
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
         { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
+        { isOpen: function () { return referralShareSheet.classList.contains('is-open'); }, close: closeReferralShareSheet },
         { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
         { isOpen: function () { return messageDetailScreen.classList.contains('is-open'); }, close: closeMessageDetail },
+        { isOpen: function () { return familyAccountScreen.classList.contains('is-open'); }, close: closeFamilyAccount },
+        { isOpen: function () { return familyNotificationsScreen.classList.contains('is-open'); }, close: closeFamilyNotifications },
+        { isOpen: function () { return familyBillingScreen.classList.contains('is-open'); }, close: closeFamilyBilling },
+        { isOpen: function () { return familyReferralHowScreen.classList.contains('is-open'); }, close: closeFamilyReferralHow },
+        { isOpen: function () { return familyInvitesScreen.classList.contains('is-open'); }, close: closeFamilyInvites },
+        { isOpen: function () { return familyCreditsScreen.classList.contains('is-open'); }, close: closeFamilyCredits },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
         { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
         { isOpen: function () { return panel.classList.contains('open'); }, close: closePanel }
@@ -7196,6 +8628,67 @@
       });
       familyProfileBack.addEventListener('click', closeFamilyProfile);
       familyProfileLogout.addEventListener('click', simulateLogout);
+      familyProfileAccountTrigger.addEventListener('click', openFamilyAccount);
+      familyAccountBack.addEventListener('click', closeFamilyAccount);
+      familyAccountForm.addEventListener('input', function () { setFamilyAccountDirty(true); });
+      familyAccountForm.addEventListener('change', function () { setFamilyAccountDirty(true); });
+      familyAccountChangeActions.forEach(function (action) {
+        action.addEventListener('click', function () { setFamilyAccountDirty(true); });
+      });
+      familyAccountForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!familyAccountSaveButton.disabled) {
+          setFamilyAccountDirty(false);
+          showFamilyAccountSaveSuccess();
+        }
+      });
+      familyAccountSaveSuccessClose.addEventListener('click', hideFamilyAccountSaveSuccess);
+      familyProfileNotificationsTrigger.addEventListener('click', openFamilyNotifications);
+      familyNotificationsBack.addEventListener('click', closeFamilyNotifications);
+      familyNotificationsForm.addEventListener('change', function () { setFamilyNotificationsDirty(true); });
+      familyNotificationsForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!familyNotificationsSaveButton.disabled) {
+          setFamilyNotificationsDirty(false);
+          showFamilyNotificationsSaveSuccess();
+        }
+      });
+      familyNotificationsSaveSuccessClose.addEventListener('click', hideFamilyNotificationsSaveSuccess);
+      familyProfileBillingTrigger.addEventListener('click', openFamilyBilling);
+      familyBillingBack.addEventListener('click', closeFamilyBilling);
+      familyBillingForm.addEventListener('input', function () { setFamilyBillingDirty(true); });
+      familyBillingForm.addEventListener('change', function () { setFamilyBillingDirty(true); });
+      familyBillingForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!familyBillingSaveButton.disabled) {
+          setFamilyBillingDirty(false);
+          showFamilyBillingSaveSuccess();
+        }
+      });
+      familyBillingSaveSuccessClose.addEventListener('click', hideFamilyBillingSaveSuccess);
+      familyProfileCreditsTrigger.addEventListener('click', openFamilyCredits);
+      familyCreditsBack.addEventListener('click', closeFamilyCredits);
+      familyCreditsInvitesTrigger.addEventListener('click', openFamilyInvites);
+      familyCreditsHowItWorksTrigger.addEventListener('click', openFamilyReferralHow);
+      familyInvitesBack.addEventListener('click', closeFamilyInvites);
+      familyReferralHowBack.addEventListener('click', closeFamilyReferralHow);
+      familyCreditsShare.addEventListener('click', function () {
+        openReferralShareSheet(familyCreditsShare);
+      });
+      familyInvitesShare.addEventListener('click', function () {
+        openReferralShareSheet(familyInvitesShare);
+      });
+      familyReferralHowShare.addEventListener('click', function () {
+        openReferralShareSheet(familyReferralHowShare);
+      });
+      referralShareBackdrop.addEventListener('click', closeReferralShareSheet);
+      referralShareOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          var invite = 'https://www.hlidacky.cz/invite/user123';
+          if (navigator.share) navigator.share({ title: 'Hlídačky.cz', text: 'Join with my link and get 200 Kč in credits 💖', url: invite }).catch(function () {});
+          else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(invite).catch(function () {});
+        });
+      });
       logoutSuccessAlertClose.addEventListener('click', hideLogoutSuccess);
       navItems.forEach(function (item) {
         item.addEventListener('click', function () {
