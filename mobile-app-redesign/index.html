@@ -1602,6 +1602,338 @@
       line-height: 22px;
     }
 
+    /* Bookings reuses the compact Booking card hierarchy: status, schedule,
+       sitter and amount stay in consistent slots while the card actions are
+       available without taking space away from the booking details. */
+    .bookings-screen {
+      position: absolute;
+      z-index: 10;
+      inset: 100px 0 83px;
+      overflow: hidden;
+      background: #fff;
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 200ms;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .bookings-screen.is-open {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .bookings-screen__content {
+      display: flex;
+      height: 100%;
+      min-height: 100%;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      padding: 20px 16px 28px;
+      background: #fff;
+    }
+
+    .bookings-screen__section { display: flex; flex-direction: column; gap: 16px; }
+
+    .bookings-screen__heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: #4a5a61;
+      font-size: 18px;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+
+    .bookings-screen__heading::before,
+    .bookings-screen__heading::after {
+      content: '';
+      height: 1px;
+      flex: 1 1 auto;
+      background: #e5e5ea;
+    }
+
+    .booking-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto auto;
+      gap: 6px 14px;
+      overflow: visible;
+      border: 1px solid rgba(229, 229, 234, .92);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(42, 53, 57, .1);
+      padding: 12px 18px 54px;
+      color: #2a3539;
+    }
+
+    .booking-card::after {
+      content: '';
+      position: absolute;
+      right: 18px;
+      bottom: 54px;
+      left: 18px;
+      height: 0;
+      border-top: 1px dashed #bec2ce;
+    }
+
+    .booking-card__topline {
+      display: flex;
+      min-height: 21px;
+      grid-column: 1 / -1;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .booking-card__status {
+      display: inline-flex;
+      min-height: 20px;
+      align-items: center;
+      gap: 4px;
+      border-radius: 64px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .booking-card__status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .8;
+    }
+
+    .booking-card--waiting .booking-card__status { background: #fff1e5; color: #ed7000; }
+    .booking-card--confirmed .booking-card__status { background: #e6f1fe; color: #147ffc; }
+    .booking-card--paid .booking-card__status { background: #eff9ef; color: #0ba825; }
+    .booking-card--cancelled .booking-card__status { background: #fff0f2; color: #e6213a; }
+    .booking-card--waiting { padding-bottom: 64px; }
+    .booking-card--waiting::after { bottom: 64px; }
+    .booking-card--waiting .booking-card__actions { bottom: 22px; }
+
+    .booking-card__reference { color: #8b91a3; font-size: 11px; font-weight: 350; line-height: 1.4; }
+
+    .booking-card__schedule {
+      display: flex;
+      grid-column: 1 / -1;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #bec2ce;
+    }
+
+    .booking-card__date { margin: 0; color: #2a3539; font-size: 18px; font-weight: 700; letter-spacing: -0.45px; line-height: 1.15; }
+    .booking-card__time { margin: 0; color: #2a3539; font-size: 14px; letter-spacing: -0.25px; line-height: 1.25; }
+    .booking-card__time span { color: #94a3b7; font-weight: 350; }
+
+    .booking-card__footer {
+      display: flex;
+      grid-column: 1;
+      min-width: 0;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+    }
+
+    .booking-card__avatar {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(42, 53, 57, .2);
+      object-fit: cover;
+    }
+
+    .booking-card__sitter { overflow: hidden; color: #2a3539; font-size: 14px; font-weight: 500; letter-spacing: -0.35px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+    .booking-card__extra { display: flex; grid-row: 3; grid-column: 2; align-self: start; align-items: center; height: 24px; gap: 5px; color: #8b91a3; font-size: 14px; line-height: 1.25; white-space: nowrap; }
+    .booking-card__extra-icons { display: inline-flex; gap: 4px; color: #8b91a3; font-size: 14px; }
+    .booking-card__price { color: #2a3539; font-weight: 450; }
+    .booking-card__price span { color: #8b91a3; font-weight: 350; }
+
+    .booking-card__confirm {
+      position: absolute;
+      bottom: 10px;
+      left: 18px;
+      display: inline-flex;
+      width: calc(100% - 132px);
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+      box-shadow: inset 0 -3px 0 #07801f;
+      background: #0ba825;
+      padding: 8px 12px 11px;
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .booking-card__confirm:hover,
+    .booking-card__confirm:focus-visible { background: #07801f; outline: 0; }
+
+    .booking-card__actions { position: absolute; right: 18px; bottom: 14px; }
+    .booking-card__actions-trigger { display: inline-flex; align-items: center; gap: 4px; border: 0; background: transparent; padding: 0; color: #8792a5; font: inherit; font-size: 14px; line-height: 1.4; text-decoration: none; cursor: pointer; }
+    .booking-card__actions-label { text-decoration: underline; }
+    .booking-card__actions-trigger i { color: #8b91a3; font-size: 10px; text-decoration: none; }
+    .booking-card__menu { display: none; }
+
+    .booking-actions-sheet {
+      position: absolute;
+      z-index: 50;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .booking-actions-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      padding: 0;
+      background: rgba(42, 53, 57, .44);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .booking-actions-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -8px 40px rgba(42, 53, 57, .16);
+      padding: 12px 0 calc(24px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .booking-actions-sheet__handle {
+      width: 36px;
+      height: 4px;
+      margin: 0 auto 16px;
+      border-radius: 999px;
+      background: #2a3539;
+    }
+
+    .booking-actions-sheet__action {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      gap: 16px;
+      border: 0;
+      background: transparent;
+      padding: 16px 20px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 17px;
+      line-height: 1.4;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .booking-actions-sheet__action i { width: 20px; flex: 0 0 20px; color: #f96073; font-size: 20px; text-align: center; }
+    .booking-actions-sheet__action:hover { background: #f7f7f7; }
+    .booking-actions-sheet__action:active { background: #f2f3f5; }
+    .booking-actions-sheet__separator { height: 1px; margin: 4px 0; background: #e5e5ea; }
+
+    .booking-actions-sheet.is-open { pointer-events: auto; }
+    .booking-actions-sheet.is-open .booking-actions-sheet__backdrop { opacity: 1; }
+    .booking-actions-sheet.is-open .booking-actions-sheet__panel { transform: translateY(0); }
+
+    .booking-card__payment-note {
+      position: absolute;
+      bottom: 12px;
+      left: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      max-width: calc(100% - 132px);
+      margin: 0;
+      color: #8b91a3;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .bookings-protect {
+      display: flex;
+      min-height: 142px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid #e5e5ea;
+      border-radius: 6px;
+      background: #147ffc;
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .bookings-protect__heading { margin: 0; font-size: 18px; font-weight: 450; letter-spacing: -0.2px; line-height: 1.4; }
+    .bookings-protect__brand { display: block; width: 178px; height: 32px; }
+    .bookings-protect__brand img { display: block; width: 100%; height: 100%; }
+    .bookings-protect__link { color: rgba(255, 255, 255, .8); font-size: 12px; line-height: 1.4; text-decoration: underline; text-underline-offset: 3px; transition: color 160ms ease; }
+    .bookings-protect__link:hover,
+    .bookings-protect__link:focus-visible { color: #fff; }
+    .bookings-screen__load-more { align-self: center; border: 1px solid #e5e5ea; border-radius: 4px; box-shadow: inset 0 -3px 0 #e5e5ea; background: #fff; padding: 10px 32px 13px; color: #2a3539; font: inherit; font-size: 14px; line-height: 1.4; cursor: pointer; }
+    .bookings-screen__archive { align-self: center; border: 0; background: transparent; padding: 0; color: #8b91a3; font: inherit; font-size: 13px; line-height: 1.4; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .bookings-screen__archive i { margin-right: 4px; font-size: 11px; }
+
+    .bookings-guest-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 20px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.8) 75%, #fff);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, visibility 0s linear 180ms;
+      visibility: hidden;
+    }
+
+    .bookings-screen.is-open.is-guest .bookings-guest-overlay { opacity: 1; pointer-events: auto; transition: opacity 180ms ease, visibility 0s; visibility: visible; }
+    .bookings-guest-overlay__card { display: flex; width: 100%; max-width: 335px; flex-direction: column; align-items: center; gap: 12px; border: 1px solid #ff9ba7; border-radius: 8px; background: #feecee; box-shadow: 0 6px 8px rgba(42, 53, 57, .2); padding: 20px 16px 24px; text-align: center; }
+    .bookings-guest-overlay__doodle { position: relative; width: 64px; height: 64px; }
+    .bookings-guest-overlay__doodle img { position: absolute; width: auto; height: auto; }
+    .bookings-guest-overlay__doodle img:first-child { inset: 18.8% 12.1% 18.3% 11.6%; }
+    .bookings-guest-overlay__doodle img:last-child { inset: 9.2% 10.5% 10.8% 15%; }
+    .bookings-guest-overlay__copy { max-width: 282px; margin: 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -0.24px; line-height: 1.4; }
+    .bookings-guest-overlay__copy a { color: #f96073; }
+    .bookings-guest-overlay__post { display: inline-flex; min-height: 40px; align-items: center; gap: 8px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 #e6213a; background: #f96073; padding: 8px 14px 10px 18px; color: #fff; font: inherit; font-size: 16px; line-height: 22px; }
+    .bookings-guest-overlay__divider { width: 100%; height: 1px; background: #ff9ba7; margin: 4px 0 2px; }
+    .bookings-guest-overlay__protect { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2a3539; }
+    .bookings-guest-overlay__protect-brand { display: block; width: 127px; height: 32px; }
+    .bookings-guest-overlay__protect-brand img { display: block; width: 100%; height: 100%; }
+    .bookings-guest-overlay__benefits { display: grid; gap: 5px; color: #4a5a61; font-size: 12px; font-weight: 350; line-height: 1.4; text-align: left; }
+    .bookings-guest-overlay__benefits span { display: flex; align-items: center; gap: 6px; }
+    .bookings-guest-overlay__benefits i { color: #22bf1e; font-size: 14px; }
+
     /* Filters are an application-level screen, rather than a desktop dialog.
        It deliberately starts below the native status bar and covers the app's
        navbar, so opening it does not move either fixed part of the phone UI. */
@@ -4189,6 +4521,7 @@
       .favourites-screen { top: 48px; }
       .messages-screen { top: 48px; }
       .jobs-screen { top: 48px; }
+      .bookings-screen { top: 48px; }
       .ai-panel.open { max-height: 1100px; }
     }
 
@@ -4641,6 +4974,58 @@
         </div>
       </div>
     </section>
+    <section class="bookings-screen" id="bookingsScreen" aria-label="Bookings" aria-hidden="true">
+      <div class="bookings-screen__content" id="bookingsContent">
+        <section class="bookings-screen__section" aria-labelledby="upcomingBookingsHeading">
+          <h1 class="bookings-screen__heading" id="upcomingBookingsHeading">Upcoming</h1>
+          <article class="booking-card booking-card--waiting" data-booking-card aria-label="Booking waiting to confirm with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Waiting to confirm</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 27. 11.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <button class="booking-card__confirm" type="button" data-booking-confirm><i class="fa-regular fa-check" aria-hidden="true"></i>Confirm</button>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button><button class="booking-card__cancel" type="button" role="menuitem" data-booking-cancel>Cancel booking</button></div></div>
+          </article>
+          <article class="booking-card booking-card--confirmed" data-booking-card aria-label="Confirmed booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Confirmed</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Wednesday, 29. 11.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <p class="booking-card__payment-note"><i class="fa-light fa-credit-card" aria-hidden="true"></i>You can pay online once the booking has started</p>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button><button class="booking-card__cancel" type="button" role="menuitem" data-booking-cancel>Cancel booking</button></div></div>
+          </article>
+        </section>
+        <section class="bookings-screen__section" aria-labelledby="pastBookingsHeading">
+          <h2 class="bookings-screen__heading" id="pastBookingsHeading">Past</h2>
+          <article class="booking-card booking-card--paid" data-booking-card aria-label="Past paid booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Paid by card</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 11. 8.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button></div></div>
+          </article>
+          <article class="booking-card booking-card--paid" data-booking-card aria-label="Past paid booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Paid by card</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 4. 8.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button></div></div>
+          </article>
+        </section>
+        <section class="bookings-protect" aria-label="Hlídačky Protect information"><p class="bookings-protect__heading">Bookings protected by</p><div class="bookings-protect__brand"><img src="./assets/care-protect-logo-reversed.svg" alt="Hlídačky Protect"></div><a class="bookings-protect__link" href="#">What’s HlídačkyProtect™</a></section>
+        <button class="bookings-screen__load-more" type="button">Load more</button>
+        <button class="bookings-screen__archive" type="button"><i class="fa-light fa-box-archive" aria-hidden="true"></i>Archived bookings</button>
+      </div>
+      <div class="bookings-guest-overlay" id="bookingsGuestOverlay" aria-hidden="true">
+        <div class="bookings-guest-overlay__card">
+          <div class="bookings-guest-overlay__doodle" aria-hidden="true"><img src="./assets/bookings-guest-doodle-layer-2.svg" alt=""><img src="./assets/bookings-guest-doodle-layer-1.svg" alt=""></div>
+          <p class="bookings-guest-overlay__copy">When you’re a member, you’ll see your bookings here. Book if you’ve agreed with a sitter, it confirms your plans and adds <a href="#">HlídačkyProtect™</a>.</p>
+          <button class="bookings-guest-overlay__post" type="button">Post a job <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <div class="bookings-guest-overlay__divider" aria-hidden="true"></div>
+          <div class="bookings-guest-overlay__protect"><div class="bookings-guest-overlay__protect-brand"><img src="./assets/care-protect-logo.svg" alt="Hlídačky Protect"></div><div class="bookings-guest-overlay__benefits"><span><i class="fa-regular fa-check" aria-hidden="true"></i>Insured sitting &amp; cleaning</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>100% guaranteed sitter match</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>Secure payments</span></div></div>
+        </div>
+      </div>
+    </section>
     <section class="family-profile-screen" id="familyProfileScreen" data-node-id="2284:67211">
       <header class="family-profile-header">
         <button class="family-profile-header__back" id="familyProfileBack" type="button" aria-label="Back to search"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
@@ -4876,6 +5261,18 @@
         </div>
       </section>
     </div>
+    <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
+      <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
+      <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
+        <div class="booking-actions-sheet__handle" aria-hidden="true"></div>
+        <button class="booking-actions-sheet__action" id="bookingActionsSheetPrimary" type="button"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span></span></button>
+        <button class="booking-actions-sheet__action" id="bookingActionsSheetArchive" type="button"><i class="fa-light fa-box-archive" aria-hidden="true"></i><span>Archive booking</span></button>
+        <button class="booking-actions-sheet__action" id="bookingActionsSheetMessage" type="button"><i class="fa-light fa-message" aria-hidden="true"></i><span>Send a message</span></button>
+        <button class="booking-actions-sheet__action" id="bookingActionsSheetProfile" type="button"><i class="fa-light fa-circle-user" aria-hidden="true"></i><span>View profile</span></button>
+        <div class="booking-actions-sheet__separator" id="bookingActionsSheetSeparator" aria-hidden="true"></div>
+        <button class="booking-actions-sheet__action booking-actions-sheet__action--report" id="bookingActionsSheetReport" type="button"><i class="fa-light fa-flag" aria-hidden="true"></i><span>Report</span></button>
+      </section>
+    </div>
     <section class="ai-panel" id="aiPanel" aria-hidden="true">
       <div class="ai-panel-top">
         <div class="ai-head">
@@ -5021,14 +5418,30 @@
       var favouritesScreen = document.getElementById('favouritesScreen');
       var favouritesContent = document.getElementById('favouritesContent');
       var favouritesGuestOverlay = document.getElementById('favouritesGuestOverlay');
-      var favouritesPostJob = document.getElementById('favouritesPostJob');
       var favouritesFindSearch = document.getElementById('favouritesFindSearch');
       var messagesScreen = document.getElementById('messagesScreen');
       var messagesGuestOverlay = document.getElementById('messagesGuestOverlay');
-      var messagesGuestMembership = document.getElementById('messagesGuestMembership');
       var messagesGuestSearch = document.getElementById('messagesGuestSearch');
       var jobsScreen = document.getElementById('jobsScreen');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
+      var bookingsScreen = document.getElementById('bookingsScreen');
+      var bookingsGuestOverlay = document.getElementById('bookingsGuestOverlay');
+      var bookingActionTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-booking-actions]'));
+      var bookingConfirmButtons = Array.prototype.slice.call(document.querySelectorAll('[data-booking-confirm]'));
+      var bookingCancelButtons = Array.prototype.slice.call(document.querySelectorAll('[data-booking-cancel]'));
+      var bookingViewButtons = Array.prototype.slice.call(document.querySelectorAll('[data-booking-view]'));
+      var bookingActionsSheet = document.getElementById('bookingActionsSheet');
+      var bookingActionsSheetBackdrop = document.getElementById('bookingActionsSheetBackdrop');
+      var bookingActionsSheetDialog = document.getElementById('bookingActionsSheetDialog');
+      var bookingActionsSheetPrimary = document.getElementById('bookingActionsSheetPrimary');
+      var bookingActionsSheetArchive = document.getElementById('bookingActionsSheetArchive');
+      var bookingActionsSheetMessage = document.getElementById('bookingActionsSheetMessage');
+      var bookingActionsSheetProfile = document.getElementById('bookingActionsSheetProfile');
+      var bookingActionsSheetSeparator = document.getElementById('bookingActionsSheetSeparator');
+      var bookingActionsSheetReport = document.getElementById('bookingActionsSheetReport');
+      var activeBookingActionTrigger = null;
+      var activeBookingActionCard = null;
+      var bookingActionsSheetCloseTimer = null;
       var mobileHeaderTitle = document.getElementById('mobileAppHeaderTitle');
       var mobileHeaderIcon = document.getElementById('mobileAppHeaderIcon');
       var mobileAppHeader = document.querySelector('.mobile-app-header');
@@ -5969,6 +6382,67 @@
         jobsGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
       }
 
+      function syncBookingsAccessState() {
+        var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
+        bookingsScreen.classList.toggle('is-guest', !isLoggedIn);
+        bookingsGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
+      }
+
+      function closeBookingActionsSheet() {
+        if (!bookingActionsSheet || bookingActionsSheet.hidden) return;
+        bookingActionsSheet.classList.remove('is-open');
+        bookingActionsSheet.setAttribute('aria-hidden', 'true');
+        if (activeBookingActionTrigger) activeBookingActionTrigger.setAttribute('aria-expanded', 'false');
+        activeBookingActionTrigger = null;
+        activeBookingActionCard = null;
+        window.clearTimeout(bookingActionsSheetCloseTimer);
+        bookingActionsSheetCloseTimer = window.setTimeout(function () {
+          bookingActionsSheet.hidden = true;
+        }, 280);
+      }
+
+      function openBookingActionsSheet(trigger) {
+        var card = trigger.closest('[data-booking-card]');
+        if (!card) return;
+        var isUpcoming = card.classList.contains('booking-card--waiting') || card.classList.contains('booking-card--confirmed');
+        var sitterName = card.querySelector('.booking-card__sitter').textContent.trim().split(/\s+/)[0];
+        var primaryIcon = bookingActionsSheetPrimary.querySelector('i');
+        var primaryLabel = bookingActionsSheetPrimary.querySelector('span');
+        window.clearTimeout(bookingActionsSheetCloseTimer);
+        primaryIcon.className = isUpcoming ? 'fa-light fa-xmark' : 'fa-light fa-calendar-plus';
+        primaryLabel.textContent = isUpcoming ? 'Cancel booking' : 'Book ' + sitterName + ' again';
+        bookingActionsSheetArchive.hidden = isUpcoming;
+        bookingActionsSheetSeparator.hidden = isUpcoming;
+        bookingActionsSheetReport.hidden = isUpcoming;
+        activeBookingActionTrigger = trigger;
+        activeBookingActionCard = card;
+        bookingActionsSheet.hidden = false;
+        bookingActionsSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(function () {
+          bookingActionsSheet.classList.add('is-open');
+          bookingActionsSheetDialog.focus({ preventScroll: true });
+        });
+      }
+
+      function closeBookingActions() {
+        bookingActionTriggers.forEach(function (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+        });
+        closeBookingActionsSheet();
+      }
+
+      function cancelBooking(card) {
+        if (!card) return;
+        var status = card.querySelector('[data-booking-status]');
+        card.classList.remove('booking-card--waiting', 'booking-card--confirmed');
+        card.classList.add('booking-card--cancelled');
+        status.textContent = 'Cancelled';
+        var confirm = card.querySelector('[data-booking-confirm]');
+        if (confirm) confirm.remove();
+        closeBookingActions();
+      }
+
       function selectAppScreen(screen) {
         var placeholder = APP_PLACEHOLDERS[screen];
         currentAppScreen = screen;
@@ -5985,6 +6459,8 @@
           messagesScreen.setAttribute('aria-hidden', 'true');
           jobsScreen.classList.remove('is-open');
           jobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.remove('is-hidden');
           restoreSearchHeader();
           // Coming back to a tab is not a new search. The feed keeps its
@@ -6007,6 +6483,8 @@
           messagesScreen.setAttribute('aria-hidden', 'true');
           jobsScreen.classList.remove('is-open');
           jobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
           syncFavouritesAccessState();
           favouritesScreen.classList.add('is-open');
           favouritesScreen.setAttribute('aria-hidden', 'false');
@@ -6024,6 +6502,8 @@
           favouritesScreen.setAttribute('aria-hidden', 'true');
           jobsScreen.classList.remove('is-open');
           jobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
           syncMessagesAccessState();
           messagesScreen.classList.add('is-open');
           messagesScreen.setAttribute('aria-hidden', 'false');
@@ -6041,6 +6521,8 @@
           favouritesScreen.setAttribute('aria-hidden', 'true');
           messagesScreen.classList.remove('is-open');
           messagesScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
           syncJobsAccessState();
           jobsScreen.classList.add('is-open');
           jobsScreen.setAttribute('aria-hidden', 'false');
@@ -6051,12 +6533,33 @@
           return;
         }
 
+        if (screen === 'bookings') {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          favouritesScreen.classList.remove('is-open');
+          favouritesScreen.setAttribute('aria-hidden', 'true');
+          messagesScreen.classList.remove('is-open');
+          messagesScreen.setAttribute('aria-hidden', 'true');
+          jobsScreen.classList.remove('is-open');
+          jobsScreen.setAttribute('aria-hidden', 'true');
+          syncBookingsAccessState();
+          bookingsScreen.classList.add('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'false');
+          mobileHeaderIcon.className = 'fa-solid fa-credit-card';
+          mobileHeaderIcon.style.color = '#f96073';
+          mobileHeaderTitle.textContent = 'Bookings';
+          syncBackEntry();
+          return;
+        }
+
         favouritesScreen.classList.remove('is-open');
         favouritesScreen.setAttribute('aria-hidden', 'true');
         messagesScreen.classList.remove('is-open');
         messagesScreen.setAttribute('aria-hidden', 'true');
         jobsScreen.classList.remove('is-open');
         jobsScreen.setAttribute('aria-hidden', 'true');
+        bookingsScreen.classList.remove('is-open');
+        bookingsScreen.setAttribute('aria-hidden', 'true');
         appPlaceholderIcon.className = 'app-placeholder-screen__icon fa-solid ' + placeholder.icon;
         appPlaceholderTitle.textContent = placeholder.title;
         appPlaceholderCopy.textContent = placeholder.copy;
@@ -6403,6 +6906,7 @@
         syncFavouritesAccessState();
         syncMessagesAccessState();
         syncJobsAccessState();
+        syncBookingsAccessState();
         syncSearchFilterApplyState();
         revealSitterDetails();
         revealSavedLocation();
@@ -6422,6 +6926,7 @@
         syncFavouritesAccessState();
         syncMessagesAccessState();
         syncJobsAccessState();
+        syncBookingsAccessState();
         syncSearchFilterApplyState();
         maskSitterDetails();
         stopLocationPlaceholderTypewriter();
@@ -6525,17 +7030,56 @@
       loginActions.forEach(function (action) {
         action.addEventListener('click', simulateLogin);
       });
-      favouritesPostJob.addEventListener('click', function () {
-        if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
-      });
       favouritesFindSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
-      messagesGuestMembership.addEventListener('click', function () {
-        if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
-      });
       messagesGuestSearch.addEventListener('click', function () {
         selectAppScreen('search');
+      });
+      bookingActionTriggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+          event.stopPropagation();
+          if (activeBookingActionTrigger === trigger && !bookingActionsSheet.hidden) {
+            closeBookingActionsSheet();
+            return;
+          }
+          closeBookingActionsSheet();
+          openBookingActionsSheet(trigger);
+        });
+      });
+      bookingConfirmButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var card = button.closest('[data-booking-card]');
+          var status = card.querySelector('[data-booking-status]');
+          card.classList.remove('booking-card--waiting');
+          card.classList.add('booking-card--confirmed');
+          status.textContent = 'Confirmed';
+          button.remove();
+        });
+      });
+      bookingCancelButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          cancelBooking(button.closest('[data-booking-card]'));
+        });
+      });
+      bookingViewButtons.forEach(function (button) {
+        button.addEventListener('click', closeBookingActions);
+      });
+      bookingActionsSheetBackdrop.addEventListener('click', closeBookingActionsSheet);
+      bookingActionsSheetPrimary.addEventListener('click', function () {
+        var card = activeBookingActionCard;
+        var isUpcoming = card && (card.classList.contains('booking-card--waiting') || card.classList.contains('booking-card--confirmed'));
+        closeBookingActionsSheet();
+        if (isUpcoming) cancelBooking(card);
+      });
+      [bookingActionsSheetArchive, bookingActionsSheetMessage, bookingActionsSheetProfile, bookingActionsSheetReport].forEach(function (action) {
+        action.addEventListener('click', closeBookingActionsSheet);
+      });
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.booking-card__actions') && !event.target.closest('.booking-actions-sheet')) closeBookingActions();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeBookingActionsSheet();
       });
       guestGatedCardActions.forEach(function (action) {
         if (action.matches('.profile-card-basic-info-component__parameter-content.link--tel, .profile-card-basic-info-component__reviews-count')) {
