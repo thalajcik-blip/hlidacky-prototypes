@@ -2042,8 +2042,8 @@
       gap: 8px;
       border: 0;
       border-radius: 4px;
-      box-shadow: inset 0 -3px 0 #e6213a;
-      background: #f96073;
+      box-shadow: inset 0 -3px 0 #078f20;
+      background: #0ba825;
       padding: 8px 14px 10px 18px;
       color: #fff;
       font: inherit;
@@ -2051,6 +2051,9 @@
       line-height: 22px;
       cursor: pointer;
     }
+
+    .favourites-guest-overlay__post-job:hover { background: #078f20; }
+    .favourites-guest-overlay__post-job:active { box-shadow: none; transform: translateY(3px); }
 
     .favourites-guest-overlay__search {
       display: inline-flex;
@@ -2301,14 +2304,18 @@
       gap: 8px;
       border: 0;
       border-radius: 4px;
-      box-shadow: inset 0 -3px 0 #e6213a;
-      background: #f96073;
+      box-shadow: inset 0 -3px 0 #078f20;
+      background: #0ba825;
       padding: 8px 14px 10px 18px;
       color: #fff;
       font: inherit;
       font-size: 16px;
       line-height: 22px;
+      cursor: pointer;
     }
+
+    .messages-guest-overlay__membership:hover { background: #078f20; }
+    .messages-guest-overlay__membership:active { box-shadow: none; transform: translateY(3px); }
 
     .messages-guest-overlay__search {
       display: inline-flex;
@@ -2710,7 +2717,11 @@
       font: inherit;
       font-size: 16px;
       line-height: 22px;
+      cursor: pointer;
     }
+
+    .jobs-guest-overlay__create:hover { background: #078f20; }
+    .jobs-guest-overlay__create:active { box-shadow: none; transform: translateY(3px); }
 
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
        sitter and amount stay in consistent slots while the card actions are
@@ -3035,7 +3046,9 @@
     .bookings-guest-overlay__doodle img:last-child { inset: 9.2% 10.5% 10.8% 15%; }
     .bookings-guest-overlay__copy { max-width: 282px; margin: 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -0.24px; line-height: 1.4; }
     .bookings-guest-overlay__copy a { color: #f96073; }
-    .bookings-guest-overlay__post { display: inline-flex; min-height: 40px; align-items: center; gap: 8px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 #e6213a; background: #f96073; padding: 8px 14px 10px 18px; color: #fff; font: inherit; font-size: 16px; line-height: 22px; }
+    .bookings-guest-overlay__post { display: inline-flex; min-height: 40px; align-items: center; gap: 8px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 #078f20; background: #0ba825; padding: 8px 14px 10px 18px; color: #fff; font: inherit; font-size: 16px; line-height: 22px; cursor: pointer; }
+    .bookings-guest-overlay__post:hover { background: #078f20; }
+    .bookings-guest-overlay__post:active { box-shadow: none; transform: translateY(3px); }
     .bookings-guest-overlay__divider { width: 100%; height: 1px; background: #ff9ba7; margin: 4px 0 2px; }
     .bookings-guest-overlay__protect { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2a3539; }
     .bookings-guest-overlay__protect-brand { display: block; width: 127px; height: 32px; }
@@ -6018,7 +6031,7 @@
           </div>
           <p class="favourites-guest-overlay__copy">After you join, you’ll see your chosen favourite sitters here.</p>
           <div class="favourites-guest-overlay__actions">
-            <button class="favourites-guest-overlay__post-job" id="favouritesPostJob" type="button"><span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+            <button class="favourites-guest-overlay__post-job" id="favouritesPostJob" type="button"><span>Sign up for FREE</span></button>
             <button class="favourites-guest-overlay__search" id="favouritesFindSearch" type="button"><i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i><span>Find your sitter</span></button>
           </div>
         </div>
@@ -6079,7 +6092,7 @@
           <div class="messages-guest-overlay__doodle" aria-hidden="true"><img src="./assets/messages-guest-doodle-layer-2.svg" alt=""><img src="./assets/messages-guest-doodle-layer-1.svg" alt=""></div>
           <p class="messages-guest-overlay__copy">Once subscribed, you’ll see your sitter messages here.</p>
           <div class="messages-guest-overlay__actions">
-            <button class="messages-guest-overlay__membership" id="messagesGuestMembership" type="button"><span>Go to memberships</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+            <button class="messages-guest-overlay__membership" id="messagesGuestMembership" type="button"><span>Sign up for FREE</span></button>
             <button class="messages-guest-overlay__search" id="messagesGuestSearch" type="button"><i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i><span>Find your sitter</span></button>
           </div>
         </div>
@@ -6145,8 +6158,8 @@
       <div class="jobs-guest-overlay" id="jobsGuestOverlay" aria-hidden="true">
         <div class="jobs-guest-overlay__card">
           <div class="jobs-guest-overlay__doodle" aria-hidden="true"><img src="./assets/jobs-guest-doodle-layer-2.svg" alt=""><img src="./assets/jobs-guest-doodle-layer-3.svg" alt=""><img src="./assets/jobs-guest-doodle-layer-1.svg" alt=""></div>
-          <p class="jobs-guest-overlay__copy">Create your new job. You don’t even need to be registered</p>
-          <button class="jobs-guest-overlay__create" type="button">Create a new job <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <p class="jobs-guest-overlay__copy">Create your first job. You can do it completely FOR FREE</p>
+          <button class="jobs-guest-overlay__create" id="jobsGuestCreate" type="button">Sign up for FREE</button>
         </div>
       </div>
     </section>
@@ -6196,7 +6209,7 @@
         <div class="bookings-guest-overlay__card">
           <div class="bookings-guest-overlay__doodle" aria-hidden="true"><img src="./assets/bookings-guest-doodle-layer-2.svg" alt=""><img src="./assets/bookings-guest-doodle-layer-1.svg" alt=""></div>
           <p class="bookings-guest-overlay__copy">When you’re a member, you’ll see your bookings here. Book if you’ve agreed with a sitter, it confirms your plans and adds <a href="#">HlídačkyProtect™</a>.</p>
-          <button class="bookings-guest-overlay__post" type="button">Post a job <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="bookings-guest-overlay__post" id="bookingsGuestPost" type="button">Sign up for FREE</button>
           <div class="bookings-guest-overlay__divider" aria-hidden="true"></div>
           <div class="bookings-guest-overlay__protect"><div class="bookings-guest-overlay__protect-brand"><img src="./assets/care-protect-logo.svg" alt="Hlídačky Protect"></div><div class="bookings-guest-overlay__benefits"><span><i class="fa-regular fa-check" aria-hidden="true"></i>Insured sitting &amp; cleaning</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>100% guaranteed sitter match</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>Secure payments</span></div></div>
         </div>
@@ -6833,9 +6846,11 @@
       var favouritesScreen = document.getElementById('favouritesScreen');
       var favouritesContent = document.getElementById('favouritesContent');
       var favouritesGuestOverlay = document.getElementById('favouritesGuestOverlay');
+      var favouritesPostJob = document.getElementById('favouritesPostJob');
       var favouritesFindSearch = document.getElementById('favouritesFindSearch');
       var messagesScreen = document.getElementById('messagesScreen');
       var messagesGuestOverlay = document.getElementById('messagesGuestOverlay');
+      var messagesGuestMembership = document.getElementById('messagesGuestMembership');
       var messagesGuestSearch = document.getElementById('messagesGuestSearch');
       var messageThreads = Array.prototype.slice.call(document.querySelectorAll('.message-thread'));
       var messageDetailScreen = document.getElementById('messageDetailScreen');
@@ -6847,8 +6862,10 @@
       var activeMessageThread = null;
       var jobsScreen = document.getElementById('jobsScreen');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
+      var jobsGuestCreate = document.getElementById('jobsGuestCreate');
       var bookingsScreen = document.getElementById('bookingsScreen');
       var bookingsGuestOverlay = document.getElementById('bookingsGuestOverlay');
+      var bookingsGuestPost = document.getElementById('bookingsGuestPost');
       var bookingActionTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-booking-actions]'));
       var bookingConfirmButtons = Array.prototype.slice.call(document.querySelectorAll('[data-booking-confirm]'));
       var bookingCancelButtons = Array.prototype.slice.call(document.querySelectorAll('[data-booking-cancel]'));
@@ -8893,12 +8910,16 @@
         });
       });
       registrationRoleContinue.addEventListener('click', validateRegistrationRole);
+      favouritesPostJob.addEventListener('click', openLoginSheet);
       favouritesFindSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
+      messagesGuestMembership.addEventListener('click', openLoginSheet);
       messagesGuestSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
+      jobsGuestCreate.addEventListener('click', openLoginSheet);
+      bookingsGuestPost.addEventListener('click', openLoginSheet);
       messageThreads.forEach(function (thread) {
         thread.setAttribute('tabindex', '0');
         thread.addEventListener('click', function (event) {
