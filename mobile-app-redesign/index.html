@@ -2054,6 +2054,11 @@
 
     .favourites-guest-overlay__post-job:hover { background: #078f20; }
     .favourites-guest-overlay__post-job:active { box-shadow: none; transform: translateY(3px); }
+    .favourites-guest-overlay__post-job.is-newly-registered {
+      box-shadow: inset 0 -3px 0 var(--pink-strong);
+      background: var(--pink);
+    }
+    .favourites-guest-overlay__post-job.is-newly-registered:hover { background: var(--pink-strong); }
 
     .favourites-guest-overlay__search {
       display: inline-flex;
@@ -2070,6 +2075,11 @@
     }
 
     .favourites-guest-overlay__search i { font-size: 12px; }
+    .favourites-guest-overlay__search span {
+      text-decoration: underline;
+      text-decoration-color: var(--pink);
+      text-underline-offset: 2px;
+    }
 
     /* Messages follows the mobile app list pattern from Figma: the status
        bar, header and bottom navigation stay fixed while only this list moves. */
@@ -2316,6 +2326,11 @@
 
     .messages-guest-overlay__membership:hover { background: #078f20; }
     .messages-guest-overlay__membership:active { box-shadow: none; transform: translateY(3px); }
+    .messages-guest-overlay__membership.is-newly-registered {
+      box-shadow: inset 0 -3px 0 var(--pink-strong);
+      background: var(--pink);
+    }
+    .messages-guest-overlay__membership.is-newly-registered:hover { background: var(--pink-strong); }
 
     .messages-guest-overlay__search {
       display: inline-flex;
@@ -2332,6 +2347,11 @@
     }
 
     .messages-guest-overlay__search i { font-size: 12px; }
+    .messages-guest-overlay__search span {
+      text-decoration: underline;
+      text-decoration-color: var(--pink);
+      text-underline-offset: 2px;
+    }
 
     /* Conversation detail uses the same composited right-to-left transition as
        the profile panel. The status bar and app navigation therefore never
@@ -2722,6 +2742,11 @@
 
     .jobs-guest-overlay__create:hover { background: #078f20; }
     .jobs-guest-overlay__create:active { box-shadow: none; transform: translateY(3px); }
+    .jobs-guest-overlay__create.is-newly-registered {
+      box-shadow: inset 0 -3px 0 var(--pink-strong);
+      background: var(--pink);
+    }
+    .jobs-guest-overlay__create.is-newly-registered:hover { background: var(--pink-strong); }
 
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
        sitter and amount stay in consistent slots while the card actions are
@@ -3049,6 +3074,8 @@
     .bookings-guest-overlay__post { display: inline-flex; min-height: 40px; align-items: center; gap: 8px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 #078f20; background: #0ba825; padding: 8px 14px 10px 18px; color: #fff; font: inherit; font-size: 16px; line-height: 22px; cursor: pointer; }
     .bookings-guest-overlay__post:hover { background: #078f20; }
     .bookings-guest-overlay__post:active { box-shadow: none; transform: translateY(3px); }
+    .bookings-guest-overlay__post.is-newly-registered { box-shadow: inset 0 -3px 0 var(--pink-strong); background: var(--pink); }
+    .bookings-guest-overlay__post.is-newly-registered:hover { background: var(--pink-strong); }
     .bookings-guest-overlay__divider { width: 100%; height: 1px; background: #ff9ba7; margin: 4px 0 2px; }
     .bookings-guest-overlay__protect { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2a3539; }
     .bookings-guest-overlay__protect-brand { display: block; width: 127px; height: 32px; }
@@ -6029,7 +6056,7 @@
           <div class="favourites-guest-overlay__doodle" aria-hidden="true">
             <img src="./assets/doodle-favourites.svg" alt="">
           </div>
-          <p class="favourites-guest-overlay__copy">After you join, you’ll see your chosen favourite sitters here.</p>
+          <p class="favourites-guest-overlay__copy">Your selected favorite sitters will appear here.</p>
           <div class="favourites-guest-overlay__actions">
             <button class="favourites-guest-overlay__post-job" id="favouritesPostJob" type="button"><span>Sign up for FREE</span></button>
             <button class="favourites-guest-overlay__search" id="favouritesFindSearch" type="button"><i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i><span>Find your sitter</span></button>
@@ -6090,7 +6117,7 @@
       <div class="messages-guest-overlay" id="messagesGuestOverlay" aria-hidden="true">
         <div class="messages-guest-overlay__card">
           <div class="messages-guest-overlay__doodle" aria-hidden="true"><img src="./assets/messages-guest-doodle-layer-2.svg" alt=""><img src="./assets/messages-guest-doodle-layer-1.svg" alt=""></div>
-          <p class="messages-guest-overlay__copy">Once subscribed, you’ll see your sitter messages here.</p>
+          <p class="messages-guest-overlay__copy">As a member, you'll see messages from sitter here.</p>
           <div class="messages-guest-overlay__actions">
             <button class="messages-guest-overlay__membership" id="messagesGuestMembership" type="button"><span>Sign up for FREE</span></button>
             <button class="messages-guest-overlay__search" id="messagesGuestSearch" type="button"><i class="fa-regular fa-magnifying-glass" aria-hidden="true"></i><span>Find your sitter</span></button>
@@ -7003,6 +7030,7 @@
       var pageScrollPositionBeforeFilters = 0;
       var selectedLocation = '';
       var prototypeRegistrationStatus = 'registered';
+      var isNewlyRegisteredParent = false;
       var currentAppScreen = 'search';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
       var APP_PLACEHOLDERS = {
@@ -7796,8 +7824,8 @@
         prototypeRegistrationStatus = status;
         if (status !== 'not-registered' || !loginTrigger.classList.contains('is-logged-in')) return;
 
-        // A new family begins with the existing guest search flow. The
-        // post-registration empty state is added as the next prototype branch.
+        // A new family begins with the guest search flow and gains the
+        // zero-data account state only after completing parent registration.
         simulateLogout();
         hideLogoutSuccess();
       }
@@ -7889,6 +7917,15 @@
         return false;
       }
 
+      function completeRegistration() {
+        var selectedRole = document.querySelector('[name="registration-role"]:checked');
+        if (!validateRegistrationRole() || !selectedRole || selectedRole.value !== 'family') return;
+
+        hideRegistrationRole();
+        simulateLogin({ newlyRegisteredParent: true });
+        selectAppScreen('search');
+      }
+
       function showRegistrationRoleMessage(role) {
         registrationRoleFamilyMessage.hidden = role !== 'family';
         registrationRoleSitterMessage.hidden = role !== 'sitter';
@@ -7940,27 +7977,50 @@
 
       function syncFavouritesAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
-        favouritesScreen.classList.toggle('is-guest', !isLoggedIn);
-        favouritesContent.classList.toggle('is-signed-in', isLoggedIn);
-        favouritesGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
+        var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        favouritesScreen.classList.toggle('is-guest', showZeroDataOverlay);
+        favouritesContent.classList.toggle('is-signed-in', isLoggedIn && !isNewlyRegisteredParent);
+        favouritesGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
+        favouritesPostJob.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
+        favouritesPostJob.innerHTML = isNewlyRegisteredParent
+          ? '<span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i>'
+          : '<span>Sign up for FREE</span>';
       }
 
       function syncMessagesAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
-        messagesScreen.classList.toggle('is-guest', !isLoggedIn);
-        messagesGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
+        var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        messagesScreen.classList.toggle('is-guest', showZeroDataOverlay);
+        messagesGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
+        messagesGuestMembership.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
+        messagesGuestMembership.innerHTML = isNewlyRegisteredParent
+          ? '<span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i>'
+          : '<span>Sign up for FREE</span>';
+        document.querySelector('.messages-guest-overlay__copy').textContent = isNewlyRegisteredParent
+          ? "As a member, you'll see messages from sitters here."
+          : "As a member, you'll see messages from sitter here.";
       }
 
       function syncJobsAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
-        jobsScreen.classList.toggle('is-guest', !isLoggedIn);
-        jobsGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
+        var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        jobsScreen.classList.toggle('is-guest', showZeroDataOverlay);
+        jobsGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
+        jobsGuestCreate.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
+        jobsGuestCreate.innerHTML = isNewlyRegisteredParent
+          ? '<span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i>'
+          : '<span>Sign up for FREE</span>';
       }
 
       function syncBookingsAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
-        bookingsScreen.classList.toggle('is-guest', !isLoggedIn);
-        bookingsGuestOverlay.setAttribute('aria-hidden', String(isLoggedIn));
+        var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        bookingsScreen.classList.toggle('is-guest', showZeroDataOverlay);
+        bookingsGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
+        bookingsGuestPost.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
+        bookingsGuestPost.innerHTML = isNewlyRegisteredParent
+          ? '<span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i>'
+          : '<span>Sign up for FREE</span>';
       }
 
       function closeBookingActionsSheet() {
@@ -8702,7 +8762,8 @@
         logoutAlertHideTimer = setTimeout(hideLogoutSuccess, ALERT_AUTO_DISMISS_MS);
       }
 
-      function simulateLogin() {
+      function simulateLogin(options) {
+        isNewlyRegisteredParent = Boolean(options && options.newlyRegisteredParent);
         hideLogoutSuccess();
         loginTrigger.classList.add('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Open profile');
@@ -8715,13 +8776,21 @@
         revealSitterDetails();
         revealSavedLocation();
         playFeedReload();
-        messagesNavItem.setAttribute('aria-label', 'Messages, 3 new');
-        messagesNavNotification.hidden = false;
-        messagesNavNotification.setAttribute('aria-hidden', 'false');
-        showWelcomeAlert();
+        if (isNewlyRegisteredParent) {
+          messagesNavItem.setAttribute('aria-label', 'Messages');
+          messagesNavNotification.hidden = true;
+          messagesNavNotification.setAttribute('aria-hidden', 'true');
+          hideWelcomeAlert();
+        } else {
+          messagesNavItem.setAttribute('aria-label', 'Messages, 3 new');
+          messagesNavNotification.hidden = false;
+          messagesNavNotification.setAttribute('aria-hidden', 'false');
+          showWelcomeAlert();
+        }
       }
 
       function simulateLogout() {
+        isNewlyRegisteredParent = false;
         closeFamilyProfile();
         selectAppScreen('search');
         hideLogoutSuccess();
@@ -8909,17 +8978,25 @@
           showRegistrationRoleMessage(input.value);
         });
       });
-      registrationRoleContinue.addEventListener('click', validateRegistrationRole);
-      favouritesPostJob.addEventListener('click', openLoginSheet);
+      registrationRoleContinue.addEventListener('click', completeRegistration);
+      favouritesPostJob.addEventListener('click', function () {
+        if (!isNewlyRegisteredParent) openLoginSheet();
+      });
       favouritesFindSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
-      messagesGuestMembership.addEventListener('click', openLoginSheet);
+      messagesGuestMembership.addEventListener('click', function () {
+        if (!isNewlyRegisteredParent) openLoginSheet();
+      });
       messagesGuestSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
-      jobsGuestCreate.addEventListener('click', openLoginSheet);
-      bookingsGuestPost.addEventListener('click', openLoginSheet);
+      jobsGuestCreate.addEventListener('click', function () {
+        if (!isNewlyRegisteredParent) openLoginSheet();
+      });
+      bookingsGuestPost.addEventListener('click', function () {
+        if (!isNewlyRegisteredParent) openLoginSheet();
+      });
       messageThreads.forEach(function (thread) {
         thread.setAttribute('tabindex', '0');
         thread.addEventListener('click', function (event) {
