@@ -1467,9 +1467,42 @@
     .registration-role-validation[hidden] { display: none; }
     .registration-role-validation__copy { margin: 0; color: #2a3539; font-size: 14px; font-weight: 400; line-height: 20px; text-align: center; }
     .registration-role-validation__arrow { position: absolute; bottom: -7px; left: 50%; display: block; width: 12px; height: 7px; transform: translateX(-50%); }
-    .phone-frame.is-registration-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
-    .phone-frame.is-registration-flow .mobile-bottom-nav__items { display: none; }
-    .phone-frame.is-registration-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+    .phone-frame.is-registration-flow .mobile-bottom-nav,
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
+    .phone-frame.is-registration-flow .mobile-bottom-nav__items,
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__items { display: none; }
+    .phone-frame.is-registration-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+
+    /* The existing job-creation prototype runs here as an embedded flow. The
+       phone status and home safe area stay in place while its wizard owns the
+       complete application surface between them. */
+    .job-wizard-screen {
+      position: absolute;
+      z-index: 40;
+      inset: 52px 0 32px;
+      overflow: hidden;
+      background: #fff;
+      pointer-events: none;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 300ms;
+      visibility: hidden;
+    }
+
+    .job-wizard-screen.is-open {
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      visibility: visible;
+    }
+
+    .job-wizard-screen__frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
 
     /* Figma: Welcome log in mobile / family registration details. This is a
        registration step, so it only retains the phone safe area — not app nav. */
@@ -1970,6 +2003,465 @@
       letter-spacing: -0.24px;
       line-height: 1.4;
     }
+
+    /* Figma: Welcome log in mobile / Mobile sitters dashboard. The dashboard
+       is its own app tab, so family search content remains mounted underneath
+       and can be restored without rebuilding it. */
+    .sitter-dashboard-screen {
+      position: absolute;
+      z-index: 10;
+      inset: 100px 0 83px;
+      display: flex;
+      overflow: hidden;
+      background: #fff;
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 200ms;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .sitter-dashboard-screen.is-open {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .sitter-dashboard-content {
+      width: 100%;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fff;
+      scrollbar-width: thin;
+    }
+
+    .sitter-dashboard-intro {
+      margin: 0 20px 20px;
+      color: var(--color-gray-800);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .sitter-dashboard-progress { height: 16px; overflow: hidden; margin-bottom: 32px; border-radius: 999px; background: #e3e9f0; }
+    .sitter-dashboard-progress__value { display: flex; width: 20%; height: 100%; align-items: center; justify-content: center; background: #f96073; color: #fff; font-size: 12px; font-weight: 350; line-height: 14px; }
+    .sitter-dashboard-list { display: grid; gap: 12px; }
+    .sitter-dashboard-card { display: flex; gap: 8px; align-items: flex-start; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; padding: 12px 12px 12px 8px; color: #2a3539; }
+    .sitter-dashboard-card--urgent { border-color: #ff8282; background: #ffe8e8; }
+    .sitter-dashboard-card.is-skeleton-loading { position: relative; overflow: hidden; border-color: #e5e5ea; background: #fff; pointer-events: none; }
+    .sitter-dashboard-card.is-skeleton-loading > * { opacity: 0; }
+    .sitter-dashboard-card.is-skeleton-loading::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; background: linear-gradient(#eef2f7 0 0) 12px 12px / 40px 40px no-repeat, linear-gradient(#eef2f7 0 0) 60px 14px / min(190px, calc(100% - 76px)) 18px no-repeat, linear-gradient(#eef2f7 0 0) 60px 42px / min(240px, calc(100% - 92px)) 14px no-repeat, linear-gradient(#eef2f7 0 0) 60px 66px / 112px 32px no-repeat, #fff; }
+    .sitter-dashboard-card.is-skeleton-loading::after { content: ""; position: absolute; top: 0; bottom: 0; left: -45%; width: 45%; z-index: 2; background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .82), rgba(255, 255, 255, 0)); animation: sitter-dashboard-shimmer .85s ease-in-out infinite; }
+    @keyframes sitter-dashboard-shimmer { from { transform: translateX(0); } to { transform: translateX(320%); } }
+    @media (prefers-reduced-motion: reduce) { .sitter-dashboard-card.is-skeleton-loading::after { animation: none; } }
+    .sitter-dashboard-card__doodle { display: block; width: 40px; height: 40px; flex: 0 0 40px; }
+    .sitter-dashboard-card__doodle img { display: block; width: 100%; height: 100%; }
+    .sitter-dashboard-card__body { min-width: 0; flex: 1; }
+    .sitter-dashboard-card__title { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 0; color: var(--color-gray-800); font-feature-settings: 'liga' off, 'clig' off; font-family: Soleil; font-size: 16px; font-style: normal; font-weight: 450; letter-spacing: -0.2px; line-height: 1.4; }
+    .sitter-dashboard-card__copy { margin: 2px 0 0; color: #4a5a61; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.32; }
+    .sitter-dashboard-card__copy a { color: #f96073; font-weight: 400; text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-dashboard-card__button { min-height: 32px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); margin-top: 8px; padding: 6px 12px 8px; background: #0ba825; color: var(--color-supportive-full-white); font-family: Soleil; font-size: 13px; font-style: normal; font-weight: 450; line-height: 18px; cursor: pointer; }
+    .sitter-dashboard-card--urgent .sitter-dashboard-card__button { background: #f96073; box-shadow: inset 0 -3px 0 #e6213a; }
+    .sitter-dashboard-card__button:hover { background: #078f20; }
+    .sitter-dashboard-card--urgent .sitter-dashboard-card__button:hover { background: #e6213a; }
+    .sitter-dashboard-grow-badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 64px; background: #fee7d1; padding: 3px 8px; color: #ed7000; font-size: 12px; font-weight: 700; line-height: 15px; }
+    .sitter-dashboard-grow-badge img { display: block; width: 16px; height: 16px; }
+    .sitter-dashboard-card__dismiss { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #8b91a3; cursor: pointer; }
+
+    /* Figma: Welcome log in mobile / [Mobile] Sitters - availability. The
+       existing availability-calendar prototype owns the desktop experience;
+       these names intentionally scope its compact app counterpart here. */
+    .sitter-availability-screen {
+      position: absolute;
+      z-index: 10;
+      inset: 100px 0 83px;
+      overflow: hidden;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(0, 8px, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 200ms;
+      visibility: hidden;
+    }
+
+    .sitter-availability-screen.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      visibility: visible;
+    }
+
+    .sitter-availability-content {
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fff;
+      scrollbar-width: thin;
+    }
+
+    .sitter-availability-stack { display: grid; gap: 10px; }
+
+    .sitter-availability-card {
+      position: relative;
+      overflow: visible;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .sitter-availability-card__header {
+      padding: 16px 14px;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+    }
+
+    .sitter-availability-card__header h2,
+    .sitter-availability-timetable__label {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .sitter-availability-card__body { padding: 12px; }
+    .sitter-availability-trigger {
+      display: flex;
+      width: 100%;
+      min-height: 52px;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px 16px;
+      color: var(--color-gray-800, #2a3539);
+      font: 400 16px/1.4 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-availability-trigger:focus-visible,
+    .sitter-availability-select:focus-visible,
+    .sitter-availability-mode-trigger:focus-visible,
+    .sitter-availability-option:focus-visible,
+    .sitter-timetable-option:focus-visible,
+    .sitter-availability-toggle:focus-visible,
+    .sitter-availability-day:focus-visible,
+    .sitter-availability-slot:focus-visible {
+      outline: 0;
+      border-color: #8fb1f6;
+      box-shadow: 0 0 0 2px #cbdafc;
+    }
+
+    .sitter-availability-trigger__check { color: var(--color-green-400, #22bf1e); font-size: 18px; }
+    .sitter-availability-trigger__value { flex: 1; min-width: 0; }
+    .sitter-availability-trigger__chevron { color: var(--color-pink-400, #f96073); font-size: 14px; }
+    .sitter-availability-option {
+      display: grid;
+      width: 100%;
+      gap: 2px;
+      border: 0;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+      background: #fff;
+      padding: 16px 20px;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-availability-option:last-child { border-bottom: 0; }
+    .sitter-availability-option:hover,
+    .sitter-availability-option.is-selected { background: #f7f7f7; }
+    .sitter-availability-option__title { font-size: 16px; font-weight: 450; line-height: 1.4; }
+    .sitter-availability-option__copy { color: var(--color-gray-700, #4a5a61); font-size: 14px; font-weight: 400; line-height: 1.4; }
+
+    .sitter-availability-sheet {
+      position: absolute;
+      z-index: 62;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .sitter-availability-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(42, 53, 57, .42);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .sitter-availability-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .sitter-availability-sheet__handle {
+      width: 36px;
+      height: 4px;
+      margin: 12px auto;
+      border-radius: 999px;
+      background: #2a3539;
+    }
+
+    .sitter-availability-sheet.is-open { pointer-events: auto; }
+    .sitter-availability-sheet.is-open .sitter-availability-sheet__backdrop { opacity: 1; }
+    .sitter-availability-sheet.is-open .sitter-availability-sheet__panel { transform: translateY(0); }
+
+    .sitter-timetable-sheet {
+      position: absolute;
+      z-index: 62;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .sitter-timetable-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(42, 53, 57, .42);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .sitter-timetable-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .sitter-timetable-sheet__handle {
+      width: 36px;
+      height: 4px;
+      margin: 12px auto;
+      border-radius: 999px;
+      background: #2a3539;
+    }
+
+    .sitter-timetable-sheet.is-open { pointer-events: auto; }
+    .sitter-timetable-sheet.is-open .sitter-timetable-sheet__backdrop { opacity: 1; }
+    .sitter-timetable-sheet.is-open .sitter-timetable-sheet__panel { transform: translateY(0); }
+
+    .sitter-timetable-option {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      border: 0;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+      background: #fff;
+      padding: 18px 20px;
+      color: var(--color-gray-800, #2a3539);
+      font: 450 16px/1.4 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-timetable-option:last-child { border-bottom: 0; }
+    .sitter-timetable-option:hover,
+    .sitter-timetable-option.is-selected { background: #f7f7f7; }
+
+    .sitter-availability-profile-list { display: grid; gap: 8px; }
+    .sitter-availability-profile {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      gap: 12px;
+      border-radius: 6px;
+      background: var(--color-gray-200, #f7f7f7);
+      padding: 12px;
+    }
+
+    .sitter-availability-profile span { color: var(--color-gray-700, #4a5a61); font-size: 14px; line-height: 24px; }
+    .sitter-availability-profile.is-disabled span { color: var(--color-gray-500, #8b91a3); }
+    .sitter-availability-toggle {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      flex: 0 0 48px;
+      border: 1px solid var(--color-gray-400, #bec2ce);
+      border-radius: 100px;
+      background: #fff;
+      padding: 0;
+      cursor: pointer;
+      transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .sitter-availability-toggle::after {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #cdd3de;
+      box-shadow: 0 1px 2px rgba(42, 53, 57, .18);
+      content: "";
+      transition: transform 180ms ease, background-color 180ms ease;
+    }
+
+    .sitter-availability-toggle.is-on { border-color: var(--color-green-500, #0ba825); background: var(--color-green-500, #0ba825); }
+    .sitter-availability-toggle.is-on::after { background: #fff; transform: translateX(24px); }
+
+    .sitter-availability-timetable__header {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+    }
+
+    .sitter-availability-select-wrap { position: relative; }
+    .sitter-availability-select-wrap::after {
+      position: absolute;
+      top: 50%;
+      right: 13px;
+      color: var(--color-pink-400, #f96073);
+      content: "\f078";
+      font-family: "Font Awesome 6 Pro";
+      font-size: 12px;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .sitter-availability-select {
+      width: 100%;
+      height: 40px;
+      appearance: none;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 0 36px 0 36px;
+      color: var(--color-gray-800, #2a3539);
+      font: 400 16px/1.32 Soleil, sans-serif;
+    }
+
+    .sitter-availability-mode-trigger {
+      display: flex;
+      width: 100%;
+      min-height: 40px;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px 12px;
+      color: var(--color-gray-800, #2a3539);
+      font: 400 16px/1.32 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-availability-select-wrap:has(.sitter-availability-mode-trigger)::before,
+    .sitter-availability-select-wrap:has(.sitter-availability-mode-trigger)::after { content: none; }
+
+    .sitter-availability-mode-trigger__icon { color: var(--color-gray-500, #8b91a3); font-size: 14px; }
+    .sitter-availability-mode-trigger__value { flex: 1; }
+    .sitter-availability-mode-trigger__chevron { color: var(--color-pink-400, #f96073); font-size: 12px; }
+
+    .sitter-availability-select-wrap::before {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 12px;
+      color: var(--color-gray-500, #8b91a3);
+      content: "\f133";
+      font-family: "Font Awesome 6 Pro";
+      font-size: 14px;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .sitter-availability-grid {
+      display: grid;
+      grid-template-columns: 70px repeat(7, minmax(24px, 1fr));
+      align-items: center;
+      gap: 4px 2px;
+      padding: 4px 8px 16px;
+    }
+
+    .sitter-availability-grid.is-hours { grid-template-columns: 72px repeat(7, minmax(24px, 1fr)); }
+    .sitter-availability-corner { height: 24px; }
+    .sitter-availability-day {
+      justify-self: center;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      padding: 2px;
+      color: var(--color-gray-500, #8b91a3);
+      font: 500 11px/1.2 Soleil, sans-serif;
+      text-decoration: underline;
+      text-decoration-color: rgba(190, 194, 206, .9);
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .sitter-availability-period { padding-right: 6px; color: var(--color-gray-700, #4a5a61); font: 400 12px/1.4 Soleil, sans-serif; }
+    .sitter-availability-grid.is-hours .sitter-availability-period { padding-right: 8px; text-align: right; font-size: 11px; }
+    .sitter-availability-cell { display: grid; min-height: 32px; place-items: center; background: #fafafb; }
+    .sitter-availability-slot {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border: 1px solid #bbc3d0;
+      border-radius: 4px;
+      background: #fff;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .sitter-availability-slot.is-active { border-color: var(--color-pink-400, #f96073); background: var(--color-pink-400, #f96073); }
+    .sitter-availability-slot.is-active::after {
+      position: absolute;
+      top: 6px;
+      left: 5px;
+      width: 10px;
+      height: 5px;
+      border-bottom: 2px solid #fff;
+      border-left: 2px solid #fff;
+      content: "";
+      transform: rotate(-45deg);
+    }
+
+    .sitter-availability-legend {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      border-top: 1px solid var(--color-gray-300, #e5e5ea);
+      background: var(--color-gray-200, #f7f7f7);
+      padding: 8px 12px;
+    }
+
+    .sitter-availability-legend__item { display: inline-flex; align-items: center; gap: 6px; color: var(--color-gray-700, #4a5a61); font: 400 12px/1.32 Soleil, sans-serif; }
+    .sitter-availability-legend__sample { width: 20px; height: 12px; border: 1px solid var(--color-gray-300, #e5e5ea); border-radius: 2px; background: #fff; }
+    .sitter-availability-legend__sample.is-active { border-color: var(--color-pink-400, #f96073); background: var(--color-pink-400, #f96073); }
 
     .favourites-card__activity strong {
       display: inline-flex;
@@ -5865,6 +6357,8 @@
       .registration-details-screen { top: 0; }
       .message-detail-screen { top: 0; }
       .app-placeholder-screen { top: 48px; }
+      .sitter-dashboard-screen { top: 48px; }
+      .sitter-availability-screen { top: 48px; }
       .favourites-screen { top: 48px; }
       .messages-screen { top: 48px; }
       .jobs-screen { top: 48px; }
@@ -6157,6 +6651,124 @@
           </div>
         </div>
       </div>
+    </div>
+    <section class="sitter-dashboard-screen" id="sitterDashboardScreen" aria-label="Dashboard" aria-hidden="true" data-node-id="2358:52843">
+      <div class="sitter-dashboard-content">
+        <p class="sitter-dashboard-intro">You are improving through fulfilling the tasks</p>
+        <div class="sitter-dashboard-progress" role="progressbar" aria-label="Profile progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20"><span class="sitter-dashboard-progress__value">20%</span></div>
+        <div class="sitter-dashboard-list">
+          <article class="sitter-dashboard-card sitter-dashboard-card--urgent">
+            <span class="sitter-dashboard-card__doodle"><img src="assets/dashboard-unanswered-message.svg" alt=""></span>
+            <div class="sitter-dashboard-card__body">
+              <p class="sitter-dashboard-card__title">You have 2 unanswered messages</p>
+              <p class="sitter-dashboard-card__copy">Don’t let families wait for too long.</p>
+              <button class="sitter-dashboard-card__button" id="sitterDashboardMessages" type="button">Go to messages</button>
+            </div>
+          </article>
+          <article class="sitter-dashboard-card sitter-dashboard-card--verification">
+            <span class="sitter-dashboard-card__doodle"><img src="assets/dashboard-get-verified.svg" alt=""></span>
+            <div class="sitter-dashboard-card__body">
+              <p class="sitter-dashboard-card__title">Get verified in person in Bratislava!</p>
+              <p class="sitter-dashboard-card__copy">Boost your profile's credibility and get more job offers. <a href="#">Schedule your appointment</a> in our new Verification Center.</p>
+            </div>
+          </article>
+          <article class="sitter-dashboard-card sitter-dashboard-card--grow">
+            <span class="sitter-dashboard-card__doodle"><img src="assets/dashboard-get-more-bookings.svg" alt=""></span>
+            <div class="sitter-dashboard-card__body">
+              <p class="sitter-dashboard-card__title">Get more bookings with <span class="sitter-dashboard-grow-badge"><img src="assets/grow-shield.svg" alt="">GROW</span></p>
+              <p class="sitter-dashboard-card__copy">Show up higher in search and see if your message was read.</p>
+              <button class="sitter-dashboard-card__button" type="button">Upgrade to GROW</button>
+            </div>
+          </article>
+          <article class="sitter-dashboard-card sitter-dashboard-card--whatsapp">
+            <span class="sitter-dashboard-card__doodle"><img src="assets/dashboard-join-whatsapp.svg" alt=""></span>
+            <div class="sitter-dashboard-card__body">
+              <p class="sitter-dashboard-card__title">Join our WhatsApp channel</p>
+              <p class="sitter-dashboard-card__copy">Click the bell 🔔 and <a href="#">subscribe to channel</a> to be the first to get the latest updates.</p>
+            </div>
+            <button class="sitter-dashboard-card__dismiss" type="button" aria-label="Dismiss WhatsApp channel"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+          </article>
+          <article class="sitter-dashboard-card sitter-dashboard-card--record">
+            <span class="sitter-dashboard-card__doodle"><img src="assets/dashboard-criminal-record.svg" alt=""></span>
+            <div class="sitter-dashboard-card__body">
+              <p class="sitter-dashboard-card__title">Criminal record online</p>
+              <p class="sitter-dashboard-card__copy">Now you can <a href="#">get and upload</a> the extract from the criminal record online.</p>
+            </div>
+            <button class="sitter-dashboard-card__dismiss" type="button" aria-label="Dismiss criminal record notice"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="sitter-availability-screen" id="sitterAvailabilityScreen" aria-label="Availability" aria-hidden="true" data-node-id="2360:57016">
+      <div class="sitter-availability-content">
+        <div class="sitter-availability-stack">
+          <article class="sitter-availability-card" id="sitterAvailabilityGeneralCard">
+            <header class="sitter-availability-card__header"><h2>General availability</h2></header>
+            <div class="sitter-availability-card__body">
+              <button class="sitter-availability-trigger" id="sitterAvailabilityTrigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Change general availability">
+                <i class="sitter-availability-trigger__check fa-solid fa-check" aria-hidden="true"></i>
+                <span class="sitter-availability-trigger__value" id="sitterAvailabilityValue">Active</span>
+                <i class="sitter-availability-trigger__chevron fa-regular fa-chevron-up" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
+
+          <article class="sitter-availability-card">
+            <header class="sitter-availability-card__header"><h2>Profile availability</h2></header>
+            <div class="sitter-availability-card__body">
+              <div class="sitter-availability-profile-list" id="sitterAvailabilityProfiles">
+                <div class="sitter-availability-profile"><button class="sitter-availability-toggle is-on" type="button" aria-pressed="true" data-sitter-profile="Babysitting"></button><span>Babysitting</span></div>
+                <div class="sitter-availability-profile"><button class="sitter-availability-toggle is-on" type="button" aria-pressed="true" data-sitter-profile="Pet care"></button><span>Pet care</span></div>
+                <div class="sitter-availability-profile is-disabled"><button class="sitter-availability-toggle" type="button" aria-pressed="false" data-sitter-profile="Senior care"></button><span>Senior care</span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="sitter-availability-card" id="sitterAvailabilityTimetableCard">
+            <div class="sitter-availability-timetable__header">
+              <span class="sitter-availability-timetable__label">Set your timetable</span>
+              <div class="sitter-availability-select-wrap">
+                <button class="sitter-availability-mode-trigger" id="sitterAvailabilityMode" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Change timetable display mode">
+                  <i class="sitter-availability-mode-trigger__icon fa-regular fa-calendar-days" aria-hidden="true"></i>
+                  <span class="sitter-availability-mode-trigger__value" id="sitterAvailabilityModeValue">by parts of the day</span>
+                  <i class="sitter-availability-mode-trigger__chevron fa-regular fa-chevron-up" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <div class="sitter-availability-grid" id="sitterAvailabilityGrid" aria-label="Weekly availability by parts of the day"></div>
+            <footer class="sitter-availability-legend" aria-hidden="true">
+              <span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample is-active"></span>Available</span>
+              <span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample"></span>Unavailable</span>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </section>
+    <div class="sitter-availability-sheet" id="sitterAvailabilitySheet" aria-hidden="true" hidden>
+      <button class="sitter-availability-sheet__backdrop" id="sitterAvailabilitySheetBackdrop" type="button" aria-label="Close general availability options"></button>
+      <section class="sitter-availability-sheet__panel" id="sitterAvailabilitySheetDialog" role="dialog" aria-modal="true" aria-label="General availability" tabindex="-1">
+        <div class="sitter-availability-sheet__handle" aria-hidden="true"></div>
+        <button class="sitter-availability-option is-selected" type="button" role="option" aria-selected="true" data-sitter-availability-option="Active">
+          <span class="sitter-availability-option__title">Active</span><span class="sitter-availability-option__copy">I need more jobs, looking</span>
+        </button>
+        <button class="sitter-availability-option" type="button" role="option" aria-selected="false" data-sitter-availability-option="I have just a few stable families">
+          <span class="sitter-availability-option__title">I have just a few stable families</span><span class="sitter-availability-option__copy">Doing some bookings with my stable clients only</span>
+        </button>
+        <button class="sitter-availability-option" type="button" role="option" aria-selected="false" data-sitter-availability-option="Off - for a longer time">
+          <span class="sitter-availability-option__title">Off - for a longer time</span><span class="sitter-availability-option__copy">Travelling</span>
+        </button>
+        <button class="sitter-availability-option" type="button" role="option" aria-selected="false" data-sitter-availability-option="Hidden for now">
+          <span class="sitter-availability-option__title">Hidden for now</span><span class="sitter-availability-option__copy">I'm super busy right now, but I will return</span>
+        </button>
+      </section>
+    </div>
+    <div class="sitter-timetable-sheet" id="sitterTimetableSheet" aria-hidden="true" hidden>
+      <button class="sitter-timetable-sheet__backdrop" id="sitterTimetableSheetBackdrop" type="button" aria-label="Close timetable options"></button>
+      <section class="sitter-timetable-sheet__panel" id="sitterTimetableSheetDialog" role="dialog" aria-modal="true" aria-label="Set your timetable" tabindex="-1">
+        <div class="sitter-timetable-sheet__handle" aria-hidden="true"></div>
+        <button class="sitter-timetable-option is-selected" type="button" aria-pressed="true" data-sitter-timetable-mode="parts">by parts of the day</button>
+        <button class="sitter-timetable-option" type="button" aria-pressed="false" data-sitter-timetable-mode="hours">by hours</button>
+      </section>
     </div>
     <section class="app-placeholder-screen" id="appPlaceholderScreen" aria-live="polite" aria-hidden="true">
       <div class="app-placeholder-screen__content">
@@ -6788,6 +7400,9 @@
         <footer class="registration-details-footer"><button class="registration-details-continue" id="registrationDetailsContinue" type="button">Continue <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>
       </main>
     </section>
+    <section class="job-wizard-screen" id="jobWizardScreen" aria-label="Create a new job" aria-hidden="true">
+      <iframe class="job-wizard-screen__frame" id="jobWizardFrame" title="Create a new job" src="../jobs-for-families/index.html?embed=mobile-app"></iframe>
+    </section>
     <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
       <div class="mobile-bottom-nav__items">
         <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" data-app-screen="search" data-icon="fa-magnifying-glass" aria-current="page">
@@ -7010,16 +7625,16 @@
       </button>
     </header>
     <form class="prototype-settings-modal__body" aria-label="Prototype configuration">
-      <fieldset class="prototype-settings-group" disabled>
+      <fieldset class="prototype-settings-group">
         <legend>User role</legend>
         <div class="prototype-settings-option-list">
           <label class="prototype-settings-option">
-            <input type="radio" name="prototype-user-role" value="family" checked disabled>
-            <span><strong>Parent / family</strong><small>Current experience shown in this prototype.</small></span>
+            <input type="radio" name="prototype-user-role" value="family" checked>
+            <span><strong>Parent / family</strong><small>Family experience in the application.</small></span>
           </label>
           <label class="prototype-settings-option">
-            <input type="radio" name="prototype-user-role" value="sitter" disabled>
-            <span><strong>Sitter</strong><small>Will show the sitter version of the application.</small></span>
+            <input type="radio" name="prototype-user-role" value="sitter">
+            <span><strong>Sitter</strong><small>Shows the sitter version of the application.</small></span>
           </label>
         </div>
       </fieldset>
@@ -7070,6 +7685,26 @@
       var liveRoot = document.querySelector('.hl-live');
       var headerComponent = document.querySelector('.searches-page-header-component');
       var verticalFilters = Array.prototype.slice.call(document.querySelectorAll('.searches-page-header-component__quick-filter'));
+      var sitterDashboardScreen = document.getElementById('sitterDashboardScreen');
+      var sitterDashboardCards = Array.prototype.slice.call(document.querySelectorAll('.sitter-dashboard-card'));
+      var sitterDashboardMessages = document.getElementById('sitterDashboardMessages');
+      var sitterAvailabilityScreen = document.getElementById('sitterAvailabilityScreen');
+      var sitterAvailabilityTrigger = document.getElementById('sitterAvailabilityTrigger');
+      var sitterAvailabilityValue = document.getElementById('sitterAvailabilityValue');
+      var sitterAvailabilityOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-availability-option]'));
+      var sitterAvailabilitySheet = document.getElementById('sitterAvailabilitySheet');
+      var sitterAvailabilitySheetBackdrop = document.getElementById('sitterAvailabilitySheetBackdrop');
+      var sitterAvailabilitySheetDialog = document.getElementById('sitterAvailabilitySheetDialog');
+      var sitterAvailabilitySheetCloseTimer = null;
+      var sitterAvailabilityProfiles = document.getElementById('sitterAvailabilityProfiles');
+      var sitterAvailabilityMode = document.getElementById('sitterAvailabilityMode');
+      var sitterAvailabilityModeValueLabel = document.getElementById('sitterAvailabilityModeValue');
+      var sitterTimetableOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-timetable-mode]'));
+      var sitterTimetableSheet = document.getElementById('sitterTimetableSheet');
+      var sitterTimetableSheetBackdrop = document.getElementById('sitterTimetableSheetBackdrop');
+      var sitterTimetableSheetDialog = document.getElementById('sitterTimetableSheetDialog');
+      var sitterTimetableSheetCloseTimer = null;
+      var sitterAvailabilityGrid = document.getElementById('sitterAvailabilityGrid');
       var appPlaceholderScreen = document.getElementById('appPlaceholderScreen');
       var appPlaceholderIcon = document.getElementById('appPlaceholderIcon');
       var appPlaceholderTitle = document.getElementById('appPlaceholderTitle');
@@ -7120,6 +7755,7 @@
       var prototypeSettingsBackdrop = document.getElementById('prototypeSettingsBackdrop');
       var prototypeSettingsModal = document.getElementById('prototypeSettingsModal');
       var prototypeSettingsClose = document.getElementById('prototypeSettingsClose');
+      var prototypeUserRoleInputs = Array.prototype.slice.call(document.querySelectorAll('[name="prototype-user-role"]'));
       var prototypeRegistrationStatusInputs = Array.prototype.slice.call(document.querySelectorAll('[name="prototype-registration-status"]'));
       var phoneFrame = document.querySelector('.phone-frame');
       var loginTrigger = document.getElementById('loginTrigger');
@@ -7139,6 +7775,9 @@
       var registrationDetailsBack = document.getElementById('registrationDetailsBack');
       var registrationDetailsClose = document.getElementById('registrationDetailsClose');
       var registrationDetailsContinue = document.getElementById('registrationDetailsContinue');
+      var jobWizardScreen = document.getElementById('jobWizardScreen');
+      var jobWizardFrame = document.getElementById('jobWizardFrame');
+      var jobWizardTrigger = null;
       var referralShareSheet = document.getElementById('referralShareSheet');
       var referralShareBackdrop = document.getElementById('referralShareBackdrop');
       var referralShareDialog = document.getElementById('referralShareDialog');
@@ -7226,6 +7865,7 @@
       var questionAnimationFrame = null;
       var questionAnimationTimeout = null;
       var feedReloadTimeout = null;
+      var sitterDashboardLoadingTimers = [];
       var queryExamplesTimer = null;
       var typewriterTimer = null;
       var locationPlaceholderTimer = null;
@@ -7240,15 +7880,21 @@
       var dropdownBlurTimeout = null;
       var pageScrollPositionBeforeFilters = 0;
       var selectedLocation = '';
+      var prototypeUserRole = 'family';
       var prototypeRegistrationStatus = 'registered';
       var isNewlyRegisteredParent = false;
+      var hasPostedFirstJob = false;
       var currentAppScreen = 'search';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
       var APP_PLACEHOLDERS = {
         favourites: { title: 'Favourites', icon: 'fa-heart', copy: 'Your saved sitters will appear here.' },
         messages: { title: 'Messages', icon: 'fa-message', copy: 'Your conversations will appear here.' },
         jobs: { title: 'Jobs', icon: 'fa-paper-plane', copy: 'Your jobs will appear here.' },
-        bookings: { title: 'Bookings', icon: 'fa-calendar-clock', copy: 'Your bookings will appear here.' }
+        bookings: { title: 'Bookings', icon: 'fa-calendar-clock', copy: 'Your bookings will appear here.' },
+        'sitter-calendar': { title: 'Calendar', icon: 'fa-calendar-days', copy: 'Your availability calendar will appear here.' },
+        'sitter-messages': { title: 'Messages', icon: 'fa-message', copy: 'Your conversations with families will appear here.' },
+        'sitter-jobs': { title: 'Jobs', icon: 'fa-paper-plane', copy: 'Jobs near you will appear here.' },
+        'sitter-bookings': { title: 'Bookings', icon: 'fa-calendar-clock', copy: 'Your bookings will appear here.' }
       };
 
       var DEFAULT_QUERY_EXAMPLES = [
@@ -7781,6 +8427,161 @@
         }, 520);
       }
 
+      function playSitterDashboardLoading() {
+        sitterDashboardLoadingTimers.forEach(function (timer) { clearTimeout(timer); });
+        sitterDashboardLoadingTimers = [];
+
+        sitterDashboardCards.forEach(function (card) {
+          card.classList.add('is-skeleton-loading');
+        });
+        sitterDashboardScreen.setAttribute('aria-busy', 'true');
+
+        var startDelay = prefersReducedMotion() ? 0 : 280;
+        var revealDelay = prefersReducedMotion() ? 0 : 160;
+        sitterDashboardCards.forEach(function (card, index) {
+          var timer = setTimeout(function () {
+            card.classList.remove('is-skeleton-loading');
+            if (index === sitterDashboardCards.length - 1) {
+              sitterDashboardScreen.removeAttribute('aria-busy');
+              sitterDashboardLoadingTimers = [];
+            }
+          }, startDelay + (index * revealDelay));
+          sitterDashboardLoadingTimers.push(timer);
+        });
+      }
+
+      var SITTER_AVAILABILITY_DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+      var SITTER_AVAILABILITY_DAY_LABELS = { mo: 'MO', tu: 'TU', we: 'WE', th: 'TH', fr: 'FR', sa: 'SA', su: 'SU' };
+      var SITTER_AVAILABILITY_PART_ROWS = [
+        { key: 'morning', label: 'morning', hours: ['07-08', '08-09', '09-10', '10-11', '11-12'] },
+        { key: 'afternoon', label: 'afternoon', hours: ['12-13', '13-14', '14-15', '15-16', '16-17', '17-18'] },
+        { key: 'evening', label: 'evening', hours: ['18-19', '19-20', '20-21', '21-22'] },
+        { key: 'night', label: 'night', hours: ['after-22'] }
+      ];
+      var SITTER_AVAILABILITY_HOUR_ROWS = [
+        { key: '07-08', label: '07–08' }, { key: '08-09', label: '08–09' }, { key: '09-10', label: '09–10' },
+        { key: '10-11', label: '10–11' }, { key: '11-12', label: '11–12' }, { key: '12-13', label: '12–13' },
+        { key: '13-14', label: '13–14' }, { key: '14-15', label: '14–15' }, { key: '15-16', label: '15–16' },
+        { key: '16-17', label: '16–17' }, { key: '17-18', label: '17–18' }, { key: '18-19', label: '18–19' },
+        { key: '19-20', label: '19–20' }, { key: '20-21', label: '20–21' }, { key: '21-22', label: '21–22' },
+        { key: 'after-22', label: 'after 22' }
+      ];
+      var sitterAvailabilityModeValue = 'parts';
+      var sitterAvailabilityStatus = 'Active';
+      var sitterAvailabilityHours = {};
+
+      function initialiseSitterAvailabilityHours() {
+        SITTER_AVAILABILITY_DAYS.forEach(function(day) {
+          sitterAvailabilityHours[day] = {};
+          SITTER_AVAILABILITY_HOUR_ROWS.forEach(function(row) {
+            sitterAvailabilityHours[day][row.key] = day === 'we' || day === 'th' || day === 'fr';
+          });
+        });
+      }
+
+      function isSitterAvailabilityPartActive(day, partKey) {
+        var part = SITTER_AVAILABILITY_PART_ROWS.find(function(item) { return item.key === partKey; });
+        return !!part && part.hours.every(function(hour) { return sitterAvailabilityHours[day][hour]; });
+      }
+
+      function setSitterAvailabilityPart(day, partKey, isActive) {
+        var part = SITTER_AVAILABILITY_PART_ROWS.find(function(item) { return item.key === partKey; });
+        if (!part) return;
+        part.hours.forEach(function(hour) { sitterAvailabilityHours[day][hour] = isActive; });
+      }
+
+      function renderSitterAvailabilityTimetable() {
+        if (!sitterAvailabilityGrid) return;
+        var isHours = sitterAvailabilityModeValue === 'hours';
+        var rows = isHours ? SITTER_AVAILABILITY_HOUR_ROWS : SITTER_AVAILABILITY_PART_ROWS;
+        sitterAvailabilityGrid.classList.toggle('is-hours', isHours);
+        sitterAvailabilityGrid.setAttribute('aria-label', isHours ? 'Weekly availability by hours' : 'Weekly availability by parts of the day');
+        var html = '<div class="sitter-availability-corner"></div>' + SITTER_AVAILABILITY_DAYS.map(function(day) {
+          return '<button class="sitter-availability-day" type="button" data-sitter-availability-day="' + day + '">' + SITTER_AVAILABILITY_DAY_LABELS[day] + '</button>';
+        }).join('');
+        rows.forEach(function(row) {
+          html += '<div class="sitter-availability-period">' + row.label + '</div>';
+          SITTER_AVAILABILITY_DAYS.forEach(function(day) {
+            var isActive = isHours ? sitterAvailabilityHours[day][row.key] : isSitterAvailabilityPartActive(day, row.key);
+            html += '<div class="sitter-availability-cell"><button class="sitter-availability-slot' + (isActive ? ' is-active' : '') + '" type="button" aria-pressed="' + String(isActive) + '" data-sitter-availability-slot data-day="' + day + '" data-row="' + row.key + '" data-mode="' + sitterAvailabilityModeValue + '"></button></div>';
+          });
+        });
+        sitterAvailabilityGrid.innerHTML = html;
+      }
+
+      function closeSitterAvailabilitySheet() {
+        if (!sitterAvailabilitySheet || sitterAvailabilitySheet.hidden) return;
+        sitterAvailabilitySheet.classList.remove('is-open');
+        sitterAvailabilitySheet.setAttribute('aria-hidden', 'true');
+        sitterAvailabilityTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterAvailabilitySheetCloseTimer);
+        sitterAvailabilitySheetCloseTimer = window.setTimeout(function () {
+          sitterAvailabilitySheet.hidden = true;
+          sitterAvailabilityTrigger.focus({ preventScroll: true });
+        }, 280);
+      }
+
+      function openSitterAvailabilitySheet() {
+        if (!sitterAvailabilitySheet) return;
+        closeSitterTimetableSheet();
+        window.clearTimeout(sitterAvailabilitySheetCloseTimer);
+        sitterAvailabilitySheet.hidden = false;
+        sitterAvailabilitySheet.setAttribute('aria-hidden', 'false');
+        sitterAvailabilityTrigger.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(function () {
+          sitterAvailabilitySheet.classList.add('is-open');
+          sitterAvailabilitySheetDialog.focus({ preventScroll: true });
+        });
+      }
+
+      function closeSitterTimetableSheet() {
+        if (!sitterTimetableSheet || sitterTimetableSheet.hidden) return;
+        sitterTimetableSheet.classList.remove('is-open');
+        sitterTimetableSheet.setAttribute('aria-hidden', 'true');
+        sitterAvailabilityMode.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterTimetableSheetCloseTimer);
+        sitterTimetableSheetCloseTimer = window.setTimeout(function () {
+          sitterTimetableSheet.hidden = true;
+          sitterAvailabilityMode.focus({ preventScroll: true });
+        }, 280);
+      }
+
+      function openSitterTimetableSheet() {
+        if (!sitterTimetableSheet) return;
+        closeSitterAvailabilitySheet();
+        window.clearTimeout(sitterTimetableSheetCloseTimer);
+        sitterTimetableSheet.hidden = false;
+        sitterTimetableSheet.setAttribute('aria-hidden', 'false');
+        sitterAvailabilityMode.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(function () {
+          sitterTimetableSheet.classList.add('is-open');
+          sitterTimetableSheetDialog.focus({ preventScroll: true });
+        });
+      }
+
+      function setSitterAvailabilityStatus(status) {
+        sitterAvailabilityStatus = status;
+        sitterAvailabilityValue.textContent = status;
+        sitterAvailabilityOptions.forEach(function(option) {
+          var selected = option.getAttribute('data-sitter-availability-option') === status;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        closeSitterAvailabilitySheet();
+      }
+
+      function setSitterAvailabilityMode(mode) {
+        sitterAvailabilityModeValue = mode;
+        sitterAvailabilityModeValueLabel.textContent = mode === 'hours' ? 'by hours' : 'by parts of the day';
+        sitterTimetableOptions.forEach(function(option) {
+          var selected = option.getAttribute('data-sitter-timetable-mode') === mode;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-pressed', String(selected));
+        });
+        renderSitterAvailabilityTimetable();
+        closeSitterTimetableSheet();
+      }
+
       // Show the typing indicator briefly, then run `done` to reveal the answer.
       function beginThinking(done) {
         if (thinkingTimeout) {
@@ -8041,6 +8842,56 @@
         hideLogoutSuccess();
       }
 
+      function isSitterSession() {
+        return prototypeUserRole === 'sitter' && loginTrigger.classList.contains('is-logged-in');
+      }
+
+      function syncNavigationForRole() {
+        var sitterItems = [
+          { screen: 'dashboard', icon: 'fa-grid-2', label: 'Dashboard' },
+          { screen: 'sitter-calendar', icon: 'fa-calendar-days', label: 'Availability' },
+          { screen: 'sitter-messages', icon: 'fa-message', label: 'Messages' },
+          { screen: 'sitter-jobs', icon: 'fa-paper-plane', label: 'Jobs' },
+          { screen: 'sitter-bookings', icon: 'fa-calendar-clock', label: 'Bookings' }
+        ];
+        var familyItems = [
+          { screen: 'search', icon: 'fa-magnifying-glass', label: 'Search' },
+          { screen: 'favourites', icon: 'fa-heart', label: 'Favourites' },
+          { screen: 'messages', icon: 'fa-message', label: 'Messages' },
+          { screen: 'jobs', icon: 'fa-paper-plane', label: 'Jobs' },
+          { screen: 'bookings', icon: 'fa-calendar-clock', label: 'Bookings' }
+        ];
+        var items = isSitterSession() ? sitterItems : familyItems;
+
+        navItems.forEach(function (item, index) {
+          var config = items[index];
+          var icon = item.querySelector('.mobile-bottom-nav__icon');
+          var label = item.querySelector('span:not(.mobile-bottom-nav__notification)');
+          item.setAttribute('data-app-screen', config.screen);
+          item.setAttribute('data-icon', config.icon);
+          item.setAttribute('aria-label', config.label);
+          if (icon) icon.className = 'mobile-bottom-nav__icon fa-light ' + config.icon;
+          if (label) label.textContent = config.label;
+        });
+
+        messagesNavNotification.hidden = isSitterSession() || messagesNavNotification.hidden;
+        messagesNavNotification.setAttribute('aria-hidden', String(messagesNavNotification.hidden));
+      }
+
+      function setPrototypeUserRole(role) {
+        if (prototypeUserRole === role) return;
+        prototypeUserRole = role;
+        if (loginTrigger.classList.contains('is-logged-in')) {
+          simulateLogout();
+          if (logoutSuccessTimer) {
+            clearTimeout(logoutSuccessTimer);
+            logoutSuccessTimer = null;
+          }
+          hideLogoutSuccess();
+        }
+        syncNavigationForRole();
+      }
+
       // The sheet is modal — its backdrop covers the whole frame — but every
       // control behind it stayed tabbable and readable, 58 of them. Marking
       // the rest of the frame inert traps focus inside the sheet and hides
@@ -8171,6 +9022,33 @@
         showRegistrationSuccess();
       }
 
+      function openJobWizard(trigger) {
+        if (!isNewlyRegisteredParent) return;
+        jobWizardTrigger = trigger || null;
+        hideRegistrationSuccess();
+        jobWizardScreen.classList.add('is-open');
+        jobWizardScreen.setAttribute('aria-hidden', 'false');
+        phoneFrame.classList.add('is-job-wizard-flow');
+        setBackgroundInert(jobWizardScreen);
+        syncBackEntry();
+      }
+
+      function closeJobWizard(restoreFocus) {
+        jobWizardScreen.classList.remove('is-open');
+        jobWizardScreen.setAttribute('aria-hidden', 'true');
+        phoneFrame.classList.remove('is-job-wizard-flow');
+        setBackgroundInert(null);
+        if (restoreFocus && jobWizardTrigger) jobWizardTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function completeJobWizard() {
+        hasPostedFirstJob = true;
+        closeJobWizard(false);
+        syncJobsAccessState();
+        selectAppScreen('jobs');
+      }
+
       function showRegistrationRoleMessage(role) {
         registrationRoleFamilyMessage.hidden = role !== 'family';
         registrationRoleSitterMessage.hidden = role !== 'sitter';
@@ -8248,7 +9126,7 @@
 
       function syncJobsAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
-        var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        var showZeroDataOverlay = !isLoggedIn || (isNewlyRegisteredParent && !hasPostedFirstJob);
         jobsScreen.classList.toggle('is-guest', showZeroDataOverlay);
         jobsGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
         jobsGuestCreate.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
@@ -8326,6 +9204,10 @@
       function selectAppScreen(screen) {
         var placeholder = APP_PLACEHOLDERS[screen];
         currentAppScreen = screen;
+        if (screen !== 'sitter-calendar') {
+          closeSitterAvailabilitySheet();
+          closeSitterTimetableSheet();
+        }
         if (screen !== 'search') hideRegistrationSuccess();
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
@@ -8347,7 +9229,59 @@
         closeReferralShareSheet(false);
         messageDetailScreen.classList.remove('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'true');
-        if (screen === 'messages') clearMessagesBadge();
+        if (screen === 'messages' || screen === 'sitter-messages') clearMessagesBadge();
+
+        if (screen === 'dashboard' && isSitterSession()) {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          sitterAvailabilityScreen.classList.remove('is-open');
+          sitterAvailabilityScreen.setAttribute('aria-hidden', 'true');
+          favouritesScreen.classList.remove('is-open');
+          favouritesScreen.setAttribute('aria-hidden', 'true');
+          messagesScreen.classList.remove('is-open');
+          messagesScreen.setAttribute('aria-hidden', 'true');
+          jobsScreen.classList.remove('is-open');
+          jobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
+          resultsView.classList.add('is-hidden');
+          sitterDashboardScreen.classList.add('is-open');
+          sitterDashboardScreen.setAttribute('aria-hidden', 'false');
+          mobileHeaderIcon.className = 'fa-solid fa-grid-2';
+          mobileHeaderIcon.style.color = '#f96073';
+          mobileHeaderTitle.textContent = 'Dashboard';
+          setActiveNavItem('dashboard');
+          syncBackEntry();
+          return;
+        }
+
+        sitterDashboardScreen.classList.remove('is-open');
+        sitterDashboardScreen.setAttribute('aria-hidden', 'true');
+        sitterAvailabilityScreen.classList.remove('is-open');
+        sitterAvailabilityScreen.setAttribute('aria-hidden', 'true');
+
+        if (screen === 'sitter-calendar' && isSitterSession()) {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          favouritesScreen.classList.remove('is-open');
+          favouritesScreen.setAttribute('aria-hidden', 'true');
+          messagesScreen.classList.remove('is-open');
+          messagesScreen.setAttribute('aria-hidden', 'true');
+          jobsScreen.classList.remove('is-open');
+          jobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
+          resultsView.classList.add('is-hidden');
+          sitterAvailabilityScreen.classList.add('is-open');
+          sitterAvailabilityScreen.setAttribute('aria-hidden', 'false');
+          sitterAvailabilityScreen.querySelector('.sitter-availability-content').scrollTop = 0;
+          mobileHeaderIcon.className = 'fa-solid fa-calendar-days';
+          mobileHeaderIcon.style.color = '#f96073';
+          mobileHeaderTitle.textContent = 'Availability';
+          setActiveNavItem('sitter-calendar');
+          syncBackEntry();
+          return;
+        }
 
         if (screen === 'search') {
           appPlaceholderScreen.classList.remove('is-open');
@@ -8394,7 +9328,9 @@
           return;
         }
 
-        if (screen === 'messages') {
+        // The conversation list and slide-in detail are shared by families
+        // and sitters; role-specific navigation only changes the entry point.
+        if (screen === 'messages' || (screen === 'sitter-messages' && isSitterSession())) {
           appPlaceholderScreen.classList.remove('is-open');
           appPlaceholderScreen.setAttribute('aria-hidden', 'true');
           favouritesScreen.classList.remove('is-open');
@@ -8707,6 +9643,7 @@
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
+        { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
         { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
         { isOpen: function () { return referralShareSheet.classList.contains('is-open'); }, close: closeReferralShareSheet },
         { isOpen: function () { return registrationDetailsScreen.classList.contains('is-open'); }, close: closeRegistrationDetailsToRole },
@@ -9026,12 +9963,13 @@
       }
 
       function simulateLogin(options) {
-        isNewlyRegisteredParent = Boolean(options && options.newlyRegisteredParent);
+        isNewlyRegisteredParent = prototypeUserRole === 'family' && Boolean(options && options.newlyRegisteredParent);
         hideLogoutSuccess();
         hideRegistrationSuccess();
         loginTrigger.classList.add('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Open profile');
         closeLoginSheet();
+        syncNavigationForRole();
         syncFavouritesAccessState();
         syncMessagesAccessState();
         syncJobsAccessState();
@@ -9040,6 +9978,20 @@
         revealSitterDetails();
         revealSavedLocation();
         playFeedReload();
+        if (isSitterSession()) {
+          messagesNavItem.setAttribute('aria-label', 'Messages');
+          messagesNavNotification.hidden = true;
+          messagesNavNotification.setAttribute('aria-hidden', 'true');
+          playSitterDashboardLoading();
+          showWelcomeAlert();
+          // Closing the login sheet releases its browser-back entry. Opening
+          // the dashboard in the same turn made that pending popstate close
+          // the newly opened tab again, so wait until the sheet is released.
+          setTimeout(function () {
+            if (isSitterSession()) selectAppScreen('dashboard');
+          }, 0);
+          return;
+        }
         if (isNewlyRegisteredParent) {
           messagesNavItem.setAttribute('aria-label', 'Messages');
           messagesNavNotification.hidden = true;
@@ -9055,12 +10007,15 @@
 
       function simulateLogout() {
         isNewlyRegisteredParent = false;
+        hasPostedFirstJob = false;
+        closeJobWizard(false);
         closeFamilyProfile();
-        selectAppScreen('search');
         hideLogoutSuccess();
         hideRegistrationSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
+        syncNavigationForRole();
+        selectAppScreen('search');
         syncFavouritesAccessState();
         syncMessagesAccessState();
         syncJobsAccessState();
@@ -9093,6 +10048,11 @@
       prototypeSettingsButton.addEventListener('click', openPrototypeSettingsModal);
       prototypeSettingsBackdrop.addEventListener('click', closePrototypeSettingsModal);
       prototypeSettingsClose.addEventListener('click', closePrototypeSettingsModal);
+      prototypeUserRoleInputs.forEach(function (input) {
+        input.addEventListener('change', function () {
+          if (input.checked) setPrototypeUserRole(input.value);
+        });
+      });
       prototypeRegistrationStatusInputs.forEach(function (input) {
         input.addEventListener('change', function () {
           if (input.checked) setPrototypeRegistrationStatus(input.value);
@@ -9159,7 +10119,64 @@
       });
       loginTrigger.addEventListener('click', function () {
         if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
+        else if (isSitterSession()) selectAppScreen('dashboard');
         else openFamilyProfile();
+      });
+      sitterDashboardMessages.addEventListener('click', function () {
+        selectAppScreen('sitter-messages');
+      });
+      sitterAvailabilityTrigger.addEventListener('click', function (event) {
+        event.stopPropagation();
+        if (sitterAvailabilitySheet.hidden) openSitterAvailabilitySheet();
+        else closeSitterAvailabilitySheet();
+      });
+      sitterAvailabilityOptions.forEach(function(option) {
+        option.addEventListener('click', function () {
+          setSitterAvailabilityStatus(option.getAttribute('data-sitter-availability-option'));
+        });
+      });
+      sitterAvailabilityProfiles.addEventListener('click', function (event) {
+        var toggle = event.target.closest('.sitter-availability-toggle');
+        if (!toggle) return;
+        var isOn = toggle.getAttribute('aria-pressed') === 'true';
+        toggle.classList.toggle('is-on', !isOn);
+        toggle.setAttribute('aria-pressed', String(!isOn));
+        toggle.closest('.sitter-availability-profile').classList.toggle('is-disabled', isOn);
+      });
+      sitterAvailabilityMode.addEventListener('click', function (event) {
+        event.stopPropagation();
+        if (sitterTimetableSheet.hidden) openSitterTimetableSheet();
+        else closeSitterTimetableSheet();
+      });
+      sitterTimetableOptions.forEach(function(option) {
+        option.addEventListener('click', function () {
+          setSitterAvailabilityMode(option.getAttribute('data-sitter-timetable-mode'));
+        });
+      });
+      sitterAvailabilityGrid.addEventListener('click', function (event) {
+        var dayButton = event.target.closest('[data-sitter-availability-day]');
+        if (dayButton) {
+          var day = dayButton.getAttribute('data-sitter-availability-day');
+          var shouldActivate = SITTER_AVAILABILITY_HOUR_ROWS.some(function(row) { return !sitterAvailabilityHours[day][row.key]; });
+          SITTER_AVAILABILITY_HOUR_ROWS.forEach(function(row) { sitterAvailabilityHours[day][row.key] = shouldActivate; });
+          renderSitterAvailabilityTimetable();
+          return;
+        }
+        var slot = event.target.closest('[data-sitter-availability-slot]');
+        if (!slot) return;
+        var slotDay = slot.getAttribute('data-day');
+        var rowKey = slot.getAttribute('data-row');
+        if (slot.getAttribute('data-mode') === 'hours') sitterAvailabilityHours[slotDay][rowKey] = !sitterAvailabilityHours[slotDay][rowKey];
+        else setSitterAvailabilityPart(slotDay, rowKey, !isSitterAvailabilityPartActive(slotDay, rowKey));
+        renderSitterAvailabilityTimetable();
+      });
+      sitterAvailabilitySheetBackdrop.addEventListener('click', closeSitterAvailabilitySheet);
+      sitterTimetableSheetBackdrop.addEventListener('click', closeSitterTimetableSheet);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          closeSitterAvailabilitySheet();
+          closeSitterTimetableSheet();
+        }
       });
       familyProfileBack.addEventListener('click', closeFamilyProfile);
       familyProfileLogout.addEventListener('click', simulateLogout);
@@ -9248,23 +10265,32 @@
       registrationDetailsBack.addEventListener('click', closeRegistrationDetailsToRole);
       registrationDetailsClose.addEventListener('click', dismissRegistrationDetails);
       registrationDetailsContinue.addEventListener('click', completeRegistrationDetails);
+      window.addEventListener('message', function (event) {
+        if (event.source !== jobWizardFrame.contentWindow || !event.data) return;
+        if (event.data.type === 'mobile-app-job-wizard-complete') completeJobWizard();
+        if (event.data.type === 'mobile-app-job-wizard-close') closeJobWizard(true);
+      });
       favouritesPostJob.addEventListener('click', function () {
-        if (!isNewlyRegisteredParent) openLoginSheet();
+        if (isNewlyRegisteredParent) openJobWizard(favouritesPostJob);
+        else openLoginSheet();
       });
       favouritesFindSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
       messagesGuestMembership.addEventListener('click', function () {
-        if (!isNewlyRegisteredParent) openLoginSheet();
+        if (isNewlyRegisteredParent) openJobWizard(messagesGuestMembership);
+        else openLoginSheet();
       });
       messagesGuestSearch.addEventListener('click', function () {
         selectAppScreen('search');
       });
       jobsGuestCreate.addEventListener('click', function () {
-        if (!isNewlyRegisteredParent) openLoginSheet();
+        if (isNewlyRegisteredParent) openJobWizard(jobsGuestCreate);
+        else openLoginSheet();
       });
       bookingsGuestPost.addEventListener('click', function () {
-        if (!isNewlyRegisteredParent) openLoginSheet();
+        if (isNewlyRegisteredParent) openJobWizard(bookingsGuestPost);
+        else openLoginSheet();
       });
       messageThreads.forEach(function (thread) {
         thread.setAttribute('tabindex', '0');
@@ -9431,6 +10457,8 @@
       setPanelExpanded(true);
       initBookmarks();
       updateFilterResultCount();
+      initialiseSitterAvailabilityHours();
+      renderSitterAvailabilityTimetable();
       startLocationPlaceholderTypewriter();
     })();
   </script>
