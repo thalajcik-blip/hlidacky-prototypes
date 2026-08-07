@@ -3295,6 +3295,239 @@
     }
     .jobs-guest-overlay__create.is-newly-registered:hover { background: var(--pink-strong); }
 
+    /* Sitter jobs is intentionally namespaced: it borrows the compact job-ad
+       hierarchy from jobs-for-sitters-v2 without importing that prototype's
+       feedback FAB, modal, or feedback submission script. */
+    .sitter-jobs-screen {
+      position: absolute;
+      z-index: 10;
+      inset: 100px 0 83px;
+      overflow: hidden;
+      background: #f7f9fb;
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 200ms;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .sitter-jobs-screen.is-open {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .sitter-jobs-screen__tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      min-height: 54px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+    }
+
+    .sitter-jobs-screen__tab {
+      position: relative;
+      border: 0;
+      background: transparent;
+      color: #2a3539;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-screen__tab.is-active { color: #2a3539; }
+    .sitter-jobs-screen__tab.is-active::after {
+      position: absolute;
+      right: 12px;
+      bottom: 0;
+      left: 12px;
+      height: 3px;
+      background: #f96073;
+      content: '';
+    }
+
+    .sitter-jobs-screen__content {
+      height: calc(100% - 54px);
+      overflow-y: auto;
+      padding: 0 16px 32px;
+      background: #fff;
+    }
+
+    .sitter-jobs-screen__filterbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 -16px;
+      padding: 12px 16px 14px;
+      overflow-x: auto;
+      background: #f1f5fb;
+    }
+
+    .sitter-jobs-service,
+    .sitter-jobs-filter-button {
+      width: 46px;
+      min-width: 46px;
+      height: 46px;
+      border: 1px solid #c9cfdb;
+      border-radius: 6px;
+      background: #fff;
+      color: #6f7a86;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: inset 0 -2px 0 rgba(42, 53, 57, .12);
+    }
+
+    .sitter-jobs-service.is-active {
+      border-color: #f96073;
+      background: #fff;
+      color: #f96073;
+      box-shadow: inset 0 -2px 0 rgba(249, 96, 115, .18);
+    }
+
+    .sitter-jobs-filter-button {
+      position: relative;
+      display: none;
+      color: #2a3539;
+    }
+
+    .sitter-jobs-filter-button__count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      display: grid;
+      width: 17px;
+      height: 17px;
+      place-items: center;
+      border: 2px solid #f7f9fb;
+      border-radius: 50%;
+      background: #f96073;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .sitter-jobs-screen__summary { text-align: center; }
+    .sitter-jobs-screen__location {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin: 18px auto 10px;
+      padding: 8px 12px;
+      border-radius: 64px;
+      background: #f6f7f8;
+      color: #6c757d;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .sitter-jobs-screen__location i { color: #f96073; }
+    .sitter-jobs-screen__notifications {
+      display: flex;
+      width: fit-content;
+      align-items: center;
+      gap: 7px;
+      margin: 0 auto;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #8b91a3;
+      font: inherit;
+      font-size: 13px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+    .sitter-jobs-screen__notifications:hover { color: #f96073; }
+    .sitter-jobs-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 22px; }
+
+    .sitter-job-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid #e5e5ea;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2);
+      padding: 16px 16px 18px;
+    }
+
+    .sitter-job-card[hidden] { display: none; }
+    .sitter-job-card__topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .sitter-job-card__posted { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px; margin: 0; color: #6c757d; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.32; }
+    .sitter-job-card__posted-author { color: #6c757d; font-weight: 400; opacity: .8; text-decoration: underline; text-decoration-color: rgba(108,117,125,.4); text-underline-offset: 2px; }
+    .sitter-job-card__posted strong { color: #2a3539; font-weight: 600; }
+    .sitter-job-card__more { width: 20px; height: 20px; border: 0; background: transparent; color: #8b91a3; cursor: pointer; font-size: 17px; line-height: 1; }
+    .sitter-job-card__title { margin: 0 0 4px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 1.25; }
+    .sitter-job-card__distance { margin: 0; color: #6f7a86; font-size: 14px; line-height: 1.35; }
+    .sitter-job-card__distance strong { color: #2a3539; font-weight: 600; }
+    .sitter-job-card__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .sitter-job-card__tag { display: inline-flex; min-height: 26px; align-items: center; border-radius: 4px; padding: 4px 10px; font-size: 14px; font-weight: 450; line-height: 1.35; }
+    .sitter-job-card__tag--price { background: #fff3db; color: #fd8b25; }
+    .sitter-job-card__tag--service { background: #feecee; color: #e6213a; }
+    .sitter-job-card__tag--pet { background: #e0faf1; color: #00bd79; }
+    .sitter-job-card__tag--date { background: #f3ecff; color: #7c4dff; }
+    .sitter-job-card__divider { height: 1px; margin-top: 18px; background: #e5e5ea; }
+    .sitter-job-card__message { padding-top: 16px; }
+    .sitter-job-card__copy { margin: 0; color: #4a5a61; font-size: 15px; font-weight: 350; letter-spacing: -.12px; line-height: 1.5; }
+    .sitter-job-card__copy.is-collapsed { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; -webkit-line-clamp: 8; }
+    .sitter-job-card__read-more { display: none; border: 0; background: transparent; padding: 4px 0 0; color: #f96073; font: inherit; font-size: 16px; line-height: 1.4; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .sitter-job-card__read-more.is-visible { display: inline; }
+    .sitter-job-card__action-row { display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 12px; margin-top: 16px; }
+    .sitter-job-card__reply {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+      background: #f96073;
+      color: #fff;
+      padding: 12px 18px 15px;
+      box-shadow: inset 0 -3px 0 #e6213a;
+      cursor: pointer;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .sitter-job-card__reply:hover { background: #e6213a; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); }
+    .sitter-job-card__reply:active { box-shadow: none; transform: translateY(3px); }
+    .sitter-job-card__reply.is-sent { background: #eff9ef; box-shadow: none; color: #0ba825; cursor: default; }
+    .sitter-job-card__archive { min-height: 48px; border: 1px solid #c9cfdb; border-radius: 4px; background: #fff; color: #2a3539; box-shadow: inset 0 -3px 0 rgba(42,53,57,.12); cursor: pointer; font-size: 18px; }
+    .sitter-job-card__archive:hover { color: #f96073; border-color: #f96073; }
+    .sitter-jobs-screen__show-more { display: flex; width: fit-content; margin: 20px auto 0; border: 0; background: transparent; color: #f96073; font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+
+    .sitter-jobs-filter-sheet { position: absolute; z-index: 30; inset: 0; display: flex; align-items: flex-end; visibility: hidden; pointer-events: none; }
+    .sitter-jobs-filter-sheet.is-open { visibility: visible; pointer-events: auto; }
+    .sitter-jobs-filter-sheet__backdrop { position: absolute; inset: 0; background: rgba(42, 53, 57, .42); opacity: 0; transition: opacity 180ms ease; }
+    .sitter-jobs-filter-sheet.is-open .sitter-jobs-filter-sheet__backdrop { opacity: 1; }
+    .sitter-jobs-filter-sheet__dialog {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-radius: 18px 18px 0 0;
+      background: #fff;
+      padding: 10px 20px calc(18px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform 220ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .sitter-jobs-filter-sheet.is-open .sitter-jobs-filter-sheet__dialog { transform: translateY(0); }
+    .sitter-jobs-filter-sheet__handle { width: 36px; height: 5px; margin: 0 auto 18px; border-radius: 99px; background: #2a3539; }
+    .sitter-jobs-filter-sheet__heading { margin: 0 0 16px; color: #2a3539; font-size: 20px; font-weight: 450; }
+    .sitter-jobs-filter-sheet__field { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; color: #2a3539; font-size: 14px; font-weight: 450; }
+    .sitter-jobs-filter-sheet__select { height: 42px; border: 1px solid #d0d5dd; border-radius: 4px; background: #fff; padding: 0 12px; color: #2a3539; font: inherit; font-size: 16px; }
+    .sitter-jobs-filter-sheet__apply { width: 100%; min-height: 44px; margin-top: 20px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.16); background: #0ba825; color: #fff; font: inherit; font-size: 16px; font-weight: 450; cursor: pointer; }
+    .sitter-jobs-filter-sheet__apply:hover { background: #078f20; }
+
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
        sitter and amount stay in consistent slots while the card actions are
        available without taking space away from the booking details. */
@@ -6965,6 +7198,56 @@
         </div>
       </div>
     </section>
+    <section class="sitter-jobs-screen" id="sitterJobsScreen" aria-label="Jobs near you" aria-hidden="true">
+      <div class="sitter-jobs-screen__tabs" role="tablist" aria-label="Jobs">
+        <button class="sitter-jobs-screen__tab is-active" type="button" role="tab" aria-selected="true" data-sitter-jobs-tab="new">New</button>
+        <button class="sitter-jobs-screen__tab" type="button" role="tab" aria-selected="false" data-sitter-jobs-tab="replied">Replied</button>
+        <button class="sitter-jobs-screen__tab" type="button" role="tab" aria-selected="false" data-sitter-jobs-tab="archived">Archived</button>
+      </div>
+      <div class="sitter-jobs-screen__content" id="sitterJobsContent">
+        <div class="sitter-jobs-screen__filterbar" aria-label="Service filters">
+          <button class="sitter-jobs-service is-active" type="button" aria-label="Babysitting" data-sitter-job-service="babysitting"><i class="fa-regular fa-child-reaching" aria-hidden="true"></i></button>
+          <button class="sitter-jobs-service" type="button" aria-label="Household cleaning" data-sitter-job-service="cleaning"><i class="fa-regular fa-broom" aria-hidden="true"></i></button>
+          <button class="sitter-jobs-service" type="button" aria-label="Pet care" data-sitter-job-service="pet"><i class="fa-regular fa-paw" aria-hidden="true"></i></button>
+          <button class="sitter-jobs-service" type="button" aria-label="Senior care" data-sitter-job-service="senior"><i class="fa-regular fa-person-cane" aria-hidden="true"></i></button>
+          <button class="sitter-jobs-service" type="button" aria-label="Tutoring" data-sitter-job-service="tutoring"><i class="fa-regular fa-graduation-cap" aria-hidden="true"></i></button>
+          <button class="sitter-jobs-filter-button" id="sitterJobsFilterButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Open jobs filters"><i class="fa-regular fa-sliders" aria-hidden="true"></i><span class="sitter-jobs-filter-button__count" id="sitterJobsFilterCount">1</span></button>
+        </div>
+        <div class="sitter-jobs-screen__summary">
+          <p class="sitter-jobs-screen__location"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span id="sitterJobsLocationLabel">Praha 2</span><span id="sitterJobsRadiusLabel">(+20 km)</span></p>
+          <button class="sitter-jobs-screen__notifications" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Set up notifications</span></button>
+        </div>
+        <div class="sitter-jobs-grid" id="sitterJobsGrid">
+          <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="new" data-sitter-job-service-card="babysitting">
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Alexandra</span><span>posted</span><strong>2 hours ago</strong></p><button class="sitter-job-card__more" type="button" aria-label="More job actions"><i class="fa-light fa-ellipsis" aria-hidden="true"></i></button></div>
+            <h2 class="sitter-job-card__title">Potočná 44, Brno–Bystrc</h2><p class="sitter-job-card__distance"><strong>3 km</strong> away from you</p>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">450 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--service"><i class="fa-regular fa-child-reaching" aria-hidden="true"></i>&nbsp;Babysitting</span><span class="sitter-job-card__tag sitter-job-card__tag--date">June 4, 18:00</span></div>
+            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy is-collapsed">Hello, I am looking for a reliable and caring nanny for regular babysitting starting in September for the upcoming school year. The position would involve looking after two children: a son, who will be 4 years old in November, and a daughter, who is currently 2 years old. The expected schedule is Monday to Friday, approximately from 8:00 to 14:00. However, there is some flexibility in the working hours, and adjustments can be made based on mutual agreement. Occasionally, we may also need evening babysitting.</p><button class="sitter-job-card__read-more is-visible" type="button" data-sitter-job-read-more>read more</button></div><div class="sitter-job-card__divider"></div>
+            <div class="sitter-job-card__action-row"><button class="sitter-job-card__reply" type="button" data-sitter-job-reply><i class="fa-regular fa-chevron-down" aria-hidden="true"></i><span>Reply to job</span></button><button class="sitter-job-card__archive" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i></button></div>
+          </article>
+          <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="new" data-sitter-job-service-card="pet">
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Markéta</span><span>posted</span><strong>25 minutes ago</strong></p><button class="sitter-job-card__more" type="button" aria-label="More job actions"><i class="fa-light fa-ellipsis" aria-hidden="true"></i></button></div>
+            <h2 class="sitter-job-card__title">Dog sitting in Prague 2</h2><p class="sitter-job-card__distance"><strong>2.8 km</strong> away from you</p>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">220 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--pet"><i class="fa-regular fa-paw" aria-hidden="true"></i>&nbsp;Pet care</span><span class="sitter-job-card__tag sitter-job-card__tag--date">This weekend</span></div>
+            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy is-collapsed">We need help with walking our friendly dog on Saturday and Sunday morning. Experience with larger dogs is welcome. We are looking for someone kind and reliable who can keep us updated after each walk.</p><button class="sitter-job-card__read-more is-visible" type="button" data-sitter-job-read-more>read more</button></div><div class="sitter-job-card__divider"></div>
+            <div class="sitter-job-card__action-row"><button class="sitter-job-card__reply" type="button" data-sitter-job-reply><i class="fa-regular fa-chevron-down" aria-hidden="true"></i><span>Reply to job</span></button><button class="sitter-job-card__archive" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i></button></div>
+          </article>
+          <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="replied" data-sitter-job-service-card="babysitting" hidden>
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Jana</span><span>posted</span><strong>Yesterday</strong></p><span class="sitter-job-card__tag sitter-job-card__tag--pet"><i class="fa-regular fa-check" aria-hidden="true"></i>&nbsp;Replied</span></div>
+            <h2 class="sitter-job-card__title">After-school babysitting</h2><p class="sitter-job-card__distance"><strong>3.4 km</strong> away from you</p>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">280 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--service">Babysitting</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Weekly</span></div>
+            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy">Thank you for your response. The family will get back to you in Messages.</p></div><div class="sitter-job-card__divider"></div>
+            <div class="sitter-job-card__action-row"><button class="sitter-job-card__reply is-sent" type="button" aria-disabled="true"><i class="fa-regular fa-circle-check" aria-hidden="true"></i><span>Message sent</span></button><button class="sitter-job-card__archive" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i></button></div>
+          </article>
+          <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="archived" data-sitter-job-service-card="cleaning" hidden>
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Petra</span><span>posted</span><strong>3 days ago</strong></p><span class="sitter-job-card__tag">Archived</span></div>
+            <h2 class="sitter-job-card__title">Regular household cleaning</h2><p class="sitter-job-card__distance"><strong>4.0 km</strong> away from you</p>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">300 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Once a week</span></div>
+          </article>
+        </div>
+        <button class="sitter-jobs-screen__show-more" id="sitterJobsShowMore" type="button">Show more jobs</button>
+      </div>
+    </section>
     <section class="bookings-screen" id="bookingsScreen" aria-label="Bookings" aria-hidden="true">
       <div class="bookings-screen__content" id="bookingsContent">
         <section class="bookings-screen__section" aria-labelledby="upcomingBookingsHeading">
@@ -6982,7 +7265,6 @@
             <div class="booking-card__schedule"><p class="booking-card__date">Wednesday, 29. 11.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
             <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
             <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
-            <p class="booking-card__payment-note"><i class="fa-light fa-credit-card" aria-hidden="true"></i>You can pay online once the booking has started</p>
             <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button><button class="booking-card__cancel" type="button" role="menuitem" data-booking-cancel>Cancel booking</button></div></div>
           </article>
         </section>
@@ -7015,6 +7297,47 @@
           <div class="bookings-guest-overlay__divider" aria-hidden="true"></div>
           <div class="bookings-guest-overlay__protect"><div class="bookings-guest-overlay__protect-brand"><img src="./assets/care-protect-logo.svg" alt="Hlídačky Protect"></div><div class="bookings-guest-overlay__benefits"><span><i class="fa-regular fa-check" aria-hidden="true"></i>Insured sitting &amp; cleaning</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>100% guaranteed sitter match</span><span><i class="fa-regular fa-check" aria-hidden="true"></i>Secure payments</span></div></div>
         </div>
+      </div>
+    </section>
+    <section class="bookings-screen sitter-bookings-screen" id="sitterBookingsScreen" aria-label="Sitter bookings" aria-hidden="true">
+      <div class="bookings-screen__content" id="sitterBookingsContent">
+        <section class="bookings-screen__section" aria-labelledby="sitterUpcomingBookingsHeading">
+          <h1 class="bookings-screen__heading" id="sitterUpcomingBookingsHeading">Upcoming</h1>
+          <article class="booking-card booking-card--waiting" data-booking-card aria-label="Booking waiting to confirm with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Waiting to confirm</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 27. 11.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <button class="booking-card__confirm" type="button" data-booking-confirm><i class="fa-regular fa-check" aria-hidden="true"></i>Confirm</button>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button><button class="booking-card__cancel" type="button" role="menuitem" data-booking-cancel>Cancel booking</button></div></div>
+          </article>
+          <article class="booking-card booking-card--confirmed" data-booking-card aria-label="Confirmed booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Confirmed</span><span class="booking-card__reference">#1233416</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Wednesday, 29. 11.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button><button class="booking-card__cancel" type="button" role="menuitem" data-booking-cancel>Cancel booking</button></div></div>
+          </article>
+        </section>
+        <section class="bookings-screen__section" aria-labelledby="sitterPastBookingsHeading">
+          <h2 class="bookings-screen__heading" id="sitterPastBookingsHeading">Past</h2>
+          <article class="booking-card booking-card--paid" data-booking-card aria-label="Past paid booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Paid by card</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 11. 8.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button></div></div>
+          </article>
+          <article class="booking-card booking-card--paid" data-booking-card aria-label="Past paid booking with Anastázie Nekonečná">
+            <div class="booking-card__topline"><span class="booking-card__status" data-booking-status>Paid by card</span><span class="booking-card__reference">#1233456</span></div>
+            <div class="booking-card__schedule"><p class="booking-card__date">Monday, 4. 8.</p><p class="booking-card__time">18:00 – 22:00 <span>(4 hrs.)</span></p></div>
+            <div class="booking-card__footer"><img class="booking-card__avatar" src="./assets/avatar-02.jpg" alt="Anastázie Nekonečná"><span class="booking-card__sitter">Anastázie Nekonečná</span></div>
+            <div class="booking-card__extra"><span class="booking-card__extra-icons"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><i class="fa-light fa-paw" aria-hidden="true"></i></span><span class="booking-card__price">1 080 <span>Kč</span></span></div>
+            <div class="booking-card__actions"><button class="booking-card__actions-trigger" type="button" aria-expanded="false" data-booking-actions><span class="booking-card__actions-label">Actions</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><div class="booking-card__menu" role="menu"><button type="button" role="menuitem" data-booking-view>View details</button></div></div>
+          </article>
+        </section>
+        <button class="bookings-screen__load-more" type="button">Load more</button>
+        <button class="bookings-screen__archive" type="button"><i class="fa-light fa-box-archive" aria-hidden="true"></i>Archived bookings</button>
       </div>
     </section>
     <section class="family-profile-screen" id="familyProfileScreen" data-node-id="2284:67211">
@@ -7535,6 +7858,20 @@
         </div>
       </section>
     </div>
+    <div class="sitter-jobs-filter-sheet" id="sitterJobsFilterSheet" aria-hidden="true">
+      <button class="sitter-jobs-filter-sheet__backdrop" id="sitterJobsFilterBackdrop" type="button" aria-label="Close jobs filters"></button>
+      <section class="sitter-jobs-filter-sheet__dialog" role="dialog" aria-modal="true" aria-label="Jobs filters" tabindex="-1">
+        <div class="sitter-jobs-filter-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-jobs-filter-sheet__heading">Jobs filters</h2>
+        <label class="sitter-jobs-filter-sheet__field">Search jobs in
+          <select class="sitter-jobs-filter-sheet__select" id="sitterJobsLocationSelect"><option>Praha 2</option><option>All my locations</option><option>All locations</option></select>
+        </label>
+        <label class="sitter-jobs-filter-sheet__field">Distance radius
+          <select class="sitter-jobs-filter-sheet__select" id="sitterJobsRadiusSelect"><option>+5 km</option><option>+10 km</option><option>+15 km</option><option selected>+20 km</option><option>+25 km</option><option>+30 km</option></select>
+        </label>
+        <button class="sitter-jobs-filter-sheet__apply" id="sitterJobsFilterApply" type="button">Show jobs</button>
+      </section>
+    </div>
     <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
       <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
       <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
@@ -7729,7 +8066,25 @@
       var jobsScreen = document.getElementById('jobsScreen');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
       var jobsGuestCreate = document.getElementById('jobsGuestCreate');
+      var sitterJobsScreen = document.getElementById('sitterJobsScreen');
+      var sitterJobsContent = document.getElementById('sitterJobsContent');
+      var sitterJobsTabs = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-jobs-tab]'));
+      var sitterJobsServices = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-service]'));
+      var sitterJobCards = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-card]'));
+      var sitterJobsFilterButton = document.getElementById('sitterJobsFilterButton');
+      var sitterJobsFilterSheet = document.getElementById('sitterJobsFilterSheet');
+      var sitterJobsFilterBackdrop = document.getElementById('sitterJobsFilterBackdrop');
+      var sitterJobsFilterApply = document.getElementById('sitterJobsFilterApply');
+      var sitterJobsLocationSelect = document.getElementById('sitterJobsLocationSelect');
+      var sitterJobsRadiusSelect = document.getElementById('sitterJobsRadiusSelect');
+      var sitterJobsLocationLabel = document.getElementById('sitterJobsLocationLabel');
+      var sitterJobsRadiusLabel = document.getElementById('sitterJobsRadiusLabel');
+      var sitterJobsShowMore = document.getElementById('sitterJobsShowMore');
+      var sitterJobsActiveTab = 'new';
+      var sitterJobsActiveService = 'babysitting';
       var bookingsScreen = document.getElementById('bookingsScreen');
+      var sitterBookingsScreen = document.getElementById('sitterBookingsScreen');
+      var sitterBookingsContent = document.getElementById('sitterBookingsContent');
       var bookingsGuestOverlay = document.getElementById('bookingsGuestOverlay');
       var bookingsGuestPost = document.getElementById('bookingsGuestPost');
       var bookingActionTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-booking-actions]'));
@@ -9135,6 +9490,87 @@
           : '<span>Sign up for FREE</span>';
       }
 
+      // Sitter jobs has its own data view and controls. Keeping these local
+      // means the parent Jobs screen and the standalone jobs prototype keep
+      // their existing behaviour.
+      function syncSitterJobsCards() {
+        sitterJobCards.forEach(function (card) {
+          var matchesTab = card.getAttribute('data-sitter-job-state') === sitterJobsActiveTab;
+          var service = card.getAttribute('data-sitter-job-service-card');
+          var matchesService = sitterJobsActiveTab !== 'new' || !sitterJobsActiveService || service === sitterJobsActiveService;
+          card.hidden = !(matchesTab && matchesService);
+        });
+        sitterJobsShowMore.hidden = sitterJobsActiveTab !== 'new';
+      }
+
+      function openSitterJobsFilters() {
+        sitterJobsFilterSheet.classList.add('is-open');
+        sitterJobsFilterSheet.setAttribute('aria-hidden', 'false');
+        sitterJobsFilterButton.setAttribute('aria-expanded', 'true');
+        syncBackEntry();
+      }
+
+      function closeSitterJobsFilters(restoreFocus) {
+        sitterJobsFilterSheet.classList.remove('is-open');
+        sitterJobsFilterSheet.setAttribute('aria-hidden', 'true');
+        sitterJobsFilterButton.setAttribute('aria-expanded', 'false');
+        if (restoreFocus) sitterJobsFilterButton.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      sitterJobsTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          sitterJobsActiveTab = tab.getAttribute('data-sitter-jobs-tab');
+          sitterJobsTabs.forEach(function (item) {
+            var isActive = item === tab;
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', String(isActive));
+          });
+          syncSitterJobsCards();
+        });
+      });
+
+      sitterJobsServices.forEach(function (serviceButton) {
+        serviceButton.addEventListener('click', function () {
+          sitterJobsActiveService = serviceButton.getAttribute('data-sitter-job-service');
+          sitterJobsServices.forEach(function (item) { item.classList.toggle('is-active', item === serviceButton); });
+          syncSitterJobsCards();
+        });
+      });
+
+      Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-reply]')).forEach(function (button) {
+        button.addEventListener('click', function () {
+          if (button.classList.contains('is-sent')) return;
+          button.classList.add('is-sent');
+          button.setAttribute('aria-disabled', 'true');
+          button.innerHTML = '<i class="fa-regular fa-circle-check" aria-hidden="true"></i><span>Message sent</span>';
+          var card = button.closest('[data-sitter-job-card]');
+          card.setAttribute('data-sitter-job-state', 'replied');
+          setTimeout(function () {
+            if (sitterJobsActiveTab === 'new') syncSitterJobsCards();
+          }, 400);
+        });
+      });
+
+      Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-read-more]')).forEach(function (button) {
+        button.addEventListener('click', function () {
+          var message = button.closest('.sitter-job-card__message');
+          var copy = message && message.querySelector('.sitter-job-card__copy');
+          if (!copy) return;
+          copy.classList.remove('is-collapsed');
+          button.classList.remove('is-visible');
+        });
+      });
+
+      sitterJobsFilterButton.addEventListener('click', openSitterJobsFilters);
+      sitterJobsFilterBackdrop.addEventListener('click', function () { closeSitterJobsFilters(true); });
+      sitterJobsFilterApply.addEventListener('click', function () {
+        sitterJobsLocationLabel.textContent = sitterJobsLocationSelect.value;
+        sitterJobsRadiusLabel.textContent = '(' + sitterJobsRadiusSelect.value + ')';
+        closeSitterJobsFilters(false);
+      });
+      sitterJobsShowMore.addEventListener('click', function () { sitterJobsActiveService = ''; sitterJobsServices.forEach(function (item) { item.classList.remove('is-active'); }); syncSitterJobsCards(); sitterJobsShowMore.hidden = true; });
+
       function syncBookingsAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
         var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
@@ -9208,6 +9644,7 @@
           closeSitterAvailabilitySheet();
           closeSitterTimetableSheet();
         }
+        if (screen !== 'sitter-jobs') closeSitterJobsFilters(false);
         if (screen !== 'search') hideRegistrationSuccess();
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
@@ -9242,8 +9679,12 @@
           messagesScreen.setAttribute('aria-hidden', 'true');
           jobsScreen.classList.remove('is-open');
           jobsScreen.setAttribute('aria-hidden', 'true');
+          sitterJobsScreen.classList.remove('is-open');
+          sitterJobsScreen.setAttribute('aria-hidden', 'true');
           bookingsScreen.classList.remove('is-open');
           bookingsScreen.setAttribute('aria-hidden', 'true');
+          sitterBookingsScreen.classList.remove('is-open');
+          sitterBookingsScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.add('is-hidden');
           sitterDashboardScreen.classList.add('is-open');
           sitterDashboardScreen.setAttribute('aria-hidden', 'false');
@@ -9259,8 +9700,63 @@
         sitterDashboardScreen.setAttribute('aria-hidden', 'true');
         sitterAvailabilityScreen.classList.remove('is-open');
         sitterAvailabilityScreen.setAttribute('aria-hidden', 'true');
+        sitterBookingsScreen.classList.remove('is-open');
+        sitterBookingsScreen.setAttribute('aria-hidden', 'true');
+        sitterJobsScreen.classList.remove('is-open');
+        sitterJobsScreen.setAttribute('aria-hidden', 'true');
 
         if (screen === 'sitter-calendar' && isSitterSession()) {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          favouritesScreen.classList.remove('is-open');
+          favouritesScreen.setAttribute('aria-hidden', 'true');
+          messagesScreen.classList.remove('is-open');
+          messagesScreen.setAttribute('aria-hidden', 'true');
+          jobsScreen.classList.remove('is-open');
+          jobsScreen.setAttribute('aria-hidden', 'true');
+          sitterJobsScreen.classList.remove('is-open');
+          sitterJobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
+          resultsView.classList.add('is-hidden');
+          sitterAvailabilityScreen.classList.add('is-open');
+          sitterAvailabilityScreen.setAttribute('aria-hidden', 'false');
+          sitterAvailabilityScreen.querySelector('.sitter-availability-content').scrollTop = 0;
+          mobileHeaderIcon.className = 'fa-solid fa-calendar-days';
+          mobileHeaderIcon.style.color = '#f96073';
+          mobileHeaderTitle.textContent = 'Availability';
+          setActiveNavItem('sitter-calendar');
+          syncBackEntry();
+          return;
+        }
+
+        if (screen === 'sitter-bookings' && isSitterSession()) {
+          appPlaceholderScreen.classList.remove('is-open');
+          appPlaceholderScreen.setAttribute('aria-hidden', 'true');
+          favouritesScreen.classList.remove('is-open');
+          favouritesScreen.setAttribute('aria-hidden', 'true');
+          messagesScreen.classList.remove('is-open');
+          messagesScreen.setAttribute('aria-hidden', 'true');
+          jobsScreen.classList.remove('is-open');
+          jobsScreen.setAttribute('aria-hidden', 'true');
+          sitterJobsScreen.classList.remove('is-open');
+          sitterJobsScreen.setAttribute('aria-hidden', 'true');
+          bookingsScreen.classList.remove('is-open');
+          bookingsScreen.setAttribute('aria-hidden', 'true');
+          resultsView.classList.add('is-hidden');
+          sitterBookingsScreen.classList.add('is-open');
+          sitterBookingsScreen.setAttribute('aria-hidden', 'false');
+          phoneFrame.scrollTop = 0;
+          sitterBookingsContent.scrollTop = 0;
+          mobileHeaderIcon.className = 'fa-solid fa-calendar-clock';
+          mobileHeaderIcon.style.color = '#f96073';
+          mobileHeaderTitle.textContent = 'Bookings';
+          setActiveNavItem('sitter-bookings');
+          syncBackEntry();
+          return;
+        }
+
+        if (screen === 'sitter-jobs' && isSitterSession()) {
           appPlaceholderScreen.classList.remove('is-open');
           appPlaceholderScreen.setAttribute('aria-hidden', 'true');
           favouritesScreen.classList.remove('is-open');
@@ -9272,13 +9768,16 @@
           bookingsScreen.classList.remove('is-open');
           bookingsScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.add('is-hidden');
-          sitterAvailabilityScreen.classList.add('is-open');
-          sitterAvailabilityScreen.setAttribute('aria-hidden', 'false');
-          sitterAvailabilityScreen.querySelector('.sitter-availability-content').scrollTop = 0;
-          mobileHeaderIcon.className = 'fa-solid fa-calendar-days';
+          sitterJobsScreen.classList.add('is-open');
+          sitterJobsScreen.setAttribute('aria-hidden', 'false');
+          sitterJobsContent.scrollTop = 0;
+          phoneFrame.scrollTop = 0;
+          requestAnimationFrame(function () { phoneFrame.scrollTop = 0; });
+          syncSitterJobsCards();
+          mobileHeaderIcon.className = 'fa-solid fa-paper-plane';
           mobileHeaderIcon.style.color = '#f96073';
-          mobileHeaderTitle.textContent = 'Availability';
-          setActiveNavItem('sitter-calendar');
+          mobileHeaderTitle.textContent = 'Jobs';
+          setActiveNavItem('sitter-jobs');
           syncBackEntry();
           return;
         }
@@ -9644,6 +10143,7 @@
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
         { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
+        { isOpen: function () { return sitterJobsFilterSheet.classList.contains('is-open'); }, close: function () { closeSitterJobsFilters(true); } },
         { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
         { isOpen: function () { return referralShareSheet.classList.contains('is-open'); }, close: closeReferralShareSheet },
         { isOpen: function () { return registrationDetailsScreen.classList.contains('is-open'); }, close: closeRegistrationDetailsToRole },
