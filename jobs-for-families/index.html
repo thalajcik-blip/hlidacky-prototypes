@@ -6,6 +6,8 @@
   <title>Hlídačky.cz — Create a new job</title>
   <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
   <script>
+    window.IS_MOBILE_APP_EMBED = new URLSearchParams(window.location.search).get('embed') === 'mobile-app';
+    if (window.IS_MOBILE_APP_EMBED) document.documentElement.classList.add('mobile-app-embed');
     (function(d) {
       var config = { kitId: 'ciu2vdq', scriptTimeout: 3000, async: true },
       h = d.documentElement, t = setTimeout(function() {
@@ -41,13 +43,21 @@
       var base = first && langs.indexOf(first) === -1 ? '/' + first : '';
       var lang = langs.indexOf(first) !== -1 ? first : (langs.indexOf(second) !== -1 ? second : '');
       window.PROTOTYPE_BASE = base;
-      document.write('<scr' + 'ipt src="' + (base || '') + '/strings.js"><\/scr' + 'ipt>');
+      var assetBase = window.IS_MOBILE_APP_EMBED ? '..' : (base || '');
+      document.write('<scr' + 'ipt src="' + assetBase + '/strings.js"><\/scr' + 'ipt>');
       if (lang !== 'cz') {
-        document.write('<scr' + 'ipt src="' + (base || '') + '/strings_' + (lang || 'en') + '.js"><\/scr' + 'ipt>');
+        document.write('<scr' + 'ipt src="' + assetBase + '/strings_' + (lang || 'en') + '.js"><\/scr' + 'ipt>');
       }
     })();
   </script>
-  <script src="/strings-runtime.js" data-prototype="jobs"></script>
+  <script>
+    document.write('<scr' + 'ipt src="' + (window.IS_MOBILE_APP_EMBED ? '..' : '') + '/strings-runtime.js" data-prototype="jobs"><\/scr' + 'ipt>');
+  </script>
+  <script>
+    if (window.IS_MOBILE_APP_EMBED) {
+      document.write('<link rel="stylesheet" href="../mobile-app-redesign/job-wizard.css">');
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -927,6 +937,7 @@
     .followup-nav-title { font-family: 'soleil','Inter',sans-serif; font-size: 17px; font-weight: 500; color: #2a3539; letter-spacing: -0.1px; }
     .followup-cta-text { font-size: 14px; color: var(--text); margin-bottom: 10px; line-height: 1.5; margin-top: 16px; text-align: center; }
     .followup-cta-btn { background: #0ba825; border: none; border-radius: 4px; padding: 14px 20px 16px; font-family: 'soleil','Inter',sans-serif; font-size: 16px; font-weight: 400; color: #fff; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: inset 0px -3px 0px 0px rgba(0,0,0,0.16); line-height: 22px; }
+
   </style>
 </head>
 <body>
@@ -2432,9 +2443,14 @@
     return selectedServices.size > 1;
   }
 
+  function getInitialFlowStep() {
+    return window.IS_MOBILE_APP_EMBED ? 'service' : 'contact';
+  }
+
   function buildFlow() {
+    const openingSteps = window.IS_MOBILE_APP_EMBED ? [] : ['contact'];
     if (isMultiServiceFlow()) {
-      return ['contact', 'service', 'location', 'price', 'review', 'phone', 'success', 'followup'];
+      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'success', 'followup']);
     }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
@@ -2442,10 +2458,10 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return ['contact', 'service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success', 'followup'];
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success', 'followup']);
     }
 
-    const flow = ['contact', 'service', 'location'];
+    const flow = openingSteps.concat(['service', 'location']);
     if (selectedServices.has('senior')) flow.push('senior-care');
     if (selectedServices.has('cleaning')) flow.push('cleaning');
     if (selectedServices.has('pet')) flow.push('pet');
@@ -2598,6 +2614,10 @@
     if (currentIdx < flow.length - 1) { currentIdx++; navDirection = 'forward'; showScreen(flow[currentIdx]); }
   }
   function goToFollowup() {
+    if (window.IS_MOBILE_APP_EMBED && window.parent !== window) {
+      window.parent.postMessage({ type: 'mobile-app-job-wizard-complete' }, '*');
+      return;
+    }
     const flow = buildFlow();
     const idx = flow.indexOf('followup');
     if (idx !== -1) { currentIdx = idx; navDirection = 'forward'; showScreen('followup'); }
@@ -2620,6 +2640,10 @@
   }
   function exitFlow() {
     closeExitModal();
+    if (window.IS_MOBILE_APP_EMBED && window.parent !== window) {
+      window.parent.postMessage({ type: 'mobile-app-job-wizard-close' }, '*');
+      return;
+    }
     restartFlow();
   }
   function restartFlow() {
@@ -2629,7 +2653,7 @@
     if (reviewText) reviewText.value = '';
     var priceInput = document.getElementById('price-input');
     if (priceInput) priceInput.value = '';
-    showScreen('contact');
+    showScreen(getInitialFlowStep());
   }
 
   function updateReviewPills() {
@@ -3406,6 +3430,15 @@
     return '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg>';
   }
 
+  function resolveEmbedAssetPath(path) {
+    return window.IS_MOBILE_APP_EMBED && path && path.charAt(0) === '/' ? '..' + path : path;
+  }
+
+  function resolveEmbedAssetMarkup(markup) {
+    if (!window.IS_MOBILE_APP_EMBED) return markup;
+    return markup.replace(/(src=["'])\//g, '$1../');
+  }
+
   function selectorIndicatorMarkup(type, isSelected) {
     if (!isSelected) return '';
     if (type === 'cleaningSupplies' || type === 'dogAge') {
@@ -3439,7 +3472,7 @@
       return '<div class="pm-selector' + sel + '" data-key="' + item.key + '" data-label="' + label + '" onclick="toggleModalItem(this)">' +
         '<div class="pm-selector-top">' +
           '<div class="' + checkClass + '">' + selectorIndicatorMarkup(type, !!sel) + '</div>' +
-          '<div class="' + iconWrapClass + '">' + item.icon + '</div>' +
+          '<div class="' + iconWrapClass + '">' + resolveEmbedAssetMarkup(item.icon) + '</div>' +
         '</div>' +
         '<div class="pm-selector-label">' + label + '</div>' +
         '</div>';
@@ -3575,7 +3608,7 @@
       return '<div class="pm-selector' + (selected ? ' selected' : '') + '" data-key="' + item.key + '" data-label="' + s[item.key] + '" onclick="toggleDogPersonalityTrait(this)">' +
         '<div class="pm-selector-top">' +
           '<div class="pm-selector-check">' + (selected ? checkSvg() : '') + '</div>' +
-          '<div class="pm-selector-icon">' + item.icon + '</div>' +
+          '<div class="pm-selector-icon">' + resolveEmbedAssetMarkup(item.icon) + '</div>' +
         '</div>' +
         '<div class="pm-selector-label">' + s[item.key] + '</div>' +
       '</div>';
@@ -3806,7 +3839,7 @@
       : (type === 'needs' && selectedServices.has('tutoring') && !selectedServices.has('babysitting'))
         ? '/doodles/tutoring-special-requirements-doodle.svg'
         : cfg.icon;
-    document.getElementById('pm-icon').innerHTML = '<img src="' + icon + '" width="42" height="42" alt="">';
+    document.getElementById('pm-icon').innerHTML = '<img src="' + resolveEmbedAssetPath(icon) + '" width="42" height="42" alt="">';
     document.getElementById('pm-title').textContent = getPillModalTitle(type);
 
     const body = document.getElementById('pm-body');
@@ -4365,7 +4398,13 @@
   document.querySelectorAll('.dt-select').forEach(sel => {
     sel.addEventListener('change', () => sel.classList.add('dt-selected'));
   });
-  showScreen('contact');
+  if (window.IS_MOBILE_APP_EMBED) {
+    document.querySelectorAll('img[src^="/"], link[href^="/"]').forEach(function(element) {
+      var attribute = element.tagName === 'LINK' ? 'href' : 'src';
+      element.setAttribute(attribute, '..' + element.getAttribute(attribute));
+    });
+  }
+  showScreen(getInitialFlowStep());
 
   function toggleOvernight() {
     const isOvernight = document.getElementById('freq-overnight-mode').style.display !== 'none';
