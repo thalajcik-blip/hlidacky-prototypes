@@ -477,6 +477,580 @@
       text-underline-offset: 2px;
     }
 
+    /* Figma: Sitter Profile. This reuses the family profile's native-style
+       push panel and its controls, while keeping sitter-specific content in
+       a separate screen for the later subpages. */
+    .sitter-profile-screen .family-profile-settings {
+      margin-top: 16px;
+    }
+
+    .sitter-profile-grow-label {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sitter-profile-grow-label > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sitter-profile-grow-badge {
+      flex: 0 0 auto;
+      border-radius: 64px;
+      background: var(--color-pink-400, #f96073);
+      padding: 2px 8px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .sitter-profile-divider {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 0 0;
+      color: var(--color-gray-700, #4a5a61);
+      font-size: 16px;
+      font-weight: 350;
+      letter-spacing: -0.24px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .sitter-profile-divider::before,
+    .sitter-profile-divider::after {
+      height: 1px;
+      flex: 1 1 auto;
+      background: #e5e5ea;
+      content: '';
+    }
+
+    /* Figma: Sitter Profile / Info & Settings.  This is a second panel above
+       the profile, so the persistent status bar and bottom navigation remain
+       in place while only the content panel moves. */
+    .sitter-info-screen {
+      z-index: 26;
+    }
+
+    .sitter-info-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 16px 20px;
+      background: #fff;
+    }
+
+    .sitter-info-item {
+      display: grid;
+      width: 100%;
+      min-height: 70px;
+      grid-template-columns: 16px minmax(0, 1fr) 16px;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      border: 1px solid #e5e5ea;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      padding: 14px 16px 16px;
+      color: #2a3539;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-info-item:hover {
+      background: #f7f7f7;
+    }
+
+    .sitter-info-item:active {
+      box-shadow: none;
+      padding-top: 16px;
+      padding-bottom: 14px;
+    }
+
+    .sitter-info-item > i:first-child {
+      color: var(--color-pink-400, #f96073);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .sitter-info-item__copy {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sitter-info-item__title,
+    .sitter-info-item__description {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sitter-info-item__title {
+      color: var(--color-gray-800, #2a3539);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .sitter-info-item__description {
+      color: var(--color-gray-500, #8b91a3);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.04px;
+      line-height: 16px;
+    }
+
+    .sitter-info-item > i:last-child {
+      color: var(--color-gray-800, #2a3539);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    /* Figma: Sitter Profile / Profiles. Active service profiles deliberately
+       precede the unfinished one, so the list also communicates profile
+       readiness without an extra filter or section heading. */
+    .sitter-profiles-screen {
+      z-index: 27;
+    }
+
+    .sitter-profiles-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+    }
+
+    .sitter-service-profile {
+      display: flex;
+      width: 100%;
+      min-height: 68px;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .sitter-service-profile__vertical {
+      display: flex;
+      width: 32px;
+      flex: 0 0 32px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px 0 0 4px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .sitter-service-profile--babysitting .sitter-service-profile__vertical { background: var(--color-pink-400, #f96073); }
+    .sitter-service-profile--cleaning .sitter-service-profile__vertical { background: var(--color-cyan-400, #35cfea); }
+    .sitter-service-profile--pet-care .sitter-service-profile__vertical { background: var(--color-teal-400, #00d98b); }
+    .sitter-service-profile--tutoring .sitter-service-profile__vertical { background: var(--color-violet-400, #b85eff); }
+    .sitter-service-profile--inactive .sitter-service-profile__vertical { background: var(--color-gray-400, #bec2ce); }
+
+    .sitter-service-profile__body {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-left: 0;
+      border-radius: 0 4px 4px 0;
+      background: #fff;
+      padding: 10px 16px 10px 8px;
+    }
+
+    .sitter-service-profile__avatar {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      overflow: hidden;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.2);
+    }
+
+    .sitter-service-profile__copy {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .sitter-service-profile__name {
+      overflow: hidden;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 14px;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-style: normal;
+      font-weight: 450;
+      letter-spacing: -0.242px;
+      line-height: 120%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sitter-service-profile__link {
+      align-self: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: var(--color-gray-500, #8b91a3);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      opacity: .8;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .sitter-service-profile__status {
+      align-self: flex-start;
+      border-radius: 64px;
+      background: var(--color-gray-200, #f7f7f7);
+      padding: 2px 8px;
+      color: var(--color-gray-600, #6c757d);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .sitter-service-profile__edit,
+    .sitter-service-profile__setup {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-radius: 4px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .sitter-service-profile__edit {
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      padding: 6px 12px 8px 10px;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+    }
+
+    .sitter-service-profile__edit i {
+      color: var(--color-pink-400, #f96073);
+      font-size: 12px;
+    }
+
+    .sitter-service-profile__edit:hover { background: #f7f7f7; }
+
+    .sitter-service-profile__edit:active {
+      box-shadow: none;
+      padding-top: 8px;
+      padding-bottom: 6px;
+    }
+
+    .sitter-service-profile__setup {
+      border: 0;
+      background: var(--color-green-500, #0ba825);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16);
+      padding: 4px 10px 6px;
+      color: var(--color-supportive-full-white, #fff);
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .sitter-service-profile__setup:hover { background: var(--color-green-600, #07851c); }
+
+    .sitter-service-profile__setup:active {
+      box-shadow: none;
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
+
+    .sitter-verifications-content {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+      overscroll-behavior: contain;
+    }
+
+    .sitter-verification-item {
+      display: flex;
+      min-height: 66px;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px 20px 8px 12px;
+    }
+
+    .sitter-verification-item__doodle {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      object-fit: contain;
+    }
+
+    .sitter-verification-item__label {
+      min-width: 0;
+      flex: 1 1 auto;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 140%;
+    }
+
+    .sitter-verification-item__cta {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 4px;
+      background: var(--color-green-500, #0ba825);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16);
+      color: var(--color-supportive-full-white, #fff);
+      cursor: pointer;
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      padding: 4px 10px 6px;
+      white-space: nowrap;
+    }
+
+    .sitter-verification-item__cta:hover { background: var(--color-green-600, #07851c); }
+
+    .sitter-verification-item__cta:active {
+      box-shadow: none;
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
+
+    .sitter-gallery-content {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+      overscroll-behavior: contain;
+    }
+
+    .sitter-gallery-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sitter-gallery-section__heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 140%;
+    }
+
+    .sitter-gallery-section__heading i {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .sitter-gallery-section--babysitting .sitter-gallery-section__heading i { color: var(--color-pink-400, #f96073); }
+    .sitter-gallery-section--cleaning .sitter-gallery-section__heading i { color: var(--color-cyan-400, #35cfea); }
+    .sitter-gallery-section--tutoring .sitter-gallery-section__heading i { color: var(--color-violet-400, #b85eff); }
+
+    .sitter-gallery-section__photos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .sitter-gallery-section__photo {
+      width: 100px;
+      height: 80px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .sitter-gallery-section__add {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: var(--color-pink-400, #f96073);
+      cursor: pointer;
+      font-family: Soleil, sans-serif;
+      font-feature-settings: 'lnum' 1, 'tnum' 1;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%;
+      opacity: .8;
+      padding: 0 0 5px;
+      text-decoration: none;
+    }
+
+    .sitter-gallery-section__add i {
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .sitter-gallery-section__add span {
+      text-decoration: underline;
+      text-decoration-color: currentColor;
+      text-underline-offset: 2px;
+    }
+
+    .sitter-gallery-section__add:hover { opacity: 1; }
+
+    .sitter-courses-content {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 32px;
+      background: #fff;
+      overscroll-behavior: contain;
+    }
+
+    .sitter-courses-heading {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+      line-height: 140%;
+    }
+
+    .sitter-courses-copy {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 140%;
+      opacity: .8;
+    }
+
+    .sitter-course-card {
+      display: flex;
+      min-height: 66px;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px 20px 8px 12px;
+    }
+
+    .sitter-course-card__doodle {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      object-fit: contain;
+    }
+
+    .sitter-course-card__title {
+      min-width: 0;
+      flex: 1 1 auto;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 22px;
+    }
+
+    .sitter-course-card__apply {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 4px;
+      background: var(--color-green-500, #0ba825);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16);
+      color: var(--color-supportive-full-white, #fff);
+      cursor: pointer;
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 18px;
+      padding: 4px 10px 6px;
+      white-space: nowrap;
+    }
+
+    .sitter-course-card__apply:hover { background: var(--color-green-600, #07851c); }
+
+    .sitter-course-card__apply:active {
+      box-shadow: none;
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
+
     /* Account stacks above the profile and only its own layer is animated. */
     .family-account-screen {
       display: flex;
@@ -2037,6 +2611,10 @@
       scrollbar-width: thin;
     }
 
+    .sitter-dashboard-content--new-sitter { display: none; }
+    .sitter-dashboard-screen.is-new-sitter .sitter-dashboard-content--registered { display: none; }
+    .sitter-dashboard-screen.is-new-sitter .sitter-dashboard-content--new-sitter { display: block; }
+
     .sitter-dashboard-intro {
       margin: 0 20px 20px;
       color: var(--color-gray-800);
@@ -2075,6 +2653,27 @@
     .sitter-dashboard-grow-badge img { display: block; width: 16px; height: 16px; }
     .sitter-dashboard-card__dismiss { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #8b91a3; cursor: pointer; }
 
+    /* Figma: Welcome log in mobile / [Mobile] Sitters - dashboard, first
+       session. This is deliberately a separate content view so the populated
+       dashboard remains untouched for sitters with an existing account. */
+    .sitter-dashboard-content--new-sitter .sitter-dashboard-intro { margin-top: 0; }
+    .sitter-dashboard-onboarding-list { display: grid; gap: 12px; }
+    .sitter-dashboard-onboarding-card { display: flex; align-items: flex-start; gap: 8px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; padding: 12px 12px 12px 8px; color: #2a3539; }
+    .sitter-dashboard-onboarding-card__doodle { position: relative; display: block; width: 40px; height: 40px; flex: 0 0 40px; overflow: hidden; }
+    .sitter-dashboard-onboarding-card__doodle img { position: absolute; display: block; max-width: none; }
+    .sitter-dashboard-onboarding-card__doodle--finish img:nth-child(1) { inset: 18.76% 11.52% 18.73% 11.5%; width: 76.98%; height: 62.51%; }
+    .sitter-dashboard-onboarding-card__doodle--finish img:nth-child(2) { inset: 11.72% 7.25% 9.11% 16.73%; width: 76.02%; height: 79.17%; }
+    .sitter-dashboard-onboarding-card__doodle--finish img:nth-child(3) { inset: 5.07% 9.57% 11.68% 4.72%; width: 85.71%; height: 83.25%; }
+    .sitter-dashboard-onboarding-card__doodle--activation img:nth-child(1) { inset: 13.67% 9.75% 21.48% 13.28%; width: 76.97%; height: 64.85%; }
+    .sitter-dashboard-onboarding-card__doodle--activation img:nth-child(2) { inset: 13.68% 12.53% 13.51% 11.62%; width: 75.85%; height: 72.81%; }
+    .sitter-dashboard-onboarding-card__body { min-width: 0; flex: 1; }
+    .sitter-dashboard-onboarding-card__title { margin: 0; color: #2a3539; font-family: Soleil; font-size: 16px; font-weight: 450; letter-spacing: -.2px; line-height: 1.4; }
+    .sitter-dashboard-onboarding-card__copy { margin: 2px 0 0; color: #4a5a61; font-family: Soleil; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 1.32; }
+    .sitter-dashboard-onboarding-card__link { border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; font-weight: 400; text-align: left; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .sitter-dashboard-onboarding-card__resend { display: inline-block; margin-top: 8px; }
+    .sitter-dashboard-onboarding-card__dismiss { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #8b91a3; font-size: 16px; cursor: pointer; }
+    .sitter-dashboard-onboarding-card.is-dismissed { display: none; }
+
     /* Figma: Welcome log in mobile / [Mobile] Sitters - availability. The
        existing availability-calendar prototype owns the desktop experience;
        these names intentionally scope its compact app counterpart here. */
@@ -2106,6 +2705,10 @@
       background: #fff;
       scrollbar-width: thin;
     }
+
+    .sitter-availability-content--new-sitter { display: none; padding-top: 12px; }
+    .sitter-availability-screen.is-new-sitter .sitter-availability-content--registered { display: none; }
+    .sitter-availability-screen.is-new-sitter .sitter-availability-content--new-sitter { display: block; }
 
     .sitter-availability-stack { display: grid; gap: 10px; }
 
@@ -2462,6 +3065,42 @@
     .sitter-availability-legend__item { display: inline-flex; align-items: center; gap: 6px; color: var(--color-gray-700, #4a5a61); font: 400 12px/1.32 Soleil, sans-serif; }
     .sitter-availability-legend__sample { width: 20px; height: 12px; border: 1px solid var(--color-gray-300, #e5e5ea); border-radius: 2px; background: #fff; }
     .sitter-availability-legend__sample.is-active { border-color: var(--color-pink-400, #f96073); background: var(--color-pink-400, #f96073); }
+
+    /* Figma: Welcome log in mobile / [Mobile] Sitters, newly registered — availability. */
+    .sitter-availability-onboarding-banner {
+      display: flex;
+      min-height: 64px;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #9c70ff;
+      border-radius: 4px;
+      background: #fbf9ff;
+      padding: 9px 12px;
+    }
+
+    .sitter-availability-onboarding-banner__icon {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      place-items: center;
+      border-radius: 9px;
+      background: #f5ebff;
+      color: #f96073;
+      font-size: 21px;
+    }
+
+    .sitter-availability-onboarding-banner__copy { display: grid; gap: 1px; }
+    .sitter-availability-onboarding-banner__title { color: #2a3539; font: 450 16px/1.3 Soleil, sans-serif; }
+    .sitter-availability-onboarding-banner__description { color: #66737d; font: 350 12px/1.32 Soleil, sans-serif; }
+    .sitter-availability-stack--new-sitter { margin-top: 10px; }
+    .sitter-availability-trigger--approval { cursor: default; }
+    .sitter-availability-trigger--approval .sitter-availability-trigger__check { color: #f58a2b; }
+    .sitter-availability-card--new-timetable .sitter-availability-timetable__header { padding: 14px 12px 12px; }
+    .sitter-availability-card--new-timetable .sitter-availability-grid { padding-bottom: 14px; }
+    .sitter-availability-card--new-timetable .sitter-availability-day { display: grid; place-items: center; min-height: 24px; cursor: default; }
+    .sitter-availability-card--new-timetable .sitter-availability-cell { min-height: 32px; }
+    .sitter-availability-card--new-timetable .sitter-availability-slot { display: block; cursor: default; }
 
     .favourites-card__activity strong {
       display: inline-flex;
@@ -3482,6 +4121,21 @@
     .sitter-job-card__posted-author { color: #6c757d; font-weight: 400; opacity: .8; text-decoration: underline; text-decoration-color: rgba(108,117,125,.4); text-underline-offset: 2px; }
     .sitter-job-card__posted strong { color: #2a3539; font-weight: 600; }
     .sitter-job-card__more { width: 20px; height: 20px; border: 0; background: transparent; color: #8b91a3; cursor: pointer; font-size: 17px; line-height: 1; }
+    .sitter-job-card__status {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 64px;
+      background: #eff9ef;
+      color: #0ba825;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+    .sitter-job-card__status i { font-size: 12px; }
     .sitter-job-card__title { margin: 0 0 4px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 1.25; }
     .sitter-job-card__distance { margin: 0; color: #6f7a86; font-size: 14px; line-height: 1.35; }
     .sitter-job-card__distance strong { color: #2a3539; font-weight: 600; }
@@ -3521,9 +4175,256 @@
     .sitter-job-card__reply:hover { background: #e6213a; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); }
     .sitter-job-card__reply:active { box-shadow: none; transform: translateY(3px); }
     .sitter-job-card__reply.is-sent { background: #eff9ef; box-shadow: none; color: #0ba825; cursor: default; }
+    .sitter-job-card__action-row--summary { grid-template-columns: minmax(0, 1fr); }
+    .sitter-job-card__action-row--archived { grid-template-columns: minmax(0, 1fr) 80px; }
+    .sitter-job-card__show-messages {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 16px 13px;
+      border: 1px solid #d0d5dd;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: inset 0 -3px 0 #e5e5ea;
+      color: #2a3539;
+      cursor: pointer;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 22px;
+    }
+    .sitter-job-card__show-messages:hover { border-color: #bdc1cb; box-shadow: inset 0 -3px 0 #bdc1cb; }
+    .sitter-job-card__show-messages:active { box-shadow: none; transform: translateY(3px); }
+    .sitter-job-card__show-messages i { color: #f96073; font-size: 16px; }
     .sitter-job-card__archive { min-height: 48px; border: 1px solid #c9cfdb; border-radius: 4px; background: #fff; color: #2a3539; box-shadow: inset 0 -3px 0 rgba(42,53,57,.12); cursor: pointer; font-size: 18px; }
     .sitter-job-card__archive:hover { color: #f96073; border-color: #f96073; }
+    .sitter-job-card__archive--trigger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .sitter-job-card__archive--trigger .fa-chevron-down { color: #f96073; font-size: 14px; }
     .sitter-jobs-screen__show-more { display: flex; width: fit-content; margin: 20px auto 0; border: 0; background: transparent; color: #f96073; font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+
+    /* Notification settings follows the same full-height, bottom-up sheet
+       language as search filters. The smaller selector sheet is deliberately
+       nested above it, so changing one frequency never drops the user out of
+       the settings they were editing. */
+    .sitter-jobs-notifications-screen {
+      position: absolute;
+      z-index: 41;
+      inset: 52px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(0, 100%, 0);
+      transition: transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .3s;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .sitter-jobs-notifications-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .sitter-jobs-notifications-screen.is-dragging { transition: none; }
+
+    .sitter-jobs-notifications-screen__grabber {
+      flex: 0 0 auto;
+      padding: 10px 0 2px;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    .sitter-jobs-notifications-screen__grabber::before {
+      display: block;
+      width: 36px;
+      height: 4px;
+      margin: 0 auto;
+      border-radius: 99px;
+      background: #d6d9dd;
+      content: '';
+    }
+
+    .sitter-jobs-notifications-screen.is-dragging .sitter-jobs-notifications-screen__grabber { cursor: grabbing; }
+
+    .sitter-jobs-notifications-screen__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 62px;
+      padding: 4px 20px 12px;
+      touch-action: none;
+    }
+
+    .sitter-jobs-notifications-screen__heading {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sitter-jobs-notifications-screen__doodle {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+    }
+
+    .sitter-jobs-notifications-screen__doodle img { position: absolute; display: block; max-width: none; }
+    .sitter-jobs-notifications-screen__doodle img:nth-child(1) { inset: 13.66% 8.19% 16.49% 10.83%; width: 80.98%; height: 69.85%; }
+    .sitter-jobs-notifications-screen__doodle img:nth-child(2) { inset: 18.47% 8.19% 16.53% 6.67%; width: 85.14%; height: 65%; }
+    .sitter-jobs-notifications-screen__doodle img:nth-child(3) { inset: 7.36% 12.5% 10.83% 11.67%; width: 75.83%; height: 81.81%; }
+
+    .sitter-jobs-notifications-screen__title {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font: 450 24px/1.2 Soleil, sans-serif;
+      letter-spacing: -.2px;
+    }
+
+    .sitter-jobs-notifications-screen__close {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #6d7880;
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-notifications-screen__close:hover,
+    .sitter-jobs-notifications-screen__close:focus-visible { outline: 0; background: #f2f3f5; }
+
+    .sitter-jobs-notifications-screen__content {
+      min-height: 0;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 18px 20px 24px;
+    }
+
+    .sitter-jobs-notifications-screen__intro {
+      margin: 0 0 28px;
+      color: var(--color-gray-700, #4a5a61);
+      font: 400 16px/1.4 Soleil, sans-serif;
+    }
+
+    .sitter-jobs-notifications-screen__fields { display: grid; gap: 22px; }
+    .sitter-jobs-notifications-screen__field { display: grid; gap: 8px; }
+    .sitter-jobs-notifications-screen__label { color: var(--color-gray-800, #2a3539); font: 450 14px/1.4 Soleil, sans-serif; }
+
+    .sitter-jobs-notifications-screen__select {
+      display: flex;
+      width: 100%;
+      min-height: 52px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid #c8ceda;
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 16px;
+      color: var(--color-gray-800, #2a3539);
+      font: 450 16px/1.4 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-notifications-screen__select:hover { border-color: #aeb8c5; }
+    .sitter-jobs-notifications-screen__select:focus-visible { outline: 0; border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .sitter-jobs-notifications-screen__select i { flex: 0 0 auto; color: var(--color-pink-400, #f96073); font-size: 14px; }
+
+    .sitter-jobs-notifications-screen__footer {
+      flex: 0 0 auto;
+      padding: 10px 20px 20px;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+      box-shadow: 0 -8px 24px rgba(42, 53, 57, .04);
+    }
+
+    .sitter-jobs-notifications-screen__save {
+      display: inline-flex;
+      width: 100%;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #0ca622;
+      border-radius: 5px;
+      background: #0ca622;
+      box-shadow: inset 0 -4px 0 #07851a;
+      color: #fff;
+      font: 450 16px/1 Soleil, sans-serif;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-notifications-screen__save:hover,
+    .sitter-jobs-notifications-screen__save:focus-visible { outline: 0; border-color: #079420; background: #079420; }
+    .sitter-jobs-notifications-screen__save:active { padding-top: 4px; box-shadow: none; }
+
+    .sitter-jobs-notification-options-sheet {
+      position: absolute;
+      z-index: 62;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .sitter-jobs-notification-options-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(42, 53, 57, .42);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .sitter-jobs-notification-options-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .sitter-jobs-notification-options-sheet__handle { width: 36px; height: 4px; margin: 12px auto 10px; border-radius: 99px; background: #2a3539; }
+    .sitter-jobs-notification-options-sheet__title { margin: 0; padding: 0 20px 10px; color: #2a3539; font: 450 18px/1.4 Soleil, sans-serif; }
+    .sitter-jobs-notification-options-sheet__option {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+      padding: 12px 20px;
+      color: #2a3539;
+      font: 450 16px/1.4 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-notification-options-sheet__option:hover,
+    .sitter-jobs-notification-options-sheet__option.is-selected { background: #f7f7f7; }
+    .sitter-jobs-notification-options-sheet__option.is-selected::after { margin-left: auto; color: #0ca622; font: 600 20px/1 Soleil, sans-serif; content: '✓'; }
+    .sitter-jobs-notification-options-sheet.is-open { pointer-events: auto; }
+    .sitter-jobs-notification-options-sheet.is-open .sitter-jobs-notification-options-sheet__backdrop { opacity: 1; }
+    .sitter-jobs-notification-options-sheet.is-open .sitter-jobs-notification-options-sheet__panel { transform: translateY(0); }
 
 
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
@@ -6655,6 +7556,7 @@
       .favourites-screen { top: 48px; }
       .messages-screen { top: 48px; }
       .jobs-screen { top: 48px; }
+      .sitter-jobs-screen { top: 48px; }
       .bookings-screen { top: 48px; }
       .ai-panel.open { max-height: 1100px; }
     }
@@ -6946,7 +7848,7 @@
       </div>
     </div>
     <section class="sitter-dashboard-screen" id="sitterDashboardScreen" aria-label="Dashboard" aria-hidden="true" data-node-id="2358:52843">
-      <div class="sitter-dashboard-content">
+      <div class="sitter-dashboard-content sitter-dashboard-content--registered">
         <p class="sitter-dashboard-intro">You are improving through fulfilling the tasks</p>
         <div class="sitter-dashboard-progress" role="progressbar" aria-label="Profile progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20"><span class="sitter-dashboard-progress__value">20%</span></div>
         <div class="sitter-dashboard-list">
@@ -6991,9 +7893,39 @@
           </article>
         </div>
       </div>
+      <div class="sitter-dashboard-content sitter-dashboard-content--new-sitter">
+        <p class="sitter-dashboard-intro">You are improving through fulfilling the tasks</p>
+        <div class="sitter-dashboard-progress" role="progressbar" aria-label="Profile progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63"><span class="sitter-dashboard-progress__value" style="width: 63%;">63%</span></div>
+        <div class="sitter-dashboard-onboarding-list">
+          <article class="sitter-dashboard-onboarding-card">
+            <span class="sitter-dashboard-onboarding-card__doodle sitter-dashboard-onboarding-card__doodle--finish" aria-hidden="true">
+              <img src="assets/dashboard-finish-profile-layer-2.svg" alt="">
+              <img src="assets/dashboard-finish-profile-layer-3.svg" alt="">
+              <img src="assets/dashboard-finish-profile-layer-1.svg" alt="">
+            </span>
+            <div class="sitter-dashboard-onboarding-card__body">
+              <p class="sitter-dashboard-onboarding-card__title">Finish your profile</p>
+              <p class="sitter-dashboard-onboarding-card__copy">Fill out <button class="sitter-dashboard-onboarding-card__link" type="button">some missing information</button></p>
+            </div>
+            <button class="sitter-dashboard-onboarding-card__dismiss" type="button" data-sitter-dashboard-onboarding-dismiss aria-label="Dismiss finish your profile"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+          </article>
+          <article class="sitter-dashboard-onboarding-card">
+            <span class="sitter-dashboard-onboarding-card__doodle sitter-dashboard-onboarding-card__doodle--activation" aria-hidden="true">
+              <img src="assets/dashboard-confirm-email-layer-2.svg" alt="">
+              <img src="assets/dashboard-confirm-email-layer-1.svg" alt="">
+            </span>
+            <div class="sitter-dashboard-onboarding-card__body">
+              <p class="sitter-dashboard-onboarding-card__title">Confirm activation email</p>
+              <p class="sitter-dashboard-onboarding-card__copy">Sent to your@email.com. Didn’t receive it? Check for typos, spam folders, or a full inbox. Still nothing? Contact support and we’ll help.</p>
+              <button class="sitter-dashboard-onboarding-card__link sitter-dashboard-onboarding-card__resend" type="button">Resend activation e-mail</button>
+            </div>
+            <button class="sitter-dashboard-onboarding-card__dismiss" type="button" data-sitter-dashboard-onboarding-dismiss aria-label="Dismiss activation email"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+          </article>
+        </div>
+      </div>
     </section>
     <section class="sitter-availability-screen" id="sitterAvailabilityScreen" aria-label="Availability" aria-hidden="true" data-node-id="2360:57016">
-      <div class="sitter-availability-content">
+      <div class="sitter-availability-content sitter-availability-content--registered">
         <div class="sitter-availability-stack">
           <article class="sitter-availability-card" id="sitterAvailabilityGeneralCard">
             <header class="sitter-availability-card__header"><h2>General availability</h2></header>
@@ -7033,6 +7965,43 @@
               <span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample is-active"></span>Available</span>
               <span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample"></span>Unavailable</span>
             </footer>
+          </article>
+        </div>
+      </div>
+      <div class="sitter-availability-content sitter-availability-content--new-sitter">
+        <div class="sitter-availability-onboarding-banner" role="note">
+          <span class="sitter-availability-onboarding-banner__icon" aria-hidden="true"><i class="fa-regular fa-calendar-days"></i></span>
+          <span class="sitter-availability-onboarding-banner__copy"><strong class="sitter-availability-onboarding-banner__title">Set your availability</strong><span class="sitter-availability-onboarding-banner__description">Let families know when you're free to book.</span></span>
+        </div>
+        <div class="sitter-availability-stack sitter-availability-stack--new-sitter">
+          <article class="sitter-availability-card">
+            <header class="sitter-availability-card__header"><h2>General availability</h2></header>
+            <div class="sitter-availability-card__body">
+              <div class="sitter-availability-trigger sitter-availability-trigger--approval" aria-label="General availability: Waiting for approval">
+                <i class="sitter-availability-trigger__check fa-regular fa-hourglass-half" aria-hidden="true"></i>
+                <span class="sitter-availability-trigger__value">Waiting for approval</span>
+                <i class="sitter-availability-trigger__chevron fa-regular fa-chevron-down" aria-hidden="true"></i>
+              </div>
+            </div>
+          </article>
+
+          <article class="sitter-availability-card sitter-availability-card--new-timetable">
+            <div class="sitter-availability-timetable__header">
+              <span class="sitter-availability-timetable__label">Set your timetable</span>
+              <div class="sitter-availability-mode-trigger" aria-label="Timetable view: by parts of the day">
+                <i class="sitter-availability-mode-trigger__icon fa-regular fa-calendar-days" aria-hidden="true"></i>
+                <span class="sitter-availability-mode-trigger__value">by parts of the day</span>
+                <i class="sitter-availability-mode-trigger__chevron fa-regular fa-chevron-down" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="sitter-availability-grid" aria-label="Weekly availability by parts of the day">
+              <span class="sitter-availability-corner" aria-hidden="true"></span><span class="sitter-availability-day">MO</span><span class="sitter-availability-day">TU</span><span class="sitter-availability-day">WE</span><span class="sitter-availability-day">TH</span><span class="sitter-availability-day">FR</span><span class="sitter-availability-day">SA</span><span class="sitter-availability-day">SU</span>
+              <span class="sitter-availability-period">morning</span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span>
+              <span class="sitter-availability-period">afternoon</span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span>
+              <span class="sitter-availability-period">evening</span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span>
+              <span class="sitter-availability-period">night</span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span><span class="sitter-availability-cell"><span class="sitter-availability-slot"></span></span>
+            </div>
+            <footer class="sitter-availability-legend" aria-hidden="true"><span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample is-active"></span>Available</span><span class="sitter-availability-legend__item"><span class="sitter-availability-legend__sample"></span>Unavailable</span></footer>
           </article>
         </div>
       </div>
@@ -7275,7 +8244,7 @@
         </div>
         <div class="sitter-jobs-screen__summary">
           <button class="sitter-jobs-screen__location" id="sitterJobsLocationPill" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterJobsFiltersScreen"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span id="sitterJobsLocationLabel">Praha 2</span><span id="sitterJobsRadiusLabel">(+20 km)</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
-          <button class="sitter-jobs-screen__notifications" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Set up notifications</span></button>
+          <button class="sitter-jobs-screen__notifications" id="sitterJobsNotifications" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterJobsNotificationsScreen"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Set up notifications</span></button>
         </div>
         <div class="sitter-jobs-grid" id="sitterJobsGrid">
           <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="new" data-sitter-job-service-card="babysitting">
@@ -7293,16 +8262,18 @@
             <div class="sitter-job-card__action-row"><button class="sitter-job-card__reply" type="button" data-sitter-job-reply><i class="fa-regular fa-chevron-down" aria-hidden="true"></i><span>Reply to job</span></button><button class="sitter-job-card__archive" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i></button></div>
           </article>
           <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="replied" data-sitter-job-service-card="babysitting" hidden>
-            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Jana</span><span>posted</span><strong>Yesterday</strong></p><span class="sitter-job-card__tag sitter-job-card__tag--pet"><i class="fa-regular fa-check" aria-hidden="true"></i>&nbsp;Replied</span></div>
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Jana</span><span>posted</span><strong>Yesterday</strong></p><span class="sitter-job-card__status"><i class="fa-regular fa-check" aria-hidden="true"></i><span>Replied</span></span></div>
             <h2 class="sitter-job-card__title">Potočná 40, Brno–Bystrc</h2><p class="sitter-job-card__distance"><strong>3.4 km</strong> away from you</p>
-            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">280 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--service">Babysitting</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Weekly</span></div>
-            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy">Thank you for your response. The family will get back to you in Messages.</p></div><div class="sitter-job-card__divider"></div>
-            <div class="sitter-job-card__action-row"><button class="sitter-job-card__reply is-sent" type="button" aria-disabled="true"><i class="fa-regular fa-circle-check" aria-hidden="true"></i><span>Message sent</span></button><button class="sitter-job-card__archive" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i></button></div>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">280 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--service"><i class="fa-regular fa-child-reaching" aria-hidden="true"></i>&nbsp;Babysitting</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Weekly</span></div>
+            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy is-collapsed">Hello, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years old in November) and a daughter (2 years old). Monday to Friday from 8:00 to 14:00, with flexibility by mutual agreement. Occasionally, we may also need evening babysitting.</p><button class="sitter-job-card__read-more is-visible" type="button" data-sitter-job-read-more>read more</button></div><div class="sitter-job-card__divider"></div>
+            <div class="sitter-job-card__action-row sitter-job-card__action-row--summary"><button class="sitter-job-card__show-messages" type="button" data-sitter-job-show-messages><i class="fa-light fa-message" aria-hidden="true"></i><span>Show messages</span></button></div>
           </article>
           <article class="sitter-job-card" data-sitter-job-card data-sitter-job-state="archived" data-sitter-job-service-card="cleaning" hidden>
-            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Petra</span><span>posted</span><strong>3 days ago</strong></p><span class="sitter-job-card__tag">Archived</span></div>
+            <div class="sitter-job-card__topline"><p class="sitter-job-card__posted"><span class="sitter-job-card__posted-author">Petra</span><span>posted</span><strong>3 days ago</strong></p><button class="sitter-job-card__more" type="button" aria-label="More job actions"><i class="fa-light fa-ellipsis" aria-hidden="true"></i></button></div>
             <h2 class="sitter-job-card__title">Regular household cleaning</h2><p class="sitter-job-card__distance"><strong>4.0 km</strong> away from you</p>
-            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">300 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Once a week</span></div>
+            <div class="sitter-job-card__tags"><span class="sitter-job-card__tag sitter-job-card__tag--price">300 Kč/h</span><span class="sitter-job-card__tag sitter-job-card__tag--service"><i class="fa-regular fa-broom" aria-hidden="true"></i>&nbsp;Household cleaning</span><span class="sitter-job-card__tag sitter-job-card__tag--date">Once a week</span></div>
+            <div class="sitter-job-card__divider"></div><div class="sitter-job-card__message"><p class="sitter-job-card__copy is-collapsed">We are looking for reliable help with regular household cleaning. The work includes standard cleaning of the kitchen and bathroom, dusting, vacuuming and mopping. We prefer a recurring weekly arrangement and are flexible about the exact day.</p><button class="sitter-job-card__read-more is-visible" type="button" data-sitter-job-read-more>read more</button></div><div class="sitter-job-card__divider"></div>
+            <div class="sitter-job-card__action-row sitter-job-card__action-row--archived"><button class="sitter-job-card__reply" type="button" data-sitter-job-reply><i class="fa-regular fa-chevron-down" aria-hidden="true"></i><span>Reply to job</span></button><button class="sitter-job-card__archive sitter-job-card__archive--trigger" type="button" aria-label="Archive job"><i class="fa-light fa-box-archive" aria-hidden="true"></i><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></div>
           </article>
         </div>
         <button class="sitter-jobs-screen__show-more" id="sitterJobsShowMore" type="button">Show more jobs</button>
@@ -7425,6 +8396,136 @@
           <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button>
         </div>
       </div>
+    </section>
+    <section class="family-profile-screen sitter-profile-screen" id="sitterProfileScreen" aria-label="Your Profile" aria-hidden="true" data-node-id="2367:96311">
+      <header class="family-profile-header">
+        <button class="family-profile-header__back" id="sitterProfileBack" type="button" aria-label="Back to dashboard"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-profile-header__title">Your Profile</div>
+        <div class="family-profile-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <div class="family-profile-content">
+        <div class="family-profile-user">
+          <img class="family-profile-avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková">
+          <div class="family-profile-user__details">
+            <p class="family-profile-user__name">Sandra Nováková</p>
+          </div>
+        </div>
+        <div class="family-profile-settings" aria-label="Sitter profile settings">
+          <button class="family-profile-settings__item" id="sitterProfileInfoTrigger" type="button"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Info &amp; Settings</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="sitterProfileProfilesTrigger" type="button"><i class="fa-light fa-user" aria-hidden="true"></i><span>Profiles</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="sitterProfileVerificationsTrigger" type="button"><i class="fa-light fa-badge-check" aria-hidden="true"></i><span>Verifications</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="sitterProfileGalleryTrigger" type="button"><i class="fa-light fa-images" aria-hidden="true"></i><span>Photo gallery</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" id="sitterProfileCoursesTrigger" type="button"><i class="fa-light fa-books" aria-hidden="true"></i><span>Courses</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-rocket-launch" aria-hidden="true"></i><span class="sitter-profile-grow-label"><span>GROW</span><b class="sitter-profile-grow-badge">Get more jobs!</b></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <div class="sitter-profile-divider" aria-hidden="true">Other</div>
+          <button class="family-profile-settings__item" type="button"><i class="fa-light fa-shield-heart" aria-hidden="true"></i><span>About HlídačkyProtect™</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        </div>
+        <div class="family-profile-actions">
+          <button class="family-profile-logout" id="sitterProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button>
+        </div>
+      </div>
+    </section>
+    <section class="family-account-screen sitter-info-screen" id="sitterInfoScreen" aria-label="Info &amp; Settings" aria-hidden="true" data-node-id="2367:97058">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterInfoBack" type="button" aria-label="Back to your profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Info &amp; Settings</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="sitter-info-content">
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-gear" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Account details</span><span class="sitter-info-item__description">e-mail, login and interface language</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-user" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Personal information</span><span class="sitter-info-item__description">name, date of birth, phone number</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Your place</span><span class="sitter-info-item__description">address</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-building-columns" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Bank account</span><span class="sitter-info-item__description">bank account, tax number &amp; residency</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-user-graduate" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Education</span><span class="sitter-info-item__description">highschool, university, fields of study</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" type="button"><i class="fa-light fa-globe" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Spoken languages</span><span class="sitter-info-item__description">native and other spoken languages</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+      </main>
+    </section>
+    <section class="family-account-screen sitter-profiles-screen" id="sitterProfilesScreen" aria-label="Profiles" aria-hidden="true" data-node-id="2367:97372">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterProfilesBack" type="button" aria-label="Back to your profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-solid fa-user" aria-hidden="true"></i><span>Profiles</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="sitter-profiles-content">
+        <article class="sitter-service-profile sitter-service-profile--babysitting" aria-label="Babysitting profile, active">
+          <div class="sitter-service-profile__vertical"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Babysitting</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+        </article>
+        <article class="sitter-service-profile sitter-service-profile--cleaning" aria-label="Household cleaning profile, active">
+          <div class="sitter-service-profile__vertical"><i class="fa-solid fa-broom" aria-hidden="true"></i></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Household cleaning</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+        </article>
+        <article class="sitter-service-profile sitter-service-profile--pet-care" aria-label="Pet care profile, active">
+          <div class="sitter-service-profile__vertical"><i class="fa-solid fa-paw" aria-hidden="true"></i></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Pet care</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+        </article>
+        <article class="sitter-service-profile sitter-service-profile--tutoring" aria-label="Tutoring profile, active">
+          <div class="sitter-service-profile__vertical"><i class="fa-solid fa-user-graduate" aria-hidden="true"></i></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Tutoring</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+        </article>
+        <article class="sitter-service-profile sitter-service-profile--inactive" aria-label="Senior care profile, not filled">
+          <div class="sitter-service-profile__vertical"><i class="fa-solid fa-person-cane" aria-hidden="true"></i></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Senior care</span><span class="sitter-service-profile__status">Not filled</span></div><button class="sitter-service-profile__setup" type="button">Set up profile</button></div>
+        </article>
+      </main>
+    </section>
+    <section class="family-account-screen sitter-verifications-screen" id="sitterVerificationsScreen" aria-label="Verifications" aria-hidden="true" data-node-id="2367:130599">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterVerificationsBack" type="button" aria-label="Back to your profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-badge-check" aria-hidden="true"></i><span>Verifications</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="sitter-verifications-content">
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-center.svg" alt=""><span class="sitter-verification-item__label">Verification center</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-video.svg" alt=""><span class="sitter-verification-item__label">Video verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-id.svg" alt=""><span class="sitter-verification-item__label">ID verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-bank-id.svg" alt=""><span class="sitter-verification-item__label">Bank ID verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-criminal-records.svg" alt=""><span class="sitter-verification-item__label">Criminal records verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-mojeid.svg" alt=""><span class="sitter-verification-item__label">mojeID verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-phone-number.svg" alt=""><span class="sitter-verification-item__label">Phone number verification</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-place-of-birth.svg" alt=""><span class="sitter-verification-item__label">Place of birth</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+        <article class="sitter-verification-item"><img class="sitter-verification-item__doodle" src="./assets/verification-covid-19-certificate.svg" alt=""><span class="sitter-verification-item__label">Covid-19 certificate</span><button class="sitter-verification-item__cta" type="button">Verify now</button></article>
+      </main>
+    </section>
+    <section class="family-account-screen sitter-gallery-screen" id="sitterGalleryScreen" aria-label="Gallery" aria-hidden="true" data-node-id="2367:132180">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterGalleryBack" type="button" aria-label="Back to your profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-images" aria-hidden="true"></i><span>Gallery</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="sitter-gallery-content">
+        <section class="sitter-gallery-section sitter-gallery-section--babysitting" aria-labelledby="sitterGalleryBabysittingTitle">
+          <h2 class="sitter-gallery-section__heading" id="sitterGalleryBabysittingTitle"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i><span>Babysitting photos</span></h2>
+          <div class="sitter-gallery-section__photos"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Babysitting with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Babysitting with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Babysitting with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Babysitting with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Babysitting with Sandra"></div>
+          <button class="sitter-gallery-section__add" type="button"><i class="fa-regular fa-plus" aria-hidden="true"></i><span>Add more babysitting photos</span></button>
+        </section>
+        <section class="sitter-gallery-section sitter-gallery-section--cleaning" aria-labelledby="sitterGalleryCleaningTitle">
+          <h2 class="sitter-gallery-section__heading" id="sitterGalleryCleaningTitle"><i class="fa-solid fa-broom" aria-hidden="true"></i><span>House cleaning photos</span></h2>
+          <div class="sitter-gallery-section__photos"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="House cleaning by Sandra"></div>
+          <button class="sitter-gallery-section__add" type="button"><i class="fa-regular fa-plus" aria-hidden="true"></i><span>Add more house cleaning photos</span></button>
+        </section>
+        <section class="sitter-gallery-section sitter-gallery-section--tutoring" aria-labelledby="sitterGalleryTutoringTitle">
+          <h2 class="sitter-gallery-section__heading" id="sitterGalleryTutoringTitle"><i class="fa-solid fa-user-graduate" aria-hidden="true"></i><span>Tutoring photos</span></h2>
+          <div class="sitter-gallery-section__photos"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"><img class="sitter-gallery-section__photo" src="./assets/sitter-gallery-photo.png" alt="Tutoring with Sandra"></div>
+          <button class="sitter-gallery-section__add" type="button"><i class="fa-regular fa-plus" aria-hidden="true"></i><span>Add more tutoring photos</span></button>
+        </section>
+      </main>
+    </section>
+    <section class="family-account-screen sitter-courses-screen" id="sitterCoursesScreen" aria-label="Courses" aria-hidden="true" data-node-id="2367:132386">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterCoursesBack" type="button" aria-label="Back to your profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-books" aria-hidden="true"></i><span>Courses</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <main class="sitter-courses-content">
+        <h1 class="sitter-courses-heading">Courses</h1>
+        <p class="sitter-courses-copy">The sitters have the opportunity to attend the first aid course with Red Cross, Prague 1, where they can learn a lot of practical skills.</p>
+        <article class="sitter-course-card">
+          <img class="sitter-course-card__doodle" src="./assets/doodle-first-aid-course.svg" alt="">
+          <span class="sitter-course-card__title">First Aid Course</span>
+          <button class="sitter-course-card__apply" type="button">Apply now</button>
+        </article>
+      </main>
     </section>
     <section class="family-account-screen" id="familyAccountScreen" aria-label="Basic information" aria-hidden="true">
       <header class="family-account-header">
@@ -7973,6 +9074,45 @@
         <button class="search-filters-screen__reset" id="sitterJobsFiltersReset" type="button" disabled>Clear all</button>
       </footer>
     </section>
+    <section class="sitter-jobs-notifications-screen" id="sitterJobsNotificationsScreen" role="dialog" aria-modal="true" aria-labelledby="sitterJobsNotificationsTitle" aria-hidden="true">
+      <div class="sitter-jobs-notifications-screen__grabber" id="sitterJobsNotificationsGrabber" aria-hidden="true"></div>
+      <header class="sitter-jobs-notifications-screen__header" id="sitterJobsNotificationsHeader">
+        <div class="sitter-jobs-notifications-screen__heading">
+          <span class="sitter-jobs-notifications-screen__doodle" aria-hidden="true">
+            <img src="assets/notification-settings-doodle-layer-3.svg" alt="">
+            <img src="assets/notification-settings-doodle-layer-2.svg" alt="">
+            <img src="assets/notification-settings-doodle-layer-1.svg" alt="">
+          </span>
+          <h1 class="sitter-jobs-notifications-screen__title" id="sitterJobsNotificationsTitle">Notification settings</h1>
+        </div>
+        <button class="sitter-jobs-notifications-screen__close" id="sitterJobsNotificationsClose" type="button" aria-label="Close notification settings"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </header>
+      <main class="sitter-jobs-notifications-screen__content">
+        <p class="sitter-jobs-notifications-screen__intro">Stay up to date with the latest job opportunities in your area. Choose how often you'd like to receive updates.</p>
+        <div class="sitter-jobs-notifications-screen__fields">
+                <div class="sitter-jobs-notifications-screen__field">
+            <span class="sitter-jobs-notifications-screen__label">E-mail notifications</span>
+            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsEmail" type="button" aria-haspopup="dialog" aria-expanded="false" data-sitter-jobs-notification-select="email"><span data-sitter-jobs-notification-value="email">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+                </div>
+                <div class="sitter-jobs-notifications-screen__field">
+            <span class="sitter-jobs-notifications-screen__label">Mobile app notifications</span>
+            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsMobile" type="button" aria-haspopup="dialog" aria-expanded="false" data-sitter-jobs-notification-select="mobile"><span data-sitter-jobs-notification-value="mobile">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+                </div>
+        </div>
+      </main>
+      <footer class="sitter-jobs-notifications-screen__footer"><button class="sitter-jobs-notifications-screen__save" id="sitterJobsNotificationsSave" type="button"><i class="fa-regular fa-check" aria-hidden="true"></i><span>Save changes</span></button></footer>
+    </section>
+    <div class="sitter-jobs-notification-options-sheet" id="sitterJobsNotificationOptionsSheet" aria-hidden="true" hidden>
+      <button class="sitter-jobs-notification-options-sheet__backdrop" id="sitterJobsNotificationOptionsBackdrop" type="button" aria-label="Close notification frequency options"></button>
+      <section class="sitter-jobs-notification-options-sheet__panel" id="sitterJobsNotificationOptionsDialog" role="dialog" aria-modal="true" aria-labelledby="sitterJobsNotificationOptionsTitle" tabindex="-1">
+        <div class="sitter-jobs-notification-options-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-jobs-notification-options-sheet__title" id="sitterJobsNotificationOptionsTitle">E-mail notifications</h2>
+        <button class="sitter-jobs-notification-options-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-jobs-notification-option="Immediately after publication">Immediately after publication</button>
+        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Never">Never</button>
+        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a day">Summary once a day</button>
+        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a week">Summary once a week</button>
+      </section>
+    </div>
     <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
       <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
       <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
@@ -8184,6 +9324,25 @@
       var sitterJobsFiltersCount = document.getElementById('sitterJobsFiltersCount');
       var sitterJobsFiltersNoun = document.getElementById('sitterJobsFiltersNoun');
       var sitterJobsFiltersTrigger = null;
+      var sitterJobsNotifications = document.getElementById('sitterJobsNotifications');
+      var sitterJobsNotificationsScreen = document.getElementById('sitterJobsNotificationsScreen');
+      var sitterJobsNotificationsGrabber = document.getElementById('sitterJobsNotificationsGrabber');
+      var sitterJobsNotificationsHeader = document.getElementById('sitterJobsNotificationsHeader');
+      var sitterJobsNotificationsClose = document.getElementById('sitterJobsNotificationsClose');
+      var sitterJobsNotificationsEmail = document.getElementById('sitterJobsNotificationsEmail');
+      var sitterJobsNotificationsMobile = document.getElementById('sitterJobsNotificationsMobile');
+      var sitterJobsNotificationsSave = document.getElementById('sitterJobsNotificationsSave');
+      var sitterJobsNotificationSelects = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-jobs-notification-select]'));
+      var sitterJobsNotificationValues = { email: 'Immediately after publication', mobile: 'Immediately after publication' };
+      var sitterJobsNotificationsTrigger = null;
+      var sitterJobsNotificationOptionsSheet = document.getElementById('sitterJobsNotificationOptionsSheet');
+      var sitterJobsNotificationOptionsBackdrop = document.getElementById('sitterJobsNotificationOptionsBackdrop');
+      var sitterJobsNotificationOptionsDialog = document.getElementById('sitterJobsNotificationOptionsDialog');
+      var sitterJobsNotificationOptionsTitle = document.getElementById('sitterJobsNotificationOptionsTitle');
+      var sitterJobsNotificationOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-jobs-notification-option]'));
+      var sitterJobsNotificationOptionsTrigger = null;
+      var sitterJobsNotificationOptionsChannel = null;
+      var sitterJobsNotificationOptionsCloseTimer = null;
       var sitterJobsLocationLabel = document.getElementById('sitterJobsLocationLabel');
       var sitterJobsRadiusLabel = document.getElementById('sitterJobsRadiusLabel');
       var sitterJobsShowMore = document.getElementById('sitterJobsShowMore');
@@ -8257,6 +9416,24 @@
       var familyProfileScreen = document.getElementById('familyProfileScreen');
       var familyProfileBack = document.getElementById('familyProfileBack');
       var familyProfileLogout = document.getElementById('familyProfileLogout');
+      var sitterProfileScreen = document.getElementById('sitterProfileScreen');
+      var sitterProfileBack = document.getElementById('sitterProfileBack');
+      var sitterProfileLogout = document.getElementById('sitterProfileLogout');
+      var sitterProfileInfoTrigger = document.getElementById('sitterProfileInfoTrigger');
+      var sitterInfoScreen = document.getElementById('sitterInfoScreen');
+      var sitterInfoBack = document.getElementById('sitterInfoBack');
+      var sitterProfileProfilesTrigger = document.getElementById('sitterProfileProfilesTrigger');
+      var sitterProfilesScreen = document.getElementById('sitterProfilesScreen');
+      var sitterProfilesBack = document.getElementById('sitterProfilesBack');
+      var sitterProfileVerificationsTrigger = document.getElementById('sitterProfileVerificationsTrigger');
+      var sitterVerificationsScreen = document.getElementById('sitterVerificationsScreen');
+      var sitterVerificationsBack = document.getElementById('sitterVerificationsBack');
+      var sitterProfileGalleryTrigger = document.getElementById('sitterProfileGalleryTrigger');
+      var sitterGalleryScreen = document.getElementById('sitterGalleryScreen');
+      var sitterGalleryBack = document.getElementById('sitterGalleryBack');
+      var sitterProfileCoursesTrigger = document.getElementById('sitterProfileCoursesTrigger');
+      var sitterCoursesScreen = document.getElementById('sitterCoursesScreen');
+      var sitterCoursesBack = document.getElementById('sitterCoursesBack');
       var familyProfileAccountTrigger = document.getElementById('familyProfileAccountTrigger');
       var familyAccountScreen = document.getElementById('familyAccountScreen');
       var familyAccountBack = document.getElementById('familyAccountBack');
@@ -8347,6 +9524,7 @@
       var prototypeUserRole = 'family';
       var prototypeRegistrationStatus = 'registered';
       var isNewlyRegisteredParent = false;
+      var isNewlyRegisteredSitter = false;
       var hasPostedFirstJob = false;
       var currentAppScreen = 'search';
       var LOCATION_SUGGESTIONS = ['Prachatice', 'Praha', 'Praha 1', 'Praha 2', 'Praha 3', 'Přerov', 'Přelouč', 'Poustka', 'Putovní Lhota'];
@@ -8912,6 +10090,14 @@
           }, startDelay + (index * revealDelay));
           sitterDashboardLoadingTimers.push(timer);
         });
+      }
+
+      function syncSitterDashboardState() {
+        sitterDashboardScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
+      }
+
+      function syncSitterAvailabilityState() {
+        sitterAvailabilityScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
       }
 
       var SITTER_AVAILABILITY_DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -9570,9 +10756,13 @@
 
       function completeRegistration() {
         var selectedRole = document.querySelector('[name="registration-role"]:checked');
-        if (!validateRegistrationRole() || !selectedRole || selectedRole.value !== 'family') return;
-
-        openRegistrationDetails();
+        if (!validateRegistrationRole() || !selectedRole) return;
+        if (selectedRole.value === 'family') {
+          openRegistrationDetails();
+          return;
+        }
+        hideRegistrationRole();
+        simulateLogin({ newlyRegisteredSitter: true });
       }
 
       function completeRegistrationDetails() {
@@ -9779,6 +10969,72 @@
         syncBackEntry();
       }
 
+      function syncSitterJobsNotificationValue(channel) {
+        var output = document.querySelector('[data-sitter-jobs-notification-value="' + channel + '"]');
+        if (output) output.textContent = sitterJobsNotificationValues[channel];
+      }
+
+      function closeSitterJobsNotificationOptions(restoreFocus) {
+        if (!sitterJobsNotificationOptionsSheet || sitterJobsNotificationOptionsSheet.hidden) return;
+        sitterJobsNotificationOptionsSheet.classList.remove('is-open');
+        sitterJobsNotificationOptionsSheet.setAttribute('aria-hidden', 'true');
+        if (sitterJobsNotificationOptionsTrigger) sitterJobsNotificationOptionsTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterJobsNotificationOptionsCloseTimer);
+        sitterJobsNotificationOptionsCloseTimer = window.setTimeout(function () {
+          sitterJobsNotificationOptionsSheet.hidden = true;
+          if (sitterJobsNotificationsScreen.classList.contains('is-open')) setBackgroundInert(sitterJobsNotificationsScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus && sitterJobsNotificationOptionsTrigger) sitterJobsNotificationOptionsTrigger.focus({ preventScroll: true });
+          sitterJobsNotificationOptionsTrigger = null;
+          sitterJobsNotificationOptionsChannel = null;
+        }, 280);
+      }
+
+      function openSitterJobsNotificationOptions(channel, trigger) {
+        if (!channel || !trigger) return;
+        window.clearTimeout(sitterJobsNotificationOptionsCloseTimer);
+        sitterJobsNotificationOptionsChannel = channel;
+        sitterJobsNotificationOptionsTrigger = trigger;
+        sitterJobsNotificationOptionsTitle.textContent = channel === 'email' ? 'E-mail notifications' : 'Mobile app notifications';
+        sitterJobsNotificationOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-sitter-jobs-notification-option') === sitterJobsNotificationValues[channel];
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        sitterJobsNotificationOptionsSheet.hidden = false;
+        sitterJobsNotificationOptionsSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterJobsNotificationOptionsSheet);
+        requestAnimationFrame(function () {
+          sitterJobsNotificationOptionsSheet.classList.add('is-open');
+          sitterJobsNotificationOptionsDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function openSitterJobsNotifications(trigger) {
+        sitterJobsNotificationsTrigger = trigger || sitterJobsNotifications;
+        sitterJobsNotificationsScreen.classList.add('is-open');
+        sitterJobsNotificationsScreen.setAttribute('aria-hidden', 'false');
+        sitterJobsNotificationsTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterJobsNotificationsScreen);
+        requestAnimationFrame(function () {
+          sitterJobsNotificationsEmail.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeSitterJobsNotifications(restoreFocus) {
+        if (!sitterJobsNotificationsScreen.classList.contains('is-open')) return;
+        if (!sitterJobsNotificationOptionsSheet.hidden) closeSitterJobsNotificationOptions(false);
+        sitterJobsNotificationsScreen.classList.remove('is-open');
+        sitterJobsNotificationsScreen.setAttribute('aria-hidden', 'true');
+        if (sitterJobsNotificationsTrigger) sitterJobsNotificationsTrigger.setAttribute('aria-expanded', 'false');
+        setBackgroundInert(null);
+        if (restoreFocus && sitterJobsNotificationsTrigger) sitterJobsNotificationsTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
       sitterJobsTabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
           sitterJobsActiveTab = tab.getAttribute('data-sitter-jobs-tab');
@@ -9800,18 +11056,41 @@
         });
       });
 
+      function setSitterJobCardReplied(card) {
+        if (!card) return;
+        card.setAttribute('data-sitter-job-state', 'replied');
+
+        var topLine = card.querySelector('.sitter-job-card__topline');
+        var status = topLine && topLine.querySelector('.sitter-job-card__status');
+        if (!status && topLine) {
+          status = document.createElement('span');
+          status.className = 'sitter-job-card__status';
+          status.innerHTML = '<i class="fa-regular fa-check" aria-hidden="true"></i><span>Replied</span>';
+          var moreButton = topLine.querySelector('.sitter-job-card__more');
+          if (moreButton) moreButton.replaceWith(status);
+          else topLine.appendChild(status);
+        }
+
+        var actionRow = card.querySelector('.sitter-job-card__action-row');
+        if (actionRow) {
+          actionRow.className = 'sitter-job-card__action-row sitter-job-card__action-row--summary';
+          actionRow.innerHTML = '<button class="sitter-job-card__show-messages" type="button" data-sitter-job-show-messages><i class="fa-light fa-message" aria-hidden="true"></i><span>Show messages</span></button>';
+        }
+      }
+
       Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-reply]')).forEach(function (button) {
         button.addEventListener('click', function () {
           if (button.classList.contains('is-sent')) return;
-          button.classList.add('is-sent');
-          button.setAttribute('aria-disabled', 'true');
-          button.innerHTML = '<i class="fa-regular fa-circle-check" aria-hidden="true"></i><span>Message sent</span>';
           var card = button.closest('[data-sitter-job-card]');
-          card.setAttribute('data-sitter-job-state', 'replied');
+          setSitterJobCardReplied(card);
           setTimeout(function () {
             if (sitterJobsActiveTab === 'new') syncSitterJobsCards();
           }, 400);
         });
+      });
+
+      sitterJobsGrid.addEventListener('click', function (event) {
+        if (event.target.closest('[data-sitter-job-show-messages]')) selectAppScreen('sitter-messages');
       });
 
       Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-read-more]')).forEach(function (button) {
@@ -9829,6 +11108,24 @@
       sitterJobsLocationPill.addEventListener('click', function () { openSitterJobsFilters(sitterJobsLocationPill); });
       sitterJobsFilterButton.addEventListener('click', function () { openSitterJobsFilters(sitterJobsFilterButton); });
       sitterJobsFiltersClose.addEventListener('click', function () { closeSitterJobsFilters(true); });
+      sitterJobsNotifications.addEventListener('click', function () { openSitterJobsNotifications(sitterJobsNotifications); });
+      sitterJobsNotificationsClose.addEventListener('click', function () { closeSitterJobsNotifications(true); });
+      sitterJobsNotificationsSave.addEventListener('click', function () { closeSitterJobsNotifications(true); });
+      sitterJobsNotificationSelects.forEach(function (select) {
+        select.addEventListener('click', function () {
+          openSitterJobsNotificationOptions(select.getAttribute('data-sitter-jobs-notification-select'), select);
+        });
+      });
+      sitterJobsNotificationOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          if (!sitterJobsNotificationOptionsChannel) return;
+          sitterJobsNotificationValues[sitterJobsNotificationOptionsChannel] = option.getAttribute('data-sitter-jobs-notification-option');
+          syncSitterJobsNotificationValue(sitterJobsNotificationOptionsChannel);
+          closeSitterJobsNotificationOptions(true);
+          syncBackEntry();
+        });
+      });
+      sitterJobsNotificationOptionsBackdrop.addEventListener('click', function () { closeSitterJobsNotificationOptions(true); });
       sitterJobsFiltersForm.addEventListener('change', syncSitterJobsFiltersState);
       sitterJobsFiltersApply.addEventListener('click', function () {
         applySitterJobsFilters();
@@ -9845,6 +11142,12 @@
         [sitterJobsFiltersGrabber, sitterJobsFiltersHeader],
         [sitterJobsFiltersClose],
         function () { closeSitterJobsFilters(true); }
+      );
+      enableSheetSwipeDown(
+        sitterJobsNotificationsScreen,
+        [sitterJobsNotificationsGrabber, sitterJobsNotificationsHeader],
+        [sitterJobsNotificationsClose],
+        function () { closeSitterJobsNotifications(true); }
       );
       sitterJobsShowMore.addEventListener('click', function () { sitterJobsActiveService = ''; sitterJobsServices.forEach(function (item) { item.classList.remove('is-active'); }); syncSitterJobsCards(); sitterJobsShowMore.hidden = true; });
 
@@ -9925,6 +11228,18 @@
         if (screen !== 'search') hideRegistrationSuccess();
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
+        sitterProfileScreen.classList.remove('is-open');
+        sitterProfileScreen.setAttribute('aria-hidden', 'true');
+        sitterInfoScreen.classList.remove('is-open');
+        sitterInfoScreen.setAttribute('aria-hidden', 'true');
+        sitterProfilesScreen.classList.remove('is-open');
+        sitterProfilesScreen.setAttribute('aria-hidden', 'true');
+        sitterVerificationsScreen.classList.remove('is-open');
+        sitterVerificationsScreen.setAttribute('aria-hidden', 'true');
+        sitterGalleryScreen.classList.remove('is-open');
+        sitterGalleryScreen.setAttribute('aria-hidden', 'true');
+        sitterCoursesScreen.classList.remove('is-open');
+        sitterCoursesScreen.setAttribute('aria-hidden', 'true');
         familyAccountScreen.classList.remove('is-open');
         familyAccountScreen.setAttribute('aria-hidden', 'true');
         hideFamilyAccountSaveSuccess();
@@ -9963,6 +11278,7 @@
           sitterBookingsScreen.classList.remove('is-open');
           sitterBookingsScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.add('is-hidden');
+          syncSitterDashboardState();
           sitterDashboardScreen.classList.add('is-open');
           sitterDashboardScreen.setAttribute('aria-hidden', 'false');
           mobileHeaderIcon.className = 'fa-solid fa-grid-2';
@@ -9996,6 +11312,7 @@
           bookingsScreen.classList.remove('is-open');
           bookingsScreen.setAttribute('aria-hidden', 'true');
           resultsView.classList.add('is-hidden');
+          syncSitterAvailabilityState();
           sitterAvailabilityScreen.classList.add('is-open');
           sitterAvailabilityScreen.setAttribute('aria-hidden', 'false');
           sitterAvailabilityScreen.querySelector('.sitter-availability-content').scrollTop = 0;
@@ -10216,6 +11533,109 @@
         syncBackEntry();
       }
 
+      function openSitterProfile() {
+        if (!isSitterSession()) return;
+        hideWelcomeAlert();
+        sitterProfileScreen.classList.add('is-open');
+        sitterProfileScreen.setAttribute('aria-hidden', 'false');
+        setActiveNavItem(null);
+        syncBackEntry();
+        sitterProfileBack.focus({ preventScroll: true });
+      }
+
+      function closeSitterProfile() {
+        sitterInfoScreen.classList.remove('is-open');
+        sitterInfoScreen.setAttribute('aria-hidden', 'true');
+        sitterProfilesScreen.classList.remove('is-open');
+        sitterProfilesScreen.setAttribute('aria-hidden', 'true');
+        sitterVerificationsScreen.classList.remove('is-open');
+        sitterVerificationsScreen.setAttribute('aria-hidden', 'true');
+        sitterGalleryScreen.classList.remove('is-open');
+        sitterGalleryScreen.setAttribute('aria-hidden', 'true');
+        sitterCoursesScreen.classList.remove('is-open');
+        sitterCoursesScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileScreen.classList.remove('is-open');
+        sitterProfileScreen.setAttribute('aria-hidden', 'true');
+        setActiveNavItem(currentAppScreen);
+        loginTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openSitterInfo() {
+        if (!isSitterSession()) return;
+        sitterInfoScreen.classList.add('is-open');
+        sitterInfoScreen.setAttribute('aria-hidden', 'false');
+        sitterInfoBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterInfo() {
+        sitterInfoScreen.classList.remove('is-open');
+        sitterInfoScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileInfoTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openSitterProfiles() {
+        if (!isSitterSession()) return;
+        sitterProfilesScreen.classList.add('is-open');
+        sitterProfilesScreen.setAttribute('aria-hidden', 'false');
+        sitterProfilesBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterProfiles() {
+        sitterProfilesScreen.classList.remove('is-open');
+        sitterProfilesScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileProfilesTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openSitterVerifications() {
+        if (!isSitterSession()) return;
+        sitterVerificationsScreen.classList.add('is-open');
+        sitterVerificationsScreen.setAttribute('aria-hidden', 'false');
+        sitterVerificationsBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterVerifications() {
+        sitterVerificationsScreen.classList.remove('is-open');
+        sitterVerificationsScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileVerificationsTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openSitterGallery() {
+        if (!isSitterSession()) return;
+        sitterGalleryScreen.classList.add('is-open');
+        sitterGalleryScreen.setAttribute('aria-hidden', 'false');
+        sitterGalleryBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterGallery() {
+        sitterGalleryScreen.classList.remove('is-open');
+        sitterGalleryScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileGalleryTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function openSitterCourses() {
+        if (!isSitterSession()) return;
+        sitterCoursesScreen.classList.add('is-open');
+        sitterCoursesScreen.setAttribute('aria-hidden', 'false');
+        sitterCoursesBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterCourses() {
+        sitterCoursesScreen.classList.remove('is-open');
+        sitterCoursesScreen.setAttribute('aria-hidden', 'true');
+        sitterProfileCoursesTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
       function openFamilyAccount() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
         familyAccountScreen.classList.add('is-open');
@@ -10420,6 +11840,8 @@
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
         { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
+        { isOpen: function () { return !sitterJobsNotificationOptionsSheet.hidden; }, close: function () { closeSitterJobsNotificationOptions(true); } },
+        { isOpen: function () { return sitterJobsNotificationsScreen.classList.contains('is-open'); }, close: function () { closeSitterJobsNotifications(true); } },
         { isOpen: function () { return sitterJobsFiltersScreen.classList.contains('is-open'); }, close: function () { closeSitterJobsFilters(true); } },
         { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
         { isOpen: function () { return referralShareSheet.classList.contains('is-open'); }, close: closeReferralShareSheet },
@@ -10433,6 +11855,12 @@
         { isOpen: function () { return familyReferralHowScreen.classList.contains('is-open'); }, close: closeFamilyReferralHow },
         { isOpen: function () { return familyInvitesScreen.classList.contains('is-open'); }, close: closeFamilyInvites },
         { isOpen: function () { return familyCreditsScreen.classList.contains('is-open'); }, close: closeFamilyCredits },
+        { isOpen: function () { return sitterCoursesScreen.classList.contains('is-open'); }, close: closeSitterCourses },
+        { isOpen: function () { return sitterGalleryScreen.classList.contains('is-open'); }, close: closeSitterGallery },
+        { isOpen: function () { return sitterVerificationsScreen.classList.contains('is-open'); }, close: closeSitterVerifications },
+        { isOpen: function () { return sitterProfilesScreen.classList.contains('is-open'); }, close: closeSitterProfiles },
+        { isOpen: function () { return sitterInfoScreen.classList.contains('is-open'); }, close: closeSitterInfo },
+        { isOpen: function () { return sitterProfileScreen.classList.contains('is-open'); }, close: closeSitterProfile },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
         { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
         { isOpen: function () { return panel.classList.contains('open'); }, close: closePanel }
@@ -10552,6 +11980,69 @@
 
         familyProfileScreen.addEventListener('pointerup', endDrag);
         familyProfileScreen.addEventListener('pointercancel', endDrag);
+      })();
+
+      (function enableSitterProfileSwipeBack() {
+        var EDGE_ZONE = 32;
+        var DIRECTION_LOCK = 6;
+        var DISMISS_RATIO = 0.35;
+
+        var tracking = false;
+        var dragging = false;
+        var startX = 0;
+        var startY = 0;
+        var offset = 0;
+        var panelWidth = 0;
+
+        sitterProfileScreen.addEventListener('pointerdown', function (event) {
+          if (!sitterProfileScreen.classList.contains('is-open')) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+          var rect = sitterProfileScreen.getBoundingClientRect();
+          if (event.clientX - rect.left > EDGE_ZONE) return;
+
+          tracking = true;
+          dragging = false;
+          offset = 0;
+          panelWidth = rect.width;
+          startX = event.clientX;
+          startY = event.clientY;
+        });
+
+        sitterProfileScreen.addEventListener('pointermove', function (event) {
+          if (!tracking) return;
+
+          offset = event.clientX - startX;
+          var verticalOffset = event.clientY - startY;
+
+          if (!dragging) {
+            if (Math.abs(offset) < DIRECTION_LOCK && Math.abs(verticalOffset) < DIRECTION_LOCK) return;
+            if (Math.abs(verticalOffset) > Math.abs(offset)) {
+              tracking = false;
+              return;
+            }
+            dragging = true;
+            sitterProfileScreen.classList.add('is-dragging');
+            sitterProfileScreen.setPointerCapture(event.pointerId);
+          }
+
+          sitterProfileScreen.style.transform = 'translate3d(' + Math.max(0, offset) + 'px, 0, 0)';
+        });
+
+        function endDrag() {
+          if (!tracking) return;
+
+          var shouldDismiss = dragging && offset > panelWidth * DISMISS_RATIO;
+          tracking = false;
+          dragging = false;
+          sitterProfileScreen.classList.remove('is-dragging');
+          sitterProfileScreen.style.transform = '';
+
+          if (shouldDismiss) closeSitterProfile();
+        }
+
+        sitterProfileScreen.addEventListener('pointerup', endDrag);
+        sitterProfileScreen.addEventListener('pointercancel', endDrag);
       })();
 
       function setSitterDetails(detailsList) {
@@ -10741,6 +12232,7 @@
 
       function simulateLogin(options) {
         isNewlyRegisteredParent = prototypeUserRole === 'family' && Boolean(options && options.newlyRegisteredParent);
+        isNewlyRegisteredSitter = prototypeUserRole === 'sitter' && Boolean(options && options.newlyRegisteredSitter);
         hideLogoutSuccess();
         hideRegistrationSuccess();
         loginTrigger.classList.add('is-logged-in');
@@ -10759,8 +12251,13 @@
           messagesNavItem.setAttribute('aria-label', 'Messages');
           messagesNavNotification.hidden = true;
           messagesNavNotification.setAttribute('aria-hidden', 'true');
-          playSitterDashboardLoading();
-          showWelcomeAlert();
+          syncSitterDashboardState();
+          syncSitterAvailabilityState();
+          if (isNewlyRegisteredSitter) hideWelcomeAlert();
+          else {
+            playSitterDashboardLoading();
+            showWelcomeAlert();
+          }
           // Closing the login sheet releases its browser-back entry. Opening
           // the dashboard in the same turn made that pending popstate close
           // the newly opened tab again, so wait until the sheet is released.
@@ -10784,9 +12281,13 @@
 
       function simulateLogout() {
         isNewlyRegisteredParent = false;
+        isNewlyRegisteredSitter = false;
+        syncSitterDashboardState();
+        syncSitterAvailabilityState();
         hasPostedFirstJob = false;
         closeJobWizard(false);
         closeFamilyProfile();
+        closeSitterProfile();
         hideLogoutSuccess();
         hideRegistrationSuccess();
         loginTrigger.classList.remove('is-logged-in');
@@ -10901,11 +12402,17 @@
       });
       loginTrigger.addEventListener('click', function () {
         if (!loginTrigger.classList.contains('is-logged-in')) openLoginSheet();
-        else if (isSitterSession()) selectAppScreen('dashboard');
+        else if (isSitterSession()) openSitterProfile();
         else openFamilyProfile();
       });
       sitterDashboardMessages.addEventListener('click', function () {
         selectAppScreen('sitter-messages');
+      });
+      Array.prototype.slice.call(document.querySelectorAll('[data-sitter-dashboard-onboarding-dismiss]')).forEach(function (button) {
+        button.addEventListener('click', function () {
+          var card = button.closest('.sitter-dashboard-onboarding-card');
+          if (card) card.classList.add('is-dismissed');
+        });
       });
       sitterAvailabilityTrigger.addEventListener('click', function (event) {
         event.stopPropagation();
@@ -10962,6 +12469,18 @@
       });
       familyProfileBack.addEventListener('click', closeFamilyProfile);
       familyProfileLogout.addEventListener('click', simulateLogout);
+      sitterProfileBack.addEventListener('click', closeSitterProfile);
+      sitterProfileLogout.addEventListener('click', simulateLogout);
+      sitterProfileInfoTrigger.addEventListener('click', openSitterInfo);
+      sitterInfoBack.addEventListener('click', closeSitterInfo);
+      sitterProfileProfilesTrigger.addEventListener('click', openSitterProfiles);
+      sitterProfilesBack.addEventListener('click', closeSitterProfiles);
+      sitterProfileVerificationsTrigger.addEventListener('click', openSitterVerifications);
+      sitterVerificationsBack.addEventListener('click', closeSitterVerifications);
+      sitterProfileGalleryTrigger.addEventListener('click', openSitterGallery);
+      sitterGalleryBack.addEventListener('click', closeSitterGallery);
+      sitterProfileCoursesTrigger.addEventListener('click', openSitterCourses);
+      sitterCoursesBack.addEventListener('click', closeSitterCourses);
       familyProfileAccountTrigger.addEventListener('click', openFamilyAccount);
       familyAccountBack.addEventListener('click', closeFamilyAccount);
       familyAccountForm.addEventListener('input', function () { setFamilyAccountDirty(true); });
