@@ -3867,6 +3867,10 @@
     /* Filters are an application-level screen, rather than a desktop dialog.
        It deliberately starts below the native status bar and covers the app's
        navbar, so opening it does not move either fixed part of the phone UI. */
+    /* Arrives from the bottom like the login sheet rather than appearing out
+       of nowhere — same curve and duration, so both modals in this app move
+       the same way. It leaves along the same path, which is half the point:
+       you see where it went and where it comes back from. */
     .search-filters-screen {
       position: absolute;
       z-index: 40;
@@ -3875,13 +3879,48 @@
       flex-direction: column;
       overflow: hidden;
       background: #fff;
+      transform: translate3d(0, 100%, 0);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s;
+      will-change: transform;
       pointer-events: none;
       visibility: hidden;
     }
 
     .search-filters-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
       pointer-events: auto;
       visibility: visible;
+    }
+
+    /* Follows the thumb directly while dragged. Has to stay below .is-open —
+       equal specificity, so whichever comes last wins. */
+    .search-filters-screen.is-dragging {
+      transition: none;
+    }
+
+    /* The grab area. The gesture is taken here and on the header only: the
+       form below scrolls, and stealing that would be worse than having no
+       gesture at all. */
+    .search-filters-screen__grabber {
+      flex: 0 0 auto;
+      padding: 10px 0 2px;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    .search-filters-screen__grabber::before {
+      content: '';
+      display: block;
+      width: 36px;
+      height: 4px;
+      margin: 0 auto;
+      border-radius: 999px;
+      background: #d6d9dd;
+    }
+
+    .search-filters-screen.is-dragging .search-filters-screen__grabber {
+      cursor: grabbing;
     }
 
     .search-filters-screen__header {
@@ -3891,7 +3930,8 @@
       align-items: center;
       gap: 8px;
       background: #fff;
-      padding: 12px 12px 8px 16px;
+      padding: 4px 12px 8px 16px;
+      touch-action: none;
     }
 
     .search-filters-screen__close {
@@ -7532,6 +7572,7 @@
       <footer class="family-referral-how-share-bar"><button class="family-referral-how-share-button" id="familyReferralHowShare" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Share your invite</button></footer>
     </section>
     <section class="search-filters-screen" id="searchFiltersScreen" role="dialog" aria-modal="true" aria-labelledby="searchFiltersTitle" aria-hidden="true">
+      <div class="search-filters-screen__grabber" id="searchFiltersGrabber" aria-hidden="true"></div>
       <header class="search-filters-screen__header">
         <h1 class="search-filters-screen__title" id="searchFiltersTitle"><i class="fa-light fa-sliders" aria-hidden="true"></i>Filters</h1>
         <button class="search-filters-screen__close" id="searchFiltersClose" type="button" aria-label="Close filters"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
@@ -8193,6 +8234,8 @@
       var locationAutocomplete = document.getElementById('locationAutocomplete');
       var searchFiltersTrigger = document.getElementById('searchFiltersTrigger');
       var searchFiltersScreen = document.getElementById('searchFiltersScreen');
+      var searchFiltersGrabber = document.getElementById('searchFiltersGrabber');
+      var searchFiltersHeader = searchFiltersScreen.querySelector('.search-filters-screen__header');
       var searchFiltersClose = document.getElementById('searchFiltersClose');
       var searchFiltersForm = document.getElementById('searchFiltersForm');
       var searchFiltersReset = document.getElementById('searchFiltersReset');
@@ -9160,6 +9203,82 @@
         window.scrollTo(0, pageScrollPositionBeforeFilters);
         syncBackEntry();
       }
+
+      // --- Swipe the filters away ------------------------------------------
+      // The sheet comes up from the bottom, which promises it can be pushed
+      // back down. The gesture is taken from the grabber and the header only:
+      // the form underneath scrolls, and a sheet that swallows that scroll is
+      // worse than a sheet with no gesture.
+      (function enableSearchFiltersSwipeDown() {
+        var DIRECTION_LOCK = 6;
+        var DISMISS_RATIO = 0.3;
+
+        var tracking = false;
+        var dragging = false;
+        var startX = 0;
+        var startY = 0;
+        var offset = 0;
+        var sheetHeight = 0;
+
+        function isGrabArea(target) {
+          return searchFiltersGrabber.contains(target) || searchFiltersHeader.contains(target);
+        }
+
+        searchFiltersScreen.addEventListener('pointerdown', function (event) {
+          if (!searchFiltersScreen.classList.contains('is-open')) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+          if (!isGrabArea(event.target)) return;
+          // The close button is a target of its own, not somewhere to grab.
+          if (searchFiltersClose.contains(event.target)) return;
+
+          tracking = true;
+          dragging = false;
+          offset = 0;
+          sheetHeight = searchFiltersScreen.getBoundingClientRect().height;
+          startX = event.clientX;
+          startY = event.clientY;
+        });
+
+        searchFiltersScreen.addEventListener('pointermove', function (event) {
+          if (!tracking) return;
+
+          offset = event.clientY - startY;
+          var horizontalOffset = event.clientX - startX;
+
+          if (!dragging) {
+            if (Math.abs(offset) < DIRECTION_LOCK && Math.abs(horizontalOffset) < DIRECTION_LOCK) return;
+            // Only downward counts; anything else is not this gesture.
+            if (offset <= 0 || Math.abs(horizontalOffset) > Math.abs(offset)) {
+              tracking = false;
+              return;
+            }
+            dragging = true;
+            searchFiltersScreen.classList.add('is-dragging');
+            searchFiltersScreen.setPointerCapture(event.pointerId);
+          }
+
+          searchFiltersScreen.style.transform = 'translate3d(0, ' + Math.max(0, offset) + 'px, 0)';
+        });
+
+        function endDrag() {
+          if (!tracking) return;
+
+          var shouldDismiss = dragging && offset > sheetHeight * DISMISS_RATIO;
+          tracking = false;
+          dragging = false;
+
+          // Dropping the class and the inline transform in the same task lets
+          // the sheet carry on from where the thumb left it, rather than
+          // snapping back to the top first and then animating.
+          searchFiltersScreen.classList.remove('is-dragging');
+          searchFiltersScreen.style.transform = '';
+
+          if (shouldDismiss) closeSearchFilters();
+        }
+
+        searchFiltersScreen.addEventListener('pointerup', endDrag);
+        searchFiltersScreen.addEventListener('pointercancel', endDrag);
+      })();
 
       function resetSearchFilters() {
         searchFiltersForm.reset();
