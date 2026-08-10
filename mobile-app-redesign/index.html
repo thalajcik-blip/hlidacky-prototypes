@@ -3974,15 +3974,25 @@
     .search-filters-screen__content {
       min-height: 0;
       flex: 1 1 auto;
+      /* Setting only overflow-y leaves overflow-x computing to auto, which
+         made the whole form pannable sideways whenever anything inside it
+         stuck out. Filters have nowhere to go horizontally, so the axis is
+         closed off. (Paired with a scrolling overflow-y this lands on
+         hidden, which is what stops the gesture.) */
+      overflow-x: clip;
       overflow-y: auto;
       background: #fff;
       padding: 0 12px 132px;
     }
 
+    /* The quick filters run off the right edge of the screen on purpose. The
+       width has to account for the 4px nudge as well as the parent's right
+       padding, otherwise the strip lands past the edge and takes the form
+       with it. */
     .search-filters-quick-list {
       display: flex;
       gap: 0;
-      width: calc(100% + 12px);
+      width: calc(100% + 8px);
       margin: 0 0 0 4px;
       overflow-x: auto;
       scrollbar-width: none;
