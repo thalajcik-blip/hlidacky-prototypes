@@ -3411,19 +3411,38 @@
     }
 
     .sitter-jobs-screen__summary { text-align: center; }
+    /* The pill is the way into the jobs filters, so it has to behave like a
+       control rather than a caption. */
     .sitter-jobs-screen__location {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
       margin: 18px auto 10px;
+      border: 0;
       padding: 8px 12px;
       border-radius: 64px;
       background: #f6f7f8;
       color: #6c757d;
+      font: inherit;
       font-size: 15px;
       font-weight: 400;
       line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .sitter-jobs-screen__location:hover {
+      background: #eef0f2;
+    }
+
+    .sitter-jobs-screen__location:focus-visible {
+      outline: 2px solid #6aafff;
+      outline-offset: 2px;
+    }
+
+    .sitter-jobs-screen__location .fa-chevron-down {
+      margin-left: 1px;
+      font-size: 10px;
     }
 
     .sitter-jobs-screen__location i { color: #f96073; }
@@ -3506,27 +3525,6 @@
     .sitter-job-card__archive:hover { color: #f96073; border-color: #f96073; }
     .sitter-jobs-screen__show-more { display: flex; width: fit-content; margin: 20px auto 0; border: 0; background: transparent; color: #f96073; font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
 
-    .sitter-jobs-filter-sheet { position: absolute; z-index: 30; inset: 0; display: flex; align-items: flex-end; visibility: hidden; pointer-events: none; }
-    .sitter-jobs-filter-sheet.is-open { visibility: visible; pointer-events: auto; }
-    .sitter-jobs-filter-sheet__backdrop { position: absolute; inset: 0; background: rgba(42, 53, 57, .42); opacity: 0; transition: opacity 180ms ease; }
-    .sitter-jobs-filter-sheet.is-open .sitter-jobs-filter-sheet__backdrop { opacity: 1; }
-    .sitter-jobs-filter-sheet__dialog {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      border-radius: 18px 18px 0 0;
-      background: #fff;
-      padding: 10px 20px calc(18px + env(safe-area-inset-bottom));
-      transform: translateY(100%);
-      transition: transform 220ms cubic-bezier(.22, 1, .36, 1);
-    }
-    .sitter-jobs-filter-sheet.is-open .sitter-jobs-filter-sheet__dialog { transform: translateY(0); }
-    .sitter-jobs-filter-sheet__handle { width: 36px; height: 5px; margin: 0 auto 18px; border-radius: 99px; background: #2a3539; }
-    .sitter-jobs-filter-sheet__heading { margin: 0 0 16px; color: #2a3539; font-size: 20px; font-weight: 450; }
-    .sitter-jobs-filter-sheet__field { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; color: #2a3539; font-size: 14px; font-weight: 450; }
-    .sitter-jobs-filter-sheet__select { height: 42px; border: 1px solid #d0d5dd; border-radius: 4px; background: #fff; padding: 0 12px; color: #2a3539; font: inherit; font-size: 16px; }
-    .sitter-jobs-filter-sheet__apply { width: 100%; min-height: 44px; margin-top: 20px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.16); background: #0ba825; color: #fff; font: inherit; font-size: 16px; font-weight: 450; cursor: pointer; }
-    .sitter-jobs-filter-sheet__apply:hover { background: #078f20; }
 
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
        sitter and amount stay in consistent slots while the card actions are
@@ -4116,6 +4114,18 @@
       letter-spacing: 0;
       line-height: 20px;
       text-align: center;
+    }
+
+    /* Sections where exactly one choice is always made would show a permanent
+       "1", which says nothing. They show the choice itself instead, and give
+       up the pill — pink is reserved for "you changed something". */
+    .search-filter-accordion__count--value {
+      border-radius: 0;
+      background: none;
+      padding: 0;
+      color: #6c757d;
+      font-weight: 400;
+      white-space: nowrap;
     }
 
     .search-filter-accordion__trigger > .fa-chevron-down {
@@ -7264,7 +7274,7 @@
           <button class="sitter-jobs-filter-button" id="sitterJobsFilterButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Open jobs filters"><i class="fa-regular fa-sliders" aria-hidden="true"></i><span class="sitter-jobs-filter-button__count" id="sitterJobsFilterCount">1</span></button>
         </div>
         <div class="sitter-jobs-screen__summary">
-          <p class="sitter-jobs-screen__location"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span id="sitterJobsLocationLabel">Praha 2</span><span id="sitterJobsRadiusLabel">(+20 km)</span></p>
+          <button class="sitter-jobs-screen__location" id="sitterJobsLocationPill" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterJobsFiltersScreen"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span id="sitterJobsLocationLabel">Praha 2</span><span id="sitterJobsRadiusLabel">(+20 km)</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
           <button class="sitter-jobs-screen__notifications" type="button"><i class="fa-light fa-bell" aria-hidden="true"></i><span>Set up notifications</span></button>
         </div>
         <div class="sitter-jobs-grid" id="sitterJobsGrid">
@@ -7909,20 +7919,60 @@
         </div>
       </section>
     </div>
-    <div class="sitter-jobs-filter-sheet" id="sitterJobsFilterSheet" aria-hidden="true">
-      <button class="sitter-jobs-filter-sheet__backdrop" id="sitterJobsFilterBackdrop" type="button" aria-label="Close jobs filters"></button>
-      <section class="sitter-jobs-filter-sheet__dialog" role="dialog" aria-modal="true" aria-label="Jobs filters" tabindex="-1">
-        <div class="sitter-jobs-filter-sheet__handle" aria-hidden="true"></div>
-        <h2 class="sitter-jobs-filter-sheet__heading">Jobs filters</h2>
-        <label class="sitter-jobs-filter-sheet__field">Search jobs in
-          <select class="sitter-jobs-filter-sheet__select" id="sitterJobsLocationSelect"><option>Praha 2</option><option>All my locations</option><option>All locations</option></select>
-        </label>
-        <label class="sitter-jobs-filter-sheet__field">Distance radius
-          <select class="sitter-jobs-filter-sheet__select" id="sitterJobsRadiusSelect"><option>+5 km</option><option>+10 km</option><option>+15 km</option><option selected>+20 km</option><option>+25 km</option><option>+30 km</option></select>
-        </label>
-        <button class="sitter-jobs-filter-sheet__apply" id="sitterJobsFilterApply" type="button">Show jobs</button>
-      </section>
-    </div>
+    <!-- The sitter jobs filters. Same content as the standalone
+         jobs-for-sitters-v2 prototype — services, location, radius — rebuilt
+         out of the search filters' own parts so both sheets in this app look
+         and behave like one another. -->
+    <section class="search-filters-screen" id="sitterJobsFiltersScreen" role="dialog" aria-modal="true" aria-labelledby="sitterJobsFiltersTitle" aria-hidden="true">
+      <div class="search-filters-screen__grabber" id="sitterJobsFiltersGrabber" aria-hidden="true"></div>
+      <header class="search-filters-screen__header" id="sitterJobsFiltersHeader">
+        <h1 class="search-filters-screen__title" id="sitterJobsFiltersTitle"><i class="fa-light fa-sliders" aria-hidden="true"></i>Filters</h1>
+        <button class="search-filters-screen__close" id="sitterJobsFiltersClose" type="button" aria-label="Close filters"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </header>
+      <form class="search-filters-screen__content" id="sitterJobsFiltersForm">
+        <section class="search-filter-accordion is-expanded" data-summary="value">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="true" aria-controls="sitterJobsServicesPanel">
+            <i class="fa-light fa-list-check" aria-hidden="true"></i><span>Select services</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="sitterJobsServicesPanel">
+            <div class="search-filter-grid">
+              <label class="search-filter-tile"><input type="radio" name="sitter-jobs-service" value="babysitting" data-summary-label="Babysitting" checked><i class="fa-light fa-child-reaching" aria-hidden="true"></i><span>Babysitting</span></label>
+              <label class="search-filter-tile"><input type="radio" name="sitter-jobs-service" value="cleaning" data-summary-label="Cleaning"><i class="fa-light fa-broom" aria-hidden="true"></i><span>Cleaning</span></label>
+              <label class="search-filter-tile"><input type="radio" name="sitter-jobs-service" value="pet" data-summary-label="Pet care"><i class="fa-light fa-paw" aria-hidden="true"></i><span>Pet care</span></label>
+              <label class="search-filter-tile"><input type="radio" name="sitter-jobs-service" value="senior" data-summary-label="Senior care"><i class="fa-light fa-person-cane" aria-hidden="true"></i><span>Senior care</span></label>
+              <label class="search-filter-tile"><input type="radio" name="sitter-jobs-service" value="tutoring" data-summary-label="Tutoring"><i class="fa-light fa-graduation-cap" aria-hidden="true"></i><span>Tutoring</span></label>
+            </div>
+          </div>
+        </section>
+        <section class="search-filter-accordion" data-summary="value">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="sitterJobsLocationPanel">
+            <i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Location</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="sitterJobsLocationPanel">
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-location" value="Praha 2" data-summary-label="Praha 2" checked><span>Praha 2</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-location" value="All my locations" data-summary-label="All my locations"><span>All my locations</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-location" value="All locations" data-summary-label="All locations"><span>All locations</span></label>
+          </div>
+        </section>
+        <section class="search-filter-accordion" data-summary="value">
+          <button class="search-filter-accordion__trigger" type="button" aria-expanded="false" aria-controls="sitterJobsRadiusPanel">
+            <i class="fa-light fa-circle-dot" aria-hidden="true"></i><span>Radius</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="search-filter-accordion__panel" id="sitterJobsRadiusPanel">
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+5 km" data-summary-label="+5 km"><span>+5 km</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+10 km" data-summary-label="+10 km"><span>+10 km</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+15 km" data-summary-label="+15 km"><span>+15 km</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+20 km" data-summary-label="+20 km" checked><span>+20 km</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+25 km" data-summary-label="+25 km"><span>+25 km</span></label>
+            <label class="search-filter-option"><input type="radio" name="sitter-jobs-radius" value="+30 km" data-summary-label="+30 km"><span>+30 km</span></label>
+          </div>
+        </section>
+      </form>
+      <footer class="search-filters-screen__cta">
+        <button class="search-filters-screen__apply" id="sitterJobsFiltersApply" type="button"><i class="fa-regular fa-paper-plane" aria-hidden="true"></i><span>Show</span><span id="sitterJobsFiltersCount">0</span><span id="sitterJobsFiltersNoun">jobs</span></button>
+        <button class="search-filters-screen__reset" id="sitterJobsFiltersReset" type="button" disabled>Clear all</button>
+      </footer>
+    </section>
     <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
       <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
       <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
@@ -8123,11 +8173,17 @@
       var sitterJobsServices = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-service]'));
       var sitterJobCards = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-job-card]'));
       var sitterJobsFilterButton = document.getElementById('sitterJobsFilterButton');
-      var sitterJobsFilterSheet = document.getElementById('sitterJobsFilterSheet');
-      var sitterJobsFilterBackdrop = document.getElementById('sitterJobsFilterBackdrop');
-      var sitterJobsFilterApply = document.getElementById('sitterJobsFilterApply');
-      var sitterJobsLocationSelect = document.getElementById('sitterJobsLocationSelect');
-      var sitterJobsRadiusSelect = document.getElementById('sitterJobsRadiusSelect');
+      var sitterJobsLocationPill = document.getElementById('sitterJobsLocationPill');
+      var sitterJobsFiltersScreen = document.getElementById('sitterJobsFiltersScreen');
+      var sitterJobsFiltersGrabber = document.getElementById('sitterJobsFiltersGrabber');
+      var sitterJobsFiltersHeader = document.getElementById('sitterJobsFiltersHeader');
+      var sitterJobsFiltersClose = document.getElementById('sitterJobsFiltersClose');
+      var sitterJobsFiltersForm = document.getElementById('sitterJobsFiltersForm');
+      var sitterJobsFiltersApply = document.getElementById('sitterJobsFiltersApply');
+      var sitterJobsFiltersReset = document.getElementById('sitterJobsFiltersReset');
+      var sitterJobsFiltersCount = document.getElementById('sitterJobsFiltersCount');
+      var sitterJobsFiltersNoun = document.getElementById('sitterJobsFiltersNoun');
+      var sitterJobsFiltersTrigger = null;
       var sitterJobsLocationLabel = document.getElementById('sitterJobsLocationLabel');
       var sitterJobsRadiusLabel = document.getElementById('sitterJobsRadiusLabel');
       var sitterJobsShowMore = document.getElementById('sitterJobsShowMore');
@@ -9177,12 +9233,25 @@
           var badge = accordion.querySelector('.search-filter-accordion__count');
           if (!badge) return;
 
+          var trigger = accordion.querySelector('.search-filter-accordion__trigger');
+          var label = trigger.querySelector('span').textContent;
+
+          // A section where exactly one choice is always made would show a
+          // permanent "1". It shows the choice instead.
+          if (accordion.getAttribute('data-summary') === 'value') {
+            var picked = accordion.querySelector('input:checked');
+            var value = picked ? (picked.getAttribute('data-summary-label') || picked.value) : '';
+            badge.classList.add('search-filter-accordion__count--value');
+            badge.textContent = value;
+            badge.hidden = !value;
+            trigger.setAttribute('aria-label', value ? label + ', ' + value : label);
+            return;
+          }
+
           var selected = accordion.querySelectorAll('input:checked').length;
-          var label = accordion.querySelector('.search-filter-accordion__trigger > span').textContent;
           badge.textContent = String(selected);
           badge.hidden = selected === 0;
-          accordion.querySelector('.search-filter-accordion__trigger')
-            .setAttribute('aria-label', selected ? label + ', ' + selected + ' selected' : label);
+          trigger.setAttribute('aria-label', selected ? label + ', ' + selected + ' selected' : label);
         });
       }
 
@@ -9214,12 +9283,12 @@
         syncBackEntry();
       }
 
-      // --- Swipe the filters away ------------------------------------------
-      // The sheet comes up from the bottom, which promises it can be pushed
-      // back down. The gesture is taken from the grabber and the header only:
-      // the form underneath scrolls, and a sheet that swallows that scroll is
-      // worse than a sheet with no gesture.
-      (function enableSearchFiltersSwipeDown() {
+      // --- Swipe a sheet away ----------------------------------------------
+      // A sheet that comes up from the bottom promises it can be pushed back
+      // down. The gesture is taken from the grab areas only — the form
+      // underneath them scrolls, and a sheet that swallows that scroll is
+      // worse than a sheet with no gesture at all.
+      function enableSheetSwipeDown(sheet, grabAreas, ignoreAreas, onDismiss) {
         var DIRECTION_LOCK = 6;
         var DISMISS_RATIO = 0.3;
 
@@ -9230,26 +9299,26 @@
         var offset = 0;
         var sheetHeight = 0;
 
-        function isGrabArea(target) {
-          return searchFiltersGrabber.contains(target) || searchFiltersHeader.contains(target);
+        function contains(areas, target) {
+          return areas.some(function (area) { return area && area.contains(target); });
         }
 
-        searchFiltersScreen.addEventListener('pointerdown', function (event) {
-          if (!searchFiltersScreen.classList.contains('is-open')) return;
+        sheet.addEventListener('pointerdown', function (event) {
+          if (!sheet.classList.contains('is-open')) return;
           if (event.pointerType === 'mouse' && event.button !== 0) return;
-          if (!isGrabArea(event.target)) return;
+          if (!contains(grabAreas, event.target)) return;
           // The close button is a target of its own, not somewhere to grab.
-          if (searchFiltersClose.contains(event.target)) return;
+          if (contains(ignoreAreas, event.target)) return;
 
           tracking = true;
           dragging = false;
           offset = 0;
-          sheetHeight = searchFiltersScreen.getBoundingClientRect().height;
+          sheetHeight = sheet.getBoundingClientRect().height;
           startX = event.clientX;
           startY = event.clientY;
         });
 
-        searchFiltersScreen.addEventListener('pointermove', function (event) {
+        sheet.addEventListener('pointermove', function (event) {
           if (!tracking) return;
 
           offset = event.clientY - startY;
@@ -9263,11 +9332,11 @@
               return;
             }
             dragging = true;
-            searchFiltersScreen.classList.add('is-dragging');
-            searchFiltersScreen.setPointerCapture(event.pointerId);
+            sheet.classList.add('is-dragging');
+            sheet.setPointerCapture(event.pointerId);
           }
 
-          searchFiltersScreen.style.transform = 'translate3d(0, ' + Math.max(0, offset) + 'px, 0)';
+          sheet.style.transform = 'translate3d(0, ' + Math.max(0, offset) + 'px, 0)';
         });
 
         function endDrag() {
@@ -9280,15 +9349,22 @@
           // Dropping the class and the inline transform in the same task lets
           // the sheet carry on from where the thumb left it, rather than
           // snapping back to the top first and then animating.
-          searchFiltersScreen.classList.remove('is-dragging');
-          searchFiltersScreen.style.transform = '';
+          sheet.classList.remove('is-dragging');
+          sheet.style.transform = '';
 
-          if (shouldDismiss) closeSearchFilters();
+          if (shouldDismiss) onDismiss();
         }
 
-        searchFiltersScreen.addEventListener('pointerup', endDrag);
-        searchFiltersScreen.addEventListener('pointercancel', endDrag);
-      })();
+        sheet.addEventListener('pointerup', endDrag);
+        sheet.addEventListener('pointercancel', endDrag);
+      }
+
+      enableSheetSwipeDown(
+        searchFiltersScreen,
+        [searchFiltersGrabber, searchFiltersHeader],
+        [searchFiltersClose],
+        closeSearchFilters
+      );
 
       function resetSearchFilters() {
         searchFiltersForm.reset();
@@ -9632,18 +9708,74 @@
         sitterJobsShowMore.hidden = sitterJobsActiveTab !== 'new';
       }
 
-      function openSitterJobsFilters() {
-        sitterJobsFilterSheet.classList.add('is-open');
-        sitterJobsFilterSheet.setAttribute('aria-hidden', 'false');
-        sitterJobsFilterButton.setAttribute('aria-expanded', 'true');
+      function sitterJobsFilterValue(name) {
+        var picked = sitterJobsFiltersForm.querySelector('input[name="' + name + '"]:checked');
+        return picked ? picked.value : '';
+      }
+
+      // The count on the CTA is the real number of cards the current choices
+      // leave visible, so pressing it cannot surprise you.
+      function countMatchingSitterJobs() {
+        var service = sitterJobsFilterValue('sitter-jobs-service');
+        return sitterJobCards.filter(function (card) {
+          if (card.getAttribute('data-sitter-job-state') !== sitterJobsActiveTab) return false;
+          if (sitterJobsActiveTab !== 'new') return true;
+          return card.getAttribute('data-sitter-job-service-card') === service;
+        }).length;
+      }
+
+      function syncSitterJobsFiltersState() {
+        var count = countMatchingSitterJobs();
+        sitterJobsFiltersCount.textContent = String(count);
+        sitterJobsFiltersNoun.textContent = count === 1 ? 'job' : 'jobs';
+        sitterJobsFiltersApply.setAttribute('aria-label', 'Show ' + count + (count === 1 ? ' job' : ' jobs'));
+        // "Clear all" only offers itself when there is something to clear.
+        sitterJobsFiltersReset.disabled = sitterJobsFilterValue('sitter-jobs-service') === 'babysitting'
+          && sitterJobsFilterValue('sitter-jobs-location') === 'Praha 2'
+          && sitterJobsFilterValue('sitter-jobs-radius') === '+20 km';
+        updateFilterAccordionSummaries();
+      }
+
+      // The service strip above the list and the services section inside the
+      // sheet are two views of one choice, so they are kept in step rather
+      // than allowed to disagree.
+      function applySitterJobsFilters() {
+        var service = sitterJobsFilterValue('sitter-jobs-service');
+        sitterJobsActiveService = service;
+        sitterJobsServices.forEach(function (item) {
+          item.classList.toggle('is-active', item.getAttribute('data-sitter-job-service') === service);
+        });
+        sitterJobsLocationLabel.textContent = sitterJobsFilterValue('sitter-jobs-location');
+        sitterJobsRadiusLabel.textContent = '(' + sitterJobsFilterValue('sitter-jobs-radius') + ')';
+        syncSitterJobsCards();
+        syncSitterJobsFiltersState();
+      }
+
+      function selectSitterJobsService(service) {
+        var input = sitterJobsFiltersForm.querySelector('input[name="sitter-jobs-service"][value="' + service + '"]');
+        if (input) input.checked = true;
+        syncSitterJobsFiltersState();
+      }
+
+      function openSitterJobsFilters(trigger) {
+        sitterJobsFiltersTrigger = trigger || sitterJobsLocationPill;
+        syncSitterJobsFiltersState();
+        sitterJobsFiltersScreen.classList.add('is-open');
+        sitterJobsFiltersScreen.setAttribute('aria-hidden', 'false');
+        sitterJobsFiltersTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterJobsFiltersScreen);
+        requestAnimationFrame(function () {
+          sitterJobsFiltersClose.focus({ preventScroll: true });
+        });
         syncBackEntry();
       }
 
       function closeSitterJobsFilters(restoreFocus) {
-        sitterJobsFilterSheet.classList.remove('is-open');
-        sitterJobsFilterSheet.setAttribute('aria-hidden', 'true');
-        sitterJobsFilterButton.setAttribute('aria-expanded', 'false');
-        if (restoreFocus) sitterJobsFilterButton.focus({ preventScroll: true });
+        sitterJobsFiltersScreen.classList.remove('is-open');
+        sitterJobsFiltersScreen.setAttribute('aria-hidden', 'true');
+        if (sitterJobsFiltersTrigger) sitterJobsFiltersTrigger.setAttribute('aria-expanded', 'false');
+        setBackgroundInert(null);
+        if (restoreFocus && sitterJobsFiltersTrigger) sitterJobsFiltersTrigger.focus({ preventScroll: true });
         syncBackEntry();
       }
 
@@ -9663,6 +9795,7 @@
         serviceButton.addEventListener('click', function () {
           sitterJobsActiveService = serviceButton.getAttribute('data-sitter-job-service');
           sitterJobsServices.forEach(function (item) { item.classList.toggle('is-active', item === serviceButton); });
+          selectSitterJobsService(sitterJobsActiveService);
           syncSitterJobsCards();
         });
       });
@@ -9691,13 +9824,28 @@
         });
       });
 
-      sitterJobsFilterButton.addEventListener('click', openSitterJobsFilters);
-      sitterJobsFilterBackdrop.addEventListener('click', function () { closeSitterJobsFilters(true); });
-      sitterJobsFilterApply.addEventListener('click', function () {
-        sitterJobsLocationLabel.textContent = sitterJobsLocationSelect.value;
-        sitterJobsRadiusLabel.textContent = '(' + sitterJobsRadiusSelect.value + ')';
-        closeSitterJobsFilters(false);
+      // The pill is the way in the brief asked for; the sliders button beside
+      // the service strip now opens the same sheet instead of a second one.
+      sitterJobsLocationPill.addEventListener('click', function () { openSitterJobsFilters(sitterJobsLocationPill); });
+      sitterJobsFilterButton.addEventListener('click', function () { openSitterJobsFilters(sitterJobsFilterButton); });
+      sitterJobsFiltersClose.addEventListener('click', function () { closeSitterJobsFilters(true); });
+      sitterJobsFiltersForm.addEventListener('change', syncSitterJobsFiltersState);
+      sitterJobsFiltersApply.addEventListener('click', function () {
+        applySitterJobsFilters();
+        closeSitterJobsFilters(true);
       });
+      sitterJobsFiltersReset.addEventListener('click', function () {
+        selectSitterJobsService('babysitting');
+        sitterJobsFiltersForm.querySelector('input[name="sitter-jobs-location"][value="Praha 2"]').checked = true;
+        sitterJobsFiltersForm.querySelector('input[name="sitter-jobs-radius"][value="+20 km"]').checked = true;
+        syncSitterJobsFiltersState();
+      });
+      enableSheetSwipeDown(
+        sitterJobsFiltersScreen,
+        [sitterJobsFiltersGrabber, sitterJobsFiltersHeader],
+        [sitterJobsFiltersClose],
+        function () { closeSitterJobsFilters(true); }
+      );
       sitterJobsShowMore.addEventListener('click', function () { sitterJobsActiveService = ''; sitterJobsServices.forEach(function (item) { item.classList.remove('is-active'); }); syncSitterJobsCards(); sitterJobsShowMore.hidden = true; });
 
       function syncBookingsAccessState() {
@@ -10272,7 +10420,7 @@
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
         { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
-        { isOpen: function () { return sitterJobsFilterSheet.classList.contains('is-open'); }, close: function () { closeSitterJobsFilters(true); } },
+        { isOpen: function () { return sitterJobsFiltersScreen.classList.contains('is-open'); }, close: function () { closeSitterJobsFilters(true); } },
         { isOpen: function () { return searchFiltersScreen.classList.contains('is-open'); }, close: closeSearchFilters },
         { isOpen: function () { return referralShareSheet.classList.contains('is-open'); }, close: closeReferralShareSheet },
         { isOpen: function () { return registrationDetailsScreen.classList.contains('is-open'); }, close: closeRegistrationDetailsToRole },
@@ -10715,6 +10863,11 @@
         badge.setAttribute('aria-hidden', 'true');
         trigger.insertBefore(badge, trigger.lastElementChild);
 
+        // A section that starts open in the markup never went through the
+        // toggle, so nothing ever gave it a height and the stylesheet was
+        // still clamping it to zero.
+        if (accordion.classList.contains('is-expanded')) panel.style.maxHeight = 'none';
+
         panel.addEventListener('transitionend', function (event) {
           if (event.propertyName !== 'max-height') return;
           if (!accordion.classList.contains('is-expanded')) return;
@@ -11086,6 +11239,7 @@
       setPanelExpanded(true);
       initBookmarks();
       updateFilterResultCount();
+      syncSitterJobsFiltersState();
       initialiseSitterAvailabilityHours();
       renderSitterAvailabilityTimetable();
       startLocationPlaceholderTypewriter();
