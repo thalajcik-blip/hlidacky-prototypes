@@ -2398,14 +2398,19 @@
     .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__backdrop { opacity: 1; }
     .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__panel { transform: translateY(0); }
 
+    /* Tile layout: the checkbox sits top-left, the subject's icon top-right,
+       and the label along the bottom. Unlike the plain radio rows these keep
+       their box — the checkbox inside them is what marks the choice, and it
+       needs something to sit in. */
     .sitter-profile-setup__option-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .sitter-profile-setup__option {
-      display: flex;
-      min-height: 86px;
-      align-items: flex-start;
-      justify-content: space-between;
+      display: grid;
+      min-height: 96px;
+      grid-template-columns: 24px minmax(0, 1fr);
+      grid-template-rows: 24px minmax(0, 1fr);
+      gap: 10px 8px;
       border: 1px solid var(--color-gray-300, #e5e5ea);
-      border-radius: 4px;
+      border-radius: 6px;
       background: #fff;
       padding: 12px;
       color: var(--color-gray-700, #435056);
@@ -2416,9 +2421,56 @@
       text-align: left;
       cursor: pointer;
     }
-    .sitter-profile-setup__option i { color: var(--color-gray-500, #8b91a3); font-size: 18px; }
-    .sitter-profile-setup__option.is-selected { border: 2px solid var(--color-pink-400, #f96073); padding: 11px; color: var(--color-pink-400, #f96073); }
-    .sitter-profile-setup__option.is-selected i { color: var(--color-pink-400, #f96073); }
+    .sitter-profile-setup__option::before {
+      box-sizing: border-box;
+      grid-column: 1;
+      grid-row: 1;
+      width: 24px;
+      height: 24px;
+      border: 1px solid #bec2ce;
+      border-radius: 4px;
+      background: #fff;
+      color: #fff;
+      content: '';
+      font-family: "Font Awesome 6 Pro";
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 22px;
+      text-align: center;
+    }
+    .sitter-profile-setup__option i,
+    .sitter-profile-setup__option .sitter-profile-setup__option-icon {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+    /* Only the glyph carries its own colour. The masked artwork below has to
+       inherit the tile's, or currentColor resolves against itself and the
+       icon stays grey while everything around it turns green. */
+    .sitter-profile-setup__option i { color: var(--color-gray-700, #435056); font-size: 20px; }
+    /* Masked rather than an <img> so the artwork takes the tile's colour when
+       it is selected. */
+    .sitter-profile-setup__option-icon {
+      width: 24px;
+      height: 24px;
+      background-color: currentColor;
+      -webkit-mask: var(--option-icon) center / contain no-repeat;
+      mask: var(--option-icon) center / contain no-repeat;
+    }
+    .sitter-profile-setup__option > span {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: end;
+      min-width: 0;
+    }
+    .sitter-profile-setup__option.is-selected { border: 2px solid var(--color-green-500, #0ba825); padding: 11px; color: var(--color-green-500, #0ba825); }
+    .sitter-profile-setup__option.is-selected::before {
+      border-color: var(--color-green-500, #0ba825);
+      background: var(--color-green-500, #0ba825);
+      content: "\f00c";
+    }
+    .sitter-profile-setup__option:focus-visible { outline: 0; }
+    .sitter-profile-setup__option:focus-visible::before { box-shadow: 0 0 0 2px #cbdafc; }
 
     /* Age groups pair a labelled age band with the years of experience in it. */
     .sitter-profile-setup__age-row { display: grid; grid-template-columns: minmax(0, 1fr) 128px; align-items: center; gap: 12px; }
@@ -11456,10 +11508,16 @@
 
       var SITTER_PROFILE_EXPERIENCE_YEARS = ['0 years', 'Less than 1 year', '1 – 2 years', '3 – 5 years', 'More than 5 years'];
 
+      // A tile takes either a supplied SVG (asset) or a Font Awesome glyph
+      // (icon) — the artwork is arriving step by step, so both have to work
+      // side by side until every step has its own.
       function sitterProfileSetupOptionGrid(items) {
         return '<div class="sitter-profile-setup__option-grid">' + items.map(function (item) {
-          return '<button class="sitter-profile-setup__option" type="button" data-setup-toggle><span>' + item.label
-            + '</span><i class="fa-light ' + item.icon + '" aria-hidden="true"></i></button>';
+          var art = item.asset
+            ? '<span class="sitter-profile-setup__option-icon" style="--option-icon: url(./assets/' + item.asset + ')" aria-hidden="true"></span>'
+            : '<i class="fa-light ' + item.icon + '" aria-hidden="true"></i>';
+          return '<button class="sitter-profile-setup__option" type="button" data-setup-toggle>' + art
+            + '<span>' + item.label + '</span></button>';
         }).join('') + '</div>';
       }
 
@@ -11483,11 +11541,11 @@
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Where do you want to babysit? <small>(check all that apply)</small></legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I can babysit at the parent’s place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can babysit at my place</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Transport</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I have a car</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can drive kids by car</button></div><p class="sitter-profile-setup__hint">Only select this if you are insured and the parents agree to it.</p></fieldset>';
         } else if (step.key === 'occasions') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Special occasions</legend>' + sitterProfileSetupOptionGrid([
-            { label: 'Parties', icon: 'fa-cake-candles' },
-            { label: 'Holidays', icon: 'fa-umbrella-beach' },
-            { label: 'Overnight', icon: 'fa-moon' },
-            { label: 'Children’s groups', icon: 'fa-children' },
-            { label: 'Weddings', icon: 'fa-ring' }
+            { label: 'Parties', asset: 'occasion-parties.svg' },
+            { label: 'Holidays', asset: 'occasion-holidays.svg' },
+            { label: 'Overnight', asset: 'occasion-overnight.svg' },
+            { label: 'Children’s groups', asset: 'occasion-childrens-groups.svg' },
+            { label: 'Weddings', asset: 'occasion-weddings.svg' }
           ]) + '</fieldset>';
         } else if (step.key === 'specialNeeds') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Experience with special needs</legend>' + sitterProfileSetupOptionGrid([
