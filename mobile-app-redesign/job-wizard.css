@@ -55,3 +55,74 @@ html.mobile-app-embed .btn-wizard-back:hover,
 html.mobile-app-embed .btn-wizard-back:focus-visible {
   background: #f5f6f7;
 }
+
+/* Exit-intent interruptions retain their dimmed backdrop, but in the app they
+   follow the rest of the mobile interface by rising from the bottom edge. */
+@keyframes mobile-app-exit-sheet-in {
+  from { transform: translate3d(0, 100%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+html.mobile-app-embed #exit-backdrop {
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+html.mobile-app-embed #exit-backdrop.open {
+  display: flex;
+}
+
+html.mobile-app-embed #exit-modal {
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  min-height: min(56%, 480px);
+  border-radius: 24px 24px 0 0;
+  padding: 52px 24px 32px;
+  gap: 20px;
+  animation: mobile-app-exit-sheet-in 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html.mobile-app-embed #exit-modal::before {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: #2a3539;
+  content: '';
+  transform: translateX(-50%);
+}
+
+html.mobile-app-embed .exit-close {
+  top: 16px;
+  right: 16px;
+}
+
+html.mobile-app-embed .exit-header {
+  gap: 12px;
+}
+
+html.mobile-app-embed .exit-doodle {
+  width: 54px;
+  height: 54px;
+}
+
+html.mobile-app-embed .exit-title {
+  font-size: 28px;
+  line-height: 1.25;
+  padding-top: 6px;
+}
+
+html.mobile-app-embed .exit-body {
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+html.mobile-app-embed .exit-footer {
+  margin-top: auto;
+  padding-top: 12px;
+}

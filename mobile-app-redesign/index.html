@@ -3414,6 +3414,77 @@
       line-height: 1;
     }
 
+    /* A newly registered sitter is already signed in, but has not had a
+       conversation yet. Keep this lightweight inbox state in the list itself
+       rather than reusing the sign-up overlay shown to logged-out visitors. */
+    .messages-sitter-empty-state {
+      display: none;
+      width: calc(100% - 16px);
+      max-width: 335px;
+      flex: 0 0 auto;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 16px auto;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: var(--color-supportive-full-white, #fff);
+      padding: 12px;
+      box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0.2);
+    }
+
+    .messages-screen.is-sitter-empty .message-thread { display: none; }
+    .messages-screen.is-sitter-empty .messages-sitter-empty-state { display: flex; }
+
+    .messages-sitter-empty-state__doodle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
+    }
+
+    .messages-sitter-empty-state__doodle img {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .messages-sitter-empty-state__doodle img:first-child {
+      inset: 13.67% 9.75% 21.48% 13.28%;
+      width: auto;
+      height: auto;
+    }
+
+    .messages-sitter-empty-state__doodle img:last-child {
+      inset: 13.68% 12.53% 13.51% 11.62%;
+      width: auto;
+      height: auto;
+    }
+
+    .messages-sitter-empty-state__body {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .messages-sitter-empty-state__title {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-size: 16px;
+      font-weight: 350;
+      letter-spacing: -0.2px;
+      line-height: 1.4;
+    }
+
+    .messages-sitter-empty-state__copy {
+      margin: 2px 0 0;
+      color: var(--color-gray-700, #4a5a61);
+      font-size: 12px;
+      font-weight: 350;
+      letter-spacing: -0.16px;
+      line-height: 1.32;
+    }
+
     .messages-guest-overlay {
       position: absolute;
       inset: 0;
@@ -8150,6 +8221,13 @@
           <img class="message-thread__avatar" src="./assets/messages-avatar-09.png" alt="Gabriela Godová">
           <div class="message-thread__body"><div class="message-thread__meta"><span class="message-thread__name">Gabriela Godová</span><time class="message-thread__time">5 days ago</time></div><span class="message-thread__preview">Dobrý den, dnes jsme s dětmi byli na hřišti a užili si spoustu zábavy.</span></div>
         </article>
+        <section class="messages-sitter-empty-state" id="messagesSitterEmptyState" aria-label="Empty inbox" aria-hidden="true">
+          <div class="messages-sitter-empty-state__doodle" aria-hidden="true"><img src="./assets/messages-guest-doodle-layer-2.svg" alt=""><img src="./assets/messages-guest-doodle-layer-1.svg" alt=""></div>
+          <div class="messages-sitter-empty-state__body">
+            <p class="messages-sitter-empty-state__title">Your inbox is empty</p>
+            <p class="messages-sitter-empty-state__copy">Once families get in touch, you’ll see their messages here. Make sure your profile is complete to help families find you!</p>
+          </div>
+        </section>
       </div>
       <div class="messages-guest-overlay" id="messagesGuestOverlay" aria-hidden="true">
         <div class="messages-guest-overlay__card">
@@ -8940,6 +9018,19 @@
       </div>
       <button class="registration-success-alert__close" id="registrationSuccessAlertClose" type="button" aria-label="Close registration confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
     </aside>
+    <aside class="registration-success-alert job-post-success-alert" id="jobPostSuccessAlert" role="status" aria-live="polite" aria-hidden="true">
+      <div class="registration-success-alert__content">
+        <div class="registration-success-alert__doodle" aria-hidden="true">
+          <div class="registration-success-alert__doodle-layer registration-success-alert__doodle-layer--1"><img src="./assets/registration-success-toast-doodle-layer-1.svg" alt=""></div>
+          <div class="registration-success-alert__doodle-layer registration-success-alert__doodle-layer--2"><img src="./assets/registration-success-toast-doodle-layer-2.svg" alt=""></div>
+        </div>
+        <div class="registration-success-alert__copy">
+          <p class="registration-success-alert__title">Job posted successfully</p>
+          <p class="registration-success-alert__message">Sitters can now reply to your job post</p>
+        </div>
+      </div>
+      <button class="registration-success-alert__close" id="jobPostSuccessAlertClose" type="button" aria-label="Close job posted confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+    </aside>
     <aside class="logout-success-alert" id="logoutSuccessAlert" data-node-id="2284:69502" role="status" aria-live="polite" aria-hidden="true">
       <div class="logout-success-alert__content">
         <div class="logout-success-alert__doodle" aria-hidden="true">
@@ -9296,6 +9387,7 @@
       var messagesGuestOverlay = document.getElementById('messagesGuestOverlay');
       var messagesGuestMembership = document.getElementById('messagesGuestMembership');
       var messagesGuestSearch = document.getElementById('messagesGuestSearch');
+      var messagesSitterEmptyState = document.getElementById('messagesSitterEmptyState');
       var messageThreads = Array.prototype.slice.call(document.querySelectorAll('.message-thread'));
       var messageDetailScreen = document.getElementById('messageDetailScreen');
       var messageDetailBack = document.getElementById('messageDetailBack');
@@ -9408,6 +9500,8 @@
       var welcomeAlertClose = document.getElementById('welcomeAlertClose');
       var registrationSuccessAlert = document.getElementById('registrationSuccessAlert');
       var registrationSuccessAlertClose = document.getElementById('registrationSuccessAlertClose');
+      var jobPostSuccessAlert = document.getElementById('jobPostSuccessAlert');
+      var jobPostSuccessAlertClose = document.getElementById('jobPostSuccessAlertClose');
       var logoutSuccessAlert = document.getElementById('logoutSuccessAlert');
       var logoutSuccessAlertClose = document.getElementById('logoutSuccessAlertClose');
       var messagesNavItem = document.getElementById('messagesNavItem');
@@ -9515,6 +9609,8 @@
       var logoutSuccessTimer = null;
       var welcomeAlertHideTimer = null;
       var registrationSuccessAlertTimer = null;
+      var jobPostSuccessAlertTimer = null;
+      var jobPostSuccessAlertShowTimer = null;
       var logoutAlertHideTimer = null;
       var accountSaveSuccessTimer = null;
       var notificationsSaveSuccessTimer = null;
@@ -10817,6 +10913,10 @@
         closeJobWizard(false);
         syncJobsAccessState();
         selectAppScreen('jobs');
+        // Let the wizard finish its slide-out before the feedback enters over
+        // the Jobs screen, matching the other success confirmations.
+        window.clearTimeout(jobPostSuccessAlertShowTimer);
+        jobPostSuccessAlertShowTimer = window.setTimeout(showJobPostSuccess, 320);
       }
 
       function showRegistrationRoleMessage(role) {
@@ -10883,8 +10983,12 @@
       function syncMessagesAccessState() {
         var isLoggedIn = loginTrigger.classList.contains('is-logged-in');
         var showZeroDataOverlay = !isLoggedIn || isNewlyRegisteredParent;
+        var showSitterEmptyState = isLoggedIn && isNewlyRegisteredSitter;
         messagesScreen.classList.toggle('is-guest', showZeroDataOverlay);
+        messagesScreen.classList.toggle('is-sitter-empty', showSitterEmptyState);
         messagesGuestOverlay.setAttribute('aria-hidden', String(!showZeroDataOverlay));
+        messagesSitterEmptyState.setAttribute('aria-hidden', String(!showSitterEmptyState));
+        if (showSitterEmptyState) messagesContent.scrollTop = 0;
         messagesGuestMembership.classList.toggle('is-newly-registered', isNewlyRegisteredParent);
         messagesGuestMembership.innerHTML = isNewlyRegisteredParent
           ? '<span>Post a job</span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i>'
@@ -11246,6 +11350,7 @@
         }
         if (screen !== 'sitter-jobs') closeSitterJobsFilters(false);
         if (screen !== 'search') hideRegistrationSuccess();
+        if (screen !== 'jobs') hideJobPostSuccess();
         setActiveNavItem(screen);
         familyProfileScreen.classList.remove('is-open');
         sitterProfileScreen.classList.remove('is-open');
@@ -12230,6 +12335,26 @@
         registrationSuccessAlertTimer = setTimeout(hideRegistrationSuccess, ALERT_AUTO_DISMISS_MS);
       }
 
+      function hideJobPostSuccess() {
+        if (jobPostSuccessAlertShowTimer) {
+          clearTimeout(jobPostSuccessAlertShowTimer);
+          jobPostSuccessAlertShowTimer = null;
+        }
+        if (jobPostSuccessAlertTimer) {
+          clearTimeout(jobPostSuccessAlertTimer);
+          jobPostSuccessAlertTimer = null;
+        }
+        jobPostSuccessAlert.classList.remove('is-visible');
+        jobPostSuccessAlert.setAttribute('aria-hidden', 'true');
+      }
+
+      function showJobPostSuccess() {
+        hideJobPostSuccess();
+        jobPostSuccessAlert.classList.add('is-visible');
+        jobPostSuccessAlert.setAttribute('aria-hidden', 'false');
+        jobPostSuccessAlertTimer = setTimeout(hideJobPostSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
       function hideLogoutSuccess() {
         if (logoutSuccessTimer) {
           clearTimeout(logoutSuccessTimer);
@@ -12255,6 +12380,7 @@
         isNewlyRegisteredSitter = prototypeUserRole === 'sitter' && Boolean(options && options.newlyRegisteredSitter);
         hideLogoutSuccess();
         hideRegistrationSuccess();
+        hideJobPostSuccess();
         loginTrigger.classList.add('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Open profile');
         closeLoginSheet();
@@ -12310,6 +12436,7 @@
         closeSitterProfile();
         hideLogoutSuccess();
         hideRegistrationSuccess();
+        hideJobPostSuccess();
         loginTrigger.classList.remove('is-logged-in');
         loginTrigger.setAttribute('aria-label', 'Log in or sign up');
         syncNavigationForRole();
@@ -12564,6 +12691,7 @@
       });
       logoutSuccessAlertClose.addEventListener('click', hideLogoutSuccess);
       registrationSuccessAlertClose.addEventListener('click', hideRegistrationSuccess);
+      jobPostSuccessAlertClose.addEventListener('click', hideJobPostSuccess);
       navItems.forEach(function (item) {
         item.addEventListener('click', function () {
           selectAppScreen(item.getAttribute('data-app-screen'));
