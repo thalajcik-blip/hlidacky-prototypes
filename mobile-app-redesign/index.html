@@ -663,6 +663,13 @@
     .sitter-service-profile--tutoring .sitter-service-profile__vertical { background: var(--color-violet-400, #b85eff); }
     .sitter-service-profile--inactive .sitter-service-profile__vertical { background: var(--color-gray-400, #bec2ce); }
 
+    /* A newly registered sitter has not completed any service profile yet.
+       Keep the vertical rail neutral until a profile is set up, regardless
+       of the service's eventual brand color. */
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile__vertical {
+      background: var(--color-gray-400, #bec2ce);
+    }
+
     .sitter-service-profile__body {
       display: flex;
       min-width: 0;
@@ -736,6 +743,16 @@
       font-weight: 400;
       line-height: 1.4;
     }
+
+    .sitter-service-profile__not-filled { display: none; }
+
+    .sitter-service-profile--inactive .sitter-service-profile__active { display: none; }
+    .sitter-service-profile--inactive .sitter-service-profile__status.sitter-service-profile__not-filled { display: inline-flex; }
+    .sitter-service-profile--inactive .sitter-service-profile__setup.sitter-service-profile__not-filled { display: inline-flex; }
+
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile__active { display: none; }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile__status.sitter-service-profile__not-filled { display: inline-flex; }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile__setup.sitter-service-profile__not-filled { display: inline-flex; }
 
     .sitter-service-profile__edit,
     .sitter-service-profile__setup {
@@ -8527,23 +8544,23 @@
       <main class="sitter-profiles-content">
         <article class="sitter-service-profile sitter-service-profile--babysitting" aria-label="Babysitting profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Babysitting</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Babysitting</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--cleaning" aria-label="Household cleaning profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-broom" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Household cleaning</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Household cleaning</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--pet-care" aria-label="Pet care profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-paw" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Pet care</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Pet care</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--tutoring" aria-label="Tutoring profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-user-graduate" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Tutoring</span><button class="sitter-service-profile__link" type="button">View profile</button></div><button class="sitter-service-profile__edit" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Tutoring</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--inactive" aria-label="Senior care profile, not filled">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-person-cane" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Senior care</span><span class="sitter-service-profile__status">Not filled</span></div><button class="sitter-service-profile__setup" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Senior care</span><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
         </article>
       </main>
     </section>
@@ -9520,6 +9537,7 @@
       var sitterProfileProfilesTrigger = document.getElementById('sitterProfileProfilesTrigger');
       var sitterProfilesScreen = document.getElementById('sitterProfilesScreen');
       var sitterProfilesBack = document.getElementById('sitterProfilesBack');
+      var sitterServiceProfiles = Array.prototype.slice.call(document.querySelectorAll('.sitter-service-profile'));
       var sitterProfileVerificationsTrigger = document.getElementById('sitterProfileVerificationsTrigger');
       var sitterVerificationsScreen = document.getElementById('sitterVerificationsScreen');
       var sitterVerificationsBack = document.getElementById('sitterVerificationsBack');
@@ -10195,6 +10213,17 @@
 
       function syncSitterAvailabilityState() {
         sitterAvailabilityScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
+      }
+
+      function syncSitterProfilesState() {
+        sitterProfilesScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
+        sitterServiceProfiles.forEach(function (profile) {
+          var serviceName = profile.querySelector('.sitter-service-profile__name').textContent.trim();
+          profile.setAttribute(
+            'aria-label',
+            serviceName + ' profile, ' + (isNewlyRegisteredSitter ? 'not filled' : (profile.classList.contains('sitter-service-profile--inactive') ? 'not filled' : 'active'))
+          );
+        });
       }
 
       var SITTER_AVAILABILITY_DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -11703,6 +11732,7 @@
 
       function openSitterProfiles() {
         if (!isSitterSession()) return;
+        syncSitterProfilesState();
         sitterProfilesScreen.classList.add('is-open');
         sitterProfilesScreen.setAttribute('aria-hidden', 'false');
         sitterProfilesBack.focus({ preventScroll: true });
