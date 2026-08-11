@@ -2243,6 +2243,8 @@
     }
 
     .sitter-profile-setup__doodle img { width: 100%; height: 100%; object-fit: contain; }
+    .sitter-profile-setup__doodle svg { width: 100%; height: 100%; }
+    .sitter-profile-setup__doodle-slot { display: block; width: 100%; height: 100%; }
 
     .sitter-profile-setup__hero-copy { min-width: 0; max-width: 335px; }
     .sitter-profile-setup__hero h2 {
@@ -11445,7 +11447,10 @@
       }
 
       function sitterProfileSetupStepMarkup(step, index) {
-        var heroIcon = '<img src="./assets/' + SITTER_PROFILE_SETUP_DOODLES[step.key] + '" alt="">';
+        // Left empty on purpose — the SVG is fetched and inlined after render
+        // so its strokes and fills can be animated individually. An <img>
+        // keeps its internals out of reach.
+        var heroIcon = '<span class="sitter-profile-setup__doodle-slot" data-setup-doodle="' + SITTER_PROFILE_SETUP_DOODLES[step.key] + '"></span>';
         var content = '';
         if (step.key === 'price') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Set your price</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupPriceSheet" data-setup-action="price-options"><span>' + sitterProfileSetupPrice + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></fieldset>';
@@ -11511,6 +11516,78 @@
         return '<section class="sitter-profile-setup__step" aria-label="' + step.title + '"><div class="sitter-profile-setup__hero ' + (isCentredHero ? 'sitter-profile-setup__hero--center' : '') + '"><div class="sitter-profile-setup__doodle">' + hero + '</div><div class="sitter-profile-setup__hero-copy"><h2>' + step.title + '</h2><p>' + step.description + '</p>' + (step.key === 'price' ? '<a class="sitter-profile-setup__hero-link" href="#why-price-matters">Why is it important?</a>' : '') + '</div></div><div class="sitter-profile-setup__content">' + content + '</div></section>';
       }
 
+      // --- Hero doodles: draw the strokes, then bring the fills up ----------
+      // The same treatment the job wizard next door gives its heroes, so the
+      // two onboarding flows read as one product. It needs the SVG inline —
+      // an <img> keeps its paths out of reach — so each file is fetched once
+      // and kept.
+      var sitterProfileDoodleCache = {};
+
+      function sitterProfileDoodleParts(svg) {
+        var all = Array.prototype.slice.call(svg.querySelectorAll('path, circle, ellipse, rect, line, polyline, polygon'));
+        return {
+          all: all,
+          strokes: all.filter(function (el) { var stroke = el.getAttribute('stroke'); return stroke && stroke !== 'none'; }),
+          fills: all.filter(function (el) { var fill = el.getAttribute('fill'); return fill && fill !== 'none'; })
+        };
+      }
+
+      function animateSitterProfileDoodle(svg) {
+        // Reduced motion gets the finished drawing, not a hidden one.
+        if (prefersReducedMotion()) return;
+
+        var parts = sitterProfileDoodleParts(svg);
+        parts.all.forEach(function (el) { el.style.transition = 'none'; });
+        parts.fills.forEach(function (el) { el.style.fillOpacity = '0'; });
+        parts.strokes.forEach(function (el) {
+          var length = el.getTotalLength ? el.getTotalLength() : 60;
+          el.style.strokeDasharray = length;
+          el.style.strokeDashoffset = length;
+        });
+
+        requestAnimationFrame(function () {
+          parts.strokes.forEach(function (el, index) {
+            window.setTimeout(function () {
+              el.style.transition = 'stroke-dashoffset 380ms cubic-bezier(0.4, 0, 0.2, 1)';
+              el.style.strokeDashoffset = '0';
+            }, index * 18);
+          });
+          window.setTimeout(function () {
+            parts.fills.forEach(function (el) {
+              el.style.transition = 'fill-opacity 0.35s ease';
+              el.style.fillOpacity = '1';
+            });
+          }, 200);
+        });
+      }
+
+      function renderSitterProfileDoodle() {
+        var slot = sitterProfileSetupContent.querySelector('[data-setup-doodle]');
+        if (!slot) return;
+
+        var file = slot.getAttribute('data-setup-doodle');
+
+        function inject(markup) {
+          slot.innerHTML = markup;
+          var svg = slot.querySelector('svg');
+          if (svg) animateSitterProfileDoodle(svg);
+        }
+
+        if (sitterProfileDoodleCache[file]) {
+          inject(sitterProfileDoodleCache[file]);
+          return;
+        }
+
+        window.fetch('./assets/' + file).then(function (response) {
+          return response.ok ? response.text() : '';
+        }).then(function (markup) {
+          if (!markup) return;
+          sitterProfileDoodleCache[file] = markup;
+          // The step may have moved on while the file was in flight.
+          if (slot.isConnected) inject(markup);
+        }).catch(function () {});
+      }
+
       function renderSitterProfileSetup(direction) {
         var steps = SITTER_PROFILE_SETUP_STEPS;
         // Proportional to where you actually are. The old table started the
@@ -11518,6 +11595,7 @@
         // had done yet.
         var progress = Math.round(((sitterProfileSetupStep + 1) / steps.length) * 100);
         sitterProfileSetupContent.innerHTML = '<header class="sitter-profile-setup__header"><button class="sitter-profile-setup__header-button" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><div class="sitter-profile-setup__title"><span>Create a babysitting profile</span></div><button class="sitter-profile-setup__header-button" type="button" data-setup-action="close" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></header><div class="sitter-profile-setup__progress" aria-label="Step ' + (sitterProfileSetupStep + 1) + ' of ' + steps.length + '"><span class="sitter-profile-setup__progress-fill" style="--sitter-profile-setup-progress: ' + progress + '%"></span></div><div class="sitter-profile-setup__viewport"><div class="sitter-profile-setup__stage' + (direction === 'back' ? ' is-enter-back' : (direction === 'next' ? ' is-enter-forward' : '')) + '">' + sitterProfileSetupStepMarkup(steps[sitterProfileSetupStep], sitterProfileSetupStep) + '</div></div><footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__back" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><button class="sitter-profile-setup__next" type="button" data-setup-action="next">' + (sitterProfileSetupStep === steps.length - 1 ? 'Go to profile' : 'Next') + ' <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>';
+        renderSitterProfileDoodle();
       }
 
       function openSitterProfileSetup(trigger) {
