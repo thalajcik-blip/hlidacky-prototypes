@@ -10758,9 +10758,23 @@
         var selectedRole = document.querySelector('[name="registration-role"]:checked');
         if (!validateRegistrationRole() || !selectedRole) return;
         if (selectedRole.value === 'family') {
+          // A sitter-configured guest can decide to become a family. Keep the
+          // prototype configuration aligned before continuing with family
+          // registration details and the family search experience.
+          setPrototypeUserRole('family');
+          prototypeUserRoleInputs.forEach(function (input) {
+            input.checked = input.value === 'family';
+          });
           openRegistrationDetails();
           return;
         }
+        // The registration choice is authoritative. A family-configured guest
+        // can decide to become a sitter, so keep Prototype settings in sync
+        // before creating the session and rendering sitter-only navigation.
+        setPrototypeUserRole('sitter');
+        prototypeUserRoleInputs.forEach(function (input) {
+          input.checked = input.value === 'sitter';
+        });
         hideRegistrationRole();
         simulateLogin({ newlyRegisteredSitter: true });
       }
