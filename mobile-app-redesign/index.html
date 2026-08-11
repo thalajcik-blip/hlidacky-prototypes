@@ -2059,11 +2059,14 @@
     .registration-role-validation__copy { margin: 0; color: #2a3539; font-size: 14px; font-weight: 400; line-height: 20px; text-align: center; }
     .registration-role-validation__arrow { position: absolute; bottom: -7px; left: 50%; display: block; width: 12px; height: 7px; transform: translateX(-50%); }
     .phone-frame.is-registration-flow .mobile-bottom-nav,
-    .phone-frame.is-job-wizard-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav,
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__items,
-    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__items { display: none; }
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__items,
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__items { display: none; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__indicator,
-    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+    .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
 
     /* The existing job-creation prototype runs here as an embedded flow. The
        phone status and home safe area stay in place while its wizard owns the
@@ -2094,6 +2097,359 @@
       border: 0;
       background: #fff;
     }
+
+    /* Sitter onboarding stays local to this prototype. It borrows the job
+       wizard's bottom-up entry and horizontal step flow without embedding
+       or changing the shared family job creation prototype. */
+    .sitter-profile-setup-screen {
+      position: absolute;
+      z-index: 41;
+      inset: 52px 0 32px;
+      overflow: hidden;
+      background: #fff;
+      pointer-events: none;
+      transform: translate3d(0, 100%, 0);
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 300ms;
+      visibility: hidden;
+    }
+
+    .sitter-profile-setup-screen.is-open {
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+      visibility: visible;
+    }
+
+    .sitter-profile-setup {
+      display: flex;
+      height: 100%;
+      min-height: 0;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .sitter-profile-setup__header {
+      display: grid;
+      flex: 0 0 48px;
+      grid-template-columns: 48px minmax(0, 1fr) 48px;
+      align-items: center;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+      background: #fff;
+      padding: 0 0 0 4px;
+    }
+
+    .sitter-profile-setup__header-button {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: var(--color-gray-600, #6c757d);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .sitter-profile-setup__header-button:hover { color: var(--color-gray-800, #2a3539); }
+
+    .sitter-profile-setup__title {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gray-800, #2a3539);
+      font-family: Soleil, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 24px;
+      letter-spacing: -0.051px;
+    }
+
+    .sitter-profile-setup__progress {
+      position: relative;
+      height: 12px;
+      overflow: hidden;
+      background: #f7f8fa;
+    }
+
+    .sitter-profile-setup__progress-fill {
+      display: block;
+      width: var(--sitter-profile-setup-progress, 0%);
+      height: 100%;
+      background: var(--color-pink-400, #f96073);
+      transition: width 220ms ease;
+    }
+
+    .sitter-profile-setup__viewport { min-height: 0; flex: 1 1 auto; overflow: hidden; }
+
+    .sitter-profile-setup__stage {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sitter-profile-setup__stage.is-enter-forward { animation: sitter-profile-setup-enter-forward 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .sitter-profile-setup__stage.is-enter-back { animation: sitter-profile-setup-enter-back 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+    @keyframes sitter-profile-setup-enter-forward {
+      from { opacity: 0.35; transform: translateX(12%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes sitter-profile-setup-enter-back {
+      from { opacity: 0.35; transform: translateX(-12%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .sitter-profile-setup__step {
+      display: flex;
+      width: 100%;
+      min-width: 100%;
+      min-height: 0;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: #fff;
+    }
+
+    .sitter-profile-setup__hero {
+      display: grid;
+      min-height: 217px;
+      flex: 0 0 217px;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 72px auto;
+      align-content: center;
+      justify-items: center;
+      row-gap: 8px;
+      background: #f5f6f8;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .sitter-profile-setup__hero--center { text-align: center; }
+
+    .sitter-profile-setup__doodle {
+      display: flex;
+      width: 72px;
+      height: 72px;
+      flex: 0 0 72px;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-pink-400, #f96073);
+      font-size: 30px;
+      object-fit: contain;
+    }
+
+    .sitter-profile-setup__doodle img { width: 100%; height: 100%; object-fit: contain; }
+
+    .sitter-profile-setup__hero-copy { min-width: 0; max-width: 335px; }
+    .sitter-profile-setup__hero h2 {
+      margin: 0 0 4px;
+      color: var(--color-gray-900, #20282b);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 132%;
+      letter-spacing: -0.5px;
+    }
+
+    .sitter-profile-setup__hero p {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 350;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+    }
+
+    .sitter-profile-setup__hero-link {
+      display: block;
+      width: fit-content;
+      margin: 2px auto 0;
+      color: var(--color-pink-400, #f96073);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Soleil, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 350;
+      line-height: 140%;
+      letter-spacing: -0.16px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .sitter-profile-setup__content { display: flex; flex: 1 1 auto; flex-direction: column; gap: 24px; padding: 24px 20px; }
+    .sitter-profile-setup__fieldset { margin: 0; border: 0; padding: 0; }
+    .sitter-profile-setup__label { display: block; margin: 0 0 10px; color: var(--color-gray-800, #2a3539); font-size: 16px; font-weight: 600; line-height: 1.4; }
+
+    .sitter-profile-setup__select,
+    .sitter-profile-setup__input,
+    .sitter-profile-setup__textarea {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px 14px;
+      color: var(--color-gray-800, #2a3539);
+      font: inherit;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .sitter-profile-setup__textarea { min-height: 116px; resize: vertical; }
+    .sitter-profile-setup__select:focus,
+    .sitter-profile-setup__input:focus,
+    .sitter-profile-setup__textarea:focus { outline: 2px solid #0d6efd; outline-offset: 1px; }
+
+    .sitter-profile-setup__select-trigger {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px 16px 12px 14px;
+      color: var(--color-gray-800, #2a3539);
+      font: inherit;
+      font-size: 16px;
+      line-height: 22px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-profile-setup__select-trigger > span { min-width: 0; }
+    .sitter-profile-setup__select-trigger > i { color: var(--color-pink-400, #f96073); font-size: 14px; }
+    .sitter-profile-setup__select-trigger:hover { border-color: var(--color-pink-400, #f96073); }
+    .sitter-profile-setup__select-trigger:focus-visible {
+      outline: 0;
+      border-color: #6aafff;
+      box-shadow: 0 0 0 2px #cbdafc;
+    }
+
+    .sitter-profile-setup-price-sheet {
+      position: absolute;
+      z-index: 64;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .sitter-profile-setup-price-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(42, 53, 57, .42);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .sitter-profile-setup-price-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .sitter-profile-setup-price-sheet__handle { width: 36px; height: 4px; margin: 12px auto 10px; border-radius: 99px; background: #2a3539; }
+    .sitter-profile-setup-price-sheet__title { margin: 0; padding: 0 20px 10px; color: #2a3539; font: 450 18px/1.4 Soleil, sans-serif; }
+    .sitter-profile-setup-price-sheet__option {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+      padding: 12px 20px;
+      color: #2a3539;
+      font: 450 16px/1.4 Soleil, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-profile-setup-price-sheet__option:hover,
+    .sitter-profile-setup-price-sheet__option.is-selected { background: #f7f7f7; }
+    .sitter-profile-setup-price-sheet__option.is-selected::after { margin-left: auto; color: var(--color-pink-400, #f96073); font: 600 20px/1 Soleil, sans-serif; content: '✓'; }
+    .sitter-profile-setup-price-sheet.is-open { pointer-events: auto; }
+    .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__backdrop { opacity: 1; }
+    .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__panel { transform: translateY(0); }
+
+    .sitter-profile-setup__option-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .sitter-profile-setup__option {
+      display: flex;
+      min-height: 86px;
+      align-items: flex-start;
+      justify-content: space-between;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px;
+      color: var(--color-gray-700, #435056);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 1.3;
+      text-align: left;
+      cursor: pointer;
+    }
+    .sitter-profile-setup__option i { color: var(--color-gray-500, #8b91a3); font-size: 18px; }
+    .sitter-profile-setup__option.is-selected { border: 2px solid var(--color-pink-400, #f96073); padding: 11px; color: var(--color-pink-400, #f96073); }
+    .sitter-profile-setup__option.is-selected i { color: var(--color-pink-400, #f96073); }
+
+    .sitter-profile-setup__choice-list { display: flex; flex-direction: column; gap: 8px; }
+    .sitter-profile-setup__choice {
+      display: flex;
+      min-height: 54px;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      padding: 12px 14px;
+      color: var(--color-gray-800, #2a3539);
+      font: inherit;
+      font-size: 15px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .sitter-profile-setup__choice::before { width: 18px; height: 18px; flex: 0 0 18px; border: 1px solid #bec2ce; border-radius: 50%; content: ''; }
+    .sitter-profile-setup__choice.is-selected { border: 2px solid var(--color-pink-400, #f96073); padding: 11px 13px; color: var(--color-pink-400, #f96073); }
+    .sitter-profile-setup__choice.is-selected::before { border: 5px solid var(--color-pink-400, #f96073); }
+
+    .sitter-profile-setup__notice { border: 1px solid #cfe9d5; border-radius: 4px; background: #effaf1; padding: 14px; color: var(--color-gray-700, #435056); font-size: 14px; line-height: 1.45; }
+    .sitter-profile-setup__notice i { margin-right: 6px; color: var(--color-green-500, #0ba825); }
+
+    .sitter-profile-setup__footer { display: grid; flex: 0 0 auto; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; padding: 12px 20px; }
+    .sitter-profile-setup__back,
+    .sitter-profile-setup__next { min-height: 48px; border-radius: 4px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .sitter-profile-setup__back { border: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; color: var(--color-gray-800, #2a3539); }
+    .sitter-profile-setup__next { border: 0; background: var(--color-green-500, #0ba825); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); color: #fff; }
+    .sitter-profile-setup__next:hover { background: var(--color-green-600, #07851c); }
+    .sitter-profile-setup__next:active,
+    .sitter-profile-setup__back:active { box-shadow: none; transform: translateY(2px); }
+
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-pink-400, #f96073); }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__active { display: inline-flex; }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__not-filled { display: none; }
 
     /* Figma: Welcome log in mobile / family registration details. This is a
        registration step, so it only retains the phone safe area — not app nav. */
@@ -3453,30 +3809,16 @@
     .messages-screen.is-sitter-empty .messages-sitter-empty-state { display: flex; }
 
     .messages-sitter-empty-state__doodle {
-      position: relative;
       width: 40px;
       height: 40px;
       flex: 0 0 40px;
-      overflow: hidden;
     }
 
     .messages-sitter-empty-state__doodle img {
-      position: absolute;
       display: block;
       width: 100%;
       height: 100%;
-    }
-
-    .messages-sitter-empty-state__doodle img:first-child {
-      inset: 13.67% 9.75% 21.48% 13.28%;
-      width: auto;
-      height: auto;
-    }
-
-    .messages-sitter-empty-state__doodle img:last-child {
-      inset: 13.68% 12.53% 13.51% 11.62%;
-      width: auto;
-      height: auto;
+      object-fit: contain;
     }
 
     .messages-sitter-empty-state__body {
@@ -7638,6 +7980,7 @@
       .registration-role-screen { top: 0; }
       .registration-details-screen { top: 0; }
       .message-detail-screen { top: 0; }
+      .sitter-profile-setup-screen { top: 0; }
       .app-placeholder-screen { top: 48px; }
       .sitter-dashboard-screen { top: 48px; }
       .sitter-availability-screen { top: 48px; }
@@ -8239,7 +8582,7 @@
           <div class="message-thread__body"><div class="message-thread__meta"><span class="message-thread__name">Gabriela Godová</span><time class="message-thread__time">5 days ago</time></div><span class="message-thread__preview">Dobrý den, dnes jsme s dětmi byli na hřišti a užili si spoustu zábavy.</span></div>
         </article>
         <section class="messages-sitter-empty-state" id="messagesSitterEmptyState" aria-label="Empty inbox" aria-hidden="true">
-          <div class="messages-sitter-empty-state__doodle" aria-hidden="true"><img src="./assets/messages-guest-doodle-layer-2.svg" alt=""><img src="./assets/messages-guest-doodle-layer-1.svg" alt=""></div>
+          <div class="messages-sitter-empty-state__doodle" aria-hidden="true"><img src="./assets/doodle-envelope.svg" alt=""></div>
           <div class="messages-sitter-empty-state__body">
             <p class="messages-sitter-empty-state__title">Your inbox is empty</p>
             <p class="messages-sitter-empty-state__copy">Once families get in touch, you’ll see their messages here. Make sure your profile is complete to help families find you!</p>
@@ -8544,7 +8887,7 @@
       <main class="sitter-profiles-content">
         <article class="sitter-service-profile sitter-service-profile--babysitting" aria-label="Babysitting profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Babysitting</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Babysitting</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" id="sitterBabysittingSetup" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--cleaning" aria-label="Household cleaning profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-broom" aria-hidden="true"></i></div>
@@ -8983,6 +9326,22 @@
     <section class="job-wizard-screen" id="jobWizardScreen" aria-label="Create a new job" aria-hidden="true">
       <iframe class="job-wizard-screen__frame" id="jobWizardFrame" title="Create a new job" src="../jobs-for-families/index.html?embed=mobile-app"></iframe>
     </section>
+    <section class="sitter-profile-setup-screen" id="sitterProfileSetupScreen" aria-label="Set up babysitting profile" aria-hidden="true">
+      <div class="sitter-profile-setup" id="sitterProfileSetupContent"></div>
+    </section>
+    <div class="sitter-profile-setup-price-sheet" id="sitterProfileSetupPriceSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="sitterProfileSetupPriceSheetBackdrop" type="button" aria-label="Close price options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="sitterProfileSetupPriceSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterProfileSetupPriceSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="sitterProfileSetupPriceSheetTitle">Set your price</h2>
+        <div role="listbox" aria-label="Price options">
+          <button class="sitter-profile-setup-price-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-profile-setup-price-option="150 Kč/hour">150 Kč/hour</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-price-option="180 Kč/hour">180 Kč/hour</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-price-option="200 Kč/hour">200 Kč/hour</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-price-option="250 Kč/hour">250 Kč/hour</button>
+        </div>
+      </section>
+    </div>
     <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
       <div class="mobile-bottom-nav__items">
         <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" data-app-screen="search" data-icon="fa-magnifying-glass" aria-current="page">
@@ -9509,6 +9868,18 @@
       var jobWizardScreen = document.getElementById('jobWizardScreen');
       var jobWizardFrame = document.getElementById('jobWizardFrame');
       var jobWizardTrigger = null;
+      var sitterProfileSetupScreen = document.getElementById('sitterProfileSetupScreen');
+      var sitterProfileSetupContent = document.getElementById('sitterProfileSetupContent');
+      var sitterProfileSetupTrigger = null;
+      var sitterProfileSetupStep = 0;
+      var sitterBabysittingProfileCompleted = false;
+      var sitterProfileSetupPriceSheet = document.getElementById('sitterProfileSetupPriceSheet');
+      var sitterProfileSetupPriceSheetBackdrop = document.getElementById('sitterProfileSetupPriceSheetBackdrop');
+      var sitterProfileSetupPriceSheetDialog = document.getElementById('sitterProfileSetupPriceSheetDialog');
+      var sitterProfileSetupPriceOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-profile-setup-price-option]'));
+      var sitterProfileSetupPriceSheetTrigger = null;
+      var sitterProfileSetupPriceSheetCloseTimer = null;
+      var sitterProfileSetupPrice = '150 Kč/hour';
       var referralShareSheet = document.getElementById('referralShareSheet');
       var referralShareBackdrop = document.getElementById('referralShareBackdrop');
       var referralShareDialog = document.getElementById('referralShareDialog');
@@ -9538,6 +9909,7 @@
       var sitterProfilesScreen = document.getElementById('sitterProfilesScreen');
       var sitterProfilesBack = document.getElementById('sitterProfilesBack');
       var sitterServiceProfiles = Array.prototype.slice.call(document.querySelectorAll('.sitter-service-profile'));
+      var sitterBabysittingSetup = document.getElementById('sitterBabysittingSetup');
       var sitterProfileVerificationsTrigger = document.getElementById('sitterProfileVerificationsTrigger');
       var sitterVerificationsScreen = document.getElementById('sitterVerificationsScreen');
       var sitterVerificationsBack = document.getElementById('sitterVerificationsBack');
@@ -10219,9 +10591,11 @@
         sitterProfilesScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
         sitterServiceProfiles.forEach(function (profile) {
           var serviceName = profile.querySelector('.sitter-service-profile__name').textContent.trim();
+          var isCompletedBabysittingProfile = serviceName === 'Babysitting' && sitterBabysittingProfileCompleted;
+          profile.classList.toggle('sitter-service-profile--completed', isCompletedBabysittingProfile);
           profile.setAttribute(
             'aria-label',
-            serviceName + ' profile, ' + (isNewlyRegisteredSitter ? 'not filled' : (profile.classList.contains('sitter-service-profile--inactive') ? 'not filled' : 'active'))
+            serviceName + ' profile, ' + (isNewlyRegisteredSitter && !isCompletedBabysittingProfile ? 'not filled' : (profile.classList.contains('sitter-service-profile--inactive') ? 'not filled' : 'active'))
           );
         });
       }
@@ -10935,6 +11309,143 @@
         setBackgroundInert(null);
         if (restoreFocus && jobWizardTrigger) jobWizardTrigger.focus({ preventScroll: true });
         syncBackEntry();
+      }
+
+      var SITTER_PROFILE_SETUP_STEPS = [
+        { key: 'price', title: 'Your price', description: 'We do not charge any fees or commission. The full amount you earn is yours.' },
+        { key: 'availability', title: 'Your availability', description: 'You can add specific times and days when you want to work later in your availability.' },
+        { key: 'experience', title: 'Your experience', description: 'Include all relevant experience so families can get to know you.' },
+        { key: 'location', title: 'Your location', description: 'Choose where you would like to offer babysitting.' },
+        { key: 'preferences', title: 'Your preferences', description: 'Tell families what kind of care is the best fit for you.' },
+        { key: 'about', title: 'About you', description: 'A few words help families understand who you are.' },
+        { key: 'finish', title: 'You are all set!', description: 'Review your profile and start receiving requests from families.' }
+      ];
+
+      var SITTER_PROFILE_SETUP_DOODLES = {
+        price: 'profile-price.svg',
+        availability: 'profile-calendar-availability.svg',
+        experience: 'profile-experience.svg',
+        location: 'profile-transport.svg',
+        preferences: 'profile-what-are-you-good-at.svg',
+        about: 'profile-about-you.svg',
+        finish: 'profile-email-verify.svg'
+      };
+
+      function sitterProfileSetupStepMarkup(step, index) {
+        var heroIcon = '<img src="./assets/' + SITTER_PROFILE_SETUP_DOODLES[step.key] + '" alt="">';
+        var content = '';
+        if (step.key === 'price') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Set your price</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupPriceSheet" data-setup-action="price-options"><span>' + sitterProfileSetupPrice + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></fieldset>';
+        } else if (step.key === 'availability') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How often do you want to babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="availability">Less than 20 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">20–40 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">More than 40 hours per week</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Maximum number of children</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="children">1 child</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">2 children</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">3 or more children</button></div></fieldset>';
+        } else if (step.key === 'experience') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Who did you babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="experience">Children of family and friends</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="experience">Children from other families</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How long have you been babysitting?</legend><select class="sitter-profile-setup__select" aria-label="How long have you been babysitting"><option>0 years</option><option>1–2 years</option><option>3–5 years</option><option>More than 5 years</option></select></fieldset>';
+        } else if (step.key === 'location') {
+          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">Where do you want to babysit?</span><input class="sitter-profile-setup__input" type="text" placeholder="Enter your city" value="Praha 2"></label><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How far can you travel?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="travel">Up to 5 km</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="travel">Up to 20 km</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="travel">I can travel further</button></div></fieldset>';
+        } else if (step.key === 'preferences') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">What can families count on you for?</legend><div class="sitter-profile-setup__option-grid"><button class="sitter-profile-setup__option is-selected" type="button" data-setup-toggle><span>Playing and creative activities</span><i class="fa-solid fa-check" aria-hidden="true"></i></button><button class="sitter-profile-setup__option" type="button" data-setup-toggle><span>Cooking for children</span><i class="fa-solid fa-utensils" aria-hidden="true"></i></button><button class="sitter-profile-setup__option" type="button" data-setup-toggle><span>School pick-up</span><i class="fa-solid fa-car" aria-hidden="true"></i></button><button class="sitter-profile-setup__option" type="button" data-setup-toggle><span>First aid</span><i class="fa-solid fa-kit-medical" aria-hidden="true"></i></button><button class="sitter-profile-setup__option" type="button" data-setup-toggle><span>Overnight care</span><i class="fa-solid fa-moon" aria-hidden="true"></i></button></div></fieldset>';
+        } else if (step.key === 'about') {
+          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">Introduce yourself to families</span><textarea class="sitter-profile-setup__textarea" placeholder="Tell families what you enjoy about babysitting and how you spend time with children."></textarea></label><div class="sitter-profile-setup__notice"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> You can always add more details and photos later in your profile.</div>';
+        } else {
+          content = '<div class="sitter-profile-setup__notice"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Your Babysitting profile is ready to be published. You can edit these details any time.</div>';
+        }
+        return '<section class="sitter-profile-setup__step" aria-label="' + step.title + '"><div class="sitter-profile-setup__hero ' + (step.key === 'finish' ? 'sitter-profile-setup__hero--center' : '') + '"><div class="sitter-profile-setup__doodle">' + heroIcon + '</div><div class="sitter-profile-setup__hero-copy"><h2>' + step.title + '</h2><p>' + step.description + '</p>' + (step.key === 'price' ? '<a class="sitter-profile-setup__hero-link" href="#why-price-matters">Why is it important?</a>' : '') + '</div></div><div class="sitter-profile-setup__content">' + content + '</div></section>';
+      }
+
+      function renderSitterProfileSetup(direction) {
+        var steps = SITTER_PROFILE_SETUP_STEPS;
+        var setupProgress = [3, 4, 5, 6, 7, 8, 10];
+        var progress = setupProgress[sitterProfileSetupStep] * 10;
+        sitterProfileSetupContent.innerHTML = '<header class="sitter-profile-setup__header"><button class="sitter-profile-setup__header-button" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><div class="sitter-profile-setup__title"><span>Create a babysitting profile</span></div><button class="sitter-profile-setup__header-button" type="button" data-setup-action="close" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></header><div class="sitter-profile-setup__progress" aria-label="Step ' + (sitterProfileSetupStep + 1) + ' of ' + steps.length + '"><span class="sitter-profile-setup__progress-fill" style="--sitter-profile-setup-progress: ' + progress + '%"></span></div><div class="sitter-profile-setup__viewport"><div class="sitter-profile-setup__stage' + (direction === 'back' ? ' is-enter-back' : (direction === 'next' ? ' is-enter-forward' : '')) + '">' + sitterProfileSetupStepMarkup(steps[sitterProfileSetupStep], sitterProfileSetupStep) + '</div></div><footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__back" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><button class="sitter-profile-setup__next" type="button" data-setup-action="next">' + (sitterProfileSetupStep === steps.length - 1 ? 'Finish profile' : 'Continue') + ' <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>';
+      }
+
+      function openSitterProfileSetup(trigger) {
+        if (!isNewlyRegisteredSitter) return;
+        sitterProfileSetupTrigger = trigger || null;
+        sitterProfileSetupStep = 0;
+        renderSitterProfileSetup();
+        sitterProfileSetupScreen.classList.add('is-open');
+        sitterProfileSetupScreen.setAttribute('aria-hidden', 'false');
+        phoneFrame.classList.add('is-sitter-profile-setup-flow');
+        setBackgroundInert(sitterProfileSetupScreen);
+        requestAnimationFrame(function () {
+          var closeButton = sitterProfileSetupContent.querySelector('[data-setup-action="close"]');
+          if (closeButton) closeButton.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeSitterProfileSetupPriceSheet(restoreFocus) {
+        if (!sitterProfileSetupPriceSheet || sitterProfileSetupPriceSheet.hidden) return;
+        sitterProfileSetupPriceSheet.classList.remove('is-open');
+        sitterProfileSetupPriceSheet.setAttribute('aria-hidden', 'true');
+        if (sitterProfileSetupPriceSheetTrigger) sitterProfileSetupPriceSheetTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterProfileSetupPriceSheetCloseTimer);
+        sitterProfileSetupPriceSheetCloseTimer = window.setTimeout(function () {
+          sitterProfileSetupPriceSheet.hidden = true;
+          if (sitterProfileSetupScreen.classList.contains('is-open')) setBackgroundInert(sitterProfileSetupScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus && sitterProfileSetupPriceSheetTrigger) sitterProfileSetupPriceSheetTrigger.focus({ preventScroll: true });
+          sitterProfileSetupPriceSheetTrigger = null;
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterProfileSetupPriceSheet(trigger) {
+        if (!trigger) return;
+        window.clearTimeout(sitterProfileSetupPriceSheetCloseTimer);
+        sitterProfileSetupPriceSheetTrigger = trigger;
+        sitterProfileSetupPriceOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-sitter-profile-setup-price-option') === sitterProfileSetupPrice;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        sitterProfileSetupPriceSheet.hidden = false;
+        sitterProfileSetupPriceSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterProfileSetupPriceSheet);
+        requestAnimationFrame(function () {
+          sitterProfileSetupPriceSheet.classList.add('is-open');
+          sitterProfileSetupPriceSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeSitterProfileSetup(restoreFocus) {
+        if (!sitterProfileSetupPriceSheet.hidden) {
+          window.clearTimeout(sitterProfileSetupPriceSheetCloseTimer);
+          sitterProfileSetupPriceSheet.classList.remove('is-open');
+          sitterProfileSetupPriceSheet.hidden = true;
+          sitterProfileSetupPriceSheet.setAttribute('aria-hidden', 'true');
+          sitterProfileSetupPriceSheetTrigger = null;
+        }
+        sitterProfileSetupScreen.classList.remove('is-open');
+        sitterProfileSetupScreen.setAttribute('aria-hidden', 'true');
+        phoneFrame.classList.remove('is-sitter-profile-setup-flow');
+        setBackgroundInert(null);
+        if (restoreFocus && sitterProfileSetupTrigger) sitterProfileSetupTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function advanceSitterProfileSetup() {
+        if (sitterProfileSetupStep === SITTER_PROFILE_SETUP_STEPS.length - 1) {
+          sitterBabysittingProfileCompleted = true;
+          syncSitterProfilesState();
+          closeSitterProfileSetup(false);
+          return;
+        }
+        sitterProfileSetupStep += 1;
+        renderSitterProfileSetup('next');
+        sitterProfileSetupContent.querySelector('[data-setup-action="back"]').focus({ preventScroll: true });
+      }
+
+      function retreatSitterProfileSetup() {
+        if (sitterProfileSetupStep === 0) {
+          closeSitterProfileSetup(true);
+          return;
+        }
+        sitterProfileSetupStep -= 1;
+        renderSitterProfileSetup('back');
       }
 
       function completeJobWizard() {
@@ -11698,6 +12209,7 @@
       }
 
       function closeSitterProfile() {
+        closeSitterProfileSetup(false);
         sitterInfoScreen.classList.remove('is-open');
         sitterInfoScreen.setAttribute('aria-hidden', 'true');
         sitterProfilesScreen.classList.remove('is-open');
@@ -11994,6 +12506,8 @@
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
+        { isOpen: function () { return !sitterProfileSetupPriceSheet.hidden; }, close: function () { closeSitterProfileSetupPriceSheet(true); } },
+        { isOpen: function () { return sitterProfileSetupScreen.classList.contains('is-open'); }, close: function () { closeSitterProfileSetup(true); } },
         { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
         { isOpen: function () { return !sitterJobsNotificationOptionsSheet.hidden; }, close: function () { closeSitterJobsNotificationOptions(true); } },
         { isOpen: function () { return sitterJobsNotificationsScreen.classList.contains('is-open'); }, close: function () { closeSitterJobsNotifications(true); } },
@@ -12652,6 +13166,47 @@
       sitterInfoBack.addEventListener('click', closeSitterInfo);
       sitterProfileProfilesTrigger.addEventListener('click', openSitterProfiles);
       sitterProfilesBack.addEventListener('click', closeSitterProfiles);
+      sitterBabysittingSetup.addEventListener('click', function () {
+        openSitterProfileSetup(sitterBabysittingSetup);
+      });
+      sitterProfileSetupContent.addEventListener('click', function (event) {
+        var priceOptions = event.target.closest('[data-setup-action="price-options"]');
+        if (priceOptions) {
+          openSitterProfileSetupPriceSheet(priceOptions);
+          return;
+        }
+        var choice = event.target.closest('[data-setup-choice]');
+        if (choice) {
+          var choiceGroup = choice.getAttribute('data-setup-choice');
+          sitterProfileSetupContent.querySelectorAll('[data-setup-choice="' + choiceGroup + '"]').forEach(function (item) {
+            item.classList.toggle('is-selected', item === choice);
+          });
+          return;
+        }
+        var toggle = event.target.closest('[data-setup-toggle]');
+        if (toggle) {
+          toggle.classList.toggle('is-selected');
+          return;
+        }
+        var action = event.target.closest('[data-setup-action]');
+        if (!action) return;
+        if (action.getAttribute('data-setup-action') === 'next') advanceSitterProfileSetup();
+        else if (action.getAttribute('data-setup-action') === 'back') retreatSitterProfileSetup();
+        else closeSitterProfileSetup(true);
+      });
+      sitterProfileSetupPriceOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          sitterProfileSetupPrice = option.getAttribute('data-sitter-profile-setup-price-option');
+          if (sitterProfileSetupPriceSheetTrigger) {
+            var label = sitterProfileSetupPriceSheetTrigger.querySelector('span');
+            if (label) label.textContent = sitterProfileSetupPrice;
+          }
+          closeSitterProfileSetupPriceSheet(true);
+        });
+      });
+      sitterProfileSetupPriceSheetBackdrop.addEventListener('click', function () {
+        closeSitterProfileSetupPriceSheet(true);
+      });
       sitterProfileVerificationsTrigger.addEventListener('click', openSitterVerifications);
       sitterVerificationsBack.addEventListener('click', closeSitterVerifications);
       sitterProfileGalleryTrigger.addEventListener('click', openSitterGallery);
