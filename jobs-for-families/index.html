@@ -948,7 +948,10 @@
   <!-- Shared header (static, outside animation) -->
   <div id="shared-header">
     <div class="nav-header">
-      <img src="/hlidacky-logo_small.svg" width="32" height="32" alt="Hlídačky.cz">
+      <img class="nav-brand-mark" src="/hlidacky-logo_small.svg" width="32" height="32" alt="Hlídačky.cz">
+      <button class="btn-wizard-back" id="mobileAppWizardBack" type="button" aria-label="Go back" onclick="goBackFromHeader()" hidden>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11.25 3.75 6 9l5.25 5.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <span class="nav-title" data-i18n="nav.title"></span>
       <button class="btn-close" onclick="closeFlow()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="#6b7176" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </div>
@@ -2625,6 +2628,13 @@
   function goPrev() {
     const flow = buildFlow();
     if (currentIdx > 0) { currentIdx--; navDirection = 'backward'; showScreen(flow[currentIdx]); }
+  }
+  function goBackFromHeader() {
+    if (!window.IS_MOBILE_APP_EMBED) { goPrev(); return; }
+    if (currentIdx > 0) { goPrev(); return; }
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'mobile-app-job-wizard-back' }, '*');
+    }
   }
   function closeFlow() {
     const flow = buildFlow();
@@ -4402,6 +4412,12 @@
     document.querySelectorAll('img[src^="/"], link[href^="/"]').forEach(function(element) {
       var attribute = element.tagName === 'LINK' ? 'href' : 'src';
       element.setAttribute(attribute, '..' + element.getAttribute(attribute));
+    });
+    var mobileAppWizardBack = document.getElementById('mobileAppWizardBack');
+    if (mobileAppWizardBack) mobileAppWizardBack.hidden = false;
+    window.addEventListener('message', function(event) {
+      if (!event.data || event.data.type !== 'mobile-app-job-wizard-reset') return;
+      restartFlow();
     });
   }
   showScreen(getInitialFlowStep());

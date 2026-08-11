@@ -2058,15 +2058,15 @@
       overflow: hidden;
       background: #fff;
       pointer-events: none;
-      transform: translate3d(100%, 0, 0);
-      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 300ms;
+      transform: translate3d(0, 100%, 0);
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 300ms;
       visibility: hidden;
     }
 
     .job-wizard-screen.is-open {
       pointer-events: auto;
       transform: translate3d(0, 0, 0);
-      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
       visibility: visible;
     }
 
@@ -10793,6 +10793,9 @@
         if (prototypeUserRole !== 'family' || !loginTrigger.classList.contains('is-logged-in')) return;
         jobWizardTrigger = trigger || null;
         hideRegistrationSuccess();
+        if (jobWizardFrame.contentWindow) {
+          jobWizardFrame.contentWindow.postMessage({ type: 'mobile-app-job-wizard-reset' }, '*');
+        }
         jobWizardScreen.classList.add('is-open');
         jobWizardScreen.setAttribute('aria-hidden', 'false');
         phoneFrame.classList.add('is-job-wizard-flow');
@@ -12587,6 +12590,7 @@
         if (event.source !== jobWizardFrame.contentWindow || !event.data) return;
         if (event.data.type === 'mobile-app-job-wizard-complete') completeJobWizard();
         if (event.data.type === 'mobile-app-job-wizard-close') closeJobWizard(true);
+        if (event.data.type === 'mobile-app-job-wizard-back') closeJobWizard(true);
       });
       favouritesPostJob.addEventListener('click', function () {
         if (isNewlyRegisteredParent) openJobWizard(favouritesPostJob);

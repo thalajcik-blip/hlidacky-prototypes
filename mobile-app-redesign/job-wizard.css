@@ -31,3 +31,27 @@ html.mobile-app-embed .phone-frame {
 html.mobile-app-embed .phone-notch {
   display: none;
 }
+
+/* The embedded wizard deliberately replaces only its brand mark with a
+   back affordance. Its standalone prototype keeps the original logo. */
+html.mobile-app-embed .nav-brand-mark {
+  display: none;
+}
+
+html.mobile-app-embed .btn-wizard-back {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7176;
+  cursor: pointer;
+}
+
+html.mobile-app-embed .btn-wizard-back:hover,
+html.mobile-app-embed .btn-wizard-back:focus-visible {
+  background: #f5f6f7;
+}
