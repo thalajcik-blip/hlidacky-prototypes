@@ -9305,6 +9305,7 @@
       var messageDetailInput = document.getElementById('messageDetailInput');
       var activeMessageThread = null;
       var jobsScreen = document.getElementById('jobsScreen');
+      var jobsCreateButton = jobsScreen.querySelector('.jobs-screen__create');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
       var jobsGuestCreate = document.getElementById('jobsGuestCreate');
       var sitterJobsScreen = document.getElementById('sitterJobsScreen');
@@ -10787,7 +10788,9 @@
       }
 
       function openJobWizard(trigger) {
-        if (!isNewlyRegisteredParent) return;
+        // Families can start the shared post-a-job wizard whether the account
+        // was just created or already existed before opening the prototype.
+        if (prototypeUserRole !== 'family' || !loginTrigger.classList.contains('is-logged-in')) return;
         jobWizardTrigger = trigger || null;
         hideRegistrationSuccess();
         jobWizardScreen.classList.add('is-open');
@@ -12602,6 +12605,9 @@
       jobsGuestCreate.addEventListener('click', function () {
         if (isNewlyRegisteredParent) openJobWizard(jobsGuestCreate);
         else openLoginSheet();
+      });
+      jobsCreateButton.addEventListener('click', function () {
+        openJobWizard(jobsCreateButton);
       });
       bookingsGuestPost.addEventListener('click', function () {
         if (isNewlyRegisteredParent) openJobWizard(bookingsGuestPost);
