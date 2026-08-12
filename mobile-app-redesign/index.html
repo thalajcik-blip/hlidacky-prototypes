@@ -12098,17 +12098,16 @@
 
       function renderSitterProfileSetup(direction) {
         var steps = currentProfileSetupSteps();
-        // Proportional to where you actually are. The old table started the
-        // first of seven steps at 30%, which claimed credit for work nobody
-        // had done yet.
         var currentStep = steps[sitterProfileSetupStep];
         var isAgeGroupsStep = currentStep.key === 'ageGroups';
         var isVerifyEmailStep = currentStep.key === 'verifyEmail';
-        var progress = sitterProfileSetupMode === 'cleaning'
-          ? (isVerifyEmailStep ? 100 : Math.min(90, (sitterProfileSetupStep + 3) * 10))
-          : (sitterProfileSetupMode === 'petCare' || sitterProfileSetupMode === 'seniorCare' || sitterProfileSetupMode === 'tutoring'
-            ? (isVerifyEmailStep ? 100 : Math.round(20 + (sitterProfileSetupStep * 80 / (steps.length - 1))))
-            : (isVerifyEmailStep ? 100 : (isAgeGroupsStep ? 60 : Math.round(((sitterProfileSetupStep + 1) / steps.length) * 100))));
+        // One rule for every profile: how far along you actually are. The
+        // per-flow tables it replaces disagreed with each other — cleaning
+        // opened at 30% and the others at 20% — and babysitting pinned its
+        // age-groups step to 60%, so the bar jumped forward and then fell
+        // back to 38% on the very next step. Verify your email is the last
+        // step in all five, so 100% falls out of the arithmetic.
+        var progress = Math.round(((sitterProfileSetupStep + 1) / steps.length) * 100);
         sitterProfileSetupContent.classList.toggle('is-age-groups-step', isAgeGroupsStep);
         sitterProfileSetupContent.classList.toggle('is-verify-email-step', isVerifyEmailStep);
         sitterProfileSetupContent.classList.toggle('is-cleaning-profile-setup', sitterProfileSetupMode === 'cleaning');
