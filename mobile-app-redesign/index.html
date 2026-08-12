@@ -2065,13 +2065,17 @@
     .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav,
     .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav,
     .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
+    /* Faded rather than display:none, so the icons leave and return with the
+       bar instead of popping in and out of a box that is still moving. The
+       bar clips them while it is short. */
+    .mobile-bottom-nav__items { transition: opacity 200ms ease; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__items,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav__items,
     .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__items,
     .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav__items,
     .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav__items,
     .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav__items,
-    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__items { display: none; }
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__items { opacity: 0; pointer-events: none; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__indicator,
@@ -2790,6 +2794,11 @@
       background: #fff;
       box-shadow: inset 0 1px 0 #e5e5ea;
       padding-top: 4px;
+      /* Wizards collapse this bar to a thin home indicator. Without a
+         transition it snapped back to full height the instant one closed,
+         relaying out everything above it a beat before the sheet had slid
+         away — which is the jump you saw. It now travels with the sheet. */
+      transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1), flex-basis 300ms cubic-bezier(0.16, 1, 0.3, 1), padding-top 300ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .mobile-bottom-nav__items {
@@ -9763,7 +9772,7 @@
           <div class="sitter-profile-created-alert__doodle-layer sitter-profile-created-alert__doodle-layer--1"><img src="./assets/profile-created-toast-doodle-layer-1.svg" alt=""></div>
         </div>
         <div class="sitter-profile-created-alert__copy">
-          <p class="sitter-profile-created-alert__title">Your babysitting profile has been created</p>
+          <p class="sitter-profile-created-alert__title" id="sitterProfileCreatedAlertTitle">Your babysitting profile has been created</p>
           <p class="sitter-profile-created-alert__message">Our support team will need to check it first. Usually it takes 24 hours.</p>
         </div>
       </div>
@@ -10284,6 +10293,7 @@
       var jobPostSuccessAlert = document.getElementById('jobPostSuccessAlert');
       var jobPostSuccessAlertClose = document.getElementById('jobPostSuccessAlertClose');
       var sitterProfileCreatedAlert = document.getElementById('sitterProfileCreatedAlert');
+      var sitterProfileCreatedAlertTitle = document.getElementById('sitterProfileCreatedAlertTitle');
       var sitterProfileCreatedAlertClose = document.getElementById('sitterProfileCreatedAlertClose');
       var logoutSuccessAlert = document.getElementById('logoutSuccessAlert');
       var logoutSuccessAlertClose = document.getElementById('logoutSuccessAlertClose');
@@ -12350,11 +12360,15 @@
           else if (sitterProfileSetupMode === 'tutoring') sitterTutoringProfileCompleted = true;
           else sitterBabysittingProfileCompleted = true;
           syncSitterProfilesState();
+          var finishedMode = sitterProfileSetupMode;
           closeSitterProfileSetup(false);
-          if (sitterProfileSetupMode === 'babysitting') {
-            window.clearTimeout(sitterProfileCreatedAlertShowTimer);
-            sitterProfileCreatedAlertShowTimer = window.setTimeout(showSitterProfileCreatedAlert, 320);
-          }
+          // Every profile earns the confirmation, not just babysitting. It
+          // waits for the sheet to finish leaving so the toast is not
+          // announcing itself behind the screen it belongs to.
+          window.clearTimeout(sitterProfileCreatedAlertShowTimer);
+          sitterProfileCreatedAlertShowTimer = window.setTimeout(function () {
+            showSitterProfileCreatedAlert(finishedMode);
+          }, 320);
           return;
         }
         sitterProfileSetupStep += 1;
@@ -13840,8 +13854,18 @@
         sitterProfileCreatedAlert.setAttribute('aria-hidden', 'true');
       }
 
-      function showSitterProfileCreatedAlert() {
+      var SITTER_PROFILE_CREATED_LABELS = {
+        babysitting: 'babysitting',
+        cleaning: 'cleaning',
+        petCare: 'pet care',
+        seniorCare: 'senior care',
+        tutoring: 'tutoring'
+      };
+
+      function showSitterProfileCreatedAlert(mode) {
         hideSitterProfileCreatedAlert();
+        var label = SITTER_PROFILE_CREATED_LABELS[mode] || SITTER_PROFILE_CREATED_LABELS.babysitting;
+        sitterProfileCreatedAlertTitle.textContent = 'Your ' + label + ' profile has been created';
         sitterProfileCreatedAlert.classList.add('is-visible');
         sitterProfileCreatedAlert.setAttribute('aria-hidden', 'false');
         sitterProfileCreatedAlertTimer = setTimeout(hideSitterProfileCreatedAlert, ALERT_AUTO_DISMISS_MS);
