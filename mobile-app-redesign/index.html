@@ -781,7 +781,7 @@
 
     .sitter-service-profile__edit i {
       color: var(--color-pink-400, #f96073);
-      font-size: 12px;
+      font-size: 8px;
     }
 
     .sitter-service-profile__edit:hover { background: #f7f7f7; }
@@ -2060,13 +2060,25 @@
     .registration-role-validation__arrow { position: absolute; bottom: -7px; left: 50%; display: block; width: 12px; height: 7px; transform: translateX(-50%); }
     .phone-frame.is-registration-flow .mobile-bottom-nav,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav,
-    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav,
+    .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav,
+    .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav,
+    .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav,
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__items,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav__items,
-    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__items { display: none; }
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__items,
+    .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav__items,
+    .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav__items,
+    .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav__items,
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__items { display: none; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator,
-    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+    .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
 
     /* The existing job-creation prototype runs here as an embedded flow. The
        phone status and home safe area stay in place while its wizard owns the
@@ -2181,6 +2193,10 @@
       background: var(--color-pink-400, #f96073);
       transition: width 220ms ease;
     }
+    .sitter-profile-setup.is-cleaning-profile-setup .sitter-profile-setup__progress-fill { background: var(--color-cyan-400, #35cfea); }
+    .sitter-profile-setup.is-pet-profile-setup .sitter-profile-setup__progress-fill { background: var(--color-teal-400, #00d98b); }
+    .sitter-profile-setup.is-senior-profile-setup .sitter-profile-setup__progress-fill { background: var(--color-orange-400, #fd8b25); }
+    .sitter-profile-setup.is-tutoring-profile-setup .sitter-profile-setup__progress-fill { background: var(--color-violet-400, #b85eff); }
 
     .sitter-profile-setup__viewport { min-height: 0; flex: 1 1 auto; overflow: hidden; }
 
@@ -2311,6 +2327,7 @@
     }
 
     .sitter-profile-setup__textarea { min-height: 116px; resize: vertical; }
+    .sitter-profile-setup__textarea + .sitter-profile-setup__hint { margin: 8px 0 0; }
     .sitter-profile-setup__select:focus,
     .sitter-profile-setup__input:focus,
     .sitter-profile-setup__textarea:focus { outline: 2px solid #0d6efd; outline-offset: 1px; }
@@ -2336,7 +2353,8 @@
 
     .sitter-profile-setup__select-trigger > span { min-width: 0; }
     .sitter-profile-setup__select-trigger > i { color: var(--color-pink-400, #f96073); font-size: 14px; }
-    .sitter-profile-setup__select-trigger:hover { border-color: var(--color-pink-400, #f96073); }
+    .sitter-profile-setup__select-trigger:hover { border-color: var(--color-blue-300, #6aafff); }
+    .sitter-profile-setup__select-trigger:focus,
     .sitter-profile-setup__select-trigger:focus-visible {
       outline: 0;
       border-color: #6aafff;
@@ -2397,6 +2415,57 @@
     .sitter-profile-setup-price-sheet.is-open { pointer-events: auto; }
     .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__backdrop { opacity: 1; }
     .sitter-profile-setup-price-sheet.is-open .sitter-profile-setup-price-sheet__panel { transform: translateY(0); }
+
+    /* Figma: profile-creation exit intent. This deliberately shares the
+       select sheets' overlay and motion, but uses a complete confirmation
+       layout rather than a list of values. */
+    .sitter-profile-setup-exit-sheet {
+      position: absolute;
+      z-index: 65;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+    .sitter-profile-setup-exit-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(42, 53, 57, .42);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+    .sitter-profile-setup-exit-sheet__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      padding: 0 20px 40px;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+    .sitter-profile-setup-exit-sheet__handle { width: 135px; height: 5px; margin: 16px auto 26px; border-radius: 99px; background: var(--color-gray-800, #2a3539); }
+    .sitter-profile-setup-exit-sheet__heading { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: var(--color-gray-800, #2a3539); font: 450 24px/1.32 Soleil, sans-serif; letter-spacing: -.2px; }
+    .sitter-profile-setup-exit-sheet__doodle { position: relative; width: 42px; height: 42px; flex: 0 0 42px; overflow: hidden; }
+    .sitter-profile-setup-exit-sheet__doodle-layer { position: absolute; }
+    .sitter-profile-setup-exit-sheet__doodle-layer--2 { top: 18.96%; right: 10.7%; bottom: 12.95%; left: 12.92%; }
+    .sitter-profile-setup-exit-sheet__doodle-layer--1 { top: 7.19%; right: 12.33%; bottom: 11.27%; left: 7.66%; }
+    .sitter-profile-setup-exit-sheet__doodle-layer img { display: block; width: 100%; height: 100%; }
+    .sitter-profile-setup-exit-sheet__copy { margin: 10px 0 18px; color: var(--color-gray-800, #2a3539); font: 350 16px/1.5 Soleil, sans-serif; letter-spacing: -.24px; }
+    .sitter-profile-setup-exit-sheet__actions { display: grid; gap: 10px; }
+    .sitter-profile-setup-exit-sheet__continue,
+    .sitter-profile-setup-exit-sheet__leave { min-height: 52px; border-radius: 4px; padding: 14px 20px 16px; font: 450 16px/22px Soleil, sans-serif; cursor: pointer; }
+    .sitter-profile-setup-exit-sheet__continue { border: 0; background: var(--color-green-500, #0ba825); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); color: #fff; }
+    .sitter-profile-setup-exit-sheet__continue:hover { background: var(--color-green-600, #07851c); }
+    .sitter-profile-setup-exit-sheet__leave { border: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; color: var(--color-gray-800, #2a3539); }
+    .sitter-profile-setup-exit-sheet__continue:active,
+    .sitter-profile-setup-exit-sheet__leave:active { box-shadow: none; transform: translateY(2px); }
+    .sitter-profile-setup-exit-sheet.is-open { pointer-events: auto; }
+    .sitter-profile-setup-exit-sheet.is-open .sitter-profile-setup-exit-sheet__backdrop { opacity: 1; }
+    .sitter-profile-setup-exit-sheet.is-open .sitter-profile-setup-exit-sheet__panel { transform: translateY(0); }
 
     /* Tile layout: the checkbox sits top-left, the subject's icon top-right,
        and the label along the bottom. Unlike the plain radio rows these keep
@@ -2463,6 +2532,20 @@
       align-self: end;
       min-width: 0;
     }
+    /* Cleaning work labels share a compact, stable tile height. Long names
+       stop after two lines instead of stretching only their own tile. */
+    .sitter-profile-setup.is-cleaning-profile-setup .sitter-profile-setup__option {
+      height: 112px;
+      min-height: 112px;
+      overflow: hidden;
+    }
+    .sitter-profile-setup.is-cleaning-profile-setup .sitter-profile-setup__option > span {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
     .sitter-profile-setup__option.is-selected { border: 2px solid var(--color-green-500, #0ba825); padding: 11px; color: var(--color-green-500, #0ba825); }
     .sitter-profile-setup__option.is-selected::before {
       border-color: var(--color-green-500, #0ba825);
@@ -2478,7 +2561,34 @@
     .sitter-profile-setup__age-label { display: flex; min-width: 0; align-items: baseline; gap: 6px; color: var(--color-gray-800, #2a3539); font-size: 15px; }
     .sitter-profile-setup__age-label i { color: var(--color-pink-400, #f96073); font-size: 14px; }
     .sitter-profile-setup__age-label small { color: var(--color-gray-500, #8b91a3); font-size: 13px; }
-    .sitter-profile-setup__age-row .sitter-profile-setup__select { min-height: 44px; padding: 10px 12px; font-size: 15px; }
+    .sitter-profile-setup__age-row .sitter-profile-setup__select,
+    .sitter-profile-setup__age-row .sitter-profile-setup__select-trigger { min-height: 44px; padding: 10px 12px; font-size: 15px; }
+
+    /* Figma: Set up babysitting profile — step 04. Age bands are full-width
+       fields, with their context above the control rather than beside it. */
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__hero { min-height: 192px; flex-basis: 192px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__content { gap: 12px; padding: 16px 20px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__fieldset { display: flex; width: 100%; flex-direction: column; gap: 16px; padding-top: 8px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__age-row { display: flex; width: 100%; flex-direction: column; align-items: stretch; gap: 8px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__age-row + .sitter-profile-setup__age-row { margin-top: 0; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__age-label { align-items: center; gap: 8px; padding: 0 2px; font-size: 14px; font-weight: 450; line-height: 20px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__age-label i { width: 24px; color: var(--color-gray-500, #8b91a3); font-size: 20px; line-height: 24px; text-align: center; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__age-label small { color: var(--color-gray-500, #8b91a3); font-size: 14px; font-weight: 400; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__select-trigger { min-height: 52px; padding: 14px 16px 14px 20px; font-size: 16px; line-height: 22px; }
+    .sitter-profile-setup__step--age-groups .sitter-profile-setup__select-trigger > i { font-size: 16px; }
+
+    /* Figma: Set up babysitting profile — final email-verification step. */
+    .sitter-profile-setup.is-verify-email-step .sitter-profile-setup__header-placeholder { width: 24px; height: 24px; }
+    .sitter-profile-setup__hero p strong { font-weight: 450; }
+    .sitter-profile-setup__hero-link--with-icon { display: inline-flex; align-items: center; gap: 4px; }
+    .sitter-profile-setup__hero-link--with-icon i { font-size: 12px; }
+    .sitter-profile-setup__step--verify-email .sitter-profile-setup__content { align-items: stretch; gap: 12px; padding: 16px 20px; }
+    .sitter-profile-setup__verify-email-copy { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; align-items: center; gap: 8px; padding-top: 8px; color: var(--color-gray-800, #2a3539); text-align: center; }
+    .sitter-profile-setup__verify-email-copy h3 { width: 100%; margin: 0; font: 400 16px/1.4 Soleil, sans-serif; }
+    .sitter-profile-setup__verify-email-copy p { width: 100%; margin: 0; opacity: .9; font: 350 12px/1.4 Soleil, sans-serif; }
+    .sitter-profile-setup__verify-email-resend { border: 0; background: transparent; padding: 0; color: rgba(249, 96, 115, .8); font: 400 12px/1.4 Soleil, sans-serif; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .sitter-profile-setup.is-verify-email-step .sitter-profile-setup__footer { display: block; border-top: 0; padding: 12px 20px; }
+    .sitter-profile-setup.is-verify-email-step .sitter-profile-setup__next { width: 100%; }
 
     /* A single opt-in that is not part of a group — first aid, granny nanny. */
     .sitter-profile-setup__check {
@@ -2595,6 +2705,8 @@
     .sitter-profile-setup__notice i { margin-right: 6px; color: var(--color-green-500, #0ba825); }
 
     .sitter-profile-setup__footer { display: grid; flex: 0 0 auto; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; padding: 12px 20px; }
+    .sitter-profile-setup__footer--first-step { display: block; }
+    .sitter-profile-setup__footer--first-step .sitter-profile-setup__next { width: 100%; }
     .sitter-profile-setup__back,
     .sitter-profile-setup__next { min-height: 48px; border-radius: 4px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
     .sitter-profile-setup__back { border: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; color: var(--color-gray-800, #2a3539); }
@@ -2604,7 +2716,12 @@
     .sitter-profile-setup__back:active { box-shadow: none; transform: translateY(2px); }
 
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-pink-400, #f96073); }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--cleaning.sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-cyan-400, #35cfea); }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--pet-care.sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-teal-400, #00d98b); }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--tutoring.sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-violet-400, #b85eff); }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--inactive.sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-orange-400, #fd8b25); }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__active { display: inline-flex; }
+    .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__edit { display: inline-flex; }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__not-filled { display: none; }
 
     /* Figma: Welcome log in mobile / family registration details. This is a
@@ -6074,6 +6191,41 @@
       gap: 2px;
     }
 
+    /* Figma: Babysitting profile created toast. It sits over the Profiles
+       screen after the onboarding wizard returns to its launch point. */
+    .sitter-profile-created-alert {
+      position: absolute;
+      right: 20px;
+      bottom: 99px;
+      left: 20px;
+      z-index: 28;
+      display: flex;
+      min-height: 64px;
+      align-items: flex-start;
+      padding: 12px 12px 12px 8px;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 24px 40px rgba(42, 53, 57, .2);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .sitter-profile-created-alert.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .sitter-profile-created-alert__content { display: flex; min-width: 0; flex: 1; align-items: flex-start; gap: 8px; }
+    .sitter-profile-created-alert__doodle { position: relative; width: 40px; height: 40px; flex: 0 0 40px; overflow: hidden; }
+    .sitter-profile-created-alert__doodle-layer { position: absolute; }
+    .sitter-profile-created-alert__doodle-layer--3 { top: 18.76%; right: 10.29%; bottom: 18.76%; left: 12.73%; }
+    .sitter-profile-created-alert__doodle-layer--2 { top: 17.8%; right: 28.28%; bottom: 12.67%; left: 28.31%; }
+    .sitter-profile-created-alert__doodle-layer--1 { top: 10.87%; right: 5.49%; bottom: 11.28%; left: 8.38%; }
+    .sitter-profile-created-alert__doodle-layer img { display: block; width: 100%; height: 100%; }
+    .sitter-profile-created-alert__copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+    .sitter-profile-created-alert__title { margin: 0; color: var(--color-gray-800, #2a3539); font: 450 16px/1.4 Soleil, sans-serif; letter-spacing: -.2px; }
+    .sitter-profile-created-alert__message { margin: 0; color: var(--color-gray-700, #4a5a61); font: 350 12px/1.32 Soleil, sans-serif; letter-spacing: -.16px; }
+    .sitter-profile-created-alert__close { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: var(--color-gray-500, #8b91a3); font-size: 16px; cursor: pointer; }
+
     .registration-success-alert__title {
       margin: 0;
       color: #2a3539;
@@ -9047,19 +9199,19 @@
         </article>
         <article class="sitter-service-profile sitter-service-profile--cleaning" aria-label="Household cleaning profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-broom" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Household cleaning</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Household cleaning</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" id="sitterCleaningSetup" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--pet-care" aria-label="Pet care profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-paw" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Pet care</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Pet care</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" id="sitterPetCareSetup" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--tutoring" aria-label="Tutoring profile, active">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-user-graduate" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Tutoring</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Tutoring</span><button class="sitter-service-profile__link sitter-service-profile__active" type="button">View profile</button><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__edit sitter-service-profile__active" type="button"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button><button class="sitter-service-profile__setup sitter-service-profile__not-filled" id="sitterTutoringSetup" type="button">Set up profile</button></div>
         </article>
         <article class="sitter-service-profile sitter-service-profile--inactive" aria-label="Senior care profile, not filled">
           <div class="sitter-service-profile__vertical"><i class="fa-solid fa-person-cane" aria-hidden="true"></i></div>
-          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Senior care</span><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__setup sitter-service-profile__not-filled" type="button">Set up profile</button></div>
+          <div class="sitter-service-profile__body"><img class="sitter-service-profile__avatar" src="./assets/mobile-app-header-avatar.png" alt="Sandra Nováková"><div class="sitter-service-profile__copy"><span class="sitter-service-profile__name">Senior care</span><span class="sitter-service-profile__status sitter-service-profile__not-filled">Not filled</span></div><button class="sitter-service-profile__setup sitter-service-profile__not-filled" id="sitterSeniorCareSetup" type="button">Set up profile</button></div>
         </article>
       </main>
     </section>
@@ -9498,6 +9650,46 @@
         </div>
       </section>
     </div>
+    <div class="sitter-profile-setup-price-sheet" id="sitterProfileSetupExperienceSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="sitterProfileSetupExperienceSheetBackdrop" type="button" aria-label="Close experience options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="sitterProfileSetupExperienceSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterProfileSetupExperienceSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="sitterProfileSetupExperienceSheetTitle">How long have you been babysitting?</h2>
+        <div role="listbox" aria-label="Babysitting experience options">
+          <button class="sitter-profile-setup-price-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-profile-setup-experience-option="0 years">0 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-experience-option="Less than 1 year">Less than 1 year</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-experience-option="1 – 2 years">1 – 2 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-experience-option="3 – 5 years">3 – 5 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-experience-option="More than 5 years">More than 5 years</button>
+        </div>
+      </section>
+    </div>
+    <div class="sitter-profile-setup-price-sheet" id="sitterProfileSetupAgeExperienceSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="sitterProfileSetupAgeExperienceSheetBackdrop" type="button" aria-label="Close age group experience options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="sitterProfileSetupAgeExperienceSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterProfileSetupAgeExperienceSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="sitterProfileSetupAgeExperienceSheetTitle">Experience with age group</h2>
+        <div role="listbox" aria-label="Age group experience options">
+          <button class="sitter-profile-setup-price-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-profile-setup-age-experience-option="0 years">0 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="Less than 1 year">Less than 1 year</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="1 – 2 years">1 – 2 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="3 – 5 years">3 – 5 years</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="More than 5 years">More than 5 years</button>
+        </div>
+      </section>
+    </div>
+    <div class="sitter-profile-setup-exit-sheet" id="sitterProfileSetupExitSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-exit-sheet__backdrop" id="sitterProfileSetupExitSheetBackdrop" type="button" aria-label="Continue creating your profile"></button>
+      <section class="sitter-profile-setup-exit-sheet__panel" id="sitterProfileSetupExitSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterProfileSetupExitSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-exit-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-exit-sheet__heading" id="sitterProfileSetupExitSheetTitle"><span class="sitter-profile-setup-exit-sheet__doodle" aria-hidden="true"><span class="sitter-profile-setup-exit-sheet__doodle-layer sitter-profile-setup-exit-sheet__doodle-layer--2"><img src="./assets/profile-exit-intent-layer-2.svg" alt=""></span><span class="sitter-profile-setup-exit-sheet__doodle-layer sitter-profile-setup-exit-sheet__doodle-layer--1"><img src="./assets/profile-exit-intent-layer-1.svg" alt=""></span></span><span>Don’t leave yet…</span></h2>
+        <p class="sitter-profile-setup-exit-sheet__copy" id="sitterProfileSetupExitSheetCopy">You’re just a few steps away from completing your profile and finding local jobs.</p>
+        <div class="sitter-profile-setup-exit-sheet__actions">
+          <button class="sitter-profile-setup-exit-sheet__continue" id="sitterProfileSetupExitContinue" type="button">Continue profile creation <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+          <button class="sitter-profile-setup-exit-sheet__leave" id="sitterProfileSetupExitLeave" type="button">Leave anyway</button>
+        </div>
+      </section>
+    </div>
     <nav class="mobile-bottom-nav" data-node-id="746:1411" aria-label="Main navigation">
       <div class="mobile-bottom-nav__items">
         <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" id="searchNavItem" type="button" data-app-screen="search" data-icon="fa-magnifying-glass" aria-current="page">
@@ -9562,6 +9754,20 @@
         </div>
       </div>
       <button class="registration-success-alert__close" id="jobPostSuccessAlertClose" type="button" aria-label="Close job posted confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+    </aside>
+    <aside class="sitter-profile-created-alert" id="sitterProfileCreatedAlert" role="status" aria-live="polite" aria-hidden="true">
+      <div class="sitter-profile-created-alert__content">
+        <div class="sitter-profile-created-alert__doodle" aria-hidden="true">
+          <div class="sitter-profile-created-alert__doodle-layer sitter-profile-created-alert__doodle-layer--3"><img src="./assets/profile-created-toast-doodle-layer-3.svg" alt=""></div>
+          <div class="sitter-profile-created-alert__doodle-layer sitter-profile-created-alert__doodle-layer--2"><img src="./assets/profile-created-toast-doodle-layer-2.svg" alt=""></div>
+          <div class="sitter-profile-created-alert__doodle-layer sitter-profile-created-alert__doodle-layer--1"><img src="./assets/profile-created-toast-doodle-layer-1.svg" alt=""></div>
+        </div>
+        <div class="sitter-profile-created-alert__copy">
+          <p class="sitter-profile-created-alert__title">Your babysitting profile has been created</p>
+          <p class="sitter-profile-created-alert__message">Our support team will need to check it first. Usually it takes 24 hours.</p>
+        </div>
+      </div>
+      <button class="sitter-profile-created-alert__close" id="sitterProfileCreatedAlertClose" type="button" aria-label="Close profile created confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
     </aside>
     <aside class="logout-success-alert" id="logoutSuccessAlert" data-node-id="2284:69502" role="status" aria-live="polite" aria-hidden="true">
       <div class="logout-success-alert__content">
@@ -10028,7 +10234,12 @@
       var sitterProfileSetupContent = document.getElementById('sitterProfileSetupContent');
       var sitterProfileSetupTrigger = null;
       var sitterProfileSetupStep = 0;
+      var sitterProfileSetupMode = 'babysitting';
       var sitterBabysittingProfileCompleted = false;
+      var sitterCleaningProfileCompleted = false;
+      var sitterPetCareProfileCompleted = false;
+      var sitterSeniorCareProfileCompleted = false;
+      var sitterTutoringProfileCompleted = false;
       var sitterProfileSetupPriceSheet = document.getElementById('sitterProfileSetupPriceSheet');
       var sitterProfileSetupPriceSheetBackdrop = document.getElementById('sitterProfileSetupPriceSheetBackdrop');
       var sitterProfileSetupPriceSheetDialog = document.getElementById('sitterProfileSetupPriceSheetDialog');
@@ -10036,6 +10247,32 @@
       var sitterProfileSetupPriceSheetTrigger = null;
       var sitterProfileSetupPriceSheetCloseTimer = null;
       var sitterProfileSetupPrice = '150 Kč/hour';
+      var sitterCleaningProfilePrice = '150 Kč/hour';
+      var sitterPetCareProfilePrice = '150 Kč/hour';
+      var sitterSeniorCareProfilePrice = '150 Kč/hour';
+      var sitterTutoringProfilePrice = '150 Kč/hour';
+      var sitterProfileSetupExperienceSheet = document.getElementById('sitterProfileSetupExperienceSheet');
+      var sitterProfileSetupExperienceSheetBackdrop = document.getElementById('sitterProfileSetupExperienceSheetBackdrop');
+      var sitterProfileSetupExperienceSheetDialog = document.getElementById('sitterProfileSetupExperienceSheetDialog');
+      var sitterProfileSetupExperienceOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-profile-setup-experience-option]'));
+      var sitterProfileSetupExperienceSheetTrigger = null;
+      var sitterProfileSetupExperienceSheetCloseTimer = null;
+      var sitterProfileSetupExperience = '0 years';
+      var sitterProfileSetupAgeExperienceSheet = document.getElementById('sitterProfileSetupAgeExperienceSheet');
+      var sitterProfileSetupAgeExperienceSheetBackdrop = document.getElementById('sitterProfileSetupAgeExperienceSheetBackdrop');
+      var sitterProfileSetupAgeExperienceSheetDialog = document.getElementById('sitterProfileSetupAgeExperienceSheetDialog');
+      var sitterProfileSetupAgeExperienceSheetTitle = document.getElementById('sitterProfileSetupAgeExperienceSheetTitle');
+      var sitterProfileSetupAgeExperienceOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-profile-setup-age-experience-option]'));
+      var sitterProfileSetupAgeExperienceSheetTrigger = null;
+      var sitterProfileSetupAgeExperienceSheetCloseTimer = null;
+      var sitterProfileSetupAgeGroupExperience = {};
+      var sitterProfileSetupExitSheet = document.getElementById('sitterProfileSetupExitSheet');
+      var sitterProfileSetupExitSheetBackdrop = document.getElementById('sitterProfileSetupExitSheetBackdrop');
+      var sitterProfileSetupExitSheetDialog = document.getElementById('sitterProfileSetupExitSheetDialog');
+      var sitterProfileSetupExitSheetCopy = document.getElementById('sitterProfileSetupExitSheetCopy');
+      var sitterProfileSetupExitContinue = document.getElementById('sitterProfileSetupExitContinue');
+      var sitterProfileSetupExitLeave = document.getElementById('sitterProfileSetupExitLeave');
+      var sitterProfileSetupExitSheetCloseTimer = null;
       var referralShareSheet = document.getElementById('referralShareSheet');
       var referralShareBackdrop = document.getElementById('referralShareBackdrop');
       var referralShareDialog = document.getElementById('referralShareDialog');
@@ -10046,6 +10283,8 @@
       var registrationSuccessAlertClose = document.getElementById('registrationSuccessAlertClose');
       var jobPostSuccessAlert = document.getElementById('jobPostSuccessAlert');
       var jobPostSuccessAlertClose = document.getElementById('jobPostSuccessAlertClose');
+      var sitterProfileCreatedAlert = document.getElementById('sitterProfileCreatedAlert');
+      var sitterProfileCreatedAlertClose = document.getElementById('sitterProfileCreatedAlertClose');
       var logoutSuccessAlert = document.getElementById('logoutSuccessAlert');
       var logoutSuccessAlertClose = document.getElementById('logoutSuccessAlertClose');
       var messagesNavItem = document.getElementById('messagesNavItem');
@@ -10066,6 +10305,10 @@
       var sitterProfilesBack = document.getElementById('sitterProfilesBack');
       var sitterServiceProfiles = Array.prototype.slice.call(document.querySelectorAll('.sitter-service-profile'));
       var sitterBabysittingSetup = document.getElementById('sitterBabysittingSetup');
+      var sitterCleaningSetup = document.getElementById('sitterCleaningSetup');
+      var sitterPetCareSetup = document.getElementById('sitterPetCareSetup');
+      var sitterSeniorCareSetup = document.getElementById('sitterSeniorCareSetup');
+      var sitterTutoringSetup = document.getElementById('sitterTutoringSetup');
       var sitterProfileVerificationsTrigger = document.getElementById('sitterProfileVerificationsTrigger');
       var sitterVerificationsScreen = document.getElementById('sitterVerificationsScreen');
       var sitterVerificationsBack = document.getElementById('sitterVerificationsBack');
@@ -10157,6 +10400,8 @@
       var registrationSuccessAlertTimer = null;
       var jobPostSuccessAlertTimer = null;
       var jobPostSuccessAlertShowTimer = null;
+      var sitterProfileCreatedAlertTimer = null;
+      var sitterProfileCreatedAlertShowTimer = null;
       var logoutAlertHideTimer = null;
       var accountSaveSuccessTimer = null;
       var notificationsSaveSuccessTimer = null;
@@ -10747,11 +10992,15 @@
         sitterProfilesScreen.classList.toggle('is-new-sitter', isNewlyRegisteredSitter);
         sitterServiceProfiles.forEach(function (profile) {
           var serviceName = profile.querySelector('.sitter-service-profile__name').textContent.trim();
-          var isCompletedBabysittingProfile = serviceName === 'Babysitting' && sitterBabysittingProfileCompleted;
-          profile.classList.toggle('sitter-service-profile--completed', isCompletedBabysittingProfile);
+          var isCompletedProfile = (serviceName === 'Babysitting' && sitterBabysittingProfileCompleted)
+            || (serviceName === 'Household cleaning' && sitterCleaningProfileCompleted)
+            || (serviceName === 'Pet care' && sitterPetCareProfileCompleted)
+            || (serviceName === 'Senior care' && sitterSeniorCareProfileCompleted)
+            || (serviceName === 'Tutoring' && sitterTutoringProfileCompleted);
+          profile.classList.toggle('sitter-service-profile--completed', isCompletedProfile);
           profile.setAttribute(
             'aria-label',
-            serviceName + ' profile, ' + (isNewlyRegisteredSitter && !isCompletedBabysittingProfile ? 'not filled' : (profile.classList.contains('sitter-service-profile--inactive') ? 'not filled' : 'active'))
+            serviceName + ' profile, ' + (isNewlyRegisteredSitter && !isCompletedProfile ? 'not filled' : (profile.classList.contains('sitter-service-profile--inactive') ? 'not filled' : 'active'))
           );
         });
       }
@@ -11483,6 +11732,57 @@
         { key: 'verifyEmail', title: 'Verify your email', description: 'To verify your e-mail address, click the confirmation link we sent you.' }
       ];
 
+      var CLEANING_PROFILE_SETUP_STEPS = [
+        { key: 'price', title: 'Your price', description: 'We do not charge any fees or commission. The full amount you earn is yours.' },
+        { key: 'availability', title: 'Your availability', description: 'You can add specific times and days when you want to work later in the calendar.' },
+        { key: 'otherWork', title: 'Other work', description: 'What else can you help with besides household cleaning?' },
+        { key: 'about', title: 'About you', description: 'Tell us something about yourself and your experience with household cleaning.' },
+        { key: 'identity', title: 'Identity verification', description: 'Now we just need to check your information, so the parents feel safe choosing help online.' },
+        { key: 'photo', title: 'Profile photo', description: 'Use a friendly headshot for a welcoming first impression.' },
+        { key: 'verifyEmail', title: 'Verify your email', description: 'To verify your email address, click the confirmation link we sent you.' }
+      ];
+
+      var PET_CARE_PROFILE_SETUP_STEPS = [
+        { key: 'petOptions', title: 'Pet care options', description: 'In what mode can you take care of pets?' },
+        { key: 'price', title: 'Your price', description: 'We do not charge any fees or commission. The full amount you earn is yours.' },
+        { key: 'sharingPhotos', title: 'Sharing photos', description: 'Pet owners appreciate updates from their pet’s day.' },
+        { key: 'placeExperience', title: 'Your place and experience', description: 'Tell pet owners where and how you can care for their pets.' },
+        { key: 'petType', title: 'Type of pet', description: 'Which pets are you happy to care for?' },
+        { key: 'dogSize', title: 'Dog size', description: 'What size of dogs can you take care of?' },
+        { key: 'preferences', title: 'Your preferences', description: 'Let owners know which pet-care preferences work for you.' },
+        { key: 'dogBehaviour', title: 'Dog behaviour', description: 'What dog behaviour do you feel comfortable with?' },
+        { key: 'about', title: 'About you', description: 'Describe your pet sitting experience and your approaches to care.' },
+        { key: 'petInformation', title: 'Pet information', description: 'What do you need to know about the pet?' },
+        { key: 'identity', title: 'Identity verification', description: 'Now we just need to check your information, so the owners feel safe choosing help online.' },
+        { key: 'photo', title: 'Profile photo', description: 'Use a friendly headshot for a welcoming first impression.' },
+        { key: 'verifyEmail', title: 'Verify your email', description: 'To verify your email address, click the confirmation link we sent you.' }
+      ];
+
+      var SENIOR_CARE_PROFILE_SETUP_STEPS = [
+        { key: 'price', title: 'Your price', description: 'We do not charge any fees or commission. The full amount you earn is yours.' },
+        { key: 'seniorExperience', title: 'Your experience', description: 'Tell families about your experience taking care of the elderly.' },
+        { key: 'specialCare', title: 'Special care', description: 'What kind of special care can you provide?' },
+        { key: 'seniorCertificates', title: 'Qualifications & certificates', description: 'Are you a certified caregiver under the Social Services Act?' },
+        { key: 'about', title: 'About you', description: 'Describe your experience in taking care of the elderly.' },
+        { key: 'identity', title: 'Identity verification', description: 'Now we just need to check your information, so the parents feel safe choosing help online.' },
+        { key: 'photo', title: 'Profile photo', description: 'Use a friendly headshot for a welcoming first impression.' },
+        { key: 'verifyEmail', title: 'Verify your email', description: 'To verify your email address, click the confirmation link we sent you.' }
+      ];
+
+      var TUTORING_PROFILE_SETUP_STEPS = [
+        { key: 'price', title: 'Your price', description: 'We do not charge any fees or commission. The full amount you earn is yours.' },
+        { key: 'tutoringExperience', title: 'Your experience', description: 'How long have you been tutoring, including private, group or exam preparation tuition?' },
+        { key: 'studentInformation', title: 'Student information', description: 'Which students would you like to tutor?' },
+        { key: 'subjects', title: 'Subjects', description: 'What subjects can you help students with?' },
+        { key: 'tutoringSpecialNeeds', title: 'Special needs', description: 'Do you have experience tutoring students with special educational needs?' },
+        { key: 'entranceExams', title: 'Entrance exams', description: 'Can you help students prepare for entrance exams?' },
+        { key: 'tutoringLocation', title: 'Location', description: 'Where and how would you like to tutor?' },
+        { key: 'about', title: 'About you', description: 'Describe your experience, tutoring techniques and approaches to students at different levels of education.' },
+        { key: 'identity', title: 'Identity verification', description: 'We need to check your information so families can feel safe choosing you.' },
+        { key: 'photo', title: 'Profile photo', description: 'Use a friendly headshot for a welcoming first impression.' },
+        { key: 'verifyEmail', title: 'Verify your email', description: 'To verify your email address, click the confirmation link we sent you.' }
+      ];
+
       var SITTER_PROFILE_SETUP_DOODLES = {
         price: 'profile-price.svg',
         availability: 'profile-calendar-availability.svg',
@@ -11498,12 +11798,91 @@
         verifyEmail: 'profile-email-verify.svg'
       };
 
+      var CLEANING_PROFILE_SETUP_DOODLES = {
+        price: 'cleaning-profile-price.svg',
+        availability: 'cleaning-profile-availability.svg',
+        otherWork: 'cleaning-profile-other-work.svg',
+        about: 'cleaning-profile-about.svg',
+        identity: 'cleaning-profile-identity.svg',
+        verifyEmail: 'cleaning-profile-verify-email.svg'
+      };
+
+      var PET_CARE_PROFILE_SETUP_DOODLES = {
+        petOptions: 'pet-profile-options.svg',
+        price: 'pet-profile-price.svg',
+        sharingPhotos: 'pet-profile-photos.svg',
+        placeExperience: 'pet-profile-place.svg',
+        petType: 'pet-profile-type.svg',
+        dogSize: 'pet-profile-size.svg',
+        preferences: 'pet-profile-preferences.svg',
+        dogBehaviour: 'pet-profile-behaviour.svg',
+        about: 'pet-profile-about.svg',
+        petInformation: 'pet-profile-information.svg',
+        identity: 'pet-profile-identity.svg',
+        verifyEmail: 'pet-profile-verify-email.svg'
+      };
+
+      var SENIOR_CARE_PROFILE_SETUP_DOODLES = {
+        price: 'senior-profile-price.svg',
+        seniorExperience: 'senior-profile-experience.svg',
+        specialCare: 'senior-profile-special-care.svg',
+        seniorCertificates: 'senior-profile-certificates.svg',
+        about: 'senior-profile-about.svg',
+        identity: 'senior-profile-identity.svg',
+        verifyEmail: 'senior-profile-verify-email.svg'
+      };
+
+      var TUTORING_PROFILE_SETUP_DOODLES = {
+        price: 'tutoring-profile-price.svg',
+        tutoringExperience: 'tutoring-profile-experience.svg',
+        studentInformation: 'tutoring-profile-student-information.svg',
+        subjects: 'tutoring-profile-subjects.svg',
+        tutoringSpecialNeeds: 'tutoring-profile-special-needs.svg',
+        entranceExams: 'tutoring-profile-entrance-exams.svg',
+        tutoringLocation: 'tutoring-profile-location.svg',
+        about: 'tutoring-profile-about.svg',
+        identity: 'tutoring-profile-identity.svg',
+        verifyEmail: 'tutoring-profile-verify-email.svg'
+      };
+
+      function currentProfileSetupSteps() {
+        if (sitterProfileSetupMode === 'cleaning') return CLEANING_PROFILE_SETUP_STEPS;
+        if (sitterProfileSetupMode === 'petCare') return PET_CARE_PROFILE_SETUP_STEPS;
+        if (sitterProfileSetupMode === 'seniorCare') return SENIOR_CARE_PROFILE_SETUP_STEPS;
+        if (sitterProfileSetupMode === 'tutoring') return TUTORING_PROFILE_SETUP_STEPS;
+        return SITTER_PROFILE_SETUP_STEPS;
+      }
+
+      function currentProfileSetupDoodles() {
+        if (sitterProfileSetupMode === 'cleaning') return CLEANING_PROFILE_SETUP_DOODLES;
+        if (sitterProfileSetupMode === 'petCare') return PET_CARE_PROFILE_SETUP_DOODLES;
+        if (sitterProfileSetupMode === 'seniorCare') return SENIOR_CARE_PROFILE_SETUP_DOODLES;
+        if (sitterProfileSetupMode === 'tutoring') return TUTORING_PROFILE_SETUP_DOODLES;
+        return SITTER_PROFILE_SETUP_DOODLES;
+      }
+
+      function currentProfileSetupPrice() {
+        if (sitterProfileSetupMode === 'cleaning') return sitterCleaningProfilePrice;
+        if (sitterProfileSetupMode === 'petCare') return sitterPetCareProfilePrice;
+        if (sitterProfileSetupMode === 'seniorCare') return sitterSeniorCareProfilePrice;
+        if (sitterProfileSetupMode === 'tutoring') return sitterTutoringProfilePrice;
+        return sitterProfileSetupPrice;
+      }
+
+      function currentProfileSetupServiceName() {
+        if (sitterProfileSetupMode === 'cleaning') return 'household cleaning';
+        if (sitterProfileSetupMode === 'petCare') return 'pet care';
+        if (sitterProfileSetupMode === 'seniorCare') return 'senior care';
+        if (sitterProfileSetupMode === 'tutoring') return 'tutoring';
+        return 'babysitting';
+      }
+
       var SITTER_PROFILE_AGE_GROUPS = [
-        { label: 'Infants', range: 'up to 1.5 years' },
-        { label: 'Toddlers', range: '1.5 – 3 years' },
-        { label: 'Preschoolers', range: '3 – 6 years' },
-        { label: 'School age', range: '6 – 11 years' },
-        { label: 'Teenagers', range: '12+ years' }
+        { label: 'Infants', range: 'up to 1.5 years', icon: 'fa-baby-carriage' },
+        { label: 'Toddlers', range: '1.5 – 3 years', icon: 'fa-baby' },
+        { label: 'Preschoolers', range: '3 – 6 years', icon: 'fa-child-reaching' },
+        { label: 'School age', range: '6 – 11 years', icon: 'fa-child' },
+        { label: 'Teenagers', range: '12+ years', icon: 'fa-person' }
       ];
 
       var SITTER_PROFILE_EXPERIENCE_YEARS = ['0 years', 'Less than 1 year', '1 – 2 years', '3 – 5 years', 'More than 5 years'];
@@ -11525,17 +11904,56 @@
         // Left empty on purpose — the SVG is fetched and inlined after render
         // so its strokes and fills can be animated individually. An <img>
         // keeps its internals out of reach.
-        var heroIcon = '<span class="sitter-profile-setup__doodle-slot" data-setup-doodle="' + SITTER_PROFILE_SETUP_DOODLES[step.key] + '"></span>';
+        var heroIcon = '<span class="sitter-profile-setup__doodle-slot" data-setup-doodle="' + currentProfileSetupDoodles()[step.key] + '"></span>';
         var content = '';
         if (step.key === 'price') {
-          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Set your price</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupPriceSheet" data-setup-action="price-options"><span>' + sitterProfileSetupPrice + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></fieldset>';
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Set your price</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupPriceSheet" data-setup-action="price-options"><span>' + currentProfileSetupPrice() + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></fieldset>';
+        } else if (step.key === 'tutoringExperience') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How long have you worked as a tutor?</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupExperienceSheet" data-setup-action="experience-options"><span>' + sitterProfileSetupExperience + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></fieldset>';
+        } else if (step.key === 'studentInformation') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Level of education <small>(check all that apply)</small></legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Primary school</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Secondary school</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>University</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Adult education</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Student age</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="student-age">6–11 years</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="student-age">12–15 years</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="student-age">16+ years</button></div></fieldset>';
+        } else if (step.key === 'subjects') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Subjects you can tutor</legend>' + sitterProfileSetupOptionGrid([{ label: 'Mathematics', icon: 'fa-calculator' }, { label: 'Czech language', icon: 'fa-book-open' }, { label: 'English language', icon: 'fa-language' }, { label: 'Physics', icon: 'fa-atom' }, { label: 'Chemistry', icon: 'fa-flask' }, { label: 'Biology', icon: 'fa-dna' }, { label: 'History', icon: 'fa-landmark' }, { label: 'IT & programming', icon: 'fa-laptop-code' }, { label: 'Music', icon: 'fa-music' }]) + '</fieldset>';
+        } else if (step.key === 'tutoringSpecialNeeds') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Experience with special needs</legend>' + sitterProfileSetupOptionGrid([{ label: 'ADHD', icon: 'fa-brain' }, { label: 'Dyslexia', icon: 'fa-book-open' }, { label: 'Autism spectrum', icon: 'fa-infinity' }, { label: 'Dysgraphia', icon: 'fa-pen-ruler' }, { label: 'Hearing impairment', icon: 'fa-ear-listen' }, { label: 'Vision impairment', icon: 'fa-glasses' }, { label: 'Other needs', icon: 'fa-hands-holding' }]) + '</fieldset><label class="sitter-profile-setup__fieldset" style="margin-top:16px"><span class="sitter-profile-setup__label">Any other experience</span><textarea class="sitter-profile-setup__textarea" placeholder="Describe any other special educational needs you have experience with."></textarea></label>';
+        } else if (step.key === 'entranceExams') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">I can help prepare for</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Secondary-school entrance exams</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>University entrance exams</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>School-leaving exams</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Language certificates</button></div></fieldset>';
+        } else if (step.key === 'tutoringLocation') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Where can you tutor? <small>(check all that apply)</small></legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>At the student’s place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>At my place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>Online</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Transport</legend><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I have a car</button></fieldset>';
+        } else if (step.key === 'petOptions') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">When the owner is away overnight</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I offer overnight stay at my home</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can stay at the owner’s place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I will visit and take care of the pet</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">When their owner is away during daytime</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I will visit the pet</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>The pet can stay at my place</button></div></fieldset>';
+        } else if (step.key === 'sharingPhotos') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Sharing photos with pet owners</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="pet-photos">I can send photos during care</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="pet-photos">I prefer not to share photos</button></div></fieldset>';
+        } else if (step.key === 'placeExperience') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Your experience</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="pet-experience">I have cared for my own pets</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="pet-experience">I have cared for pets of family and friends</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="pet-experience">I have professional pet-care experience</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Your place</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I can care for pets at the owner’s place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can care for pets at my place</button></div></fieldset>';
+        } else if (step.key === 'petType') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">What pets can you care for?</legend>' + sitterProfileSetupOptionGrid([{ label: 'Dogs', icon: 'fa-dog' }, { label: 'Cats', icon: 'fa-cat' }, { label: 'Small pets', icon: 'fa-rabbit' }, { label: 'Birds', icon: 'fa-dove' }, { label: 'Fish', icon: 'fa-fish' }, { label: 'Other pets', icon: 'fa-paw' }]) + '</fieldset>';
+        } else if (step.key === 'dogSize') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">What size of dogs can you care for?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="dog-size">Small dogs (up to 10 kg)</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="dog-size">Medium dogs (10–25 kg)</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="dog-size">Large dogs (over 25 kg)</button></div></fieldset>';
+        } else if (step.key === 'preferences') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Your preferences</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I am happy to care for more than one pet</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can administer medication</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I am happy to care for senior pets</button></div></fieldset>';
+        } else if (step.key === 'dogBehaviour') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Dog behaviour</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I am comfortable with energetic dogs</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I am comfortable with shy dogs</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I am comfortable with dogs that pull on a leash</button></div></fieldset>';
+        } else if (step.key === 'petInformation') {
+          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">What information do you need from the owner?</span><textarea class="sitter-profile-setup__textarea" placeholder="For example: feeding routine, medication, allergies, favourite activities…"></textarea></label>';
+        } else if (step.key === 'seniorExperience') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Your experience</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="senior-experience">I have cared for my own parents or grandparents</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="senior-experience">I have cared for seniors in my family or community</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="senior-experience">I have professional senior-care experience</button></div></fieldset><label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">Any other experience</span><textarea class="sitter-profile-setup__textarea" placeholder="Tell families about any relevant senior-care experience."></textarea></label>';
+        } else if (step.key === 'specialCare') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Experience with special care</legend>' + sitterProfileSetupOptionGrid([{ label: 'Dementia', icon: 'fa-brain' }, { label: 'Diabetes', icon: 'fa-droplet' }, { label: 'Limited mobility', icon: 'fa-wheelchair' }, { label: 'Parkinson’s disease', icon: 'fa-hand' }, { label: 'Vision impairment', icon: 'fa-glasses' }, { label: 'Hearing impairment', icon: 'fa-ear-listen' }, { label: 'Alzheimer’s disease', icon: 'fa-head-side-brain' }, { label: 'After surgery', icon: 'fa-kit-medical' }, { label: 'Medication support', icon: 'fa-pills' }, { label: 'Companionship', icon: 'fa-hands-holding' }, { label: 'Other care', icon: 'fa-heart-pulse' }]) + '</fieldset>';
+        } else if (step.key === 'seniorCertificates') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Certification</legend><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I provide services under the Social Services Act No. 108/2006 Coll.</button></fieldset><div class="sitter-profile-setup__notice"><button class="sitter-profile-setup__upload" type="button"><i class="fa-light fa-file-arrow-up" aria-hidden="true"></i>Select file to upload</button></div>';
         } else if (step.key === 'availability') {
-          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How often do you want to babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="availability">Less than 20 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">20–40 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">More than 40 hours per week</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Maximum number of children</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="children">1 child</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">2 children</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">3 or more children</button></div></fieldset>';
+          content = sitterProfileSetupMode === 'cleaning'
+            ? '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How often do you want to clean?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="cleaning-availability">less than 20 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="cleaning-availability">20–40 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="cleaning-availability">more than 40 hours per week</button></div></fieldset>'
+            : '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How often do you want to babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="availability">Less than 20 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">20–40 hours per week</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="availability">More than 40 hours per week</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Maximum number of children</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="children">1 child</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">2 children</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="children">3 or more children</button></div></fieldset>';
+        } else if (step.key === 'otherWork') {
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Type of work</legend>' + sitterProfileSetupOptionGrid([{ label: 'Ironing', icon: 'fa-shirt' }, { label: 'Laundry', icon: 'fa-washing-machine' }, { label: 'Window cleaning', icon: 'fa-window' }, { label: 'Airbnb/apartments cleaning', icon: 'fa-building' }, { label: 'Car cleaning', icon: 'fa-car' }, { label: 'Move-in/move-out cleaning', icon: 'fa-box' }, { label: 'Upholstery cleaning', icon: 'fa-couch' }, { label: 'Light home maintenance', icon: 'fa-screwdriver-wrench' }, { label: 'Garden help', icon: 'fa-seedling' }]) + '</fieldset><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I am happy to work around pets</button>';
         } else if (step.key === 'experience') {
-          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Who did you babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="experience">My own children or grandchildren</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="experience">Children of family and friends</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="experience">Other families’ children</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How long have you been babysitting?</legend><select class="sitter-profile-setup__select" aria-label="How long have you been babysitting">' + SITTER_PROFILE_EXPERIENCE_YEARS.map(function (y) { return '<option>' + y + '</option>'; }).join('') + '</select><button class="sitter-profile-setup__check" type="button" data-setup-toggle style="margin-top:10px">I’m a granny nanny</button></fieldset>';
+          content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Who did you babysit?</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__choice is-selected" type="button" data-setup-choice="experience">My own children or grandchildren</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="experience">Children of family and friends</button><button class="sitter-profile-setup__choice" type="button" data-setup-choice="experience">Other families’ children</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">How long have you been babysitting?</legend><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupExperienceSheet" data-setup-action="experience-options"><span>' + sitterProfileSetupExperience + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button><button class="sitter-profile-setup__check" type="button" data-setup-toggle style="margin-top:10px">I’m a granny nanny</button></fieldset>';
         } else if (step.key === 'ageGroups') {
           content = '<fieldset class="sitter-profile-setup__fieldset">' + SITTER_PROFILE_AGE_GROUPS.map(function (group) {
-            return '<div class="sitter-profile-setup__age-row"><span class="sitter-profile-setup__age-label"><i class="fa-light fa-child-reaching" aria-hidden="true"></i>' + group.label + ' <small>(' + group.range + ')</small></span><select class="sitter-profile-setup__select" aria-label="Experience with ' + group.label + '">' + SITTER_PROFILE_EXPERIENCE_YEARS.map(function (y) { return '<option>' + y + '</option>'; }).join('') + '</select></div>';
+            var selectedExperience = sitterProfileSetupAgeGroupExperience[group.label] || SITTER_PROFILE_EXPERIENCE_YEARS[0];
+            return '<div class="sitter-profile-setup__age-row"><span class="sitter-profile-setup__age-label"><i class="fa-light ' + group.icon + '" aria-hidden="true"></i><span>' + group.label + '</span><small>(' + group.range + ')</small></span><button class="sitter-profile-setup__select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterProfileSetupAgeExperienceSheet" data-setup-action="age-experience-options" data-age-group="' + group.label + '"><span>' + selectedExperience + '</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></div>';
           }).join('') + '</fieldset>';
         } else if (step.key === 'location') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Where do you want to babysit? <small>(check all that apply)</small></legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check is-selected" type="button" data-setup-toggle>I can babysit at the parent’s place</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can babysit at my place</button></div></fieldset><fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Transport</legend><div class="sitter-profile-setup__choice-list"><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I have a car</button><button class="sitter-profile-setup__check" type="button" data-setup-toggle>I can drive kids by car</button></div><p class="sitter-profile-setup__hint">Only select this if you are insured and the parents agree to it.</p></fieldset>';
@@ -11572,7 +11990,12 @@
             { label: 'Drawing or painting', icon: 'fa-palette' }
           ]) + '</fieldset><label class="sitter-profile-setup__fieldset" style="margin-top:16px"><span class="sitter-profile-setup__label">Other activities</span><textarea class="sitter-profile-setup__textarea" placeholder="Juggling, photography, chess, baking…"></textarea></label>';
         } else if (step.key === 'about') {
-          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">About me</span><textarea class="sitter-profile-setup__textarea" placeholder="Tell families what you enjoy about babysitting and how you spend time with children."></textarea></label><p class="sitter-profile-setup__hint">Minimum of 60 characters.</p><button class="sitter-profile-setup__skip" type="button">+ Add translation</button>';
+          var aboutPlaceholder = sitterProfileSetupMode === 'cleaning'
+            ? 'Tell families about your household-cleaning experience and the work you enjoy.'
+            : (sitterProfileSetupMode === 'petCare' ? 'Tell pet owners about your pet-sitting experience and approach to care.'
+              : (sitterProfileSetupMode === 'seniorCare' ? 'Describe your experience in taking care of the elderly.'
+                : (sitterProfileSetupMode === 'tutoring' ? 'Describe your tutoring experience, techniques and approaches to students.' : 'Tell families what you enjoy about babysitting and how you spend time with children.')));
+          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">About me</span><textarea class="sitter-profile-setup__textarea" placeholder="' + aboutPlaceholder + '"></textarea><p class="sitter-profile-setup__hint">Minimum of 60 characters.</p></label><button class="sitter-profile-setup__skip" type="button">+ Add translation</button>';
         } else if (step.key === 'identity') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Photo of your ID or driving license</legend><button class="sitter-profile-setup__upload" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload front side</button><button class="sitter-profile-setup__upload" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload back side</button></fieldset><button class="sitter-profile-setup__skip" type="button" data-setup-action="next">I will do this later</button>';
         } else if (step.key === 'photo') {
@@ -11582,13 +12005,23 @@
               return '<figure class="sitter-profile-setup__photo"><img src="./assets/' + photo[0] + '" alt=""><figcaption>' + photo[1] + '</figcaption></figure>';
             }).join('') + '</div><button class="sitter-profile-setup__skip" type="button" data-setup-action="next">I will do this later</button>';
         } else {
-          content = '<div class="sitter-profile-setup__notice"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Check your spam folder if the e-mail has not arrived. Resend it or change your e-mail address in your profile settings.</div>';
+          content = '<div class="sitter-profile-setup__verify-email-copy"><h3>Didn’t receive the email?</h3><p>Check your spam and bulk folders and that your email is without typos. If none of these apply, and your mailbox is not full, write to us or <button class="sitter-profile-setup__verify-email-resend" type="button">click here to resend the email.</button></p></div>';
         }
         var isCentredHero = step.key === 'verifyEmail' || step.key === 'photo';
         var hero = step.key === 'photo'
           ? '<img class="sitter-profile-setup__hero-photo" src="./assets/mobile-app-header-avatar.png" alt="">'
           : heroIcon;
-        return '<section class="sitter-profile-setup__step" aria-label="' + step.title + '"><div class="sitter-profile-setup__hero ' + (isCentredHero ? 'sitter-profile-setup__hero--center' : '') + '"><div class="sitter-profile-setup__doodle">' + hero + '</div><div class="sitter-profile-setup__hero-copy"><h2>' + step.title + '</h2><p>' + step.description + '</p>' + (step.key === 'price' ? '<a class="sitter-profile-setup__hero-link" href="#why-price-matters">Why is it important?</a>' : '') + '</div></div><div class="sitter-profile-setup__content">' + content + '</div></section>';
+        var heroDescription = step.key === 'verifyEmail'
+          ? 'To verify your email address, click the confirmation link we sent to <strong>[user-email]</strong>'
+          : step.description;
+        var heroLink = step.key === 'price'
+          ? '<a class="sitter-profile-setup__hero-link" href="#why-price-matters">Why is it important?</a>'
+          : ((step.key === 'petOptions' && sitterProfileSetupMode === 'petCare')
+            ? '<a class="sitter-profile-setup__hero-link sitter-profile-setup__hero-link--with-icon" href="#pet-care-tips"><i class="fa-light fa-circle-info" aria-hidden="true"></i>See the tips</a>'
+          : ((step.key === 'availability' && sitterProfileSetupMode === 'cleaning')
+            ? '<a class="sitter-profile-setup__hero-link sitter-profile-setup__hero-link--with-icon" href="#why-availability-matters"><i class="fa-light fa-circle-info" aria-hidden="true"></i>Why is it important</a>'
+            : (step.key === 'verifyEmail' ? '<a class="sitter-profile-setup__hero-link sitter-profile-setup__hero-link--with-icon" href="#why-email-verification-matters"><i class="fa-light fa-circle-info" aria-hidden="true"></i>Why is it important</a>' : '')));
+        return '<section class="sitter-profile-setup__step' + (step.key === 'ageGroups' ? ' sitter-profile-setup__step--age-groups' : '') + (step.key === 'verifyEmail' ? ' sitter-profile-setup__step--verify-email' : '') + '" aria-label="' + step.title + '"><div class="sitter-profile-setup__hero ' + (isCentredHero ? 'sitter-profile-setup__hero--center' : '') + '"><div class="sitter-profile-setup__doodle">' + hero + '</div><div class="sitter-profile-setup__hero-copy"><h2>' + step.title + '</h2><p>' + heroDescription + '</p>' + heroLink + '</div></div><div class="sitter-profile-setup__content">' + content + '</div></section>';
       }
 
       // --- Hero doodles: draw the strokes, then bring the fills up ----------
@@ -11664,23 +12097,52 @@
       }
 
       function renderSitterProfileSetup(direction) {
-        var steps = SITTER_PROFILE_SETUP_STEPS;
+        var steps = currentProfileSetupSteps();
         // Proportional to where you actually are. The old table started the
         // first of seven steps at 30%, which claimed credit for work nobody
         // had done yet.
-        var progress = Math.round(((sitterProfileSetupStep + 1) / steps.length) * 100);
-        sitterProfileSetupContent.innerHTML = '<header class="sitter-profile-setup__header"><button class="sitter-profile-setup__header-button" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><div class="sitter-profile-setup__title"><span>Create a babysitting profile</span></div><button class="sitter-profile-setup__header-button" type="button" data-setup-action="close" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></header><div class="sitter-profile-setup__progress" aria-label="Step ' + (sitterProfileSetupStep + 1) + ' of ' + steps.length + '"><span class="sitter-profile-setup__progress-fill" style="--sitter-profile-setup-progress: ' + progress + '%"></span></div><div class="sitter-profile-setup__viewport"><div class="sitter-profile-setup__stage' + (direction === 'back' ? ' is-enter-back' : (direction === 'next' ? ' is-enter-forward' : '')) + '">' + sitterProfileSetupStepMarkup(steps[sitterProfileSetupStep], sitterProfileSetupStep) + '</div></div><footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__back" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><button class="sitter-profile-setup__next" type="button" data-setup-action="next">' + (sitterProfileSetupStep === steps.length - 1 ? 'Go to profile' : 'Next') + ' <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>';
+        var currentStep = steps[sitterProfileSetupStep];
+        var isAgeGroupsStep = currentStep.key === 'ageGroups';
+        var isVerifyEmailStep = currentStep.key === 'verifyEmail';
+        var progress = sitterProfileSetupMode === 'cleaning'
+          ? (isVerifyEmailStep ? 100 : Math.min(90, (sitterProfileSetupStep + 3) * 10))
+          : (sitterProfileSetupMode === 'petCare' || sitterProfileSetupMode === 'seniorCare' || sitterProfileSetupMode === 'tutoring'
+            ? (isVerifyEmailStep ? 100 : Math.round(20 + (sitterProfileSetupStep * 80 / (steps.length - 1))))
+            : (isVerifyEmailStep ? 100 : (isAgeGroupsStep ? 60 : Math.round(((sitterProfileSetupStep + 1) / steps.length) * 100))));
+        sitterProfileSetupContent.classList.toggle('is-age-groups-step', isAgeGroupsStep);
+        sitterProfileSetupContent.classList.toggle('is-verify-email-step', isVerifyEmailStep);
+        sitterProfileSetupContent.classList.toggle('is-cleaning-profile-setup', sitterProfileSetupMode === 'cleaning');
+        sitterProfileSetupContent.classList.toggle('is-pet-profile-setup', sitterProfileSetupMode === 'petCare');
+        sitterProfileSetupContent.classList.toggle('is-senior-profile-setup', sitterProfileSetupMode === 'seniorCare');
+        sitterProfileSetupContent.classList.toggle('is-tutoring-profile-setup', sitterProfileSetupMode === 'tutoring');
+        var title = sitterProfileSetupMode === 'petCare'
+          ? '<span>Your pet care profile</span>'
+          : (sitterProfileSetupMode === 'seniorCare' ? '<span>Your senior care profile</span>'
+            : (sitterProfileSetupMode === 'tutoring' ? '<span>Your tutoring profile</span>'
+              : '<span>Create a ' + (sitterProfileSetupMode === 'cleaning' ? 'cleaning' : 'babysitting') + ' profile</span>'));
+        var headerBack = '<span class="sitter-profile-setup__header-placeholder" aria-hidden="true"></span>';
+        var footer = isVerifyEmailStep
+          ? '<footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__next" type="button" data-setup-action="next">Go to profile <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>'
+          : (sitterProfileSetupStep === 0
+            ? '<footer class="sitter-profile-setup__footer sitter-profile-setup__footer--first-step"><button class="sitter-profile-setup__next" type="button" data-setup-action="next">Next <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>'
+            : '<footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__back" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><button class="sitter-profile-setup__next" type="button" data-setup-action="next">Next <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>');
+        sitterProfileSetupContent.innerHTML = '<header class="sitter-profile-setup__header">' + headerBack + '<div class="sitter-profile-setup__title">' + title + '</div><button class="sitter-profile-setup__header-button" type="button" data-setup-action="close" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></header><div class="sitter-profile-setup__progress" aria-label="Step ' + (sitterProfileSetupStep + 1) + ' of ' + steps.length + '"><span class="sitter-profile-setup__progress-fill" style="--sitter-profile-setup-progress: ' + progress + '%"></span></div><div class="sitter-profile-setup__viewport"><div class="sitter-profile-setup__stage' + (direction === 'back' ? ' is-enter-back' : (direction === 'next' ? ' is-enter-forward' : '')) + '">' + sitterProfileSetupStepMarkup(currentStep, sitterProfileSetupStep) + '</div></div>' + footer;
         renderSitterProfileDoodle();
       }
 
-      function openSitterProfileSetup(trigger) {
+      function openSitterProfileSetup(trigger, mode) {
         if (!isNewlyRegisteredSitter) return;
+        sitterProfileSetupMode = mode || 'babysitting';
         sitterProfileSetupTrigger = trigger || null;
         sitterProfileSetupStep = 0;
         renderSitterProfileSetup();
         sitterProfileSetupScreen.classList.add('is-open');
         sitterProfileSetupScreen.setAttribute('aria-hidden', 'false');
-        phoneFrame.classList.add('is-sitter-profile-setup-flow');
+        phoneFrame.classList.toggle('is-sitter-profile-setup-flow', sitterProfileSetupMode === 'babysitting');
+        phoneFrame.classList.toggle('is-cleaning-profile-setup-flow', sitterProfileSetupMode === 'cleaning');
+        phoneFrame.classList.toggle('is-pet-profile-setup-flow', sitterProfileSetupMode === 'petCare');
+        phoneFrame.classList.toggle('is-senior-profile-setup-flow', sitterProfileSetupMode === 'seniorCare');
+        phoneFrame.classList.toggle('is-tutoring-profile-setup-flow', sitterProfileSetupMode === 'tutoring');
         setBackgroundInert(sitterProfileSetupScreen);
         requestAnimationFrame(function () {
           var closeButton = sitterProfileSetupContent.querySelector('[data-setup-action="close"]');
@@ -11710,7 +12172,7 @@
         window.clearTimeout(sitterProfileSetupPriceSheetCloseTimer);
         sitterProfileSetupPriceSheetTrigger = trigger;
         sitterProfileSetupPriceOptions.forEach(function (option) {
-          var selected = option.getAttribute('data-sitter-profile-setup-price-option') === sitterProfileSetupPrice;
+          var selected = option.getAttribute('data-sitter-profile-setup-price-option') === currentProfileSetupPrice();
           option.classList.toggle('is-selected', selected);
           option.setAttribute('aria-selected', String(selected));
         });
@@ -11725,6 +12187,122 @@
         syncBackEntry();
       }
 
+      function closeSitterProfileSetupExperienceSheet(restoreFocus) {
+        if (!sitterProfileSetupExperienceSheet || sitterProfileSetupExperienceSheet.hidden) return;
+        sitterProfileSetupExperienceSheet.classList.remove('is-open');
+        sitterProfileSetupExperienceSheet.setAttribute('aria-hidden', 'true');
+        if (sitterProfileSetupExperienceSheetTrigger) sitterProfileSetupExperienceSheetTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterProfileSetupExperienceSheetCloseTimer);
+        sitterProfileSetupExperienceSheetCloseTimer = window.setTimeout(function () {
+          sitterProfileSetupExperienceSheet.hidden = true;
+          if (sitterProfileSetupScreen.classList.contains('is-open')) setBackgroundInert(sitterProfileSetupScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus && sitterProfileSetupExperienceSheetTrigger) sitterProfileSetupExperienceSheetTrigger.focus({ preventScroll: true });
+          sitterProfileSetupExperienceSheetTrigger = null;
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterProfileSetupExperienceSheet(trigger) {
+        if (!trigger) return;
+        window.clearTimeout(sitterProfileSetupExperienceSheetCloseTimer);
+        sitterProfileSetupExperienceSheetTrigger = trigger;
+        sitterProfileSetupExperienceOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-sitter-profile-setup-experience-option') === sitterProfileSetupExperience;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        sitterProfileSetupExperienceSheet.hidden = false;
+        sitterProfileSetupExperienceSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterProfileSetupExperienceSheet);
+        requestAnimationFrame(function () {
+          sitterProfileSetupExperienceSheet.classList.add('is-open');
+          sitterProfileSetupExperienceSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeSitterProfileSetupAgeExperienceSheet(restoreFocus) {
+        if (!sitterProfileSetupAgeExperienceSheet || sitterProfileSetupAgeExperienceSheet.hidden) return;
+        sitterProfileSetupAgeExperienceSheet.classList.remove('is-open');
+        sitterProfileSetupAgeExperienceSheet.setAttribute('aria-hidden', 'true');
+        if (sitterProfileSetupAgeExperienceSheetTrigger) sitterProfileSetupAgeExperienceSheetTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterProfileSetupAgeExperienceSheetCloseTimer);
+        sitterProfileSetupAgeExperienceSheetCloseTimer = window.setTimeout(function () {
+          sitterProfileSetupAgeExperienceSheet.hidden = true;
+          if (sitterProfileSetupScreen.classList.contains('is-open')) setBackgroundInert(sitterProfileSetupScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus && sitterProfileSetupAgeExperienceSheetTrigger) sitterProfileSetupAgeExperienceSheetTrigger.focus({ preventScroll: true });
+          sitterProfileSetupAgeExperienceSheetTrigger = null;
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterProfileSetupAgeExperienceSheet(trigger) {
+        if (!trigger) return;
+        var ageGroup = trigger.getAttribute('data-age-group');
+        var selectedExperience = sitterProfileSetupAgeGroupExperience[ageGroup] || SITTER_PROFILE_EXPERIENCE_YEARS[0];
+        window.clearTimeout(sitterProfileSetupAgeExperienceSheetCloseTimer);
+        sitterProfileSetupAgeExperienceSheetTrigger = trigger;
+        sitterProfileSetupAgeExperienceSheetTitle.textContent = 'Experience with ' + ageGroup;
+        sitterProfileSetupAgeExperienceOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-sitter-profile-setup-age-experience-option') === selectedExperience;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        sitterProfileSetupAgeExperienceSheet.hidden = false;
+        sitterProfileSetupAgeExperienceSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterProfileSetupAgeExperienceSheet);
+        requestAnimationFrame(function () {
+          sitterProfileSetupAgeExperienceSheet.classList.add('is-open');
+          sitterProfileSetupAgeExperienceSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeSitterProfileSetupExitSheet(restoreFocus) {
+        if (!sitterProfileSetupExitSheet || sitterProfileSetupExitSheet.hidden) return;
+        sitterProfileSetupExitSheet.classList.remove('is-open');
+        sitterProfileSetupExitSheet.setAttribute('aria-hidden', 'true');
+        window.clearTimeout(sitterProfileSetupExitSheetCloseTimer);
+        sitterProfileSetupExitSheetCloseTimer = window.setTimeout(function () {
+          sitterProfileSetupExitSheet.hidden = true;
+          if (sitterProfileSetupScreen.classList.contains('is-open')) setBackgroundInert(sitterProfileSetupScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus) {
+            var closeButton = sitterProfileSetupContent.querySelector('[data-setup-action="close"]');
+            if (closeButton) closeButton.focus({ preventScroll: true });
+          }
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterProfileSetupExitSheet() {
+        if (!sitterProfileSetupExitSheet || !sitterProfileSetupScreen.classList.contains('is-open')) return;
+        window.clearTimeout(sitterProfileSetupExitSheetCloseTimer);
+        sitterProfileSetupExitSheetCopy.textContent = 'You’re just a few steps away from completing your profile and finding local ' + currentProfileSetupServiceName() + ' jobs.';
+        sitterProfileSetupExitSheet.hidden = false;
+        sitterProfileSetupExitSheet.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(sitterProfileSetupExitSheet);
+        requestAnimationFrame(function () {
+          sitterProfileSetupExitSheet.classList.add('is-open');
+          sitterProfileSetupExitSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function abandonSitterProfileSetup() {
+        if (!sitterProfileSetupExitSheet.hidden) {
+          window.clearTimeout(sitterProfileSetupExitSheetCloseTimer);
+          sitterProfileSetupExitSheet.classList.remove('is-open');
+          sitterProfileSetupExitSheet.hidden = true;
+          sitterProfileSetupExitSheet.setAttribute('aria-hidden', 'true');
+        }
+        closeSitterProfileSetup(true);
+      }
+
       function closeSitterProfileSetup(restoreFocus) {
         if (!sitterProfileSetupPriceSheet.hidden) {
           window.clearTimeout(sitterProfileSetupPriceSheetCloseTimer);
@@ -11733,24 +12311,57 @@
           sitterProfileSetupPriceSheet.setAttribute('aria-hidden', 'true');
           sitterProfileSetupPriceSheetTrigger = null;
         }
+        if (!sitterProfileSetupExperienceSheet.hidden) {
+          window.clearTimeout(sitterProfileSetupExperienceSheetCloseTimer);
+          sitterProfileSetupExperienceSheet.classList.remove('is-open');
+          sitterProfileSetupExperienceSheet.hidden = true;
+          sitterProfileSetupExperienceSheet.setAttribute('aria-hidden', 'true');
+          sitterProfileSetupExperienceSheetTrigger = null;
+        }
+        if (!sitterProfileSetupAgeExperienceSheet.hidden) {
+          window.clearTimeout(sitterProfileSetupAgeExperienceSheetCloseTimer);
+          sitterProfileSetupAgeExperienceSheet.classList.remove('is-open');
+          sitterProfileSetupAgeExperienceSheet.hidden = true;
+          sitterProfileSetupAgeExperienceSheet.setAttribute('aria-hidden', 'true');
+          sitterProfileSetupAgeExperienceSheetTrigger = null;
+        }
+        if (!sitterProfileSetupExitSheet.hidden) {
+          window.clearTimeout(sitterProfileSetupExitSheetCloseTimer);
+          sitterProfileSetupExitSheet.classList.remove('is-open');
+          sitterProfileSetupExitSheet.hidden = true;
+          sitterProfileSetupExitSheet.setAttribute('aria-hidden', 'true');
+        }
         sitterProfileSetupScreen.classList.remove('is-open');
         sitterProfileSetupScreen.setAttribute('aria-hidden', 'true');
         phoneFrame.classList.remove('is-sitter-profile-setup-flow');
+        phoneFrame.classList.remove('is-cleaning-profile-setup-flow');
+        phoneFrame.classList.remove('is-pet-profile-setup-flow');
+        phoneFrame.classList.remove('is-senior-profile-setup-flow');
+        phoneFrame.classList.remove('is-tutoring-profile-setup-flow');
         setBackgroundInert(null);
         if (restoreFocus && sitterProfileSetupTrigger) sitterProfileSetupTrigger.focus({ preventScroll: true });
         syncBackEntry();
       }
 
       function advanceSitterProfileSetup() {
-        if (sitterProfileSetupStep === SITTER_PROFILE_SETUP_STEPS.length - 1) {
-          sitterBabysittingProfileCompleted = true;
+        if (sitterProfileSetupStep === currentProfileSetupSteps().length - 1) {
+          if (sitterProfileSetupMode === 'cleaning') sitterCleaningProfileCompleted = true;
+          else if (sitterProfileSetupMode === 'petCare') sitterPetCareProfileCompleted = true;
+          else if (sitterProfileSetupMode === 'seniorCare') sitterSeniorCareProfileCompleted = true;
+          else if (sitterProfileSetupMode === 'tutoring') sitterTutoringProfileCompleted = true;
+          else sitterBabysittingProfileCompleted = true;
           syncSitterProfilesState();
           closeSitterProfileSetup(false);
+          if (sitterProfileSetupMode === 'babysitting') {
+            window.clearTimeout(sitterProfileCreatedAlertShowTimer);
+            sitterProfileCreatedAlertShowTimer = window.setTimeout(showSitterProfileCreatedAlert, 320);
+          }
           return;
         }
         sitterProfileSetupStep += 1;
         renderSitterProfileSetup('next');
-        sitterProfileSetupContent.querySelector('[data-setup-action="back"]').focus({ preventScroll: true });
+        var nextFocusTarget = sitterProfileSetupContent.querySelector('[data-setup-action="back"], [data-setup-action="next"]');
+        if (nextFocusTarget) nextFocusTarget.focus({ preventScroll: true });
       }
 
       function retreatSitterProfileSetup() {
@@ -12524,6 +13135,7 @@
 
       function closeSitterProfile() {
         closeSitterProfileSetup(false);
+        hideSitterProfileCreatedAlert();
         sitterInfoScreen.classList.remove('is-open');
         sitterInfoScreen.setAttribute('aria-hidden', 'true');
         sitterProfilesScreen.classList.remove('is-open');
@@ -12566,6 +13178,7 @@
       }
 
       function closeSitterProfiles() {
+        hideSitterProfileCreatedAlert();
         sitterProfilesScreen.classList.remove('is-open');
         sitterProfilesScreen.setAttribute('aria-hidden', 'true');
         sitterProfileProfilesTrigger.focus({ preventScroll: true });
@@ -12820,6 +13433,8 @@
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
+        { isOpen: function () { return !sitterProfileSetupAgeExperienceSheet.hidden; }, close: function () { closeSitterProfileSetupAgeExperienceSheet(true); } },
+        { isOpen: function () { return !sitterProfileSetupExperienceSheet.hidden; }, close: function () { closeSitterProfileSetupExperienceSheet(true); } },
         { isOpen: function () { return !sitterProfileSetupPriceSheet.hidden; }, close: function () { closeSitterProfileSetupPriceSheet(true); } },
         { isOpen: function () { return sitterProfileSetupScreen.classList.contains('is-open'); }, close: function () { closeSitterProfileSetup(true); } },
         { isOpen: function () { return jobWizardScreen.classList.contains('is-open'); }, close: function () { closeJobWizard(true); } },
@@ -13213,6 +13828,26 @@
         jobPostSuccessAlertTimer = setTimeout(hideJobPostSuccess, ALERT_AUTO_DISMISS_MS);
       }
 
+      function hideSitterProfileCreatedAlert() {
+        if (sitterProfileCreatedAlertShowTimer) {
+          clearTimeout(sitterProfileCreatedAlertShowTimer);
+          sitterProfileCreatedAlertShowTimer = null;
+        }
+        if (sitterProfileCreatedAlertTimer) {
+          clearTimeout(sitterProfileCreatedAlertTimer);
+          sitterProfileCreatedAlertTimer = null;
+        }
+        sitterProfileCreatedAlert.classList.remove('is-visible');
+        sitterProfileCreatedAlert.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterProfileCreatedAlert() {
+        hideSitterProfileCreatedAlert();
+        sitterProfileCreatedAlert.classList.add('is-visible');
+        sitterProfileCreatedAlert.setAttribute('aria-hidden', 'false');
+        sitterProfileCreatedAlertTimer = setTimeout(hideSitterProfileCreatedAlert, ALERT_AUTO_DISMISS_MS);
+      }
+
       function hideLogoutSuccess() {
         if (logoutSuccessTimer) {
           clearTimeout(logoutSuccessTimer);
@@ -13468,6 +14103,10 @@
       sitterTimetableSheetBackdrop.addEventListener('click', closeSitterTimetableSheet);
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
+          if (!sitterProfileSetupExitSheet.hidden) {
+            closeSitterProfileSetupExitSheet(true);
+            return;
+          }
           closeSitterAvailabilitySheet();
           closeSitterTimetableSheet();
         }
@@ -13481,12 +14120,43 @@
       sitterProfileProfilesTrigger.addEventListener('click', openSitterProfiles);
       sitterProfilesBack.addEventListener('click', closeSitterProfiles);
       sitterBabysittingSetup.addEventListener('click', function () {
-        openSitterProfileSetup(sitterBabysittingSetup);
+        openSitterProfileSetup(sitterBabysittingSetup, 'babysitting');
+      });
+      sitterCleaningSetup.addEventListener('click', function () {
+        openSitterProfileSetup(sitterCleaningSetup, 'cleaning');
+      });
+      sitterPetCareSetup.addEventListener('click', function () {
+        openSitterProfileSetup(sitterPetCareSetup, 'petCare');
+      });
+      sitterSeniorCareSetup.addEventListener('click', function () {
+        openSitterProfileSetup(sitterSeniorCareSetup, 'seniorCare');
+      });
+      sitterTutoringSetup.addEventListener('click', function () {
+        openSitterProfileSetup(sitterTutoringSetup, 'tutoring');
+      });
+      sitterProfileSetupExitContinue.addEventListener('click', function () {
+        closeSitterProfileSetupExitSheet(true);
+      });
+      sitterProfileSetupExitLeave.addEventListener('click', function () {
+        abandonSitterProfileSetup();
+      });
+      sitterProfileSetupExitSheetBackdrop.addEventListener('click', function () {
+        closeSitterProfileSetupExitSheet(true);
       });
       sitterProfileSetupContent.addEventListener('click', function (event) {
         var priceOptions = event.target.closest('[data-setup-action="price-options"]');
         if (priceOptions) {
           openSitterProfileSetupPriceSheet(priceOptions);
+          return;
+        }
+        var experienceOptions = event.target.closest('[data-setup-action="experience-options"]');
+        if (experienceOptions) {
+          openSitterProfileSetupExperienceSheet(experienceOptions);
+          return;
+        }
+        var ageExperienceOptions = event.target.closest('[data-setup-action="age-experience-options"]');
+        if (ageExperienceOptions) {
+          openSitterProfileSetupAgeExperienceSheet(ageExperienceOptions);
           return;
         }
         var choice = event.target.closest('[data-setup-choice]');
@@ -13506,20 +14176,52 @@
         if (!action) return;
         if (action.getAttribute('data-setup-action') === 'next') advanceSitterProfileSetup();
         else if (action.getAttribute('data-setup-action') === 'back') retreatSitterProfileSetup();
-        else closeSitterProfileSetup(true);
+        else if (action.getAttribute('data-setup-action') === 'close') openSitterProfileSetupExitSheet();
       });
       sitterProfileSetupPriceOptions.forEach(function (option) {
         option.addEventListener('click', function () {
-          sitterProfileSetupPrice = option.getAttribute('data-sitter-profile-setup-price-option');
+          var selectedPrice = option.getAttribute('data-sitter-profile-setup-price-option');
+          if (sitterProfileSetupMode === 'cleaning') sitterCleaningProfilePrice = selectedPrice;
+          else if (sitterProfileSetupMode === 'petCare') sitterPetCareProfilePrice = selectedPrice;
+          else if (sitterProfileSetupMode === 'seniorCare') sitterSeniorCareProfilePrice = selectedPrice;
+          else if (sitterProfileSetupMode === 'tutoring') sitterTutoringProfilePrice = selectedPrice;
+          else sitterProfileSetupPrice = selectedPrice;
           if (sitterProfileSetupPriceSheetTrigger) {
             var label = sitterProfileSetupPriceSheetTrigger.querySelector('span');
-            if (label) label.textContent = sitterProfileSetupPrice;
+            if (label) label.textContent = selectedPrice;
           }
           closeSitterProfileSetupPriceSheet(true);
         });
       });
       sitterProfileSetupPriceSheetBackdrop.addEventListener('click', function () {
         closeSitterProfileSetupPriceSheet(true);
+      });
+      sitterProfileSetupExperienceOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          sitterProfileSetupExperience = option.getAttribute('data-sitter-profile-setup-experience-option');
+          if (sitterProfileSetupExperienceSheetTrigger) {
+            var label = sitterProfileSetupExperienceSheetTrigger.querySelector('span');
+            if (label) label.textContent = sitterProfileSetupExperience;
+          }
+          closeSitterProfileSetupExperienceSheet(true);
+        });
+      });
+      sitterProfileSetupExperienceSheetBackdrop.addEventListener('click', function () {
+        closeSitterProfileSetupExperienceSheet(true);
+      });
+      sitterProfileSetupAgeExperienceOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          if (!sitterProfileSetupAgeExperienceSheetTrigger) return;
+          var ageGroup = sitterProfileSetupAgeExperienceSheetTrigger.getAttribute('data-age-group');
+          var experience = option.getAttribute('data-sitter-profile-setup-age-experience-option');
+          sitterProfileSetupAgeGroupExperience[ageGroup] = experience;
+          var label = sitterProfileSetupAgeExperienceSheetTrigger.querySelector('span');
+          if (label) label.textContent = experience;
+          closeSitterProfileSetupAgeExperienceSheet(true);
+        });
+      });
+      sitterProfileSetupAgeExperienceSheetBackdrop.addEventListener('click', function () {
+        closeSitterProfileSetupAgeExperienceSheet(true);
       });
       sitterProfileVerificationsTrigger.addEventListener('click', openSitterVerifications);
       sitterVerificationsBack.addEventListener('click', closeSitterVerifications);
@@ -13591,6 +14293,7 @@
       logoutSuccessAlertClose.addEventListener('click', hideLogoutSuccess);
       registrationSuccessAlertClose.addEventListener('click', hideRegistrationSuccess);
       jobPostSuccessAlertClose.addEventListener('click', hideJobPostSuccess);
+      sitterProfileCreatedAlertClose.addEventListener('click', hideSitterProfileCreatedAlert);
       navItems.forEach(function (item) {
         item.addEventListener('click', function () {
           selectAppScreen(item.getAttribute('data-app-screen'));
