@@ -8653,7 +8653,7 @@
             </span>
             <div class="sitter-dashboard-onboarding-card__body">
               <p class="sitter-dashboard-onboarding-card__title">Finish your profile</p>
-              <p class="sitter-dashboard-onboarding-card__copy">Fill out <button class="sitter-dashboard-onboarding-card__link" type="button">some missing information</button></p>
+              <p class="sitter-dashboard-onboarding-card__copy">Fill out <button class="sitter-dashboard-onboarding-card__link" id="sitterDashboardProfilesLink" type="button">some missing information</button></p>
             </div>
             <button class="sitter-dashboard-onboarding-card__dismiss" type="button" data-sitter-dashboard-onboarding-dismiss aria-label="Dismiss finish your profile"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
           </article>
@@ -10311,8 +10311,10 @@
       var sitterInfoScreen = document.getElementById('sitterInfoScreen');
       var sitterInfoBack = document.getElementById('sitterInfoBack');
       var sitterProfileProfilesTrigger = document.getElementById('sitterProfileProfilesTrigger');
+      var sitterDashboardProfilesLink = document.getElementById('sitterDashboardProfilesLink');
       var sitterProfilesScreen = document.getElementById('sitterProfilesScreen');
       var sitterProfilesBack = document.getElementById('sitterProfilesBack');
+      var sitterProfilesReturnTrigger = null;
       var sitterServiceProfiles = Array.prototype.slice.call(document.querySelectorAll('.sitter-service-profile'));
       var sitterBabysittingSetup = document.getElementById('sitterBabysittingSetup');
       var sitterCleaningSetup = document.getElementById('sitterCleaningSetup');
@@ -13181,8 +13183,9 @@
         syncBackEntry();
       }
 
-      function openSitterProfiles() {
+      function openSitterProfiles(trigger) {
         if (!isSitterSession()) return;
+        sitterProfilesReturnTrigger = trigger || sitterProfileProfilesTrigger;
         syncSitterProfilesState();
         sitterProfilesScreen.classList.add('is-open');
         sitterProfilesScreen.setAttribute('aria-hidden', 'false');
@@ -13194,7 +13197,8 @@
         hideSitterProfileCreatedAlert();
         sitterProfilesScreen.classList.remove('is-open');
         sitterProfilesScreen.setAttribute('aria-hidden', 'true');
-        sitterProfileProfilesTrigger.focus({ preventScroll: true });
+        if (sitterProfilesReturnTrigger) sitterProfilesReturnTrigger.focus({ preventScroll: true });
+        sitterProfilesReturnTrigger = null;
         syncBackEntry();
       }
 
@@ -14140,7 +14144,12 @@
       sitterProfileLogout.addEventListener('click', simulateLogout);
       sitterProfileInfoTrigger.addEventListener('click', openSitterInfo);
       sitterInfoBack.addEventListener('click', closeSitterInfo);
-      sitterProfileProfilesTrigger.addEventListener('click', openSitterProfiles);
+      sitterProfileProfilesTrigger.addEventListener('click', function () {
+        openSitterProfiles(sitterProfileProfilesTrigger);
+      });
+      sitterDashboardProfilesLink.addEventListener('click', function () {
+        openSitterProfiles(sitterDashboardProfilesLink);
+      });
       sitterProfilesBack.addEventListener('click', closeSitterProfiles);
       sitterBabysittingSetup.addEventListener('click', function () {
         openSitterProfileSetup(sitterBabysittingSetup, 'babysitting');
