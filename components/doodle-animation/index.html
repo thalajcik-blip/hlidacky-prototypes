@@ -117,6 +117,17 @@
 
   /* animatable pieces need a local transform origin */
   svg .an { transform-box: fill-box; transform-origin: center; }
+
+  /* per-path layers are meaningless when only the wrapper can be animated */
+  fieldset.off { opacity:.38; pointer-events:none; }
+
+  /* explanatory text must NOT be a .row — that is a flex container, so every
+     inline <b>/<code> would become its own flex item and split into columns */
+  .hint { display:block; margin:6px 0 2px; font-size:10px; color:var(--muted);
+    line-height:1.45; }
+  .hint code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:9.5px; background:#eef1f3; padding:0 3px; border-radius:3px; }
+  .hint.alert { color:var(--warn); }
 </style>
 
 <header>
@@ -128,30 +139,37 @@
   </div>
 
   <div class="groups">
-    <fieldset><legend>bucketing</legend>
+    <fieldset id="fs-bucketing"><legend>bucketing</legend>
+      <div class="row"><label>render as</label><select id="target">
+        <option value="inline" selected>inline SVG — per-path</option>
+        <option value="wrapper">&lt;img&gt; wrapper — opacity/rotate/zoom only</option></select></div>
       <div class="row"><label>threshold</label>
         <input type="range" id="thr" min="0" max="40" step="0.5" value="8">
         <output id="thr_o"></output></div>
-      <div class="row" style="font-size:10px; color:var(--muted); line-height:1.45">
+      <div class="hint">
         strokes longer than this are <b>drawn</b>, shorter ones <b>pop</b></div>
+      <div class="hint alert" id="wrapNote" hidden>
+        wrapper mode animates the whole icon only — deployable on the existing
+        <code>&lt;img&gt;</code> with no pipeline change</div>
     </fieldset>
 
     <fieldset><legend>composition (whole icon)</legend>
       <div class="row"><label>delay</label><input type="range" id="p_d" min="0" max="1200" step="10" value="0"><output id="p_d_o"></output></div>
       <div class="row"><label>duration</label><input type="range" id="p_t" min="100" max="2000" step="10" value="760"><output id="p_t_o"></output></div>
-      <div class="row"><label>rotate</label><input type="range" id="p_r" min="-12" max="12" step="0.5" value="-4"><output id="p_r_o"></output></div>
+      <div class="row"><label>rotate</label><input type="range" id="p_r" min="-45" max="45" step="0.5" value="-4"><output id="p_r_o"></output></div>
       <!-- above 100% the icon starts oversized and settles down, which is what
            the Stamp preset uses -->
       <div class="row"><label>zoom from</label><input type="range" id="p_z" min="50" max="135" step="1" value="90"><output id="p_z_o"></output></div>
+      <div class="row"><label>opacity from</label><input type="range" id="p_o" min="0" max="100" step="1" value="100"><output id="p_o_o"></output></div>
       <div class="row"><label>easing</label><select id="p_e">
         <option value="out" selected>ease-out</option><option value="over">overshoot</option>
         <option value="soft">soft</option></select></div>
-      <div class="row" style="font-size:10px; color:var(--muted); line-height:1.45">
-        runs on a wrapper, independent of the stroke timeline — set both to
-        neutral (0° / 100%) to switch off</div>
+      <div class="hint">
+        runs on a wrapper, independent of the stroke timeline — neutral
+        (0° / 100% / 100%) switches it off</div>
     </fieldset>
 
-    <fieldset><legend>fills</legend>
+    <fieldset id="fs-fills"><legend>fills</legend>
       <div class="row"><label>delay</label><input type="range" id="f_d" min="0" max="1200" step="10" value="0"><output id="f_d_o"></output></div>
       <div class="row"><label>duration</label><input type="range" id="f_t" min="50" max="1600" step="10" value="420"><output id="f_t_o"></output></div>
       <div class="row"><label>stagger</label><input type="range" id="f_s" min="0" max="200" step="2" value="24"><output id="f_s_o"></output></div>
@@ -160,7 +178,7 @@
         <option value="rise">fade + rise</option></select></div>
     </fieldset>
 
-    <fieldset><legend>contours (draw)</legend>
+    <fieldset id="fs-contours"><legend>contours (draw)</legend>
       <div class="row"><label>delay</label><input type="range" id="c_d" min="0" max="1200" step="10" value="0"><output id="c_d_o"></output></div>
       <div class="row"><label>speed</label><input type="range" id="c_t" min="40" max="1400" step="10" value="620"><output id="c_t_o"></output></div>
       <div class="row"><label>stagger</label><input type="range" id="c_s" min="0" max="300" step="5" value="55"><output id="c_s_o"></output></div>
@@ -173,7 +191,7 @@
         <option value="fixed">same duration</option></select></div>
     </fieldset>
 
-    <fieldset><legend>accents (pop)</legend>
+    <fieldset id="fs-accents"><legend>accents (pop)</legend>
       <div class="row"><label>delay</label><input type="range" id="a_d" min="0" max="1600" step="10" value="380"><output id="a_d_o"></output></div>
       <div class="row"><label>duration</label><input type="range" id="a_t" min="50" max="900" step="10" value="260"><output id="a_t_o"></output></div>
       <div class="row"><label>stagger</label><input type="range" id="a_s" min="0" max="150" step="2" value="34"><output id="a_s_o"></output></div>
@@ -192,10 +210,21 @@
       <input type="checkbox" id="loop"> loop (tuning only)</label>
     <select id="preset" title="sets every layer, composition included">
       <option value="">— full preset —</option>
-      <option value="sketch">Sketch (drawn in)</option>
-      <option value="pop">Pop (fast, playful)</option>
-      <option value="calm">Calm (gentle, fills first)</option>
-      <option value="snap">Snap (near-instant)</option>
+      <optgroup label="Inline SVG — needs the build step">
+        <option value="sketch">Sketch (drawn in)</option>
+        <option value="pop">Pop (fast, playful)</option>
+        <option value="calm">Calm (gentle, fills first)</option>
+        <option value="snap">Snap (near-instant)</option>
+      </optgroup>
+      <optgroup label="&lt;img&gt;-safe — wrapper only">
+        <option value="w_fade">Fade (opacity only)</option>
+        <option value="w_zoom">Zoom fade</option>
+        <option value="w_pop">Pop in (overshoot)</option>
+        <option value="w_tilt">Tilt fade</option>
+        <option value="w_stamp">Stamp (from above)</option>
+        <option value="w_swing">Swing in (wide rotation)</option>
+        <option value="w_settle">Settle (slow, subtle)</option>
+      </optgroup>
     </select>
     <select id="cpreset" title="overrides the composition layer only — mix with any full preset">
       <option value="">— composition only —</option>
@@ -1409,6 +1438,29 @@ animation. This splits the work cleanly in two:</p>
 <div class="note"><b>Recommended split:</b> ship the composition layer as v1 — it
 is deployable immediately and independently — and the stroke layers as v2 once
 the inline-rendering and pipeline questions are settled.</div>
+<h4>v1 presets — ready to implement today</h4>
+<p>Set <b>render as</b> to <code>&lt;img&gt; wrapper</code> in the toolbar to
+preview these. They animate <code>opacity</code>, <code>transform: rotate()</code>
+and <code>transform: scale()</code> on <code>.doodle-icon-component</code> and
+touch nothing inside the SVG, so they work on the current markup unchanged:</p>
+<table>
+  <tr><th>Preset</th><th>Opacity from</th><th>Rotate</th><th>Zoom from</th><th>Duration</th><th>Easing</th></tr>
+  <tr><td>Fade</td><td>0%</td><td>0°</td><td>100%</td><td>420 ms</td><td>soft</td></tr>
+  <tr><td>Zoom fade</td><td>0%</td><td>0°</td><td>88%</td><td>560 ms</td><td>ease-out</td></tr>
+  <tr><td>Pop in</td><td>0%</td><td>0°</td><td>72%</td><td>520 ms</td><td>overshoot</td></tr>
+  <tr><td>Tilt fade</td><td>0%</td><td>−9°</td><td>96%</td><td>640 ms</td><td>ease-out</td></tr>
+  <tr><td>Stamp</td><td>0%</td><td>+5°</td><td>126%</td><td>460 ms</td><td>overshoot</td></tr>
+  <tr><td>Swing in</td><td>0%</td><td>−28°</td><td>82%</td><td>700 ms</td><td>overshoot</td></tr>
+  <tr><td>Settle</td><td>35%</td><td>−3°</td><td>97%</td><td>1000 ms</td><td>soft</td></tr>
+</table>
+<p>All three properties are compositor-friendly, so this costs no layout or paint
+work. The only integration needed is the wrapper class plus an
+IntersectionObserver to add it once on entry — no build step, no annotated
+assets, no inline rendering.</p>
+<p>One caveat carried over from the composition layer: scaling the wrapper scales
+stroke widths with it. At <code>zoom from 72%</code> the strokes start noticeably
+thinner and thicken as the icon settles. It reads as pen pressure at gentle
+values; Pop in and Stamp sit at the edge of that.</p>
 <p>One shortcut worth weighing for v2: CSS animations declared <em>inside</em> the
 SVG file do run in an <code>&lt;img&gt;</code>. They cannot be triggered from the
 page, but since the icons already use <code>loading="lazy"</code> the browser
@@ -1487,8 +1539,10 @@ const icons = [...document.querySelectorAll('.card')].map(card => {
 function readCfg() {
   const v = id => +$(id).value, s = id => $(id).value;
   return {
+    target: s('target'),
     threshold: v('thr'),
-    comp:     { delay:v('p_d'), dur:v('p_t'), rot:v('p_r'), zoom:v('p_z'), easing:s('p_e') },
+    comp:     { delay:v('p_d'), dur:v('p_t'), rot:v('p_r'), zoom:v('p_z'),
+                opacity:v('p_o'), easing:s('p_e') },
     fills:    { delay:v('f_d'), dur:v('f_t'), stagger:v('f_s'), mode:s('f_m') },
     contours: { delay:v('c_d'), dur:v('c_t'), stagger:v('c_s'), order:s('c_o'), pace:s('c_p') },
     accents:  { delay:v('a_d'), dur:v('a_t'), stagger:v('a_s'), mode:s('a_m'), order:s('a_o') },
@@ -1524,21 +1578,29 @@ const EASE_COMP = { out:'cubic-bezier(.22,1,.36,1)', over:EASE_POP, soft:EASE_FA
 function play(icon, cfg, seed) {
   icon.items.forEach(it => { it.el.getAnimations().forEach(a => a.cancel()); it.el.style.cssText = ''; });
   icon.svg.getAnimations().forEach(a => a.cancel());
-  icon.svg.style.transform = '';
+  icon.svg.style.cssText = '';
   const b = bucketsOf(icon, cfg);
   let end = 0;
   const track = t => { if (t > end) end = t; };
 
   if (REDUCED) { icon.items.forEach(it => it.el.style.opacity = 1); return 0; }
 
-  // composition — rotate/zoom the whole icon on its own timeline.
+  // composition — rotate/zoom/fade the whole icon on its own timeline.
   // Separate element from the paths, so it never fights the dashoffset tweens.
-  const c = cfg.comp, z = c.zoom / 100;
-  if (c.rot !== 0 || z !== 1) {
+  const c = cfg.comp, z = c.zoom / 100, o = c.opacity / 100;
+  if (c.rot !== 0 || z !== 1 || o !== 1) {
     icon.svg.animate(
-      [{ transform: `rotate(${c.rot}deg) scale(${z})` }, { transform: 'rotate(0deg) scale(1)' }],
+      [{ transform: `rotate(${c.rot}deg) scale(${z})`, opacity: o },
+       { transform: 'rotate(0deg) scale(1)',          opacity: 1 }],
       { duration:c.dur, delay:c.delay, easing:EASE_COMP[c.easing], fill:'both' });
     track(c.delay + c.dur);
+  }
+
+  // <img>-safe mode: the paths are unreachable in production, so nothing below
+  // the wrapper may animate. Reveal every element and stop here.
+  if (cfg.target === 'wrapper') {
+    icon.items.forEach(it => it.el.style.opacity = 1);
+    return end;
   }
 
   // fills
@@ -1582,6 +1644,13 @@ function play(icon, cfg, seed) {
 
 /* ---------- 4. stats + orchestration ---------- */
 function refreshStats(cfg) {
+  const wrap = cfg.target === 'wrapper';
+
+  // the per-path panels do nothing in wrapper mode — dim them so that is obvious
+  ['fs-fills', 'fs-contours', 'fs-accents'].forEach(id =>
+    $(id).classList.toggle('off', wrap));
+  $('wrapNote').hidden = !wrap;
+
   let C = 0, A = 0, F = 0, flagged = 0, shown = 0;
   icons.forEach(icon => {
     if (icon.card.hidden) return;          // stats describe what you can see
@@ -1590,8 +1659,9 @@ function refreshStats(cfg) {
     C += b.contours.length; A += b.accents.length; F += b.fills.length;
     const strokes = b.contours.length + b.accents.length;
     const ratio = strokes ? b.accents.length / strokes : 0;
-    // "flagged" = almost nothing left to actually draw
-    const bad = b.contours.length <= 2 || ratio > 0.85;
+    // "flagged" = almost nothing left to actually draw. Irrelevant in wrapper
+    // mode, where nothing is drawn by design.
+    const bad = !wrap && (b.contours.length <= 2 || ratio > 0.85);
     icon.card.classList.toggle('flagged', bad);
     if (bad) flagged++;
     icon.badge.textContent = `${b.contours.length}/${b.accents.length}/${b.fills.length}`;
@@ -1600,9 +1670,11 @@ function refreshStats(cfg) {
   const S = C + A;
   $('shown').innerHTML = shown === icons.length
     ? `<b>${shown}</b> icons` : `<b>${shown}</b>/${icons.length} icons`;
-  $('split').innerHTML = S
-    ? `draw <b>${C}</b> · pop <b>${A}</b> (${Math.round(A/S*100)}%) · fill <b>${F}</b>` : '';
+  $('split').innerHTML = wrap
+    ? `<b>wrapper only</b> — no per-path animation`
+    : (S ? `draw <b>${C}</b> · pop <b>${A}</b> (${Math.round(A/S*100)}%) · fill <b>${F}</b>` : '');
   const fl = $('flag');
+  fl.hidden = wrap;
   fl.innerHTML = flagged ? `nothing drawn: <b>${flagged}</b>/${shown}` : `nothing drawn: <b>0</b>`;
   fl.classList.toggle('warn', flagged > 0);
   $('empty').hidden = shown > 0;
@@ -1652,7 +1724,7 @@ let debounce = null;
 const runSoon = () => { clearTimeout(debounce); debounce = setTimeout(runAll, 110); };
 
 // live readouts
-const UNITS = { thr:' u', p_r:'°', p_z:' %' };
+const UNITS = { thr:' u', p_r:'°', p_z:' %', p_o:' %' };
 [...document.querySelectorAll('input[type=range]')].forEach(r => {
   const o = $(r.id + '_o');
   const sync = () => { if (o) o.textContent = r.value + (UNITS[r.id] || ' ms'); };
@@ -1670,10 +1742,20 @@ $('loop').addEventListener('change', runAll);
 const PRESETS = {
   // thresholds are kept in the 6–10u band: above ~10 icons like light-bulb,
   // shield-guarantee and whatsapp lose every drawable contour and just pop in
-  sketch: { thr:8,  p_d:0,  p_t:760, p_r:-4, p_z:90,  p_e:'out',  f_d:120, f_t:420, f_s:24, f_m:'scale', c_d:0,   c_t:620, c_s:55, c_o:'doc',  c_p:'const', a_d:420, a_t:260, a_s:34, a_m:'pop', a_o:'rand' },
-  pop:    { thr:9,  p_d:0,  p_t:520, p_r:-7, p_z:78,  p_e:'over', f_d:0,   f_t:260, f_s:12, f_m:'scale', c_d:60,  c_t:340, c_s:22, c_o:'long', c_p:'const', a_d:220, a_t:200, a_s:18, a_m:'pop', a_o:'center' },
-  calm:   { thr:7,  p_d:0,  p_t:1100,p_r:-2, p_z:96,  p_e:'soft', f_d:0,   f_t:640, f_s:36, f_m:'rise',  c_d:260, c_t:900, c_s:80, c_o:'top',  c_p:'const', a_d:760, a_t:340, a_s:46, a_m:'fade',a_o:'doc' },
-  snap:   { thr:10, p_d:0,  p_t:300, p_r:0,  p_z:94,  p_e:'out',  f_d:0,   f_t:180, f_s:0,  f_m:'fade',  c_d:0,   c_t:260, c_s:8,  c_o:'doc',  c_p:'fixed', a_d:140, a_t:160, a_s:8,  a_m:'pop', a_o:'rand' },
+  sketch: { target:'inline', thr:8,  p_d:0, p_t:760, p_r:-4, p_z:90, p_o:100, p_e:'out',  f_d:120, f_t:420, f_s:24, f_m:'scale', c_d:0,   c_t:620, c_s:55, c_o:'doc',  c_p:'const', a_d:420, a_t:260, a_s:34, a_m:'pop', a_o:'rand' },
+  pop:    { target:'inline', thr:9,  p_d:0, p_t:520, p_r:-7, p_z:78, p_o:100, p_e:'over', f_d:0,   f_t:260, f_s:12, f_m:'scale', c_d:60,  c_t:340, c_s:22, c_o:'long', c_p:'const', a_d:220, a_t:200, a_s:18, a_m:'pop', a_o:'center' },
+  calm:   { target:'inline', thr:7,  p_d:0, p_t:1100,p_r:-2, p_z:96, p_o:100, p_e:'soft', f_d:0,   f_t:640, f_s:36, f_m:'rise',  c_d:260, c_t:900, c_s:80, c_o:'top',  c_p:'const', a_d:760, a_t:340, a_s:46, a_m:'fade',a_o:'doc' },
+  snap:   { target:'inline', thr:10, p_d:0, p_t:300, p_r:0,  p_z:94, p_o:100, p_e:'out',  f_d:0,   f_t:180, f_s:0,  f_m:'fade',  c_d:0,   c_t:260, c_s:8,  c_o:'doc',  c_p:'fixed', a_d:140, a_t:160, a_s:8,  a_m:'pop', a_o:'rand' },
+
+  /* <img>-safe: opacity, rotation and zoom on the wrapper only. No per-path
+     work, so these ship on the existing markup with no pipeline change. */
+  w_fade:   { target:'wrapper', p_d:0, p_t:420,  p_r:0,   p_z:100, p_o:0,  p_e:'soft' },
+  w_zoom:   { target:'wrapper', p_d:0, p_t:560,  p_r:0,   p_z:88,  p_o:0,  p_e:'out'  },
+  w_pop:    { target:'wrapper', p_d:0, p_t:520,  p_r:0,   p_z:72,  p_o:0,  p_e:'over' },
+  w_tilt:   { target:'wrapper', p_d:0, p_t:640,  p_r:-9,  p_z:96,  p_o:0,  p_e:'out'  },
+  w_stamp:  { target:'wrapper', p_d:0, p_t:460,  p_r:5,   p_z:126, p_o:0,  p_e:'over' },
+  w_swing:  { target:'wrapper', p_d:0, p_t:700,  p_r:-28, p_z:82,  p_o:0,  p_e:'over' },
+  w_settle: { target:'wrapper', p_d:0, p_t:1000, p_r:-3,  p_z:97,  p_o:35, p_e:'soft' },
 };
 /* composition-only presets — applied on top of whatever full preset is loaded,
    so the two layers stay independently swappable */
