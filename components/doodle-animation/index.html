@@ -1,5 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Doodle icons — animation preset tuner</title>
 <style>
   :root {
@@ -15,13 +16,29 @@
     border-bottom:1px solid var(--line); padding:12px 18px;
     box-shadow:0 1px 14px rgba(0,0,0,.05);
   }
-  .title { display:flex; align-items:baseline; gap:8px; margin:0 0 10px; }
+  .title { display:flex; align-items:baseline; gap:8px; margin:0 0 10px;
+    flex-wrap:wrap; }
   h1 { font-size:14px; margin:0; letter-spacing:.02em; }
   h1 small { font-weight:400; color:var(--muted); margin-left:8px; }
   .title .sep { flex:1; }
   #docOpen { flex:none; font-size:11px; color:var(--accent); background:none;
     border:0; padding:2px 4px; cursor:pointer; text-decoration:underline;
     text-underline-offset:2px; }
+  #panelToggle { display:none; flex:none; font-size:11px; padding:3px 8px;
+    border:1px solid var(--line); border-radius:5px; background:#fff;
+    cursor:pointer; }
+
+  /* On a phone the four control panels stack to ~1160px — more than a full
+     screen before the first icon, and a sticky header taller than the viewport
+     traps the page. Collapse them by default and let the grid lead. */
+  @media (max-width: 720px) {
+    header { position:static; }
+    #panelToggle { display:inline-block; }
+    h1 small { display:none; }
+    body.collapsed .groups { display:none; }
+    body.collapsed .bar { margin-top:0; }
+    .grid { padding:12px; gap:8px; }
+  }
 
   /* ---- handoff modal ---- */
   dialog#doc { width:min(820px,92vw); max-height:88vh; padding:0; border:0;
@@ -135,10 +152,12 @@
     <h1>Doodle icons — animation preset tuner
       <small>composition settles · contours draw · accents pop · fills fade — plays once on appear</small></h1>
     <span class="sep"></span>
+    <button id="panelToggle" type="button" aria-expanded="false"
+            aria-controls="groups">Controls ▾</button>
     <button id="docOpen" type="button">Engineering handoff ↗</button>
   </div>
 
-  <div class="groups">
+  <div class="groups" id="groups">
     <fieldset id="fs-bucketing"><legend>bucketing</legend>
       <div class="row"><label>render as</label><select id="target">
         <option value="inline" selected>inline SVG — per-path</option>
@@ -1852,6 +1871,22 @@ const io = new IntersectionObserver(entries => {
     play(icon, cfg, seed + k++);
   });
 }, { rootMargin: '0px 0px -8% 0px' });
+
+/* ---------- collapsible controls (small screens) ---------- */
+const SMALL = 720;
+function syncToggle() {
+  const collapsed = document.body.classList.contains('collapsed');
+  const b = $('panelToggle');
+  b.textContent = collapsed ? 'Controls ▾' : 'Controls ▴';
+  b.setAttribute('aria-expanded', String(!collapsed));
+}
+// start collapsed on a phone so the icon grid is what you land on
+if (innerWidth <= SMALL) document.body.classList.add('collapsed');
+syncToggle();
+$('panelToggle').addEventListener('click', () => {
+  document.body.classList.toggle('collapsed');
+  syncToggle();
+});
 
 /* ---------- handoff modal ---------- */
 $('docOpen').addEventListener('click', () => $('doc').showModal());
