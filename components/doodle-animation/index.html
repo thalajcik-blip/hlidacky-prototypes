@@ -1669,16 +1669,23 @@ function srcFor(icon) {
   return icon.src;
 }
 
+/* `hidden` is an HTMLElement IDL attribute — SVGElement does NOT implement it,
+   so `svg.hidden = true` silently sets a JS expando and never reaches the DOM.
+   Always drive visibility through the attribute, which works for both. */
+const setShown = (el, on) =>
+  on ? el.removeAttribute('hidden') : el.setAttribute('hidden', '');
+const isShown = el => !el.hasAttribute('hidden');
+
 // the element the composition tween runs on, whichever is currently on screen
-const stageOf = icon => icon.img.hidden ? icon.svg : icon.img;
+const stageOf = icon => isShown(icon.img) ? icon.img : icon.svg;
 
 function setRenderMode(mode) {
   const asImg = mode === 'wrapper';
   icons.forEach(icon => {
     if (asImg && icon.img.getAttribute('src') !== srcFor(icon))
       icon.img.src = srcFor(icon);
-    icon.img.hidden = !asImg;
-    icon.svg.hidden = asImg;
+    setShown(icon.img, asImg);
+    setShown(icon.svg, !asImg);
   });
 }
 
@@ -1847,7 +1854,7 @@ function park(icon) {
     el.getAnimations().forEach(a => a.cancel()); el.style.cssText = '';
   });
   // an <img> has no inner paths to hide, so park it whole
-  if (!icon.img.hidden) icon.img.style.opacity = 0;
+  if (isShown(icon.img)) icon.img.style.opacity = 0;
 }
 
 function runAll() {
