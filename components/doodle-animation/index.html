@@ -47,6 +47,48 @@
   dialog#doc::backdrop, dialog#css::backdrop { background:rgba(16,22,26,.55); }
   #cssOut { white-space:pre; }
   #cssCopy { font-size:11px; padding:3px 10px; }
+
+  /* ---- uploader ---- */
+  dialog#up { width:min(560px,92vw); max-height:88vh; padding:0; border:0;
+    border-radius:12px; background:var(--panel); color:var(--ink);
+    box-shadow:0 24px 70px rgba(0,0,0,.3); }
+  dialog#up::backdrop { background:rgba(16,22,26,.55); }
+  #upBody { padding:16px 20px 18px; overflow-y:auto; max-height:calc(88vh - 52px);
+    font-size:12px; }
+  #drop { display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:22px; border:2px dashed var(--line); border-radius:10px;
+    cursor:pointer; text-align:center; color:var(--muted); }
+  #drop b { color:var(--ink); font-size:13px; }
+  #drop span { font-size:11px; }
+  #drop.over, #drop:focus-visible { border-color:var(--accent); background:#f5f4ff;
+    outline:none; }
+  #drop.loaded { border-style:solid; border-color:#9ad3b0; background:#f4fbf7; }
+  .fld { display:flex; align-items:center; gap:10px; margin-top:11px; }
+  .fld label { width:44px; flex:none; color:var(--muted); }
+  .fld input { flex:1; min-width:0; font:inherit; font-size:12px; padding:5px 8px;
+    border:1px solid var(--line); border-radius:6px; }
+  #upReport h3 { font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--muted); margin:16px 0 6px; }
+  #upChecks { list-style:none; margin:0; padding:0; }
+  #upChecks li { display:flex; gap:7px; padding:2px 0; line-height:1.45; }
+  #upChecks .m { flex:none; width:14px; font-weight:700; }
+  #upChecks .ok   .m { color:#1a9b62; }
+  #upChecks .warn .m { color:var(--warn); }
+  #upChecks .bad  .m { color:#c2334a; }
+  #upChecks small { color:var(--muted); }
+  #upSwatches { display:flex; gap:8px; }
+  #upSwatches figure { margin:0; text-align:center; font-size:9px; color:var(--muted); }
+  #upSwatches svg { width:52px; height:52px; display:block; }
+  #upActions { display:flex; align-items:center; gap:8px; margin-top:18px;
+    padding-top:13px; border-top:1px solid var(--line); }
+  #upActions .sep { flex:1; }
+  #upAdd:disabled { opacity:.45; cursor:not-allowed; }
+  .card[data-user="1"] { border-color:#b9b2ff; }
+  .card .kill { position:absolute; top:4px; right:5px; border:0; background:none;
+    color:var(--muted); cursor:pointer; font-size:13px; line-height:1; padding:2px;
+    display:none; }
+  .card[data-user="1"] { position:relative; }
+  .card[data-user="1"]:hover .kill { display:block; }
   #docBar { position:sticky; top:0; display:flex; align-items:center; gap:10px;
     padding:13px 20px; background:var(--panel); border-bottom:1px solid var(--line);
     border-radius:12px 12px 0 0; }
@@ -270,6 +312,7 @@
     <span class="stat" id="split"></span>
     <span class="stat" id="flag"></span>
     <span class="stat">total <b id="total">–</b></span>
+    <button id="addBtn">＋ Add doodle</button>
     <button id="export">⇩ JSON</button>
     <button class="primary" id="exportCss">&lt;/&gt; Get CSS</button>
   </div>
@@ -1538,6 +1581,39 @@ deliberately; it affects this tool only, never production output.</div>
   <div id="docBody"><pre><code id="cssOut"></code></pre></div>
 </dialog>
 
+<dialog id="up">
+  <div id="docBar">
+    <h2>Add a doodle</h2>
+    <span class="sep"></span>
+    <button id="upClose" type="button" aria-label="Close">&times;</button>
+  </div>
+  <div id="upBody">
+    <div id="drop" tabindex="0" role="button">
+      <b>Drop an SVG here</b><span>or click to choose — pink version, 72×72</span>
+      <input type="file" id="upFile" accept=".svg,image/svg+xml" hidden>
+    </div>
+
+    <div class="fld"><label for="upName">Name</label>
+      <input type="text" id="upName" placeholder="e.g. sitter-bicycle" autocomplete="off"></div>
+    <div class="fld"><label for="upTags">Tags</label>
+      <input type="text" id="upTags" placeholder="comma separated — transport, outdoor, sitter" autocomplete="off"></div>
+
+    <div id="upReport" hidden>
+      <h3>Conformance</h3>
+      <ul id="upChecks"></ul>
+      <h3>Colour variants</h3>
+      <div id="upSwatches"></div>
+      <p class="hint" id="upTintNote"></p>
+    </div>
+
+    <div id="upActions">
+      <span class="stat" id="upStatus"></span>
+      <span class="sep"></span>
+      <button id="upAdd" class="primary" disabled>Add to grid</button>
+    </div>
+  </div>
+</dialog>
+
 <script>const PALETTES = {"#f96073":{"pink":"#f96073","cyan":"#35cfea","teal":"#00d98b","orange":"#fd8b25","violet":"#b85eff"},"#2a3539":{"pink":"#2a3539","cyan":"#2a3539","teal":"#2a3539","orange":"#2a3539","violet":"#2a3539"},"#ffda6a":{"pink":"#ffda6a","cyan":"#ffda6a","teal":"#ffda6a","orange":"#ffda6a","violet":"#ffda6a"},"#fff":{"pink":"#fff","cyan":"#fff","teal":"#fff","orange":"#fff","violet":"#fff"},"#ff9ba7":{"pink":"#ff9ba7","cyan":"#62e4fb","teal":"#34f5af","orange":"#ffa945","violet":"#cd8eff"},"#fff3cd":{"pink":"#fff3cd","cyan":"#fff3cd","teal":"#fff3cd","orange":"#fff3cd","violet":"#fff3cd"},"#ffd5da":{"pink":"#ffd5da","cyan":"#c3f6ff","teal":"#88ffd4","orange":"#fee7d1","violet":"#e4c1ff"},"none":{"pink":"none","cyan":"none","teal":"none","orange":"none","violet":"none"},"white":{"pink":"white","cyan":"white","teal":"white","orange":"white","violet":"white"},"#ffe69c":{"pink":"#ffe69c","cyan":"#ffe69c","teal":"#ffe69c","orange":"#ffe69c","violet":"#ffe69c"},"#fecb54":{"pink":"#fecb54","cyan":"#fecb54","teal":"#fecb54","orange":"#fecb54","violet":"#fecb54"}};</script>
 
 <script>
@@ -1545,11 +1621,13 @@ const $ = id => document.getElementById(id);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- 1. parse every icon once: classify + measure ---------- */
-const icons = [...document.querySelectorAll('.card')].map(card => {
+const GEOM = 'path, rect, circle, ellipse, polygon, polyline, line';
+
+function makeIcon(card) {
   const svg = card.querySelector('svg');
   const items = [];
   // <rect> shows up in checklist-extra-item; treat every geometry element the same
-  svg.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line').forEach((p, i) => {
+  svg.querySelectorAll(GEOM).forEach((p, i) => {
     // inherit stroke through ancestor <g>
     let stroke = p.getAttribute('stroke'), n = p.parentElement;
     while (!stroke && n && n.tagName.toLowerCase() !== 'svg') {
@@ -1566,8 +1644,12 @@ const icons = [...document.querySelectorAll('.card')].map(card => {
     el, fill: el.getAttribute('fill'), stroke: el.getAttribute('stroke') }));
   return { card, svg, img: card.querySelector('img.imgv'), src: null,
            items, tinted, badge: card.querySelector('.bk'),
-           name: card.dataset.variant.toLowerCase() };
-});
+           name: card.dataset.variant.toLowerCase(),
+           tags: (card.dataset.tags || '').toLowerCase(),
+           user: card.dataset.user === '1' };
+}
+
+const icons = [...document.querySelectorAll('.card')].map(makeIcon);
 
 /* ---------- 1b. real <img> rendering ----------
    Wrapper mode does not merely *skip* per-path animation — it swaps the inline
@@ -1889,10 +1971,12 @@ $('swatches').addEventListener('click', e => {
   runAll();
 });
 
-/* ---------- filter by name ---------- */
+/* ---------- filter by name or tag ---------- */
 function applyFilter() {
   const q = $('filter').value.trim().toLowerCase();
-  icons.forEach(icon => { icon.card.hidden = q !== '' && !icon.name.includes(q); });
+  icons.forEach(icon => {
+    icon.card.hidden = q !== '' && !icon.name.includes(q) && !icon.tags.includes(q);
+  });
   runAll();
 }
 let filterT = null;
@@ -1902,6 +1986,7 @@ $('filter').addEventListener('input', () => {
 $('filter').addEventListener('keydown', e => {
   if (e.key === 'Escape') { $('filter').value = ''; applyFilter(); }
 });
+$('filter').placeholder = 'filter by name or tag…';
 
 $('export').addEventListener('click', () => {
   const cfg = readCfg();
@@ -2072,6 +2157,244 @@ const io = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '0px 0px -8% 0px' });
 
+/* ================= uploader ================= */
+
+/* An uploaded SVG is inlined into this document, so it is untrusted markup:
+   strip anything scriptable before it ever reaches the DOM. */
+const BANNED = ['script', 'foreignObject', 'iframe', 'use', 'image', 'animate',
+                'animateTransform', 'set', 'handler'];
+function sanitize(svg) {
+  BANNED.forEach(t => svg.querySelectorAll(t).forEach(el => el.remove()));
+  svg.querySelectorAll('*').forEach(el => {
+    [...el.attributes].forEach(a => {
+      const n = a.name.toLowerCase();
+      if (n.startsWith('on')) el.removeAttribute(a.name);
+      if ((n === 'href' || n === 'xlink:href') && /^\s*javascript:/i.test(a.value))
+        el.removeAttribute(a.name);
+    });
+  });
+  return svg;
+}
+
+const KNOWN_COLOURS = new Set(Object.keys(PALETTES));
+
+/* The same checks the validation pass ran over the shipped set, so a new doodle
+   is held to the rules the existing 195 already satisfy. */
+function validate(svg) {
+  const out = [], add = (level, text, note) => out.push({ level, text, note });
+
+  const vb = (svg.getAttribute('viewBox') || '').trim();
+  vb === '0 0 72 72'
+    ? add('ok', 'viewBox is 0 0 72 72')
+    : add('bad', `viewBox is "${vb || 'missing'}"`, 'the whole system is drawn on a 72×72 grid');
+
+  const tags = new Set();
+  svg.querySelectorAll('*').forEach(el => tags.add(el.tagName.toLowerCase()));
+  const allowed = new Set(['g','path','rect','circle','ellipse','polygon','polyline','line','title','desc']);
+  const extra = [...tags].filter(t => !allowed.has(t));
+  extra.length
+    ? add('bad', `unsupported elements: ${extra.join(', ')}`, 'the build step only handles shapes and groups')
+    : add('ok', 'only shapes and groups');
+
+  // classify exactly as the build step would
+  const geo = [...svg.querySelectorAll(GEOM)];
+  let strokes = 0, fills = 0, unclassified = 0;
+  const widths = new Set(), colours = new Set();
+  geo.forEach(p => {
+    let s = p.getAttribute('stroke'), f = p.getAttribute('fill'), w = p.getAttribute('stroke-width');
+    let n = p.parentElement;
+    while (n && n.tagName.toLowerCase() !== 'svg') {
+      s = s || n.getAttribute('stroke'); f = f || n.getAttribute('fill');
+      w = w || n.getAttribute('stroke-width'); n = n.parentElement;
+    }
+    if (s && s !== 'none') { strokes++; if (w) widths.add(w); colours.add(s.toLowerCase()); }
+    else if (f && f !== 'none') { fills++; colours.add(f.toLowerCase()); }
+    else unclassified++;
+  });
+
+  unclassified === 0
+    ? add('ok', `every element classified — ${strokes} stroke, ${fills} fill`)
+    : add('bad', `${unclassified} element(s) have neither stroke nor fill`,
+          'these would silently drop out of the animation');
+
+  const bad = [...widths].filter(w => { const n = parseFloat(w); return !(n >= 1.3 && n <= 1.55); });
+  !widths.size ? add('warn', 'no stroke-width found', 'the set uses ~1.4')
+    : bad.length ? add('warn', `stroke-width off-system: ${bad.join(', ')}`, 'the set sits between 1.395 and 1.466')
+    : add('ok', `stroke-width in range (${[...widths].join(', ')})`);
+
+  const unknown = [...colours].filter(c => !KNOWN_COLOURS.has(c));
+  unknown.length
+    ? add('warn', `${unknown.length} colour(s) outside the palette: ${unknown.slice(0,4).join(', ')}`,
+          'these cannot be auto-recoloured and will stay as-is in all 5 variants')
+    : add('ok', `palette matches the system (${colours.size} colours)`);
+
+  return { checks: out, strokes, fills,
+           blocking: out.some(c => c.level === 'bad') };
+}
+
+/* preview thumbnails of the four generated colours */
+function tintedClone(svg, colour) {
+  const c = svg.cloneNode(true);
+  c.querySelectorAll('*').forEach(el => {
+    for (const attr of ['fill', 'stroke']) {
+      const v = el.getAttribute(attr);
+      if (!v) continue;
+      const row = PALETTES[v.toLowerCase()];
+      if (row) el.setAttribute(attr, row[colour] || v);
+    }
+  });
+  c.setAttribute('width', '52'); c.setAttribute('height', '52');
+  return c;
+}
+
+let pending = null;   // { svg, checks }
+
+function slug(s) {
+  return s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function refreshAddState() {
+  const named = slug($('upName').value).length > 0;
+  const dup = icons.some(i => i.name === slug($('upName').value));
+  $('upAdd').disabled = !pending || pending.blocking || !named || dup;
+  $('upStatus').textContent =
+    !pending ? 'Waiting for a file.'
+    : pending.blocking ? 'Fix the blocking issues above.'
+    : !named ? 'Give it a name.'
+    : dup ? `"${slug($('upName').value)}" already exists.`
+    : 'Ready.';
+}
+
+function loadSvgText(text, filename) {
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const svg = doc.querySelector('svg');
+  if (!svg || doc.querySelector('parsererror')) {
+    pending = null; $('upReport').hidden = true;
+    $('upStatus').textContent = 'That file is not valid SVG.';
+    $('drop').classList.remove('loaded');
+    refreshAddState(); return;
+  }
+  sanitize(svg);
+  svg.removeAttribute('width'); svg.removeAttribute('height');
+
+  const res = validate(svg);
+  pending = { svg, blocking: res.blocking };
+
+  $('upChecks').innerHTML = res.checks.map(c =>
+    `<li class="${c.level}"><span class="m">${c.level === 'ok' ? '✓' : c.level === 'warn' ? '!' : '×'}</span>` +
+    `<span>${c.text}${c.note ? `<br><small>${c.note}</small>` : ''}</span></li>`).join('');
+
+  const sw = $('upSwatches'); sw.innerHTML = '';
+  ['pink','cyan','teal','orange','violet'].forEach(col => {
+    const fig = document.createElement('figure');
+    fig.appendChild(tintedClone(svg, col));
+    fig.appendChild(Object.assign(document.createElement('figcaption'), { textContent: col }));
+    sw.appendChild(fig);
+  });
+  $('upTintNote').textContent =
+    'Generated from the uploaded pink file with the palette table — override in Figma if a slot needs a different colour.';
+
+  $('upReport').hidden = false;
+  $('drop').classList.add('loaded');
+  // prefill from the filename, but never clobber a name the user typed — and do
+  // replace one we filled in ourselves, or dropping a second file would keep the
+  // first file's name
+  if (filename && (!$('upName').value || $('upName').dataset.auto === '1')) {
+    $('upName').value = filename.replace(/\.svg$/i, '');
+    $('upName').dataset.auto = '1';
+  }
+  refreshAddState();
+}
+
+function readFile(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => loadSvgText(r.result, file.name);
+  r.readAsText(file);
+}
+
+/* ---- wiring ---- */
+$('addBtn').addEventListener('click', () => {
+  pending = null; $('upReport').hidden = true; $('drop').classList.remove('loaded');
+  $('upName').value = ''; $('upTags').value = ''; $('upFile').value = '';
+  delete $('upName').dataset.auto;
+  refreshAddState(); $('up').showModal();
+});
+$('upClose').addEventListener('click', () => $('up').close());
+$('up').addEventListener('click', e => { if (e.target === $('up')) $('up').close(); });
+$('drop').addEventListener('click', () => $('upFile').click());
+$('drop').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('upFile').click(); }
+});
+$('upFile').addEventListener('change', e => readFile(e.target.files[0]));
+['dragenter','dragover'].forEach(t => $('drop').addEventListener(t, e => {
+  e.preventDefault(); $('drop').classList.add('over');
+}));
+['dragleave','drop'].forEach(t => $('drop').addEventListener(t, e => {
+  e.preventDefault(); $('drop').classList.remove('over');
+}));
+$('drop').addEventListener('drop', e => readFile(e.dataTransfer.files[0]));
+$('upName').addEventListener('input', () => {
+  delete $('upName').dataset.auto;   // typed by hand now — stop overwriting it
+  refreshAddState();
+});
+
+$('upAdd').addEventListener('click', () => {
+  const name = slug($('upName').value);
+  const tags = $('upTags').value.split(',').map(s => slug(s)).filter(Boolean).join(' ');
+  addIcon(name, tags, pending.svg.outerHTML, true);
+  $('up').close();
+});
+
+/* ---- insert into the grid ---- */
+function addIcon(name, tags, svgHtml, persist) {
+  const fig = document.createElement('figure');
+  fig.className = 'card';
+  fig.dataset.variant = name; fig.dataset.color = 'pink';
+  fig.dataset.tags = tags; fig.dataset.user = '1';
+  fig.innerHTML =
+    `<button class="kill" title="Remove" aria-label="Remove ${name}">×</button>` +
+    `<div class="art">${svgHtml}<img class="imgv" alt="" hidden></div>` +
+    `<figcaption><span class="nm">${name}</span><span class="bk"></span></figcaption>`;
+  $('grid').prepend(fig);
+
+  const icon = makeIcon(fig);
+  icons.unshift(icon);
+  byCard.set(fig, icon);
+  icon.version = -1;
+  icon.items.forEach(it => it.el.style.opacity = 0);
+  if (colour !== 'pink') retint(colour);      // match whatever swatch is active
+  io.observe(fig);
+
+  fig.querySelector('.kill').addEventListener('click', () => {
+    io.unobserve(fig); byCard.delete(fig);
+    icons.splice(icons.indexOf(icon), 1);
+    fig.remove(); saveUser(); runAll();
+  });
+
+  if (persist) saveUser();
+  runAll();
+}
+
+/* ---- keep uploads across reloads ---- */
+const STORE = 'doodle-tuner-uploads';
+function saveUser() {
+  const mine = icons.filter(i => i.user).map(i => ({
+    name: i.name, tags: i.tags,
+    svg: (() => { const c = i.svg.cloneNode(true);
+      c.querySelectorAll('[style]').forEach(el => el.removeAttribute('style'));
+      c.removeAttribute('style'); c.removeAttribute('hidden');
+      c.querySelectorAll('.an').forEach(el => el.classList.remove('an'));
+      return c.outerHTML; })(),
+  }));
+  try { localStorage.setItem(STORE, JSON.stringify(mine)); } catch (e) {}
+}
+function loadUser() {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(STORE) || '[]'); } catch (e) {}
+  saved.reverse().forEach(u => addIcon(u.name, u.tags, u.svg, false));
+}
+
 /* ---------- collapsible controls (small screens) ---------- */
 const SMALL = 720;
 function syncToggle() {
@@ -2098,4 +2421,5 @@ $('doc').addEventListener('click', e => { if (e.target === $('doc')) $('doc').cl
 icons.forEach(i => { i.version = -1; i.items.forEach(it => it.el.style.opacity = 0); });
 refreshStats(readCfg());
 icons.forEach(i => io.observe(i.card));
+loadUser();          // restore anything uploaded in a previous session
 </script>
