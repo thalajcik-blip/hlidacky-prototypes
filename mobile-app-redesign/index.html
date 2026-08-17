@@ -620,6 +620,322 @@
       text-align: center;
     }
 
+    /* Figma: Sitter Profile / Info & Settings / Account details. */
+    .sitter-account-details-screen,
+    .sitter-personal-information-screen,
+    .sitter-your-place-screen,
+    .sitter-bank-account-screen,
+    .sitter-education-screen,
+    .sitter-spoken-languages-screen { z-index: 30; }
+
+    .sitter-account-details-content {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px 20px 16px;
+      background: #fff;
+    }
+
+    .sitter-account-details-screen.is-dirty .sitter-account-details-content,
+    .sitter-personal-information-screen.is-dirty .sitter-account-details-content,
+    .sitter-your-place-screen.is-dirty .sitter-account-details-content,
+    .sitter-bank-account-screen.is-dirty .sitter-account-details-content,
+    .sitter-education-screen.is-dirty .sitter-account-details-content,
+    .sitter-spoken-languages-screen.is-dirty .sitter-account-details-content { padding-bottom: 88px; }
+
+    .sitter-bank-account-number {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 80px auto minmax(0, 1fr) auto 100px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sitter-bank-account-number .account-field__input,
+    .sitter-bank-account-number .account-field__select { min-width: 0; padding: 0 12px; font-size: 14px; }
+    .sitter-bank-account-number__separator { color: var(--color-gray-700, #4a5a61); font-size: 16px; line-height: 1; }
+
+    .sitter-bank-account-details {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 114px minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .sitter-education-textarea {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 4px;
+      outline: 0;
+      background: #fff;
+      padding: 10px 16px;
+      color: var(--color-gray-800, #2a3539);
+      font: inherit;
+      font-size: 16px;
+      letter-spacing: .2px;
+      line-height: 1.32;
+    }
+
+    .sitter-education-textarea::placeholder { color: var(--color-gray-500, #8b91a3); }
+    .sitter-education-textarea:focus,
+    .sitter-education-textarea:focus-visible { border-color: var(--color-blue-300, #6aafff); box-shadow: 0 0 0 2px #cbdafc; }
+    .sitter-education-screen .account-field__label small { color: var(--color-gray-500, #8b91a3); font-size: 14px; font-weight: 400; }
+
+    .sitter-language-group { display: flex; flex-direction: column; gap: 8px; width: 100%; padding-top: 8px; }
+    .sitter-language-group__label { padding: 0 2px; color: var(--color-gray-800, #2a3539); font-size: 16px; font-weight: 450; line-height: 1.4; }
+    .sitter-language-grid { display: grid; grid-template-columns: repeat(3, 88px); gap: 8px; padding: 12px 0; }
+
+    .sitter-language-choice {
+      display: flex;
+      height: 80px;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      border: 1px solid var(--color-gray-400, #bec2ce);
+      border-radius: 4px;
+      background: #fff;
+      padding: 8px;
+      color: var(--color-gray-700, #4a5a61);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sitter-language-choice__top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .sitter-language-choice__check { display: inline-grid; width: 20px; height: 20px; place-items: center; border: 1px solid var(--color-gray-400, #bec2ce); border-radius: 4px; background: #fff; color: #fff; font-family: "Font Awesome 6 Pro"; font-size: 13px; font-weight: 900; }
+    .sitter-language-choice__flag { font-size: 20px; line-height: 20px; }
+    .sitter-language-choice__name { overflow: hidden; color: inherit; font-size: 12px; letter-spacing: -.3px; line-height: 1.16; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-language-choice.is-selected { border: 2px solid var(--color-green-400, #22bf1e); color: var(--color-green-400, #22bf1e); padding: 7px; }
+    .sitter-language-choice.is-selected .sitter-language-choice__check { border-color: var(--color-green-400, #22bf1e); background: var(--color-green-400, #22bf1e); }
+    .sitter-language-choice.is-selected .sitter-language-choice__check::after { content: "\f00c"; }
+    .sitter-language-choice:focus-visible { outline: 0; box-shadow: 0 0 0 2px #cbdafc; }
+    .sitter-language-more { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; border: 0; background: transparent; padding: 0 0 5px; color: var(--color-pink-400, #f96073); font: inherit; font-size: 14px; line-height: 1.4; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .sitter-language-more i { font-size: 12px; text-decoration: none; }
+    .sitter-language-extra { display: none; }
+    .sitter-language-group.is-expanded .sitter-language-extra { display: grid; }
+
+    .sitter-your-place-address { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+    .sitter-your-place-map {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+      border: 1px solid var(--color-gray-300, #e5e5ea);
+      border-radius: 8px;
+      background: var(--color-gray-200, #f7f7f7);
+    }
+
+    .sitter-your-place-map img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .sitter-your-place-map i { position: absolute; top: 50%; left: 50%; color: var(--color-pink-400, #f96073); font-size: 24px; transform: translate(-50%, -50%); }
+
+    .sitter-your-place-privacy {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--color-blue-200, #b7d8ff);
+      border-radius: 4px;
+      background: var(--color-blue-100, #e6f1fe);
+      padding: 12px 16px;
+      color: var(--color-gray-800, #2a3539);
+      font-size: 14px;
+      letter-spacing: -.32px;
+      line-height: 1.4;
+    }
+
+    .sitter-your-place-privacy i { flex: 0 0 auto; color: var(--color-gray-500, #8b91a3); font-size: 14px; }
+
+    .sitter-your-place-add-address {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      border: 0;
+      background: transparent;
+      padding: 8px 0 5px;
+      color: var(--color-pink-400, #f96073);
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .sitter-your-place-add-address i { font-size: 14px; text-decoration: none; }
+
+    .sitter-personal-birth-date {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 72px minmax(0, 1fr) 90px;
+      gap: 8px;
+    }
+
+    .sitter-personal-birth-date__select { position: relative; min-width: 0; }
+    .sitter-personal-birth-date__select .account-field__select { padding: 0 36px 0 16px; background-image: none; }
+    .sitter-personal-birth-date__select i { position: absolute; top: 50%; right: 16px; pointer-events: none; color: var(--color-pink-400, #f96073); font-size: 14px; transform: translateY(-50%); }
+
+    .sitter-personal-phone-visibility {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding-top: 8px;
+      color: var(--color-gray-700, #4a5a61);
+      font-size: 14px;
+      font-weight: 350;
+      letter-spacing: -.242px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .sitter-personal-phone-visibility input {
+      appearance: none;
+      -webkit-appearance: none;
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      margin: 0;
+      border: 1px solid var(--color-gray-400, #bec2ce);
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .sitter-personal-phone-visibility input:checked { border-color: var(--color-pink-400, #f96073); background: var(--color-pink-400, #f96073); }
+    .sitter-personal-phone-visibility input:checked::after { display: block; color: #fff; content: "\f00c"; font-family: "Font Awesome 6 Pro"; font-size: 13px; font-weight: 900; line-height: 18px; text-align: center; }
+    .sitter-personal-phone-visibility input:focus-visible { outline: 0; box-shadow: 0 0 0 2px #cbdafc; }
+
+    .sitter-personal-smoker { display: flex; flex-direction: column; gap: 12px; width: 100%; padding: 8px 2px; }
+    .sitter-personal-smoker__title { margin: 0; color: var(--color-gray-800, #2a3539); font-size: 16px; font-weight: 450; line-height: 1.4; }
+    .sitter-personal-smoker__options { display: flex; flex-direction: column; gap: 12px; padding-left: 16px; }
+
+    .sitter-personal-smoker__option {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      align-self: flex-start;
+      color: var(--color-gray-700, #4a5a61);
+      font-size: 16px;
+      letter-spacing: -.32px;
+      line-height: 24px;
+      cursor: pointer;
+    }
+
+    .sitter-personal-smoker__option input {
+      appearance: none;
+      -webkit-appearance: none;
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      margin: 0;
+      border: 1px solid var(--color-gray-400, #bec2ce);
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .sitter-personal-smoker__option input:checked { border: 6px solid var(--color-pink-400, #f96073); background: #fff; }
+    .sitter-personal-smoker__option input:focus-visible { outline: 0; box-shadow: 0 0 0 2px #cbdafc; }
+
+    .sitter-account-login-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px 2px;
+    }
+
+    .sitter-account-login-methods__title {
+      margin: 0;
+      color: var(--color-gray-800, #2a3539);
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .sitter-account-login-methods__list { display: flex; flex-direction: column; }
+
+    .sitter-account-login-method {
+      display: grid;
+      min-height: 61px;
+      grid-template-columns: 32px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--color-gray-300, #e5e5ea);
+      padding: 12px 0;
+    }
+
+    .sitter-account-login-method__icon {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--color-gray-200, #f7f7f7);
+      color: var(--color-gray-700, #4a5a61);
+      font-size: 16px;
+    }
+
+    .sitter-account-login-method__copy { display: flex; min-width: 0; flex-direction: column; }
+    .sitter-account-login-method__name { color: var(--color-gray-800, #2a3539); font-size: 14px; font-weight: 400; line-height: 1.4; }
+    .sitter-account-login-method__email { overflow: hidden; color: var(--color-gray-500, #8b91a3); font-size: 12px; font-weight: 400; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+
+    .sitter-account-login-method__action,
+    .sitter-account-notifications-link {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .sitter-account-login-method__action {
+      color: var(--color-gray-500, #8b91a3);
+      font-size: 14px;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .sitter-account-login-method__action--remove { color: var(--color-pink-400, #f96073); }
+
+    .sitter-account-notifications-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      color: var(--color-gray-500, #8b91a3);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .sitter-account-notifications-link > span { text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-account-notifications-link i { font-size: 14px; }
+
+    .sitter-account-danger-zone {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border: 1px solid var(--color-red-400, #ea2323);
+      border-radius: 4px;
+      background: var(--color-pink-100, #feecee);
+      padding: 12px;
+    }
+
+    .sitter-account-danger-zone__title { margin: 0; color: var(--color-red-400, #ea2323); font-size: 16px; font-weight: 450; line-height: 1.4; }
+    .sitter-account-danger-zone__copy { margin: 0; color: var(--color-gray-700, #4a5a61); font-size: 14px; line-height: 1.4; }
+    .sitter-account-danger-zone__action { align-self: flex-start; border: 0; background: transparent; padding: 0; color: var(--color-pink-400, #f96073); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
     /* Figma: Sitter Profile / Profiles. Active service profiles deliberately
        precede the unfinished one, so the list also communicates profile
        readiness without an extra filter or section heading. */
@@ -750,6 +1066,10 @@
     .sitter-service-profile--inactive .sitter-service-profile__status.sitter-service-profile__not-filled { display: inline-flex; }
     .sitter-service-profile--inactive .sitter-service-profile__setup.sitter-service-profile__not-filled { display: inline-flex; }
 
+    /* An existing profile is already editable; only profiles that have not
+       been initialized retain their setup action. */
+    .sitter-profiles-screen:not(.is-new-sitter) .sitter-service-profile:not(.sitter-service-profile--inactive) .sitter-service-profile__setup { display: none; }
+
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile__active { display: none; }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile__status.sitter-service-profile__not-filled { display: inline-flex; }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile__setup.sitter-service-profile__not-filled { display: inline-flex; }
@@ -781,7 +1101,7 @@
 
     .sitter-service-profile__edit i {
       color: var(--color-pink-400, #f96073);
-      font-size: 8px;
+      font-size: 12px;
     }
 
     .sitter-service-profile__edit:hover { background: #f7f7f7; }
@@ -1247,14 +1567,18 @@
       font: inherit;
       font-size: 16px;
       line-height: 1.4;
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 2px;
       cursor: pointer;
     }
 
     .account-remove-photo i,
     .account-manage-login i { font-size: 14px; text-decoration: none; }
+
+    .account-remove-photo > span,
+    .account-manage-login > span {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
 
     .account-field {
       display: flex;
@@ -1275,7 +1599,7 @@
       background: #eff9ef;
       padding: 1.5px 6px;
       color: #0ba825;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 400;
       line-height: 1.4;
     }
@@ -1300,7 +1624,9 @@
     }
 
     .account-field__input:focus,
-    .account-field__select:focus { border-color: #f96073; box-shadow: 0 0 0 2px rgba(249, 96, 115, .16); }
+    .account-field__input:focus-visible,
+    .account-field__select:focus,
+    .account-field__select:focus-visible { border-color: var(--color-blue-300, #6aafff); box-shadow: 0 0 0 2px #cbdafc; }
 
     .account-field__select {
       appearance: none;
@@ -1311,6 +1637,9 @@
       background-repeat: no-repeat;
       cursor: pointer;
     }
+
+    .account-field__language-trigger { display: flex; align-items: center; justify-content: space-between; background-image: none; text-align: left; }
+    .account-field__language-trigger i { color: #f96073; font-size: 14px; }
 
     .account-phone-field { display: flex; min-width: 0; }
 
@@ -1368,7 +1697,7 @@
     .account-service-tile__icon { color: currentColor; font-size: 18px; line-height: 20px; }
     .account-service-tile__label { overflow: hidden; font-size: 12px; font-weight: 400; letter-spacing: -.3px; line-height: 1.16; text-overflow: ellipsis; white-space: nowrap; }
     .account-service-tile:has(input:checked) { border: 2px solid #f96073; padding: 7px 7px 5px; color: #f96073; }
-    .account-service-tile:focus-within { outline: 2px solid rgba(249, 96, 115, .3); outline-offset: 2px; }
+    .account-service-tile:focus-within { outline: 2px solid var(--color-blue-300, #6aafff); outline-offset: 2px; }
 
     .account-save-button {
       width: 100%;
@@ -2064,7 +2393,10 @@
     .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav,
     .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav,
     .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav,
-    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav,
+    .phone-frame.is-family-profile-subpage-flow .mobile-bottom-nav,
+    .phone-frame.is-sitter-profile-subpage-flow .mobile-bottom-nav,
+    .phone-frame.is-message-detail-flow .mobile-bottom-nav { height: 32px; flex-basis: 32px; gap: 0; padding-top: 0; }
     /* Faded rather than display:none, so the icons leave and return with the
        bar instead of popping in and out of a box that is still moving. The
        bar clips them while it is short. */
@@ -2075,14 +2407,35 @@
     .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav__items,
     .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav__items,
     .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav__items,
-    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__items { opacity: 0; pointer-events: none; }
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__items,
+    .phone-frame.is-family-profile-subpage-flow .mobile-bottom-nav__items,
+    .phone-frame.is-sitter-profile-subpage-flow .mobile-bottom-nav__items,
+    .phone-frame.is-message-detail-flow .mobile-bottom-nav__items { opacity: 0; pointer-events: none; }
     .phone-frame.is-registration-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-job-wizard-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-sitter-profile-setup-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-cleaning-profile-setup-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-pet-profile-setup-flow .mobile-bottom-nav__indicator,
     .phone-frame.is-senior-profile-setup-flow .mobile-bottom-nav__indicator,
-    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+    .phone-frame.is-tutoring-profile-setup-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-family-profile-subpage-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-sitter-profile-subpage-flow .mobile-bottom-nav__indicator,
+    .phone-frame.is-message-detail-flow .mobile-bottom-nav__indicator { padding: 10px 120px 12px; }
+
+    /* These settings pages previously stopped above the 83px app navigation.
+       When that navigation collapses, they instead fill the released space
+       down to the phone's system indicator. */
+    .phone-frame.is-family-profile-subpage-flow #familyAccountScreen.is-open,
+    .phone-frame.is-family-profile-subpage-flow #familyNotificationsScreen.is-open,
+    .phone-frame.is-family-profile-subpage-flow #familyBillingScreen.is-open,
+    .phone-frame.is-family-profile-subpage-flow #familyCreditsScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterAccountDetailsScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterPersonalInformationScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterYourPlaceScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterBankAccountScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterEducationScreen.is-open,
+    .phone-frame.is-sitter-profile-subpage-flow #sitterSpokenLanguagesScreen.is-open,
+    .phone-frame.is-message-detail-flow #messageDetailScreen.is-open { bottom: 32px; }
 
     /* The existing job-creation prototype runs here as an embedded flow. The
        phone status and home safe area stay in place while its wizard owns the
@@ -2705,8 +3058,9 @@
     .sitter-profile-setup__choice:focus-visible { outline: 0; }
     .sitter-profile-setup__choice:focus-visible::before { box-shadow: 0 0 0 2px #cbdafc; }
 
-    .sitter-profile-setup__notice { border: 1px solid #cfe9d5; border-radius: 4px; background: #effaf1; padding: 14px; color: var(--color-gray-700, #435056); font-size: 14px; line-height: 1.45; }
+    .sitter-profile-setup__notice { border: 1px solid #cfe9d5; border-radius: 4px; background: #fff; padding: 14px; color: var(--color-gray-700, #435056); font-size: 14px; line-height: 1.45; }
     .sitter-profile-setup__notice i { margin-right: 6px; color: var(--color-green-500, #0ba825); }
+    .sitter-profile-setup__notice .sitter-profile-setup__upload i { margin-right: 0; color: var(--color-pink-400, #f96073); }
 
     .sitter-profile-setup__footer { display: grid; flex: 0 0 auto; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--color-gray-300, #e5e5ea); background: #fff; padding: 12px 20px; }
     .sitter-profile-setup__footer--first-step { display: block; }
@@ -2727,6 +3081,13 @@
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__active { display: inline-flex; }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__edit { display: inline-flex; }
     .sitter-profiles-screen.is-new-sitter .sitter-service-profile--completed .sitter-service-profile__not-filled { display: none; }
+
+    /* Senior care can be initialized later by an already registered sitter.
+       Once complete, it follows the same active profile state as a profile
+       created during registration. */
+    .sitter-service-profile--inactive.sitter-service-profile--completed .sitter-service-profile__vertical { background: var(--color-orange-400, #fd8b25); }
+    .sitter-service-profile--inactive.sitter-service-profile--completed .sitter-service-profile__active { display: inline-flex; }
+    .sitter-service-profile--inactive.sitter-service-profile--completed .sitter-service-profile__not-filled { display: none; }
 
     /* Figma: Welcome log in mobile / family registration details. This is a
        registration step, so it only retains the phone safe area — not app nav. */
@@ -9187,13 +9548,105 @@
         <div class="family-account-header__placeholder" aria-hidden="true"></div>
       </header>
       <main class="sitter-info-content">
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-gear" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Account details</span><span class="sitter-info-item__description">e-mail, login and interface language</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-user" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Personal information</span><span class="sitter-info-item__description">name, date of birth, phone number</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Your place</span><span class="sitter-info-item__description">address</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-building-columns" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Bank account</span><span class="sitter-info-item__description">bank account, tax number &amp; residency</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-user-graduate" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Education</span><span class="sitter-info-item__description">highschool, university, fields of study</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="sitter-info-item" type="button"><i class="fa-light fa-globe" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Spoken languages</span><span class="sitter-info-item__description">native and other spoken languages</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterAccountDetailsTrigger" type="button"><i class="fa-light fa-gear" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Account details</span><span class="sitter-info-item__description">e-mail, login and interface language</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterPersonalInformationTrigger" type="button"><i class="fa-light fa-user" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Personal information</span><span class="sitter-info-item__description">name, date of birth, phone number</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterYourPlaceTrigger" type="button"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Your place</span><span class="sitter-info-item__description">address</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterBankAccountTrigger" type="button"><i class="fa-light fa-building-columns" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Bank account</span><span class="sitter-info-item__description">bank account, tax number &amp; residency</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterEducationTrigger" type="button"><i class="fa-light fa-user-graduate" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Education</span><span class="sitter-info-item__description">highschool, university, fields of study</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="sitter-info-item" id="sitterSpokenLanguagesTrigger" type="button"><i class="fa-light fa-globe" aria-hidden="true"></i><span class="sitter-info-item__copy"><span class="sitter-info-item__title">Spoken languages</span><span class="sitter-info-item__description">native and other spoken languages</span></span><i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
       </main>
+    </section>
+    <section class="family-account-screen sitter-account-details-screen" id="sitterAccountDetailsScreen" aria-label="Account details" aria-hidden="true" data-node-id="2389:48388">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterAccountDetailsBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-gear" aria-hidden="true"></i><span>Account details</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterAccountDetailsForm">
+        <label class="account-field"><span class="account-field__label">Email</span><input class="account-field__input" type="email" value="sandra.novakova@example.com" autocomplete="email"></label>
+        <label class="account-field"><span class="account-field__label">Interface language</span><button class="account-field__select account-field__language-trigger" id="sitterAccountLanguageTrigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterAccountLanguageSheet"><span>English</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></label>
+        <section class="sitter-account-login-methods" aria-labelledby="sitterAccountLoginMethodsTitle">
+          <h2 class="sitter-account-login-methods__title" id="sitterAccountLoginMethodsTitle">Login methods</h2>
+          <div class="sitter-account-login-methods__list">
+            <div class="sitter-account-login-method"><span class="sitter-account-login-method__icon"><i class="fa-light fa-key" aria-hidden="true"></i></span><span class="sitter-account-login-method__copy"><span class="sitter-account-login-method__name">Password</span><span class="sitter-account-login-method__email">sandra.novakova@example.com</span></span><button class="sitter-account-login-method__action" type="button" data-sitter-account-change>Edit</button></div>
+            <div class="sitter-account-login-method"><span class="sitter-account-login-method__icon"><i class="fa-brands fa-google" aria-hidden="true"></i></span><span class="sitter-account-login-method__copy"><span class="sitter-account-login-method__name">Google</span><span class="sitter-account-login-method__email">sandra.novakova@example.com</span></span><button class="sitter-account-login-method__action sitter-account-login-method__action--remove" type="button" data-sitter-account-change>Remove</button></div>
+          </div>
+        </section>
+        <button class="sitter-account-notifications-link" type="button"><i class="fa-regular fa-envelope" aria-hidden="true"></i><span>Manage notifications &amp; opt-ins</span></button>
+        <section class="sitter-account-danger-zone" aria-labelledby="sitterAccountDangerTitle"><h2 class="sitter-account-danger-zone__title" id="sitterAccountDangerTitle">Danger zone</h2><p class="sitter-account-danger-zone__copy">Deleting your account permanently removes your profile and saved information.</p><button class="sitter-account-danger-zone__action" type="button">Delete account</button></section>
+      </form>
+      <footer class="account-save-bar" id="sitterAccountDetailsSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterAccountDetailsSaveButton" type="submit" form="sitterAccountDetailsForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterAccountDetailsSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterAccountDetailsSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
+    </section>
+    <section class="family-account-screen sitter-personal-information-screen" id="sitterPersonalInformationScreen" aria-label="Personal information" aria-hidden="true" data-node-id="2389:48637">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterPersonalInformationBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-id-card" aria-hidden="true"></i><span>Personal information</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterPersonalInformationForm">
+        <label class="account-field"><span class="account-field__label">Full name</span><input class="account-field__input" type="text" value="Sandra Nováková" autocomplete="name"></label>
+        <div class="account-field"><span class="account-field__label">Your date of birth</span><div class="sitter-personal-birth-date"><span class="sitter-personal-birth-date__select"><select class="account-field__select" aria-label="Day of birth"><option selected>31</option><option>1</option><option>15</option></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span><span class="sitter-personal-birth-date__select"><select class="account-field__select" aria-label="Month of birth"><option selected>January</option><option>February</option><option>March</option></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span><span class="sitter-personal-birth-date__select"><select class="account-field__select" aria-label="Year of birth"><option selected>1980</option><option>1981</option><option>1982</option></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span></div></div>
+        <div class="account-field"><span class="account-field__label">Phone number</span><span class="account-phone-field"><span class="account-phone-field__prefix" aria-hidden="true">🇨🇿 <i class="fa-regular fa-chevron-down"></i><span>(+420)</span></span><input class="account-field__input" type="tel" value="777 123 456" autocomplete="tel"></span><label class="sitter-personal-phone-visibility"><input type="checkbox" checked><span>Families can see my phone number.</span></label></div>
+        <section class="sitter-personal-smoker" aria-labelledby="sitterPersonalSmokerTitle"><h2 class="sitter-personal-smoker__title" id="sitterPersonalSmokerTitle">Are you a smoker?</h2><div class="sitter-personal-smoker__options"><label class="sitter-personal-smoker__option"><input type="radio" name="sitterSmoker" checked><span>No, I don’t smoke</span></label><label class="sitter-personal-smoker__option"><input type="radio" name="sitterSmoker"><span>Yes, I smoke</span></label></div></section>
+      </form>
+      <footer class="account-save-bar" id="sitterPersonalInformationSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterPersonalInformationSaveButton" type="submit" form="sitterPersonalInformationForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterPersonalInformationSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterPersonalInformationSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
+    </section>
+    <section class="family-account-screen sitter-your-place-screen" id="sitterYourPlaceScreen" aria-label="Your place" aria-hidden="true" data-node-id="2389:48837">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterYourPlaceBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Your place</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterYourPlaceForm">
+        <section class="sitter-your-place-address" aria-labelledby="sitterYourPlaceAddressLabel"><label class="account-field"><span class="account-field__label" id="sitterYourPlaceAddressLabel">Your primary address</span><input class="account-field__input" type="text" value="Americká 362/11, 123 00 Praha 4" autocomplete="street-address"></label><div class="sitter-your-place-map" aria-label="Map centred on your primary address"><img src="./assets/sitter-your-place-map.png" alt=""><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div><p class="sitter-your-place-privacy"><i class="fa-light fa-circle-info" aria-hidden="true"></i><span>Your full address is always hidden.</span></p></section>
+        <button class="sitter-your-place-add-address" id="sitterYourPlaceAddSecondary" type="button"><i class="fa-regular fa-plus" aria-hidden="true"></i><span>Add secondary address</span></button>
+        <label class="account-field" id="sitterYourPlaceSecondaryField" hidden><span class="account-field__label">Secondary address</span><input class="account-field__input" type="text" placeholder="Enter another address" autocomplete="street-address"></label>
+      </form>
+      <footer class="account-save-bar" id="sitterYourPlaceSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterYourPlaceSaveButton" type="submit" form="sitterYourPlaceForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterYourPlaceSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterYourPlaceSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
+    </section>
+    <section class="family-account-screen sitter-bank-account-screen" id="sitterBankAccountScreen" aria-label="Bank account" aria-hidden="true" data-node-id="2389:48939">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterBankAccountBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-building-columns" aria-hidden="true"></i><span>Bank account</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterBankAccountForm">
+        <div class="account-field"><span class="account-field__label">Your bank account number</span><div class="sitter-bank-account-number"><input class="account-field__input" type="text" inputmode="numeric" placeholder="prefix" aria-label="Bank account prefix"><span class="sitter-bank-account-number__separator" aria-hidden="true">-</span><input class="account-field__input" type="text" inputmode="numeric" placeholder="number" aria-label="Bank account number"><span class="sitter-bank-account-number__separator" aria-hidden="true">/</span><button class="account-field__select account-field__language-trigger" id="sitterBankAccountBankTrigger" type="button" aria-label="Bank" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterBankAccountOptionsSheet" data-sitter-bank-account-select="bank"><span>bank</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></div></div>
+        <label class="account-field"><span class="account-field__label">Bank account holder name</span><input class="account-field__input" type="text" placeholder="Jan Novák" autocomplete="name"></label>
+        <div class="sitter-bank-account-details"><label class="account-field"><span class="account-field__label">Tax number</span><input class="account-field__input" type="text" inputmode="numeric" placeholder="1345678"></label><label class="account-field"><span class="account-field__label">Tax residency</span><button class="account-field__select account-field__language-trigger" id="sitterBankAccountResidencyTrigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sitterBankAccountOptionsSheet" data-sitter-bank-account-select="residency"><span>Czech Republic</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></label></div>
+      </form>
+      <footer class="account-save-bar" id="sitterBankAccountSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterBankAccountSaveButton" type="submit" form="sitterBankAccountForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterBankAccountSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterBankAccountSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
+    </section>
+    <section class="family-account-screen sitter-education-screen" id="sitterEducationScreen" aria-label="Education" aria-hidden="true" data-node-id="2392:49085">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterEducationBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-user-graduate" aria-hidden="true"></i><span>Education</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterEducationForm">
+        <label class="account-field"><span class="account-field__label">High school &amp; field of study</span><input class="account-field__input" type="text" value="Gymnázium Jana Nováka, Praha"></label>
+        <label class="account-field"><span class="account-field__label">University <small>(optional)</small></span><input class="account-field__input" type="text" value="Pedagogická fakulta UK"></label>
+        <label class="account-field"><span class="account-field__label">Courses and certificates</span><textarea class="sitter-education-textarea" placeholder="Include relevant certificates in pedagogy, psychology, sign language, or if you worked as a rescue worker, camp leader, etc."></textarea></label>
+      </form>
+      <footer class="account-save-bar" id="sitterEducationSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterEducationSaveButton" type="submit" form="sitterEducationForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterEducationSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterEducationSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
+    </section>
+    <section class="family-account-screen sitter-spoken-languages-screen" id="sitterSpokenLanguagesScreen" aria-label="Spoken languages" aria-hidden="true" data-node-id="2392:49213">
+      <header class="family-account-header">
+        <button class="family-account-header__back" id="sitterSpokenLanguagesBack" type="button" aria-label="Back to Info and Settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="family-account-header__title"><i class="fa-light fa-globe" aria-hidden="true"></i><span>Spoken languages</span></div>
+        <div class="family-account-header__placeholder" aria-hidden="true"></div>
+      </header>
+      <form class="sitter-account-details-content" id="sitterSpokenLanguagesForm">
+        <section class="sitter-language-group" aria-labelledby="sitterNativeLanguagesLabel"><h2 class="sitter-language-group__label" id="sitterNativeLanguagesLabel">Your native language(s)</h2><div class="sitter-language-grid"><button class="sitter-language-choice is-selected" type="button" aria-pressed="true" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇨🇿</span></span><span class="sitter-language-choice__name">Čeština</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇸🇰</span></span><span class="sitter-language-choice__name">Slovenčina</span></button></div><button class="sitter-language-more" type="button" data-sitter-language-more><i class="fa-regular fa-plus" aria-hidden="true"></i><span>more languages</span></button><div class="sitter-language-grid sitter-language-extra" aria-label="More native languages"><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇵🇱</span></span><span class="sitter-language-choice__name">Polski</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇭🇺</span></span><span class="sitter-language-choice__name">Magyar</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇷🇴</span></span><span class="sitter-language-choice__name">Română</span></button></div></section>
+        <section class="sitter-language-group" aria-labelledby="sitterOtherLanguagesLabel"><h2 class="sitter-language-group__label" id="sitterOtherLanguagesLabel">Other languages <small>(optional)</small></h2><div class="sitter-language-grid"><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇬🇧</span></span><span class="sitter-language-choice__name">English</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇩🇪</span></span><span class="sitter-language-choice__name">Deutsch</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇪🇸</span></span><span class="sitter-language-choice__name">Español</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇫🇷</span></span><span class="sitter-language-choice__name">Français</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇮🇹</span></span><span class="sitter-language-choice__name">Italiano</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇺🇦</span></span><span class="sitter-language-choice__name">Українська</span></button></div><button class="sitter-language-more" type="button" data-sitter-language-more><i class="fa-regular fa-plus" aria-hidden="true"></i><span>more languages</span></button><div class="sitter-language-grid sitter-language-extra" aria-label="More other languages"><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇵🇹</span></span><span class="sitter-language-choice__name">Português</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇷🇺</span></span><span class="sitter-language-choice__name">Русский</span></button><button class="sitter-language-choice" type="button" aria-pressed="false" data-sitter-language-choice><span class="sitter-language-choice__top"><span class="sitter-language-choice__check" aria-hidden="true"></span><span class="sitter-language-choice__flag" aria-hidden="true">🇹🇷</span></span><span class="sitter-language-choice__name">Türkçe</span></button></div></section>
+      </form>
+      <footer class="account-save-bar" id="sitterSpokenLanguagesSaveBar" aria-hidden="true"><button class="account-save-button" id="sitterSpokenLanguagesSaveButton" type="submit" form="sitterSpokenLanguagesForm" disabled>Save changes</button></footer>
+      <aside class="account-save-success" id="sitterSpokenLanguagesSaveSuccess" role="status" aria-live="polite" aria-hidden="true"><div class="account-save-success__doodle" aria-hidden="true"><div class="account-save-success__doodle-layer account-save-success__doodle-layer--2"><img src="./assets/account-save-toast-doodle-layer-2.svg" alt=""></div><div class="account-save-success__doodle-layer account-save-success__doodle-layer--1"><img src="./assets/account-save-toast-doodle-layer-1.svg" alt=""></div></div><p class="account-save-success__message">Your configuration updates are saved</p><button class="account-save-success__close" id="sitterSpokenLanguagesSaveSuccessClose" type="button" aria-label="Dismiss confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
     </section>
     <section class="family-account-screen sitter-profiles-screen" id="sitterProfilesScreen" aria-label="Profiles" aria-hidden="true" data-node-id="2367:97372">
       <header class="family-account-header">
@@ -9294,14 +9747,14 @@
           <img class="account-photo-panel__avatar" src="./assets/mobile-app-header-avatar.png" alt="Alice Nováková">
           <div class="account-photo-panel__actions">
             <button class="account-upload-button" type="button" data-account-change><i class="fa-regular fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload photo</button>
-            <button class="account-remove-photo" type="button" data-account-change><i class="fa-regular fa-trash-can" aria-hidden="true"></i>Remove photo</button>
+            <button class="account-remove-photo" type="button" data-account-change><i class="fa-regular fa-trash-can" aria-hidden="true"></i><span>Remove photo</span></button>
           </div>
         </section>
         <label class="account-field"><span class="account-field__label">Full name</span><input class="account-field__input" type="text" value="Alice Nováková" autocomplete="name"></label>
         <label class="account-field"><span class="account-field__label">E-mail</span><input class="account-field__input" type="email" value="alice.novakova@example.com" autocomplete="email"></label>
-        <button class="account-manage-login" type="button"><i class="fa-regular fa-gear" aria-hidden="true"></i>Manage password &amp; login settings</button>
+        <button class="account-manage-login" type="button"><i class="fa-regular fa-gear" aria-hidden="true"></i><span>Manage password &amp; login settings</span></button>
         <label class="account-field"><span class="account-field__label account-field__label--with-badge">Phone number <span class="account-field__confirmation"><i class="fa-solid fa-check" aria-hidden="true"></i>confirmed</span></span><span class="account-phone-field"><span class="account-phone-field__prefix" aria-hidden="true">🇨🇿 <span>(+420)</span><i class="fa-solid fa-caret-down"></i></span><input class="account-field__input" type="tel" value="777 123 456" autocomplete="tel"></span></label>
-        <label class="account-field"><span class="account-field__label">Interface language</span><select class="account-field__select"><option>English</option><option>Čeština</option><option>Slovenčina</option></select></label>
+        <label class="account-field"><span class="account-field__label">Interface language</span><button class="account-field__select account-field__language-trigger" id="accountLanguageTrigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="accountLanguageSheet"><span>English</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button></label>
         <section class="account-field" aria-labelledby="accountPreferredServices"><span class="account-field__label" id="accountPreferredServices">Preferred services</span><div class="account-services">
           <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox" checked><i class="account-service-tile__icon fa-light fa-child-reaching" aria-hidden="true"></i></span><span class="account-service-tile__label">Babysitting</span></label>
           <label class="account-service-tile"><span class="account-service-tile__top"><input type="checkbox"><i class="account-service-tile__icon fa-light fa-broom" aria-hidden="true"></i></span><span class="account-service-tile__label">Household cleaning</span></label>
@@ -9684,6 +10137,45 @@
           <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="1 – 2 years">1 – 2 years</button>
           <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="3 – 5 years">3 – 5 years</button>
           <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-profile-setup-age-experience-option="More than 5 years">More than 5 years</button>
+        </div>
+      </section>
+    </div>
+    <div class="sitter-profile-setup-price-sheet" id="accountLanguageSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="accountLanguageSheetBackdrop" type="button" aria-label="Close interface language options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="accountLanguageSheetDialog" role="dialog" aria-modal="true" aria-labelledby="accountLanguageSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="accountLanguageSheetTitle">Interface language</h2>
+        <div role="listbox" aria-label="Interface language options">
+          <button class="sitter-profile-setup-price-sheet__option is-selected" type="button" role="option" aria-selected="true" data-account-language-option="English">English</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-account-language-option="Čeština">Čeština</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-account-language-option="Slovenčina">Slovenčina</button>
+        </div>
+      </section>
+    </div>
+    <div class="sitter-profile-setup-price-sheet" id="sitterAccountLanguageSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="sitterAccountLanguageSheetBackdrop" type="button" aria-label="Close interface language options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="sitterAccountLanguageSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterAccountLanguageSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="sitterAccountLanguageSheetTitle">Interface language</h2>
+        <div role="listbox" aria-label="Interface language options">
+          <button class="sitter-profile-setup-price-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-account-language-option="English">English</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-account-language-option="Čeština">Čeština</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-account-language-option="Slovenčina">Slovenčina</button>
+        </div>
+      </section>
+    </div>
+    <div class="sitter-profile-setup-price-sheet" id="sitterBankAccountOptionsSheet" aria-hidden="true" hidden>
+      <button class="sitter-profile-setup-price-sheet__backdrop" id="sitterBankAccountOptionsSheetBackdrop" type="button" aria-label="Close bank account options"></button>
+      <section class="sitter-profile-setup-price-sheet__panel" id="sitterBankAccountOptionsSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterBankAccountOptionsSheetTitle" tabindex="-1">
+        <div class="sitter-profile-setup-price-sheet__handle" aria-hidden="true"></div>
+        <h2 class="sitter-profile-setup-price-sheet__title" id="sitterBankAccountOptionsSheetTitle">Bank</h2>
+        <div role="listbox" aria-label="Bank account options">
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="bank">bank</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="bank">Česká spořitelna</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="bank">ČSOB</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="bank">Komerční banka</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="residency">Czech Republic</button>
+          <button class="sitter-profile-setup-price-sheet__option" type="button" role="option" aria-selected="false" data-sitter-bank-account-option="residency">Slovakia</button>
         </div>
       </section>
     </div>
@@ -10310,6 +10802,80 @@
       var sitterProfileInfoTrigger = document.getElementById('sitterProfileInfoTrigger');
       var sitterInfoScreen = document.getElementById('sitterInfoScreen');
       var sitterInfoBack = document.getElementById('sitterInfoBack');
+      var sitterAccountDetailsTrigger = document.getElementById('sitterAccountDetailsTrigger');
+      var sitterAccountDetailsScreen = document.getElementById('sitterAccountDetailsScreen');
+      var sitterAccountDetailsBack = document.getElementById('sitterAccountDetailsBack');
+      var sitterAccountDetailsForm = document.getElementById('sitterAccountDetailsForm');
+      var sitterAccountDetailsSaveBar = document.getElementById('sitterAccountDetailsSaveBar');
+      var sitterAccountDetailsSaveButton = document.getElementById('sitterAccountDetailsSaveButton');
+      var sitterAccountDetailsChangeActions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-account-change]'));
+      var sitterAccountDetailsSaveSuccess = document.getElementById('sitterAccountDetailsSaveSuccess');
+      var sitterAccountDetailsSaveSuccessClose = document.getElementById('sitterAccountDetailsSaveSuccessClose');
+      var sitterAccountDetailsSaveSuccessTimer = null;
+      var sitterAccountLanguageTrigger = document.getElementById('sitterAccountLanguageTrigger');
+      var sitterAccountLanguageSheet = document.getElementById('sitterAccountLanguageSheet');
+      var sitterAccountLanguageSheetBackdrop = document.getElementById('sitterAccountLanguageSheetBackdrop');
+      var sitterAccountLanguageSheetDialog = document.getElementById('sitterAccountLanguageSheetDialog');
+      var sitterAccountLanguageOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-account-language-option]'));
+      var sitterAccountLanguageSheetCloseTimer = null;
+      var sitterPersonalInformationTrigger = document.getElementById('sitterPersonalInformationTrigger');
+      var sitterPersonalInformationScreen = document.getElementById('sitterPersonalInformationScreen');
+      var sitterPersonalInformationBack = document.getElementById('sitterPersonalInformationBack');
+      var sitterPersonalInformationForm = document.getElementById('sitterPersonalInformationForm');
+      var sitterPersonalInformationSaveBar = document.getElementById('sitterPersonalInformationSaveBar');
+      var sitterPersonalInformationSaveButton = document.getElementById('sitterPersonalInformationSaveButton');
+      var sitterPersonalInformationSaveSuccess = document.getElementById('sitterPersonalInformationSaveSuccess');
+      var sitterPersonalInformationSaveSuccessClose = document.getElementById('sitterPersonalInformationSaveSuccessClose');
+      var sitterPersonalInformationSaveSuccessTimer = null;
+      var sitterYourPlaceTrigger = document.getElementById('sitterYourPlaceTrigger');
+      var sitterYourPlaceScreen = document.getElementById('sitterYourPlaceScreen');
+      var sitterYourPlaceBack = document.getElementById('sitterYourPlaceBack');
+      var sitterYourPlaceForm = document.getElementById('sitterYourPlaceForm');
+      var sitterYourPlaceSaveBar = document.getElementById('sitterYourPlaceSaveBar');
+      var sitterYourPlaceSaveButton = document.getElementById('sitterYourPlaceSaveButton');
+      var sitterYourPlaceSaveSuccess = document.getElementById('sitterYourPlaceSaveSuccess');
+      var sitterYourPlaceSaveSuccessClose = document.getElementById('sitterYourPlaceSaveSuccessClose');
+      var sitterYourPlaceSaveSuccessTimer = null;
+      var sitterYourPlaceAddSecondary = document.getElementById('sitterYourPlaceAddSecondary');
+      var sitterYourPlaceSecondaryField = document.getElementById('sitterYourPlaceSecondaryField');
+      var sitterBankAccountTrigger = document.getElementById('sitterBankAccountTrigger');
+      var sitterBankAccountScreen = document.getElementById('sitterBankAccountScreen');
+      var sitterBankAccountBack = document.getElementById('sitterBankAccountBack');
+      var sitterBankAccountForm = document.getElementById('sitterBankAccountForm');
+      var sitterBankAccountSaveBar = document.getElementById('sitterBankAccountSaveBar');
+      var sitterBankAccountSaveButton = document.getElementById('sitterBankAccountSaveButton');
+      var sitterBankAccountSaveSuccess = document.getElementById('sitterBankAccountSaveSuccess');
+      var sitterBankAccountSaveSuccessClose = document.getElementById('sitterBankAccountSaveSuccessClose');
+      var sitterBankAccountSaveSuccessTimer = null;
+      var sitterBankAccountBankTrigger = document.getElementById('sitterBankAccountBankTrigger');
+      var sitterBankAccountResidencyTrigger = document.getElementById('sitterBankAccountResidencyTrigger');
+      var sitterBankAccountOptionsSheet = document.getElementById('sitterBankAccountOptionsSheet');
+      var sitterBankAccountOptionsSheetBackdrop = document.getElementById('sitterBankAccountOptionsSheetBackdrop');
+      var sitterBankAccountOptionsSheetDialog = document.getElementById('sitterBankAccountOptionsSheetDialog');
+      var sitterBankAccountOptionsSheetTitle = document.getElementById('sitterBankAccountOptionsSheetTitle');
+      var sitterBankAccountOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-bank-account-option]'));
+      var sitterBankAccountOptionsActiveTrigger = null;
+      var sitterBankAccountOptionsSheetCloseTimer = null;
+      var sitterEducationTrigger = document.getElementById('sitterEducationTrigger');
+      var sitterEducationScreen = document.getElementById('sitterEducationScreen');
+      var sitterEducationBack = document.getElementById('sitterEducationBack');
+      var sitterEducationForm = document.getElementById('sitterEducationForm');
+      var sitterEducationSaveBar = document.getElementById('sitterEducationSaveBar');
+      var sitterEducationSaveButton = document.getElementById('sitterEducationSaveButton');
+      var sitterEducationSaveSuccess = document.getElementById('sitterEducationSaveSuccess');
+      var sitterEducationSaveSuccessClose = document.getElementById('sitterEducationSaveSuccessClose');
+      var sitterEducationSaveSuccessTimer = null;
+      var sitterSpokenLanguagesTrigger = document.getElementById('sitterSpokenLanguagesTrigger');
+      var sitterSpokenLanguagesScreen = document.getElementById('sitterSpokenLanguagesScreen');
+      var sitterSpokenLanguagesBack = document.getElementById('sitterSpokenLanguagesBack');
+      var sitterSpokenLanguagesForm = document.getElementById('sitterSpokenLanguagesForm');
+      var sitterSpokenLanguagesSaveBar = document.getElementById('sitterSpokenLanguagesSaveBar');
+      var sitterSpokenLanguagesSaveButton = document.getElementById('sitterSpokenLanguagesSaveButton');
+      var sitterSpokenLanguagesSaveSuccess = document.getElementById('sitterSpokenLanguagesSaveSuccess');
+      var sitterSpokenLanguagesSaveSuccessClose = document.getElementById('sitterSpokenLanguagesSaveSuccessClose');
+      var sitterSpokenLanguagesChoices = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-language-choice]'));
+      var sitterSpokenLanguagesMoreButtons = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-language-more]'));
+      var sitterSpokenLanguagesSaveSuccessTimer = null;
       var sitterProfileProfilesTrigger = document.getElementById('sitterProfileProfilesTrigger');
       var sitterDashboardProfilesLink = document.getElementById('sitterDashboardProfilesLink');
       var sitterProfilesScreen = document.getElementById('sitterProfilesScreen');
@@ -10337,6 +10903,12 @@
       var familyAccountSaveBar = document.getElementById('familyAccountSaveBar');
       var familyAccountSaveButton = document.getElementById('familyAccountSaveButton');
       var familyAccountChangeActions = Array.prototype.slice.call(document.querySelectorAll('[data-account-change]'));
+      var accountLanguageTrigger = document.getElementById('accountLanguageTrigger');
+      var accountLanguageSheet = document.getElementById('accountLanguageSheet');
+      var accountLanguageSheetBackdrop = document.getElementById('accountLanguageSheetBackdrop');
+      var accountLanguageSheetDialog = document.getElementById('accountLanguageSheetDialog');
+      var accountLanguageOptions = Array.prototype.slice.call(document.querySelectorAll('[data-account-language-option]'));
+      var accountLanguageSheetCloseTimer = null;
       var familyAccountSaveSuccess = document.getElementById('familyAccountSaveSuccess');
       var familyAccountSaveSuccessClose = document.getElementById('familyAccountSaveSuccessClose');
       var familyProfileNotificationsTrigger = document.getElementById('familyProfileNotificationsTrigger');
@@ -12142,7 +12714,7 @@
       }
 
       function openSitterProfileSetup(trigger, mode) {
-        if (!isNewlyRegisteredSitter) return;
+        if (!isNewlyRegisteredSitter && mode !== 'seniorCare') return;
         sitterProfileSetupMode = mode || 'babysitting';
         sitterProfileSetupTrigger = trigger || null;
         sitterProfileSetupStep = 0;
@@ -12861,6 +13433,7 @@
         familyReferralHowScreen.classList.remove('is-open');
         familyReferralHowScreen.setAttribute('aria-hidden', 'true');
         closeReferralShareSheet(false);
+        phoneFrame.classList.remove('is-message-detail-flow');
         messageDetailScreen.classList.remove('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'true');
         if (screen === 'messages' || screen === 'sitter-messages') clearMessagesBadge();
@@ -13117,6 +13690,7 @@
 
       function closeFamilyProfile() {
         hideFamilyAccountSaveSuccess();
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyAccountScreen.classList.remove('is-open');
         familyAccountScreen.setAttribute('aria-hidden', 'true');
         familyNotificationsScreen.classList.remove('is-open');
@@ -13151,6 +13725,12 @@
       function closeSitterProfile() {
         closeSitterProfileSetup(false);
         hideSitterProfileCreatedAlert();
+        closeSitterAccountDetails(false);
+        closeSitterPersonalInformation(false);
+        closeSitterYourPlace(false);
+        closeSitterBankAccount(false);
+        closeSitterEducation(false);
+        closeSitterSpokenLanguages(false);
         sitterInfoScreen.classList.remove('is-open');
         sitterInfoScreen.setAttribute('aria-hidden', 'true');
         sitterProfilesScreen.classList.remove('is-open');
@@ -13180,6 +13760,332 @@
         sitterInfoScreen.classList.remove('is-open');
         sitterInfoScreen.setAttribute('aria-hidden', 'true');
         sitterProfileInfoTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setSitterAccountDetailsDirty(isDirty) {
+        sitterAccountDetailsScreen.classList.toggle('is-dirty', isDirty);
+        sitterAccountDetailsSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterAccountDetailsSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterAccountDetailsSaveSuccess() {
+        if (sitterAccountDetailsSaveSuccessTimer) {
+          clearTimeout(sitterAccountDetailsSaveSuccessTimer);
+          sitterAccountDetailsSaveSuccessTimer = null;
+        }
+        sitterAccountDetailsSaveSuccess.classList.remove('is-visible');
+        sitterAccountDetailsSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterAccountDetailsSaveSuccess() {
+        hideSitterAccountDetailsSaveSuccess();
+        sitterAccountDetailsSaveSuccess.classList.add('is-visible');
+        sitterAccountDetailsSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterAccountDetailsSaveSuccessTimer = setTimeout(hideSitterAccountDetailsSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function closeSitterAccountLanguageSheet(restoreFocus) {
+        if (sitterAccountLanguageSheet.hidden) return;
+        sitterAccountLanguageSheet.classList.remove('is-open');
+        sitterAccountLanguageSheet.setAttribute('aria-hidden', 'true');
+        sitterAccountLanguageTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterAccountLanguageSheetCloseTimer);
+        sitterAccountLanguageSheetCloseTimer = window.setTimeout(function () {
+          sitterAccountLanguageSheet.hidden = true;
+          if (sitterAccountDetailsScreen.classList.contains('is-open')) setBackgroundInert(sitterAccountDetailsScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus) sitterAccountLanguageTrigger.focus({ preventScroll: true });
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterAccountLanguageSheet() {
+        if (!sitterAccountDetailsScreen.classList.contains('is-open')) return;
+        var selectedLanguage = sitterAccountLanguageTrigger.querySelector('span').textContent;
+        window.clearTimeout(sitterAccountLanguageSheetCloseTimer);
+        sitterAccountLanguageOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-sitter-account-language-option') === selectedLanguage;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        sitterAccountLanguageSheet.hidden = false;
+        sitterAccountLanguageSheet.setAttribute('aria-hidden', 'false');
+        sitterAccountLanguageTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterAccountLanguageSheet);
+        requestAnimationFrame(function () {
+          sitterAccountLanguageSheet.classList.add('is-open');
+          sitterAccountLanguageSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function openSitterAccountDetails() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterAccountDetailsScreen.classList.add('is-open');
+        sitterAccountDetailsScreen.setAttribute('aria-hidden', 'false');
+        sitterAccountDetailsBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterAccountDetails(restoreFocus) {
+        hideSitterAccountDetailsSaveSuccess();
+        if (!sitterAccountLanguageSheet.hidden) {
+          window.clearTimeout(sitterAccountLanguageSheetCloseTimer);
+          sitterAccountLanguageSheet.classList.remove('is-open');
+          sitterAccountLanguageSheet.hidden = true;
+          sitterAccountLanguageSheet.setAttribute('aria-hidden', 'true');
+          sitterAccountLanguageTrigger.setAttribute('aria-expanded', 'false');
+        }
+        setBackgroundInert(null);
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterAccountDetailsScreen.classList.remove('is-open');
+        sitterAccountDetailsScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterAccountDetailsTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setSitterPersonalInformationDirty(isDirty) {
+        sitterPersonalInformationScreen.classList.toggle('is-dirty', isDirty);
+        sitterPersonalInformationSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterPersonalInformationSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterPersonalInformationSaveSuccess() {
+        if (sitterPersonalInformationSaveSuccessTimer) {
+          clearTimeout(sitterPersonalInformationSaveSuccessTimer);
+          sitterPersonalInformationSaveSuccessTimer = null;
+        }
+        sitterPersonalInformationSaveSuccess.classList.remove('is-visible');
+        sitterPersonalInformationSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterPersonalInformationSaveSuccess() {
+        hideSitterPersonalInformationSaveSuccess();
+        sitterPersonalInformationSaveSuccess.classList.add('is-visible');
+        sitterPersonalInformationSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterPersonalInformationSaveSuccessTimer = setTimeout(hideSitterPersonalInformationSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openSitterPersonalInformation() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterPersonalInformationScreen.classList.add('is-open');
+        sitterPersonalInformationScreen.setAttribute('aria-hidden', 'false');
+        sitterPersonalInformationBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterPersonalInformation(restoreFocus) {
+        hideSitterPersonalInformationSaveSuccess();
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterPersonalInformationScreen.classList.remove('is-open');
+        sitterPersonalInformationScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterPersonalInformationTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setSitterYourPlaceDirty(isDirty) {
+        sitterYourPlaceScreen.classList.toggle('is-dirty', isDirty);
+        sitterYourPlaceSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterYourPlaceSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterYourPlaceSaveSuccess() {
+        if (sitterYourPlaceSaveSuccessTimer) {
+          clearTimeout(sitterYourPlaceSaveSuccessTimer);
+          sitterYourPlaceSaveSuccessTimer = null;
+        }
+        sitterYourPlaceSaveSuccess.classList.remove('is-visible');
+        sitterYourPlaceSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterYourPlaceSaveSuccess() {
+        hideSitterYourPlaceSaveSuccess();
+        sitterYourPlaceSaveSuccess.classList.add('is-visible');
+        sitterYourPlaceSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterYourPlaceSaveSuccessTimer = setTimeout(hideSitterYourPlaceSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openSitterYourPlace() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterYourPlaceScreen.classList.add('is-open');
+        sitterYourPlaceScreen.setAttribute('aria-hidden', 'false');
+        sitterYourPlaceBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterYourPlace(restoreFocus) {
+        hideSitterYourPlaceSaveSuccess();
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterYourPlaceScreen.classList.remove('is-open');
+        sitterYourPlaceScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterYourPlaceTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterBankAccountOptionsSheet(restoreFocus) {
+        if (sitterBankAccountOptionsSheet.hidden) return;
+        sitterBankAccountOptionsSheet.classList.remove('is-open');
+        sitterBankAccountOptionsSheet.setAttribute('aria-hidden', 'true');
+        if (sitterBankAccountOptionsActiveTrigger) sitterBankAccountOptionsActiveTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(sitterBankAccountOptionsSheetCloseTimer);
+        sitterBankAccountOptionsSheetCloseTimer = window.setTimeout(function () {
+          sitterBankAccountOptionsSheet.hidden = true;
+          if (sitterBankAccountScreen.classList.contains('is-open')) setBackgroundInert(sitterBankAccountScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus && sitterBankAccountOptionsActiveTrigger) sitterBankAccountOptionsActiveTrigger.focus({ preventScroll: true });
+          sitterBankAccountOptionsActiveTrigger = null;
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openSitterBankAccountOptionsSheet(trigger) {
+        if (!sitterBankAccountScreen.classList.contains('is-open')) return;
+        var optionType = trigger.getAttribute('data-sitter-bank-account-select');
+        var selectedValue = trigger.querySelector('span').textContent;
+        sitterBankAccountOptionsActiveTrigger = trigger;
+        sitterBankAccountOptionsSheetTitle.textContent = optionType === 'bank' ? 'Bank' : 'Tax residency';
+        window.clearTimeout(sitterBankAccountOptionsSheetCloseTimer);
+        sitterBankAccountOptions.forEach(function (option) {
+          var matchesType = option.getAttribute('data-sitter-bank-account-option') === optionType;
+          var isSelected = matchesType && option.textContent === selectedValue;
+          option.hidden = !matchesType;
+          option.classList.toggle('is-selected', isSelected);
+          option.setAttribute('aria-selected', String(isSelected));
+        });
+        sitterBankAccountOptionsSheet.hidden = false;
+        sitterBankAccountOptionsSheet.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(sitterBankAccountOptionsSheet);
+        requestAnimationFrame(function () {
+          sitterBankAccountOptionsSheet.classList.add('is-open');
+          sitterBankAccountOptionsSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function setSitterBankAccountDirty(isDirty) {
+        sitterBankAccountScreen.classList.toggle('is-dirty', isDirty);
+        sitterBankAccountSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterBankAccountSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterBankAccountSaveSuccess() {
+        if (sitterBankAccountSaveSuccessTimer) {
+          clearTimeout(sitterBankAccountSaveSuccessTimer);
+          sitterBankAccountSaveSuccessTimer = null;
+        }
+        sitterBankAccountSaveSuccess.classList.remove('is-visible');
+        sitterBankAccountSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterBankAccountSaveSuccess() {
+        hideSitterBankAccountSaveSuccess();
+        sitterBankAccountSaveSuccess.classList.add('is-visible');
+        sitterBankAccountSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterBankAccountSaveSuccessTimer = setTimeout(hideSitterBankAccountSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openSitterBankAccount() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterBankAccountScreen.classList.add('is-open');
+        sitterBankAccountScreen.setAttribute('aria-hidden', 'false');
+        sitterBankAccountBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterBankAccount(restoreFocus) {
+        closeSitterBankAccountOptionsSheet(false);
+        hideSitterBankAccountSaveSuccess();
+        setBackgroundInert(null);
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterBankAccountScreen.classList.remove('is-open');
+        sitterBankAccountScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterBankAccountTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setSitterEducationDirty(isDirty) {
+        sitterEducationScreen.classList.toggle('is-dirty', isDirty);
+        sitterEducationSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterEducationSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterEducationSaveSuccess() {
+        if (sitterEducationSaveSuccessTimer) {
+          clearTimeout(sitterEducationSaveSuccessTimer);
+          sitterEducationSaveSuccessTimer = null;
+        }
+        sitterEducationSaveSuccess.classList.remove('is-visible');
+        sitterEducationSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterEducationSaveSuccess() {
+        hideSitterEducationSaveSuccess();
+        sitterEducationSaveSuccess.classList.add('is-visible');
+        sitterEducationSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterEducationSaveSuccessTimer = setTimeout(hideSitterEducationSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openSitterEducation() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterEducationScreen.classList.add('is-open');
+        sitterEducationScreen.setAttribute('aria-hidden', 'false');
+        sitterEducationBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterEducation(restoreFocus) {
+        hideSitterEducationSaveSuccess();
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterEducationScreen.classList.remove('is-open');
+        sitterEducationScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterEducationTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function setSitterSpokenLanguagesDirty(isDirty) {
+        sitterSpokenLanguagesScreen.classList.toggle('is-dirty', isDirty);
+        sitterSpokenLanguagesSaveBar.setAttribute('aria-hidden', String(!isDirty));
+        sitterSpokenLanguagesSaveButton.disabled = !isDirty;
+      }
+
+      function hideSitterSpokenLanguagesSaveSuccess() {
+        if (sitterSpokenLanguagesSaveSuccessTimer) {
+          clearTimeout(sitterSpokenLanguagesSaveSuccessTimer);
+          sitterSpokenLanguagesSaveSuccessTimer = null;
+        }
+        sitterSpokenLanguagesSaveSuccess.classList.remove('is-visible');
+        sitterSpokenLanguagesSaveSuccess.setAttribute('aria-hidden', 'true');
+      }
+
+      function showSitterSpokenLanguagesSaveSuccess() {
+        hideSitterSpokenLanguagesSaveSuccess();
+        sitterSpokenLanguagesSaveSuccess.classList.add('is-visible');
+        sitterSpokenLanguagesSaveSuccess.setAttribute('aria-hidden', 'false');
+        sitterSpokenLanguagesSaveSuccessTimer = setTimeout(hideSitterSpokenLanguagesSaveSuccess, ALERT_AUTO_DISMISS_MS);
+      }
+
+      function openSitterSpokenLanguages() {
+        if (!isSitterSession()) return;
+        phoneFrame.classList.add('is-sitter-profile-subpage-flow');
+        sitterSpokenLanguagesScreen.classList.add('is-open');
+        sitterSpokenLanguagesScreen.setAttribute('aria-hidden', 'false');
+        sitterSpokenLanguagesBack.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function closeSitterSpokenLanguages(restoreFocus) {
+        hideSitterSpokenLanguagesSaveSuccess();
+        phoneFrame.classList.remove('is-sitter-profile-subpage-flow');
+        sitterSpokenLanguagesScreen.classList.remove('is-open');
+        sitterSpokenLanguagesScreen.setAttribute('aria-hidden', 'true');
+        if (restoreFocus) sitterSpokenLanguagesTrigger.focus({ preventScroll: true });
         syncBackEntry();
       }
 
@@ -13249,14 +14155,59 @@
 
       function openFamilyAccount() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyAccountScreen.classList.add('is-open');
         familyAccountScreen.setAttribute('aria-hidden', 'false');
         familyAccountBack.focus({ preventScroll: true });
         syncBackEntry();
       }
 
+      function closeAccountLanguageSheet(restoreFocus) {
+        if (accountLanguageSheet.hidden) return;
+        accountLanguageSheet.classList.remove('is-open');
+        accountLanguageSheet.setAttribute('aria-hidden', 'true');
+        accountLanguageTrigger.setAttribute('aria-expanded', 'false');
+        window.clearTimeout(accountLanguageSheetCloseTimer);
+        accountLanguageSheetCloseTimer = window.setTimeout(function () {
+          accountLanguageSheet.hidden = true;
+          if (familyAccountScreen.classList.contains('is-open')) setBackgroundInert(familyAccountScreen);
+          else setBackgroundInert(null);
+          if (restoreFocus) accountLanguageTrigger.focus({ preventScroll: true });
+        }, 280);
+        syncBackEntry();
+      }
+
+      function openAccountLanguageSheet() {
+        if (!familyAccountScreen.classList.contains('is-open')) return;
+        var selectedLanguage = accountLanguageTrigger.querySelector('span').textContent;
+        window.clearTimeout(accountLanguageSheetCloseTimer);
+        accountLanguageOptions.forEach(function (option) {
+          var selected = option.getAttribute('data-account-language-option') === selectedLanguage;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-selected', String(selected));
+        });
+        accountLanguageSheet.hidden = false;
+        accountLanguageSheet.setAttribute('aria-hidden', 'false');
+        accountLanguageTrigger.setAttribute('aria-expanded', 'true');
+        setBackgroundInert(accountLanguageSheet);
+        requestAnimationFrame(function () {
+          accountLanguageSheet.classList.add('is-open');
+          accountLanguageSheetDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
       function closeFamilyAccount() {
         hideFamilyAccountSaveSuccess();
+        if (!accountLanguageSheet.hidden) {
+          window.clearTimeout(accountLanguageSheetCloseTimer);
+          accountLanguageSheet.classList.remove('is-open');
+          accountLanguageSheet.hidden = true;
+          accountLanguageSheet.setAttribute('aria-hidden', 'true');
+          accountLanguageTrigger.setAttribute('aria-expanded', 'false');
+        }
+        setBackgroundInert(null);
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyAccountScreen.classList.remove('is-open');
         familyAccountScreen.setAttribute('aria-hidden', 'true');
         familyProfileAccountTrigger.focus({ preventScroll: true });
@@ -13287,6 +14238,7 @@
 
       function openFamilyNotifications() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyNotificationsScreen.classList.add('is-open');
         familyNotificationsScreen.setAttribute('aria-hidden', 'false');
         familyNotificationsBack.focus({ preventScroll: true });
@@ -13295,6 +14247,7 @@
 
       function closeFamilyNotifications() {
         hideFamilyNotificationsSaveSuccess();
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyNotificationsScreen.classList.remove('is-open');
         familyNotificationsScreen.setAttribute('aria-hidden', 'true');
         familyProfileNotificationsTrigger.focus({ preventScroll: true });
@@ -13323,6 +14276,7 @@
 
       function openFamilyBilling() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyBillingScreen.classList.add('is-open');
         familyBillingScreen.setAttribute('aria-hidden', 'false');
         familyBillingBack.focus({ preventScroll: true });
@@ -13331,6 +14285,7 @@
 
       function closeFamilyBilling() {
         hideFamilyBillingSaveSuccess();
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyBillingScreen.classList.remove('is-open');
         familyBillingScreen.setAttribute('aria-hidden', 'true');
         familyProfileBillingTrigger.focus({ preventScroll: true });
@@ -13359,6 +14314,7 @@
 
       function openFamilyCredits() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyCreditsScreen.classList.add('is-open');
         familyCreditsScreen.setAttribute('aria-hidden', 'false');
         familyCreditsBack.focus({ preventScroll: true });
@@ -13366,6 +14322,7 @@
       }
 
       function closeFamilyCredits() {
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyInvitesScreen.classList.remove('is-open');
         familyInvitesScreen.setAttribute('aria-hidden', 'true');
         familyReferralHowScreen.classList.remove('is-open');
@@ -13419,6 +14376,7 @@
         thread.classList.remove('is-unread');
         var unreadBadge = thread.querySelector('.message-thread__badge');
         if (unreadBadge) unreadBadge.remove();
+        phoneFrame.classList.add('is-message-detail-flow');
         messageDetailScreen.classList.add('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'false');
         messageDetailScreen.querySelector('.message-detail-screen__messages').scrollTop = 0;
@@ -13427,6 +14385,7 @@
       }
 
       function closeMessageDetail() {
+        phoneFrame.classList.remove('is-message-detail-flow');
         messageDetailScreen.classList.remove('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'true');
         if (activeMessageThread) activeMessageThread.focus({ preventScroll: true });
@@ -13450,6 +14409,9 @@
       // Topmost first, matching the z-index order they stack in.
       var BACK_LAYERS = [
         { isOpen: function () { return !prototypeSettingsModal.hidden; }, close: closePrototypeSettingsModal },
+        { isOpen: function () { return !sitterBankAccountOptionsSheet.hidden; }, close: function () { closeSitterBankAccountOptionsSheet(true); } },
+        { isOpen: function () { return !sitterAccountLanguageSheet.hidden; }, close: function () { closeSitterAccountLanguageSheet(true); } },
+        { isOpen: function () { return !accountLanguageSheet.hidden; }, close: function () { closeAccountLanguageSheet(true); } },
         { isOpen: function () { return !sitterProfileSetupAgeExperienceSheet.hidden; }, close: function () { closeSitterProfileSetupAgeExperienceSheet(true); } },
         { isOpen: function () { return !sitterProfileSetupExperienceSheet.hidden; }, close: function () { closeSitterProfileSetupExperienceSheet(true); } },
         { isOpen: function () { return !sitterProfileSetupPriceSheet.hidden; }, close: function () { closeSitterProfileSetupPriceSheet(true); } },
@@ -13474,6 +14436,12 @@
         { isOpen: function () { return sitterGalleryScreen.classList.contains('is-open'); }, close: closeSitterGallery },
         { isOpen: function () { return sitterVerificationsScreen.classList.contains('is-open'); }, close: closeSitterVerifications },
         { isOpen: function () { return sitterProfilesScreen.classList.contains('is-open'); }, close: closeSitterProfiles },
+        { isOpen: function () { return sitterSpokenLanguagesScreen.classList.contains('is-open'); }, close: function () { closeSitterSpokenLanguages(true); } },
+        { isOpen: function () { return sitterEducationScreen.classList.contains('is-open'); }, close: function () { closeSitterEducation(true); } },
+        { isOpen: function () { return sitterBankAccountScreen.classList.contains('is-open'); }, close: function () { closeSitterBankAccount(true); } },
+        { isOpen: function () { return sitterYourPlaceScreen.classList.contains('is-open'); }, close: function () { closeSitterYourPlace(true); } },
+        { isOpen: function () { return sitterPersonalInformationScreen.classList.contains('is-open'); }, close: function () { closeSitterPersonalInformation(true); } },
+        { isOpen: function () { return sitterAccountDetailsScreen.classList.contains('is-open'); }, close: function () { closeSitterAccountDetails(true); } },
         { isOpen: function () { return sitterInfoScreen.classList.contains('is-open'); }, close: closeSitterInfo },
         { isOpen: function () { return sitterProfileScreen.classList.contains('is-open'); }, close: closeSitterProfile },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
@@ -14130,6 +15098,14 @@
       sitterTimetableSheetBackdrop.addEventListener('click', closeSitterTimetableSheet);
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
+          if (!sitterAccountLanguageSheet.hidden) {
+            closeSitterAccountLanguageSheet(true);
+            return;
+          }
+          if (!accountLanguageSheet.hidden) {
+            closeAccountLanguageSheet(true);
+            return;
+          }
           if (!sitterProfileSetupExitSheet.hidden) {
             closeSitterProfileSetupExitSheet(true);
             return;
@@ -14144,6 +15120,120 @@
       sitterProfileLogout.addEventListener('click', simulateLogout);
       sitterProfileInfoTrigger.addEventListener('click', openSitterInfo);
       sitterInfoBack.addEventListener('click', closeSitterInfo);
+      sitterAccountDetailsTrigger.addEventListener('click', openSitterAccountDetails);
+      sitterAccountDetailsBack.addEventListener('click', function () { closeSitterAccountDetails(true); });
+      sitterAccountDetailsForm.addEventListener('input', function () { setSitterAccountDetailsDirty(true); });
+      sitterAccountDetailsForm.addEventListener('change', function () { setSitterAccountDetailsDirty(true); });
+      sitterAccountDetailsChangeActions.forEach(function (action) {
+        action.addEventListener('click', function () { setSitterAccountDetailsDirty(true); });
+      });
+      sitterAccountDetailsForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterAccountDetailsSaveButton.disabled) {
+          setSitterAccountDetailsDirty(false);
+          showSitterAccountDetailsSaveSuccess();
+        }
+      });
+      sitterAccountDetailsSaveSuccessClose.addEventListener('click', hideSitterAccountDetailsSaveSuccess);
+      sitterAccountLanguageTrigger.addEventListener('click', openSitterAccountLanguageSheet);
+      sitterAccountLanguageSheetBackdrop.addEventListener('click', function () { closeSitterAccountLanguageSheet(true); });
+      sitterAccountLanguageOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          sitterAccountLanguageTrigger.querySelector('span').textContent = option.getAttribute('data-sitter-account-language-option');
+          setSitterAccountDetailsDirty(true);
+          closeSitterAccountLanguageSheet(true);
+        });
+      });
+      sitterPersonalInformationTrigger.addEventListener('click', openSitterPersonalInformation);
+      sitterPersonalInformationBack.addEventListener('click', function () { closeSitterPersonalInformation(true); });
+      sitterPersonalInformationForm.addEventListener('input', function () { setSitterPersonalInformationDirty(true); });
+      sitterPersonalInformationForm.addEventListener('change', function () { setSitterPersonalInformationDirty(true); });
+      sitterPersonalInformationForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterPersonalInformationSaveButton.disabled) {
+          setSitterPersonalInformationDirty(false);
+          showSitterPersonalInformationSaveSuccess();
+        }
+      });
+      sitterPersonalInformationSaveSuccessClose.addEventListener('click', hideSitterPersonalInformationSaveSuccess);
+      sitterYourPlaceTrigger.addEventListener('click', openSitterYourPlace);
+      sitterYourPlaceBack.addEventListener('click', function () { closeSitterYourPlace(true); });
+      sitterYourPlaceForm.addEventListener('input', function () { setSitterYourPlaceDirty(true); });
+      sitterYourPlaceForm.addEventListener('change', function () { setSitterYourPlaceDirty(true); });
+      sitterYourPlaceAddSecondary.addEventListener('click', function () {
+        sitterYourPlaceSecondaryField.hidden = false;
+        sitterYourPlaceAddSecondary.hidden = true;
+        setSitterYourPlaceDirty(true);
+        sitterYourPlaceSecondaryField.querySelector('input').focus({ preventScroll: true });
+      });
+      sitterYourPlaceForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterYourPlaceSaveButton.disabled) {
+          setSitterYourPlaceDirty(false);
+          showSitterYourPlaceSaveSuccess();
+        }
+      });
+      sitterYourPlaceSaveSuccessClose.addEventListener('click', hideSitterYourPlaceSaveSuccess);
+      sitterBankAccountTrigger.addEventListener('click', openSitterBankAccount);
+      sitterBankAccountBack.addEventListener('click', function () { closeSitterBankAccount(true); });
+      sitterBankAccountBankTrigger.addEventListener('click', function () { openSitterBankAccountOptionsSheet(sitterBankAccountBankTrigger); });
+      sitterBankAccountResidencyTrigger.addEventListener('click', function () { openSitterBankAccountOptionsSheet(sitterBankAccountResidencyTrigger); });
+      sitterBankAccountOptionsSheetBackdrop.addEventListener('click', function () { closeSitterBankAccountOptionsSheet(true); });
+      sitterBankAccountOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          if (!sitterBankAccountOptionsActiveTrigger) return;
+          sitterBankAccountOptionsActiveTrigger.querySelector('span').textContent = option.textContent;
+          setSitterBankAccountDirty(true);
+          closeSitterBankAccountOptionsSheet(true);
+        });
+      });
+      sitterBankAccountForm.addEventListener('input', function () { setSitterBankAccountDirty(true); });
+      sitterBankAccountForm.addEventListener('change', function () { setSitterBankAccountDirty(true); });
+      sitterBankAccountForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterBankAccountSaveButton.disabled) {
+          setSitterBankAccountDirty(false);
+          showSitterBankAccountSaveSuccess();
+        }
+      });
+      sitterBankAccountSaveSuccessClose.addEventListener('click', hideSitterBankAccountSaveSuccess);
+      sitterEducationTrigger.addEventListener('click', openSitterEducation);
+      sitterEducationBack.addEventListener('click', function () { closeSitterEducation(true); });
+      sitterEducationForm.addEventListener('input', function () { setSitterEducationDirty(true); });
+      sitterEducationForm.addEventListener('change', function () { setSitterEducationDirty(true); });
+      sitterEducationForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterEducationSaveButton.disabled) {
+          setSitterEducationDirty(false);
+          showSitterEducationSaveSuccess();
+        }
+      });
+      sitterEducationSaveSuccessClose.addEventListener('click', hideSitterEducationSaveSuccess);
+      sitterSpokenLanguagesTrigger.addEventListener('click', openSitterSpokenLanguages);
+      sitterSpokenLanguagesBack.addEventListener('click', function () { closeSitterSpokenLanguages(true); });
+      sitterSpokenLanguagesChoices.forEach(function (choice) {
+        choice.addEventListener('click', function () {
+          var isSelected = choice.classList.toggle('is-selected');
+          choice.setAttribute('aria-pressed', String(isSelected));
+          setSitterSpokenLanguagesDirty(true);
+        });
+      });
+      sitterSpokenLanguagesMoreButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var group = button.closest('.sitter-language-group');
+          var isExpanded = group.classList.toggle('is-expanded');
+          button.setAttribute('aria-expanded', String(isExpanded));
+          button.querySelector('span').textContent = isExpanded ? 'fewer languages' : 'more languages';
+        });
+      });
+      sitterSpokenLanguagesForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!sitterSpokenLanguagesSaveButton.disabled) {
+          setSitterSpokenLanguagesDirty(false);
+          showSitterSpokenLanguagesSaveSuccess();
+        }
+      });
+      sitterSpokenLanguagesSaveSuccessClose.addEventListener('click', hideSitterSpokenLanguagesSaveSuccess);
       sitterProfileProfilesTrigger.addEventListener('click', function () {
         openSitterProfiles(sitterProfileProfilesTrigger);
       });
@@ -14263,6 +15353,18 @@
       sitterCoursesBack.addEventListener('click', closeSitterCourses);
       familyProfileAccountTrigger.addEventListener('click', openFamilyAccount);
       familyAccountBack.addEventListener('click', closeFamilyAccount);
+      accountLanguageTrigger.addEventListener('click', openAccountLanguageSheet);
+      accountLanguageSheetBackdrop.addEventListener('click', function () {
+        closeAccountLanguageSheet(true);
+      });
+      accountLanguageOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          var selectedLanguage = option.getAttribute('data-account-language-option');
+          accountLanguageTrigger.querySelector('span').textContent = selectedLanguage;
+          setFamilyAccountDirty(true);
+          closeAccountLanguageSheet(true);
+        });
+      });
       familyAccountForm.addEventListener('input', function () { setFamilyAccountDirty(true); });
       familyAccountForm.addEventListener('change', function () { setFamilyAccountDirty(true); });
       familyAccountChangeActions.forEach(function (action) {

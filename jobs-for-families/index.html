@@ -949,9 +949,6 @@
   <div id="shared-header">
     <div class="nav-header">
       <img class="nav-brand-mark" src="/hlidacky-logo_small.svg" width="32" height="32" alt="Hlídačky.cz">
-      <button class="btn-wizard-back" id="mobileAppWizardBack" type="button" aria-label="Go back" onclick="goBackFromHeader()" hidden>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11.25 3.75 6 9l5.25 5.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
       <span class="nav-title" data-i18n="nav.title"></span>
       <button class="btn-close" onclick="closeFlow()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="#6b7176" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </div>
@@ -1039,7 +1036,6 @@
     </div>
     <div class="screen-footer">
       <div class="btn-row">
-        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
         <button class="btn-primary" id="btn-service-next" onclick="goNextService()">
           <span data-i18n="nav.btnNext"></span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2628,13 +2624,6 @@
   function goPrev() {
     const flow = buildFlow();
     if (currentIdx > 0) { currentIdx--; navDirection = 'backward'; showScreen(flow[currentIdx]); }
-  }
-  function goBackFromHeader() {
-    if (!window.IS_MOBILE_APP_EMBED) { goPrev(); return; }
-    if (currentIdx > 0) { goPrev(); return; }
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'mobile-app-job-wizard-back' }, '*');
-    }
   }
   function closeFlow() {
     const flow = buildFlow();
@@ -4413,8 +4402,6 @@
       var attribute = element.tagName === 'LINK' ? 'href' : 'src';
       element.setAttribute(attribute, '..' + element.getAttribute(attribute));
     });
-    var mobileAppWizardBack = document.getElementById('mobileAppWizardBack');
-    if (mobileAppWizardBack) mobileAppWizardBack.hidden = false;
     window.addEventListener('message', function(event) {
       if (!event.data || event.data.type !== 'mobile-app-job-wizard-reset') return;
       restartFlow();

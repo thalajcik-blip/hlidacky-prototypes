@@ -38,22 +38,21 @@ html.mobile-app-embed .nav-brand-mark {
   display: none;
 }
 
-html.mobile-app-embed .btn-wizard-back {
-  display: inline-flex;
-  width: 32px;
-  height: 32px;
+/* The title occupies the real visual centre, not the remaining space between
+   a missing left control and the close button. */
+html.mobile-app-embed .nav-header {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
   align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: #6b7176;
-  cursor: pointer;
 }
 
-html.mobile-app-embed .btn-wizard-back:hover,
-html.mobile-app-embed .btn-wizard-back:focus-visible {
-  background: #f5f6f7;
+html.mobile-app-embed .nav-title {
+  grid-column: 2;
+  text-align: center;
+}
+
+html.mobile-app-embed .btn-close {
+  grid-column: 3;
 }
 
 /* Exit-intent interruptions retain their dimmed backdrop, but in the app they
