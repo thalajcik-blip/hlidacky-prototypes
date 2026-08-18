@@ -477,6 +477,480 @@
       text-underline-offset: 2px;
     }
 
+    /* Figma: Sitter detail. A sitter profile is a pushed page, not a modal:
+       it leaves the Search tab selected and returns to the exact result card. */
+    .sitter-detail-screen {
+      display: flex;
+      position: absolute;
+      z-index: 26;
+      inset: 52px 0 83px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 300ms;
+      will-change: transform;
+      backface-visibility: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+
+    .sitter-detail-screen.is-open {
+      transform: translate3d(0, 0, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .sitter-detail-screen__panel { display: contents; }
+
+    /* A profile opened from a booking is contextual: it presents over the
+       booking list and leaves through the same bottom edge, unlike Search's
+       pushed profile page. */
+    .sitter-detail-screen.is-presented {
+      z-index: 80;
+      inset: 0;
+      align-items: flex-end;
+      justify-content: flex-end;
+      background: transparent;
+      transform: none;
+      visibility: visible;
+    }
+
+    /* In presented mode only the inner panel moves. The screen itself must
+       not animate its transform, or the base right-hand push runs underneath
+       the present — on the way in you get both at once, and on the way out
+       the screen slides off sideways after the panel has already gone. The
+       reset class covers the frame where is-presented is taken away. */
+    .sitter-detail-screen.is-presented,
+    .sitter-detail-screen.is-presentation-reset {
+      transition: none;
+    }
+
+    .sitter-detail-screen.is-presented::before {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background: rgba(20, 28, 35, .44);
+      backdrop-filter: blur(4px);
+      content: '';
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    .sitter-detail-screen.is-presented .sitter-detail-screen__panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: 100%;
+      height: 90%;
+      min-height: 0;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 32px rgba(28, 38, 50, .2);
+      transform: translate3d(0, 100%, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .sitter-detail-screen__present-handle {
+      display: none;
+      width: 56px;
+      height: 5px;
+      flex: 0 0 auto;
+      margin: 12px auto 6px;
+      border-radius: 999px;
+      background: #cfd4da;
+    }
+
+    @keyframes sitter-detail-present-in {
+      from { transform: translate3d(0, 100%, 0); }
+      to { transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes sitter-detail-present-out {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(0, 100%, 0); }
+    }
+
+    .sitter-detail-screen.is-presented.is-open::before { opacity: 1; }
+    .sitter-detail-screen.is-presented.is-open .sitter-detail-screen__panel {
+      transform: translate3d(0, 0, 0);
+      animation: sitter-detail-present-in 320ms cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .sitter-detail-screen.is-presented.is-closing .sitter-detail-screen__panel {
+      transform: translate3d(0, 100%, 0);
+      animation: sitter-detail-present-out 260ms ease-in both;
+    }
+
+    .sitter-detail-screen.is-booking-present .sitter-detail-screen__present-handle { display: block; }
+
+    .sitter-detail-screen.is-dragging { transition: none; }
+
+    .sitter-detail-header {
+      display: grid;
+      min-height: 48px;
+      grid-template-columns: 32px minmax(0, 1fr) 32px;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding: 8px 16px;
+    }
+
+    .sitter-detail-header__back {
+      display: inline-grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      padding: 4px;
+      color: #8b91a3;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .sitter-detail-header__back:hover,
+    .sitter-detail-header__back:focus-visible { outline: 0; background: #f2f3f5; }
+
+    .sitter-detail-header__close {
+      display: none;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      padding: 4px;
+      color: #697582;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .sitter-detail-header__close:hover,
+    .sitter-detail-header__close:focus-visible { outline: 0; background: #f2f3f5; }
+
+    .sitter-detail-screen.is-booking-present .sitter-detail-header__back { visibility: hidden; pointer-events: none; }
+    .sitter-detail-screen.is-booking-present .sitter-detail-header__close { display: inline-grid; }
+
+    .sitter-detail-header__title {
+      margin: 0;
+      overflow: hidden;
+      color: #2a3539;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -.05px;
+      line-height: 24px;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Figma: profile switch — this belongs to the sitter page, rather than
+       the search filter bar, so a profile can expose several care services. */
+    .sitter-detail-profile-switch {
+      height: 57px;
+      border-bottom: 1px solid #e5e5ea;
+      background: #fff;
+      padding-top: 4px;
+    }
+
+    .sitter-detail-profile-switch__items {
+      display: flex;
+      height: 52px;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .sitter-detail-profile-switch__item {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 20%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      padding: 6px 2px;
+      color: #4a5a61;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .sitter-detail-profile-switch__item i { display: grid; width: 18px; height: 18px; place-items: center; color: currentColor; font-size: 14px; }
+    .sitter-detail-profile-switch__label { display: flex; height: 24px; align-items: center; justify-content: center; overflow: hidden; color: currentColor; font-size: 10px; font-weight: 450; letter-spacing: -.32px; line-height: 12px; text-align: center; text-overflow: ellipsis; }
+    .sitter-detail-profile-switch__item.is-active { border-bottom-color: #f96073; color: #212529; }
+    .sitter-detail-profile-switch__item:hover { background: #f7f7f7; }
+    .sitter-detail-profile-switch__item:focus-visible { position: relative; z-index: 1; outline: 2px solid #6aafff; outline-offset: -2px; }
+
+    .sitter-detail-content {
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      background: #fff;
+      padding: 0 0 96px;
+      scrollbar-width: none;
+    }
+
+    .sitter-detail-content::-webkit-scrollbar { display: none; }
+    .sitter-detail-content.is-push-enter { transform: translate3d(100%, 0, 0); }
+    .sitter-detail-content.is-push-transition { transition: transform 300ms cubic-bezier(.22, 1, .36, 1); }
+    .sitter-detail-content--previous { position: absolute; z-index: 0; top: 105px; right: 0; bottom: 0; left: 0; overflow: hidden; background: #fff; pointer-events: none; transform: translate3d(0, 0, 0); transition: transform 300ms cubic-bezier(.22, 1, .36, 1); }
+    .sitter-detail-content--previous.is-push-leaving { transform: translate3d(-30%, 0, 0); }
+
+    .sitter-detail-hero { padding: 20px 20px 12px; text-align: center; }
+
+    .sitter-detail-photo-wrap {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 16px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #f2f3f5;
+      box-shadow: 0 4px 10px -7px rgba(42, 53, 57, .32);
+    }
+
+    .sitter-detail-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    .sitter-detail-verified {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #00ba9c;
+      padding: 4px 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 450;
+      line-height: 20px;
+    }
+
+    .sitter-detail-verified img { width: 18px; height: 18px; flex: 0 0 18px; }
+    .sitter-detail-verified__label { text-decoration: underline; text-underline-offset: 2px; }
+
+    .sitter-detail-main-information { display: flex; flex-direction: column; align-items: center; padding-top: 0; }
+    .sitter-detail-name { margin: 0; color: #2a3539; font-size: 24px; font-weight: 700; letter-spacing: -.2px; line-height: 32px; text-align: center; }
+    .sitter-detail-meta { display: flex; align-items: flex-start; justify-content: center; gap: 12px; margin: 0; color: #2a3539; font-size: 16px; font-weight: 350; letter-spacing: -.24px; line-height: 24px; text-align: center; }
+    .sitter-detail-meta__divider { display: block; width: 1px; height: 24px; flex: 0 0 1px; }
+    .sitter-detail-rating { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; color: #6c757d; font-size: 16px; font-weight: 350; letter-spacing: -.24px; line-height: 24px; }
+    .sitter-detail-rating__stars { display: inline-flex; gap: 4px; align-items: center; height: 24px; }
+    .sitter-detail-rating__stars img { display: block; width: 24px; height: 24px; }
+    .sitter-detail-rating__stars img.is-empty { opacity: .24; }
+
+    .sitter-detail-actions { display: grid; gap: 8px; padding: 12px 20px; }
+    .sitter-detail-actions--sticky { position: absolute; z-index: 2; right: 0; bottom: 0; left: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #e5e5ea; background: #fff; box-shadow: 0 -12px 20px rgba(42, 53, 57, .12); opacity: 0; pointer-events: none; transform: translateY(100%); transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 220ms; visibility: hidden; }
+    .sitter-detail-actions--sticky.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 0s; visibility: visible; }
+    .sitter-detail-actions__book,
+    .sitter-detail-actions__message,
+    .sitter-detail-actions__call {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 4px;
+      padding: 14px 16px 16px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+      cursor: pointer;
+    }
+
+    .sitter-detail-actions__book { border: 0; background: #0ba825; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); color: #fff; }
+    .sitter-detail-actions__book:hover { background: #07961f; }
+    .sitter-detail-actions__secondary { display: grid; grid-template-columns: minmax(0, 1fr) 80px; gap: 8px; }
+    .sitter-detail-actions__message,
+    .sitter-detail-actions__call { border: 1px solid #e5e5ea; background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; color: #2a3539; }
+    .sitter-detail-actions__message:hover,
+    .sitter-detail-actions__call:hover { background: #f7f7f7; }
+    .sitter-detail-actions__book:focus-visible,
+    .sitter-detail-actions__message:focus-visible,
+    .sitter-detail-actions__call:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
+
+    .sitter-detail-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 20px; border: 1px solid #e5e5ea; border-radius: 8px; padding: 8px 12px; }
+    .sitter-detail-stat { display: flex; min-width: 140px; min-height: 60px; flex: 1 1 calc(50% - 4px); align-items: center; gap: 10px; padding: 4px 0; }
+    .sitter-detail-stat__icon { display: inline-grid; width: 32px; height: 100%; min-height: 52px; flex: 0 0 32px; place-items: center; border-radius: 4px; background: #feecee; color: #f96073; font-size: 16px; }
+    .sitter-detail-stat__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+    .sitter-detail-stat__value { width: 100%; overflow: hidden; color: #2a3539; font-size: 14px; font-weight: 700; letter-spacing: -.2px; line-height: 20px; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-detail-stat__label { color: #4a5a61; font-size: 12px; font-weight: 350; letter-spacing: -.16px; line-height: 16px; }
+
+    .sitter-detail-section { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px; }
+    .sitter-detail-section__heading { margin: 0; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-section__copy { margin: 12px 0 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 21px; }
+    .sitter-detail-more { display: flex; width: max-content; align-items: center; gap: 5px; margin: 10px auto 0; border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; font-size: 16px; line-height: 22px; cursor: pointer; }
+    .sitter-detail-more > span { text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-reviews { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #f1f5fb; padding: 20px 0; }
+    .sitter-detail-reviews__header { display: flex; align-items: center; gap: 10px; padding: 0 20px; }
+    .sitter-detail-reviews__heading { min-width: 0; flex: 1 1 auto; margin: 0; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-reviews__leave { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 2px; border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; font-size: 16px; line-height: 22px; cursor: pointer; }
+    .sitter-detail-reviews__leave > span { text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-reviews__leave i { width: 20px; font-size: 12px; text-align: center; }
+    .sitter-detail-reviews__divider { display: block; width: 100%; height: 24px; }
+    .sitter-detail-reviews__summary { display: flex; align-items: flex-start; gap: 12px; padding: 8px 20px 0; }
+    .sitter-detail-reviews__score { color: #2a3539; font-size: 40px; font-weight: 450; letter-spacing: -.2px; line-height: 52px; }
+    .sitter-detail-reviews__rating { display: flex; flex-direction: column; align-items: flex-start; padding-top: 8px; }
+    .sitter-detail-reviews__stars { display: inline-flex; gap: 4px; height: 24px; align-items: center; }
+    .sitter-detail-reviews__stars img { display: block; width: 24px; height: 24px; }
+    .sitter-detail-reviews__based-on { margin: 0; color: #6c757d; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 21px; }
+    .sitter-detail-reviews__list { display: flex; flex-direction: column; gap: 16px; padding: 16px 20px 0; }
+    .sitter-detail-review-card { display: flex; min-width: 0; flex-direction: column; gap: 8px; border: 1px solid #ccd5e2; border-radius: 6px; background: #fff; padding: 20px 16px; }
+    .sitter-detail-review-card__stars { display: inline-flex; gap: 4px; height: 20px; align-items: center; }
+    .sitter-detail-review-card__stars img { display: block; width: 20px; height: 20px; }
+    .sitter-detail-review-card__copy { margin: 4px 0 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 21px; }
+    .sitter-detail-review-card__author { margin: 6px 0 0; color: #2a3539; font-size: 16px; font-weight: 450; letter-spacing: -.32px; line-height: 21px; }
+    .sitter-detail-review-card__meta { display: flex; align-items: center; gap: 8px; margin: 0; color: #8b91a3; font-size: 12px; font-weight: 400; letter-spacing: -.32px; line-height: 16px; }
+    .sitter-detail-review-card__meta span + span { display: inline-flex; align-items: center; gap: 8px; }
+    .sitter-detail-review-card__meta span + span::before { width: 1px; height: 16px; background: #bec2ce; content: ''; }
+    .sitter-detail-review-card__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .sitter-detail-review-card__tag { display: inline-flex; align-items: center; gap: 4px; border-radius: 19px; background: #f7f7f7; padding: 2px 8px; color: #6c757d; font-size: 12px; line-height: 17px; }
+    .sitter-detail-review-card__tag--service { background: #feecee; color: #e6213a; }
+    .sitter-detail-review-card__tag i { font-size: 12px; }
+    .sitter-detail-reviews__more { display: flex; width: max-content; align-items: center; gap: 4px; margin: 16px auto 0; border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; font-size: 16px; line-height: 22px; cursor: pointer; }
+    .sitter-detail-reviews__more > span { text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-reviews__more i { font-size: 14px; }
+
+    .sitter-detail-verify { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; }
+    .sitter-detail-verify__top { background: #e0faf1; }
+    .sitter-detail-verify__stripe { height: 28px; border-bottom: 1px solid #2a3539; background: #03c499; }
+    .sitter-detail-verify__content { display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding: 0 10px 12px; }
+    .sitter-detail-verify__avatar { position: relative; width: 72px; height: 64px; flex: 0 0 72px; margin-top: -32px; }
+    .sitter-detail-verify__avatar > img { position: absolute; top: 0; left: 4px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 4px rgba(42, 53, 57, .2); }
+    .sitter-detail-verify__avatar-badge { position: absolute; right: 0; bottom: 0; display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(42, 53, 57, .16); }
+    .sitter-detail-verify__avatar-badge img { display: block; width: 16px; height: 18px; }
+    .sitter-detail-verify__checks { display: flex; min-width: 0; flex: 1 1 auto; align-items: flex-end; justify-content: space-between; gap: 4px; transform: translateY(-16px); }
+    .sitter-detail-verify__check { display: flex; min-width: 0; flex: 1 1 0; flex-direction: column; align-items: center; gap: 3px; color: #2a3539; font-size: 11px; font-weight: 450; letter-spacing: -.12px; line-height: 14px; text-align: center; }
+    .sitter-detail-verify__check img { display: block; width: 22px; height: 24px; }
+    .sitter-detail-verify__footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #fff; background: rgba(3, 196, 153, .2); padding: 4px 12px; }
+    .sitter-detail-verify__brand { position: relative; width: 116px; height: 32px; flex: 0 0 116px; }
+    .sitter-detail-verify__brand img { position: absolute; display: block; }
+    .sitter-detail-verify__brand-shield { top: 5px; left: 4px; width: 19px; height: 21px; }
+    .sitter-detail-verify__brand-wordmark { top: 10px; left: 29px; width: 78px; height: 13px; }
+    .sitter-detail-verify__brand-trademark { top: 12px; right: 4px; width: 4px; height: 3px; }
+    .sitter-detail-verify__more { display: inline-flex; align-items: center; gap: 4px; border: 0; background: transparent; padding: 0; color: #2a3539; font: inherit; font-size: 14px; font-weight: 450; line-height: 20px; cursor: pointer; }
+    .sitter-detail-verify__more > span { color: var(--color-pink-400, #f96073); text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-verify__more i { color: var(--color-pink-400, #f96073); font-size: 12px; }
+
+    .sitter-detail-availability { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px 0; }
+    .sitter-detail-availability__heading { margin: 0; padding: 0 20px 8px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-availability__calendar { overflow: hidden; border-radius: 4px; padding: 8px 20px; }
+    .sitter-detail-availability__days,
+    .sitter-detail-availability__row { display: grid; grid-template-columns: 72px repeat(7, minmax(0, 1fr)); align-items: center; }
+    .sitter-detail-availability__days { height: 22px; margin-bottom: 4px; }
+    .sitter-detail-availability__day { color: #4a5a61; font-size: 14px; font-weight: 400; letter-spacing: -.32px; line-height: 18px; text-align: center; text-transform: uppercase; }
+    .sitter-detail-availability__label { padding-right: 4px; color: #4a5a61; font-size: 13px; font-weight: 400; letter-spacing: -.32px; line-height: 16px; text-align: right; }
+    .sitter-detail-availability__cell { position: relative; height: 28px; overflow: hidden; border-right: 1px solid #fff; border-bottom: 1px solid #fff; background: #e5e5ea; }
+    .sitter-detail-availability__cell.is-available::after { position: absolute; inset: 0 4px; background: rgba(34, 191, 30, .8); content: ''; }
+    .sitter-detail-availability__footer { display: grid; gap: 12px; padding: 8px 20px 0; }
+    .sitter-detail-availability__legend { display: grid; gap: 4px; border-radius: 4px; background: #f7f7f7; padding: 8px 12px; }
+    .sitter-detail-availability__legend-item { display: inline-flex; align-items: center; gap: 8px; color: #4a5a61; font-size: 12px; font-weight: 400; letter-spacing: -.32px; line-height: 17px; }
+    .sitter-detail-availability__legend-sample { width: 20px; height: 14px; flex: 0 0 20px; border-radius: 2px; background: #bec2ce; }
+    .sitter-detail-availability__legend-sample.is-available { background: #22bf1e; }
+    .sitter-detail-availability__time-off { display: flex; align-items: center; gap: 8px; border-radius: 4px; background: #feecee; padding: 8px 12px 8px 8px; }
+    .sitter-detail-availability__doodle { position: relative; width: 32px; height: 32px; flex: 0 0 32px; overflow: hidden; }
+    .sitter-detail-availability__doodle img { position: absolute; display: block; }
+    .sitter-detail-availability__doodle-layer-2 { top: 6px; right: 3px; bottom: 6px; left: 4px; width: 25px; height: 24px; }
+    .sitter-detail-availability__doodle-layer-3 { top: 6px; right: 5px; bottom: 5px; left: 4px; width: 23px; height: 25px; }
+    .sitter-detail-availability__doodle-layer-1 { top: 2px; right: 2px; bottom: 3px; left: 3px; width: 27px; height: 28px; }
+    .sitter-detail-availability__time-off-copy { margin: 0; color: #2a3539; font-size: 14px; font-weight: 350; letter-spacing: -.32px; line-height: 18px; }
+
+    .sitter-detail-gallery { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px 0 0; }
+    .sitter-detail-gallery__heading { margin: 0; padding: 0 20px 8px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-gallery__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 0 20px; }
+    .sitter-detail-gallery__item { aspect-ratio: 1; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 6px; background: #fff; padding: 4px; }
+    .sitter-detail-gallery__item img { display: block; width: 100%; height: 100%; border-radius: 2px; object-fit: cover; opacity: .8; }
+    .sitter-detail-gallery__more { display: flex; width: max-content; align-items: center; gap: 4px; margin: 16px auto 0; border: 0; background: transparent; padding: 0 20px 20px; color: var(--color-pink-400, #f96073); font: inherit; font-size: 16px; font-weight: 400; line-height: 22px; cursor: pointer; }
+    .sitter-detail-gallery__more > span { text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-gallery__more i { font-size: 14px; }
+
+    .sitter-detail-work { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px 0; }
+    .sitter-detail-work__heading { margin: 0; padding: 0 20px 8px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-work__location { display: grid; gap: 8px; padding: 8px 20px 10px; }
+    .sitter-detail-work__location + .sitter-detail-work__location { padding-top: 8px; padding-bottom: 0; }
+    .sitter-detail-work__copy { margin: 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.242px; line-height: 20px; }
+    .sitter-detail-work__copy a { color: var(--color-pink-400, #f96073); font-weight: 450; text-decoration: underline; text-underline-offset: 2px; }
+    .sitter-detail-work__copy i { padding: 0 2px; color: #4a5a61; font-size: 14px; }
+    .sitter-detail-work__map { position: relative; height: 240px; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 6px; background: #f7f7f7; }
+    .sitter-detail-work__map-image { position: absolute; top: calc(50% - 22.5px); left: calc(50% - 27px); width: 1173px; height: 667px; max-width: none; transform: translate(-50%, -50%); }
+    .sitter-detail-work__map-pin { position: absolute; top: 50%; left: 50%; color: var(--color-pink-400, #f96073); font-size: 24px; line-height: 1; transform: translate(-50%, -50%); }
+
+    .sitter-detail-info-section { margin: 12px 20px 0; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px; }
+    .sitter-detail-info-section__heading { margin: 0 0 12px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-info-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .sitter-detail-info-list__item { display: flex; align-items: flex-start; gap: 6px; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 20px; }
+    .sitter-detail-info-list__item > i { display: grid; width: 24px; height: 20px; flex: 0 0 24px; place-items: center; color: #03c499; font-size: 16px; }
+    .sitter-detail-info-list__item--unavailable > i { color: #8b91a3; }
+    .sitter-detail-info-list__item strong { color: #212529; font-weight: 450; }
+    .sitter-detail-info-list--age { gap: 4px; margin: 0 -4px; }
+    .sitter-detail-info-list--age .sitter-detail-info-list__item { align-items: center; }
+    .sitter-detail-info-list--age .sitter-detail-info-list__item > i { color: #8b91a3; font-size: 16px; }
+    .sitter-detail-info-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sitter-detail-info-tag { display: inline-flex; align-items: center; gap: 4px; border-radius: 64px; background: #f7f7f7; padding: 3px 8px; color: #2a3539; font-size: 12px; font-weight: 400; line-height: 17px; }
+    .sitter-detail-info-tag i { color: var(--color-pink-400, #f96073); font-size: 12px; }
+    .sitter-detail-info-section__copy { margin: 12px 0 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 21px; }
+    .sitter-detail-language-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sitter-detail-language-tag { display: inline-flex; align-items: center; gap: 4px; border-radius: 64px; background: #f7f7f7; padding: 3px 8px; color: #2a3539; font-size: 12px; font-weight: 400; line-height: 17px; }
+    .sitter-detail-language-tag__flag { font-size: 14px; line-height: 1; }
+    .sitter-detail-report { display: flex; justify-content: center; padding: 20px 20px 32px; }
+    .sitter-detail-report__link { display: inline-flex; height: 28px; align-items: center; gap: 2px; color: #6c757d; font-size: 18px; font-weight: 400; line-height: 25px; opacity: .8; }
+    .sitter-detail-report__link i { display: grid; width: 24px; height: 24px; place-items: center; font-size: 16px; text-decoration: none; }
+    .sitter-detail-report__link span { text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+    .sitter-detail-other-profiles { margin: 0 20px 40px; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 20px 0; }
+    .sitter-detail-other-profiles__heading { margin: 0; padding: 0 20px 8px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-other-profiles__list { display: grid; gap: 8px; margin: 0; padding: 8px 20px 0; list-style: none; }
+    .sitter-detail-other-profiles__item { display: flex; min-height: 48px; align-items: center; gap: 8px; border: 1px solid #e5e5ea; border-radius: 6px; background: #f1f5fb; padding: 6px 12px 6px 4px; }
+    .sitter-detail-other-profiles__avatar { position: relative; width: 40px; height: 32px; flex: 0 0 40px; }
+    .sitter-detail-other-profiles__avatar > img { position: absolute; top: 0; left: 4px; display: block; width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2); }
+    .sitter-detail-other-profiles__badge { position: absolute; top: 16px; left: 24px; display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; background: #fff; filter: drop-shadow(0 2.667px 3.556px rgba(139, 145, 163, .24)); }
+    .sitter-detail-other-profiles__badge img { display: block; width: 10px; height: 11px; }
+    .sitter-detail-other-profiles__name { min-width: 0; flex: 1 1 auto; color: #2a3539; font-size: 16px; font-weight: 450; letter-spacing: -.24px; line-height: 21px; }
+    .sitter-detail-other-profiles__open { flex: 0 0 auto; color: var(--color-pink-400, #f96073); font-size: 16px; font-weight: 400; line-height: 22px; opacity: .8; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+    .sitter-detail-alternatives { overflow: hidden; background: #f1f5fb; padding: 24px 0; }
+    .sitter-detail-alternatives__heading { margin: 0; padding: 0 20px; color: #2a3539; font-size: 20px; font-weight: 450; letter-spacing: -.2px; line-height: 28px; }
+    .sitter-detail-alternatives__feed { display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; padding: 16px 20px 4px; scroll-padding-inline: 20px; scroll-snap-type: x proximity; scrollbar-width: none; }
+    .sitter-detail-alternatives__feed::-webkit-scrollbar { display: none; }
+    .sitter-detail-alternative-card { display: flex; width: 300px; min-width: 300px; height: 318px; flex-direction: column; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; box-shadow: 0 10px 32px -4px rgba(42, 53, 57, .2); padding-bottom: 4px; scroll-snap-align: start; cursor: pointer; }
+    .sitter-detail-alternative-card:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
+    .sitter-detail-alternative-card__header { display: flex; gap: 12px; align-items: flex-start; padding: 16px 16px 0; }
+    .sitter-detail-alternative-card__photo-wrap { position: relative; width: 96px; flex: 0 0 96px; overflow: hidden; border-radius: 4px; }
+    .sitter-detail-alternative-card__photo { display: block; width: 96px; height: 96px; border: 1px solid rgba(229, 229, 234, .5); border-radius: 4px 4px 0 0; object-fit: cover; }
+    .sitter-detail-alternative-card__verified { display: flex; height: 24px; align-items: center; justify-content: center; gap: 4px; margin-top: -1px; border-radius: 0 0 4px 4px; background: #03c499; padding: 2px 4px 4px; color: #fff; font-size: 12px; font-weight: 400; line-height: 17px; }
+    .sitter-detail-alternative-card__verified img { display: block; width: 16px; height: 16px; }
+    .sitter-detail-alternative-card__verified span { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .75); text-decoration-thickness: 8%; text-underline-offset: 2px; }
+    .sitter-detail-alternative-card__info { min-width: 0; flex: 1 1 auto; }
+    .sitter-detail-alternative-card__name { margin: 0; overflow: hidden; color: #2a3539; font-size: 18px; font-weight: 700; letter-spacing: -.32px; line-height: 25px; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-detail-alternative-card__meta { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 20px; color: #8b91a3; font-size: 14px; font-weight: 400; letter-spacing: -.24px; line-height: 20px; }
+    .sitter-detail-alternative-card__meta i { width: 14px; flex: 0 0 14px; font-size: 14px; text-align: center; }
+    .sitter-detail-alternative-card__meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-detail-alternative-card__phone { color: #8b91a3; opacity: .8; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 1px; }
+    .sitter-detail-alternative-card__rating { display: flex; align-items: center; gap: 6px; height: 24px; padding-top: 2px; }
+    .sitter-detail-alternative-card__stars { display: inline-flex; gap: 2px; }
+    .sitter-detail-alternative-card__stars img { display: block; width: 16px; height: 16px; }
+    .sitter-detail-alternative-card__reviews { color: #8b91a3; font-size: 14px; line-height: 20px; }
+    .sitter-detail-alternative-card__price { display: inline-flex; margin-top: 1px; border-radius: 2px; background: #f7f7f7; padding: 2px 8px; color: #2a3539; font-size: 12px; line-height: 17px; }
+    .sitter-detail-alternative-card__content { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; gap: 8px; padding: 12px 16px; }
+    .sitter-detail-alternative-card__copy { display: -webkit-box; min-height: 63px; margin: 0; overflow: hidden; color: #2a3539; font-size: 14px; font-weight: 350; letter-spacing: -.16px; line-height: 21px; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+    .sitter-detail-alternative-card__copy a { color: var(--color-pink-400, #f96073); text-decoration: underline; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+    .sitter-detail-alternative-card__tags { display: flex; max-height: 80px; flex-wrap: wrap; align-content: center; gap: 4px; overflow: hidden; }
+    .sitter-detail-alternative-card__tag { border-radius: 64px; background: #f7f7f7; padding: 2px 8px; color: #6c757d; font-size: 12px; line-height: 17px; }
+    .sitter-detail-alternatives__more { display: flex; width: max-content; height: 28px; align-items: center; margin: 12px auto 0; color: var(--color-pink-400, #f96073); font-size: 18px; font-weight: 400; line-height: 25px; opacity: .8; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+
     /* Figma: Sitter Profile. This reuses the family profile's native-style
        push panel and its controls, while keeping sitter-specific content in
        a separate screen for the later subpages. */
@@ -2428,7 +2902,8 @@
     .phone-frame.is-family-profile-subpage-flow #familyAccountScreen.is-open,
     .phone-frame.is-family-profile-subpage-flow #familyNotificationsScreen.is-open,
     .phone-frame.is-family-profile-subpage-flow #familyBillingScreen.is-open,
-    .phone-frame.is-family-profile-subpage-flow #familyCreditsScreen.is-open,
+    .phone-frame.is-family-profile-subpage-flow #familyInvitesScreen.is-open,
+    .phone-frame.is-family-profile-subpage-flow #familyReferralHowScreen.is-open,
     .phone-frame.is-sitter-profile-subpage-flow #sitterAccountDetailsScreen.is-open,
     .phone-frame.is-sitter-profile-subpage-flow #sitterPersonalInformationScreen.is-open,
     .phone-frame.is-sitter-profile-subpage-flow #sitterYourPlaceScreen.is-open,
@@ -2462,7 +2937,7 @@
     .job-wizard-screen__frame {
       display: block;
       width: 100%;
-      height: 100%;
+      height: 90%;
       border: 0;
       background: #fff;
     }
@@ -4712,6 +5187,204 @@
     .message-detail-screen__attachment { position: absolute; top: 50%; right: 16px; display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #6c757d; font-size: 20px; transform: translateY(-50%); }
     .message-detail-screen__send { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #f96073; font-size: 24px; cursor: pointer; }
 
+    /* A message started from a sitter or booking card is a temporary,
+       contextual task. It is presented above the originating screen rather
+       than pushing the user into Messages, so dismissing returns to that card. */
+    .sitter-message-sheet {
+      position: absolute;
+      z-index: 80;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+      visibility: hidden;
+      transition: visibility 0s linear 300ms;
+    }
+
+    .sitter-message-sheet.is-open {
+      pointer-events: auto;
+      visibility: visible;
+      transition: visibility 0s;
+    }
+
+    .sitter-message-sheet.is-closing { visibility: visible; }
+
+    .sitter-message-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(20, 28, 35, .44);
+      cursor: default;
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    .sitter-message-sheet.is-open .sitter-message-sheet__backdrop { opacity: 1; }
+
+    .sitter-message-sheet__panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: 100%;
+      height: 80%;
+      min-height: 0;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 32px rgba(28, 38, 50, .2);
+      transform: translate3d(0, 100%, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .sitter-message-sheet.is-open .sitter-message-sheet__panel { transform: translate3d(0, 0, 0); }
+    .sitter-message-sheet__panel.is-dragging { transition: none; }
+
+    .sitter-message-sheet__header {
+      display: grid;
+      min-height: 68px;
+      grid-template-columns: 32px minmax(0, 1fr) auto 24px;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 20px 12px;
+      touch-action: none;
+    }
+
+    .sitter-message-sheet__contact { display: contents; }
+    .sitter-message-sheet__avatar { width: 32px; height: 32px; flex: 0 0 32px; border: 1px solid #fff; border-radius: 50%; box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2); object-fit: cover; }
+    .sitter-message-sheet__contact-info { min-width: 0; padding-left: 8px; }
+    .sitter-message-sheet__name { margin: 0; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 700; letter-spacing: -.32px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-message-sheet__booking { margin: 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
+
+    .sitter-message-sheet__book {
+      display: inline-flex;
+      height: 32px;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #0ba825;
+      border-radius: 4px;
+      box-shadow: inset 0 -3px 0 #0ba825;
+      background: #fff;
+      padding: 6px 12px 8px 10px;
+      color: #0ba825;
+      font: 400 13px/18px Soleil, sans-serif;
+      cursor: pointer;
+    }
+
+    .sitter-message-sheet__book i { font-size: 14px; }
+    .sitter-message-sheet__book:hover {
+      border-color: #0ba825;
+      box-shadow: inset 0 -3px 0 #0a8c20;
+      background: #0ba825;
+      color: #fff;
+    }
+
+    .sitter-message-sheet__book:focus-visible { outline: 2px solid #0ba825; outline-offset: 2px; }
+
+    .sitter-message-sheet__close {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      justify-self: end;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #bec2ce;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .sitter-message-sheet__close:hover,
+    .sitter-message-sheet__close:focus-visible { outline: 0; background: #f2f3f5; }
+    .sitter-message-sheet__messages { align-items: center; gap: 12px; padding: 16px 20px; }
+    .sitter-message-sheet__composer { gap: 18px; padding: 0 20px 20px; }
+
+    /* Booking is the next committed task from a sitter card. It follows the
+       Figma booking sheet rather than opening a second modal over the card. */
+    .sitter-booking-sheet {
+      position: absolute;
+      z-index: 82;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+      visibility: hidden;
+      transition: visibility 0s linear 300ms;
+    }
+
+    .sitter-booking-sheet.is-open { pointer-events: auto; visibility: visible; transition: visibility 0s; }
+    .sitter-booking-sheet.is-closing { visibility: visible; }
+    .sitter-booking-sheet__backdrop { position: absolute; inset: 0; border: 0; background: rgba(42, 53, 57, .44); opacity: 0; transition: opacity .28s ease; }
+    .sitter-booking-sheet.is-open .sitter-booking-sheet__backdrop { opacity: 1; }
+
+    .sitter-booking-sheet__panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: 100%;
+      height: 95%;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      transform: translate3d(0, 100%, 0);
+      transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .sitter-booking-sheet.is-open .sitter-booking-sheet__panel { transform: translate3d(0, 0, 0); }
+    .sitter-booking-sheet__panel.is-dragging { transition: none; }
+    .sitter-booking-sheet__indicator { flex: 0 0 33px; padding-top: 16px; touch-action: none; cursor: grab; }
+    .sitter-booking-sheet__indicator::before { content: ''; display: block; width: 135px; height: 5px; margin: 0 auto; border-radius: 999px; background: #d6d9dd; }
+    .sitter-booking-sheet__panel.is-dragging .sitter-booking-sheet__indicator { cursor: grabbing; }
+
+    .sitter-booking-sheet__nav { display: grid; flex: 0 0 48px; grid-template-columns: 32px minmax(0, 1fr) 32px; align-items: center; gap: 8px; border-bottom: 1px solid #e5e5ea; padding: 8px 16px; touch-action: none; }
+    .sitter-booking-sheet__nav-spacer { width: 32px; height: 32px; }
+    .sitter-booking-sheet__nav-title { margin: 0; color: #2a3539; font: 700 16px/24px Soleil, sans-serif; letter-spacing: -.05px; text-align: center; }
+    .sitter-booking-sheet__close { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 4px; background: transparent; color: #6c757d; font-size: 20px; cursor: pointer; }
+    .sitter-booking-sheet__close:hover, .sitter-booking-sheet__close:focus-visible { outline: 0; background: #f2f3f5; }
+
+    .sitter-booking-sheet__intro { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 4px; background: #f7f7f7; padding: 16px 20px; text-align: center; }
+    .sitter-booking-sheet__avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2); object-fit: cover; }
+    .sitter-booking-sheet__intro-title { margin: 0; color: #2a3539; font: 450 20px/1.4 Soleil, sans-serif; letter-spacing: -.2px; }
+    .sitter-booking-sheet__intro-copy { margin: 0; color: #6c757d; font: 350 12px/1.5 Soleil, sans-serif; letter-spacing: -.16px; }
+    .sitter-booking-sheet__protect { width: 134px; height: 24px; object-fit: contain; }
+
+    .sitter-booking-sheet__form { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-y: auto; padding: 16px 20px 0; }
+    .sitter-booking-section { display: flex; flex-direction: column; gap: 12px; padding-bottom: 24px; }
+    .sitter-booking-section--price { padding-bottom: 12px; }
+    .sitter-booking-section__heading { display: flex; align-items: center; justify-content: space-between; color: #2a3539; }
+    .sitter-booking-section__heading h3 { margin: 0; font: 700 18px/20px Soleil, sans-serif; letter-spacing: -.32px; }
+    .sitter-booking-section__heading i { color: #8b91a3; font-size: 15px; }
+
+    .sitter-booking-services { display: flex; gap: 8px; overflow-x: auto; }
+    .sitter-booking-service { display: flex; width: 88px; height: 80px; flex: 0 0 88px; flex-direction: column; justify-content: space-between; border: 1px solid #bec2ce; border-radius: 4px; background: #fff; padding: 8px 8px 6px; color: #4a5a61; font: 400 12px/1.16 Soleil, sans-serif; text-align: left; cursor: pointer; }
+    .sitter-booking-service__icons { display: flex; align-items: flex-start; justify-content: space-between; }
+    .sitter-booking-service__check { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border: 1px solid #bec2ce; border-radius: 4px; color: transparent; font-size: 13px; }
+    .sitter-booking-service__icon { font-size: 18px; }
+    .sitter-booking-service.is-selected { border: 2px solid #22bf1e; color: #22bf1e; padding: 7px 7px 5px; }
+    .sitter-booking-service.is-selected .sitter-booking-service__check { border-color: #22bf1e; background: #22bf1e; color: #fff; }
+
+    .sitter-booking-inputs { display: flex; width: 100%; }
+    .sitter-booking-input { width: 100%; height: 52px; min-width: 0; border: 1px solid #e5e5ea; border-radius: 0; outline: 0; background: #fff; padding: 0 12px; color: #2a3539; font: 400 16px/1.4 Soleil, sans-serif; letter-spacing: .2px; }
+    .sitter-booking-input:first-child { border-radius: 4px 0 0 4px; }
+    .sitter-booking-input:last-child { border-radius: 0 4px 4px 0; }
+    .sitter-booking-input + .sitter-booking-input { margin-left: -1px; }
+    .sitter-booking-input--date { flex: 1.3; }
+    .sitter-booking-input--time { flex: 1; }
+    .sitter-booking-price { width: 100%; height: 52px; border: 1px solid #e5e5ea; border-radius: 4px; outline: 0; background: #fff; padding: 0 20px; color: #2a3539; font: 400 16px/1.4 Soleil, sans-serif; letter-spacing: .2px; }
+    .sitter-booking-input:focus, .sitter-booking-price:focus { position: relative; z-index: 1; border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+
+    .sitter-booking-sheet__footer { flex: 0 0 auto; padding: 0 20px 20px; }
+    .sitter-booking-sheet__total { padding: 8px; color: #8b91a3; font: 400 12px/1.2 Soleil, sans-serif; text-align: center; letter-spacing: -.16px; }
+    .sitter-booking-sheet__total strong { display: block; margin-top: 2px; color: #2a3539; font: 450 28px/28px Soleil, sans-serif; letter-spacing: -.32px; }
+    .sitter-booking-sheet__total strong span { color: #8b91a3; font: 400 18px/1.2 Soleil, sans-serif; }
+    .sitter-booking-sheet__submit { display: flex; width: 100%; flex-direction: column; align-items: center; gap: 2px; overflow: hidden; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); background: #0ba825; padding: 12px 24px 14px; color: #fff; cursor: pointer; }
+    .sitter-booking-sheet__submit span { font: 700 20px/22px Soleil, sans-serif; }
+    .sitter-booking-sheet__submit small { font: 350 14px/1.5 Soleil, sans-serif; letter-spacing: -.16px; }
+    .sitter-booking-sheet__submit:hover { background: #079420; }
+
     .jobs-screen {
       position: absolute;
       z-index: 10;
@@ -5152,6 +5825,9 @@
       outline-offset: 2px;
     }
 
+    .sitter-detail-profile-tags { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; margin-top: 12px; padding: 0 20px; }
+    .sitter-detail-profile-tag { border-radius: 64px; background: #f7f7f7; padding: 2px 8px; color: #6c757d; font-size: 12px; font-weight: 400; line-height: 17px; white-space: nowrap; }
+
     .sitter-jobs-screen__location .fa-chevron-down {
       margin-left: 1px;
       font-size: 10px;
@@ -5444,39 +6120,33 @@
     .sitter-jobs-notifications-screen__save:focus-visible { outline: 0; border-color: #079420; background: #079420; }
     .sitter-jobs-notifications-screen__save:active { padding-top: 4px; box-shadow: none; }
 
+    /* Frequency selection is a push inside the notification sheet, not a
+       second sheet. That keeps one presentation layer and gives Back and
+       Close their distinct meanings. */
     .sitter-jobs-notification-options-sheet {
       position: absolute;
-      z-index: 62;
+      z-index: 2;
       inset: 0;
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      transform: translate3d(100%, 0, 0);
+      transition: transform .28s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .28s;
+      visibility: hidden;
       pointer-events: none;
     }
 
-    .sitter-jobs-notification-options-sheet__backdrop {
-      position: absolute;
-      inset: 0;
-      border: 0;
-      background: rgba(42, 53, 57, .42);
-      backdrop-filter: blur(4px);
-      opacity: 0;
-      transition: opacity .28s ease;
-    }
-
-    .sitter-jobs-notification-options-sheet__panel {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 20px 20px 0 0;
-      background: #fff;
-      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
-      transform: translateY(100%);
-      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
-    }
-
-    .sitter-jobs-notification-options-sheet__handle { width: 36px; height: 4px; margin: 12px auto 10px; border-radius: 99px; background: #2a3539; }
-    .sitter-jobs-notification-options-sheet__title { margin: 0; padding: 0 20px 10px; color: #2a3539; font: 450 18px/1.4 Soleil, sans-serif; }
+    .sitter-jobs-notification-options-sheet__panel { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+    .sitter-jobs-notification-options-sheet__header { display: grid; flex: 0 0 56px; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; min-height: 56px; border-bottom: 1px solid #e5e7eb; padding: 0 12px; }
+    .sitter-jobs-notification-options-sheet__back,
+    .sitter-jobs-notification-options-sheet__close { display: inline-flex; width: 44px; height: 36px; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: #6d7880; font-size: 20px; cursor: pointer; }
+    .sitter-jobs-notification-options-sheet__back:hover,
+    .sitter-jobs-notification-options-sheet__back:focus-visible,
+    .sitter-jobs-notification-options-sheet__close:hover,
+    .sitter-jobs-notification-options-sheet__close:focus-visible { outline: 0; background: #f2f3f5; }
+    .sitter-jobs-notification-options-sheet__title { margin: 0; overflow: hidden; color: #2a3539; font: 450 18px/1.4 Soleil, sans-serif; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+    .sitter-jobs-notification-options-sheet__list { min-height: 0; overflow-y: auto; }
     .sitter-jobs-notification-options-sheet__option {
       display: flex;
       width: 100%;
@@ -5495,9 +6165,7 @@
     .sitter-jobs-notification-options-sheet__option:hover,
     .sitter-jobs-notification-options-sheet__option.is-selected { background: #f7f7f7; }
     .sitter-jobs-notification-options-sheet__option.is-selected::after { margin-left: auto; color: #0ca622; font: 600 20px/1 Soleil, sans-serif; content: '✓'; }
-    .sitter-jobs-notification-options-sheet.is-open { pointer-events: auto; }
-    .sitter-jobs-notification-options-sheet.is-open .sitter-jobs-notification-options-sheet__backdrop { opacity: 1; }
-    .sitter-jobs-notification-options-sheet.is-open .sitter-jobs-notification-options-sheet__panel { transform: translateY(0); }
+    .sitter-jobs-notification-options-sheet.is-open { transform: translate3d(0, 0, 0); transition: transform .28s cubic-bezier(.22, 1, .36, 1), visibility 0s; visibility: visible; pointer-events: auto; }
 
 
     /* Bookings reuses the compact Booking card hierarchy: status, schedule,
@@ -5759,6 +6427,76 @@
     .booking-actions-sheet.is-open { pointer-events: auto; }
     .booking-actions-sheet.is-open .booking-actions-sheet__backdrop { opacity: 1; }
     .booking-actions-sheet.is-open .booking-actions-sheet__panel { transform: translateY(0); }
+
+    /* Figma: cancelling an upcoming family booking is deliberately a second
+       confirmation step. Keeping it in a separate sheet makes the destructive
+       action unmistakable and preserves the booking when it is dismissed. */
+    .booking-cancel-alert {
+      position: absolute;
+      z-index: 52;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .booking-cancel-alert__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      padding: 0;
+      background: rgba(42, 53, 57, .8);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .booking-cancel-alert__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 40px rgba(42, 53, 57, .16);
+      padding: 0 20px calc(40px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .booking-cancel-alert__handle {
+      width: 135px;
+      height: 5px;
+      margin: 16px auto 26px;
+      border-radius: 99px;
+      background: #2a3539;
+    }
+
+    .booking-cancel-alert__content { display: grid; gap: 10px; max-width: 400px; margin: 0 auto; }
+    .booking-cancel-alert__spacer { width: 64px; height: 8px; margin: 0 auto; }
+    .booking-cancel-alert__heading { display: flex; align-items: center; gap: 8px; margin: 0; color: #2a3539; font: 450 24px/1.32 Soleil, sans-serif; letter-spacing: -.2px; }
+    .booking-cancel-alert__icon { display: block; width: 42px; height: 42px; flex: 0 0 42px; }
+    .booking-cancel-alert__copy { margin: 0; color: #2a3539; font: 350 16px/1.5 Soleil, sans-serif; letter-spacing: -.24px; }
+    .booking-cancel-alert__actions { display: grid; gap: 10px; }
+    .booking-cancel-alert__confirm,
+    .booking-cancel-alert__keep {
+      min-height: 52px;
+      border-radius: 4px;
+      padding: 14px 20px 16px;
+      font: 450 16px/22px Soleil, sans-serif;
+      cursor: pointer;
+    }
+    .booking-cancel-alert__confirm { border: 0; background: #f96073; box-shadow: inset 0 -3px 0 #e6213a; color: #fff; }
+    .booking-cancel-alert__confirm:hover,
+    .booking-cancel-alert__confirm:focus-visible { background: #ea4d62; outline: 0; }
+    .booking-cancel-alert__keep { border: 1px solid #e5e5ea; background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; color: #2a3539; }
+    .booking-cancel-alert__keep:hover,
+    .booking-cancel-alert__keep:focus-visible { background: #f7f7f7; outline: 0; }
+    .booking-cancel-alert__confirm:active,
+    .booking-cancel-alert__keep:active { box-shadow: none; transform: translateY(2px); }
+    .booking-cancel-alert.is-open { pointer-events: auto; }
+    .booking-cancel-alert.is-open .booking-cancel-alert__backdrop { opacity: 1; }
+    .booking-cancel-alert.is-open .booking-cancel-alert__panel { transform: translateY(0); }
 
     .booking-card__payment-note {
       position: absolute;
@@ -8649,6 +9387,7 @@
       .status-bar { display: none; }
       .phone-frame { width: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
       .family-profile-screen { top: 0; }
+      .sitter-detail-screen { top: 0; }
       .family-account-screen { top: 0; }
       .family-notifications-screen { top: 0; }
       .family-billing-screen { top: 0; }
@@ -9310,6 +10049,60 @@
         <button class="message-detail-screen__send" type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
       </form>
     </section>
+    <section class="sitter-message-sheet" id="sitterMessageSheet" aria-hidden="true" inert>
+      <button class="sitter-message-sheet__backdrop" id="sitterMessageSheetBackdrop" type="button" aria-label="Close conversation"></button>
+      <section class="sitter-message-sheet__panel" id="sitterMessageSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterMessageSheetName" tabindex="-1">
+        <div class="search-filters-screen__grabber sitter-message-sheet__grabber" id="sitterMessageSheetGrabber" aria-hidden="true"></div>
+        <header class="sitter-message-sheet__header" id="sitterMessageSheetHeader">
+          <img class="sitter-message-sheet__avatar" id="sitterMessageSheetAvatar" src="./assets/messages-avatar-01.png" alt="">
+          <div class="sitter-message-sheet__contact-info"><p class="sitter-message-sheet__name" id="sitterMessageSheetName">Conversation</p><p class="sitter-message-sheet__booking" id="sitterMessageSheetBooking">No booking yet</p></div>
+          <button class="sitter-message-sheet__book" id="sitterMessageSheetBook" type="button"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span>Book</span></button>
+          <button class="sitter-message-sheet__close" id="sitterMessageSheetClose" type="button" aria-label="Close conversation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+        </header>
+        <div class="message-detail-screen__messages sitter-message-sheet__messages" id="sitterMessageSheetMessages" aria-live="polite">
+          <p class="message-detail-screen__date">November 20, 2025</p>
+          <div class="conversation-bubble-row conversation-bubble-row--outgoing">
+            <div class="conversation-bubble-row__stack"><p class="conversation-bubble conversation-bubble--outgoing">Hello, I’m interested in arranging babysitting. Would you have time for a short call this week?</p><div class="conversation-bubble-row__meta"><i class="fa-light fa-circle-check" aria-hidden="true"></i><span>Seen</span><span>17:06</span></div></div>
+          </div>
+        </div>
+        <form class="message-detail-screen__composer sitter-message-sheet__composer" id="sitterMessageSheetComposer">
+          <div class="message-detail-screen__input-wrap"><input class="message-detail-screen__input" id="sitterMessageSheetInput" type="text" placeholder="Your message..." aria-label="Your message"><button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div>
+          <button class="message-detail-screen__send" type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+        </form>
+      </section>
+    </section>
+    <section class="sitter-booking-sheet" id="sitterBookingSheet" aria-hidden="true" inert>
+      <button class="sitter-booking-sheet__backdrop" id="sitterBookingSheetBackdrop" type="button" aria-label="Close new booking"></button>
+      <section class="sitter-booking-sheet__panel" id="sitterBookingSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterBookingSheetTitle" tabindex="-1">
+        <div class="sitter-booking-sheet__indicator" id="sitterBookingSheetIndicator" aria-hidden="true"></div>
+        <header class="sitter-booking-sheet__nav" id="sitterBookingSheetHeader"><span class="sitter-booking-sheet__nav-spacer" aria-hidden="true"></span><p class="sitter-booking-sheet__nav-title">New booking</p><button class="sitter-booking-sheet__close" id="sitterBookingSheetClose" type="button" aria-label="Close new booking"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></header>
+        <div class="sitter-booking-sheet__intro">
+          <img class="sitter-booking-sheet__avatar" id="sitterBookingSheetAvatar" src="./assets/avatar-01.jpg" alt="">
+          <h2 class="sitter-booking-sheet__intro-title" id="sitterBookingSheetTitle">Create a booking with<br><span id="sitterBookingSheetName">Sitter</span></h2>
+          <p class="sitter-booking-sheet__intro-copy">unique insurance and secure payments</p>
+          <img class="sitter-booking-sheet__protect" src="./assets/care-protect-logo.svg" alt="Hlídačky Protect">
+        </div>
+        <form class="sitter-booking-sheet__form" id="sitterBookingSheetForm">
+          <section class="sitter-booking-section" aria-labelledby="sitterBookingServicesTitle">
+            <div class="sitter-booking-section__heading"><h3 id="sitterBookingServicesTitle">Services</h3><i class="fa-light fa-circle-plus" aria-hidden="true"></i></div>
+            <div class="sitter-booking-services" role="group" aria-label="Services">
+              <button class="sitter-booking-service is-selected" type="button" aria-pressed="true" data-sitter-booking-service><span class="sitter-booking-service__icons"><span class="sitter-booking-service__check"><i class="fa-solid fa-check" aria-hidden="true"></i></span><i class="sitter-booking-service__icon fa-light fa-child-reaching" aria-hidden="true"></i></span><span>Babysitting</span></button>
+              <button class="sitter-booking-service" type="button" aria-pressed="false" data-sitter-booking-service><span class="sitter-booking-service__icons"><span class="sitter-booking-service__check"><i class="fa-solid fa-check" aria-hidden="true"></i></span><i class="sitter-booking-service__icon fa-light fa-broom" aria-hidden="true"></i></span><span>Cleaning</span></button>
+              <button class="sitter-booking-service" type="button" aria-pressed="false" data-sitter-booking-service><span class="sitter-booking-service__icons"><span class="sitter-booking-service__check"><i class="fa-solid fa-check" aria-hidden="true"></i></span><i class="sitter-booking-service__icon fa-light fa-paw" aria-hidden="true"></i></span><span>Pet care</span></button>
+            </div>
+          </section>
+          <section class="sitter-booking-section" aria-labelledby="sitterBookingWhenTitle">
+            <div class="sitter-booking-section__heading"><h3 id="sitterBookingWhenTitle">When</h3><i class="fa-light fa-moon-stars" aria-hidden="true"></i></div>
+            <div class="sitter-booking-inputs"><input class="sitter-booking-input sitter-booking-input--date" type="text" value="27.11." aria-label="Booking date"><input class="sitter-booking-input sitter-booking-input--time" type="text" value="16:00" aria-label="Booking start time"><input class="sitter-booking-input sitter-booking-input--time" type="text" value="19:00" aria-label="Booking end time"></div>
+          </section>
+          <section class="sitter-booking-section sitter-booking-section--price" aria-labelledby="sitterBookingPriceTitle">
+            <div class="sitter-booking-section__heading"><h3 id="sitterBookingPriceTitle">Price</h3><i class="fa-light fa-pen-to-square" aria-hidden="true"></i></div>
+            <input class="sitter-booking-price" type="text" value="150 Kč/hour" aria-label="Hourly price">
+          </section>
+        </form>
+        <footer class="sitter-booking-sheet__footer"><div class="sitter-booking-sheet__total">total price for 3 hours<strong>1 280 <span>Kč</span></strong></div><button class="sitter-booking-sheet__submit" id="sitterBookingSheetSubmit" type="submit" form="sitterBookingSheetForm"><span>Send booking request</span><small>Change time or price anytime</small></button></footer>
+      </section>
+    </section>
     <section class="jobs-screen" id="jobsScreen" aria-label="Jobs" aria-hidden="true">
       <div class="jobs-screen__content">
         <button class="jobs-screen__create" type="button"><i class="fa-regular fa-plus" aria-hidden="true"></i>Create a new job</button>
@@ -9511,6 +10304,197 @@
         <div class="family-profile-actions">
           <button class="family-profile-logout" id="familyProfileLogout" type="button"><i class="fa-regular fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button>
         </div>
+      </div>
+    </section>
+    <section class="sitter-detail-screen" id="sitterDetailScreen" aria-label="Sitter profile" aria-hidden="true" data-node-id="2404:75810">
+      <div class="sitter-detail-screen__panel">
+      <div class="sitter-detail-screen__present-handle" aria-hidden="true"></div>
+      <header class="sitter-detail-header" data-node-id="2404:75813">
+        <button class="sitter-detail-header__back" id="sitterDetailBack" type="button" aria-label="Back to search results"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <h1 class="sitter-detail-header__title">Sitter profile</h1>
+        <button class="sitter-detail-header__close" id="sitterDetailClose" type="button" aria-label="Close sitter profile"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+      </header>
+      <main class="sitter-detail-content" id="sitterDetailContent">
+        <nav class="sitter-detail-profile-switch" aria-label="Sitter service profiles" data-node-id="2404:79113">
+          <div class="sitter-detail-profile-switch__items">
+            <button class="sitter-detail-profile-switch__item is-active" type="button" aria-pressed="true" data-sitter-detail-profile="babysitting"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><span class="sitter-detail-profile-switch__label">Babysitting</span></button>
+            <button class="sitter-detail-profile-switch__item" type="button" aria-pressed="false" data-sitter-detail-profile="cleaning"><i class="fa-light fa-broom" aria-hidden="true"></i><span class="sitter-detail-profile-switch__label">Household cleaning</span></button>
+            <button class="sitter-detail-profile-switch__item" type="button" aria-pressed="false" data-sitter-detail-profile="pet-care"><i class="fa-light fa-paw" aria-hidden="true"></i><span class="sitter-detail-profile-switch__label">Pet care</span></button>
+            <button class="sitter-detail-profile-switch__item" type="button" aria-pressed="false" data-sitter-detail-profile="senior-care"><i class="fa-light fa-person-cane" aria-hidden="true"></i><span class="sitter-detail-profile-switch__label">Senior care</span></button>
+            <button class="sitter-detail-profile-switch__item" type="button" aria-pressed="false" data-sitter-detail-profile="tutoring"><i class="fa-light fa-graduation-cap" aria-hidden="true"></i><span class="sitter-detail-profile-switch__label">Tutoring</span></button>
+          </div>
+        </nav>
+        <section class="sitter-detail-hero" aria-labelledby="sitterDetailName">
+          <div class="sitter-detail-photo-wrap">
+            <img class="sitter-detail-photo" id="sitterDetailPhoto" src="./assets/avatar-01.jpg" alt="">
+            <span class="sitter-detail-verified"><img src="./assets/care-verify-shield.svg" width="18" height="18" alt="" aria-hidden="true"><span class="sitter-detail-verified__label">Verified</span></span>
+          </div>
+          <div class="sitter-detail-main-information" data-node-id="2404:79146">
+            <h2 class="sitter-detail-name" id="sitterDetailName">Alexandra Růžičková</h2>
+            <p class="sitter-detail-meta"><span id="sitterDetailLocation">Praha 2</span><img class="sitter-detail-meta__divider" src="./assets/sitter-detail-info-divider.svg" width="1" height="24" alt="" aria-hidden="true"><span id="sitterDetailAge">28 years</span></p>
+            <div class="sitter-detail-rating"><span class="sitter-detail-rating__stars" id="sitterDetailStars" role="img" aria-label="5 out of 5 stars"></span><span id="sitterDetailReviews">(20)</span></div>
+          </div>
+          <div class="sitter-detail-profile-tags" id="sitterDetailProfileTags" data-node-id="2404:79244">
+            <span class="sitter-detail-profile-tag">Overnight sitting</span><span class="sitter-detail-profile-tag">Speaks English</span><span class="sitter-detail-profile-tag">Can drive</span><span class="sitter-detail-profile-tag">Experience with diabetes</span><span class="sitter-detail-profile-tag">Plays guitar</span>
+          </div>
+        </section>
+        <section class="sitter-detail-actions" aria-label="Contact sitter" data-node-id="2404:75905">
+          <button class="sitter-detail-actions__book" id="sitterDetailBook" type="button"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i>Book now</button>
+          <div class="sitter-detail-actions__secondary">
+            <button class="sitter-detail-actions__message" id="sitterDetailMessage" type="button"><i class="fa-light fa-message" aria-hidden="true"></i>Message</button>
+            <button class="sitter-detail-actions__call" type="button" aria-label="Call sitter"><i class="fa-light fa-phone" aria-hidden="true"></i></button>
+          </div>
+        </section>
+        <section class="sitter-detail-stats" aria-label="Sitter statistics" data-node-id="2404:79172">
+          <div class="sitter-detail-stat"><span class="sitter-detail-stat__icon"><i class="fa-light fa-child-reaching" aria-hidden="true"></i></span><span class="sitter-detail-stat__copy"><strong class="sitter-detail-stat__value">5 years</strong><span class="sitter-detail-stat__label">Babysitting experience</span></span></div>
+          <div class="sitter-detail-stat"><span class="sitter-detail-stat__icon"><i class="fa-light fa-coins" aria-hidden="true"></i></span><span class="sitter-detail-stat__copy"><strong class="sitter-detail-stat__value" id="sitterDetailFactRate">500 Kč/h</strong><span class="sitter-detail-stat__label">Babysitting rate</span></span></div>
+          <div class="sitter-detail-stat"><span class="sitter-detail-stat__icon"><i class="fa-light fa-users" aria-hidden="true"></i></span><span class="sitter-detail-stat__copy"><strong class="sitter-detail-stat__value" id="sitterDetailFactFamilies">20 families</strong><span class="sitter-detail-stat__label" id="sitterDetailFactContacted">already contacted Alexandra</span></span></div>
+          <div class="sitter-detail-stat"><span class="sitter-detail-stat__icon"><i class="fa-light fa-arrow-rotate-right" aria-hidden="true"></i></span><span class="sitter-detail-stat__copy"><strong class="sitter-detail-stat__value">Very often</strong><span class="sitter-detail-stat__label">booked repeatedly</span></span></div>
+        </section>
+        <section class="sitter-detail-section" data-node-id="2404:75952" aria-labelledby="sitterDetailAboutHeading">
+          <h2 class="sitter-detail-section__heading" id="sitterDetailAboutHeading">About me</h2>
+          <p class="sitter-detail-section__copy" id="sitterDetailDescription">Experienced babysitter for regular and one-time care. I most often help with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.</p>
+          <button class="sitter-detail-more" type="button"><span>Show more</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+        </section>
+        <section class="sitter-detail-reviews" aria-labelledby="sitterDetailReviewHeading" data-node-id="2404:79473">
+          <header class="sitter-detail-reviews__header"><h2 class="sitter-detail-reviews__heading" id="sitterDetailReviewHeading">Reviews</h2><button class="sitter-detail-reviews__leave" type="button"><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Leave a review</span></button></header>
+          <img class="sitter-detail-reviews__divider" src="./assets/sitter-detail-reviews-divider.svg" width="335" height="24" alt="" aria-hidden="true">
+          <div class="sitter-detail-reviews__summary"><strong class="sitter-detail-reviews__score" id="sitterDetailReviewScore">5.0</strong><div class="sitter-detail-reviews__rating"><span class="sitter-detail-reviews__stars" id="sitterDetailReviewStars" aria-hidden="true"><img src="./assets/sitter-detail-star.svg" width="24" height="24" alt=""><img src="./assets/sitter-detail-star.svg" width="24" height="24" alt=""><img src="./assets/sitter-detail-star.svg" width="24" height="24" alt=""><img src="./assets/sitter-detail-star.svg" width="24" height="24" alt=""><img src="./assets/sitter-detail-star.svg" width="24" height="24" alt=""></span><p class="sitter-detail-reviews__based-on" id="sitterDetailReviewBasedOn">based on 20 reviews</p></div></div>
+          <div class="sitter-detail-reviews__list">
+            <article class="sitter-detail-review-card">
+              <div class="sitter-detail-review-card__stars" aria-label="5 out of 5 stars"><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""></div>
+              <p class="sitter-detail-review-card__copy" id="sitterDetailReviewCopy">We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.</p>
+              <div><p class="sitter-detail-review-card__author">Jiřina B.</p><p class="sitter-detail-review-card__meta"><span>Praha 2</span><span>June 15, 2024</span></p></div>
+              <div class="sitter-detail-review-card__tags"><span class="sitter-detail-review-card__tag sitter-detail-review-card__tag--service"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i>Babysitting</span><span class="sitter-detail-review-card__tag"><i class="fa-light fa-arrow-rotate-right" aria-hidden="true"></i>Repeated booking</span></div>
+            </article>
+            <article class="sitter-detail-review-card">
+              <div class="sitter-detail-review-card__stars" aria-label="5 out of 5 stars"><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""><img src="./assets/sitter-detail-star.svg" width="20" height="20" alt=""></div>
+              <p class="sitter-detail-review-card__copy">A kind, reliable sitter who quickly found a great way to connect with our children. We would happily book again.</p>
+              <div><p class="sitter-detail-review-card__author">Eliška Z.</p><p class="sitter-detail-review-card__meta"><span>Praha 2</span><span>June 1, 2024</span></p></div>
+              <div class="sitter-detail-review-card__tags"><span class="sitter-detail-review-card__tag sitter-detail-review-card__tag--service"><i class="fa-solid fa-child-reaching" aria-hidden="true"></i>Babysitting</span><span class="sitter-detail-review-card__tag"><i class="fa-light fa-arrow-rotate-right" aria-hidden="true"></i>Repeated booking</span></div>
+            </article>
+          </div>
+          <button class="sitter-detail-reviews__more" type="button"><span>Show more reviews</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+        </section>
+        <section class="sitter-detail-verify" aria-label="Hlídačky Verify" data-node-id="2408:79654">
+          <div class="sitter-detail-verify__top">
+            <div class="sitter-detail-verify__stripe" aria-hidden="true"></div>
+            <div class="sitter-detail-verify__content">
+              <div class="sitter-detail-verify__avatar"><img id="sitterDetailVerifyAvatar" src="./assets/avatar-01.jpg" alt=""><span class="sitter-detail-verify__avatar-badge"><img src="./assets/care-verify-profile-shield.svg" alt="" aria-hidden="true"></span></div>
+              <div class="sitter-detail-verify__checks">
+                <div class="sitter-detail-verify__check"><img src="./assets/care-verify-verification-shield.svg" alt="" aria-hidden="true"><span>Video<br>verification</span></div>
+                <div class="sitter-detail-verify__check"><img src="./assets/care-verify-verification-shield.svg" alt="" aria-hidden="true"><span>Clean<br>record</span></div>
+                <div class="sitter-detail-verify__check"><img src="./assets/care-verify-verification-shield.svg" alt="" aria-hidden="true"><span>+2 more<br>verifications</span></div>
+              </div>
+            </div>
+          </div>
+          <footer class="sitter-detail-verify__footer">
+            <div class="sitter-detail-verify__brand" aria-label="Hlídačky Verify"><img class="sitter-detail-verify__brand-shield" src="./assets/care-verify-logo-shield.svg" alt=""><img class="sitter-detail-verify__brand-wordmark" src="./assets/care-verify-wordmark.svg" alt=""><img class="sitter-detail-verify__brand-trademark" src="./assets/care-verify-trademark.svg" alt=""></div>
+            <button class="sitter-detail-verify__more" type="button"><span>Show more</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+          </footer>
+        </section>
+        <section class="sitter-detail-availability" aria-labelledby="sitterDetailAvailabilityHeading" data-node-id="2408:80289">
+          <h2 class="sitter-detail-availability__heading" id="sitterDetailAvailabilityHeading">Availability</h2>
+          <div class="sitter-detail-availability__calendar" role="table" aria-label="Weekly availability">
+            <div class="sitter-detail-availability__days" role="row"><span aria-hidden="true"></span><span class="sitter-detail-availability__day" role="columnheader">Mo</span><span class="sitter-detail-availability__day" role="columnheader">Tu</span><span class="sitter-detail-availability__day" role="columnheader">We</span><span class="sitter-detail-availability__day" role="columnheader">Th</span><span class="sitter-detail-availability__day" role="columnheader">Fr</span><span class="sitter-detail-availability__day" role="columnheader">Sa</span><span class="sitter-detail-availability__day" role="columnheader">Su</span></div>
+            <div class="sitter-detail-availability__row" role="row"><span class="sitter-detail-availability__label" role="rowheader">morning</span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span></div>
+            <div class="sitter-detail-availability__row" role="row"><span class="sitter-detail-availability__label" role="rowheader">afternoon</span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span></div>
+            <div class="sitter-detail-availability__row" role="row"><span class="sitter-detail-availability__label" role="rowheader">evening</span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span></div>
+            <div class="sitter-detail-availability__row" role="row"><span class="sitter-detail-availability__label" role="rowheader">night</span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell is-available"></span><span class="sitter-detail-availability__cell"></span><span class="sitter-detail-availability__cell"></span></div>
+          </div>
+          <div class="sitter-detail-availability__footer">
+            <div class="sitter-detail-availability__legend"><span class="sitter-detail-availability__legend-item"><i class="sitter-detail-availability__legend-sample is-available" aria-hidden="true"></i>Available</span><span class="sitter-detail-availability__legend-item"><i class="sitter-detail-availability__legend-sample" aria-hidden="true"></i>Unavailable</span></div>
+            <div class="sitter-detail-availability__time-off"><span class="sitter-detail-availability__doodle" aria-hidden="true"><img class="sitter-detail-availability__doodle-layer-2" src="./assets/sitter-detail-time-off-layer-2.svg" alt=""><img class="sitter-detail-availability__doodle-layer-3" src="./assets/sitter-detail-time-off-layer-3.svg" alt=""><img class="sitter-detail-availability__doodle-layer-1" src="./assets/sitter-detail-time-off-layer-1.svg" alt=""></span><p class="sitter-detail-availability__time-off-copy"><span id="sitterDetailTimeOffName">Alexandra</span> has upcoming time-off from June 17 to June 24</p></div>
+          </div>
+        </section>
+        <section class="sitter-detail-gallery" aria-labelledby="sitterDetailGalleryHeading" data-node-id="2404:76207">
+          <h2 class="sitter-detail-gallery__heading" id="sitterDetailGalleryHeading">Gallery</h2>
+          <div class="sitter-detail-gallery__grid">
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-1.png" alt="Babysitter reading with children"></div>
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-2.png" alt="Babysitter and child drawing"></div>
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-3.png" alt="Babysitter helping a child"></div>
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-4.png" alt="Children playing with blocks"></div>
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-5.png" alt="Babysitter holding a child"></div>
+            <div class="sitter-detail-gallery__item"><img src="./assets/sitter-detail-gallery-6.png" alt="Babysitter with children outdoors"></div>
+          </div>
+          <button class="sitter-detail-gallery__more" type="button"><span>Show more photos</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+        </section>
+        <section class="sitter-detail-work" aria-labelledby="sitterDetailWorkHeading" data-node-id="2409:80503">
+          <h2 class="sitter-detail-work__heading" id="sitterDetailWorkHeading">Where I work</h2>
+          <div class="sitter-detail-work__location">
+            <p class="sitter-detail-work__copy">I’m most of the time in <a href="#">Jihomoravský</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Žďár nad Sázavou</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Nové Město na Moravě</a></p>
+            <div class="sitter-detail-work__map" role="img" aria-label="Map of Nové Město na Moravě"><img class="sitter-detail-work__map-image" src="./assets/sitter-detail-work-map.png" alt=""><i class="sitter-detail-work__map-pin fa-solid fa-location-dot" aria-hidden="true"></i></div>
+          </div>
+          <div class="sitter-detail-work__location"><p class="sitter-detail-work__copy">I also work in <a href="#">Královohradecký</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Jičín</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Valdice</a></p></div>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailPreferencesHeading" data-node-id="2408:79981">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailPreferencesHeading">Preferences</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I can babysit <strong>between 20 and 40 hours per week</strong></span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I can babysit <strong>up to 3 children</strong></span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I can babysit <strong>at parents place</strong></span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I have <strong>a space available for babysitting</strong></span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailExperienceHeading" data-node-id="2408:80002">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailExperienceHeading">Experience with babysitting</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I have <strong>8 years of babysitting experience</strong></span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I have been babysitting in my family and friends</span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I have babysitting experience with families outside my own</span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailAgeExperienceHeading" data-node-id="2408:80020">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailAgeExperienceHeading">Experience with age groups</h2>
+          <ul class="sitter-detail-info-list sitter-detail-info-list--age"><li class="sitter-detail-info-list__item"><i class="fa-light fa-baby" aria-hidden="true"></i><span><strong>1,5 year</strong> of experience with infants</span></li><li class="sitter-detail-info-list__item"><i class="fa-light fa-child" aria-hidden="true"></i><span><strong>5 years</strong> of experience with toddlers</span></li><li class="sitter-detail-info-list__item"><i class="fa-light fa-child-reaching" aria-hidden="true"></i><span><strong>7 years</strong> experience with pre-school age</span></li><li class="sitter-detail-info-list__item"><i class="fa-light fa-school" aria-hidden="true"></i><span><strong>7 years</strong> experience with school age</span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailOccasionsHeading" data-node-id="2408:80045">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailOccasionsHeading">Extra occasions</h2>
+          <div class="sitter-detail-info-tags"><span class="sitter-detail-info-tag"><i class="fa-light fa-party-horn" aria-hidden="true"></i>Parties</span><span class="sitter-detail-info-tag"><i class="fa-light fa-umbrella-beach" aria-hidden="true"></i>Holidays</span><span class="sitter-detail-info-tag"><i class="fa-light fa-moon-stars" aria-hidden="true"></i>Overnight</span><span class="sitter-detail-info-tag"><i class="fa-light fa-people-group" aria-hidden="true"></i>Children's groups</span><span class="sitter-detail-info-tag"><i class="fa-light fa-rings-wedding" aria-hidden="true"></i>Weddings</span></div>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailSpecialNeedsHeading" data-node-id="2408:80059">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailSpecialNeedsHeading">Experience with special needs</h2>
+          <div class="sitter-detail-info-tags"><span class="sitter-detail-info-tag"><i class="fa-light fa-infinity" aria-hidden="true"></i>Autism spectrum</span><span class="sitter-detail-info-tag"><i class="fa-light fa-droplet" aria-hidden="true"></i>Diabetes</span><span class="sitter-detail-info-tag"><i class="fa-light fa-lungs" aria-hidden="true"></i>Asthma</span><span class="sitter-detail-info-tag"><i class="fa-light fa-brain" aria-hidden="true"></i>ADHD</span><span class="sitter-detail-info-tag"><i class="fa-light fa-utensils" aria-hidden="true"></i>Food allergies</span><span class="sitter-detail-info-tag"><i class="fa-light fa-eye" aria-hidden="true"></i>Vision disorders</span><span class="sitter-detail-info-tag"><i class="fa-light fa-bolt" aria-hidden="true"></i>Epilepsia</span></div>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailSkillsHeading" data-node-id="2408:80073">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailSkillsHeading">Skills and activities</h2>
+          <div class="sitter-detail-info-tags"><span class="sitter-detail-info-tag"><i class="fa-light fa-microphone" aria-hidden="true"></i>Singing</span><span class="sitter-detail-info-tag"><i class="fa-light fa-guitar" aria-hidden="true"></i>Musical instrument</span><span class="sitter-detail-info-tag"><i class="fa-light fa-futbol" aria-hidden="true"></i>Sport</span><span class="sitter-detail-info-tag"><i class="fa-light fa-masks-theater" aria-hidden="true"></i>Theater / Dancing</span></div>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailLanguagesHeading" data-node-id="2408:80088">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailLanguagesHeading">Languages I speak</h2>
+          <div class="sitter-detail-language-tags"><span class="sitter-detail-language-tag"><span class="sitter-detail-language-tag__flag" role="img" aria-label="Czech flag">🇨🇿</span>Czech (native)</span><span class="sitter-detail-language-tag"><span class="sitter-detail-language-tag__flag" role="img" aria-label="Slovak flag">🇸🇰</span>Slovak</span><span class="sitter-detail-language-tag"><span class="sitter-detail-language-tag__flag" role="img" aria-label="British flag">🇬🇧</span>English</span><span class="sitter-detail-language-tag"><span class="sitter-detail-language-tag__flag" role="img" aria-label="German flag">🇩🇪</span>German</span></div>
+          <p class="sitter-detail-info-section__copy">I am a native Czech speaker with a C1 level proficiency in English and a B2 level in German. Additionally, I am capable of teaching children the basics of the English language if needed, offering them a solid foundation in vocabulary, grammar, and conversation skills.</p>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailEducationHeading" data-node-id="2408:80115">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailEducationHeading">My education</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Faculty of Education, Charles University Prague (bachelors degree)</span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Secondary school of education, Brno (graduation)</span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailCoursesHeading" data-node-id="2414:44401">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailCoursesHeading">Courses and Certificates</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Safe Sitter Certification (safety skills, first aid, and CPR)</span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Deaf-Blind Communication Techniques Certification</span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Elementary art school</span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailTransportHeading" data-node-id="2414:44419">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailTransportHeading">Transport possibilities</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I have a car</span></li><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I can drive children if needed. I have a driver’s license and experience driving with kids.</span></li></ul>
+        </section>
+        <section class="sitter-detail-info-section" aria-labelledby="sitterDetailOtherInfoHeading" data-node-id="2414:44434">
+          <h2 class="sitter-detail-info-section__heading" id="sitterDetailOtherInfoHeading">Other information</h2>
+          <ul class="sitter-detail-info-list"><li class="sitter-detail-info-list__item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>I’m a non-smoker</span></li><li class="sitter-detail-info-list__item sitter-detail-info-list__item--unavailable"><i class="fa-solid fa-minus" aria-hidden="true"></i><span>I’m a smoker</span></li></ul>
+        </section>
+        <div class="sitter-detail-report" data-node-id="2414:44337"><a class="sitter-detail-report__link" href="#" aria-label="Report profile"><i class="fa-regular fa-flag" aria-hidden="true"></i><span>Report profile</span></a></div>
+        <section class="sitter-detail-other-profiles" aria-labelledby="sitterDetailOtherProfilesHeading" data-node-id="2414:44465">
+          <h2 class="sitter-detail-other-profiles__heading" id="sitterDetailOtherProfilesHeading">Alexandra’s other profiles</h2>
+          <ul class="sitter-detail-other-profiles__list">
+            <li class="sitter-detail-other-profiles__item"><div class="sitter-detail-other-profiles__avatar"><img src="./assets/sitter-detail-other-profile-cleaning.png" alt=""><span class="sitter-detail-other-profiles__badge"><img src="./assets/sitter-detail-other-profile-shield.svg" alt=""></span></div><span class="sitter-detail-other-profiles__name">Household cleaning</span><a class="sitter-detail-other-profiles__open" href="#">Open</a></li>
+            <li class="sitter-detail-other-profiles__item"><div class="sitter-detail-other-profiles__avatar"><img src="./assets/sitter-detail-other-profile-pet-care.png" alt=""><span class="sitter-detail-other-profiles__badge"><img src="./assets/sitter-detail-other-profile-shield.svg" alt=""></span></div><span class="sitter-detail-other-profiles__name">Pet care</span><a class="sitter-detail-other-profiles__open" href="#">Open</a></li>
+            <li class="sitter-detail-other-profiles__item"><div class="sitter-detail-other-profiles__avatar"><img src="./assets/sitter-detail-other-profile-senior-care.png" alt=""><span class="sitter-detail-other-profiles__badge"><img src="./assets/sitter-detail-other-profile-shield.svg" alt=""></span></div><span class="sitter-detail-other-profiles__name">Senior care</span><a class="sitter-detail-other-profiles__open" href="#">Open</a></li>
+          </ul>
+        </section>
+        <section class="sitter-detail-alternatives" id="sitterDetailAlternatives" aria-labelledby="sitterDetailAlternativesHeading" data-node-id="2414:44547">
+          <h2 class="sitter-detail-alternatives__heading" id="sitterDetailAlternativesHeading">Other sitters in Nové město</h2>
+          <div class="sitter-detail-alternatives__feed" aria-label="Alternative sitter profiles">
+            <article class="sitter-detail-alternative-card" data-sitter-age="29 years" data-sitter-rating="3.5" data-sitter-review="Eva is kind, punctual and keeps children engaged with creative activities." role="link" tabindex="0" aria-label="Open Eva Beranová's sitter profile"><header class="sitter-detail-alternative-card__header"><div class="sitter-detail-alternative-card__photo-wrap"><img class="sitter-detail-alternative-card__photo" src="./assets/sitter-detail-alternative-eva.png" alt="Eva Beranová"><div class="sitter-detail-alternative-card__verified"><img src="./assets/sitter-detail-alternative-shield.svg" alt=""><span>Verified</span></div></div><div class="sitter-detail-alternative-card__info"><h3 class="sitter-detail-alternative-card__name">Eva Beranová</h3><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Plzeň 2 - Slovany</span></div><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-phone" aria-hidden="true"></i><span class="sitter-detail-alternative-card__phone">+420 720 123 456</span></div><div class="sitter-detail-alternative-card__rating"><span class="sitter-detail-alternative-card__stars"><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star-half.svg" alt=""><img src="./assets/sitter-detail-alternative-star-empty.svg" alt=""></span><span class="sitter-detail-alternative-card__reviews">(2)</span></div><span class="sitter-detail-alternative-card__price">200 Kč/h</span></div></header><div class="sitter-detail-alternative-card__content"><p class="sitter-detail-alternative-card__copy">Friendly and reliable sitter who enjoys creating meaningful activities for children. <a href="#">View profile</a></p><div class="sitter-detail-alternative-card__tags"><span class="sitter-detail-alternative-card__tag">Overnight sitting</span><span class="sitter-detail-alternative-card__tag">Speaks English</span><span class="sitter-detail-alternative-card__tag">Can drive</span><span class="sitter-detail-alternative-card__tag">Experience with diabetes</span><span class="sitter-detail-alternative-card__tag">Plays guitar</span></div></div></article>
+            <article class="sitter-detail-alternative-card" data-sitter-age="34 years" data-sitter-rating="4.5" data-sitter-review="Milena is a warm and experienced sitter who families happily book again." role="link" tabindex="0" aria-label="Open Milena B.'s sitter profile"><header class="sitter-detail-alternative-card__header"><div class="sitter-detail-alternative-card__photo-wrap"><img class="sitter-detail-alternative-card__photo" src="./assets/sitter-detail-alternative-milena.png" alt="Milena B."><div class="sitter-detail-alternative-card__verified"><img src="./assets/sitter-detail-alternative-shield.svg" alt=""><span>Verified</span></div></div><div class="sitter-detail-alternative-card__info"><h3 class="sitter-detail-alternative-card__name">Milena B.</h3><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Plzeň 1</span></div><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-phone" aria-hidden="true"></i><span class="sitter-detail-alternative-card__phone">+420 720 123 456</span></div><div class="sitter-detail-alternative-card__rating"><span class="sitter-detail-alternative-card__stars"><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star-half.svg" alt=""></span><span class="sitter-detail-alternative-card__reviews">(8)</span></div><span class="sitter-detail-alternative-card__price">240 Kč/h</span></div></header><div class="sitter-detail-alternative-card__content"><p class="sitter-detail-alternative-card__copy">A kind sitter who quickly found a great way to connect with children. <a href="#">View profile</a></p><div class="sitter-detail-alternative-card__tags"><span class="sitter-detail-alternative-card__tag">Repeated booking</span><span class="sitter-detail-alternative-card__tag">Speaks English</span><span class="sitter-detail-alternative-card__tag">First aid course</span></div></div></article>
+            <article class="sitter-detail-alternative-card" data-sitter-age="27 years" data-sitter-rating="5.0" data-sitter-review="Lucie is attentive, dependable and brings calm energy to every booking." role="link" tabindex="0" aria-label="Open Lucie K.'s sitter profile"><header class="sitter-detail-alternative-card__header"><div class="sitter-detail-alternative-card__photo-wrap"><img class="sitter-detail-alternative-card__photo" src="./assets/avatar-03.jpg" alt="Lucie K."><div class="sitter-detail-alternative-card__verified"><img src="./assets/sitter-detail-alternative-shield.svg" alt=""><span>Verified</span></div></div><div class="sitter-detail-alternative-card__info"><h3 class="sitter-detail-alternative-card__name">Lucie K.</h3><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Nové město</span></div><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-phone" aria-hidden="true"></i><span class="sitter-detail-alternative-card__phone">+420 721 234 567</span></div><div class="sitter-detail-alternative-card__rating"><span class="sitter-detail-alternative-card__stars"><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""></span><span class="sitter-detail-alternative-card__reviews">(12)</span></div><span class="sitter-detail-alternative-card__price">220 Kč/h</span></div></header><div class="sitter-detail-alternative-card__content"><p class="sitter-detail-alternative-card__copy">Experienced babysitter for regular and one-time care, indoors or outdoors. <a href="#">View profile</a></p><div class="sitter-detail-alternative-card__tags"><span class="sitter-detail-alternative-card__tag">Drawing / painting</span><span class="sitter-detail-alternative-card__tag">Can drive</span><span class="sitter-detail-alternative-card__tag">Pet care</span></div></div></article>
+          </div>
+          <a class="sitter-detail-alternatives__more" href="#">More sitters near you</a>
+        </section>
+      </main>
+      <section class="sitter-detail-actions sitter-detail-actions--sticky" id="sitterDetailStickyActions" aria-label="Contact sitter" aria-hidden="true" inert data-node-id="2409:82544">
+        <button class="sitter-detail-actions__book" id="sitterDetailStickyBook" type="button" tabindex="-1"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i>Book now</button>
+        <button class="sitter-detail-actions__message" id="sitterDetailStickyMessage" type="button" tabindex="-1"><i class="fa-light fa-message" aria-hidden="true"></i>Message</button>
+      </section>
       </div>
     </section>
     <section class="family-profile-screen sitter-profile-screen" id="sitterProfileScreen" aria-label="Your Profile" aria-hidden="true" data-node-id="2367:96311">
@@ -10422,27 +11406,31 @@
         <div class="sitter-jobs-notifications-screen__fields">
                 <div class="sitter-jobs-notifications-screen__field">
             <span class="sitter-jobs-notifications-screen__label">E-mail notifications</span>
-            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsEmail" type="button" aria-haspopup="dialog" aria-expanded="false" data-sitter-jobs-notification-select="email"><span data-sitter-jobs-notification-value="email">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsEmail" type="button" aria-expanded="false" aria-controls="sitterJobsNotificationOptionsSheet" data-sitter-jobs-notification-select="email"><span data-sitter-jobs-notification-value="email">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
                 </div>
                 <div class="sitter-jobs-notifications-screen__field">
             <span class="sitter-jobs-notifications-screen__label">Mobile app notifications</span>
-            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsMobile" type="button" aria-haspopup="dialog" aria-expanded="false" data-sitter-jobs-notification-select="mobile"><span data-sitter-jobs-notification-value="mobile">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
+            <button class="sitter-jobs-notifications-screen__select" id="sitterJobsNotificationsMobile" type="button" aria-expanded="false" aria-controls="sitterJobsNotificationOptionsSheet" data-sitter-jobs-notification-select="mobile"><span data-sitter-jobs-notification-value="mobile">Immediately after publication</span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></button>
                 </div>
         </div>
       </main>
       <footer class="sitter-jobs-notifications-screen__footer"><button class="sitter-jobs-notifications-screen__save" id="sitterJobsNotificationsSave" type="button"><i class="fa-regular fa-check" aria-hidden="true"></i><span>Save changes</span></button></footer>
-    </section>
-    <div class="sitter-jobs-notification-options-sheet" id="sitterJobsNotificationOptionsSheet" aria-hidden="true" hidden>
-      <button class="sitter-jobs-notification-options-sheet__backdrop" id="sitterJobsNotificationOptionsBackdrop" type="button" aria-label="Close notification frequency options"></button>
-      <section class="sitter-jobs-notification-options-sheet__panel" id="sitterJobsNotificationOptionsDialog" role="dialog" aria-modal="true" aria-labelledby="sitterJobsNotificationOptionsTitle" tabindex="-1">
-        <div class="sitter-jobs-notification-options-sheet__handle" aria-hidden="true"></div>
-        <h2 class="sitter-jobs-notification-options-sheet__title" id="sitterJobsNotificationOptionsTitle">E-mail notifications</h2>
-        <button class="sitter-jobs-notification-options-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-jobs-notification-option="Immediately after publication">Immediately after publication</button>
-        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Never">Never</button>
-        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a day">Summary once a day</button>
-        <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a week">Summary once a week</button>
+      <section class="sitter-jobs-notification-options-sheet" id="sitterJobsNotificationOptionsSheet" aria-hidden="true" hidden>
+        <div class="sitter-jobs-notification-options-sheet__panel" id="sitterJobsNotificationOptionsDialog" aria-labelledby="sitterJobsNotificationOptionsTitle" tabindex="-1">
+          <header class="sitter-jobs-notification-options-sheet__header">
+            <button class="sitter-jobs-notification-options-sheet__back" id="sitterJobsNotificationOptionsBack" type="button" aria-label="Back to notification settings"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+            <h2 class="sitter-jobs-notification-options-sheet__title" id="sitterJobsNotificationOptionsTitle">E-mail notifications</h2>
+            <button class="sitter-jobs-notification-options-sheet__close" id="sitterJobsNotificationOptionsClose" type="button" aria-label="Close notification settings"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+          </header>
+          <div class="sitter-jobs-notification-options-sheet__list" role="listbox" aria-label="Notification frequency">
+            <button class="sitter-jobs-notification-options-sheet__option is-selected" type="button" role="option" aria-selected="true" data-sitter-jobs-notification-option="Immediately after publication">Immediately after publication</button>
+            <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Never">Never</button>
+            <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a day">Summary once a day</button>
+            <button class="sitter-jobs-notification-options-sheet__option" type="button" role="option" aria-selected="false" data-sitter-jobs-notification-option="Summary once a week">Summary once a week</button>
+          </div>
+        </div>
       </section>
-    </div>
+    </section>
     <div class="booking-actions-sheet" id="bookingActionsSheet" aria-hidden="true" hidden>
       <button class="booking-actions-sheet__backdrop" id="bookingActionsSheetBackdrop" type="button" aria-label="Close booking actions"></button>
       <section class="booking-actions-sheet__panel" id="bookingActionsSheetDialog" role="dialog" aria-modal="true" aria-label="Booking actions" tabindex="-1">
@@ -10455,6 +11443,22 @@
         <button class="booking-actions-sheet__action booking-actions-sheet__action--report" id="bookingActionsSheetReport" type="button"><i class="fa-light fa-flag" aria-hidden="true"></i><span>Report</span></button>
       </section>
     </div>
+    <section class="booking-cancel-alert" id="bookingCancelAlert" aria-hidden="true" hidden>
+      <button class="booking-cancel-alert__backdrop" id="bookingCancelAlertBackdrop" type="button" aria-label="Dismiss cancellation alert"></button>
+      <section class="booking-cancel-alert__panel" id="bookingCancelAlertDialog" role="alertdialog" aria-modal="true" aria-labelledby="bookingCancelAlertTitle" aria-describedby="bookingCancelAlertCopy" tabindex="-1">
+        <div class="booking-cancel-alert__handle" aria-hidden="true"></div>
+        <div class="booking-cancel-alert__content">
+          <div class="booking-cancel-alert__spacer" aria-hidden="true"></div>
+          <h2 class="booking-cancel-alert__heading" id="bookingCancelAlertTitle"><img class="booking-cancel-alert__icon" src="./assets/doodle-cancel.svg" alt="" aria-hidden="true"><span>Cancel booking</span></h2>
+          <p class="booking-cancel-alert__copy" id="bookingCancelAlertCopy"></p>
+          <div class="booking-cancel-alert__spacer" aria-hidden="true"></div>
+          <div class="booking-cancel-alert__actions">
+            <button class="booking-cancel-alert__confirm" id="bookingCancelAlertConfirm" type="button">Cancel Booking</button>
+            <button class="booking-cancel-alert__keep" id="bookingCancelAlertKeep" type="button">Keep booking</button>
+          </div>
+        </div>
+      </section>
+    </section>
     <section class="ai-panel" id="aiPanel" aria-hidden="true">
       <div class="ai-panel-top">
         <div class="ai-head">
@@ -10635,6 +11639,45 @@
       var messageDetailComposer = document.getElementById('messageDetailComposer');
       var messageDetailInput = document.getElementById('messageDetailInput');
       var activeMessageThread = null;
+      var sitterMessageSheet = document.getElementById('sitterMessageSheet');
+      var sitterMessageSheetBackdrop = document.getElementById('sitterMessageSheetBackdrop');
+      var sitterMessageSheetDialog = document.getElementById('sitterMessageSheetDialog');
+      var sitterMessageSheetGrabber = document.getElementById('sitterMessageSheetGrabber');
+      var sitterMessageSheetHeader = document.getElementById('sitterMessageSheetHeader');
+      var sitterMessageSheetClose = document.getElementById('sitterMessageSheetClose');
+      var sitterMessageSheetBook = document.getElementById('sitterMessageSheetBook');
+      var sitterMessageSheetName = document.getElementById('sitterMessageSheetName');
+      var sitterMessageSheetBooking = document.getElementById('sitterMessageSheetBooking');
+      var sitterMessageSheetAvatar = document.getElementById('sitterMessageSheetAvatar');
+      var sitterMessageSheetIncomingAvatar = document.getElementById('sitterMessageSheetIncomingAvatar');
+      var sitterMessageSheetMessages = document.getElementById('sitterMessageSheetMessages');
+      var sitterMessageSheetComposer = document.getElementById('sitterMessageSheetComposer');
+      var sitterMessageSheetInput = document.getElementById('sitterMessageSheetInput');
+      var sitterMessageButtons = Array.prototype.slice.call(document.querySelectorAll('.sitter-card .profile-card-content-actions-bar-component .btn')).filter(function (button) {
+        return button.textContent.trim() === 'Message';
+      });
+      var activeSitterConversation = null;
+      var activeSitterMessageTrigger = null;
+      var activeSitterMessageCard = null;
+      var sitterMessageDrafts = {};
+      var sitterMessageHistory = {};
+      var sitterMessageSheetCloseTimer = null;
+      var sitterBookingSheet = document.getElementById('sitterBookingSheet');
+      var sitterBookingSheetBackdrop = document.getElementById('sitterBookingSheetBackdrop');
+      var sitterBookingSheetDialog = document.getElementById('sitterBookingSheetDialog');
+      var sitterBookingSheetIndicator = document.getElementById('sitterBookingSheetIndicator');
+      var sitterBookingSheetHeader = document.getElementById('sitterBookingSheetHeader');
+      var sitterBookingSheetClose = document.getElementById('sitterBookingSheetClose');
+      var sitterBookingSheetName = document.getElementById('sitterBookingSheetName');
+      var sitterBookingSheetAvatar = document.getElementById('sitterBookingSheetAvatar');
+      var sitterBookingSheetForm = document.getElementById('sitterBookingSheetForm');
+      var sitterBookingServiceButtons = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-booking-service]'));
+      var sitterBookingButtons = Array.prototype.slice.call(document.querySelectorAll('.sitter-card .profile-card-content-actions-bar-component .btn')).filter(function (button) {
+        return button.textContent.trim() === 'Booking';
+      });
+      var activeSitterBookingTrigger = null;
+      var sitterBookingReturnsToMessage = false;
+      var sitterBookingSheetCloseTimer = null;
       var jobsScreen = document.getElementById('jobsScreen');
       var jobsCreateButton = jobsScreen.querySelector('.jobs-screen__create');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
@@ -10668,8 +11711,9 @@
       var sitterJobsNotificationValues = { email: 'Immediately after publication', mobile: 'Immediately after publication' };
       var sitterJobsNotificationsTrigger = null;
       var sitterJobsNotificationOptionsSheet = document.getElementById('sitterJobsNotificationOptionsSheet');
-      var sitterJobsNotificationOptionsBackdrop = document.getElementById('sitterJobsNotificationOptionsBackdrop');
       var sitterJobsNotificationOptionsDialog = document.getElementById('sitterJobsNotificationOptionsDialog');
+      var sitterJobsNotificationOptionsBack = document.getElementById('sitterJobsNotificationOptionsBack');
+      var sitterJobsNotificationOptionsClose = document.getElementById('sitterJobsNotificationOptionsClose');
       var sitterJobsNotificationOptionsTitle = document.getElementById('sitterJobsNotificationOptionsTitle');
       var sitterJobsNotificationOptions = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-jobs-notification-option]'));
       var sitterJobsNotificationOptionsTrigger = null;
@@ -10698,9 +11742,18 @@
       var bookingActionsSheetProfile = document.getElementById('bookingActionsSheetProfile');
       var bookingActionsSheetSeparator = document.getElementById('bookingActionsSheetSeparator');
       var bookingActionsSheetReport = document.getElementById('bookingActionsSheetReport');
+      var bookingCancelAlert = document.getElementById('bookingCancelAlert');
+      var bookingCancelAlertBackdrop = document.getElementById('bookingCancelAlertBackdrop');
+      var bookingCancelAlertDialog = document.getElementById('bookingCancelAlertDialog');
+      var bookingCancelAlertCopy = document.getElementById('bookingCancelAlertCopy');
+      var bookingCancelAlertConfirm = document.getElementById('bookingCancelAlertConfirm');
+      var bookingCancelAlertKeep = document.getElementById('bookingCancelAlertKeep');
       var activeBookingActionTrigger = null;
       var activeBookingActionCard = null;
       var bookingActionsSheetCloseTimer = null;
+      var activeBookingCancelAlertCard = null;
+      var activeBookingCancelAlertTrigger = null;
+      var bookingCancelAlertCloseTimer = null;
       var mobileHeaderTitle = document.getElementById('mobileAppHeaderTitle');
       var mobileHeaderIcon = document.getElementById('mobileAppHeaderIcon');
       var mobileAppHeader = document.querySelector('.mobile-app-header');
@@ -10796,6 +11849,39 @@
       var familyProfileScreen = document.getElementById('familyProfileScreen');
       var familyProfileBack = document.getElementById('familyProfileBack');
       var familyProfileLogout = document.getElementById('familyProfileLogout');
+      var sitterDetailScreen = document.getElementById('sitterDetailScreen');
+      var sitterDetailBack = document.getElementById('sitterDetailBack');
+      var sitterDetailClose = document.getElementById('sitterDetailClose');
+      var sitterDetailContent = document.getElementById('sitterDetailContent');
+      var sitterDetailAlternatives = document.getElementById('sitterDetailAlternatives');
+      var sitterDetailPhoto = document.getElementById('sitterDetailPhoto');
+      var sitterDetailVerifyAvatar = document.getElementById('sitterDetailVerifyAvatar');
+      var sitterDetailName = document.getElementById('sitterDetailName');
+      var sitterDetailLocation = document.getElementById('sitterDetailLocation');
+      var sitterDetailAge = document.getElementById('sitterDetailAge');
+      var sitterDetailStars = document.getElementById('sitterDetailStars');
+      var sitterDetailReviews = document.getElementById('sitterDetailReviews');
+      var sitterDetailFactRate = document.getElementById('sitterDetailFactRate');
+      var sitterDetailFactFamilies = document.getElementById('sitterDetailFactFamilies');
+      var sitterDetailFactContacted = document.getElementById('sitterDetailFactContacted');
+      var sitterDetailDescription = document.getElementById('sitterDetailDescription');
+      var sitterDetailProfileTags = document.getElementById('sitterDetailProfileTags');
+      var sitterDetailReviewCopy = document.getElementById('sitterDetailReviewCopy');
+      var sitterDetailReviewScore = document.getElementById('sitterDetailReviewScore');
+      var sitterDetailReviewBasedOn = document.getElementById('sitterDetailReviewBasedOn');
+      var sitterDetailTimeOffName = document.getElementById('sitterDetailTimeOffName');
+      var sitterDetailProfileSwitchItems = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-detail-profile]'));
+      var sitterDetailActions = document.querySelector('.sitter-detail-actions:not(.sitter-detail-actions--sticky)');
+      var sitterDetailBook = document.getElementById('sitterDetailBook');
+      var sitterDetailMessage = document.getElementById('sitterDetailMessage');
+      var sitterDetailStickyActions = document.getElementById('sitterDetailStickyActions');
+      var sitterDetailStickyBook = document.getElementById('sitterDetailStickyBook');
+      var sitterDetailStickyMessage = document.getElementById('sitterDetailStickyMessage');
+      var activeSitterDetailCard = null;
+      var activeSitterDetailTrigger = null;
+      var activeSitterDetailData = null;
+      var sitterDetailHistory = [];
+      var sitterDetailPresentationCloseTimer = null;
       var sitterProfileScreen = document.getElementById('sitterProfileScreen');
       var sitterProfileBack = document.getElementById('sitterProfileBack');
       var sitterProfileLogout = document.getElementById('sitterProfileLogout');
@@ -12040,6 +13126,18 @@
         [searchFiltersClose],
         closeSearchFilters
       );
+      enableSheetSwipeDown(
+        sitterMessageSheetDialog,
+        [sitterMessageSheetGrabber, sitterMessageSheetHeader],
+        [sitterMessageSheetClose],
+        function () { closeSitterMessageSheet(true); }
+      );
+      enableSheetSwipeDown(
+        sitterBookingSheetDialog,
+        [sitterBookingSheetIndicator, sitterBookingSheetHeader],
+        [sitterBookingSheetClose],
+        function () { closeSitterBookingSheet(true); }
+      );
 
       function resetSearchFilters() {
         searchFiltersForm.reset();
@@ -12133,8 +13231,14 @@
       // the background from assistive tech, without hand-rolling a Tab cycle.
       function setBackgroundInert(liveLayer) {
         Array.prototype.forEach.call(phoneFrame.children, function (child) {
-          if (child === liveLayer) child.removeAttribute('inert');
-          else child.toggleAttribute('inert', Boolean(liveLayer));
+          if ((child === sitterMessageSheet && !sitterMessageSheet.classList.contains('is-open')) ||
+              (child === sitterBookingSheet && !sitterBookingSheet.classList.contains('is-open'))) {
+            child.setAttribute('inert', '');
+          } else if (child === liveLayer) {
+            child.removeAttribute('inert');
+          } else {
+            child.toggleAttribute('inert', Boolean(liveLayer));
+          }
         });
         if (prototypeSettingsButton) prototypeSettingsButton.toggleAttribute('inert', Boolean(liveLayer));
       }
@@ -13004,6 +14108,32 @@
         });
       }
 
+      // A tab owns the screen underneath any pushed detail.  Keeping that tab
+      // selected makes the persistent navigation truthful, and reselecting it
+      // has the native tab-bar meaning: return this tab to its root instead of
+      // rebuilding another tab or sending the user to Search.
+      function popActiveTabToRoot() {
+        if (sitterDetailScreen.classList.contains('is-open')) {
+          closeSitterDetail();
+          return;
+        }
+        if (familyProfileScreen.classList.contains('is-open')) {
+          closeFamilyProfile();
+          return;
+        }
+        if (sitterProfileScreen.classList.contains('is-open')) {
+          closeSitterProfile();
+          return;
+        }
+        if (messageDetailScreen.classList.contains('is-open')) {
+          closeMessageDetail();
+          return;
+        }
+        if (currentAppScreen === 'search' && panel.classList.contains('open')) {
+          closePanel();
+        }
+      }
+
       function restoreSearchHeader() {
         var activeVertical = document.querySelector('.searches-page-header-component__quick-filter--active');
         syncMobileHeaderTitle();
@@ -13150,16 +14280,22 @@
         if (output) output.textContent = sitterJobsNotificationValues[channel];
       }
 
+      function setSitterJobsNotificationOptionsInert(isOpen) {
+        Array.prototype.forEach.call(sitterJobsNotificationsScreen.children, function (child) {
+          if (child !== sitterJobsNotificationOptionsSheet) child.toggleAttribute('inert', isOpen);
+        });
+      }
+
       function closeSitterJobsNotificationOptions(restoreFocus) {
         if (!sitterJobsNotificationOptionsSheet || sitterJobsNotificationOptionsSheet.hidden) return;
         sitterJobsNotificationOptionsSheet.classList.remove('is-open');
         sitterJobsNotificationOptionsSheet.setAttribute('aria-hidden', 'true');
+        sitterJobsNotificationsScreen.classList.remove('is-options-open');
+        setSitterJobsNotificationOptionsInert(false);
         if (sitterJobsNotificationOptionsTrigger) sitterJobsNotificationOptionsTrigger.setAttribute('aria-expanded', 'false');
         window.clearTimeout(sitterJobsNotificationOptionsCloseTimer);
         sitterJobsNotificationOptionsCloseTimer = window.setTimeout(function () {
           sitterJobsNotificationOptionsSheet.hidden = true;
-          if (sitterJobsNotificationsScreen.classList.contains('is-open')) setBackgroundInert(sitterJobsNotificationsScreen);
-          else setBackgroundInert(null);
           if (restoreFocus && sitterJobsNotificationOptionsTrigger) sitterJobsNotificationOptionsTrigger.focus({ preventScroll: true });
           sitterJobsNotificationOptionsTrigger = null;
           sitterJobsNotificationOptionsChannel = null;
@@ -13180,7 +14316,8 @@
         sitterJobsNotificationOptionsSheet.hidden = false;
         sitterJobsNotificationOptionsSheet.setAttribute('aria-hidden', 'false');
         trigger.setAttribute('aria-expanded', 'true');
-        setBackgroundInert(sitterJobsNotificationOptionsSheet);
+        sitterJobsNotificationsScreen.classList.add('is-options-open');
+        setSitterJobsNotificationOptionsInert(true);
         requestAnimationFrame(function () {
           sitterJobsNotificationOptionsSheet.classList.add('is-open');
           sitterJobsNotificationOptionsDialog.focus({ preventScroll: true });
@@ -13301,7 +14438,8 @@
           syncBackEntry();
         });
       });
-      sitterJobsNotificationOptionsBackdrop.addEventListener('click', function () { closeSitterJobsNotificationOptions(true); });
+      sitterJobsNotificationOptionsBack.addEventListener('click', function () { closeSitterJobsNotificationOptions(true); });
+      sitterJobsNotificationOptionsClose.addEventListener('click', function () { closeSitterJobsNotifications(true); });
       sitterJobsFiltersForm.addEventListener('change', syncSitterJobsFiltersState);
       sitterJobsFiltersApply.addEventListener('click', function () {
         applySitterJobsFilters();
@@ -13382,6 +14520,51 @@
         closeBookingActionsSheet();
       }
 
+      function isRegisteredFamilySession() {
+        return prototypeUserRole === 'family' &&
+          prototypeRegistrationStatus === 'registered' &&
+          loginTrigger.classList.contains('is-logged-in');
+      }
+
+      function bookingCancellationCopy(card) {
+        var sitter = card && card.querySelector('.booking-card__sitter');
+        var date = card && card.querySelector('.booking-card__date');
+        var sitterName = sitter ? sitter.textContent.trim() : 'this sitter';
+        var bookingDate = date ? date.textContent.trim() : 'the scheduled date';
+        return 'Are you sure you want to cancel your upcoming booking with ' + sitterName + ' scheduled for ' + bookingDate + '?';
+      }
+
+      function closeBookingCancelAlert(restoreFocus) {
+        if (!bookingCancelAlert || bookingCancelAlert.hidden) return;
+        bookingCancelAlert.classList.remove('is-open');
+        bookingCancelAlert.setAttribute('aria-hidden', 'true');
+        setBackgroundInert(null);
+        var trigger = activeBookingCancelAlertTrigger;
+        activeBookingCancelAlertCard = null;
+        activeBookingCancelAlertTrigger = null;
+        window.clearTimeout(bookingCancelAlertCloseTimer);
+        bookingCancelAlertCloseTimer = window.setTimeout(function () {
+          bookingCancelAlert.hidden = true;
+        }, 280);
+        if (restoreFocus !== false && trigger) trigger.focus({ preventScroll: true });
+      }
+
+      function openBookingCancelAlert(card, trigger) {
+        if (!card || !isRegisteredFamilySession()) return false;
+        window.clearTimeout(bookingCancelAlertCloseTimer);
+        activeBookingCancelAlertCard = card;
+        activeBookingCancelAlertTrigger = trigger || null;
+        bookingCancelAlertCopy.textContent = bookingCancellationCopy(card);
+        bookingCancelAlert.hidden = false;
+        bookingCancelAlert.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(bookingCancelAlert);
+        requestAnimationFrame(function () {
+          bookingCancelAlert.classList.add('is-open');
+          bookingCancelAlertDialog.focus({ preventScroll: true });
+        });
+        return true;
+      }
+
       function cancelBooking(card) {
         if (!card) return;
         var status = card.querySelector('[data-booking-status]');
@@ -13404,6 +14587,13 @@
         if (screen !== 'search') hideRegistrationSuccess();
         if (screen !== 'jobs') hideJobPostSuccess();
         setActiveNavItem(screen);
+        var wasBookingDetailPresented = sitterDetailScreen.classList.contains('is-presented');
+        window.clearTimeout(sitterDetailPresentationCloseTimer);
+        sitterDetailScreen.classList.remove('is-open');
+        resetSitterDetailPresentation();
+        sitterDetailScreen.setAttribute('aria-hidden', 'true');
+        if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
+        if (wasBookingDetailPresented) setBackgroundInert(null);
         familyProfileScreen.classList.remove('is-open');
         sitterProfileScreen.classList.remove('is-open');
         sitterProfileScreen.setAttribute('aria-hidden', 'true');
@@ -13493,7 +14683,6 @@
           syncSitterAvailabilityState();
           sitterAvailabilityScreen.classList.add('is-open');
           sitterAvailabilityScreen.setAttribute('aria-hidden', 'false');
-          sitterAvailabilityScreen.querySelector('.sitter-availability-content').scrollTop = 0;
           mobileHeaderIcon.className = 'fa-solid fa-calendar-days';
           mobileHeaderIcon.style.color = '#f96073';
           mobileHeaderTitle.textContent = 'Availability';
@@ -13518,8 +14707,6 @@
           resultsView.classList.add('is-hidden');
           sitterBookingsScreen.classList.add('is-open');
           sitterBookingsScreen.setAttribute('aria-hidden', 'false');
-          phoneFrame.scrollTop = 0;
-          sitterBookingsContent.scrollTop = 0;
           mobileHeaderIcon.className = 'fa-solid fa-calendar-clock';
           mobileHeaderIcon.style.color = '#f96073';
           mobileHeaderTitle.textContent = 'Bookings';
@@ -13542,9 +14729,6 @@
           resultsView.classList.add('is-hidden');
           sitterJobsScreen.classList.add('is-open');
           sitterJobsScreen.setAttribute('aria-hidden', 'false');
-          sitterJobsContent.scrollTop = 0;
-          phoneFrame.scrollTop = 0;
-          requestAnimationFrame(function () { phoneFrame.scrollTop = 0; });
           syncSitterJobsCards();
           mobileHeaderIcon.className = 'fa-solid fa-paper-plane';
           mobileHeaderIcon.style.color = '#f96073';
@@ -13681,7 +14865,8 @@
         if (!loginTrigger.classList.contains('is-logged-in')) return;
         hideWelcomeAlert();
         familyProfileScreen.classList.add('is-open');
-        setActiveNavItem(null);
+        // The profile is pushed over the current tab, not a sixth tab.
+        setActiveNavItem(currentAppScreen);
         syncBackEntry();
         // The panel starts off-canvas, so a plain focus() scrolls the phone
         // frame sideways to reveal it and fights the slide-in transition.
@@ -13712,12 +14897,309 @@
         syncBackEntry();
       }
 
+      function sitterDetailForCard(card) {
+        if (card && card.classList.contains('booking-card')) {
+          var bookingSitter = card.querySelector('.booking-card__sitter');
+          var bookingAvatar = card.querySelector('.booking-card__avatar');
+          var bookingSitterName = bookingSitter ? bookingSitter.textContent.trim() : 'Sitter';
+          return {
+            name: bookingSitterName,
+            photoSrc: bookingAvatar ? bookingAvatar.src : './assets/avatar-01.jpg',
+            location: 'Praha 2',
+            age: '28 years',
+            rating: '5.0',
+            reviews: '20',
+            rate: '500 Kč/h',
+            description: 'Experienced babysitter for regular and one-time care. She most often helps with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.',
+            tags: ['First aid course', 'Overnight care', 'Speaks English', 'Drawing/painting', 'Accepts online payments'],
+            review: '“We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.”'
+          };
+        }
+        if (card && card.classList.contains('sitter-detail-alternative-card')) {
+          var alternativeName = card.querySelector('.sitter-detail-alternative-card__name');
+          var alternativePhoto = card.querySelector('.sitter-detail-alternative-card__photo');
+          var alternativeMeta = card.querySelectorAll('.sitter-detail-alternative-card__meta span');
+          var alternativeReviews = card.querySelector('.sitter-detail-alternative-card__reviews');
+          var alternativeRate = card.querySelector('.sitter-detail-alternative-card__price');
+          var alternativeCopy = card.querySelector('.sitter-detail-alternative-card__copy');
+          var alternativeTags = Array.prototype.slice.call(card.querySelectorAll('.sitter-detail-alternative-card__tag'));
+          var alternativeNameText = alternativeName ? alternativeName.textContent.trim() : 'Sitter';
+          return {
+            name: alternativeNameText,
+            photoSrc: alternativePhoto ? alternativePhoto.src : './assets/avatar-01.jpg',
+            location: alternativeMeta[0] ? alternativeMeta[0].textContent.trim() : 'Praha 2',
+            age: card.getAttribute('data-sitter-age') || '28 years',
+            rating: card.getAttribute('data-sitter-rating') || '5.0',
+            reviews: alternativeReviews ? alternativeReviews.textContent.replace(/[()]/g, '').trim() : '0',
+            rate: alternativeRate ? alternativeRate.textContent.trim() : '—',
+            description: alternativeCopy ? alternativeCopy.textContent.replace('View profile', '').trim() : 'Reliable care tailored to your family’s routine.',
+            tags: alternativeTags.map(function (tag) { return tag.textContent.trim(); }).filter(Boolean),
+            review: '“' + (card.getAttribute('data-sitter-review') || 'A reliable and kind sitter our family would happily recommend.') + '”'
+          };
+        }
+        var nameElement = card.querySelector('.sitter-card__name');
+        var photo = card.querySelector('.profile-photo-component__photo img');
+        var location = card.querySelector('.profile-card-basic-info-component__parameter-content');
+        var rating = card.querySelector('.rating-stars');
+        var reviews = card.querySelector('.profile-card-basic-info-component__reviews-count');
+        var rate = card.querySelector('.profile-card-basic-info-component__parameter-badges .badge-component');
+        var description = card.querySelector('.profile-card-content-component__description');
+        var review = card.querySelector('.extra-content-review-component__text');
+        var tags = Array.prototype.slice.call(card.querySelectorAll('.extra-content-pills-component__pill .badge-component__ellipsis-text'));
+        var name = nameElement ? nameElement.textContent.trim() : 'Sitter';
+        var ages = {
+          'Alexandra Růžičková': '28 years',
+          'Klára Svobodová': '31 years',
+          'Tereza Malá': '26 years',
+          'Augusta Valentová': '35 years'
+        };
+        var ratingLabel = rating ? rating.getAttribute('aria-label') : '5.0 out of 5';
+        var ratingValue = (ratingLabel.match(/[0-5](?:[.,][0-9])?/) || ['5.0'])[0].replace(',', '.');
+
+        return {
+          name: name,
+          photoSrc: photo ? photo.src : './assets/avatar-01.jpg',
+          location: location ? location.textContent.trim() : 'Praha 2',
+          age: ages[name] || '28 years',
+          rating: ratingValue,
+          reviews: reviews ? reviews.textContent.replace(/[()]/g, '').trim() : '0',
+          rate: rate ? rate.textContent.trim() : '—',
+          description: description ? description.textContent.trim() : 'Reliable care tailored to your family’s routine.',
+          tags: tags.map(function (tag) { return tag.textContent.trim(); }).filter(Boolean),
+          review: review ? review.textContent.trim() : '“A reliable and kind sitter our family would happily recommend.”'
+        };
+      }
+
+      function renderSitterDetailStars(rating) {
+        var roundedRating = Math.round(Number(rating) * 2) / 2;
+        sitterDetailStars.replaceChildren();
+        for (var index = 1; index <= 5; index += 1) {
+          var star = document.createElement('img');
+          star.width = 24;
+          star.height = 24;
+          star.alt = '';
+          star.setAttribute('aria-hidden', 'true');
+          if (roundedRating >= index) star.src = './assets/sitter-detail-star.svg';
+          else if (roundedRating >= index - .5) star.src = './assets/sitter-detail-star-half.svg';
+          else {
+            star.src = './assets/sitter-detail-star.svg';
+            star.className = 'is-empty';
+          }
+          sitterDetailStars.appendChild(star);
+        }
+        sitterDetailStars.setAttribute('aria-label', rating + ' out of 5 stars');
+      }
+
+      function renderSitterDetailProfileTags(tags) {
+        sitterDetailProfileTags.replaceChildren();
+        tags.forEach(function (tag) {
+          if (tag.toLowerCase() === 'booked repeatedly') return;
+          var pill = document.createElement('span');
+          pill.className = 'sitter-detail-profile-tag';
+          pill.textContent = tag;
+          sitterDetailProfileTags.appendChild(pill);
+        });
+      }
+
+      function populateSitterDetail(card) {
+        var detail = sitterDetailForCard(card);
+        populateSitterDetailData(detail);
+        return detail;
+      }
+
+      function populateSitterDetailData(detail) {
+        sitterDetailPhoto.src = detail.photoSrc;
+        sitterDetailPhoto.alt = detail.name;
+        sitterDetailVerifyAvatar.src = detail.photoSrc;
+        sitterDetailVerifyAvatar.alt = detail.name;
+        sitterDetailName.textContent = detail.name;
+        sitterDetailLocation.textContent = detail.location;
+        sitterDetailAge.textContent = detail.age;
+        renderSitterDetailStars(detail.rating);
+        sitterDetailReviews.textContent = '(' + detail.reviews + ')';
+        sitterDetailFactRate.textContent = detail.rate;
+        sitterDetailFactFamilies.textContent = detail.reviews + ' families';
+        sitterDetailFactContacted.textContent = 'already contacted ' + detail.name.split(' ')[0];
+        sitterDetailDescription.textContent = detail.description;
+        sitterDetailReviewCopy.textContent = detail.review;
+        sitterDetailReviewScore.textContent = detail.rating;
+        sitterDetailReviewBasedOn.textContent = 'based on ' + detail.reviews + (detail.reviews === '1' ? ' review' : ' reviews');
+        sitterDetailTimeOffName.textContent = detail.name.split(' ')[0];
+        renderSitterDetailProfileTags(detail.tags);
+      }
+
+      function selectSitterDetailProfile(profile) {
+        sitterDetailProfileSwitchItems.forEach(function (item) {
+          var isSelected = item.getAttribute('data-sitter-detail-profile') === profile;
+          item.classList.toggle('is-active', isSelected);
+          item.setAttribute('aria-pressed', String(isSelected));
+        });
+      }
+
+      function setSitterDetailStickyActionsVisible(visible) {
+        sitterDetailStickyActions.classList.toggle('is-visible', visible);
+        sitterDetailStickyActions.setAttribute('aria-hidden', String(!visible));
+        sitterDetailStickyActions.toggleAttribute('inert', !visible);
+        sitterDetailStickyBook.tabIndex = visible ? 0 : -1;
+        sitterDetailStickyMessage.tabIndex = visible ? 0 : -1;
+      }
+
+      function updateSitterDetailStickyActions() {
+        var showStickyActions = sitterDetailScreen.classList.contains('is-open') && sitterDetailContent.scrollTop >= sitterDetailActions.offsetTop + sitterDetailActions.offsetHeight - 16;
+        setSitterDetailStickyActionsVisible(showStickyActions);
+      }
+
+      function openSitterDetail(card, trigger) {
+        if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
+        window.clearTimeout(sitterDetailPresentationCloseTimer);
+        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing');
+        if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
+        sitterDetailBack.setAttribute('aria-label', 'Back to search results');
+        sitterDetailHistory = [];
+        activeSitterDetailCard = card;
+        activeSitterDetailTrigger = trigger;
+        activeSitterDetailData = populateSitterDetail(card);
+        selectSitterDetailProfile('babysitting');
+        sitterDetailScreen.classList.add('is-open');
+        sitterDetailScreen.setAttribute('aria-hidden', 'false');
+        sitterDetailContent.scrollTop = 0;
+        setSitterDetailStickyActionsVisible(false);
+        setActiveNavItem(currentAppScreen);
+        requestAnimationFrame(function () { sitterDetailBack.focus({ preventScroll: true }); });
+        syncBackEntry();
+      }
+
+      function openBookingSitterDetail(card, trigger) {
+        if (!isRegisteredFamilySession() || !card) return;
+        window.clearTimeout(sitterDetailPresentationCloseTimer);
+        sitterDetailHistory = [];
+        activeSitterDetailCard = card;
+        activeSitterDetailTrigger = trigger;
+        activeSitterDetailData = populateSitterDetail(card);
+        selectSitterDetailProfile('babysitting');
+        sitterDetailScreen.classList.remove('is-closing');
+        sitterDetailScreen.classList.add('is-presented', 'is-booking-present');
+        sitterDetailScreen.setAttribute('aria-hidden', 'false');
+        if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = true;
+        sitterDetailContent.scrollTop = 0;
+        setSitterDetailStickyActionsVisible(false);
+        setBackgroundInert(sitterDetailScreen);
+        // Commit the panel's off-screen start before opening, so the slide up
+        // always has somewhere to come from. What keeps the screen itself
+        // still is the transition: none that is-presented carries — without
+        // it this reflow pinned the base push at 100% and the screen then
+        // travelled in from the right while the panel rose.
+        void sitterDetailScreen.offsetHeight;
+        requestAnimationFrame(function () {
+          sitterDetailScreen.classList.add('is-open');
+          sitterDetailClose.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function prepareSitterDetailPush() {
+        var previousLayer = sitterDetailContent.cloneNode(true);
+        previousLayer.removeAttribute('id');
+        previousLayer.className = 'sitter-detail-content--previous';
+        previousLayer.setAttribute('aria-hidden', 'true');
+        Array.prototype.forEach.call(previousLayer.querySelectorAll('[id]'), function (element) { element.removeAttribute('id'); });
+        previousLayer.scrollTop = sitterDetailContent.scrollTop;
+        sitterDetailScreen.appendChild(previousLayer);
+        sitterDetailContent.classList.remove('is-push-transition');
+        sitterDetailContent.classList.add('is-push-enter');
+
+        return function finishSitterDetailPush() {
+          requestAnimationFrame(function () {
+            sitterDetailContent.classList.add('is-push-transition');
+            sitterDetailContent.classList.remove('is-push-enter');
+            previousLayer.classList.add('is-push-leaving');
+            window.setTimeout(function () {
+              sitterDetailContent.classList.remove('is-push-transition');
+              previousLayer.remove();
+            }, 300);
+          });
+        };
+      }
+
+      function openAlternativeSitterDetail(card) {
+        if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
+        if (!sitterDetailScreen.classList.contains('is-open')) {
+          openSitterDetail(card, card);
+          return;
+        }
+        sitterDetailHistory.push({
+          card: activeSitterDetailCard,
+          trigger: activeSitterDetailTrigger,
+          detail: activeSitterDetailData,
+          scrollTop: sitterDetailContent.scrollTop
+        });
+        var finishPush = prepareSitterDetailPush();
+        activeSitterDetailCard = card;
+        activeSitterDetailTrigger = card;
+        activeSitterDetailData = populateSitterDetail(card);
+        selectSitterDetailProfile('babysitting');
+        sitterDetailContent.scrollTop = 0;
+        setSitterDetailStickyActionsVisible(false);
+        requestAnimationFrame(function () { sitterDetailBack.focus({ preventScroll: true }); });
+        finishPush();
+        syncBackEntry();
+      }
+
+      // Leaving presented mode hands the screen back to its base right-hand
+      // push, whose transform transition would then animate it off sideways
+      // in full view. Suppressed for the one frame the swap takes.
+      function resetSitterDetailPresentation() {
+        sitterDetailScreen.classList.add('is-presentation-reset');
+        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing');
+        void sitterDetailScreen.offsetHeight;
+        sitterDetailScreen.classList.remove('is-presentation-reset');
+      }
+
+      function closeSitterDetail(restoreFocus) {
+        if (!sitterDetailScreen.classList.contains('is-open')) return;
+        if (sitterDetailHistory.length) {
+          var previousDetail = sitterDetailHistory.pop();
+          activeSitterDetailCard = previousDetail.card;
+          activeSitterDetailTrigger = previousDetail.trigger;
+          activeSitterDetailData = previousDetail.detail;
+          populateSitterDetailData(previousDetail.detail);
+          sitterDetailContent.scrollTop = previousDetail.scrollTop;
+          requestAnimationFrame(function () {
+            updateSitterDetailStickyActions();
+            sitterDetailBack.focus({ preventScroll: true });
+          });
+          syncBackEntry();
+          return;
+        }
+        var wasPresented = sitterDetailScreen.classList.contains('is-presented');
+        sitterDetailScreen.classList.remove('is-open');
+        sitterDetailScreen.setAttribute('aria-hidden', 'true');
+        setSitterDetailStickyActionsVisible(false);
+        setActiveNavItem(currentAppScreen);
+        if (wasPresented) {
+          setBackgroundInert(null);
+          sitterDetailScreen.classList.add('is-closing');
+          window.clearTimeout(sitterDetailPresentationCloseTimer);
+          sitterDetailPresentationCloseTimer = window.setTimeout(function () {
+            resetSitterDetailPresentation();
+            if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
+            sitterDetailBack.setAttribute('aria-label', 'Back to search results');
+          }, 300);
+        } else {
+          sitterDetailScreen.classList.remove('is-booking-present');
+          if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
+        }
+        if (restoreFocus !== false && activeSitterDetailTrigger) activeSitterDetailTrigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
       function openSitterProfile() {
         if (!isSitterSession()) return;
         hideWelcomeAlert();
         sitterProfileScreen.classList.add('is-open');
         sitterProfileScreen.setAttribute('aria-hidden', 'false');
-        setActiveNavItem(null);
+        // The profile is pushed over the current tab, not a sixth tab.
+        setActiveNavItem(currentAppScreen);
         syncBackEntry();
         sitterProfileBack.focus({ preventScroll: true });
       }
@@ -14314,7 +15796,8 @@
 
       function openFamilyCredits() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
-        phoneFrame.classList.add('is-family-profile-subpage-flow');
+        // Reading available credits is a normal pushed screen. It has no
+        // competing bottom action, so the tab bar remains available.
         familyCreditsScreen.classList.add('is-open');
         familyCreditsScreen.setAttribute('aria-hidden', 'false');
         familyCreditsBack.focus({ preventScroll: true });
@@ -14335,6 +15818,9 @@
 
       function openFamilyInvites() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        // This screen owns a persistent Share action, so it replaces the tab
+        // bar for the rest of this pushed branch.
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyInvitesScreen.classList.add('is-open');
         familyInvitesScreen.setAttribute('aria-hidden', 'false');
         familyInvitesBack.focus({ preventScroll: true });
@@ -14342,6 +15828,7 @@
       }
 
       function closeFamilyInvites() {
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyInvitesScreen.classList.remove('is-open');
         familyInvitesScreen.setAttribute('aria-hidden', 'true');
         familyCreditsInvitesTrigger.focus({ preventScroll: true });
@@ -14350,6 +15837,9 @@
 
       function openFamilyReferralHow() {
         if (!loginTrigger.classList.contains('is-logged-in')) return;
+        // This screen owns a persistent Share action, so it replaces the tab
+        // bar for the rest of this pushed branch.
+        phoneFrame.classList.add('is-family-profile-subpage-flow');
         familyReferralHowScreen.classList.add('is-open');
         familyReferralHowScreen.setAttribute('aria-hidden', 'false');
         familyReferralHowBack.focus({ preventScroll: true });
@@ -14357,6 +15847,7 @@
       }
 
       function closeFamilyReferralHow() {
+        phoneFrame.classList.remove('is-family-profile-subpage-flow');
         familyReferralHowScreen.classList.remove('is-open');
         familyReferralHowScreen.setAttribute('aria-hidden', 'true');
         familyCreditsHowItWorksTrigger.focus({ preventScroll: true });
@@ -14389,6 +15880,143 @@
         messageDetailScreen.classList.remove('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'true');
         if (activeMessageThread) activeMessageThread.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function conversationForSitterCard(card) {
+        if (card && card.classList.contains('booking-card')) {
+          var bookingSitter = card.querySelector('.booking-card__sitter');
+          var bookingAvatar = card.querySelector('.booking-card__avatar');
+          var bookingDate = card.querySelector('.booking-card__date');
+          var bookingSitterName = bookingSitter ? bookingSitter.textContent.trim() : 'Sitter';
+          return {
+            id: 'booking-sitter-' + encodeURIComponent(bookingSitterName),
+            name: bookingSitterName,
+            avatarSrc: bookingAvatar ? bookingAvatar.src : './assets/mobile-app-header-avatar.png',
+            bookingLabel: bookingDate ? 'Booking on ' + bookingDate.textContent.trim() : 'Upcoming booking'
+          };
+        }
+        var detail = card ? sitterDetailForCard(card) : null;
+        var hlidackyAvatar = document.querySelector('.mobile-app-header__profile-avatar');
+        var name = detail ? detail.name : 'Sitter';
+        return {
+          id: 'sitter-' + encodeURIComponent(name),
+          name: name,
+          avatarSrc: detail && detail.photoSrc ? detail.photoSrc : (hlidackyAvatar ? hlidackyAvatar.src : './assets/mobile-app-header-avatar.png'),
+          bookingLabel: 'No booking yet'
+        };
+      }
+
+      function openSitterMessageSheet(card, trigger) {
+        if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
+        window.clearTimeout(sitterMessageSheetCloseTimer);
+        activeSitterConversation = conversationForSitterCard(card);
+        activeSitterMessageTrigger = trigger;
+        activeSitterMessageCard = card;
+        sitterMessageSheetName.textContent = activeSitterConversation.name;
+        sitterMessageSheetBooking.textContent = activeSitterConversation.bookingLabel;
+        sitterMessageSheetAvatar.src = activeSitterConversation.avatarSrc;
+        sitterMessageSheetAvatar.alt = activeSitterConversation.name;
+        if (sitterMessageSheetIncomingAvatar) {
+          sitterMessageSheetIncomingAvatar.src = activeSitterConversation.avatarSrc;
+          sitterMessageSheetIncomingAvatar.alt = activeSitterConversation.name;
+        }
+        sitterMessageSheetInput.value = sitterMessageDrafts[activeSitterConversation.id] || '';
+        renderSitterMessageThread();
+        sitterMessageSheet.classList.remove('is-closing');
+        sitterMessageSheet.classList.add('is-open');
+        sitterMessageSheetDialog.classList.add('is-open');
+        sitterMessageSheet.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(sitterMessageSheet);
+        sitterMessageSheetMessages.scrollTop = sitterMessageSheetMessages.scrollHeight;
+        requestAnimationFrame(function () { sitterMessageSheetClose.focus({ preventScroll: true }); });
+        syncBackEntry();
+      }
+
+      function closeSitterMessageSheet(restoreFocus) {
+        if (!sitterMessageSheet.classList.contains('is-open')) return;
+        sitterMessageSheet.classList.remove('is-open');
+        sitterMessageSheet.classList.add('is-closing');
+        sitterMessageSheetDialog.classList.remove('is-open');
+        sitterMessageSheet.setAttribute('aria-hidden', 'true');
+        setBackgroundInert(null);
+        if (restoreFocus !== false && activeSitterMessageTrigger) activeSitterMessageTrigger.focus({ preventScroll: true });
+        window.clearTimeout(sitterMessageSheetCloseTimer);
+        sitterMessageSheetCloseTimer = window.setTimeout(function () { sitterMessageSheet.classList.remove('is-closing'); }, 300);
+        syncBackEntry();
+      }
+
+      function appendSitterMessageRow(text) {
+        var row = document.createElement('div');
+        row.className = 'conversation-bubble-row conversation-bubble-row--outgoing';
+        row.setAttribute('data-sitter-message-history', '');
+        var stack = document.createElement('div');
+        stack.className = 'conversation-bubble-row__stack';
+        var bubble = document.createElement('p');
+        bubble.className = 'conversation-bubble conversation-bubble--outgoing';
+        bubble.textContent = text;
+        var meta = document.createElement('div');
+        meta.className = 'conversation-bubble-row__meta';
+        meta.textContent = 'Just now';
+        stack.appendChild(bubble);
+        stack.appendChild(meta);
+        row.appendChild(stack);
+        sitterMessageSheetMessages.appendChild(row);
+        sitterMessageSheetMessages.scrollTop = sitterMessageSheetMessages.scrollHeight;
+      }
+
+      function renderSitterMessageThread() {
+        Array.prototype.forEach.call(sitterMessageSheetMessages.querySelectorAll('[data-sitter-message-history]'), function (row) {
+          row.remove();
+        });
+        if (!activeSitterConversation) return;
+        (sitterMessageHistory[activeSitterConversation.id] || []).forEach(appendSitterMessageRow);
+      }
+
+      function appendSitterMessage(text) {
+        if (!activeSitterConversation) return;
+        var history = sitterMessageHistory[activeSitterConversation.id] || [];
+        history.push(text);
+        sitterMessageHistory[activeSitterConversation.id] = history;
+        appendSitterMessageRow(text);
+      }
+
+      function openSitterBookingSheet(card, trigger, returnToMessage) {
+        if (prototypeUserRole !== 'family' || prototypeRegistrationStatus !== 'registered' || !loginTrigger.classList.contains('is-logged-in') || !card) return;
+        window.clearTimeout(sitterBookingSheetCloseTimer);
+        var detail = sitterDetailForCard(card);
+        var sitterName = detail.name;
+        activeSitterBookingTrigger = trigger;
+        sitterBookingReturnsToMessage = Boolean(returnToMessage);
+        sitterBookingSheetName.textContent = sitterName;
+        sitterBookingSheetAvatar.src = detail.photoSrc;
+        sitterBookingSheetAvatar.alt = sitterName;
+        sitterBookingSheet.classList.remove('is-closing');
+        sitterBookingSheet.classList.add('is-open');
+        sitterBookingSheetDialog.classList.add('is-open');
+        sitterBookingSheet.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(sitterBookingSheet);
+        requestAnimationFrame(function () { sitterBookingSheetClose.focus({ preventScroll: true }); });
+        syncBackEntry();
+      }
+
+      function closeSitterBookingSheet(restoreFocus) {
+        if (!sitterBookingSheet.classList.contains('is-open')) return;
+        var returnsToMessage = sitterBookingReturnsToMessage && sitterMessageSheet.classList.contains('is-open');
+        sitterBookingSheet.classList.remove('is-open');
+        sitterBookingSheet.classList.add('is-closing');
+        sitterBookingSheetDialog.classList.remove('is-open');
+        sitterBookingSheet.setAttribute('aria-hidden', 'true');
+        if (returnsToMessage) {
+          setBackgroundInert(sitterMessageSheet);
+          if (restoreFocus !== false) sitterMessageSheetBook.focus({ preventScroll: true });
+        } else {
+          setBackgroundInert(null);
+          if (restoreFocus !== false && activeSitterBookingTrigger) activeSitterBookingTrigger.focus({ preventScroll: true });
+        }
+        sitterBookingReturnsToMessage = false;
+        window.clearTimeout(sitterBookingSheetCloseTimer);
+        sitterBookingSheetCloseTimer = window.setTimeout(function () { sitterBookingSheet.classList.remove('is-closing'); }, 300);
         syncBackEntry();
       }
 
@@ -14425,7 +16053,10 @@
         { isOpen: function () { return registrationDetailsScreen.classList.contains('is-open'); }, close: closeRegistrationDetailsToRole },
         { isOpen: function () { return registrationRoleScreen.classList.contains('is-open'); }, close: closeRegistrationRoleToLogin },
         { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
+        { isOpen: function () { return sitterBookingSheet.classList.contains('is-open'); }, close: closeSitterBookingSheet },
+        { isOpen: function () { return sitterMessageSheet.classList.contains('is-open'); }, close: closeSitterMessageSheet },
         { isOpen: function () { return messageDetailScreen.classList.contains('is-open'); }, close: closeMessageDetail },
+        { isOpen: function () { return sitterDetailScreen.classList.contains('is-open'); }, close: closeSitterDetail },
         { isOpen: function () { return familyAccountScreen.classList.contains('is-open'); }, close: closeFamilyAccount },
         { isOpen: function () { return familyNotificationsScreen.classList.contains('is-open'); }, close: closeFamilyNotifications },
         { isOpen: function () { return familyBillingScreen.classList.contains('is-open'); }, close: closeFamilyBilling },
@@ -14445,7 +16076,6 @@
         { isOpen: function () { return sitterInfoScreen.classList.contains('is-open'); }, close: closeSitterInfo },
         { isOpen: function () { return sitterProfileScreen.classList.contains('is-open'); }, close: closeSitterProfile },
         { isOpen: function () { return familyProfileScreen.classList.contains('is-open'); }, close: closeFamilyProfile },
-        { isOpen: function () { return currentAppScreen !== 'search'; }, close: function () { selectAppScreen('search'); } },
         { isOpen: function () { return panel.classList.contains('open'); }, close: closePanel }
       ];
 
@@ -14626,6 +16256,61 @@
 
         sitterProfileScreen.addEventListener('pointerup', endDrag);
         sitterProfileScreen.addEventListener('pointercancel', endDrag);
+      })();
+
+      (function enableSitterDetailSwipeBack() {
+        var EDGE_ZONE = 32;
+        var DIRECTION_LOCK = 6;
+        var DISMISS_RATIO = 0.35;
+        var tracking = false;
+        var dragging = false;
+        var startX = 0;
+        var startY = 0;
+        var offset = 0;
+        var panelWidth = 0;
+
+        sitterDetailScreen.addEventListener('pointerdown', function (event) {
+          if (!sitterDetailScreen.classList.contains('is-open') || sitterDetailScreen.classList.contains('is-presented')) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+          var rect = sitterDetailScreen.getBoundingClientRect();
+          if (event.clientX - rect.left > EDGE_ZONE) return;
+          tracking = true;
+          dragging = false;
+          offset = 0;
+          panelWidth = rect.width;
+          startX = event.clientX;
+          startY = event.clientY;
+        });
+
+        sitterDetailScreen.addEventListener('pointermove', function (event) {
+          if (!tracking) return;
+          offset = event.clientX - startX;
+          var verticalOffset = event.clientY - startY;
+          if (!dragging) {
+            if (Math.abs(offset) < DIRECTION_LOCK && Math.abs(verticalOffset) < DIRECTION_LOCK) return;
+            if (Math.abs(verticalOffset) > Math.abs(offset)) {
+              tracking = false;
+              return;
+            }
+            dragging = true;
+            sitterDetailScreen.classList.add('is-dragging');
+            sitterDetailScreen.setPointerCapture(event.pointerId);
+          }
+          sitterDetailScreen.style.transform = 'translate3d(' + Math.max(0, offset) + 'px, 0, 0)';
+        });
+
+        function endDrag() {
+          if (!tracking) return;
+          var shouldDismiss = dragging && offset > panelWidth * DISMISS_RATIO;
+          tracking = false;
+          dragging = false;
+          sitterDetailScreen.classList.remove('is-dragging');
+          sitterDetailScreen.style.transform = '';
+          if (shouldDismiss) closeSitterDetail();
+        }
+
+        sitterDetailScreen.addEventListener('pointerup', endDrag);
+        sitterDetailScreen.addEventListener('pointercancel', endDrag);
       })();
 
       function setSitterDetails(detailsList) {
@@ -15430,7 +17115,12 @@
       sitterProfileCreatedAlertClose.addEventListener('click', hideSitterProfileCreatedAlert);
       navItems.forEach(function (item) {
         item.addEventListener('click', function () {
-          selectAppScreen(item.getAttribute('data-app-screen'));
+          var nextScreen = item.getAttribute('data-app-screen');
+          if (nextScreen === currentAppScreen) {
+            popActiveTabToRoot();
+            return;
+          }
+          selectAppScreen(nextScreen);
         });
       });
       loginSheetBackdrop.addEventListener('click', closeLoginSheet);
@@ -15499,6 +17189,92 @@
         event.preventDefault();
         messageDetailInput.value = '';
       });
+      Array.prototype.slice.call(document.querySelectorAll('.sitter-card')).forEach(function (card) {
+        Array.prototype.slice.call(card.querySelectorAll('.sitter-card__name, .profile-photo-component__photo a, .profile-card-content-component__description-link-wrapper .link')).forEach(function (trigger) {
+          trigger.addEventListener('click', function (event) {
+            if (!loginTrigger.classList.contains('is-logged-in')) return;
+            event.preventDefault();
+            openSitterDetail(card, trigger);
+          });
+        });
+      });
+      Array.prototype.slice.call(document.querySelectorAll('.sitter-detail-alternative-card')).forEach(function (card) {
+        card.addEventListener('click', function (event) {
+          event.preventDefault();
+          openAlternativeSitterDetail(card);
+        });
+        card.addEventListener('keydown', function (event) {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          openAlternativeSitterDetail(card);
+        });
+      });
+      sitterDetailBack.addEventListener('click', function () { closeSitterDetail(true); });
+      sitterDetailClose.addEventListener('click', function () { closeSitterDetail(true); });
+      sitterDetailProfileSwitchItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+          selectSitterDetailProfile(item.getAttribute('data-sitter-detail-profile'));
+        });
+      });
+      sitterDetailBook.addEventListener('click', function () {
+        if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailBook);
+      });
+      sitterDetailMessage.addEventListener('click', function () {
+        if (activeSitterDetailCard) openSitterMessageSheet(activeSitterDetailCard, sitterDetailMessage);
+      });
+      sitterDetailStickyBook.addEventListener('click', function () {
+        if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailStickyBook);
+      });
+      sitterDetailStickyMessage.addEventListener('click', function () {
+        if (activeSitterDetailCard) openSitterMessageSheet(activeSitterDetailCard, sitterDetailStickyMessage);
+      });
+      sitterDetailContent.addEventListener('scroll', updateSitterDetailStickyActions, { passive: true });
+      sitterMessageButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          if (!loginTrigger.classList.contains('is-logged-in')) return;
+          event.preventDefault();
+          openSitterMessageSheet(button.closest('.sitter-card'), button);
+        });
+      });
+      sitterBookingButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          if (!loginTrigger.classList.contains('is-logged-in')) return;
+          event.preventDefault();
+          openSitterBookingSheet(button.closest('.sitter-card'), button);
+        });
+      });
+      sitterMessageSheetBackdrop.addEventListener('click', function () { closeSitterMessageSheet(true); });
+      sitterMessageSheetClose.addEventListener('click', function () { closeSitterMessageSheet(true); });
+      sitterMessageSheetBook.addEventListener('click', function () {
+        if (activeSitterMessageCard) openSitterBookingSheet(activeSitterMessageCard, sitterMessageSheetBook, true);
+      });
+      sitterMessageSheetInput.addEventListener('input', function () {
+        if (activeSitterConversation) sitterMessageDrafts[activeSitterConversation.id] = sitterMessageSheetInput.value;
+      });
+      sitterMessageSheetComposer.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var message = sitterMessageSheetInput.value.trim();
+        if (!message || !activeSitterConversation) return;
+        appendSitterMessage(message);
+        sitterMessageDrafts[activeSitterConversation.id] = '';
+        sitterMessageSheetInput.value = '';
+        sitterMessageSheetInput.focus({ preventScroll: true });
+      });
+      sitterBookingSheetBackdrop.addEventListener('click', function () { closeSitterBookingSheet(true); });
+      sitterBookingSheetClose.addEventListener('click', function () { closeSitterBookingSheet(true); });
+      sitterBookingServiceButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          button.classList.toggle('is-selected');
+          button.setAttribute('aria-pressed', String(button.classList.contains('is-selected')));
+        });
+      });
+      sitterBookingSheetForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && sitterMessageSheet.classList.contains('is-open')) closeSitterMessageSheet(true);
+        if (event.key === 'Escape' && sitterBookingSheet.classList.contains('is-open')) closeSitterBookingSheet(true);
+      });
       bookingActionTriggers.forEach(function (trigger) {
         trigger.addEventListener('click', function (event) {
           event.stopPropagation();
@@ -15522,7 +17298,8 @@
       });
       bookingCancelButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-          cancelBooking(button.closest('[data-booking-card]'));
+          var card = button.closest('[data-booking-card]');
+          if (!openBookingCancelAlert(card, button)) cancelBooking(card);
         });
       });
       bookingViewButtons.forEach(function (button) {
@@ -15531,18 +17308,39 @@
       bookingActionsSheetBackdrop.addEventListener('click', closeBookingActionsSheet);
       bookingActionsSheetPrimary.addEventListener('click', function () {
         var card = activeBookingActionCard;
+        var trigger = activeBookingActionTrigger;
         var isUpcoming = card && (card.classList.contains('booking-card--waiting') || card.classList.contains('booking-card--confirmed'));
         closeBookingActionsSheet();
-        if (isUpcoming) cancelBooking(card);
+        if (isUpcoming && !openBookingCancelAlert(card, trigger)) cancelBooking(card);
       });
-      [bookingActionsSheetArchive, bookingActionsSheetMessage, bookingActionsSheetProfile, bookingActionsSheetReport].forEach(function (action) {
+      [bookingActionsSheetArchive, bookingActionsSheetReport].forEach(function (action) {
         action.addEventListener('click', closeBookingActionsSheet);
+      });
+      bookingActionsSheetProfile.addEventListener('click', function () {
+        var card = activeBookingActionCard;
+        var trigger = activeBookingActionTrigger;
+        closeBookingActionsSheet();
+        if (card) openBookingSitterDetail(card, trigger);
+      });
+      bookingActionsSheetMessage.addEventListener('click', function () {
+        var card = activeBookingActionCard;
+        var trigger = activeBookingActionTrigger;
+        closeBookingActionsSheet();
+        if (card) openSitterMessageSheet(card, trigger);
+      });
+      bookingCancelAlertBackdrop.addEventListener('click', function () { closeBookingCancelAlert(true); });
+      bookingCancelAlertKeep.addEventListener('click', function () { closeBookingCancelAlert(true); });
+      bookingCancelAlertConfirm.addEventListener('click', function () {
+        var card = activeBookingCancelAlertCard;
+        closeBookingCancelAlert(false);
+        cancelBooking(card);
       });
       document.addEventListener('click', function (event) {
         if (!event.target.closest('.booking-card__actions') && !event.target.closest('.booking-actions-sheet')) closeBookingActions();
       });
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') closeBookingActionsSheet();
+        if (event.key === 'Escape' && bookingCancelAlert && !bookingCancelAlert.hidden) closeBookingCancelAlert(true);
       });
       guestGatedCardActions.forEach(function (action) {
         if (action.matches('.profile-card-basic-info-component__parameter-content.link--tel, .profile-card-basic-info-component__reviews-count')) {
