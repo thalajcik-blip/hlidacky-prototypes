@@ -886,6 +886,11 @@
     .sitter-detail-work__copy { margin: 0; color: #4a5a61; font-size: 14px; font-weight: 350; letter-spacing: -.242px; line-height: 20px; }
     .sitter-detail-work__copy a { color: var(--color-pink-400, #f96073); font-weight: 450; text-decoration: underline; text-underline-offset: 2px; }
     .sitter-detail-work__copy i { padding: 0 2px; color: #4a5a61; font-size: 14px; }
+    /* I12e — a presented profile carries one subject and one task, so the area
+       breadcrumb is prose here, not a link. Rendered as <span>, never as a
+       greyed-out <a>: a dead link reads as a broken app, a sentence reads as a
+       sentence. The swap is done in setSitterDetailAreaLinksLive(). */
+    .sitter-detail-work__copy span[data-area-link] { color: inherit; font-weight: 450; }
     .sitter-detail-work__map { position: relative; height: 240px; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 6px; background: #f7f7f7; }
     .sitter-detail-work__map-image { position: absolute; top: calc(50% - 22.5px); left: calc(50% - 27px); width: 1173px; height: 667px; max-width: none; transform: translate(-50%, -50%); }
     .sitter-detail-work__map-pin { position: absolute; top: 50%; left: 50%; color: var(--color-pink-400, #f96073); font-size: 24px; line-height: 1; transform: translate(-50%, -50%); }
@@ -5220,6 +5225,18 @@
     }
 
     .sitter-message-sheet.is-open .sitter-message-sheet__backdrop { opacity: 1; }
+
+    /* I11d — opened from a profile that is itself presented, the conversation is
+       the same subject seen another way, so it reads as a PUSH inside that one
+       presentation rather than as a second sheet stacked on the first. The
+       profile's scrim already dims the base screen; a second one here is what
+       made two live presentations visible. */
+    .sitter-message-sheet.is-over-profile.is-open .sitter-message-sheet__backdrop { opacity: 0; }
+    /* Both layers sit at z-index 80 and the profile comes later in the DOM, so
+       without this the conversation opened *behind* the profile — visible as
+       "Message does nothing", while the back button silently had two layers to
+       unwind. Pushed means on top. */
+    .sitter-message-sheet.is-over-profile { z-index: 81; }
 
     .sitter-message-sheet__panel {
       position: relative;
@@ -10422,10 +10439,10 @@
         <section class="sitter-detail-work" aria-labelledby="sitterDetailWorkHeading" data-node-id="2409:80503">
           <h2 class="sitter-detail-work__heading" id="sitterDetailWorkHeading">Where I work</h2>
           <div class="sitter-detail-work__location">
-            <p class="sitter-detail-work__copy">I’m most of the time in <a href="#">Jihomoravský</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Žďár nad Sázavou</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Nové Město na Moravě</a></p>
+            <p class="sitter-detail-work__copy">I’m most of the time in <a href="#" data-area-link>Jihomoravský</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#" data-area-link>Žďár nad Sázavou</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#" data-area-link>Nové Město na Moravě</a></p>
             <div class="sitter-detail-work__map" role="img" aria-label="Map of Nové Město na Moravě"><img class="sitter-detail-work__map-image" src="./assets/sitter-detail-work-map.png" alt=""><i class="sitter-detail-work__map-pin fa-solid fa-location-dot" aria-hidden="true"></i></div>
           </div>
-          <div class="sitter-detail-work__location"><p class="sitter-detail-work__copy">I also work in <a href="#">Královohradecký</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Jičín</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#">Valdice</a></p></div>
+          <div class="sitter-detail-work__location"><p class="sitter-detail-work__copy">I also work in <a href="#" data-area-link>Královohradecký</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#" data-area-link>Jičín</a><i class="fa-light fa-arrow-right" aria-hidden="true"></i><a href="#" data-area-link>Valdice</a></p></div>
         </section>
         <section class="sitter-detail-info-section" aria-labelledby="sitterDetailPreferencesHeading" data-node-id="2408:79981">
           <h2 class="sitter-detail-info-section__heading" id="sitterDetailPreferencesHeading">Preferences</h2>
@@ -10488,7 +10505,7 @@
             <article class="sitter-detail-alternative-card" data-sitter-age="34 years" data-sitter-rating="4.5" data-sitter-review="Milena is a warm and experienced sitter who families happily book again." role="link" tabindex="0" aria-label="Open Milena B.'s sitter profile"><header class="sitter-detail-alternative-card__header"><div class="sitter-detail-alternative-card__photo-wrap"><img class="sitter-detail-alternative-card__photo" src="./assets/sitter-detail-alternative-milena.png" alt="Milena B."><div class="sitter-detail-alternative-card__verified"><img src="./assets/sitter-detail-alternative-shield.svg" alt=""><span>Verified</span></div></div><div class="sitter-detail-alternative-card__info"><h3 class="sitter-detail-alternative-card__name">Milena B.</h3><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Plzeň 1</span></div><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-phone" aria-hidden="true"></i><span class="sitter-detail-alternative-card__phone">+420 720 123 456</span></div><div class="sitter-detail-alternative-card__rating"><span class="sitter-detail-alternative-card__stars"><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star-half.svg" alt=""></span><span class="sitter-detail-alternative-card__reviews">(8)</span></div><span class="sitter-detail-alternative-card__price">240 Kč/h</span></div></header><div class="sitter-detail-alternative-card__content"><p class="sitter-detail-alternative-card__copy">A kind sitter who quickly found a great way to connect with children. <a href="#">View profile</a></p><div class="sitter-detail-alternative-card__tags"><span class="sitter-detail-alternative-card__tag">Repeated booking</span><span class="sitter-detail-alternative-card__tag">Speaks English</span><span class="sitter-detail-alternative-card__tag">First aid course</span></div></div></article>
             <article class="sitter-detail-alternative-card" data-sitter-age="27 years" data-sitter-rating="5.0" data-sitter-review="Lucie is attentive, dependable and brings calm energy to every booking." role="link" tabindex="0" aria-label="Open Lucie K.'s sitter profile"><header class="sitter-detail-alternative-card__header"><div class="sitter-detail-alternative-card__photo-wrap"><img class="sitter-detail-alternative-card__photo" src="./assets/avatar-03.jpg" alt="Lucie K."><div class="sitter-detail-alternative-card__verified"><img src="./assets/sitter-detail-alternative-shield.svg" alt=""><span>Verified</span></div></div><div class="sitter-detail-alternative-card__info"><h3 class="sitter-detail-alternative-card__name">Lucie K.</h3><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-location-dot" aria-hidden="true"></i><span>Nové město</span></div><div class="sitter-detail-alternative-card__meta"><i class="fa-light fa-phone" aria-hidden="true"></i><span class="sitter-detail-alternative-card__phone">+420 721 234 567</span></div><div class="sitter-detail-alternative-card__rating"><span class="sitter-detail-alternative-card__stars"><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""><img src="./assets/sitter-detail-alternative-star.svg" alt=""></span><span class="sitter-detail-alternative-card__reviews">(12)</span></div><span class="sitter-detail-alternative-card__price">220 Kč/h</span></div></header><div class="sitter-detail-alternative-card__content"><p class="sitter-detail-alternative-card__copy">Experienced babysitter for regular and one-time care, indoors or outdoors. <a href="#">View profile</a></p><div class="sitter-detail-alternative-card__tags"><span class="sitter-detail-alternative-card__tag">Drawing / painting</span><span class="sitter-detail-alternative-card__tag">Can drive</span><span class="sitter-detail-alternative-card__tag">Pet care</span></div></div></article>
           </div>
-          <a class="sitter-detail-alternatives__more" href="#">More sitters near you</a>
+          <a class="sitter-detail-alternatives__more" id="sitterDetailAlternativesMore" href="#">More sitters near you</a>
         </section>
       </main>
       <section class="sitter-detail-actions sitter-detail-actions--sticky" id="sitterDetailStickyActions" aria-label="Contact sitter" aria-hidden="true" inert data-node-id="2409:82544">
@@ -11645,6 +11662,7 @@
       var sitterMessageSheetGrabber = document.getElementById('sitterMessageSheetGrabber');
       var sitterMessageSheetHeader = document.getElementById('sitterMessageSheetHeader');
       var sitterMessageSheetClose = document.getElementById('sitterMessageSheetClose');
+      var sitterDetailAlternativesMore = document.getElementById('sitterDetailAlternativesMore');
       var sitterMessageSheetBook = document.getElementById('sitterMessageSheetBook');
       var sitterMessageSheetName = document.getElementById('sitterMessageSheetName');
       var sitterMessageSheetBooking = document.getElementById('sitterMessageSheetBooking');
@@ -15049,11 +15067,55 @@
         setSitterDetailStickyActionsVisible(showStickyActions);
       }
 
+      /* ------------------------------------------------------------------
+         Container-dependent rendering (guidelines I12 / I12e / I12g).
+
+         The ONE fact these read is the container: is this profile pushed, or
+         is it presented? Never which tab, never which entry point — that is
+         what keeps the rule cheap enough to live with.
+         ------------------------------------------------------------------ */
+      var sitterDetailWorkCopies = Array.prototype.slice.call(
+        document.querySelectorAll('.sitter-detail-work__copy'));
+
+      function setSitterDetailAreaLinksLive(live) {
+        var from = live ? 'span[data-area-link]' : 'a[data-area-link]';
+        sitterDetailWorkCopies.forEach(function (copy) {
+          Array.prototype.slice.call(copy.querySelectorAll(from)).forEach(function (node) {
+            var next = document.createElement(live ? 'a' : 'span');
+            next.setAttribute('data-area-link', '');
+            next.textContent = node.textContent;
+            if (live) next.setAttribute('href', '#');
+            node.parentNode.replaceChild(next, node);
+          });
+        });
+      }
+
+      /* I11 — the destination of both the area links and "More sitters near you"
+         is the list of sitters this profile was pushed from, and that list is
+         already in the stack. So they RESOLVE to it. They never push a second
+         copy of a screen the user is already standing on. */
+      function resolveToSitterList() {
+        if (sitterDetailScreen.classList.contains('is-presented')) return;
+        sitterDetailHistory = [];
+        closeSitterDetail(false);
+      }
+
+      /* I10b — a pop-to-root link names the root it actually returns to, not the
+         one it usually returns to. Pushed from Favourites, this lands on the
+         shortlist, so it must not promise search results. */
+      function syncSitterDetailAlternativesMore() {
+        if (!sitterDetailAlternativesMore) return;
+        sitterDetailAlternativesMore.textContent =
+          currentAppScreen === 'favourites' ? 'Back to favourites' : 'More sitters near you';
+      }
+
       function openSitterDetail(card, trigger) {
         if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
         window.clearTimeout(sitterDetailPresentationCloseTimer);
         sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing');
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
+        setSitterDetailAreaLinksLive(true);      // pushed: the links are live (I12e)
+        syncSitterDetailAlternativesMore();
         sitterDetailBack.setAttribute('aria-label', 'Back to search results');
         sitterDetailHistory = [];
         activeSitterDetailCard = card;
@@ -15081,6 +15143,7 @@
         sitterDetailScreen.classList.add('is-presented', 'is-booking-present');
         sitterDetailScreen.setAttribute('aria-hidden', 'false');
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = true;
+        setSitterDetailAreaLinksLive(false);     // presented: prose, not links (I12e)
         sitterDetailContent.scrollTop = 0;
         setSitterDetailStickyActionsVisible(false);
         setBackgroundInert(sitterDetailScreen);
@@ -15924,6 +15987,13 @@
         sitterMessageSheetInput.value = sitterMessageDrafts[activeSitterConversation.id] || '';
         renderSitterMessageThread();
         sitterMessageSheet.classList.remove('is-closing');
+        /* I11d — same subject, so this is a push inside the live presentation,
+           not a second presentation on top of it. The control therefore reads
+           as back, and the profile stays underneath for it to return to. */
+        var overPresentedProfile = sitterDetailScreen.classList.contains('is-open') &&
+                                   sitterDetailScreen.classList.contains('is-presented');
+        sitterMessageSheet.classList.toggle('is-over-profile', overPresentedProfile);
+        setSitterMessageSheetDismissal(overPresentedProfile);
         sitterMessageSheet.classList.add('is-open');
         sitterMessageSheetDialog.classList.add('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'false');
@@ -15933,14 +16003,35 @@
         syncBackEntry();
       }
 
+      /* Back when this conversation was pushed over a presented profile, close
+         when it is the presentation itself. One control, two truthful meanings. */
+      function setSitterMessageSheetDismissal(isBack) {
+        var icon = sitterMessageSheetClose.querySelector('i');
+        if (icon) icon.className = isBack ? 'fa-regular fa-chevron-left' : 'fa-regular fa-xmark';
+        sitterMessageSheetClose.setAttribute('aria-label',
+          isBack ? 'Back to sitter profile' : 'Close conversation');
+      }
+
       function closeSitterMessageSheet(restoreFocus) {
         if (!sitterMessageSheet.classList.contains('is-open')) return;
-        sitterMessageSheet.classList.remove('is-open');
+        var wasOverProfile = sitterMessageSheet.classList.contains('is-over-profile');
+        sitterMessageSheet.classList.remove('is-open', 'is-over-profile');
         sitterMessageSheet.classList.add('is-closing');
         sitterMessageSheetDialog.classList.remove('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'true');
-        setBackgroundInert(null);
-        if (restoreFocus !== false && activeSitterMessageTrigger) activeSitterMessageTrigger.focus({ preventScroll: true });
+        setSitterMessageSheetDismissal(false);
+        // Popping back to the profile must hand the presentation back to it,
+        // not release the whole frame — otherwise the base screen underneath
+        // becomes live while a sheet is still on top of it.
+        var backToProfile = wasOverProfile &&
+          sitterDetailScreen.classList.contains('is-open') &&
+          sitterDetailScreen.classList.contains('is-presented');
+        setBackgroundInert(backToProfile ? sitterDetailScreen : null);
+        if (backToProfile) {
+          requestAnimationFrame(function () { sitterDetailClose.focus({ preventScroll: true }); });
+        } else if (restoreFocus !== false && activeSitterMessageTrigger) {
+          activeSitterMessageTrigger.focus({ preventScroll: true });
+        }
         window.clearTimeout(sitterMessageSheetCloseTimer);
         sitterMessageSheetCloseTimer = window.setTimeout(function () { sitterMessageSheet.classList.remove('is-closing'); }, 300);
         syncBackEntry();
@@ -17211,6 +17302,21 @@
       });
       sitterDetailBack.addEventListener('click', function () { closeSitterDetail(true); });
       sitterDetailClose.addEventListener('click', function () { closeSitterDetail(true); });
+      /* Area links and the pop-to-root link both resolve to the sitter list this
+         profile was pushed from (I11). Delegated, so the span/anchor swap in
+         setSitterDetailAreaLinksLive() never has to rebind anything. */
+      sitterDetailContent.addEventListener('click', function (event) {
+        var link = event.target.closest ? event.target.closest('a[data-area-link]') : null;
+        if (!link) return;
+        event.preventDefault();
+        resolveToSitterList();
+      });
+      if (sitterDetailAlternativesMore) {
+        sitterDetailAlternativesMore.addEventListener('click', function (event) {
+          event.preventDefault();
+          resolveToSitterList();
+        });
+      }
       sitterDetailProfileSwitchItems.forEach(function (item) {
         item.addEventListener('click', function () {
           selectSitterDetailProfile(item.getAttribute('data-sitter-detail-profile'));
