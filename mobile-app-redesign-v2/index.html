@@ -5185,19 +5185,25 @@
       padding: 8px 16px 16px;
     }
 
-    .message-detail-screen__input { width: 100%; min-width: 0; height: 52px; border: 1px solid #e5e5ea; border-radius: 28px; outline: 0; background: #fff; padding: 0 48px 0 20px; color: #2a3539; font: inherit; font-size: 16px; letter-spacing: .2px; }
+    .message-detail-screen__input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 52px; max-height: 200px; height: 52px; resize: none; overflow-y: hidden; border: 1px solid #e5e5ea; border-radius: 28px; outline: 0; background: #fff; padding: 14px 48px 14px 20px; color: #2a3539; font: inherit; font-size: 16px; letter-spacing: .2px; line-height: 24px; }
     .message-detail-screen__input::placeholder { color: #8b91a3; opacity: 1; }
     .message-detail-screen__input:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
     .message-detail-screen__input-wrap { position: relative; min-width: 0; flex: 1; }
     .message-detail-screen__attachment { position: absolute; top: 50%; right: 16px; display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #6c757d; font-size: 20px; transform: translateY(-50%); }
     .message-detail-screen__send { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #f96073; font-size: 24px; cursor: pointer; }
+    .message-detail-screen__composer .message-detail-screen__send,
+    .outreach-composer__footer .outreach-composer__send { align-self: flex-end; margin-bottom: 14px; }
 
     /* A message started from a sitter or booking card is a temporary,
        contextual task. It is presented above the originating screen rather
        than pushing the user into Messages, so dismissing returns to that card. */
+    /* Above the presented sitter profile, which also sits at 80 and comes
+       later in the document — a tie there left the thread opening behind the
+       profile it was opened from. Still below the booking sheet at 82, which
+       can be opened from inside this one. */
     .sitter-message-sheet {
       position: absolute;
-      z-index: 80;
+      z-index: 81;
       inset: 0;
       display: flex;
       align-items: flex-end;
@@ -5317,6 +5323,127 @@
     .sitter-message-sheet__close:focus-visible { outline: 0; background: #f2f3f5; }
     .sitter-message-sheet__messages { align-items: center; gap: 12px; padding: 16px 20px; }
     .sitter-message-sheet__composer { gap: 18px; padding: 0 20px 20px; }
+    .sitter-message-sheet__composer .message-detail-screen__input { box-sizing: border-box; min-height: 52px; max-height: 200px; height: 52px; resize: none; overflow-y: hidden; padding-top: 14px; padding-bottom: 14px; line-height: 24px; }
+
+    /* First contact is deliberately separate from the conversation sheet.
+       It lets a parent contact several sitters without being pulled into the
+       Messages tab after every send. */
+    .outreach-composer-sheet {
+      position: absolute;
+      z-index: 83;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+      visibility: hidden;
+      transition: visibility 0s linear 300ms;
+    }
+    .outreach-composer-sheet.is-open { pointer-events: auto; visibility: visible; transition: visibility 0s; }
+    .outreach-composer-sheet.is-closing { visibility: visible; }
+    .outreach-composer-sheet__backdrop { position: absolute; inset: 0; border: 0; background: rgba(20, 28, 35, .44); opacity: 0; transition: opacity 220ms ease; }
+    .outreach-composer-sheet.is-open .outreach-composer-sheet__backdrop { opacity: 1; }
+    .outreach-composer-sheet__panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: 100%;
+      height: 82%;
+      min-height: 0;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+      box-shadow: 0 -12px 32px rgba(28, 38, 50, .2);
+      transform: translate3d(0, 100%, 0);
+      transition: transform 300ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .outreach-composer-sheet.is-open .outreach-composer-sheet__panel { transform: translate3d(0, 0, 0); }
+    .outreach-composer-sheet__grabber { flex: 0 0 25px; margin: 0; padding-top: 12px; }
+    .outreach-composer-sheet__grabber::before { width: 88px; height: 5px; background: #d6d9dd; }
+    .outreach-composer-sheet__header { display: grid; flex: 0 0 auto; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 12px; border-bottom: 1px solid #e5e5ea; padding: 0 20px 14px; }
+    .outreach-composer-sheet__close { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 4px; background: transparent; padding: 0; color: #6c757d; font-size: 20px; cursor: pointer; }
+    .outreach-composer-sheet__close:hover, .outreach-composer-sheet__close:focus-visible { outline: 0; background: #f2f3f5; }
+    .outreach-composer-sheet__title { margin: 0; color: #2a3539; font-size: 18px; font-weight: 700; letter-spacing: -.32px; line-height: 1.25; }
+    .outreach-composer-sheet__subtitle { margin: 2px 0 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
+    .outreach-composer-sheet__body { min-height: 0; flex: 1 1 auto; overflow-y: auto; padding: 16px 20px 8px; }
+    .outreach-composer-recipient { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; align-items: center; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; padding: 12px; }
+    .outreach-composer-recipient__avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+    .outreach-composer-recipient__name { margin: 0; color: #2a3539; font-size: 16px; font-weight: 700; line-height: 1.35; }
+    .outreach-composer-recipient__meta { margin: 2px 0 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
+    .outreach-composer-recipient__badges { display: flex; grid-column: 1 / -1; flex-wrap: wrap; gap: 4px; }
+    .outreach-composer-recipient__badges span, .sitter-card__conversation-status { border-radius: 64px; background: #f2f3f5; padding: 3px 8px; color: #4a5a61; font-size: 11px; line-height: 1.2; }
+    .outreach-composer__previous { display: flex; width: 100%; justify-content: flex-end; margin: 16px 0 6px; border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .outreach-composer__field { width: 100%; min-height: 120px; resize: vertical; border: 1px solid #e5e5ea; border-radius: 8px; outline: 0; background: #fff; padding: 12px; color: #2a3539; font: inherit; font-size: 16px; line-height: 1.4; }
+    .outreach-composer__field:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .outreach-composer__cross-sell { margin: 16px 0 8px; color: #4a5a61; font-size: 13px; line-height: 1.45; }
+    .outreach-composer__cross-sell button { border: 0; background: transparent; padding: 0; color: #f96073; font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .outreach-composer__error { margin: 0; color: #d42b46; font-size: 12px; line-height: 1.4; }
+    .outreach-composer__footer { flex: 0 0 auto; border-top: 1px solid #e5e5ea; background: #fff; padding: 12px 20px calc(16px + env(safe-area-inset-bottom)); }
+    .outreach-composer__send { display: inline-flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 #078f20; background: #0ba825; color: #fff; font: 500 16px/22px Soleil, sans-serif; cursor: pointer; }
+    .outreach-composer__send:disabled { box-shadow: none; background: #d6d9dd; color: #8b91a3; cursor: not-allowed; }
+    .sitter-card__conversation-status { display: flex; width: fit-content; margin: 0 0 4px; }
+    .phone-frame.is-outreach-composer-flow .mobile-bottom-nav { opacity: 0; pointer-events: none; visibility: hidden; }
+
+    .outreach-toast { position: absolute; z-index: 90; right: 12px; bottom: 96px; left: 12px; display: flex; align-items: flex-start; gap: 8px; border: 1px solid #7eea7c; border-radius: 4px; background: #eff9ef; padding: 12px 12px 12px 8px; color: #2a3539; box-shadow: 0 24px 40px rgba(42, 53, 57, .2); opacity: 0; pointer-events: none; transform: translate3d(0, 12px, 0); transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms; visibility: hidden; }
+    .outreach-toast.is-visible { opacity: 1; pointer-events: auto; transform: translate3d(0, 0, 0); transition: opacity 180ms ease, transform 180ms ease, visibility 0s; visibility: visible; }
+    .outreach-toast__doodle { width: 40px; height: 40px; flex: 0 0 40px; object-fit: contain; }
+    .outreach-toast__body { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .outreach-toast__copy { margin: 0; color: #2a3539; font: 450 16px/1.5 Soleil, sans-serif; letter-spacing: -.24px; }
+    .outreach-toast__action { border: 0; background: transparent; padding: 4px 0 8px; color: #f96073; font: 400 12px/1.4 Soleil, sans-serif; opacity: .8; text-decoration: underline; text-decoration-color: #ff9ba7; text-underline-offset: 2px; cursor: pointer; }
+    .outreach-toast__close { display: inline-flex; width: 24px; height: 24px; flex: 0 0 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #8b91a3; font-size: 16px; cursor: pointer; }
+
+    /* Figma 2429:45880 — the first contact state uses the same compact
+       empty-thread composition as Messages, not a long form. */
+    .outreach-composer-sheet__panel { height: 80%; }
+    .outreach-composer-sheet__header { grid-template-columns: minmax(0, 1fr) auto 24px; gap: 8px; padding: 0 16px 12px; }
+    .outreach-composer-sheet__title { overflow: hidden; font-size: 16px; letter-spacing: -.32px; text-overflow: ellipsis; white-space: nowrap; }
+    .outreach-composer-sheet__subtitle { font-size: 12px; letter-spacing: -.16px; }
+    .outreach-composer-sheet__book { display: inline-flex; height: 32px; align-items: center; gap: 4px; border: 1px solid #0ba825; border-radius: 4px; box-shadow: inset 0 -3px 0 #0ba825; background: #fff; padding: 6px 12px 8px 10px; color: #0ba825; font: 400 13px/18px Soleil, sans-serif; cursor: pointer; }
+    .outreach-composer-sheet__book i { font-size: 14px; }
+    .outreach-composer-sheet__book:hover { background: #0ba825; color: #fff; }
+    .outreach-composer-sheet__body { display: flex; min-height: 0; align-items: center; justify-content: flex-start; flex-direction: column; padding: 40px 16px 12px; }
+    .outreach-composer-recipient { display: flex; width: 100%; flex: 1 1 auto; align-items: center; flex-direction: column; gap: 0; border: 0; background: transparent; padding: 0; text-align: center; }
+    .outreach-composer-recipient__avatar-wrap { position: relative; width: 92px; height: 84px; flex: 0 0 84px; }
+    .outreach-composer-recipient__avatar { position: absolute; top: 0; left: 4px; width: 84px; height: 84px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); object-fit: cover; }
+    .outreach-composer-recipient__verified { position: absolute; right: 0; bottom: 0; display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: #fff; box-shadow: 0 6px 8px rgba(42, 53, 57, .2); }
+    .outreach-composer-recipient__verified img { width: 24px; height: 25px; }
+    .outreach-composer-recipient__name { margin: 10px 0 0; color: #2a3539; font: 450 24px/1.32 Soleil, sans-serif; letter-spacing: -.2px; }
+    .outreach-composer-recipient__meta { display: flex; align-items: center; gap: 12px; margin: 0; color: #2a3539; font: 350 16px/1.5 Soleil, sans-serif; letter-spacing: -.24px; }
+    .outreach-composer-recipient__divider { width: 1px; height: 20px; background: #bec2ce; }
+    .outreach-composer-recipient__rating { display: flex; align-items: center; gap: 6px; margin: 4px 0 8px; padding: 12px 0; color: #6c757d; font: 350 16px/1.5 Soleil, sans-serif; letter-spacing: -.24px; }
+    .outreach-composer-recipient__stars { display: inline-flex; gap: 4px; color: #fbb73f; font-size: 24px; line-height: 1; }
+    .outreach-composer__previous { width: auto; justify-content: center; align-items: center; gap: 2px; margin: 14px 0 0; color: #f96073; font-size: 18px; opacity: .8; text-decoration: none; }
+    .outreach-composer__previous i { width: 24px; font-size: 16px; }
+    .outreach-composer__previous span { text-decoration: underline; text-decoration-color: #ff9ba7; text-underline-offset: 2px; }
+    .outreach-composer__error { flex: 0 0 auto; margin: 0 16px 6px; }
+    .outreach-composer__footer { display: flex; flex: 0 0 auto; align-items: center; gap: 18px; border-top: 0; padding: 8px 16px calc(16px + env(safe-area-inset-bottom)); }
+    .outreach-composer__input-wrap { position: relative; min-width: 0; flex: 1 1 auto; }
+    .outreach-composer__field { box-sizing: border-box; display: block; width: 100%; min-height: 52px; max-height: 200px; height: 52px; resize: none; overflow-y: hidden; border-radius: 28px; padding: 14px 48px 14px 20px; font-size: 16px; letter-spacing: .2px; line-height: 24px; }
+    .outreach-composer__attachment { position: absolute; top: 50%; right: 16px; display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: #6c757d; font-size: 20px; transform: translateY(-50%); }
+    .outreach-composer__send { width: 24px; min-height: 24px; height: 24px; flex: 0 0 24px; border: 0; box-shadow: none; background: transparent; padding: 0; color: #f96073; font-size: 24px; }
+    .outreach-composer__send:hover { background: transparent; color: #d42b46; }
+    .outreach-composer__send:disabled { background: transparent; color: #bec2ce; }
+
+    /* Figma 2430:73716 — template selection replaces the composer content
+       within the same presented sheet. */
+    .outreach-composer-screen { display: flex; width: 100%; min-height: 0; height: 100%; flex: 1 1 auto; flex-direction: column; }
+    .outreach-template-screen { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: inherit; background: #fff; opacity: 0; pointer-events: none; transform: translate3d(0, 16px, 0); transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1); }
+    .outreach-composer-sheet.is-showing-template .outreach-template-screen { opacity: 1; pointer-events: auto; transform: translate3d(0, 0, 0); }
+    .outreach-template-screen__close { position: absolute; z-index: 1; top: 20px; right: 20px; display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 4px; color: #2a3539; font-size: 24px; line-height: 1; opacity: .4; cursor: pointer; }
+    .outreach-template-screen__close:hover, .outreach-template-screen__close:focus-visible { outline: 0; opacity: .75; }
+    .outreach-template-screen__feed { min-height: 0; flex: 1 1 auto; overflow-y: auto; padding: 56px 20px 12px; }
+    .outreach-template-screen__heading { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 8px; }
+    .outreach-template-screen__heading img { width: 42px; height: 42px; flex: 0 0 42px; object-fit: contain; }
+    .outreach-template-screen__heading h3 { margin: 4px 0 0; color: #2a3539; font: 450 24px/1.32 Soleil, sans-serif; letter-spacing: -.2px; }
+    .outreach-template-options { margin: 0; padding: 0; border: 0; }
+    .outreach-template-option { display: flex; width: 100%; gap: 12px; align-items: flex-start; border: 0; border-bottom: 1px solid #e5e5ea; background: transparent; padding: 8px 0; color: #4a5a61; text-align: left; font: 400 16px/24px Soleil, sans-serif; letter-spacing: -.32px; cursor: pointer; }
+    .outreach-template-option__radio { position: relative; width: 20px; height: 20px; flex: 0 0 20px; margin-top: 2px; border: 1.5px solid #8b91a3; border-radius: 50%; }
+    .outreach-template-option.is-selected .outreach-template-option__radio { border-color: #0ba825; }
+    .outreach-template-option.is-selected .outreach-template-option__radio::after { position: absolute; inset: 4px; border-radius: 50%; background: #0ba825; content: ''; }
+    .outreach-template-option:hover { color: #2a3539; }
+    .outreach-template-screen__footer { flex: 0 0 auto; border-top: 1px solid #e5e5ea; box-shadow: 0 -8px 8px rgba(42, 53, 57, .12); background: #fff; padding: 14px 20px calc(20px + env(safe-area-inset-bottom)); }
+    .outreach-template-screen__use { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); background: #0ba825; padding: 14px 20px 16px; color: #fff; font: 450 16px/22px Soleil, sans-serif; cursor: pointer; }
+    .outreach-template-screen__use:disabled { box-shadow: none; background: #0ba825; cursor: default; }
 
     /* Booking is the next committed task from a sitter card. It follows the
        Figma booking sheet rather than opening a second modal over the card. */
@@ -5554,8 +5681,15 @@
       gap: 4px;
       border: 1px solid #e5e5ea;
       border-radius: 4px;
+      background: #fff;
       padding: 8px 8px 12px;
+      font: inherit;
+      text-align: center;
+      cursor: pointer;
     }
+
+    .job-card__applicant:hover { background: #f7f7f7; }
+    .job-card__applicant:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
 
     .job-card__applicant img {
       width: 48px;
@@ -5605,6 +5739,93 @@
       color: #2a3539;
       font-size: 16px;
     }
+
+    .job-applicant-menu,
+    .message-detail-menu {
+      position: absolute;
+      z-index: 80;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .job-applicant-menu.is-open,
+    .message-detail-menu.is-open {
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .job-applicant-menu.is-closing,
+    .message-detail-menu.is-closing { visibility: visible; }
+
+    .job-applicant-menu__backdrop,
+    .message-detail-menu__backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      padding: 0;
+      background: rgba(42, 53, 57, .44);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .job-applicant-menu__panel,
+    .message-detail-menu__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      box-shadow: 0 -8px 40px rgba(42, 53, 57, .16);
+      padding: 12px 0 calc(24px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .job-applicant-menu.is-open .job-applicant-menu__panel,
+    .message-detail-menu.is-open .message-detail-menu__panel { transform: translateY(0); }
+    .job-applicant-menu.is-open .job-applicant-menu__backdrop,
+    .message-detail-menu.is-open .message-detail-menu__backdrop { opacity: 1; }
+    .job-applicant-menu.is-closing .job-applicant-menu__panel,
+    .message-detail-menu.is-closing .message-detail-menu__panel { transform: translateY(100%); }
+
+    .job-applicant-menu__handle,
+    .message-detail-menu__handle {
+      width: 36px;
+      height: 4px;
+      margin: 0 auto 16px;
+      border-radius: 999px;
+      background: #2a3539;
+    }
+
+    .job-applicant-menu__action,
+    .message-detail-menu__action {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      gap: 16px;
+      border: 0;
+      background: transparent;
+      padding: 16px 20px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 17px;
+      line-height: 1.4;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .job-applicant-menu__action:hover,
+    .message-detail-menu__action:hover { background: #f7f7f7; }
+    .job-applicant-menu__action:active,
+    .message-detail-menu__action:active { background: #f2f3f5; }
+    .job-applicant-menu__action i,
+    .message-detail-menu__action i { width: 20px; flex: 0 0 20px; color: #f96073; font-size: 20px; text-align: center; }
 
     .jobs-screen__more {
       align-self: center;
@@ -10041,7 +10262,7 @@
           <p class="message-detail-screen__name" id="messageDetailName">Alice Masopustová</p>
           <p class="message-detail-screen__booking">No booking yet</p>
         </div>
-        <button class="message-detail-screen__menu" type="button" aria-label="Conversation options"><i class="fa-regular fa-ellipsis" aria-hidden="true"></i></button>
+        <button class="message-detail-screen__menu" id="messageDetailMenu" type="button" aria-label="Conversation options" aria-haspopup="dialog" aria-controls="messageDetailOptionsMenu" aria-expanded="false"><i class="fa-regular fa-ellipsis" aria-hidden="true"></i></button>
       </header>
       <div class="message-detail-screen__messages" id="messageDetailMessages">
         <p class="message-detail-screen__date">November 20, 2025</p>
@@ -10062,9 +10283,18 @@
         </div>
       </div>
       <form class="message-detail-screen__composer" id="messageDetailComposer">
-        <div class="message-detail-screen__input-wrap"><input class="message-detail-screen__input" id="messageDetailInput" type="text" placeholder="Your message..." aria-label="Your message"><button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div>
+        <div class="message-detail-screen__input-wrap"><textarea class="message-detail-screen__input" id="messageDetailInput" rows="1" placeholder="Your message..." aria-label="Your message"></textarea><button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div>
         <button class="message-detail-screen__send" type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
       </form>
+    </section>
+    <section class="message-detail-menu" id="messageDetailOptionsMenu" aria-hidden="true" inert>
+      <button class="message-detail-menu__backdrop" id="messageDetailOptionsBackdrop" type="button" aria-label="Close conversation options"></button>
+      <section class="message-detail-menu__panel" id="messageDetailOptionsDialog" role="dialog" aria-modal="true" aria-label="Conversation options" tabindex="-1">
+        <div class="message-detail-menu__handle" aria-hidden="true"></div>
+        <button class="message-detail-menu__action" type="button" data-message-detail-action="profile"><i class="fa-light fa-circle-user" aria-hidden="true"></i><span>View profile</span></button>
+        <button class="message-detail-menu__action" type="button" data-message-detail-action="note"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Add sitter note</span></button>
+        <button class="message-detail-menu__action" type="button" data-message-detail-action="read"><i class="fa-light fa-envelope" aria-hidden="true"></i><span>Mark as read</span></button>
+      </section>
     </section>
     <section class="sitter-message-sheet" id="sitterMessageSheet" aria-hidden="true" inert>
       <button class="sitter-message-sheet__backdrop" id="sitterMessageSheetBackdrop" type="button" aria-label="Close conversation"></button>
@@ -10083,11 +10313,50 @@
           </div>
         </div>
         <form class="message-detail-screen__composer sitter-message-sheet__composer" id="sitterMessageSheetComposer">
-          <div class="message-detail-screen__input-wrap"><input class="message-detail-screen__input" id="sitterMessageSheetInput" type="text" placeholder="Your message..." aria-label="Your message"><button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div>
+          <div class="message-detail-screen__input-wrap"><textarea class="message-detail-screen__input" id="sitterMessageSheetInput" rows="1" placeholder="Your message..." aria-label="Your message"></textarea><button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div>
           <button class="message-detail-screen__send" type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
         </form>
       </section>
     </section>
+    <section class="outreach-composer-sheet" id="outreachComposerSheet" aria-hidden="true" inert>
+      <button class="outreach-composer-sheet__backdrop" id="outreachComposerBackdrop" type="button" aria-label="Close first contact message"></button>
+      <section class="outreach-composer-sheet__panel" id="outreachComposerDialog" role="dialog" aria-modal="true" aria-labelledby="outreachComposerTitle" aria-describedby="outreachComposerSubtitle" tabindex="-1">
+        <div class="outreach-composer-screen" id="outreachComposerScreen">
+        <div class="search-filters-screen__grabber outreach-composer-sheet__grabber" aria-hidden="true"></div>
+        <header class="outreach-composer-sheet__header">
+          <div><h2 class="outreach-composer-sheet__title" id="outreachComposerTitle">Sitter</h2><p class="outreach-composer-sheet__subtitle" id="outreachComposerSubtitle">No booking yet</p></div>
+          <button class="outreach-composer-sheet__book" id="outreachComposerBook" type="button"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span>Book</span></button>
+          <button class="outreach-composer-sheet__close" id="outreachComposerClose" type="button" aria-label="Close first contact message"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+        </header>
+        <div class="outreach-composer-sheet__body">
+          <section class="outreach-composer-recipient" aria-label="Recipient">
+            <div class="outreach-composer-recipient__avatar-wrap"><img class="outreach-composer-recipient__avatar" id="outreachComposerAvatar" src="./assets/avatar-01.jpg" alt=""><span class="outreach-composer-recipient__verified"><img src="./assets/care-verify-profile-shield.svg" alt="" aria-hidden="true"></span></div>
+            <p class="outreach-composer-recipient__name" id="outreachComposerRecipientName">Sitter</p>
+            <p class="outreach-composer-recipient__meta"><span id="outreachComposerRecipientLocation"></span><span class="outreach-composer-recipient__divider" aria-hidden="true"></span><span id="outreachComposerRecipientAge"></span></p>
+            <p class="outreach-composer-recipient__rating"><span class="outreach-composer-recipient__stars" id="outreachComposerRecipientStars" aria-label=""></span><span id="outreachComposerRecipientReviews"></span></p>
+            <button class="outreach-composer__previous" id="outreachComposerPrevious" type="button"><i class="fa-light fa-message" aria-hidden="true"></i><span>Use a message template</span></button>
+          </section>
+        </div>
+        <p class="outreach-composer__error" id="outreachComposerError" role="alert" hidden>We could not send your message. Please try again.</p>
+        <footer class="outreach-composer__footer"><div class="outreach-composer__input-wrap"><textarea class="outreach-composer__field" id="outreachComposerInput" rows="1" placeholder="Your message..." aria-label="First contact message"></textarea><button class="outreach-composer__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button></div><button class="outreach-composer__send" id="outreachComposerSend" type="button" aria-label="Send message" disabled><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button></footer>
+        </div>
+        <section class="outreach-template-screen" id="outreachTemplateScreen" aria-hidden="true" inert aria-labelledby="outreachTemplateTitle">
+          <button class="outreach-template-screen__close" id="outreachTemplateClose" type="button" aria-label="Back to message composer"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+          <div class="outreach-template-screen__feed">
+            <header class="outreach-template-screen__heading"><img src="./assets/doodle-envelope.svg" alt="" aria-hidden="true"><h3 id="outreachTemplateTitle">Choose a message template</h3></header>
+            <div class="outreach-template-options" id="outreachTemplateOptions" role="radiogroup" aria-label="Message templates">
+              <button class="outreach-template-option" type="button" role="radio" aria-checked="false" data-template="Hi, we’re looking for someone to care for our little ones, and your profile caught our attention 😊 Would you be interested?"><span class="outreach-template-option__radio" aria-hidden="true"></span><span>Hi, we’re looking for someone to care for our little ones, and your profile caught our attention 😊 Would you be interested?</span></button>
+              <button class="outreach-template-option" type="button" role="radio" aria-checked="false" data-template="Hi, we really like your profile and think you could be a great fit for our family. Are you currently available?"><span class="outreach-template-option__radio" aria-hidden="true"></span><span>Hi, we really like your profile and think you could be a great fit for our family. Are you currently available?</span></button>
+              <button class="outreach-template-option" type="button" role="radio" aria-checked="false" data-template="Hey! We’re looking for a reliable babysitter, and we’d love to get to know you better. Would you be interested? 😊"><span class="outreach-template-option__radio" aria-hidden="true"></span><span>Hey! We’re looking for a reliable babysitter, and we’d love to get to know you better. Would you be interested? 😊</span></button>
+              <button class="outreach-template-option" type="button" role="radio" aria-checked="false" data-template="Hi, we’re looking for someone to help us with childcare. Your experience sounds like a great match for our family."><span class="outreach-template-option__radio" aria-hidden="true"></span><span>Hi, we’re looking for someone to help us with childcare. Your experience sounds like a great match for our family.</span></button>
+              <button class="outreach-template-option" type="button" role="radio" aria-checked="false" data-template="Hello! We came across your profile and would love to discuss babysitting our children. Please let us know if you’re interested."><span class="outreach-template-option__radio" aria-hidden="true"></span><span>Hello! We came across your profile and would love to discuss babysitting our children. Please let us know if you’re interested.</span></button>
+            </div>
+          </div>
+          <footer class="outreach-template-screen__footer"><button class="outreach-template-screen__use" id="outreachTemplateUse" type="button" disabled><i class="fa-regular fa-check" aria-hidden="true"></i><span>Use selected template</span></button></footer>
+        </section>
+      </section>
+    </section>
+    <aside class="outreach-toast" id="outreachToast" role="status" aria-live="polite" aria-hidden="true"><img class="outreach-toast__doodle" src="./assets/doodle-envelope.svg" alt="" aria-hidden="true"><div class="outreach-toast__body"><p class="outreach-toast__copy" id="outreachToastCopy">Sent</p><button class="outreach-toast__action" id="outreachToastAction" type="button">View conversation</button></div><button class="outreach-toast__close" id="outreachToastClose" type="button" aria-label="Dismiss sent message confirmation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></aside>
     <section class="sitter-booking-sheet" id="sitterBookingSheet" aria-hidden="true" inert>
       <button class="sitter-booking-sheet__backdrop" id="sitterBookingSheetBackdrop" type="button" aria-label="Close new booking"></button>
       <section class="sitter-booking-sheet__panel" id="sitterBookingSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterBookingSheetTitle" tabindex="-1">
@@ -10127,14 +10396,14 @@
           <div class="job-card__heading"><p class="job-card__posted">posted <strong>5 minutes</strong> ago</p><span class="job-card__status"><i class="fa-regular fa-check" aria-hidden="true"></i>Approved</span></div>
           <div class="job-card__location"><h2>Pet care</h2><div class="job-card__chips"><span class="job-card__chip job-card__chip--price"><i class="fa-regular fa-badge-dollar" aria-hidden="true"></i>450 Kč/h</span><span class="job-card__chip job-card__chip--time"><i class="fa-regular fa-clock" aria-hidden="true"></i>2 hours</span><span class="job-card__chip job-card__chip--place"><i class="fa-regular fa-location-dot" aria-hidden="true"></i>Lidická, Brno</span></div></div>
           <p class="job-card__copy">Hello, I am looking for a reliable person for regular dog care and walking starting in September for the upcoming year. Our dog is 4 years old. Care is needed Monday–Thursday from 8:00 to 14:00, with the possibility to adjust the schedule by agreement.</p>
-          <div class="job-card__applicants"><div class="job-card__applicant"><img src="./assets/jobs-avatar-01.png" alt="Markéta"><span>Markéta</span></div><div class="job-card__applicant"><img src="./assets/jobs-avatar-02.png" alt="Elena"><span>Elena</span></div><div class="job-card__applicant"><img src="./assets/jobs-avatar-03.png" alt="Marianna"><span>Marianna</span></div></div>
+          <div class="job-card__applicants"><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-01.png" alt="Markéta"><span>Markéta</span></button><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-02.png" alt="Elena"><span>Elena</span></button><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-03.png" alt="Marianna"><span>Marianna</span></button></div>
           <div class="job-card__actions"><button class="job-card__reply" type="button">Reply to non-selected</button><button class="job-card__more" type="button" aria-label="More job actions"><i class="fa-regular fa-ellipsis" aria-hidden="true"></i></button></div>
         </article>
         <article class="job-card" aria-label="Approved pet care job in Brno">
           <div class="job-card__heading"><p class="job-card__posted">posted <strong>3 days</strong> ago</p><span class="job-card__status"><i class="fa-regular fa-check" aria-hidden="true"></i>Approved</span></div>
           <div class="job-card__location"><h2>Pet care</h2><div class="job-card__chips"><span class="job-card__chip job-card__chip--price"><i class="fa-regular fa-badge-dollar" aria-hidden="true"></i>450 Kč/h</span><span class="job-card__chip job-card__chip--time"><i class="fa-regular fa-clock" aria-hidden="true"></i>2 hours</span><span class="job-card__chip job-card__chip--place"><i class="fa-regular fa-location-dot" aria-hidden="true"></i>Lidická, Brno</span></div></div>
           <p class="job-card__copy">Hello, I am looking for a reliable person for regular dog care and walking starting in September for the upcoming year. Our dog is 4 years old. Care is needed Monday–Thursday from 8:00 to 14:00.</p>
-          <div class="job-card__applicants"><div class="job-card__applicant"><img src="./assets/jobs-avatar-04.png" alt="Silvie"><span>Silvie</span></div><div class="job-card__applicant"><img src="./assets/jobs-avatar-05.png" alt="Anna"><span>Anna</span></div><div class="job-card__applicant"><img src="./assets/jobs-avatar-06.png" alt="Barbora"><span>Barbora</span></div></div>
+          <div class="job-card__applicants"><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-04.png" alt="Silvie"><span>Silvie</span></button><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-05.png" alt="Anna"><span>Anna</span></button><button class="job-card__applicant" type="button" aria-haspopup="dialog" aria-expanded="false"><img src="./assets/jobs-avatar-06.png" alt="Barbora"><span>Barbora</span></button></div>
           <div class="job-card__actions"><button class="job-card__reply" type="button">Reply to non-selected</button><button class="job-card__more" type="button" aria-label="More job actions"><i class="fa-regular fa-ellipsis" aria-hidden="true"></i></button></div>
         </article>
         <article class="job-card" aria-label="Approved pet care job in Brno">
@@ -10152,6 +10421,15 @@
           <button class="jobs-guest-overlay__create" id="jobsGuestCreate" type="button">Sign up for FREE</button>
         </div>
       </div>
+    </section>
+    <section class="job-applicant-menu" id="jobApplicantMenu" aria-hidden="true" inert>
+      <button class="job-applicant-menu__backdrop" id="jobApplicantMenuBackdrop" type="button" aria-label="Close applicant menu"></button>
+      <section class="job-applicant-menu__panel" id="jobApplicantMenuDialog" role="dialog" aria-modal="true" aria-label="Applicant actions" tabindex="-1">
+        <div class="job-applicant-menu__handle" aria-hidden="true"></div>
+        <button class="job-applicant-menu__action" type="button" data-job-applicant-action="profile"><i class="fa-light fa-circle-user" aria-hidden="true"></i><span>View profile</span></button>
+        <button class="job-applicant-menu__action" type="button" data-job-applicant-action="booking"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span>Book sitter</span></button>
+        <button class="job-applicant-menu__action" type="button" data-job-applicant-action="message"><i class="fa-light fa-message" aria-hidden="true"></i><span>Send a message</span></button>
+      </section>
     </section>
     <section class="sitter-jobs-screen" id="sitterJobsScreen" aria-label="Jobs near you" aria-hidden="true">
       <div class="sitter-jobs-screen__tabs" role="tablist" aria-label="Jobs">
@@ -11644,6 +11922,7 @@
       var favouritesPostJob = document.getElementById('favouritesPostJob');
       var favouritesFindSearch = document.getElementById('favouritesFindSearch');
       var messagesScreen = document.getElementById('messagesScreen');
+      var messagesContent = document.getElementById('messagesContent');
       var messagesGuestOverlay = document.getElementById('messagesGuestOverlay');
       var messagesGuestMembership = document.getElementById('messagesGuestMembership');
       var messagesGuestSearch = document.getElementById('messagesGuestSearch');
@@ -11651,11 +11930,17 @@
       var messageThreads = Array.prototype.slice.call(document.querySelectorAll('.message-thread'));
       var messageDetailScreen = document.getElementById('messageDetailScreen');
       var messageDetailBack = document.getElementById('messageDetailBack');
+      var messageDetailMenu = document.getElementById('messageDetailMenu');
+      var messageDetailOptionsMenu = document.getElementById('messageDetailOptionsMenu');
+      var messageDetailOptionsBackdrop = document.getElementById('messageDetailOptionsBackdrop');
+      var messageDetailOptionsDialog = document.getElementById('messageDetailOptionsDialog');
+      var messageDetailOptionsActions = Array.prototype.slice.call(messageDetailOptionsMenu.querySelectorAll('.message-detail-menu__action'));
       var messageDetailName = document.getElementById('messageDetailName');
       var messageDetailAvatar = document.getElementById('messageDetailAvatar');
       var messageDetailComposer = document.getElementById('messageDetailComposer');
       var messageDetailInput = document.getElementById('messageDetailInput');
       var activeMessageThread = null;
+      var messageDetailOptionsCloseTimer = null;
       var sitterMessageSheet = document.getElementById('sitterMessageSheet');
       var sitterMessageSheetBackdrop = document.getElementById('sitterMessageSheetBackdrop');
       var sitterMessageSheetDialog = document.getElementById('sitterMessageSheetDialog');
@@ -11680,6 +11965,52 @@
       var sitterMessageDrafts = {};
       var sitterMessageHistory = {};
       var sitterMessageSheetCloseTimer = null;
+      // Prototype-only client data. In the product this is returned with each
+      // sitter in the list payload; keeping it keyed by the sitter's photo
+      // makes the same sitter retain state across Search and Favourites.
+      var SHOW_NEW_SITTER_LABEL = true;
+      var sitterConversationStates = {
+        'avatar-01.jpg': true,
+        'avatar-02.jpg': false,
+        'avatar-03.jpg': false,
+        'avatar-04.jpg': false,
+        'avatar-05.jpg': true
+      };
+      var outreachComposerSheet = document.getElementById('outreachComposerSheet');
+      var outreachComposerBackdrop = document.getElementById('outreachComposerBackdrop');
+      var outreachComposerDialog = document.getElementById('outreachComposerDialog');
+      var outreachComposerScreen = document.getElementById('outreachComposerScreen');
+      var outreachComposerClose = document.getElementById('outreachComposerClose');
+      var outreachComposerBook = document.getElementById('outreachComposerBook');
+      var outreachComposerTitle = document.getElementById('outreachComposerTitle');
+      var outreachComposerSubtitle = document.getElementById('outreachComposerSubtitle');
+      var outreachComposerAvatar = document.getElementById('outreachComposerAvatar');
+      var outreachComposerRecipientName = document.getElementById('outreachComposerRecipientName');
+      var outreachComposerRecipientLocation = document.getElementById('outreachComposerRecipientLocation');
+      var outreachComposerRecipientAge = document.getElementById('outreachComposerRecipientAge');
+      var outreachComposerRecipientStars = document.getElementById('outreachComposerRecipientStars');
+      var outreachComposerRecipientReviews = document.getElementById('outreachComposerRecipientReviews');
+      var outreachComposerPrevious = document.getElementById('outreachComposerPrevious');
+      var outreachComposerInput = document.getElementById('outreachComposerInput');
+      var outreachComposerError = document.getElementById('outreachComposerError');
+      var outreachComposerSend = document.getElementById('outreachComposerSend');
+      var outreachTemplateScreen = document.getElementById('outreachTemplateScreen');
+      var outreachTemplateClose = document.getElementById('outreachTemplateClose');
+      var outreachTemplateOptions = Array.prototype.slice.call(document.querySelectorAll('.outreach-template-option'));
+      var outreachTemplateUse = document.getElementById('outreachTemplateUse');
+      var activeOutreachTemplate = '';
+      var outreachComposerDrafts = {};
+      var lastParentOutreachText = '';
+      var activeOutreachSitter = null;
+      var activeOutreachTrigger = null;
+      var outreachComposerCloseTimer = null;
+      var outreachToast = document.getElementById('outreachToast');
+      var outreachToastCopy = document.getElementById('outreachToastCopy');
+      var outreachToastAction = document.getElementById('outreachToastAction');
+      var outreachToastClose = document.getElementById('outreachToastClose');
+      var outreachToastTimer = null;
+      var activeOutreachToastSitter = null;
+      syncAllSitterConversationAids();
       var sitterBookingSheet = document.getElementById('sitterBookingSheet');
       var sitterBookingSheetBackdrop = document.getElementById('sitterBookingSheetBackdrop');
       var sitterBookingSheetDialog = document.getElementById('sitterBookingSheetDialog');
@@ -11700,6 +12031,13 @@
       var jobsCreateButton = jobsScreen.querySelector('.jobs-screen__create');
       var jobsGuestOverlay = document.getElementById('jobsGuestOverlay');
       var jobsGuestCreate = document.getElementById('jobsGuestCreate');
+      var jobApplicantTriggers = Array.prototype.slice.call(jobsScreen.querySelectorAll('.job-card__applicant'));
+      var jobApplicantMenu = document.getElementById('jobApplicantMenu');
+      var jobApplicantMenuBackdrop = document.getElementById('jobApplicantMenuBackdrop');
+      var jobApplicantMenuDialog = document.getElementById('jobApplicantMenuDialog');
+      var jobApplicantMenuActions = Array.prototype.slice.call(jobApplicantMenu.querySelectorAll('.job-applicant-menu__action'));
+      var activeJobApplicantTrigger = null;
+      var jobApplicantMenuCloseTimer = null;
       var sitterJobsScreen = document.getElementById('sitterJobsScreen');
       var sitterJobsContent = document.getElementById('sitterJobsContent');
       var sitterJobsTabs = Array.prototype.slice.call(document.querySelectorAll('[data-sitter-jobs-tab]'));
@@ -13250,6 +13588,7 @@
       function setBackgroundInert(liveLayer) {
         Array.prototype.forEach.call(phoneFrame.children, function (child) {
           if ((child === sitterMessageSheet && !sitterMessageSheet.classList.contains('is-open')) ||
+              (child === outreachComposerSheet && !outreachComposerSheet.classList.contains('is-open')) ||
               (child === sitterBookingSheet && !sitterBookingSheet.classList.contains('is-open'))) {
             child.setAttribute('inert', '');
           } else if (child === liveLayer) {
@@ -14544,6 +14883,273 @@
           loginTrigger.classList.contains('is-logged-in');
       }
 
+      function sitterConversationKey(card) {
+        var photo = card && card.querySelector('.profile-photo-component__photo img');
+        if (photo && photo.src) return photo.src.split('/').pop();
+        var detail = card ? sitterDetailForCard(card) : null;
+        return detail ? 'sitter-' + encodeURIComponent(detail.name) : 'sitter-unknown';
+      }
+
+      function hasSitterConversation(card) {
+        return Boolean(sitterConversationStates[sitterConversationKey(card)]);
+      }
+
+      function setSitterConversationState(card, hasConversation) {
+        if (!card) return;
+        sitterConversationStates[sitterConversationKey(card)] = Boolean(hasConversation);
+        syncSitterConversationAid(card);
+      }
+
+      function syncSitterConversationAid(card) {
+        if (!card || !card.classList.contains('sitter-card')) return;
+        var status = card.querySelector('.sitter-card__conversation-status');
+        var showStatus = SHOW_NEW_SITTER_LABEL && isRegisteredFamilySession() && !hasSitterConversation(card);
+        if (!showStatus) {
+          if (status) status.remove();
+          return;
+        }
+        if (!status) {
+          status = document.createElement('span');
+          status.className = 'sitter-card__conversation-status';
+        }
+        var nameWrapper = card.querySelector('.sitter-card__name-wrapper');
+        if (status && nameWrapper && nameWrapper.firstChild !== status) nameWrapper.insertBefore(status, nameWrapper.firstChild);
+        if (status) status.textContent = 'New sitter · no messages yet';
+      }
+
+      function syncAllSitterConversationAids() {
+        Array.prototype.forEach.call(document.querySelectorAll('.sitter-card'), syncSitterConversationAid);
+      }
+
+      function updateOutreachComposerSendState() {
+        outreachComposerSend.disabled = !outreachComposerInput.value.trim();
+      }
+
+      function resizeMessageComposerInput(input) {
+        if (!input) return;
+        input.style.height = 'auto';
+        var nextHeight = Math.min(input.scrollHeight, 200);
+        input.style.height = Math.max(nextHeight, 52) + 'px';
+        input.style.overflowY = input.scrollHeight > 200 ? 'auto' : 'hidden';
+      }
+
+      function resizeSitterMessageInput() {
+        resizeMessageComposerInput(sitterMessageSheetInput);
+      }
+
+      function resizeMessageDetailInput() {
+        resizeMessageComposerInput(messageDetailInput);
+      }
+
+      function resizeOutreachComposerInput() {
+        resizeMessageComposerInput(outreachComposerInput);
+      }
+
+      function returnToOutreachComposer(restoreFocus) {
+        outreachComposerSheet.classList.remove('is-showing-template');
+        outreachTemplateScreen.setAttribute('aria-hidden', 'true');
+        outreachTemplateScreen.setAttribute('inert', '');
+        outreachComposerScreen.setAttribute('aria-hidden', 'false');
+        outreachComposerScreen.removeAttribute('inert');
+        if (restoreFocus !== false) outreachComposerPrevious.focus({ preventScroll: true });
+      }
+
+      function openOutreachTemplatePicker() {
+        activeOutreachTemplate = '';
+        outreachTemplateOptions.forEach(function (option) {
+          option.classList.remove('is-selected');
+          option.setAttribute('aria-checked', 'false');
+        });
+        outreachTemplateUse.disabled = true;
+        outreachComposerScreen.setAttribute('aria-hidden', 'true');
+        outreachComposerScreen.setAttribute('inert', '');
+        outreachTemplateScreen.setAttribute('aria-hidden', 'false');
+        outreachTemplateScreen.removeAttribute('inert');
+        outreachComposerSheet.classList.add('is-showing-template');
+        requestAnimationFrame(function () { outreachTemplateClose.focus({ preventScroll: true }); });
+      }
+
+      function openOutreachComposer(card, trigger) {
+        if (!isRegisteredFamilySession() || !card) return;
+        var detail = sitterDetailForCard(card);
+        window.clearTimeout(outreachComposerCloseTimer);
+        activeOutreachSitter = { card: card, detail: detail, key: sitterConversationKey(card) };
+        activeOutreachTrigger = trigger || null;
+        outreachComposerTitle.textContent = detail.name;
+        outreachComposerSubtitle.textContent = 'No booking yet';
+        outreachComposerAvatar.src = detail.photoSrc;
+        outreachComposerAvatar.alt = detail.name;
+        outreachComposerRecipientName.textContent = detail.name;
+        outreachComposerRecipientLocation.textContent = detail.location;
+        outreachComposerRecipientAge.textContent = detail.age;
+        outreachComposerRecipientStars.replaceChildren();
+        for (var starIndex = 1; starIndex <= 5; starIndex += 1) {
+          var star = document.createElement('i');
+          star.className = 'fa-sharp fa-solid fa-star';
+          star.setAttribute('aria-hidden', 'true');
+          outreachComposerRecipientStars.appendChild(star);
+        }
+        outreachComposerRecipientStars.setAttribute('aria-label', detail.rating + ' out of 5 stars');
+        outreachComposerRecipientReviews.textContent = '(' + detail.reviews + ')';
+        outreachComposerInput.value = outreachComposerDrafts[activeOutreachSitter.key] || '';
+        resizeOutreachComposerInput();
+        outreachComposerError.hidden = true;
+        returnToOutreachComposer(false);
+        updateOutreachComposerSendState();
+        outreachComposerSheet.classList.remove('is-closing');
+        outreachComposerSheet.classList.add('is-open');
+        outreachComposerSheet.removeAttribute('inert');
+        outreachComposerSheet.setAttribute('aria-hidden', 'false');
+        phoneFrame.classList.add('is-outreach-composer-flow');
+        setBackgroundInert(outreachComposerSheet);
+        requestAnimationFrame(function () { outreachComposerClose.focus({ preventScroll: true }); });
+        syncBackEntry();
+      }
+
+      function closeOutreachComposer(restoreFocus, afterClose) {
+        if (!outreachComposerSheet.classList.contains('is-open')) {
+          if (afterClose) afterClose();
+          return;
+        }
+        returnToOutreachComposer(false);
+        outreachComposerSheet.classList.remove('is-open');
+        outreachComposerSheet.classList.add('is-closing');
+        outreachComposerSheet.setAttribute('aria-hidden', 'true');
+        outreachComposerSheet.setAttribute('inert', '');
+        phoneFrame.classList.remove('is-outreach-composer-flow');
+        setBackgroundInert(null);
+        var trigger = activeOutreachTrigger;
+        window.clearTimeout(outreachComposerCloseTimer);
+        outreachComposerCloseTimer = window.setTimeout(function () {
+          outreachComposerSheet.classList.remove('is-closing');
+          if (afterClose) afterClose();
+        }, 300);
+        if (restoreFocus !== false && trigger) trigger.focus({ preventScroll: true });
+        syncBackEntry();
+      }
+
+      function appendConversationToMessages(sitter, message) {
+        var existing = document.querySelector('[data-outreach-conversation-key="' + sitter.key + '"]');
+        if (existing) return existing;
+        var thread = document.createElement('article');
+        thread.className = 'message-thread';
+        thread.tabIndex = 0;
+        thread.setAttribute('data-outreach-conversation-key', sitter.key);
+        thread.setAttribute('aria-label', 'Message from ' + sitter.detail.name);
+        thread.innerHTML = '<button class="message-thread__star" type="button" aria-label="Star conversation"><i class="fa-light fa-star" aria-hidden="true"></i></button>' +
+          '<img class="message-thread__avatar" src="' + sitter.detail.photoSrc + '" alt="' + sitter.detail.name + '">' +
+          '<div class="message-thread__body"><div class="message-thread__meta"><strong class="message-thread__name"></strong><time class="message-thread__time">Now</time></div><span class="message-thread__preview"></span></div>';
+        thread.querySelector('.message-thread__name').textContent = sitter.detail.name;
+        thread.querySelector('.message-thread__preview').textContent = message;
+        thread.addEventListener('click', function (event) {
+          if (event.target.closest('.message-thread__star')) return;
+          openMessageDetail(thread);
+        });
+        thread.addEventListener('keydown', function (event) {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          if (event.target.closest('.message-thread__star')) return;
+          event.preventDefault();
+          openMessageDetail(thread);
+        });
+        messagesContent.insertBefore(thread, messagesContent.firstChild);
+        return thread;
+      }
+
+      function showOutreachToast(sitter) {
+        if (!sitter) return;
+        window.clearTimeout(outreachToastTimer);
+        activeOutreachToastSitter = sitter;
+        outreachToastCopy.textContent = 'Sent to ' + sitter.detail.name.split(' ')[0];
+        outreachToast.setAttribute('aria-hidden', 'false');
+        outreachToast.classList.add('is-visible');
+        outreachToastTimer = window.setTimeout(hideOutreachToast, 6500);
+      }
+
+      function hideOutreachToast() {
+        outreachToast.classList.remove('is-visible');
+        outreachToast.setAttribute('aria-hidden', 'true');
+        window.clearTimeout(outreachToastTimer);
+        outreachToastTimer = null;
+      }
+
+      function sendOutreachMessage() {
+        if (!activeOutreachSitter) return;
+        var message = outreachComposerInput.value.trim();
+        if (!message) return;
+        var sitter = activeOutreachSitter;
+        // This static prototype has no transport layer. Keep the failure path
+        // available for review while leaving the normal tap a successful send.
+        if (outreachComposerInput.getAttribute('data-simulate-error') === 'true') {
+          outreachComposerError.hidden = false;
+          return;
+        }
+        outreachComposerDrafts[sitter.key] = '';
+        lastParentOutreachText = message;
+        var conversation = conversationForSitterCard(sitter.card);
+        sitterMessageHistory[conversation.id] = [message];
+        setSitterConversationState(sitter.card, true);
+        appendConversationToMessages(sitter, message);
+        closeOutreachComposer(false, function () { showOutreachToast(sitter); });
+      }
+
+      function openSitterMessageDestination(card, trigger) {
+        if (!card) return;
+        if (isRegisteredFamilySession() && card.classList.contains('sitter-card') && !hasSitterConversation(card)) {
+          openOutreachComposer(card, trigger);
+          return;
+        }
+        openSitterMessageSheet(card, trigger);
+      }
+
+      function openJobApplicantMenu(trigger) {
+        if (!isRegisteredFamilySession() || !trigger) return;
+        window.clearTimeout(jobApplicantMenuCloseTimer);
+        activeJobApplicantTrigger = trigger;
+        trigger.setAttribute('aria-expanded', 'true');
+        jobApplicantMenu.classList.remove('is-closing');
+        jobApplicantMenu.removeAttribute('inert');
+        jobApplicantMenu.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(jobApplicantMenu);
+        requestAnimationFrame(function () {
+          jobApplicantMenu.classList.add('is-open');
+          jobApplicantMenuDialog.focus({ preventScroll: true });
+        });
+      }
+
+      function closeJobApplicantMenu(restoreFocus, preservesBackEntry, immediately) {
+        if (!jobApplicantMenu.classList.contains('is-open')) return;
+        var trigger = activeJobApplicantTrigger;
+        jobApplicantMenu.classList.remove('is-open');
+        jobApplicantMenu.setAttribute('aria-hidden', 'true');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        setBackgroundInert(null);
+        jobApplicantMenu.setAttribute('inert', '');
+        window.clearTimeout(jobApplicantMenuCloseTimer);
+        if (immediately) {
+          jobApplicantMenu.classList.remove('is-closing');
+        } else {
+          jobApplicantMenu.classList.add('is-closing');
+          jobApplicantMenuCloseTimer = window.setTimeout(function () {
+            jobApplicantMenu.classList.remove('is-closing');
+          }, 280);
+        }
+        if (restoreFocus !== false && trigger) trigger.focus({ preventScroll: true });
+        activeJobApplicantTrigger = null;
+        if (!preservesBackEntry) syncBackEntry();
+      }
+
+      function openJobApplicantAction(action) {
+        var applicant = activeJobApplicantTrigger;
+        // The presented surface replaces the menu immediately; leaving the
+        // dismissal animation visible would briefly layer one sheet over
+        // another, unlike the direct actions on booking and sitter cards.
+        closeJobApplicantMenu(false, true, true);
+        if (!applicant) return;
+        if (action === 'profile') openBookingSitterDetail(applicant, applicant);
+        if (action === 'booking') openSitterBookingSheet(applicant, applicant);
+        if (action === 'message') openSitterMessageSheet(applicant, applicant);
+      }
+
       function bookingCancellationCopy(card) {
         var sitter = card && card.querySelector('.booking-card__sitter');
         var date = card && card.querySelector('.booking-card__date');
@@ -14931,6 +15537,42 @@
             description: 'Experienced babysitter for regular and one-time care. She most often helps with evening routines, activities at home and outdoors, and can also handle overnight care by prior arrangement.',
             tags: ['First aid course', 'Overnight care', 'Speaks English', 'Drawing/painting', 'Accepts online payments'],
             review: '“We were very happy with the babysitting. Communication was quick, handoff was stress-free, and the children liked her from the very first meeting.”'
+          };
+        }
+        if (card && card.classList.contains('job-card__applicant')) {
+          var applicantName = card.querySelector('span');
+          var applicantPhoto = card.querySelector('img');
+          var applicantJob = card.closest('.job-card');
+          var applicantLocation = applicantJob && applicantJob.querySelector('.job-card__chip--place');
+          var applicantNameText = applicantName ? applicantName.textContent.trim() : 'Sitter';
+          return {
+            name: applicantNameText,
+            photoSrc: applicantPhoto ? applicantPhoto.src : './assets/avatar-01.jpg',
+            location: applicantLocation ? applicantLocation.textContent.trim() : 'Brno',
+            age: '28 years',
+            rating: '5.0',
+            reviews: '12',
+            rate: '450 Kč/h',
+            description: 'Reliable care tailored to your family’s routine, with a focus on clear communication and a comfortable first meeting.',
+            tags: ['First aid course', 'Overnight care', 'Speaks English', 'Accepts online payments'],
+            review: '“A reliable and kind sitter our family would happily recommend.”'
+          };
+        }
+        if (card && card.classList.contains('message-thread')) {
+          var messageSitterName = card.querySelector('.message-thread__name');
+          var messageSitterPhoto = card.querySelector('.message-thread__avatar');
+          var messageSitterNameText = messageSitterName ? messageSitterName.textContent.trim() : 'Sitter';
+          return {
+            name: messageSitterNameText,
+            photoSrc: messageSitterPhoto ? messageSitterPhoto.src : './assets/avatar-01.jpg',
+            location: 'Praha 2',
+            age: '28 years',
+            rating: '5.0',
+            reviews: '20',
+            rate: '500 Kč/h',
+            description: 'Reliable care tailored to your family’s routine, with a focus on clear communication and a comfortable first meeting.',
+            tags: ['First aid course', 'Overnight care', 'Speaks English', 'Accepts online payments'],
+            review: '“A reliable and kind sitter our family would happily recommend.”'
           };
         }
         if (card && card.classList.contains('sitter-detail-alternative-card')) {
@@ -15917,6 +16559,59 @@
         syncBackEntry();
       }
 
+      function markMessageThreadAsRead(thread) {
+        if (!thread) return;
+        thread.classList.remove('is-unread');
+        var unreadBadge = thread.querySelector('.message-thread__badge');
+        if (unreadBadge) unreadBadge.remove();
+      }
+
+      function openMessageDetailOptions() {
+        if (!activeMessageThread || !messageDetailScreen.classList.contains('is-open')) return;
+        window.clearTimeout(messageDetailOptionsCloseTimer);
+        messageDetailMenu.setAttribute('aria-expanded', 'true');
+        messageDetailOptionsMenu.classList.remove('is-closing');
+        messageDetailOptionsMenu.removeAttribute('inert');
+        messageDetailOptionsMenu.setAttribute('aria-hidden', 'false');
+        setBackgroundInert(messageDetailOptionsMenu);
+        requestAnimationFrame(function () {
+          messageDetailOptionsMenu.classList.add('is-open');
+          messageDetailOptionsDialog.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      function closeMessageDetailOptions(restoreFocus, preservesBackEntry, immediately) {
+        if (!messageDetailOptionsMenu.classList.contains('is-open')) return;
+        messageDetailOptionsMenu.classList.remove('is-open');
+        messageDetailOptionsMenu.setAttribute('aria-hidden', 'true');
+        messageDetailMenu.setAttribute('aria-expanded', 'false');
+        setBackgroundInert(null);
+        messageDetailOptionsMenu.setAttribute('inert', '');
+        window.clearTimeout(messageDetailOptionsCloseTimer);
+        if (immediately) {
+          messageDetailOptionsMenu.classList.remove('is-closing');
+        } else {
+          messageDetailOptionsMenu.classList.add('is-closing');
+          messageDetailOptionsCloseTimer = window.setTimeout(function () {
+            messageDetailOptionsMenu.classList.remove('is-closing');
+          }, 280);
+        }
+        if (restoreFocus !== false) messageDetailMenu.focus({ preventScroll: true });
+        if (!preservesBackEntry) syncBackEntry();
+      }
+
+      function openMessageDetailOptionAction(action) {
+        var thread = activeMessageThread;
+        if (action === 'profile') {
+          closeMessageDetailOptions(false, true, true);
+          if (thread) openBookingSitterDetail(thread, messageDetailMenu);
+          return;
+        }
+        if (action === 'read') markMessageThreadAsRead(thread);
+        closeMessageDetailOptions(true);
+      }
+
       function openMessageDetail(thread) {
         if (!loginTrigger.classList.contains('is-logged-in') || !thread) return;
         var name = thread.querySelector('.message-thread__name').textContent.trim();
@@ -15927,12 +16622,12 @@
           image.src = avatar.src;
           image.alt = image === messageDetailAvatar ? name : '';
         });
-        thread.classList.remove('is-unread');
-        var unreadBadge = thread.querySelector('.message-thread__badge');
-        if (unreadBadge) unreadBadge.remove();
+        markMessageThreadAsRead(thread);
+        messageDetailMenu.setAttribute('aria-expanded', 'false');
         phoneFrame.classList.add('is-message-detail-flow');
         messageDetailScreen.classList.add('is-open');
         messageDetailScreen.setAttribute('aria-hidden', 'false');
+        resizeMessageDetailInput();
         messageDetailScreen.querySelector('.message-detail-screen__messages').scrollTop = 0;
         messageDetailBack.focus({ preventScroll: true });
         syncBackEntry();
@@ -15963,7 +16658,7 @@
         var hlidackyAvatar = document.querySelector('.mobile-app-header__profile-avatar');
         var name = detail ? detail.name : 'Sitter';
         return {
-          id: 'sitter-' + encodeURIComponent(name),
+          id: 'sitter-' + sitterConversationKey(card),
           name: name,
           avatarSrc: detail && detail.photoSrc ? detail.photoSrc : (hlidackyAvatar ? hlidackyAvatar.src : './assets/mobile-app-header-avatar.png'),
           bookingLabel: 'No booking yet'
@@ -15985,6 +16680,7 @@
           sitterMessageSheetIncomingAvatar.alt = activeSitterConversation.name;
         }
         sitterMessageSheetInput.value = sitterMessageDrafts[activeSitterConversation.id] || '';
+        resizeSitterMessageInput();
         renderSitterMessageThread();
         sitterMessageSheet.classList.remove('is-closing');
         /* I11d — same subject, so this is a push inside the live presentation,
@@ -16144,7 +16840,10 @@
         { isOpen: function () { return registrationDetailsScreen.classList.contains('is-open'); }, close: closeRegistrationDetailsToRole },
         { isOpen: function () { return registrationRoleScreen.classList.contains('is-open'); }, close: closeRegistrationRoleToLogin },
         { isOpen: function () { return loginBottomSheet.classList.contains('is-open'); }, close: closeLoginSheet },
+        { isOpen: function () { return jobApplicantMenu.classList.contains('is-open'); }, close: function () { closeJobApplicantMenu(true); } },
+        { isOpen: function () { return messageDetailOptionsMenu.classList.contains('is-open'); }, close: function () { closeMessageDetailOptions(true); } },
         { isOpen: function () { return sitterBookingSheet.classList.contains('is-open'); }, close: closeSitterBookingSheet },
+        { isOpen: function () { return outreachComposerSheet.classList.contains('is-open'); }, close: closeOutreachComposer },
         { isOpen: function () { return sitterMessageSheet.classList.contains('is-open'); }, close: closeSitterMessageSheet },
         { isOpen: function () { return messageDetailScreen.classList.contains('is-open'); }, close: closeMessageDetail },
         { isOpen: function () { return sitterDetailScreen.classList.contains('is-open'); }, close: closeSitterDetail },
@@ -16654,6 +17353,7 @@
         syncJobsAccessState();
         syncBookingsAccessState();
         syncSearchFilterApplyState();
+        syncAllSitterConversationAids();
         revealSitterDetails();
         revealSavedLocation();
         playFeedReload();
@@ -16710,6 +17410,7 @@
         syncJobsAccessState();
         syncBookingsAccessState();
         syncSearchFilterApplyState();
+        syncAllSitterConversationAids();
         maskSitterDetails();
         stopLocationPlaceholderTypewriter();
         locationInput.value = '';
@@ -17258,6 +17959,13 @@
       jobsCreateButton.addEventListener('click', function () {
         openJobWizard(jobsCreateButton);
       });
+      jobApplicantTriggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function () { openJobApplicantMenu(trigger); });
+      });
+      jobApplicantMenuBackdrop.addEventListener('click', function () { closeJobApplicantMenu(true); });
+      jobApplicantMenuActions.forEach(function (action) {
+        action.addEventListener('click', function () { openJobApplicantAction(action.getAttribute('data-job-applicant-action')); });
+      });
       bookingsGuestPost.addEventListener('click', function () {
         if (isNewlyRegisteredParent) openJobWizard(bookingsGuestPost);
         else openLoginSheet();
@@ -17276,9 +17984,16 @@
         });
       });
       messageDetailBack.addEventListener('click', closeMessageDetail);
+      messageDetailMenu.addEventListener('click', openMessageDetailOptions);
+      messageDetailOptionsBackdrop.addEventListener('click', function () { closeMessageDetailOptions(true); });
+      messageDetailOptionsActions.forEach(function (action) {
+        action.addEventListener('click', function () { openMessageDetailOptionAction(action.getAttribute('data-message-detail-action')); });
+      });
+      messageDetailInput.addEventListener('input', resizeMessageDetailInput);
       messageDetailComposer.addEventListener('submit', function (event) {
         event.preventDefault();
         messageDetailInput.value = '';
+        resizeMessageDetailInput();
       });
       Array.prototype.slice.call(document.querySelectorAll('.sitter-card')).forEach(function (card) {
         Array.prototype.slice.call(card.querySelectorAll('.sitter-card__name, .profile-photo-component__photo a, .profile-card-content-component__description-link-wrapper .link')).forEach(function (trigger) {
@@ -17326,22 +18041,68 @@
         if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailBook);
       });
       sitterDetailMessage.addEventListener('click', function () {
-        if (activeSitterDetailCard) openSitterMessageSheet(activeSitterDetailCard, sitterDetailMessage);
+        if (activeSitterDetailCard) openSitterMessageDestination(activeSitterDetailCard, sitterDetailMessage);
       });
       sitterDetailStickyBook.addEventListener('click', function () {
         if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailStickyBook);
       });
       sitterDetailStickyMessage.addEventListener('click', function () {
-        if (activeSitterDetailCard) openSitterMessageSheet(activeSitterDetailCard, sitterDetailStickyMessage);
+        if (activeSitterDetailCard) openSitterMessageDestination(activeSitterDetailCard, sitterDetailStickyMessage);
       });
       sitterDetailContent.addEventListener('scroll', updateSitterDetailStickyActions, { passive: true });
       sitterMessageButtons.forEach(function (button) {
         button.addEventListener('click', function (event) {
           if (!loginTrigger.classList.contains('is-logged-in')) return;
           event.preventDefault();
-          openSitterMessageSheet(button.closest('.sitter-card'), button);
+          openSitterMessageDestination(button.closest('.sitter-card'), button);
         });
       });
+      outreachComposerBackdrop.addEventListener('click', function () { closeOutreachComposer(true); });
+      outreachComposerClose.addEventListener('click', function () { closeOutreachComposer(true); });
+      outreachComposerInput.addEventListener('input', function () {
+        if (activeOutreachSitter) outreachComposerDrafts[activeOutreachSitter.key] = outreachComposerInput.value;
+        outreachComposerError.hidden = true;
+        resizeOutreachComposerInput();
+        updateOutreachComposerSendState();
+      });
+      outreachComposerPrevious.addEventListener('click', function () {
+        openOutreachTemplatePicker();
+      });
+      outreachTemplateClose.addEventListener('click', function () { returnToOutreachComposer(true); });
+      outreachTemplateOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          activeOutreachTemplate = option.getAttribute('data-template') || '';
+          outreachTemplateOptions.forEach(function (otherOption) {
+            var isSelected = otherOption === option;
+            otherOption.classList.toggle('is-selected', isSelected);
+            otherOption.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+          });
+          outreachTemplateUse.disabled = !activeOutreachTemplate;
+        });
+      });
+      outreachTemplateUse.addEventListener('click', function () {
+        if (!activeOutreachTemplate) return;
+        outreachComposerInput.value = activeOutreachTemplate;
+        if (activeOutreachSitter) outreachComposerDrafts[activeOutreachSitter.key] = activeOutreachTemplate;
+        outreachComposerError.hidden = true;
+        resizeOutreachComposerInput();
+        updateOutreachComposerSendState();
+        returnToOutreachComposer(false);
+        outreachComposerInput.focus({ preventScroll: true });
+      });
+      outreachComposerSend.addEventListener('click', sendOutreachMessage);
+      outreachComposerBook.addEventListener('click', function () {
+        var sitter = activeOutreachSitter;
+        closeOutreachComposer(false, function () {
+          if (sitter) openSitterBookingSheet(sitter.card, outreachComposerBook);
+        });
+      });
+      outreachToastAction.addEventListener('click', function () {
+        var sitter = activeOutreachToastSitter;
+        hideOutreachToast();
+        if (sitter) openSitterMessageSheet(sitter.card, null);
+      });
+      outreachToastClose.addEventListener('click', hideOutreachToast);
       sitterBookingButtons.forEach(function (button) {
         button.addEventListener('click', function (event) {
           if (!loginTrigger.classList.contains('is-logged-in')) return;
@@ -17356,6 +18117,7 @@
       });
       sitterMessageSheetInput.addEventListener('input', function () {
         if (activeSitterConversation) sitterMessageDrafts[activeSitterConversation.id] = sitterMessageSheetInput.value;
+        resizeSitterMessageInput();
       });
       sitterMessageSheetComposer.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -17364,6 +18126,7 @@
         appendSitterMessage(message);
         sitterMessageDrafts[activeSitterConversation.id] = '';
         sitterMessageSheetInput.value = '';
+        resizeSitterMessageInput();
         sitterMessageSheetInput.focus({ preventScroll: true });
       });
       sitterBookingSheetBackdrop.addEventListener('click', function () { closeSitterBookingSheet(true); });
@@ -17378,8 +18141,11 @@
         event.preventDefault();
       });
       document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && outreachComposerSheet.classList.contains('is-open')) closeOutreachComposer(true);
         if (event.key === 'Escape' && sitterMessageSheet.classList.contains('is-open')) closeSitterMessageSheet(true);
         if (event.key === 'Escape' && sitterBookingSheet.classList.contains('is-open')) closeSitterBookingSheet(true);
+        if (event.key === 'Escape' && jobApplicantMenu.classList.contains('is-open')) closeJobApplicantMenu(true);
+        if (event.key === 'Escape' && messageDetailOptionsMenu.classList.contains('is-open')) closeMessageDetailOptions(true);
       });
       bookingActionTriggers.forEach(function (trigger) {
         trigger.addEventListener('click', function (event) {
