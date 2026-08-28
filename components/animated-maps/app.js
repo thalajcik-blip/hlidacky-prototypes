@@ -159,20 +159,35 @@ function formatValue(value) {
   return Number(value || 0).toFixed(decimals)
 }
 
+// Names reach the markup through a value="" attribute, and they are typed by
+// hand now rather than fixed in this file — an apostrophe or a quote would
+// otherwise close the attribute early and take the rest of the row with it.
+const escapeAttribute = value => String(value)
+  .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
 function renderTable() {
   table.innerHTML = regions.map(region => `
     <tr>
-      <td><span class="region-dot" style="background:${colorAt(region.value)}"></span>${region.name}</td>
-      <td><input type="text" inputmode="decimal" value="${region.value}" aria-label="${region.name} value" data-region="${region.id}" data-field="value"></td>
-      <td><input type="text" inputmode="numeric" value="${region.delay}" aria-label="${region.name} delay in milliseconds" data-region="${region.id}" data-field="delay"></td>
+      <td><span class="region-cell"><span class="region-dot" style="background:${colorAt(region.value)}"></span><input class="region-name-input" type="text" value="${escapeAttribute(region.name)}" aria-label="Region name" data-region="${region.id}" data-field="name"></span></td>
+      <td><input type="text" inputmode="decimal" value="${region.value}" aria-label="${escapeAttribute(region.name)} value" data-region="${region.id}" data-field="value"></td>
+      <td><input type="text" inputmode="numeric" value="${region.delay}" aria-label="${escapeAttribute(region.name)} delay in milliseconds" data-region="${region.id}" data-field="delay"></td>
     </tr>`).join('')
   table.querySelectorAll('input').forEach(input => input.addEventListener('input', event => {
     const region = regions.find(item => item.id === event.target.dataset.region)
+    const field = event.target.dataset.field
+    if (field === 'name') {
+      region.name = event.target.value
+      renderPreview(true)
+      return
+    }
     const value = Number(event.target.value.replace(',', '.'))
     if (!Number.isFinite(value)) return
-    region[event.target.dataset.field] = event.target.value === '' ? 0 : value
+    region[field] = event.target.value === '' ? 0 : value
     renderPreview(true)
   }))
+  // Re-rendering on every keystroke would take the field out from under the
+  // cursor, so the table is rebuilt on blur — which is also when the dot
+  // colours and the aria labels need to catch up.
   table.querySelectorAll('input').forEach(input => input.addEventListener('change', renderTable))
 }
 
@@ -323,6 +338,9 @@ function renderPreview(showAll = false, counterValues = {}) {
     node.setAttribute('transform', `translate(${region.x} ${region.y})`)
     node.querySelector('.value-number').textContent = formatValue(value)
     node.querySelector('.unit').textContent = ` ${text.unit.value}`
+    // buildLabels writes the name once, so an edited name would never reach the
+    // map without this.
+    node.querySelector('.region-name').textContent = region.name
     resizeValueChip(node)
   })
   mapPaths.forEach((path, index) => {
