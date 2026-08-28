@@ -15876,6 +15876,22 @@
          forced reflows: one to commit the start with transitions off, one to
          commit them back on at that same position, so the only thing left to
          animate is the travel to rest. */
+      /* The push transition outlasts the 300ms every other sheet here closes on,
+         so the classes that hold a popped layer off-screen to the RIGHT have to
+         survive that long. Drop them earlier and the panel is retargeted to its
+         off-screen-BOTTOM resting place while still mid-flight — and animating
+         between those two corners walks it back across the screen, which is the
+         flash of the sheet closing after it has already gone. */
+      var PUSH_EXIT_MS = 360;
+
+      /* Remove classes without letting the resulting change animate. */
+      function snapClasses(layer, panel, classes) {
+        layer.classList.add('is-transition-suppressed');
+        classes.forEach(function (name) { layer.classList.remove(name); });
+        void panel.offsetWidth;
+        layer.classList.remove('is-transition-suppressed');
+      }
+
       function commitPushStart(layer, panel) {
         layer.classList.add('is-transition-suppressed');
         void panel.offsetWidth;
@@ -16097,11 +16113,12 @@
           }
           window.clearTimeout(sitterDetailPresentationCloseTimer);
           sitterDetailPresentationCloseTimer = window.setTimeout(function () {
+            snapClasses(sitterDetailScreen, sitterDetailScreen.querySelector('.sitter-detail-screen__panel'),
+              ['is-over-thread', 'is-push-host']);
             resetSitterDetailPresentation();
-            sitterDetailScreen.classList.remove('is-over-thread', 'is-push-host');
             if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
             sitterDetailBack.setAttribute('aria-label', 'Back to search results');
-          }, 300);
+          }, wasOverThread ? PUSH_EXIT_MS : 300);
         } else {
           sitterDetailScreen.classList.remove('is-booking-present');
           if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
@@ -16946,8 +16963,9 @@
         }
         window.clearTimeout(sitterMessageSheetCloseTimer);
         sitterMessageSheetCloseTimer = window.setTimeout(function () {
-          sitterMessageSheet.classList.remove('is-closing', 'is-over-profile', 'is-push-host');
-        }, 300);
+          snapClasses(sitterMessageSheet, sitterMessageSheetDialog,
+            ['is-closing', 'is-over-profile', 'is-push-host']);
+        }, PUSH_EXIT_MS);
         syncBackEntry();
       }
 
