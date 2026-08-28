@@ -327,6 +327,138 @@ async function replay() {
   }
 }
 
+// --- export -----------------------------------------------------------------
+// A rasterised SVG is an isolated document: no external stylesheet, no webfont
+// fetch, no access to the page it came from. Whatever the export needs has to
+// travel inside the file, which is why the styles are inlined and the fonts
+// are carried as base64 rather than referenced.
+const SVG_NS = 'http://www.w3.org/2000/svg'
+const EXPORT_FONTS = [
+  { family: 'Soleil', weight: 600, file: 'soleil-600.woff2' },
+  { family: 'Soleil', weight: 700, file: 'soleil-700.woff2' },
+  { family: 'DM Sans', weight: 400, file: 'dmsans-400.woff2' },
+  { family: 'DM Sans', weight: 700, file: 'dmsans-700.woff2' },
+  { family: 'DM Mono', weight: 500, file: 'dmmono-500.woff2' },
+]
+const EXPORT_STYLE_PROPS = [
+  'fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-linejoin',
+  'opacity', 'font-family', 'font-size', 'font-weight', 'font-style',
+  'letter-spacing', 'text-anchor', 'filter',
+]
+const exportStatus = document.querySelector('#export-status')
+const exportScaleInput = document.querySelector('#export-scale-input')
+let embeddedFontCss = null
+
+async function fontCss() {
+  if (embeddedFontCss) return embeddedFontCss
+  const faces = await Promise.all(EXPORT_FONTS.map(async face => {
+    const bytes = new Uint8Array(await (await fetch(`assets/fonts/${face.file}`)).arrayBuffer())
+    let binary = ''
+    for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i])
+    return `@font-face{font-family:'${face.family}';font-style:normal;font-weight:${face.weight};` +
+           `src:url(data:font/woff2;base64,${btoa(binary)}) format('woff2');}`
+  }))
+  embeddedFontCss = faces.join('')
+  return embeddedFontCss
+}
+
+// Computed styles are read from the live elements and written onto the matching
+// clone, walked in step. Copying the stylesheet instead would mean re-deciding
+// which selectors apply, and getting that subtly wrong is invisible until the
+// export is already out of the building.
+function inlineStyles(source, clone) {
+  const computed = getComputedStyle(source)
+  const declarations = EXPORT_STYLE_PROPS
+    .map(prop => [prop, computed.getPropertyValue(prop)])
+    .filter(([, value]) => value && value !== 'none' || false)
+    .map(([prop, value]) => `${prop}:${value}`)
+  const filter = computed.getPropertyValue('filter')
+  if (filter && filter !== 'none') declarations.push(`filter:${filter}`)
+  if (declarations.length) clone.setAttribute('style', declarations.join(';'))
+  for (let i = 0; i < source.children.length; i += 1) {
+    inlineStyles(source.children[i], clone.children[i])
+  }
+}
+
+async function buildExportSvg() {
+  renderPreview(true)                 // export the finished chart, not a frame of it
+  const clone = artboard.cloneNode(true)
+  clone.setAttribute('xmlns', SVG_NS)
+  clone.setAttribute('width', ARTBOARD.w)
+  clone.setAttribute('height', ARTBOARD.h)
+  inlineStyles(artboard, clone)
+  const style = document.createElementNS(SVG_NS, 'style')
+  style.textContent = await fontCss()
+  clone.insertBefore(style, clone.firstChild)   // after inlining, so indices stayed aligned
+  return new XMLSerializer().serializeToString(clone)
+}
+
+async function rasterize(markup, scale, type, quality) {
+  const url = URL.createObjectURL(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }))
+  try {
+    const image = new Image()
+    await new Promise((resolve, reject) => {
+      image.onload = resolve
+      image.onerror = () => reject(new Error('the SVG could not be rendered'))
+      image.src = url
+    })
+    const canvas = document.createElement('canvas')
+    canvas.width = ARTBOARD.w * scale
+    canvas.height = ARTBOARD.h * scale
+    const context = canvas.getContext('2d')
+    // JPEG has no alpha, and an unpainted canvas is transparent black — which
+    // encodes as a black background rather than the white one on screen.
+    if (type === 'image/jpeg') {
+      context.fillStyle = '#ffffff'
+      context.fillRect(0, 0, canvas.width, canvas.height)
+    }
+    context.drawImage(image, 0, 0, canvas.width, canvas.height)
+    return await new Promise(resolve => canvas.toBlob(resolve, type, quality))
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
+function exportFileName(extension) {
+  const slug = (text.title.value || 'animated-map')
+    .toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').slice(0, 60)
+  return `${slug || 'animated-map'}.${extension}`
+}
+
+function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+async function runExport(format) {
+  exportStatus.textContent = 'Preparing…'
+  try {
+    const markup = await buildExportSvg()
+    if (format === 'svg') {
+      saveBlob(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }), exportFileName('svg'))
+    } else {
+      const scale = Number(exportScaleInput.value) || 1
+      const type = format === 'jpg' ? 'image/jpeg' : 'image/png'
+      const blob = await rasterize(markup, scale, type, format === 'jpg' ? 0.92 : undefined)
+      if (!blob) throw new Error('the canvas produced nothing')
+      saveBlob(blob, exportFileName(format))
+    }
+    exportStatus.textContent = 'Saved'
+  } catch (error) {
+    exportStatus.textContent = `Failed — ${error.message}`
+    console.error(error)
+  }
+  setTimeout(() => { exportStatus.textContent = '' }, 2600)
+}
+
+document.querySelectorAll('[data-export]').forEach(button => {
+  button.addEventListener('click', () => runExport(button.dataset.export))
+})
+
 // --- dragging labels --------------------------------------------------------
 // The preview is a 1920x1080 viewBox scaled to whatever space the panel has,
 // and it is letterboxed by preserveAspectRatio. Screen pixels therefore mean

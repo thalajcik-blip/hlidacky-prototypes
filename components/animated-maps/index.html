@@ -44,6 +44,16 @@
         <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">▶</span> Replay animation</button>
         <button class="copy-button" id="copy-positions" type="button">Copy label positions</button>
         <p class="drag-hint">Drag a label on the map to place it.</p>
+
+      <div class="export-controls">
+        <div class="export-heading"><p class="eyebrow">Export</p><span class="export-status" id="export-status" role="status"></span></div>
+        <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option></select></span></label>
+        <div class="export-buttons">
+          <button class="export-button" type="button" data-export="png">PNG</button>
+          <button class="export-button" type="button" data-export="jpg">JPG</button>
+          <button class="export-button" type="button" data-export="svg">SVG</button>
+        </div>
+      </div>
       </div>
     </aside>
 
