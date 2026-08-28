@@ -100,3 +100,10 @@ label { display: grid; gap: 6px; margin-bottom: 13px; color: var(--muted); font-
 
 .export-buttons { grid-template-columns: repeat(3, 1fr); }
 .export-button--video { grid-column: 1 / -1; }
+.export-panel .export-controls { margin: 0; padding: 0; border: 0; }
+.export-panel .export-heading { justify-content: flex-end; min-height: 14px; }
+.map-settings-toggle { display: inline-flex; align-items: center; gap: 5px; }
+.toolbar-icon { width: 12px; font-size: 14px; font-weight: 600; line-height: 1; text-align: center; }
+.toolbar-icon--gear { width: 18px; font-size: 21px; }
+.status { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; }
+.map-settings-toggle { height: 38px; padding: 0 10px; }

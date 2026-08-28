@@ -44,25 +44,13 @@
         <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">▶</span> Replay animation</button>
         <button class="copy-button" id="copy-positions" type="button">Copy label positions</button>
         <p class="drag-hint">Drag a label on the map to place it.</p>
-
-      <div class="export-controls">
-        <div class="export-heading"><p class="eyebrow">Export</p><span class="export-status" id="export-status" role="status"></span></div>
-        <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option></select></span></label>
-        <div class="export-buttons">
-          <button class="export-button" type="button" data-export="png">PNG</button>
-          <button class="export-button" type="button" data-export="jpg">JPG</button>
-          <button class="export-button" type="button" data-export="svg">SVG</button>
-          <button class="export-button export-button--video" type="button" data-export="mp4">MP4 video</button>
-          <button class="export-button export-button--video" type="button" data-export="embed">Animated SVG · embed</button>
-        </div>
-      </div>
       </div>
     </aside>
 
     <section class="preview-panel" aria-label="Animation preview">
-      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel">Chart Settings</button></div></header>
+      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel"><span class="toolbar-icon toolbar-icon--gear" aria-hidden="true">⚙</span>Chart Settings</button><button class="map-settings-toggle" id="export-toggle" type="button" aria-expanded="false" aria-controls="export-panel"><span class="toolbar-icon" aria-hidden="true">↓</span>Export</button></div></header>
       <section class="appearance-panel" id="map-settings-panel" aria-labelledby="map-settings-title" hidden>
-        <div class="appearance-panel-header"><div><p class="eyebrow">Appearance</p><h2 id="map-settings-title">Map settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
+        <div class="appearance-panel-header"><div><p class="eyebrow">Appearance</p><h2 id="map-settings-title">Chart settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
         <label>Decimal places<span class="select-picker"><select class="editor-select" id="decimal-places-input"><option value="0" selected>0 · Whole numbers</option><option value="1">1 · 6.6</option><option value="2">2 · 6.60</option><option value="3">3 · 6.600</option></select></span></label>
         <label>Color scheme
           <span class="scheme-picker"><span class="scheme-swatch" id="color-scheme-swatch" aria-hidden="true"></span><select id="color-scheme-input"><option value="babysitting">Babysitting · Pink</option><option value="pet-care">Pet Care · Teal</option><option value="cleaning">Cleaning · Cyan</option><option value="senior-care">Senior Care · Orange</option><option value="tutoring">Tutoring · Violet</option></select></span>
@@ -71,7 +59,22 @@
           <label class="range-control"><span>Headline <output id="headline-scale-output">100%</output></span><input id="headline-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
           <label class="range-control"><span>Subheadline <output id="subheadline-scale-output">100%</output></span><input id="subheadline-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
           <label class="range-control"><span>Value pills &amp; content <output id="value-scale-output">100%</output></span><input id="value-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+          <label class="range-control"><span>Unit size <output id="unit-scale-output">100%</output></span><input id="unit-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
           <label class="range-control"><span>Region names <output id="region-name-scale-output">100%</output></span><input id="region-name-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+        </div>
+      </section>
+      <section class="appearance-panel export-panel" id="export-panel" aria-labelledby="export-panel-title" hidden>
+        <div class="appearance-panel-header"><div><p class="eyebrow">Export</p><h2 id="export-panel-title">Export chart</h2></div><button class="appearance-panel-close" id="export-panel-close" type="button" aria-label="Close export panel">×</button></div>
+        <div class="export-controls">
+          <div class="export-heading"><span class="export-status" id="export-status" role="status"></span></div>
+          <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option></select></span></label>
+          <div class="export-buttons">
+            <button class="export-button" type="button" data-export="png">PNG</button>
+            <button class="export-button" type="button" data-export="jpg">JPG</button>
+            <button class="export-button" type="button" data-export="svg">SVG</button>
+            <button class="export-button export-button--video" type="button" data-export="mp4">MP4 video</button>
+            <button class="export-button export-button--video" type="button" data-export="embed">Animated SVG · embed</button>
+          </div>
         </div>
       </section>
       <div class="preview-stage">

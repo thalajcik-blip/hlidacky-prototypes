@@ -38,6 +38,11 @@ const mapSettings = {
   panel: document.querySelector('#map-settings-panel'),
   close: document.querySelector('#map-settings-close'),
 }
+const exportPanel = {
+  toggle: document.querySelector('#export-toggle'),
+  panel: document.querySelector('#export-panel'),
+  close: document.querySelector('#export-panel-close'),
+}
 const labelScaleControls = {
   headline: {
     input: document.querySelector('#headline-scale-input'),
@@ -50,6 +55,10 @@ const labelScaleControls = {
   valuePill: {
     input: document.querySelector('#value-scale-input'),
     output: document.querySelector('#value-scale-output'),
+  },
+  unit: {
+    input: document.querySelector('#unit-scale-input'),
+    output: document.querySelector('#unit-scale-output'),
   },
   regionName: {
     input: document.querySelector('#region-name-scale-input'),
@@ -82,7 +91,21 @@ const minimumLabelFontSize = 10
 function setMapSettingsOpen(isOpen) {
   mapSettings.panel.hidden = !isOpen
   mapSettings.toggle.setAttribute('aria-expanded', String(isOpen))
-  if (isOpen) mapSettings.panel.querySelector('select').focus()
+  if (isOpen) {
+    exportPanel.panel.hidden = true
+    exportPanel.toggle.setAttribute('aria-expanded', 'false')
+    mapSettings.panel.querySelector('select').focus()
+  }
+}
+
+function setExportPanelOpen(isOpen) {
+  exportPanel.panel.hidden = !isOpen
+  exportPanel.toggle.setAttribute('aria-expanded', String(isOpen))
+  if (isOpen) {
+    mapSettings.panel.hidden = true
+    mapSettings.toggle.setAttribute('aria-expanded', 'false')
+    exportPanel.panel.querySelector('select').focus()
+  }
 }
 
 mapSettings.toggle.addEventListener('click', () => setMapSettingsOpen(mapSettings.panel.hidden))
@@ -90,15 +113,29 @@ mapSettings.close.addEventListener('click', () => {
   setMapSettingsOpen(false)
   mapSettings.toggle.focus()
 })
+exportPanel.toggle.addEventListener('click', () => setExportPanelOpen(exportPanel.panel.hidden))
+exportPanel.close.addEventListener('click', () => {
+  setExportPanelOpen(false)
+  exportPanel.toggle.focus()
+})
 document.addEventListener('pointerdown', event => {
   if (!mapSettings.panel.hidden && !mapSettings.panel.contains(event.target) && !mapSettings.toggle.contains(event.target)) {
     setMapSettingsOpen(false)
   }
+  if (!exportPanel.panel.hidden && !exportPanel.panel.contains(event.target) && !exportPanel.toggle.contains(event.target)) {
+    setExportPanelOpen(false)
+  }
 })
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !mapSettings.panel.hidden) {
-    setMapSettingsOpen(false)
-    mapSettings.toggle.focus()
+  if (event.key === 'Escape') {
+    if (!mapSettings.panel.hidden) {
+      setMapSettingsOpen(false)
+      mapSettings.toggle.focus()
+    }
+    if (!exportPanel.panel.hidden) {
+      setExportPanelOpen(false)
+      exportPanel.toggle.focus()
+    }
   }
 })
 
@@ -189,9 +226,10 @@ function updateLabelSizing() {
   const styles = getComputedStyle(labels)
   const baseSize = name => Number.parseFloat(styles.getPropertyValue(name)) || 0
   const valuePillScale = Number(labelScaleControls.valuePill.input.value) / 100
+  const unitScale = Number(labelScaleControls.unit.input.value) / 100
   const regionNameScale = Number(labelScaleControls.regionName.input.value) / 100
   const valueSize = baseSize('--value-base-size') * valuePillScale
-  const unitSize = baseSize('--unit-base-size') * valuePillScale
+  const unitSize = baseSize('--unit-base-size') * unitScale
   const regionNameSize = baseSize('--region-name-base-size') * regionNameScale
   const chipTextSize = Math.max(valueSize, unitSize)
   const chipY = -Math.ceil(chipTextSize * .92)
