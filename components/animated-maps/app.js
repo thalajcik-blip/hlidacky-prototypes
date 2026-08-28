@@ -298,29 +298,102 @@ function renderPreview(showAll = false, counterValues = {}) {
   })
 }
 
+// --- the animation as a function of time -------------------------------------
+// It used to be CSS transitions plus a rAF counter: fine on screen, useless for
+// export, because a transition is driven by the wall clock and asking for "the
+// frame at 400ms" gets whatever the clock happens to say. Every channel is now
+// interpolated explicitly, so the preview and the exported video are the same
+// computation rather than two that merely resemble each other.
+const TIMING = { counter: 760, fill: 460, label: 260 }
+
+function cubicBezier(x1, y1, x2, y2) {
+  const curve = (a, b, t) => (((1 - 3 * b + 3 * a) * t + (3 * b - 6 * a)) * t + 3 * a) * t
+  return x => {
+    let low = 0
+    let high = 1
+    let t = x
+    for (let i = 0; i < 24; i += 1) {          // bisection: exact enough, no derivatives
+      const current = curve(x1, x2, t)
+      if (Math.abs(current - x) < 1e-5) break
+      if (current < x) low = t; else high = t
+      t = (low + high) / 2
+    }
+    return curve(y1, y2, t)
+  }
+}
+
+const easeOutCubic = progress => 1 - Math.pow(1 - progress, 3)
+const easeFill = cubicBezier(.2, .75, .25, 1)      // was the CSS fill transition
+const easeLabel = cubicBezier(.25, .1, .25, 1)     // CSS 'ease'
+
+function parseColor(value) {
+  if (value.startsWith('#')) {
+    const hex = value.length === 4
+      ? value.slice(1).split('').map(channel => channel + channel).join('')
+      : value.slice(1)
+    return [0, 2, 4].map(i => Number.parseInt(hex.slice(i, i + 2), 16))
+  }
+  return value.match(/\d+/g).slice(0, 3).map(Number)
+}
+
+function mixColor(from, to, progress) {
+  const a = parseColor(from)
+  const b = parseColor(to)
+  return `rgb(${a.map((channel, i) => Math.round(channel + (b[i] - channel) * progress)).join(', ')})`
+}
+
+function animationDuration() {
+  return regions.reduce((longest, region) => Math.max(longest, region.delay), 0) + TIMING.counter
+}
+
+// Renders the chart exactly as it stands t milliseconds into the animation.
+function applyFrame(t) {
+  regions.forEach((region, index) => {
+    const node = labelNodes.get(region.id)
+    const path = mapPaths[index]
+    const elapsed = t - region.delay
+    if (elapsed < 0) {
+      if (path) path.style.fill = activeColorScheme.low
+      if (node) {
+        node.classList.remove('is-visible')
+        node.querySelector('.label-content').style.cssText = 'opacity:0;transform:translateY(4px)'
+      }
+      return
+    }
+    if (path) {
+      path.style.fill = mixColor(activeColorScheme.low, colorAt(region.value),
+        easeFill(Math.min(1, elapsed / TIMING.fill)))
+    }
+    if (!node) return
+    const appear = easeLabel(Math.min(1, elapsed / TIMING.label))
+    node.classList.add('is-visible')
+    node.querySelector('.label-content').style.cssText =
+      `opacity:${appear};transform:translateY(${(1 - appear) * 4}px)`
+    node.querySelector('.value-number').textContent =
+      formatValue(region.value * easeOutCubic(Math.min(1, elapsed / TIMING.counter)))
+    node.querySelector('.unit').textContent = ` ${text.unit.value}`
+    resizeValueChip(node)
+  })
+}
+
 function wait(milliseconds) { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
 
 async function replay() {
   const currentRun = ++runId
   status.textContent = 'Playing'
   status.classList.remove('ready')
-  const counterValues = {}
-  renderPreview(false, counterValues)
-  await Promise.all(regions.map(async region => {
-    await wait(region.delay)
-    if (currentRun !== runId) return
-    const start = performance.now()
-    await new Promise(resolve => {
-      const frame = now => {
-        if (currentRun !== runId) return resolve()
-        const progress = Math.min(1, (now - start) / 760)
-        counterValues[region.id] = region.value * (1 - Math.pow(1 - progress, 3))
-        renderPreview(false, counterValues)
-        progress < 1 ? requestAnimationFrame(frame) : resolve()
-      }
-      requestAnimationFrame(frame)
-    })
-  }))
+  const total = animationDuration()
+  const start = performance.now()
+  await new Promise(resolve => {
+    const frame = now => {
+      if (currentRun !== runId) return resolve()
+      const elapsed = now - start
+      applyFrame(Math.min(elapsed, total))
+      if (elapsed < total) requestAnimationFrame(frame)
+      else resolve()
+    }
+    requestAnimationFrame(frame)
+  })
   if (currentRun === runId) {
     status.textContent = 'Ready'
     status.classList.add('ready')
@@ -381,7 +454,12 @@ function inlineStyles(source, clone) {
 }
 
 async function buildExportSvg() {
-  renderPreview(true)                 // export the finished chart, not a frame of it
+  renderPreview(true)                 // stills show the finished chart
+  return buildFrameSvg()
+}
+
+// Serialises whatever the artboard shows right now, mid-animation or not.
+async function buildFrameSvg() {
   const clone = artboard.cloneNode(true)
   clone.setAttribute('xmlns', SVG_NS)
   clone.setAttribute('width', ARTBOARD.w)
@@ -437,9 +515,11 @@ function saveBlob(blob, filename) {
 async function runExport(format) {
   exportStatus.textContent = 'Preparing…'
   try {
-    const markup = await buildExportSvg()
+    const markup = format === 'mp4' ? null : await buildExportSvg()
     if (format === 'svg') {
       saveBlob(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }), exportFileName('svg'))
+    } else if (format === 'mp4') {
+      saveBlob(await exportVideo(), exportFileName('mp4'))
     } else {
       const scale = Number(exportScaleInput.value) || 1
       const type = format === 'jpg' ? 'image/jpeg' : 'image/png'
@@ -453,6 +533,93 @@ async function runExport(format) {
     console.error(error)
   }
   setTimeout(() => { exportStatus.textContent = '' }, 2600)
+}
+
+// --- video ------------------------------------------------------------------
+// Chrome and Safari both record H.264 in an MP4 container directly, so no muxer
+// is vendored. MediaRecorder is realtime by nature, which suits this animation:
+// it runs a second and a half, and a frame costs about 10ms to serialise and
+// draw — comfortably inside a 33ms budget at 30fps.
+//
+// captureStream(0) hands frame timing over: nothing is captured until
+// requestFrame() is called, so the recorder sees exactly the frames applyFrame
+// produced and never samples a half-drawn canvas.
+const VIDEO_FPS = 30
+const VIDEO_TAIL_MS = 700          // hold the finished chart before cutting
+
+// avc3 is preferred over avc1 deliberately. With avc1 the codec description
+// lives in the container header and may not change for the length of the
+// recording; Chrome warns that a mid-recording encoder reconfiguration breaks
+// that promise, and the file it writes is then subtly malformed. avc3 carries
+// its parameter sets in-band, so a reconfiguration is legal. Both are H.264 and
+// play in the same places; avc1 stays as the fallback.
+function videoMimeType() {
+  return [
+    'video/mp4;codecs=avc3.640028',
+    'video/mp4;codecs=avc3.42E01E',
+    'video/mp4;codecs=avc1.640028',
+    'video/mp4',
+  ].find(type => MediaRecorder.isTypeSupported(type)) || null
+}
+
+async function exportVideo() {
+  const mimeType = videoMimeType()
+  if (!mimeType) throw new Error('this browser cannot record MP4')
+
+  const scale = Number(exportScaleInput.value) || 1
+  const canvas = document.createElement('canvas')
+  canvas.width = ARTBOARD.w * scale
+  canvas.height = ARTBOARD.h * scale
+  const context = canvas.getContext('2d')
+  context.fillStyle = '#ffffff'
+  context.fillRect(0, 0, canvas.width, canvas.height)
+
+  const stream = canvas.captureStream(0)
+  const [track] = stream.getVideoTracks()
+  const chunks = []
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 16000000 * scale })
+  recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data) }
+  const finished = new Promise(resolve => { recorder.onstop = resolve })
+
+  const total = animationDuration()
+  const frameCount = Math.round((total + VIDEO_TAIL_MS) / 1000 * VIDEO_FPS)
+  const image = new Image()
+
+  const drawFrameAt = async time => {
+    applyFrame(Math.min(time, total))
+    const url = URL.createObjectURL(new Blob([await buildFrameSvg()], { type: 'image/svg+xml;charset=utf-8' }))
+    try {
+      await new Promise((resolve, reject) => {
+        image.onload = resolve
+        image.onerror = () => reject(new Error('a frame could not be rendered'))
+        image.src = url
+      })
+      context.drawImage(image, 0, 0, canvas.width, canvas.height)
+    } finally {
+      URL.revokeObjectURL(url)
+    }
+  }
+
+  await drawFrameAt(0)            // paint frame zero before the recorder starts
+  recorder.start()
+  const startedAt = performance.now()
+
+  for (let index = 0; index < frameCount; index += 1) {
+    const target = index / VIDEO_FPS * 1000
+    await drawFrameAt(target)
+    track.requestFrame()
+    exportStatus.textContent = `Recording ${Math.round((index + 1) / frameCount * 100)}%`
+    // Pace to the wall clock: MediaRecorder timestamps by it, so running ahead
+    // would yield a video shorter than the animation it represents.
+    const drift = target - (performance.now() - startedAt)
+    if (drift > 0) await wait(drift)
+  }
+
+  recorder.stop()
+  track.stop()
+  await finished
+  applyFrame(total)
+  return new Blob(chunks, { type: mimeType })
 }
 
 document.querySelectorAll('[data-export]').forEach(button => {
