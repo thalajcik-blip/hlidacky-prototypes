@@ -1,19 +1,49 @@
-const regions = [
-  { id: 'zlinsky', name: 'Zlínský', value: 175, delay: 750, x: 1478, y: 764 },
-  { id: 'vysocina', name: 'Vysočina', value: 171, delay: 500, x: 1005, y: 672 },
-  { id: 'ustecky', name: 'Ústecký', value: 170, delay: 0, x: 552, y: 264 },
-  { id: 'jihomoravsky', name: 'Jihomoravský', value: 187, delay: 750, x: 1215, y: 800 },
-  { id: 'jihocesky', name: 'Jihočeský', value: 181, delay: 500, x: 725, y: 805 },
-  { id: 'praha', name: 'Praha', value: 230, delay: 250, x: 683, y: 437 },
-  { id: 'plzensky', name: 'Plzeňský', value: 177, delay: 250, x: 398, y: 596 },
-  { id: 'pardubicky', name: 'Pardubický', value: 169, delay: 500, x: 1088, y: 503 },
-  { id: 'olomoucky', name: 'Olomoucký', value: 168, delay: 750, x: 1342, y: 589 },
-  { id: 'moravskoslezsky', name: 'Moravskoslezský', value: 168, delay: 750, x: 1528, y: 509 },
-  { id: 'liberecky', name: 'Liberecký', value: 182, delay: 0, x: 819, y: 162 },
-  { id: 'karlovarsky', name: 'Karlovarský', value: 176, delay: 0, x: 297, y: 400 },
-  { id: 'kralovohradecky', name: 'Královohradecký', value: 173, delay: 0, x: 1024, y: 326 },
-  { id: 'stredocesky', name: 'Středočeský', value: 207, delay: 250, x: 750, y: 539 },
-]
+const maps = {
+  czechia: {
+    label: 'Czech Republic',
+    asset: 'assets/czech-regions.svg',
+    decimals: '0',
+    copy: { title: 'Hourly rate for babysitting in the Czech Republic', subtitle: 'Average hourly rate by region', source: 'Source: Hlídačky.cz', unit: 'Kč' },
+    regionPath: () => true,
+    regions: [
+      { id: 'zlinsky', name: 'Zlínský', value: 175, delay: 750, x: 1478, y: 764 },
+      { id: 'vysocina', name: 'Vysočina', value: 171, delay: 500, x: 1005, y: 672 },
+      { id: 'ustecky', name: 'Ústecký', value: 170, delay: 0, x: 552, y: 264 },
+      { id: 'jihomoravsky', name: 'Jihomoravský', value: 187, delay: 750, x: 1215, y: 800 },
+      { id: 'jihocesky', name: 'Jihočeský', value: 181, delay: 500, x: 725, y: 805 },
+      { id: 'praha', name: 'Praha', value: 230, delay: 250, x: 683, y: 437 },
+      { id: 'plzensky', name: 'Plzeňský', value: 177, delay: 250, x: 398, y: 596 },
+      { id: 'pardubicky', name: 'Pardubický', value: 169, delay: 500, x: 1088, y: 503 },
+      { id: 'olomoucky', name: 'Olomoucký', value: 168, delay: 750, x: 1342, y: 589 },
+      { id: 'moravskoslezsky', name: 'Moravskoslezský', value: 168, delay: 750, x: 1528, y: 509 },
+      { id: 'liberecky', name: 'Liberecký', value: 182, delay: 0, x: 819, y: 162 },
+      { id: 'karlovarsky', name: 'Karlovarský', value: 176, delay: 0, x: 297, y: 400 },
+      { id: 'kralovohradecky', name: 'Královohradecký', value: 173, delay: 0, x: 1024, y: 326 },
+      { id: 'stredocesky', name: 'Středočeský', value: 207, delay: 250, x: 750, y: 539 },
+    ],
+  },
+  slovakia: {
+    label: 'Slovakia',
+    asset: 'assets/slovakia-regions.svg',
+    decimals: '2',
+    copy: { title: 'Hourly rate for babysitting in Slovakia', subtitle: 'Average hourly rate by region', source: 'Source: Hlídačky.sk', unit: '€' },
+    // This SVG stores a white separator shape after every coloured region.
+    // Keep the separators in the artwork but only animate the coloured paths.
+    regionPath: path => path.getAttribute('fill')?.toLowerCase() !== 'white',
+    regions: [
+      { id: 'banskobystricky', name: 'Banskobystrický', value: 6.20, delay: 500, x: 910, y: 574 },
+      { id: 'nitriansky', name: 'Nitriansky', value: 6.70, delay: 500, x: 517, y: 780 },
+      { id: 'trnavsky', name: 'Trnavský', value: 7.40, delay: 250, x: 298, y: 808 },
+      { id: 'presovsky', name: 'Prešovský', value: 6.40, delay: 750, x: 1521, y: 309 },
+      { id: 'kosicky', name: 'Košický', value: 7.00, delay: 750, x: 1332, y: 498 },
+      { id: 'bratislavsky', name: 'Bratislavský', value: 8.70, delay: 0, x: 167, y: 694 },
+      { id: 'zilinsky', name: 'Žilinský', value: 6.60, delay: 250, x: 817, y: 311 },
+      { id: 'trenciansky', name: 'Trenčiansky', value: 6.60, delay: 0, x: 468, y: 425 },
+    ],
+  },
+}
+let activeMapKey = 'czechia'
+let regions = maps[activeMapKey].regions
 
 const colorSchemes = {
   babysitting: { low: '#fee7ea', high: '#f85f73' },
@@ -30,6 +60,8 @@ const text = {
   source: document.querySelector('#source-input'),
   unit: document.querySelector('#unit-input'),
 }
+const mapPicker = document.querySelector('#map-picker')
+const regionCount = document.querySelector('#region-count')
 const colorSchemeInput = document.querySelector('#color-scheme-input')
 const colorSchemeSwatch = document.querySelector('#color-scheme-swatch')
 const decimalPlacesInput = document.querySelector('#decimal-places-input')
@@ -138,6 +170,54 @@ document.addEventListener('keydown', event => {
     }
   }
 })
+
+async function loadMap(mapKey) {
+  const map = maps[mapKey]
+  if (!map) return
+
+  // A country swap changes the SVG, its editable rows and the default copy as
+  // one operation. The map definition is the only place a future country has
+  // to be registered.
+  activeMapKey = mapKey
+  regions = map.regions
+  mapPicker.value = mapKey
+  Object.entries(map.copy).forEach(([key, value]) => { text[key].value = value })
+  decimalPlacesInput.value = map.decimals
+  regionCount.textContent = regions.length
+  artboard.setAttribute('aria-label', `Animated ${map.label} regional map`)
+  runId += 1
+  status.textContent = 'Loading map'
+  status.classList.remove('ready')
+  mapArt.replaceChildren()
+  labels.replaceChildren()
+  labelNodes.clear()
+  mapPaths = []
+  mapContentBox = null
+
+  try {
+    const markup = await (await fetch(map.asset)).text()
+    const holder = document.createElement('div')
+    holder.innerHTML = markup
+    const source = holder.querySelector('svg')
+    const paths = Array.from(source.querySelectorAll('path'))
+    paths.forEach(path => mapArt.appendChild(path))
+    mapPaths = paths.filter(map.regionPath)
+    if (mapPaths.length !== regions.length) {
+      throw new Error(`Expected ${regions.length} region paths, received ${mapPaths.length}`)
+    }
+    mapPaths.forEach((path, index) => { path.dataset.region = regions[index].id })
+    mapContentBox = mapArt.getBBox()
+    buildLabels()
+    updateLabelSizing()
+    renderTable()
+    renderCopy()
+    replay()
+  } catch (error) {
+    console.error(error)
+    status.textContent = 'Map unavailable'
+    status.classList.add('ready')
+  }
+}
 
 // Both sections may stay open. Forcing one shut to open the other collapsed
 // whatever the user was in the middle of and moved everything under the cursor,
@@ -834,25 +914,5 @@ colorSchemeInput.addEventListener('input', () => {
   renderPreview(true)
 })
 document.querySelector('#replay-button').addEventListener('click', replay)
-
-fetch('assets/czech-regions.svg')
-  .then(response => response.text())
-  .then(markup => {
-    // The map's own <svg> wrapper and its white backing rect are dropped: the
-    // artboard supplies the background, and the paths belong directly in the
-    // chart group so a single transform moves map and labels together — which
-    // is what keeps the dragged label positions correct.
-    const holder = document.createElement('div')
-    holder.innerHTML = markup
-    const source = holder.querySelector('svg')
-    Array.from(source.querySelectorAll('path')).forEach(path => mapArt.appendChild(path))
-    mapPaths = [...mapArt.querySelectorAll('path')]
-    mapPaths.forEach((path, index) => { path.dataset.region = regions[index].id })
-    mapContentBox = mapArt.getBBox()
-    buildLabels()
-    updateLabelSizing()
-    renderTable()
-    renderCopy()
-    replay()
-  })
-  .catch(() => { status.textContent = 'Map unavailable'; status.classList.add('ready') })
+mapPicker.addEventListener('change', () => loadMap(mapPicker.value))
+loadMap(activeMapKey)

@@ -20,6 +20,9 @@
         <details class="editor-accordion" open>
           <summary><span><h2>Content</h2></span></summary>
           <div class="editor-accordion-content">
+            <label>Map
+              <span class="select-picker"><select class="editor-select" id="map-picker" aria-label="Map picker"><option value="czechia">Czech Republic</option><option value="slovakia">Slovakia</option><option value="croatia" disabled>Croatia · Coming soon</option><option value="austria" disabled>Austria · Coming soon</option><option value="hungary" disabled>Hungary · Coming soon</option></select></span>
+            </label>
             <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
             <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
             <label>Source<input id="source-input" value="Source: Hlídačky.cz"></label>
@@ -28,7 +31,7 @@
         </details>
 
         <details class="editor-accordion">
-          <summary><span><h2>Data</h2></span><span class="count">14</span></summary>
+          <summary><span><h2>Data</h2></span><span class="count" id="region-count">14</span></summary>
           <div class="editor-accordion-content">
             <div class="table-shell">
               <table>
