@@ -15899,13 +15899,30 @@
         void panel.offsetWidth;
       }
 
-      /* I11b — the profile is already in the live path, so the sitter's name in
-         the thread header resolves to it: pop back rather than push a second
-         copy. Otherwise this is the first push, and the profile takes the same
-         frame the conversation is in. */
+      /* I11b — the profile this thread's header would open may already be live
+         in the path beneath the presentation, pushed into the tab stack the
+         user is standing in: favourites > profile, then Message. Nothing inside
+         the presentation may open it a second time. Resolving to an instance
+         directly beneath is dismissing the presentation, which lands the user
+         back on the profile the sheet was opened from.
+
+         "Open and pushed" is the same thing as "in the live path" here, because
+         selectAppScreen closes a pushed profile on every tab change — one can
+         never be left behind in a tab the user has walked away from. */
+      function profileLiveBeneathPresentation() {
+        if (!sitterDetailScreen.classList.contains('is-open')) return false;
+        if (sitterDetailScreen.classList.contains('is-presented')) return false;
+        if (!activeSitterDetailCard || !activeSitterConversation) return false;
+        return conversationForSitterCard(activeSitterDetailCard).id === activeSitterConversation.id;
+      }
+
+      /* The sitter's name in the thread header. It pushes the profile inside the
+         presentation only when that profile is nowhere in the live path —
+         otherwise it resolves to the instance that already exists, whether that
+         sits lower in this presentation or in the tab stack underneath it. */
       function openSitterProfileFromThread() {
         if (!sitterMessageSheet.classList.contains('is-open')) return;
-        if (presentationStack.indexOf('profile') !== -1) {
+        if (presentationStack.indexOf('profile') !== -1 || profileLiveBeneathPresentation()) {
           closeSitterMessageSheet(true);
           return;
         }
