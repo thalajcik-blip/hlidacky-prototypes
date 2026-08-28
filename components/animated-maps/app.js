@@ -836,9 +836,16 @@ async function exportVideo() {
   if (!mimeType) throw new Error('this browser cannot record MP4')
 
   const scale = Number(exportScaleInput.value) || 1
+  // H.264 encodes in 2x2 blocks, so an odd canvas dimension gets silently
+  // rounded down and the last row or column of the chart never makes it into
+  // the file — Croatia's 1920x1937 artboard came out 1920x1936. Pad up to even
+  // and leave the extra strip background: nothing is lost, and the alternative
+  // of scaling onto an even grid would stretch the whole frame to hide a pixel.
+  const drawWidth = artboardSize.w * scale
+  const drawHeight = artboardSize.h * scale
   const canvas = document.createElement('canvas')
-  canvas.width = artboardSize.w * scale
-  canvas.height = artboardSize.h * scale
+  canvas.width = drawWidth + drawWidth % 2
+  canvas.height = drawHeight + drawHeight % 2
   const context = canvas.getContext('2d')
   context.fillStyle = '#ffffff'
   context.fillRect(0, 0, canvas.width, canvas.height)
@@ -863,7 +870,7 @@ async function exportVideo() {
         image.onerror = () => reject(new Error('a frame could not be rendered'))
         image.src = url
       })
-      context.drawImage(image, 0, 0, canvas.width, canvas.height)
+      context.drawImage(image, 0, 0, drawWidth, drawHeight)
     } finally {
       URL.revokeObjectURL(url)
     }
