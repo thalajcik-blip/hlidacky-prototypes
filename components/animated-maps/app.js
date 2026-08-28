@@ -3,7 +3,7 @@ const maps = {
     label: 'Czech Republic',
     asset: 'assets/czech-regions.svg',
     decimals: '0',
-    copy: { title: 'Hourly rate for babysitting in the Czech Republic', subtitle: 'Average hourly rate by region', source: 'Source: Hlídačky.cz', unit: 'Kč' },
+    copy: { title: 'Hourly rate for babysitting in the Czech Republic', subtitle: 'Average hourly rate by region', source: 'Source: [Hlídačky.cz](https://www.hlidacky.cz/)', unit: 'Kč' },
     regionPath: () => true,
     regions: [
       { id: 'zlinsky', name: 'Zlínský', value: 175, delay: 750, x: 1478, y: 764 },
@@ -26,7 +26,7 @@ const maps = {
     label: 'Slovakia',
     asset: 'assets/slovakia-regions.svg',
     decimals: '2',
-    copy: { title: 'Hourly rate for babysitting in Slovakia', subtitle: 'Average hourly rate by region', source: 'Source: Hlídačky.sk', unit: '€' },
+    copy: { title: 'Hourly rate for babysitting in Slovakia', subtitle: 'Average hourly rate by region', source: 'Source: [Hlídačky.sk](https://www.hlidacky.sk/)', unit: '€' },
     // This SVG stores a white separator shape after every coloured region.
     // Keep the separators in the artwork but only animate the coloured paths.
     regionPath: path => path.getAttribute('fill')?.toLowerCase() !== 'white',
@@ -39,6 +39,89 @@ const maps = {
       { id: 'bratislavsky', name: 'Bratislavský', value: 8.70, delay: 0, x: 167, y: 694 },
       { id: 'zilinsky', name: 'Žilinský', value: 6.60, delay: 250, x: 817, y: 311 },
       { id: 'trenciansky', name: 'Trenčiansky', value: 6.60, delay: 0, x: 468, y: 425 },
+    ],
+  },
+  hungary: {
+    label: 'Hungary',
+    asset: 'assets/hungary-regions.svg',
+    decimals: '0',
+    copy: { title: 'Hourly rate for babysitting in Hungary', subtitle: 'Average hourly rate by region', source: 'Source: [Bébicsősz.hu](https://www.bebicsosz.hu/)', unit: 'Ft' },
+    // Budapest is exported twice as identical geometry. Retaining the first
+    // copy gives us one animated path for each of the 19 counties plus Budapest.
+    regionPath: (path, index, paths) => paths.findIndex(candidate => candidate.getAttribute('d') === path.getAttribute('d')) === index,
+    regions: [
+      { id: 'csongrad-csanad', name: 'Csongrád–Csanád', label: 'Csongrád–\nCsanád', value: 2091, delay: 750, x: 1134, y: 780 },
+      { id: 'baranya', name: 'Baranya', value: 2044, delay: 750, x: 617, y: 916 },
+      { id: 'zala', name: 'Zala', value: 2210, delay: 500, x: 319, y: 675 },
+      { id: 'veszprem', name: 'Veszprém', value: 2357, delay: 250, x: 514, y: 527 },
+      { id: 'somogy', name: 'Somogy', value: 2300, delay: 500, x: 485, y: 750 },
+      { id: 'szabolcs-szatmar-bereg', name: 'Szabolcs–Szatmár–Bereg', label: 'Szabolcs–Szatmár\n–Bereg', value: 2122, delay: 750, x: 1598, y: 237 },
+      { id: 'hajdu-bihar', name: 'Hajdú-Bihar', value: 2260, delay: 750, x: 1412, y: 410 },
+      { id: 'borsod-abauj-zemplen', name: 'Borsod–Abaúj–Zemplén', label: 'Borsod–Abaúj–\nZemplén', value: 2184, delay: 0, x: 1307, y: 133 },
+      { id: 'nograd', name: 'Nógrád', value: 2188, delay: 0, x: 960, y: 225 },
+      { id: 'heves', name: 'Heves', value: 2253, delay: 250, x: 1134, y: 301 },
+      { id: 'bekes', name: 'Békés', value: 2000, delay: 750, x: 1322, y: 685 },
+      { id: 'jasz-nagykun-szolnok', name: 'Jász–Nagykun–Szolnok', label: 'Jász–Nagykun–\nSzolnok', value: 1913, delay: 500, x: 1206, y: 501 },
+      { id: 'bacs-kiskun', name: 'Bács-Kiskun', value: 2233, delay: 500, x: 936, y: 707 },
+      { id: 'komarom-esztergom', name: 'Komárom–Esztergom', label: 'Komárom–\nEsztergom', value: 2359, delay: 0, x: 670, y: 345 },
+      { id: 'vas', name: 'Vas', value: 2063, delay: 0, x: 285, y: 489 },
+      { id: 'fejer', name: 'Fejér', value: 2377, delay: 250, x: 728, y: 535 },
+      { id: 'tolna', name: 'Tolna', value: 2657, delay: 500, x: 728, y: 748 },
+      { id: 'pest', name: 'Pest', value: 2732, delay: 250, x: 989, y: 496 },
+      { id: 'gyor-moson-sopron', name: 'Győr–Moson–Sopron', value: 2458, delay: 0, x: 453, y: 320 },
+      { id: 'budapest', name: 'Budapest', value: 2835, delay: 250, x: 884, y: 376 },
+    ],
+  },
+  austria: {
+    label: 'Austria',
+    asset: 'assets/austria-regions.svg',
+    decimals: '2',
+    copy: { title: 'Hourly rate for babysitting in Austria', subtitle: 'Average hourly rate by region', source: 'Source: [Sitters.at](https://www.sitters.at/)', unit: '€' },
+    regionPath: () => true,
+    pathRegionIds: ['oberoesterreich', 'wien', 'niederoesterreich', 'burgenland', 'steiermark', 'kaernten', 'salzburg', 'tirol', 'tirol', 'vorarlberg'],
+    regions: [
+      { id: 'oberoesterreich', name: 'Oberösterreich', value: 8.80, delay: 0, x: 1111, y: 391 },
+      { id: 'wien', name: 'Wien', value: 10.40, delay: 250, x: 1654, y: 334 },
+      { id: 'niederoesterreich', name: 'Niederösterreich', value: 9.20, delay: 250, x: 1477, y: 266 },
+      { id: 'burgenland', name: 'Burgenland', value: 8.00, delay: 750, x: 1685, y: 631 },
+      { id: 'steiermark', name: 'Steiermark', value: 8.70, delay: 500, x: 1376, y: 632 },
+      { id: 'kaernten', name: 'Kärnten', value: 8.20, delay: 750, x: 1109, y: 850 },
+      { id: 'salzburg', name: 'Salzburg', value: 8.80, delay: 500, x: 924, y: 659 },
+      { id: 'tirol', name: 'Tirol', value: 9.00, delay: 250, x: 583, y: 677 },
+      { id: 'vorarlberg', name: 'Vorarlberg', value: 9.40, delay: 0, x: 187, y: 658 },
+    ],
+  },
+  croatia: {
+    label: 'Croatia',
+    asset: 'assets/croatia-regions.svg',
+    canvas: { w: 1920, h: 1937 },
+    decimals: '2',
+    copy: { title: 'Hourly rate for babysitting in Croatia', subtitle: 'Average hourly rate by region', source: 'Source: [Siterice.hr](https://www.siterice.hr/)', unit: '€' },
+    // The SVG also carries six unfilled island-detail paths. Only filled paths
+    // are counties, while the details remain in the map artwork underneath.
+    regionPath: path => Boolean(path.getAttribute('fill')),
+    regions: [
+      { id: 'zagrebacka', name: 'Zagrebačka', value: 8.00, delay: 250, x: 900, y: 330 },
+      { id: 'krapinsko-zagorska', name: 'Krapinsko-zagorska', label: 'Krapinsko-\nzagorska', value: 7.40, delay: 0, x: 740, y: 220 },
+      { id: 'sisacko-moslavacka', name: 'Sisačko-moslavačka', label: 'Sisačko-\nmoslavačka', value: 6.80, delay: 500, x: 900, y: 545 },
+      { id: 'karlovacka', name: 'Karlovačka', value: 6.80, delay: 500, x: 635, y: 595 },
+      { id: 'varazdinska', name: 'Varaždinska', value: 6.90, delay: 0, x: 915, y: 185 },
+      { id: 'koprivnicko-krizevacka', name: 'Koprivničko-križevačka', label: 'Koprivničko-\nkriževačka', value: 5.60, delay: 250, x: 1110, y: 210 },
+      { id: 'bjelovarsko-bilogorska', name: 'Bjelovarsko-bilogorska', label: 'Bjelovarsko-\nbilogorska', value: 5.40, delay: 500, x: 1115, y: 385 },
+      { id: 'primorsko-goranska', name: 'Primorsko-goranska', label: 'Primorsko-\ngoranska', value: 8.40, delay: 750, x: 400, y: 520 },
+      { id: 'licko-senjska', name: 'Ličko-senjska', value: 6.80, delay: 500, x: 600, y: 860 },
+      { id: 'viroviticko-podravska', name: 'Virovitičko-podravska', label: 'Virovitičko-\npodravska', value: 5.60, delay: 750, x: 1320, y: 365 },
+      { id: 'pozesko-slavonska', name: 'Požeško-slavonska', value: 6.10, delay: 750, x: 1290, y: 535 },
+      { id: 'brodsko-posavska', name: 'Brodsko-posavska', value: 6.80, delay: 500, x: 1290, y: 680 },
+      { id: 'zadarska', name: 'Zadarska', value: 8.00, delay: 250, x: 660, y: 1110 },
+      { id: 'osjecko-baranjska', name: 'Osječko-baranjska', label: 'Osječko-\nbaranjska', value: 6.10, delay: 750, x: 1510, y: 430 },
+      { id: 'sibensko-kninska', name: 'Šibensko-kninska', value: 6.80, delay: 500, x: 790, y: 1220 },
+      { id: 'vukovarsko-srijemska', name: 'Vukovarsko-srijemska', label: 'Vukovarsko-\nsrijemska', value: 6.60, delay: 750, x: 1650, y: 625 },
+      { id: 'splitsko-dalmatinska', name: 'Splitsko-dalmatinska', label: 'Splitsko-\ndalmatinska', value: 8.70, delay: 0, x: 1060, y: 1340 },
+      { id: 'istarska', name: 'Istarska', value: 7.50, delay: 0, x: 160, y: 600 },
+      { id: 'dubrovacko-neretvanska', name: 'Dubrovačko-neretvanska', label: 'Dubrovačko-\nneretvanska', value: 8.80, delay: 250, x: 1190, y: 1655 },
+      { id: 'medimurska', name: 'Međimurska', value: 7.10, delay: 0, x: 945, y: 70 },
+      { id: 'grad-zagreb', name: 'Grad Zagreb', label: 'Grad\nZagreb', value: 8.50, delay: 250, x: 745, y: 395 },
     ],
   },
 }
@@ -104,12 +187,15 @@ const chart = document.querySelector('#chart')
 const headline = document.querySelector('#preview-title')
 const subheadline = document.querySelector('#preview-subtitle')
 const sourceText = document.querySelector('#preview-source')
+const sourceLink = document.querySelector('#preview-source-link')
+const previewDimensions = document.querySelector('#preview-dimensions')
 
-// Everything below is in artboard units of the 1920x1080 viewBox — never in
+// Everything below is in the selected artboard's own units — never in
 // screen pixels. That is the whole point of the single artboard: one scale for
 // the entire composition, so what the preview shows is what an export at any
 // resolution produces.
-const ARTBOARD = { w: 1920, h: 1080, margin: 80, top: 72, bottom: 96 }
+const defaultArtboardSize = { w: 1920, h: 1080, margin: 80, top: 72, bottom: 96 }
+let artboardSize = { ...defaultArtboardSize }
 const baseCopySize = { headline: 52, subheadline: 29, source: 18 }
 let mapContentBox = null
 const labelNodes = new Map()
@@ -117,8 +203,21 @@ let drag = null
 const mapArt = document.querySelector('#map-art')
 const status = document.querySelector('#animation-status')
 let mapPaths = []
+let regionPaths = new Map()
 let runId = 0
 const minimumLabelFontSize = 10
+
+function updateArtboardSize(canvas = defaultArtboardSize) {
+  artboardSize = { ...defaultArtboardSize, ...canvas }
+  artboard.setAttribute('viewBox', `0 0 ${artboardSize.w} ${artboardSize.h}`)
+  artboard.querySelector('.artboard-bg').setAttribute('width', artboardSize.w)
+  artboard.querySelector('.artboard-bg').setAttribute('height', artboardSize.h)
+  previewDimensions.textContent = `${artboardSize.w} × ${artboardSize.h}`
+  Array.from(exportScaleInput.options).forEach(option => {
+    const scale = Number(option.value)
+    option.textContent = `${artboardSize.w * scale} × ${artboardSize.h * scale}`
+  })
+}
 
 function setMapSettingsOpen(isOpen) {
   mapSettings.panel.hidden = !isOpen
@@ -181,6 +280,7 @@ async function loadMap(mapKey) {
   activeMapKey = mapKey
   regions = map.regions
   mapPicker.value = mapKey
+  updateArtboardSize(map.canvas)
   Object.entries(map.copy).forEach(([key, value]) => { text[key].value = value })
   decimalPlacesInput.value = map.decimals
   regionCount.textContent = regions.length
@@ -192,6 +292,7 @@ async function loadMap(mapKey) {
   labels.replaceChildren()
   labelNodes.clear()
   mapPaths = []
+  regionPaths = new Map()
   mapContentBox = null
 
   try {
@@ -202,10 +303,21 @@ async function loadMap(mapKey) {
     const paths = Array.from(source.querySelectorAll('path'))
     paths.forEach(path => mapArt.appendChild(path))
     mapPaths = paths.filter(map.regionPath)
-    if (mapPaths.length !== regions.length) {
-      throw new Error(`Expected ${regions.length} region paths, received ${mapPaths.length}`)
+    const pathRegionIds = map.pathRegionIds || regions.map(region => region.id)
+    if (mapPaths.length !== pathRegionIds.length) {
+      throw new Error(`Expected ${pathRegionIds.length} region paths, received ${mapPaths.length}`)
     }
-    mapPaths.forEach((path, index) => { path.dataset.region = regions[index].id })
+    regionPaths = new Map(regions.map(region => [region.id, []]))
+    mapPaths.forEach((path, index) => {
+      const regionId = pathRegionIds[index]
+      const pathsForRegion = regionPaths.get(regionId)
+      if (!pathsForRegion) throw new Error(`Unknown region path target: ${regionId}`)
+      path.dataset.region = regionId
+      pathsForRegion.push(path)
+    })
+    if ([...regionPaths.values()].some(pathsForRegion => pathsForRegion.length === 0)) {
+      throw new Error('Each region needs at least one SVG path')
+    }
     mapContentBox = mapArt.getBBox()
     buildLabels()
     updateLabelSizing()
@@ -236,7 +348,9 @@ function colorAt(value) {
 
 function formatValue(value) {
   const decimals = Number(decimalPlacesInput.value)
-  return Number(value || 0).toFixed(decimals)
+  const [integer, fraction] = Number(value || 0).toFixed(decimals).split('.')
+  const groupedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  return fraction == null ? groupedInteger : `${groupedInteger}.${fraction}`
 }
 
 // Names reach the markup through a value="" attribute, and they are typed by
@@ -257,6 +371,7 @@ function renderTable() {
     const field = event.target.dataset.field
     if (field === 'name') {
       region.name = event.target.value
+      delete region.label
       renderPreview(true)
       return
     }
@@ -274,6 +389,18 @@ function renderTable() {
 // Built once and then updated in place. Rebuilding the markup every frame,
 // as this did, would replace the element under the pointer mid-drag — and it
 // threw away and recreated fourteen label groups on every animation frame.
+function setRegionName(node, region) {
+  const name = node.querySelector('.region-name')
+  name.replaceChildren()
+  ;(region.label || region.name).split('\n').forEach((line, index) => {
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
+    tspan.textContent = line
+    tspan.setAttribute('x', '0')
+    if (index) tspan.setAttribute('dy', '1.1em')
+    name.appendChild(tspan)
+  })
+}
+
 function buildLabels() {
   labels.innerHTML = `
     <defs>
@@ -291,10 +418,11 @@ function buildLabels() {
       <g class="label-content">
         <rect class="value-chip" y="-35" height="60" rx="30"></rect>
         <text class="value" y="8" text-anchor="middle"><tspan class="value-number"></tspan><tspan class="unit" dx="4"></tspan></text>
-        <text class="region-name" y="58" text-anchor="middle">${region.name}</text>
+        <text class="region-name" y="58" text-anchor="middle"></text>
       </g>
     </g>`).join('')
   labels.querySelectorAll('.label').forEach(node => labelNodes.set(node.dataset.region, node))
+  regions.forEach(region => setRegionName(labelNodes.get(region.id), region))
 }
 
 function resizeValueChip(node) {
@@ -354,29 +482,29 @@ function layoutArtboard() {
   sourceText.setAttribute('font-size', baseCopySize.source)
 
   const lineHeight = headlineSize * 1.06
-  const firstBaseline = ARTBOARD.top + headlineSize
+  const firstBaseline = artboardSize.top + headlineSize
   Array.from(headline.querySelectorAll('tspan')).forEach((line, index) => {
-    line.setAttribute('x', ARTBOARD.w / 2)
+    line.setAttribute('x', artboardSize.w / 2)
     line.setAttribute('y', firstBaseline + index * lineHeight)
   })
 
   const headlineLines = Math.max(headline.querySelectorAll('tspan').length, 1)
   const headlineBottom = firstBaseline + (headlineLines - 1) * lineHeight
   const subheadlineBaseline = headlineBottom + subheadlineSize * 1.9
-  subheadline.setAttribute('x', ARTBOARD.w / 2)
+  subheadline.setAttribute('x', artboardSize.w / 2)
   subheadline.setAttribute('y', subheadlineBaseline)
-  sourceText.setAttribute('x', ARTBOARD.w - ARTBOARD.margin)
-  sourceText.setAttribute('y', ARTBOARD.h - 40)
+  sourceText.setAttribute('x', artboardSize.w - artboardSize.margin)
+  sourceText.setAttribute('y', artboardSize.h - 40)
 
   if (!mapContentBox) return
   // Fit the map's own ink, not its viewBox: the source file carries padding of
   // its own, and fitting the box would leave the country floating small.
   const top = subheadlineBaseline + 46
-  const bottom = ARTBOARD.h - ARTBOARD.bottom
-  const availableWidth = ARTBOARD.w - ARTBOARD.margin * 2
+  const bottom = artboardSize.h - artboardSize.bottom
+  const availableWidth = artboardSize.w - artboardSize.margin * 2
   const availableHeight = Math.max(bottom - top, 1)
   const scale = Math.min(availableWidth / mapContentBox.width, availableHeight / mapContentBox.height)
-  const x = ARTBOARD.w / 2 - (mapContentBox.x + mapContentBox.width / 2) * scale
+  const x = artboardSize.w / 2 - (mapContentBox.x + mapContentBox.width / 2) * scale
   const y = (top + bottom) / 2 - (mapContentBox.y + mapContentBox.height / 2) * scale
   chart.setAttribute('transform', `translate(${x} ${y}) scale(${scale})`)
 }
@@ -404,7 +532,10 @@ function renderCopy() {
     headline.appendChild(tspan)
   })
   subheadline.textContent = text.subtitle.value
-  sourceText.textContent = text.source.value
+  const sourceMatch = text.source.value.match(/^(.*?)\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)\s*$/)
+  sourceText.textContent = sourceMatch ? `${sourceMatch[1]}${sourceMatch[2]}` : text.source.value
+  if (sourceMatch) sourceLink.setAttribute('href', sourceMatch[3])
+  else sourceLink.removeAttribute('href')
   layoutArtboard()
 }
 
@@ -420,14 +551,15 @@ function renderPreview(showAll = false, counterValues = {}) {
     node.querySelector('.unit').textContent = ` ${text.unit.value}`
     // buildLabels writes the name once, so an edited name would never reach the
     // map without this.
-    node.querySelector('.region-name').textContent = region.name
+    setRegionName(node, region)
     resizeValueChip(node)
   })
-  mapPaths.forEach((path, index) => {
-    const region = regions[index]
-    path.style.fill = showAll || Object.prototype.hasOwnProperty.call(counterValues, region.id)
-      ? colorAt(region.value)
-      : activeColorScheme.low
+  regions.forEach(region => {
+    regionPaths.get(region.id)?.forEach(path => {
+      path.style.fill = showAll || Object.prototype.hasOwnProperty.call(counterValues, region.id)
+        ? colorAt(region.value)
+        : activeColorScheme.low
+    })
   })
 }
 
@@ -481,22 +613,22 @@ function animationDuration() {
 
 // Renders the chart exactly as it stands t milliseconds into the animation.
 function applyFrame(t) {
-  regions.forEach((region, index) => {
+  regions.forEach(region => {
     const node = labelNodes.get(region.id)
-    const path = mapPaths[index]
+    const pathsForRegion = regionPaths.get(region.id) || []
     const elapsed = t - region.delay
     if (elapsed < 0) {
-      if (path) path.style.fill = activeColorScheme.low
+      pathsForRegion.forEach(path => { path.style.fill = activeColorScheme.low })
       if (node) {
         node.classList.remove('is-visible')
         node.querySelector('.label-content').style.cssText = 'opacity:0;transform:translateY(4px)'
       }
       return
     }
-    if (path) {
+    pathsForRegion.forEach(path => {
       path.style.fill = mixColor(activeColorScheme.low, colorAt(region.value),
         easeFill(Math.min(1, elapsed / TIMING.fill)))
-    }
+    })
     if (!node) return
     const appear = easeLabel(Math.min(1, elapsed / TIMING.label))
     node.classList.add('is-visible')
@@ -595,8 +727,8 @@ async function buildExportSvg() {
 async function buildFrameSvg() {
   const clone = artboard.cloneNode(true)
   clone.setAttribute('xmlns', SVG_NS)
-  clone.setAttribute('width', ARTBOARD.w)
-  clone.setAttribute('height', ARTBOARD.h)
+  clone.setAttribute('width', artboardSize.w)
+  clone.setAttribute('height', artboardSize.h)
   inlineStyles(artboard, clone)
   const style = document.createElementNS(SVG_NS, 'style')
   style.textContent = await fontCss()
@@ -614,8 +746,8 @@ async function rasterize(markup, scale, type, quality) {
       image.src = url
     })
     const canvas = document.createElement('canvas')
-    canvas.width = ARTBOARD.w * scale
-    canvas.height = ARTBOARD.h * scale
+    canvas.width = artboardSize.w * scale
+    canvas.height = artboardSize.h * scale
     const context = canvas.getContext('2d')
     // JPEG has no alpha, and an unpainted canvas is transparent black — which
     // encodes as a black background rather than the white one on screen.
@@ -705,8 +837,8 @@ async function exportVideo() {
 
   const scale = Number(exportScaleInput.value) || 1
   const canvas = document.createElement('canvas')
-  canvas.width = ARTBOARD.w * scale
-  canvas.height = ARTBOARD.h * scale
+  canvas.width = artboardSize.w * scale
+  canvas.height = artboardSize.h * scale
   const context = canvas.getContext('2d')
   context.fillStyle = '#ffffff'
   context.fillRect(0, 0, canvas.width, canvas.height)
@@ -775,20 +907,19 @@ function buildEmbedSvg() {
   applyFrame(animationDuration())          // final state supplies colours and chip widths
   const clone = artboard.cloneNode(true)
   clone.setAttribute('xmlns', SVG_NS)
-  clone.setAttribute('width', ARTBOARD.w)
-  clone.setAttribute('height', ARTBOARD.h)
+  clone.setAttribute('width', artboardSize.w)
+  clone.setAttribute('height', artboardSize.h)
   inlineStyles(artboard, clone)
 
   const keyframes = []
-  regions.forEach((region, index) => {
+  regions.forEach(region => {
     const finalFill = colorAt(region.value)
-    const path = clone.querySelectorAll('#map-art path')[index]
-    if (path) {
+    clone.querySelectorAll(`#map-art path[data-region="${region.id}"]`).forEach(path => {
       path.setAttribute('style',
         `${path.getAttribute('style') || ''};fill:${activeColorScheme.low};` +
         `animation:fill-${region.id} ${TIMING.fill}ms ${region.delay}ms cubic-bezier(.2,.75,.25,1) forwards`)
-      keyframes.push(`@keyframes fill-${region.id}{to{fill:${finalFill}}}`)
-    }
+    })
+    keyframes.push(`@keyframes fill-${region.id}{to{fill:${finalFill}}}`)
 
     const label = clone.querySelector(`.label[data-region="${region.id}"]`)
     if (!label) return
@@ -866,8 +997,8 @@ labels.addEventListener('pointerdown', event => {
 labels.addEventListener('pointermove', event => {
   if (!drag || event.pointerId !== drag.pointerId) return
   const point = svgPoint(event)
-  drag.region.x = Math.round(clamp(point.x + drag.offsetX, 0, 1920))
-  drag.region.y = Math.round(clamp(point.y + drag.offsetY, 0, 1080))
+  drag.region.x = Math.round(clamp(point.x + drag.offsetX, 0, artboardSize.w))
+  drag.region.y = Math.round(clamp(point.y + drag.offsetY, 0, artboardSize.h))
   drag.node.setAttribute('transform', `translate(${drag.region.x} ${drag.region.y})`)
 })
 

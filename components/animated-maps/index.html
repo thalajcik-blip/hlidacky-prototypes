@@ -21,7 +21,7 @@
           <summary><span><h2>Content</h2></span></summary>
           <div class="editor-accordion-content">
             <label>Map
-              <span class="select-picker"><select class="editor-select" id="map-picker" aria-label="Map picker"><option value="czechia">Czech Republic</option><option value="slovakia">Slovakia</option><option value="croatia" disabled>Croatia · Coming soon</option><option value="austria" disabled>Austria · Coming soon</option><option value="hungary" disabled>Hungary · Coming soon</option></select></span>
+              <span class="select-picker"><select class="editor-select" id="map-picker" aria-label="Map picker"><option value="czechia">Czech Republic</option><option value="slovakia">Slovakia</option><option value="hungary">Hungary</option><option value="austria">Austria</option><option value="croatia">Croatia</option></select></span>
             </label>
             <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
             <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
@@ -50,7 +50,7 @@
     </aside>
 
     <section class="preview-panel" aria-label="Animation preview">
-      <header class="preview-toolbar"><div><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel"><span class="toolbar-icon toolbar-icon--gear" aria-hidden="true">⚙</span>Appearance</button><button class="map-settings-toggle" id="export-toggle" type="button" aria-expanded="false" aria-controls="export-panel"><span class="toolbar-icon" aria-hidden="true">↓</span>Export</button></div></header>
+      <header class="preview-toolbar"><div><strong id="preview-dimensions">1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel"><span class="toolbar-icon toolbar-icon--gear" aria-hidden="true">⚙</span>Appearance</button><button class="map-settings-toggle" id="export-toggle" type="button" aria-expanded="false" aria-controls="export-panel"><span class="toolbar-icon" aria-hidden="true">↓</span>Export</button></div></header>
       <section class="appearance-panel" id="map-settings-panel" aria-labelledby="map-settings-title" hidden>
         <div class="appearance-panel-header"><div><h2 id="map-settings-title">Chart settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
         <label>Decimal places<span class="select-picker"><select class="editor-select" id="decimal-places-input"><option value="0" selected>0 · Whole numbers</option><option value="1">1 · 6.6</option><option value="2">2 · 6.60</option><option value="3">3 · 6.600</option></select></span></label>
@@ -80,9 +80,8 @@
         </div>
       </section>
       <div class="preview-stage">
-        <!-- One artboard, one coordinate system. Headline, map and source all
-             live in the same 1920x1080 viewBox, so the preview is the export
-             at a smaller scale rather than an approximation of it. -->
+        <!-- One artboard, one coordinate system. Its dimensions follow the
+             selected map, so the preview is the export at a smaller scale. -->
         <svg class="artboard" id="artboard" viewBox="0 0 1920 1080" role="img" aria-label="Animated Czech Republic regional map">
           <rect class="artboard-bg" x="0" y="0" width="1920" height="1080"></rect>
           <text class="headline" id="preview-title" text-anchor="middle"></text>
@@ -91,7 +90,7 @@
             <g class="map-art" id="map-art"></g>
             <g class="labels" id="map-labels"></g>
           </g>
-          <text class="source" id="preview-source" text-anchor="end"></text>
+          <a id="preview-source-link" target="_blank" rel="noopener"><text class="source" id="preview-source" text-anchor="end"></text></a>
         </svg>
       </div>
     </section>
