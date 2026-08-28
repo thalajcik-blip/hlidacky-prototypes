@@ -23,6 +23,8 @@ const text = {
 }
 const table = document.querySelector('#regions-table')
 const labels = document.querySelector('#map-labels')
+const labelNodes = new Map()
+let drag = null
 const mapArt = document.querySelector('#map-art')
 const status = document.querySelector('#animation-status')
 let mapPaths = []
@@ -53,21 +55,35 @@ function renderTable() {
   }))
 }
 
+// Built once and then updated in place. Rebuilding the markup every frame,
+// as this did, would replace the element under the pointer mid-drag — and it
+// threw away and recreated fourteen label groups on every animation frame.
+function buildLabels() {
+  labels.innerHTML = regions.map(region => `
+    <g class="label" data-region="${region.id}" transform="translate(${region.x} ${region.y})">
+      <g class="label-content">
+        <rect class="value-chip" x="-61" y="-27" width="122" height="54" rx="27"></rect>
+        <text class="value" y="8" text-anchor="middle"><tspan class="value-number"></tspan><tspan class="unit"></tspan></text>
+        <text class="region-name" y="58" text-anchor="middle">${region.name}</text>
+      </g>
+    </g>`).join('')
+  labels.querySelectorAll('.label').forEach(node => labelNodes.set(node.dataset.region, node))
+}
+
 function renderPreview(showAll = false, counterValues = {}) {
   document.querySelector('#preview-title').textContent = text.title.value || 'Untitled map'
   document.querySelector('#preview-subtitle').textContent = text.subtitle.value
   document.querySelector('#preview-source').textContent = text.source.value
-  labels.innerHTML = regions.map(region => {
+  regions.forEach(region => {
+    const node = labelNodes.get(region.id)
+    if (!node) return
     const visible = showAll || Object.prototype.hasOwnProperty.call(counterValues, region.id)
     const value = showAll ? region.value : (counterValues[region.id] || 0)
-    return `<g class="label${visible ? ' is-visible' : ''}" transform="translate(${region.x} ${region.y})">
-      <g class="label-content">
-        <rect class="value-chip" x="-61" y="-27" width="122" height="54" rx="27"></rect>
-        <text class="value" y="8" text-anchor="middle"><tspan>${value}</tspan><tspan class="unit"> ${text.unit.value}</tspan></text>
-        <text class="region-name" y="58" text-anchor="middle">${region.name}</text>
-      </g>
-    </g>`
-  }).join('')
+    node.classList.toggle('is-visible', visible)
+    node.setAttribute('transform', `translate(${region.x} ${region.y})`)
+    node.querySelector('.value-number').textContent = value
+    node.querySelector('.unit').textContent = ` ${text.unit.value}`
+  })
   mapPaths.forEach((path, index) => {
     const region = regions[index]
     path.style.fill = showAll || Object.prototype.hasOwnProperty.call(counterValues, region.id)
@@ -105,6 +121,69 @@ async function replay() {
   }
 }
 
+// --- dragging labels --------------------------------------------------------
+// The preview is a 1920x1080 viewBox scaled to whatever space the panel has,
+// and it is letterboxed by preserveAspectRatio. Screen pixels therefore mean
+// nothing here: every pointer position goes through the SVG's own matrix so a
+// label lands where the cursor is at any preview size.
+function svgPoint(event) {
+  const point = labels.createSVGPoint()
+  point.x = event.clientX
+  point.y = event.clientY
+  return point.matrixTransform(labels.getScreenCTM().inverse())
+}
+
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
+
+labels.addEventListener('pointerdown', event => {
+  const node = event.target.closest('.label')
+  if (!node) return
+  const region = regions.find(item => item.id === node.dataset.region)
+  if (!region) return
+  const point = svgPoint(event)
+  // Hold the grab offset so the label does not jump its centre to the cursor.
+  drag = { region, node, offsetX: region.x - point.x, offsetY: region.y - point.y, pointerId: event.pointerId }
+  node.classList.add('is-dragging')
+  labels.setPointerCapture(event.pointerId)
+  event.preventDefault()
+})
+
+labels.addEventListener('pointermove', event => {
+  if (!drag || event.pointerId !== drag.pointerId) return
+  const point = svgPoint(event)
+  drag.region.x = Math.round(clamp(point.x + drag.offsetX, 0, 1920))
+  drag.region.y = Math.round(clamp(point.y + drag.offsetY, 0, 1080))
+  drag.node.setAttribute('transform', `translate(${drag.region.x} ${drag.region.y})`)
+})
+
+function endDrag(event) {
+  if (!drag || event.pointerId !== drag.pointerId) return
+  drag.node.classList.remove('is-dragging')
+  if (labels.hasPointerCapture(event.pointerId)) labels.releasePointerCapture(event.pointerId)
+  drag = null
+}
+
+labels.addEventListener('pointerup', endDrag)
+labels.addEventListener('pointercancel', endDrag)
+
+// Positions tuned by dragging live in memory only, so hand them back in the
+// shape this file declares them in — ready to paste over the list at the top.
+const copyButton = document.querySelector('#copy-positions')
+
+copyButton.addEventListener('click', async () => {
+  const body = regions
+    .map(region => `  { id: '${region.id}', name: '${region.name}', value: ${region.value}, x: ${region.x}, y: ${region.y} },`)
+    .join('\n')
+  try {
+    await navigator.clipboard.writeText(`const regions = [\n${body}\n]`)
+    copyButton.textContent = 'Copied to clipboard'
+  } catch {
+    copyButton.textContent = 'Copy failed — see console'
+    console.log(`const regions = [\n${body}\n]`)
+  }
+  setTimeout(() => { copyButton.textContent = 'Copy label positions' }, 1800)
+})
+
 Object.values(text).forEach(input => input.addEventListener('input', () => renderPreview(true)))
 document.querySelector('#replay-button').addEventListener('click', replay)
 
@@ -116,6 +195,7 @@ fetch('assets/czech-regions.svg')
     svg.setAttribute('viewBox', '0 0 1920 1080')
     mapPaths = [...svg.querySelectorAll('path')]
     mapPaths.forEach((path, index) => { path.dataset.region = regions[index].id })
+    buildLabels()
     renderTable()
     replay()
   })
