@@ -13,13 +13,12 @@
       <div class="editor-scroll">
         <a class="back-link" href="/components/">← Components</a>
         <div class="panel-intro">
-          <p class="eyebrow">Czech Republic</p>
           <h1>Animated maps</h1>
           <p>Update the data, then replay the regional animation.</p>
         </div>
 
         <details class="editor-accordion" open>
-          <summary><span><p class="eyebrow">Content</p><h2>Copy</h2></span></summary>
+          <summary><span><h2>Content</h2></span></summary>
           <div class="editor-accordion-content">
             <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
             <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
@@ -29,7 +28,7 @@
         </details>
 
         <details class="editor-accordion">
-          <summary><span><p class="eyebrow">Data</p><h2>Regions</h2></span><span class="count">14</span></summary>
+          <summary><span><h2>Data</h2></span><span class="count">14</span></summary>
           <div class="editor-accordion-content">
             <div class="table-shell">
               <table>
@@ -48,9 +47,9 @@
     </aside>
 
     <section class="preview-panel" aria-label="Animation preview">
-      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel"><span class="toolbar-icon toolbar-icon--gear" aria-hidden="true">⚙</span>Chart Settings</button><button class="map-settings-toggle" id="export-toggle" type="button" aria-expanded="false" aria-controls="export-panel"><span class="toolbar-icon" aria-hidden="true">↓</span>Export</button></div></header>
+      <header class="preview-toolbar"><div><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel"><span class="toolbar-icon toolbar-icon--gear" aria-hidden="true">⚙</span>Appearance</button><button class="map-settings-toggle" id="export-toggle" type="button" aria-expanded="false" aria-controls="export-panel"><span class="toolbar-icon" aria-hidden="true">↓</span>Export</button></div></header>
       <section class="appearance-panel" id="map-settings-panel" aria-labelledby="map-settings-title" hidden>
-        <div class="appearance-panel-header"><div><p class="eyebrow">Appearance</p><h2 id="map-settings-title">Chart settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
+        <div class="appearance-panel-header"><div><h2 id="map-settings-title">Chart settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
         <label>Decimal places<span class="select-picker"><select class="editor-select" id="decimal-places-input"><option value="0" selected>0 · Whole numbers</option><option value="1">1 · 6.6</option><option value="2">2 · 6.60</option><option value="3">3 · 6.600</option></select></span></label>
         <label>Color scheme
           <span class="scheme-picker"><span class="scheme-swatch" id="color-scheme-swatch" aria-hidden="true"></span><select id="color-scheme-input"><option value="babysitting">Babysitting · Pink</option><option value="pet-care">Pet Care · Teal</option><option value="cleaning">Cleaning · Cyan</option><option value="senior-care">Senior Care · Orange</option><option value="tutoring">Tutoring · Violet</option></select></span>
@@ -64,7 +63,7 @@
         </div>
       </section>
       <section class="appearance-panel export-panel" id="export-panel" aria-labelledby="export-panel-title" hidden>
-        <div class="appearance-panel-header"><div><p class="eyebrow">Export</p><h2 id="export-panel-title">Export chart</h2></div><button class="appearance-panel-close" id="export-panel-close" type="button" aria-label="Close export panel">×</button></div>
+        <div class="appearance-panel-header"><div><h2 id="export-panel-title">Export chart</h2></div><button class="appearance-panel-close" id="export-panel-close" type="button" aria-label="Close export panel">×</button></div>
         <div class="export-controls">
           <div class="export-heading"><span class="export-status" id="export-status" role="status"></span></div>
           <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option></select></span></label>
