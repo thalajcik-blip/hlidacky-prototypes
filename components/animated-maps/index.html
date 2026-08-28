@@ -63,15 +63,19 @@
         </div>
       </section>
       <div class="preview-stage">
-        <div class="preview-copy">
-          <h2 id="preview-title"></h2>
-          <p id="preview-subtitle"></p>
-        </div>
-        <div class="map-frame">
-          <div class="map-art" id="map-art"></div>
-          <svg class="labels" id="map-labels" viewBox="0 0 1920 1080" aria-label="Animated Czech Republic regional map"></svg>
-        </div>
-        <p class="source" id="preview-source"></p>
+        <!-- One artboard, one coordinate system. Headline, map and source all
+             live in the same 1920x1080 viewBox, so the preview is the export
+             at a smaller scale rather than an approximation of it. -->
+        <svg class="artboard" id="artboard" viewBox="0 0 1920 1080" role="img" aria-label="Animated Czech Republic regional map">
+          <rect class="artboard-bg" x="0" y="0" width="1920" height="1080"></rect>
+          <text class="headline" id="preview-title" text-anchor="middle"></text>
+          <text class="subheadline" id="preview-subtitle" text-anchor="middle"></text>
+          <g id="chart">
+            <g class="map-art" id="map-art"></g>
+            <g class="labels" id="map-labels"></g>
+          </g>
+          <text class="source" id="preview-source" text-anchor="end"></text>
+        </svg>
       </div>
     </section>
   </main>

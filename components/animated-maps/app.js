@@ -58,8 +58,19 @@ const labelScaleControls = {
 }
 const table = document.querySelector('#regions-table')
 const labels = document.querySelector('#map-labels')
-const mapFrame = document.querySelector('.map-frame')
-const previewCopy = document.querySelector('.preview-copy')
+const artboard = document.querySelector('#artboard')
+const chart = document.querySelector('#chart')
+const headline = document.querySelector('#preview-title')
+const subheadline = document.querySelector('#preview-subtitle')
+const sourceText = document.querySelector('#preview-source')
+
+// Everything below is in artboard units of the 1920x1080 viewBox — never in
+// screen pixels. That is the whole point of the single artboard: one scale for
+// the entire composition, so what the preview shows is what an export at any
+// resolution produces.
+const ARTBOARD = { w: 1920, h: 1080, margin: 80, top: 72, bottom: 96 }
+const baseCopySize = { headline: 52, subheadline: 29, source: 18 }
+let mapContentBox = null
 const labelNodes = new Map()
 let drag = null
 const mapArt = document.querySelector('#map-art')
@@ -168,21 +179,20 @@ function resizeValueChip(node) {
   chip.setAttribute('x', -width / 2)
 }
 
-// Labels live in the same scalable SVG as the map. Below a given preview
-// width, raise their SVG font sizes so the rendered text remains legible.
+// Sizes are plain artboard units now. The old version raised them as the
+// preview panel got narrower, to keep on-screen text legible — a compensation
+// for the copy being measured in viewport pixels while the map was measured in
+// artboard units. With one coordinate system the whole composition scales
+// together, and that clamp would have made the exported font size depend on
+// the width of the browser window.
 function updateLabelSizing() {
-  const previewScale = mapFrame.clientWidth / 1920
-  if (!previewScale) return
-
   const styles = getComputedStyle(labels)
   const baseSize = name => Number.parseFloat(styles.getPropertyValue(name)) || 0
-  previewCopy.style.setProperty('--headline-scale', Number(labelScaleControls.headline.input.value) / 100)
-  previewCopy.style.setProperty('--subheadline-scale', Number(labelScaleControls.subheadline.input.value) / 100)
   const valuePillScale = Number(labelScaleControls.valuePill.input.value) / 100
   const regionNameScale = Number(labelScaleControls.regionName.input.value) / 100
-  const valueSize = Math.max(baseSize('--value-base-size') * valuePillScale, minimumLabelFontSize / previewScale)
-  const unitSize = Math.max(baseSize('--unit-base-size') * valuePillScale, minimumLabelFontSize / previewScale)
-  const regionNameSize = Math.max(baseSize('--region-name-base-size') * regionNameScale, minimumLabelFontSize / previewScale)
+  const valueSize = baseSize('--value-base-size') * valuePillScale
+  const unitSize = baseSize('--unit-base-size') * valuePillScale
+  const regionNameSize = baseSize('--region-name-base-size') * regionNameScale
   const chipTextSize = Math.max(valueSize, unitSize)
   const chipY = -Math.ceil(chipTextSize * .92)
   const chipHeight = Math.max(Math.ceil(60 * valuePillScale), Math.ceil(chipTextSize * 1.58))
@@ -201,20 +211,74 @@ function updateLabelSizing() {
   })
 }
 
-new ResizeObserver(updateLabelSizing).observe(mapFrame)
+/* Lay the artboard out top to bottom: the headline takes however many lines it
+   is given, the subheadline follows it, and the map is fitted into whatever
+   vertical space is left. Driven by content rather than fixed coordinates, so
+   a three-line headline does not collide with the map. */
+function layoutArtboard() {
+  const headlineSize = baseCopySize.headline * (Number(labelScaleControls.headline.input.value) / 100)
+  const subheadlineSize = baseCopySize.subheadline * (Number(labelScaleControls.subheadline.input.value) / 100)
+
+  headline.setAttribute('font-size', headlineSize)
+  subheadline.setAttribute('font-size', subheadlineSize)
+  sourceText.setAttribute('font-size', baseCopySize.source)
+
+  const lineHeight = headlineSize * 1.06
+  const firstBaseline = ARTBOARD.top + headlineSize
+  Array.from(headline.querySelectorAll('tspan')).forEach((line, index) => {
+    line.setAttribute('x', ARTBOARD.w / 2)
+    line.setAttribute('y', firstBaseline + index * lineHeight)
+  })
+
+  const headlineLines = Math.max(headline.querySelectorAll('tspan').length, 1)
+  const headlineBottom = firstBaseline + (headlineLines - 1) * lineHeight
+  const subheadlineBaseline = headlineBottom + subheadlineSize * 1.9
+  subheadline.setAttribute('x', ARTBOARD.w / 2)
+  subheadline.setAttribute('y', subheadlineBaseline)
+  sourceText.setAttribute('x', ARTBOARD.w - ARTBOARD.margin)
+  sourceText.setAttribute('y', ARTBOARD.h - 40)
+
+  if (!mapContentBox) return
+  // Fit the map's own ink, not its viewBox: the source file carries padding of
+  // its own, and fitting the box would leave the country floating small.
+  const top = subheadlineBaseline + 46
+  const bottom = ARTBOARD.h - ARTBOARD.bottom
+  const availableWidth = ARTBOARD.w - ARTBOARD.margin * 2
+  const availableHeight = Math.max(bottom - top, 1)
+  const scale = Math.min(availableWidth / mapContentBox.width, availableHeight / mapContentBox.height)
+  const x = ARTBOARD.w / 2 - (mapContentBox.x + mapContentBox.width / 2) * scale
+  const y = (top + bottom) / 2 - (mapContentBox.y + mapContentBox.height / 2) * scale
+  chart.setAttribute('transform', `translate(${x} ${y}) scale(${scale})`)
+}
 
 Object.values(labelScaleControls).forEach(control => {
   control.input.addEventListener('input', () => {
     control.output.value = `${control.input.value}%`
     updateLabelSizing()
     renderPreview(true)
+    layoutArtboard()
   })
 })
 
+// SVG text does not wrap, so the headline breaks where the author breaks it.
+// For a chart headline that is the better deal anyway: where a line turns is a
+// typographic decision, not something to hand to a measuring algorithm.
+// Written separately from the per-frame render because it changes when someone
+// types, not sixty times a second — and because it is what forces a relayout.
+function renderCopy() {
+  const lines = (text.title.value || 'Untitled map').split('\n')
+  headline.textContent = ''
+  lines.forEach(line => {
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
+    tspan.textContent = line
+    headline.appendChild(tspan)
+  })
+  subheadline.textContent = text.subtitle.value
+  sourceText.textContent = text.source.value
+  layoutArtboard()
+}
+
 function renderPreview(showAll = false, counterValues = {}) {
-  document.querySelector('#preview-title').textContent = text.title.value || 'Untitled map'
-  document.querySelector('#preview-subtitle').textContent = text.subtitle.value
-  document.querySelector('#preview-source').textContent = text.source.value
   regions.forEach(region => {
     const node = labelNodes.get(region.id)
     if (!node) return
@@ -269,7 +333,11 @@ async function replay() {
 // nothing here: every pointer position goes through the SVG's own matrix so a
 // label lands where the cursor is at any preview size.
 function svgPoint(event) {
-  const point = labels.createSVGPoint()
+  // createSVGPoint lives on the <svg> root, so it comes from the artboard —
+  // but the matrix has to come from the labels group, because that group now
+  // sits inside the chart's fit transform. Its screen CTM carries that
+  // transform, which is what keeps a drag landing under the cursor.
+  const point = artboard.createSVGPoint()
   point.x = event.clientX
   point.y = event.clientY
   return point.matrixTransform(labels.getScreenCTM().inverse())
@@ -326,7 +394,10 @@ copyButton.addEventListener('click', async () => {
   setTimeout(() => { copyButton.textContent = 'Copy label positions' }, 1800)
 })
 
-Object.values(text).forEach(input => input.addEventListener('input', () => renderPreview(true)))
+Object.values(text).forEach(input => input.addEventListener('input', () => {
+  renderCopy()
+  renderPreview(true)
+}))
 const updateDecimalPlaces = () => renderPreview(true)
 decimalPlacesInput.addEventListener('input', updateDecimalPlaces)
 decimalPlacesInput.addEventListener('change', updateDecimalPlaces)
@@ -342,14 +413,21 @@ document.querySelector('#replay-button').addEventListener('click', replay)
 fetch('assets/czech-regions.svg')
   .then(response => response.text())
   .then(markup => {
-    mapArt.innerHTML = markup
-    const svg = mapArt.querySelector('svg')
-    svg.setAttribute('viewBox', '0 0 1920 1080')
-    mapPaths = [...svg.querySelectorAll('path')]
+    // The map's own <svg> wrapper and its white backing rect are dropped: the
+    // artboard supplies the background, and the paths belong directly in the
+    // chart group so a single transform moves map and labels together — which
+    // is what keeps the dragged label positions correct.
+    const holder = document.createElement('div')
+    holder.innerHTML = markup
+    const source = holder.querySelector('svg')
+    Array.from(source.querySelectorAll('path')).forEach(path => mapArt.appendChild(path))
+    mapPaths = [...mapArt.querySelectorAll('path')]
     mapPaths.forEach((path, index) => { path.dataset.region = regions[index].id })
+    mapContentBox = mapArt.getBBox()
     buildLabels()
     updateLabelSizing()
     renderTable()
+    renderCopy()
     replay()
   })
   .catch(() => { status.textContent = 'Map unavailable'; status.classList.add('ready') })
