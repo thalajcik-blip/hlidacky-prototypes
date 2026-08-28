@@ -10,38 +10,58 @@
 <body>
   <main class="app-shell">
     <aside class="editor-panel">
-      <a class="back-link" href="/components/">← Components</a>
-      <div class="panel-intro">
-        <p class="eyebrow">Czech Republic</p>
-        <h1>Animated maps</h1>
-        <p>Update the data, then replay the regional animation.</p>
-      </div>
-
-      <section class="editor-section" aria-labelledby="copy-heading">
-        <div class="section-heading"><div><p class="eyebrow">Content</p><h2 id="copy-heading">Copy</h2></div></div>
-        <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
-        <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
-        <label>Source<input id="source-input" value="Source: Hlídačky.cz"></label>
-        <label>Unit<input id="unit-input" value="Kč"></label>
-      </section>
-
-      <section class="editor-section region-section" aria-labelledby="regions-heading">
-        <div class="section-heading"><div><p class="eyebrow">Data</p><h2 id="regions-heading">Regions</h2></div><span class="count">14</span></div>
-        <div class="table-shell">
-          <table>
-            <thead><tr><th>Region</th><th>Value</th><th>Order</th></tr></thead>
-            <tbody id="regions-table"></tbody>
-          </table>
+      <div class="editor-scroll">
+        <a class="back-link" href="/components/">← Components</a>
+        <div class="panel-intro">
+          <p class="eyebrow">Czech Republic</p>
+          <h1>Animated maps</h1>
+          <p>Update the data, then replay the regional animation.</p>
         </div>
-      </section>
 
-      <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">▶</span> Replay animation</button>
-      <button class="copy-button" id="copy-positions" type="button">Copy label positions</button>
-      <p class="drag-hint">Drag a label on the map to place it.</p>
+        <details class="editor-accordion" open>
+          <summary><span><p class="eyebrow">Content</p><h2>Copy</h2></span></summary>
+          <div class="editor-accordion-content">
+            <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
+            <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
+            <label>Source<input id="source-input" value="Source: Hlídačky.cz"></label>
+            <label>Unit<input id="unit-input" value="Kč"></label>
+          </div>
+        </details>
+
+        <details class="editor-accordion">
+          <summary><span><p class="eyebrow">Data</p><h2>Regions</h2></span><span class="count">14</span></summary>
+          <div class="editor-accordion-content">
+            <div class="table-shell">
+              <table>
+                <thead><tr><th>Region</th><th>Value</th><th>Delay (ms)</th></tr></thead>
+                <tbody id="regions-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </div>
+      <div class="editor-actions">
+        <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">▶</span> Replay animation</button>
+        <button class="copy-button" id="copy-positions" type="button">Copy label positions</button>
+        <p class="drag-hint">Drag a label on the map to place it.</p>
+      </div>
     </aside>
 
     <section class="preview-panel" aria-label="Animation preview">
-      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><span class="status" id="animation-status">Playing</span></header>
+      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><div class="preview-actions"><span class="status" id="animation-status">Playing</span><button class="map-settings-toggle" id="map-settings-toggle" type="button" aria-expanded="false" aria-controls="map-settings-panel">Chart Settings</button></div></header>
+      <section class="appearance-panel" id="map-settings-panel" aria-labelledby="map-settings-title" hidden>
+        <div class="appearance-panel-header"><div><p class="eyebrow">Appearance</p><h2 id="map-settings-title">Map settings</h2></div><button class="appearance-panel-close" id="map-settings-close" type="button" aria-label="Close map settings">×</button></div>
+        <label>Decimal places<span class="select-picker"><select class="editor-select" id="decimal-places-input"><option value="0" selected>0 · Whole numbers</option><option value="1">1 · 6.6</option><option value="2">2 · 6.60</option><option value="3">3 · 6.600</option></select></span></label>
+        <label>Color scheme
+          <span class="scheme-picker"><span class="scheme-swatch" id="color-scheme-swatch" aria-hidden="true"></span><select id="color-scheme-input"><option value="babysitting">Babysitting · Pink</option><option value="pet-care">Pet Care · Teal</option><option value="cleaning">Cleaning · Cyan</option><option value="senior-care">Senior Care · Orange</option><option value="tutoring">Tutoring · Violet</option></select></span>
+        </label>
+        <div class="label-size-controls" aria-label="Map label size controls">
+          <label class="range-control"><span>Headline <output id="headline-scale-output">100%</output></span><input id="headline-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+          <label class="range-control"><span>Subheadline <output id="subheadline-scale-output">100%</output></span><input id="subheadline-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+          <label class="range-control"><span>Value pills &amp; content <output id="value-scale-output">100%</output></span><input id="value-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+          <label class="range-control"><span>Region names <output id="region-name-scale-output">100%</output></span><input id="region-name-scale-input" type="range" min="70" max="160" value="100" step="1"></label>
+        </div>
+      </section>
       <div class="preview-stage">
         <div class="preview-copy">
           <h2 id="preview-title"></h2>
