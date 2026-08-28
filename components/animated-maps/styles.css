@@ -121,6 +121,15 @@ th:not(:first-child) { padding-right: 18px; padding-left: 6px; text-align: right
 .editor-accordion::details-content {
   block-size: 0;
   overflow: hidden;
+  /* The clip is only wanted vertically, for the open and close, but overflow
+     cannot be set per axis — asking for one clipped axis makes the other
+     scroll. The fields sit flush with this box, so the 3px focus ring was
+     being cut off at the left and right edges. Widening the clip and pulling
+     it back by the same amount leaves the fields where they are and gives the
+     ring somewhere to land. block-size sets the content box, so the height
+     animation is untouched. */
+  padding-inline: 5px;
+  margin-inline: -5px;
   transition: block-size .24s ease, content-visibility .24s allow-discrete;
 }
 .editor-accordion[open]::details-content { block-size: auto; }
