@@ -69,7 +69,8 @@
         <div class="appearance-panel-header"><div><h2 id="export-panel-title">Export chart</h2></div><button class="appearance-panel-close" id="export-panel-close" type="button" aria-label="Close export panel">×</button></div>
         <div class="export-controls">
           <div class="export-heading"><span class="export-status" id="export-status" role="status"></span></div>
-          <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option></select></span></label>
+          <label class="export-size">Raster size<span class="select-picker"><select class="editor-select" id="export-scale-input"><option value="1" selected>1920 × 1080</option><option value="2">3840 × 2160</option><option value="custom">Custom width…</option></select></span></label>
+          <label class="export-size export-custom" id="export-custom" hidden>Width in pixels<span class="custom-size"><input id="export-width-input" type="number" min="200" max="8000" step="10" value="1920"><span class="custom-size__derived" id="export-height-output" aria-live="polite">× 1080</span></span></label>
           <div class="export-buttons">
             <button class="export-button" type="button" data-export="png">PNG</button>
             <button class="export-button" type="button" data-export="jpg">JPG</button>

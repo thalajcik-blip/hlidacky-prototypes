@@ -220,8 +220,12 @@ function updateArtboardSize(canvas = defaultArtboardSize) {
   previewDimensions.textContent = `${artboardSize.w} × ${artboardSize.h}`
   Array.from(exportScaleInput.options).forEach(option => {
     const scale = Number(option.value)
+    if (!Number.isFinite(scale)) return        // the custom entry keeps its label
     option.textContent = `${artboardSize.w * scale} × ${artboardSize.h * scale}`
   })
+  // A different map can mean a different aspect ratio, so the height a custom
+  // width derives has to be recomputed with it.
+  syncExportSize()
 }
 
 function setMapSettingsOpen(isOpen) {
@@ -728,6 +732,9 @@ const EXPORT_STYLE_PROPS = [
 ]
 const exportStatus = document.querySelector('#export-status')
 const exportScaleInput = document.querySelector('#export-scale-input')
+const exportCustom = document.querySelector('#export-custom')
+const exportWidthInput = document.querySelector('#export-width-input')
+const exportHeightOutput = document.querySelector('#export-height-output')
 let embeddedFontCss = null
 
 async function fontCss() {
@@ -779,7 +786,32 @@ async function buildFrameSvg() {
   return new XMLSerializer().serializeToString(clone)
 }
 
-async function rasterize(markup, scale, type, quality) {
+/* The aspect ratio belongs to the artboard, which is not always 16:9 — Croatia
+   is 1920x1937. So a custom size asks for a width and derives the height,
+   rather than letting the two be set independently and quietly distort the
+   chart. Presets stay as multiples of the artboard. */
+function exportDimensions() {
+  if (exportScaleInput.value === 'custom') {
+    const requested = Math.round(Number(exportWidthInput.value) || artboardSize.w)
+    const width = Math.max(200, Math.min(8000, requested))
+    return { w: width, h: Math.round(width * artboardSize.h / artboardSize.w) }
+  }
+  const scale = Number(exportScaleInput.value) || 1
+  return { w: Math.round(artboardSize.w * scale), h: Math.round(artboardSize.h * scale) }
+}
+
+function syncExportSize() {
+  const custom = exportScaleInput.value === 'custom'
+  exportCustom.hidden = !custom
+  const { w, h } = exportDimensions()
+  exportHeightOutput.textContent = `× ${h}`
+  if (custom && Number(exportWidthInput.value) !== w) exportWidthInput.value = w
+}
+
+exportScaleInput.addEventListener('change', syncExportSize)
+exportWidthInput.addEventListener('input', syncExportSize)
+
+async function rasterize(markup, width, height, type, quality) {
   const url = URL.createObjectURL(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }))
   try {
     const image = new Image()
@@ -789,8 +821,8 @@ async function rasterize(markup, scale, type, quality) {
       image.src = url
     })
     const canvas = document.createElement('canvas')
-    canvas.width = artboardSize.w * scale
-    canvas.height = artboardSize.h * scale
+    canvas.width = width
+    canvas.height = height
     const context = canvas.getContext('2d')
     // JPEG has no alpha, and an unpainted canvas is transparent black — which
     // encodes as a black background rather than the white one on screen.
@@ -833,9 +865,9 @@ async function runExport(format) {
     } else if (format === 'mp4') {
       saveBlob(await exportVideo(), exportFileName('mp4'))
     } else {
-      const scale = Number(exportScaleInput.value) || 1
+      const { w, h } = exportDimensions()
       const type = format === 'jpg' ? 'image/jpeg' : 'image/png'
-      const blob = await rasterize(markup, scale, type, format === 'jpg' ? 0.92 : undefined)
+      const blob = await rasterize(markup, w, h, type, format === 'jpg' ? 0.92 : undefined)
       if (!blob) throw new Error('the canvas produced nothing')
       saveBlob(blob, exportFileName(format))
     }
@@ -878,14 +910,13 @@ async function exportVideo() {
   const mimeType = videoMimeType()
   if (!mimeType) throw new Error('this browser cannot record MP4')
 
-  const scale = Number(exportScaleInput.value) || 1
   // H.264 encodes in 2x2 blocks, so an odd canvas dimension gets silently
   // rounded down and the last row or column of the chart never makes it into
   // the file — Croatia's 1920x1937 artboard came out 1920x1936. Pad up to even
   // and leave the extra strip background: nothing is lost, and the alternative
   // of scaling onto an even grid would stretch the whole frame to hide a pixel.
-  const drawWidth = artboardSize.w * scale
-  const drawHeight = artboardSize.h * scale
+  // A custom width makes an odd dimension far likelier than the presets did.
+  const { w: drawWidth, h: drawHeight } = exportDimensions()
   const canvas = document.createElement('canvas')
   canvas.width = drawWidth + drawWidth % 2
   canvas.height = drawHeight + drawHeight % 2
@@ -896,7 +927,13 @@ async function exportVideo() {
   const stream = canvas.captureStream(0)
   const [track] = stream.getVideoTracks()
   const chunks = []
-  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 16000000 * scale })
+  // Bitrate follows the pixel count rather than a preset multiplier, so a
+  // custom size gets a rate that matches what it is actually encoding.
+  const pixelRatio = (canvas.width * canvas.height) / (1920 * 1080)
+  const recorder = new MediaRecorder(stream, {
+    mimeType,
+    videoBitsPerSecond: Math.round(Math.max(4, Math.min(48, 16 * pixelRatio)) * 1000000),
+  })
   recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data) }
   const finished = new Promise(resolve => { recorder.onstop = resolve })
 
