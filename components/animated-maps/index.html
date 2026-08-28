@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animated Maps</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="editor-panel">
+      <a class="back-link" href="/components/">← Components</a>
+      <div class="panel-intro">
+        <p class="eyebrow">Czech Republic</p>
+        <h1>Animated maps</h1>
+        <p>Update the data, then replay the regional animation.</p>
+      </div>
+
+      <section class="editor-section" aria-labelledby="copy-heading">
+        <div class="section-heading"><div><p class="eyebrow">Content</p><h2 id="copy-heading">Copy</h2></div></div>
+        <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting in the Czech Republic</textarea></label>
+        <label>Subheadline<input id="subtitle-input" value="Average hourly rate by region"></label>
+        <label>Source<input id="source-input" value="Source: Hlídačky.cz"></label>
+        <label>Unit<input id="unit-input" value="Kč"></label>
+      </section>
+
+      <section class="editor-section region-section" aria-labelledby="regions-heading">
+        <div class="section-heading"><div><p class="eyebrow">Data</p><h2 id="regions-heading">Regions</h2></div><span class="count">14</span></div>
+        <div class="table-shell">
+          <table>
+            <thead><tr><th>Region</th><th>Value</th><th>Order</th></tr></thead>
+            <tbody id="regions-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">▶</span> Replay animation</button>
+    </aside>
+
+    <section class="preview-panel" aria-label="Animation preview">
+      <header class="preview-toolbar"><div><p class="eyebrow">Live preview</p><strong>1920 × 1080</strong></div><span class="status" id="animation-status">Playing</span></header>
+      <div class="preview-stage">
+        <div class="preview-copy">
+          <h2 id="preview-title"></h2>
+          <p id="preview-subtitle"></p>
+        </div>
+        <div class="map-frame">
+          <div class="map-art" id="map-art"></div>
+          <svg class="labels" id="map-labels" viewBox="0 0 1920 1080" aria-label="Animated Czech Republic regional map"></svg>
+        </div>
+        <p class="source" id="preview-source"></p>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
