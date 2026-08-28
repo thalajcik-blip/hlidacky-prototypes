@@ -515,9 +515,13 @@ function saveBlob(blob, filename) {
 async function runExport(format) {
   exportStatus.textContent = 'Preparing…'
   try {
-    const markup = format === 'mp4' ? null : await buildExportSvg()
+    const markup = format === 'mp4' || format === 'embed' ? null : await buildExportSvg()
     if (format === 'svg') {
       saveBlob(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }), exportFileName('svg'))
+    } else if (format === 'embed') {
+      await fontCss()
+      saveBlob(new Blob([buildEmbedSvg()], { type: 'image/svg+xml;charset=utf-8' }),
+        exportFileName('animated.svg'))
     } else if (format === 'mp4') {
       saveBlob(await exportVideo(), exportFileName('mp4'))
     } else {
@@ -620,6 +624,75 @@ async function exportVideo() {
   await finished
   applyFrame(total)
   return new Blob(chunks, { type: mimeType })
+}
+
+// --- embeddable animated SVG -------------------------------------------------
+// One file a developer can drop in an <img>, an <object>, or inline: no script,
+// no dependencies, vector at any size, fonts already inside it. CSS animations
+// run in an <img>-loaded SVG; script does not, which is why the counter is not
+// scripted.
+//
+// CSS cannot count, so each value is pre-rendered as a stack of tspans and one
+// is revealed at a time. Twenty steps reads as a smooth tick and costs a few
+// kilobytes, which is a better trade than shipping a script that half the
+// embedding contexts refuse to run.
+const EMBED_STEPS = 20
+
+function buildEmbedSvg() {
+  applyFrame(animationDuration())          // final state supplies colours and chip widths
+  const clone = artboard.cloneNode(true)
+  clone.setAttribute('xmlns', SVG_NS)
+  clone.setAttribute('width', ARTBOARD.w)
+  clone.setAttribute('height', ARTBOARD.h)
+  inlineStyles(artboard, clone)
+
+  const keyframes = []
+  regions.forEach((region, index) => {
+    const finalFill = colorAt(region.value)
+    const path = clone.querySelectorAll('#map-art path')[index]
+    if (path) {
+      path.setAttribute('style',
+        `${path.getAttribute('style') || ''};fill:${activeColorScheme.low};` +
+        `animation:fill-${region.id} ${TIMING.fill}ms ${region.delay}ms cubic-bezier(.2,.75,.25,1) forwards`)
+      keyframes.push(`@keyframes fill-${region.id}{to{fill:${finalFill}}}`)
+    }
+
+    const label = clone.querySelector(`.label[data-region="${region.id}"]`)
+    if (!label) return
+    const content = label.querySelector('.label-content')
+    content.setAttribute('style',
+      `opacity:0;transform:translateY(4px);transform-box:fill-box;transform-origin:center;` +
+      `animation:label-appear ${TIMING.label}ms ${region.delay}ms ease forwards`)
+
+    // One <text> per step of the count-up, stacked at the same coordinates and
+    // revealed in turn. Stacking tspans inside a single <text> does not work:
+    // they lay out horizontally, and opacity:0 hides a tspan without taking it
+    // out of the line, so twenty invisible numbers drag the visible one aside.
+    const valueText = label.querySelector('.value')
+    const step = TIMING.counter / EMBED_STEPS
+    for (let i = 0; i < EMBED_STEPS; i += 1) {
+      const frameText = valueText.cloneNode(true)
+      const progress = easeOutCubic((i + 1) / EMBED_STEPS)
+      frameText.querySelector('.value-number').textContent = formatValue(region.value * progress)
+      const last = i === EMBED_STEPS - 1
+      frameText.setAttribute('style',
+        `${valueText.getAttribute('style') || ''};opacity:0;` +
+        // fill-mode must stay none for every step but the last: 'both' would
+        // apply the keyframe's opacity outside the window too, leaving all
+        // twenty numbers on screen at once.
+        `animation:hold ${step}ms ${region.delay + i * step}ms linear ${last ? 'forwards' : ''}`)
+      valueText.parentNode.insertBefore(frameText, valueText)
+    }
+    valueText.remove()
+  })
+
+  keyframes.push('@keyframes label-appear{to{opacity:1;transform:translateY(0)}}')
+  keyframes.push('@keyframes hold{from{opacity:1}to{opacity:1}}')
+
+  const style = document.createElementNS(SVG_NS, 'style')
+  style.textContent = embeddedFontCss + keyframes.join('')
+  clone.insertBefore(style, clone.firstChild)
+  return new XMLSerializer().serializeToString(clone)
 }
 
 document.querySelectorAll('[data-export]').forEach(button => {
