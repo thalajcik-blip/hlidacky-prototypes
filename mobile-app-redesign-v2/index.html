@@ -15936,6 +15936,21 @@
         syncBackEntry();
       }
 
+      /* I11b — the conversation this profile's CTA would open may already be
+         live in the path beneath the presentation: the Messages tab is the one
+         the user is standing in, and its thread is the same conversation. Read
+         from the path rather than from the entry point, so it stays correct
+         however the profile was reached — and note the tab test is part of the
+         path, not a proxy for it: a thread left open in a tab the user is not
+         in is mounted, not live, and must not resolve anything. */
+      function conversationLiveBeneathPresentation() {
+        if (currentAppScreen !== 'messages') return false;
+        if (!messageDetailScreen.classList.contains('is-open')) return false;
+        if (!activeMessageThread || !activeSitterDetailCard) return false;
+        return conversationForSitterCard(activeMessageThread).id ===
+               conversationForSitterCard(activeSitterDetailCard).id;
+      }
+
       /* 2.4 — the close control ends the WHOLE presentation from wherever the
          user is standing inside it, however deep the internal stack got. Back
          is the control that moves one step; these two must never blur. */
@@ -17082,6 +17097,11 @@
         { isOpen: function () { return outreachComposerSheet.classList.contains('is-open'); }, close: closeOutreachComposer },
         { isOpen: function () { return sitterDetailScreen.classList.contains('is-over-thread') && sitterDetailScreen.classList.contains('is-open'); }, close: function () { closeSitterDetail(true); } },
         { isOpen: function () { return sitterMessageSheet.classList.contains('is-open'); }, close: closeSitterMessageSheet },
+        // A presented profile sits over the whole tab stack, so it has to be
+        // offered back a step before anything inside that stack — otherwise
+        // back closes the thread underneath while the profile is still on
+        // screen, and stops matching what the profile's own ✕ does (I8).
+        { isOpen: function () { return sitterDetailScreen.classList.contains('is-open') && sitterDetailScreen.classList.contains('is-presented'); }, close: function () { closeSitterPresentation(true); } },
         { isOpen: function () { return messageDetailScreen.classList.contains('is-open'); }, close: closeMessageDetail },
         { isOpen: function () { return sitterDetailScreen.classList.contains('is-open'); }, close: closeSitterDetail },
         { isOpen: function () { return familyAccountScreen.classList.contains('is-open'); }, close: closeFamilyAccount },
@@ -18278,10 +18298,18 @@
         if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailBook);
       });
       sitterDetailMessage.addEventListener('click', function () {
-        // I11b — the conversation is already in the live path underneath this
-        // profile, so this resolves to it rather than opening a second copy.
+        // I11b — the conversation is already in the live path, so this resolves
+        // to the instance that exists rather than opening a second one. Where
+        // that instance sits decides how: lower down inside this presentation,
+        // pop back to it; directly beneath the presentation, resolving to it
+        // IS dismissing the presentation.
         if (sitterDetailScreen.classList.contains('is-over-thread')) {
           closeSitterDetail(true);
+          return;
+        }
+        if (sitterDetailScreen.classList.contains('is-presented') &&
+            conversationLiveBeneathPresentation()) {
+          closeSitterPresentation(true);
           return;
         }
         if (activeSitterDetailCard) openSitterMessageDestination(activeSitterDetailCard, sitterDetailMessage);
