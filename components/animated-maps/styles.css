@@ -1,4 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+/* Self-hosted so the chart looks the same for everyone and, more to the point,
+   so it can be exported at all. A rasterised SVG is an isolated document with
+   no network access: webfonts fetched over the wire never arrive, and the
+   export silently falls back. These files are also what gets embedded into an
+   exported SVG. Subset to Latin + Latin Extended-A, which covers Czech.
+
+   Soleil was named throughout but never actually served — it resolved only on
+   machines with the brand font installed locally, and fell back to DM Sans for
+   everyone else. */
+@font-face { font-family: Soleil; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/fonts/soleil-600.woff2') format('woff2'); }
+@font-face { font-family: Soleil; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/fonts/soleil-700.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/fonts/dmsans-400.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/fonts/dmsans-700.woff2') format('woff2'); }
+@font-face { font-family: 'DM Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/fonts/dmmono-500.woff2') format('woff2'); }
 
 :root { --ink: #2a3539; --muted: #687276; --pink: #f85f73; --line: #e2e7e4; }
 * { box-sizing: border-box; }
