@@ -3,6 +3,7 @@ const maps = {
     label: 'Czech Republic',
     asset: 'assets/czech-regions.svg',
     decimals: '0',
+    locale: 'cs-CZ',
     copy: { title: 'Hourly rate for babysitting in the Czech Republic', subtitle: 'Average hourly rate by region', source: 'Source: [Hlídačky.cz](https://www.hlidacky.cz/)', unit: 'Kč' },
     regionPath: () => true,
     regions: [
@@ -26,6 +27,7 @@ const maps = {
     label: 'Slovakia',
     asset: 'assets/slovakia-regions.svg',
     decimals: '2',
+    locale: 'sk-SK',
     copy: { title: 'Hourly rate for babysitting in Slovakia', subtitle: 'Average hourly rate by region', source: 'Source: [Hlídačky.sk](https://www.hlidacky.sk/)', unit: '€' },
     // This SVG stores a white separator shape after every coloured region.
     // Keep the separators in the artwork but only animate the coloured paths.
@@ -45,6 +47,7 @@ const maps = {
     label: 'Hungary',
     asset: 'assets/hungary-regions.svg',
     decimals: '0',
+    locale: 'hu-HU',
     copy: { title: 'Hourly rate for babysitting in Hungary', subtitle: 'Average hourly rate by region', source: 'Source: [Bébicsősz.hu](https://www.bebicsosz.hu/)', unit: 'Ft' },
     // Budapest is exported twice as identical geometry. Retaining the first
     // copy gives us one animated path for each of the 19 counties plus Budapest.
@@ -76,6 +79,7 @@ const maps = {
     label: 'Austria',
     asset: 'assets/austria-regions.svg',
     decimals: '2',
+    locale: 'de-AT',
     copy: { title: 'Hourly rate for babysitting in Austria', subtitle: 'Average hourly rate by region', source: 'Source: [Sitters.at](https://www.sitters.at/)', unit: '€' },
     regionPath: () => true,
     pathRegionIds: ['oberoesterreich', 'wien', 'niederoesterreich', 'burgenland', 'steiermark', 'kaernten', 'salzburg', 'tirol', 'tirol', 'vorarlberg'],
@@ -96,6 +100,7 @@ const maps = {
     asset: 'assets/croatia-regions.svg',
     canvas: { w: 1920, h: 1937 },
     decimals: '2',
+    locale: 'hr-HR',
     copy: { title: 'Hourly rate for babysitting in Croatia', subtitle: 'Average hourly rate by region', source: 'Source: [Siterice.hr](https://www.siterice.hr/)', unit: '€' },
     // The SVG also carries six unfilled island-detail paths. Only filled paths
     // are counties, while the details remain in the map artwork underneath.
@@ -346,11 +351,35 @@ function colorAt(value) {
   return `rgb(${start.map((channel, index) => Math.round(channel + (end[index] - channel) * t)).join(', ')})`
 }
 
+// Every country this tool draws writes the decimal separator as a comma, and
+// the previous formatter hardcoded a point — so Slovakia, Austria and Croatia,
+// the three maps that carry two decimals, all read 8.40 where they should read
+// 8,40. Grouping differs too: Croatian groups thousands with a point, Czech and
+// Slovak with a non-breaking space, and Hungarian does not group four digits at
+// all. Intl knows all of that; a hand-written separator table would only be a
+// worse copy of it.
+//
+// The formatter is cached because this runs for every label on every animation
+// frame, and building one per call is not free.
+let valueFormatter = null
+let valueFormatterKey = ''
+
+function numberFormatter() {
+  const locale = maps[activeMapKey]?.locale || 'cs-CZ'
+  const decimals = Number(decimalPlacesInput.value) || 0
+  const key = `${locale}:${decimals}`
+  if (key !== valueFormatterKey) {
+    valueFormatter = new Intl.NumberFormat(locale, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
+    valueFormatterKey = key
+  }
+  return valueFormatter
+}
+
 function formatValue(value) {
-  const decimals = Number(decimalPlacesInput.value)
-  const [integer, fraction] = Number(value || 0).toFixed(decimals).split('.')
-  const groupedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-  return fraction == null ? groupedInteger : `${groupedInteger}.${fraction}`
+  return numberFormatter().format(Number(value) || 0)
 }
 
 // Names reach the markup through a value="" attribute, and they are typed by
