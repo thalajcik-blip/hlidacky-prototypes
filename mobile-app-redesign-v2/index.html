@@ -5274,7 +5274,62 @@
 
     .sitter-message-sheet__contact { display: contents; }
     .sitter-message-sheet__avatar { width: 32px; height: 32px; flex: 0 0 32px; border: 1px solid #fff; border-radius: 50%; box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2); object-fit: cover; }
-    .sitter-message-sheet__contact-info { min-width: 0; padding-left: 8px; }
+    .sitter-message-sheet__contact-info { min-width: 0; padding-left: 8px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+
+    /* 2.4 / I11d — the conversation and the profile are the same subject seen
+       two ways, so the second one is PUSHED INSIDE the one live presentation.
+       It therefore has to take the same frame as the layer it covers: same
+       height, arriving from the right like a push, hiding the layer beneath
+       completely. Anything that let the covered layer show through — a second
+       scrim, a second grabber, a second close button — would read as a second
+       sheet, which is exactly what 2.4 forbids. */
+    .sitter-message-sheet.is-over-profile .sitter-message-sheet__panel {
+      height: 90%;
+      transform: translate3d(100%, 0, 0);
+    }
+    .sitter-message-sheet.is-over-profile.is-open .sitter-message-sheet__panel { transform: translate3d(0, 0, 0); }
+    /* The scrim underneath already dims the base screen; and with no visible
+       backdrop there is nothing outside the panel that may dismiss (3.1). */
+    .sitter-message-sheet.is-over-profile .sitter-message-sheet__backdrop { pointer-events: none; }
+
+    /* The two controls a pushed-into presentation owes the user (2.4/2.6):
+       back one step, on the left — and the close that ends the whole
+       presentation, which stays where it always is, on the right. */
+    .sitter-message-sheet__back {
+      display: none;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      justify-self: start;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #2a3539;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .sitter-message-sheet.is-over-profile .sitter-message-sheet__back { display: inline-flex; }
+    .sitter-message-sheet.is-over-profile .sitter-message-sheet__header {
+      grid-template-columns: 24px 32px minmax(0, 1fr) auto 24px;
+    }
+
+    /* The mirror image: the profile pushed inside a presentation whose root is
+       the conversation. Same frame, same push, same pair of controls — the
+       profile header already carries them. z-index matches the sheet and the
+       later DOM position puts it on top, which leaves the booking sheet (82)
+       and the outreach composer (83) above both, where they belong. */
+    .sitter-detail-screen.is-over-thread { z-index: 81; }
+    .sitter-detail-screen.is-presented.is-over-thread::before { opacity: 0; }
+    .sitter-detail-screen.is-presented.is-over-thread .sitter-detail-screen__panel {
+      transform: translate3d(100%, 0, 0);
+      animation: none;
+    }
+    .sitter-detail-screen.is-presented.is-over-thread.is-open .sitter-detail-screen__panel {
+      transform: translate3d(0, 0, 0);
+      animation: none;
+    }
+    .sitter-detail-screen.is-booking-present.is-over-thread .sitter-detail-header__back { visibility: visible; pointer-events: auto; }
     .sitter-message-sheet__name { margin: 0; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 700; letter-spacing: -.32px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
     .sitter-message-sheet__booking { margin: 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
 
@@ -10308,8 +10363,9 @@
       <section class="sitter-message-sheet__panel" id="sitterMessageSheetDialog" role="dialog" aria-modal="true" aria-labelledby="sitterMessageSheetName" tabindex="-1">
         <div class="search-filters-screen__grabber sitter-message-sheet__grabber" id="sitterMessageSheetGrabber" aria-hidden="true"></div>
         <header class="sitter-message-sheet__header" id="sitterMessageSheetHeader">
+          <button class="sitter-message-sheet__back" id="sitterMessageSheetBack" type="button" aria-label="Back to sitter profile"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
           <img class="sitter-message-sheet__avatar" id="sitterMessageSheetAvatar" src="./assets/messages-avatar-01.png" alt="">
-          <div class="sitter-message-sheet__contact-info"><p class="sitter-message-sheet__name" id="sitterMessageSheetName">Conversation</p><p class="sitter-message-sheet__booking" id="sitterMessageSheetBooking">No booking yet</p></div>
+          <button class="sitter-message-sheet__contact-info" id="sitterMessageSheetProfileLink" type="button" aria-label="View sitter profile"><p class="sitter-message-sheet__name" id="sitterMessageSheetName">Conversation</p><p class="sitter-message-sheet__booking" id="sitterMessageSheetBooking">No booking yet</p></button>
           <button class="sitter-message-sheet__book" id="sitterMessageSheetBook" type="button"><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span>Book</span></button>
           <button class="sitter-message-sheet__close" id="sitterMessageSheetClose" type="button" aria-label="Close conversation"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
         </header>
@@ -11955,6 +12011,8 @@
       var sitterMessageSheetHeader = document.getElementById('sitterMessageSheetHeader');
       var sitterMessageSheetClose = document.getElementById('sitterMessageSheetClose');
       var sitterDetailAlternativesMore = document.getElementById('sitterDetailAlternativesMore');
+      var sitterMessageSheetBack = document.getElementById('sitterMessageSheetBack');
+      var sitterMessageSheetProfileLink = document.getElementById('sitterMessageSheetProfileLink');
       var sitterMessageSheetBook = document.getElementById('sitterMessageSheetBook');
       var sitterMessageSheetName = document.getElementById('sitterMessageSheetName');
       var sitterMessageSheetBooking = document.getElementById('sitterMessageSheetBooking');
@@ -15017,11 +15075,14 @@
         syncBackEntry();
       }
 
-      function setOutreachComposerDismissal(isBack) {
+      // The close control keeps its shape and its side wherever it is raised
+      // from: a left-pointing chevron anchored on the right would be the one
+      // thing worse than either control alone. Back, where a presentation has
+      // an internal stack, is a separate control on the left.
+      function setOutreachComposerDismissal() {
         var icon = outreachComposerClose.querySelector('i');
-        if (icon) icon.className = isBack ? 'fa-regular fa-chevron-left' : 'fa-light fa-xmark';
-        outreachComposerClose.setAttribute('aria-label',
-          isBack ? 'Back to sitter profile' : 'Close first contact message');
+        if (icon) icon.className = 'fa-light fa-xmark';
+        outreachComposerClose.setAttribute('aria-label', 'Close first contact message');
       }
 
       function closeOutreachComposer(restoreFocus, afterClose) {
@@ -15759,6 +15820,65 @@
         });
       }
 
+      /* ------------------------------------------------------------------
+         One live presentation, one internal stack (2.4).
+
+         The profile and the conversation are the same subject seen two ways,
+         so whichever is opened second is pushed INSIDE the presentation the
+         first one opened (I11d). This array is that internal stack, and it is
+         also the live path the duplicate check reads (I11b): an action whose
+         destination is already in it resolves to that instance instead of
+         opening a second copy.
+
+         Bounded at two by construction — profile > thread, or thread >
+         profile — which is exactly the pair the guidelines describe.
+         ------------------------------------------------------------------ */
+      var presentationStack = [];
+
+      /* I11b — the profile is already in the live path, so the sitter's name in
+         the thread header resolves to it: pop back rather than push a second
+         copy. Otherwise this is the first push, and the profile takes the same
+         frame the conversation is in. */
+      function openSitterProfileFromThread() {
+        if (!sitterMessageSheet.classList.contains('is-open')) return;
+        if (presentationStack.indexOf('profile') !== -1) {
+          closeSitterMessageSheet(true);
+          return;
+        }
+        var card = activeSitterMessageCard;
+        if (!card) return;
+        presentationStack.push('profile');
+        window.clearTimeout(sitterDetailPresentationCloseTimer);
+        sitterDetailHistory = [];
+        activeSitterDetailCard = card;
+        activeSitterDetailTrigger = sitterMessageSheetProfileLink;
+        activeSitterDetailData = populateSitterDetail(card);
+        selectSitterDetailProfile('babysitting');
+        sitterDetailScreen.classList.remove('is-closing');
+        sitterDetailScreen.classList.add('is-presented', 'is-booking-present', 'is-over-thread');
+        sitterDetailScreen.setAttribute('aria-hidden', 'false');
+        if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = true;
+        setSitterDetailAreaLinksLive(false);     // presented: prose, not links (I12e)
+        sitterDetailContent.scrollTop = 0;
+        setSitterDetailStickyActionsVisible(false);
+        setBackgroundInert(sitterDetailScreen);
+        void sitterDetailScreen.offsetHeight;
+        requestAnimationFrame(function () {
+          sitterDetailScreen.classList.add('is-open');
+          sitterDetailBack.focus({ preventScroll: true });
+        });
+        syncBackEntry();
+      }
+
+      /* 2.4 — the close control ends the WHOLE presentation from wherever the
+         user is standing inside it, however deep the internal stack got. Back
+         is the control that moves one step; these two must never blur. */
+      function closeSitterPresentation(restoreFocus) {
+        presentationStack = [];
+        if (sitterMessageSheet.classList.contains('is-open')) closeSitterMessageSheet(false);
+        if (sitterDetailScreen.classList.contains('is-open')) closeSitterDetail(restoreFocus);
+      }
+
       /* I11 — the destination of both the area links and "More sitters near you"
          is the list of sitters this profile was pushed from, and that list is
          already in the stack. So they RESOLVE to it. They never push a second
@@ -15781,7 +15901,8 @@
       function openSitterDetail(card, trigger) {
         if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
         window.clearTimeout(sitterDetailPresentationCloseTimer);
-        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing');
+        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing', 'is-over-thread');
+        presentationStack = [];
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
         setSitterDetailAreaLinksLive(true);      // pushed: the links are live (I12e)
         syncSitterDetailAlternativesMore();
@@ -15808,9 +15929,10 @@
         activeSitterDetailTrigger = trigger;
         activeSitterDetailData = populateSitterDetail(card);
         selectSitterDetailProfile('babysitting');
-        sitterDetailScreen.classList.remove('is-closing');
+        sitterDetailScreen.classList.remove('is-closing', 'is-over-thread');
         sitterDetailScreen.classList.add('is-presented', 'is-booking-present');
         sitterDetailScreen.setAttribute('aria-hidden', 'false');
+        presentationStack = ['profile'];
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = true;
         setSitterDetailAreaLinksLive(false);     // presented: prose, not links (I12e)
         sitterDetailContent.scrollTop = 0;
@@ -15904,16 +16026,27 @@
           return;
         }
         var wasPresented = sitterDetailScreen.classList.contains('is-presented');
+        var wasOverThread = sitterDetailScreen.classList.contains('is-over-thread');
         sitterDetailScreen.classList.remove('is-open');
         sitterDetailScreen.setAttribute('aria-hidden', 'true');
         setSitterDetailStickyActionsVisible(false);
         setActiveNavItem(currentAppScreen);
         if (wasPresented) {
-          setBackgroundInert(null);
+          var profileIndex = presentationStack.lastIndexOf('profile');
+          if (profileIndex !== -1) presentationStack.splice(profileIndex, 1);
+          // Popped off the conversation it was pushed over, the presentation is
+          // handed back to that conversation — not released, which would make
+          // the base screen live underneath a sheet that is still on top.
+          var backToThread = wasOverThread && sitterMessageSheet.classList.contains('is-open');
+          setBackgroundInert(backToThread ? sitterMessageSheet : null);
           sitterDetailScreen.classList.add('is-closing');
+          if (backToThread) {
+            requestAnimationFrame(function () { sitterMessageSheetClose.focus({ preventScroll: true }); });
+          }
           window.clearTimeout(sitterDetailPresentationCloseTimer);
           sitterDetailPresentationCloseTimer = window.setTimeout(function () {
             resetSitterDetailPresentation();
+            sitterDetailScreen.classList.remove('is-over-thread');
             if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
             sitterDetailBack.setAttribute('aria-label', 'Back to search results');
           }, 300);
@@ -16710,13 +16843,19 @@
         resizeSitterMessageInput();
         renderSitterMessageThread();
         sitterMessageSheet.classList.remove('is-closing');
-        /* I11d — same subject, so this is a push inside the live presentation,
-           not a second presentation on top of it. The control therefore reads
-           as back, and the profile stays underneath for it to return to. */
+        /* I11d — a conversation opened from a profile that is itself presented
+           is the same subject seen another way, so it is a PUSH INSIDE that one
+           presentation, not a second presentation stacked on it. It covers the
+           profile entirely and gains a back control; the profile waits
+           underneath for it. */
         var overPresentedProfile = sitterDetailScreen.classList.contains('is-open') &&
                                    sitterDetailScreen.classList.contains('is-presented');
         sitterMessageSheet.classList.toggle('is-over-profile', overPresentedProfile);
-        setSitterMessageSheetDismissal(overPresentedProfile);
+        if (overPresentedProfile) {
+          if (presentationStack.indexOf('thread') === -1) presentationStack.push('thread');
+        } else {
+          presentationStack = ['thread'];
+        }
         sitterMessageSheet.classList.add('is-open');
         sitterMessageSheetDialog.classList.add('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'false');
@@ -16726,15 +16865,6 @@
         syncBackEntry();
       }
 
-      /* Back when this conversation was pushed over a presented profile, close
-         when it is the presentation itself. One control, two truthful meanings. */
-      function setSitterMessageSheetDismissal(isBack) {
-        var icon = sitterMessageSheetClose.querySelector('i');
-        if (icon) icon.className = isBack ? 'fa-regular fa-chevron-left' : 'fa-regular fa-xmark';
-        sitterMessageSheetClose.setAttribute('aria-label',
-          isBack ? 'Back to sitter profile' : 'Close conversation');
-      }
-
       function closeSitterMessageSheet(restoreFocus) {
         if (!sitterMessageSheet.classList.contains('is-open')) return;
         var wasOverProfile = sitterMessageSheet.classList.contains('is-over-profile');
@@ -16742,7 +16872,8 @@
         sitterMessageSheet.classList.add('is-closing');
         sitterMessageSheetDialog.classList.remove('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'true');
-        setSitterMessageSheetDismissal(false);
+        var threadIndex = presentationStack.lastIndexOf('thread');
+        if (threadIndex !== -1) presentationStack.splice(threadIndex, 1);
         // Popping back to the profile must hand the presentation back to it,
         // not release the whole frame — otherwise the base screen underneath
         // becomes live while a sheet is still on top of it.
@@ -16871,6 +17002,7 @@
         { isOpen: function () { return messageDetailOptionsMenu.classList.contains('is-open'); }, close: function () { closeMessageDetailOptions(true); } },
         { isOpen: function () { return sitterBookingSheet.classList.contains('is-open'); }, close: closeSitterBookingSheet },
         { isOpen: function () { return outreachComposerSheet.classList.contains('is-open'); }, close: closeOutreachComposer },
+        { isOpen: function () { return sitterDetailScreen.classList.contains('is-over-thread') && sitterDetailScreen.classList.contains('is-open'); }, close: function () { closeSitterDetail(true); } },
         { isOpen: function () { return sitterMessageSheet.classList.contains('is-open'); }, close: closeSitterMessageSheet },
         { isOpen: function () { return messageDetailScreen.classList.contains('is-open'); }, close: closeMessageDetail },
         { isOpen: function () { return sitterDetailScreen.classList.contains('is-open'); }, close: closeSitterDetail },
@@ -18043,7 +18175,7 @@
         });
       });
       sitterDetailBack.addEventListener('click', function () { closeSitterDetail(true); });
-      sitterDetailClose.addEventListener('click', function () { closeSitterDetail(true); });
+      sitterDetailClose.addEventListener('click', function () { closeSitterPresentation(true); });
       /* Area links and the pop-to-root link both resolve to the sitter list this
          profile was pushed from (I11). Delegated, so the span/anchor swap in
          setSitterDetailAreaLinksLive() never has to rebind anything. */
@@ -18068,6 +18200,12 @@
         if (activeSitterDetailCard) openSitterBookingSheet(activeSitterDetailCard, sitterDetailBook);
       });
       sitterDetailMessage.addEventListener('click', function () {
+        // I11b — the conversation is already in the live path underneath this
+        // profile, so this resolves to it rather than opening a second copy.
+        if (sitterDetailScreen.classList.contains('is-over-thread')) {
+          closeSitterDetail(true);
+          return;
+        }
         if (activeSitterDetailCard) openSitterMessageDestination(activeSitterDetailCard, sitterDetailMessage);
       });
       sitterDetailStickyBook.addEventListener('click', function () {
@@ -18137,8 +18275,13 @@
           openSitterBookingSheet(button.closest('.sitter-card'), button);
         });
       });
-      sitterMessageSheetBackdrop.addEventListener('click', function () { closeSitterMessageSheet(true); });
-      sitterMessageSheetClose.addEventListener('click', function () { closeSitterMessageSheet(true); });
+      sitterMessageSheetBackdrop.addEventListener('click', function () { closeSitterPresentation(true); });
+      sitterMessageSheetClose.addEventListener('click', function () { closeSitterPresentation(true); });
+      sitterMessageSheetBack.addEventListener('click', function () { closeSitterMessageSheet(true); });
+      // 2.10 — the sitter's name in a thread sheet opens their profile inside
+      // that same sheet. The avatar beside it is the same target.
+      sitterMessageSheetProfileLink.addEventListener('click', openSitterProfileFromThread);
+      sitterMessageSheetAvatar.addEventListener('click', openSitterProfileFromThread);
       sitterMessageSheetBook.addEventListener('click', function () {
         if (activeSitterMessageCard) openSitterBookingSheet(activeSitterMessageCard, sitterMessageSheetBook, true);
       });
