@@ -139,12 +139,9 @@ document.addEventListener('keydown', event => {
   }
 })
 
-const editorAccordions = [...document.querySelectorAll('.editor-accordion')]
-editorAccordions.forEach(accordion => accordion.addEventListener('toggle', () => {
-  if (accordion.open) editorAccordions.forEach(other => {
-    if (other !== accordion) other.open = false
-  })
-}))
+// Both sections may stay open. Forcing one shut to open the other collapsed
+// whatever the user was in the middle of and moved everything under the cursor,
+// to save a scroll the panel can absorb perfectly well.
 
 function colorAt(value) {
   const values = regions.map(region => Number(region.value) || 0)
