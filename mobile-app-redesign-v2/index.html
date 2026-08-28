@@ -5294,6 +5294,12 @@
        backdrop there is nothing outside the panel that may dismiss (3.1). */
     .sitter-message-sheet.is-over-profile .sitter-message-sheet__backdrop { pointer-events: none; }
 
+    .is-transition-suppressed .sitter-message-sheet__panel,
+    .is-transition-suppressed .sitter-detail-screen__panel {
+      transition: none !important;
+      animation: none !important;
+    }
+
     /* The two controls a pushed-into presentation owes the user (2.4/2.6):
        back one step, on the left — and the close that ends the whole
        presentation, which stays where it always is, on the right. */
@@ -5339,17 +5345,24 @@
       animation: none;
     }
     .sitter-detail-screen.is-booking-present.is-over-thread .sitter-detail-header__back { visibility: visible; pointer-events: auto; }
+    .sitter-detail-screen.is-presented.is-over-thread.is-closing .sitter-detail-screen__panel {
+      transform: translate3d(100%, 0, 0);
+      animation: none;
+    }
 
     /* A push moves both screens: the incoming one arrives from the right, the
        outgoing one slides a little further left and dims. Without the second
        half the new screen reads as a sheet dropped on top rather than as a step
        forward — and the direction is the whole signal that back undoes it. */
-    .sitter-message-sheet.is-open.is-pushed-under .sitter-message-sheet__panel,
-    .sitter-detail-screen.is-presented.is-open.is-pushed-under .sitter-detail-screen__panel {
-      transform: translate3d(-28%, 0, 0);
-      filter: brightness(.93);
+    .sitter-message-sheet.is-push-host .sitter-message-sheet__panel,
+    .sitter-detail-screen.is-presented.is-push-host .sitter-detail-screen__panel {
       animation: none;
       transition: transform 340ms cubic-bezier(.32, .72, 0, 1), filter 340ms ease;
+    }
+    .sitter-message-sheet.is-push-host.is-pushed-under .sitter-message-sheet__panel,
+    .sitter-detail-screen.is-presented.is-push-host.is-pushed-under .sitter-detail-screen__panel {
+      transform: translate3d(-28%, 0, 0);
+      filter: brightness(.93);
     }
     .sitter-message-sheet__name { margin: 0; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 700; letter-spacing: -.32px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
     .sitter-message-sheet__booking { margin: 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
@@ -15856,6 +15869,20 @@
          ------------------------------------------------------------------ */
       var presentationStack = [];
 
+      /* Put a layer at its off-screen start WITHOUT animating into it. The class
+         that positions it also carries the push transition, so setting both in
+         one go starts a transition from wherever the panel last was — for a
+         sheet that is the bottom, and the push then arrives from below. Two
+         forced reflows: one to commit the start with transitions off, one to
+         commit them back on at that same position, so the only thing left to
+         animate is the travel to rest. */
+      function commitPushStart(layer, panel) {
+        layer.classList.add('is-transition-suppressed');
+        void panel.offsetWidth;
+        layer.classList.remove('is-transition-suppressed');
+        void panel.offsetWidth;
+      }
+
       /* I11b — the profile is already in the live path, so the sitter's name in
          the thread header resolves to it: pop back rather than push a second
          copy. Otherwise this is the first push, and the profile takes the same
@@ -15883,7 +15910,8 @@
         sitterDetailContent.scrollTop = 0;
         setSitterDetailStickyActionsVisible(false);
         setBackgroundInert(sitterDetailScreen);
-        void sitterDetailScreen.offsetHeight;
+        sitterMessageSheet.classList.add('is-push-host');
+        commitPushStart(sitterDetailScreen, sitterDetailScreen.querySelector('.sitter-detail-screen__panel'));
         requestAnimationFrame(function () {
           sitterDetailScreen.classList.add('is-open');
           sitterMessageSheet.classList.add('is-pushed-under');
@@ -15923,7 +15951,7 @@
       function openSitterDetail(card, trigger) {
         if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
         window.clearTimeout(sitterDetailPresentationCloseTimer);
-        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing', 'is-over-thread', 'is-pushed-under');
+        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing', 'is-over-thread', 'is-pushed-under', 'is-push-host');
         presentationStack = [];
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
         setSitterDetailAreaLinksLive(true);      // pushed: the links are live (I12e)
@@ -15951,7 +15979,7 @@
         activeSitterDetailTrigger = trigger;
         activeSitterDetailData = populateSitterDetail(card);
         selectSitterDetailProfile('babysitting');
-        sitterDetailScreen.classList.remove('is-closing', 'is-over-thread', 'is-pushed-under');
+        sitterDetailScreen.classList.remove('is-closing', 'is-over-thread', 'is-pushed-under', 'is-push-host');
         sitterDetailScreen.classList.add('is-presented', 'is-booking-present');
         sitterDetailScreen.setAttribute('aria-hidden', 'false');
         presentationStack = ['profile'];
@@ -16061,6 +16089,7 @@
           // the base screen live underneath a sheet that is still on top.
           var backToThread = wasOverThread && sitterMessageSheet.classList.contains('is-open');
           sitterMessageSheet.classList.remove('is-pushed-under');
+          if (!backToThread) sitterMessageSheet.classList.remove('is-push-host');
           setBackgroundInert(backToThread ? sitterMessageSheet : null);
           sitterDetailScreen.classList.add('is-closing');
           if (backToThread) {
@@ -16069,7 +16098,7 @@
           window.clearTimeout(sitterDetailPresentationCloseTimer);
           sitterDetailPresentationCloseTimer = window.setTimeout(function () {
             resetSitterDetailPresentation();
-            sitterDetailScreen.classList.remove('is-over-thread');
+            sitterDetailScreen.classList.remove('is-over-thread', 'is-push-host');
             if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
             sitterDetailBack.setAttribute('aria-label', 'Back to search results');
           }, 300);
@@ -16879,11 +16908,10 @@
         } else {
           presentationStack = ['thread'];
         }
-        // Commit the off-screen start before opening. Both classes land in one
-        // block, so without this the browser never renders the panel at
-        // translateX(100%) and animates from wherever it was instead — which is
-        // the bottom, turning the push back into a sheet.
-        if (overPresentedProfile) void sitterMessageSheetDialog.offsetHeight;
+        if (overPresentedProfile) {
+          sitterDetailScreen.classList.add('is-push-host');
+          commitPushStart(sitterMessageSheet, sitterMessageSheetDialog);
+        }
         sitterMessageSheet.classList.add('is-open');
         sitterDetailScreen.classList.toggle('is-pushed-under', overPresentedProfile);
         sitterMessageSheetDialog.classList.add('is-open');
@@ -16897,7 +16925,7 @@
       function closeSitterMessageSheet(restoreFocus) {
         if (!sitterMessageSheet.classList.contains('is-open')) return;
         var wasOverProfile = sitterMessageSheet.classList.contains('is-over-profile');
-        sitterMessageSheet.classList.remove('is-open', 'is-over-profile', 'is-pushed-under');
+        sitterMessageSheet.classList.remove('is-open', 'is-pushed-under');
         sitterMessageSheet.classList.add('is-closing');
         sitterMessageSheetDialog.classList.remove('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'true');
@@ -16917,7 +16945,9 @@
           activeSitterMessageTrigger.focus({ preventScroll: true });
         }
         window.clearTimeout(sitterMessageSheetCloseTimer);
-        sitterMessageSheetCloseTimer = window.setTimeout(function () { sitterMessageSheet.classList.remove('is-closing'); }, 300);
+        sitterMessageSheetCloseTimer = window.setTimeout(function () {
+          sitterMessageSheet.classList.remove('is-closing', 'is-over-profile', 'is-push-host');
+        }, 300);
         syncBackEntry();
       }
 
