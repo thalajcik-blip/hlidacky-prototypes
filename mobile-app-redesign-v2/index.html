@@ -5286,6 +5286,8 @@
     .sitter-message-sheet.is-over-profile .sitter-message-sheet__panel {
       height: 90%;
       transform: translate3d(100%, 0, 0);
+      box-shadow: -8px 0 22px rgba(0, 0, 0, .13);
+      transition: transform 340ms cubic-bezier(.32, .72, 0, 1), filter 340ms ease;
     }
     .sitter-message-sheet.is-over-profile.is-open .sitter-message-sheet__panel { transform: translate3d(0, 0, 0); }
     /* The scrim underneath already dims the base screen; and with no visible
@@ -5322,14 +5324,33 @@
     .sitter-detail-screen.is-over-thread { z-index: 81; }
     .sitter-detail-screen.is-presented.is-over-thread::before { opacity: 0; }
     .sitter-detail-screen.is-presented.is-over-thread .sitter-detail-screen__panel {
+      /* The frame belongs to the presentation, and the presentation's root set
+         it — here that root is the conversation. A pushed screen moves within
+         the frame; it does not resize it, or the sheet grows under the user
+         mid-push. */
+      height: 80%;
       transform: translate3d(100%, 0, 0);
+      box-shadow: -8px 0 22px rgba(0, 0, 0, .13);
       animation: none;
+      transition: transform 340ms cubic-bezier(.32, .72, 0, 1), filter 340ms ease;
     }
     .sitter-detail-screen.is-presented.is-over-thread.is-open .sitter-detail-screen__panel {
       transform: translate3d(0, 0, 0);
       animation: none;
     }
     .sitter-detail-screen.is-booking-present.is-over-thread .sitter-detail-header__back { visibility: visible; pointer-events: auto; }
+
+    /* A push moves both screens: the incoming one arrives from the right, the
+       outgoing one slides a little further left and dims. Without the second
+       half the new screen reads as a sheet dropped on top rather than as a step
+       forward — and the direction is the whole signal that back undoes it. */
+    .sitter-message-sheet.is-open.is-pushed-under .sitter-message-sheet__panel,
+    .sitter-detail-screen.is-presented.is-open.is-pushed-under .sitter-detail-screen__panel {
+      transform: translate3d(-28%, 0, 0);
+      filter: brightness(.93);
+      animation: none;
+      transition: transform 340ms cubic-bezier(.32, .72, 0, 1), filter 340ms ease;
+    }
     .sitter-message-sheet__name { margin: 0; overflow: hidden; color: #2a3539; font-size: 16px; font-weight: 700; letter-spacing: -.32px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
     .sitter-message-sheet__booking { margin: 0; color: #6c757d; font-size: 12px; line-height: 1.4; }
 
@@ -15865,6 +15886,7 @@
         void sitterDetailScreen.offsetHeight;
         requestAnimationFrame(function () {
           sitterDetailScreen.classList.add('is-open');
+          sitterMessageSheet.classList.add('is-pushed-under');
           sitterDetailBack.focus({ preventScroll: true });
         });
         syncBackEntry();
@@ -15901,7 +15923,7 @@
       function openSitterDetail(card, trigger) {
         if (!loginTrigger.classList.contains('is-logged-in') || !card) return;
         window.clearTimeout(sitterDetailPresentationCloseTimer);
-        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing', 'is-over-thread');
+        sitterDetailScreen.classList.remove('is-presented', 'is-booking-present', 'is-closing', 'is-over-thread', 'is-pushed-under');
         presentationStack = [];
         if (sitterDetailAlternatives) sitterDetailAlternatives.hidden = false;
         setSitterDetailAreaLinksLive(true);      // pushed: the links are live (I12e)
@@ -15929,7 +15951,7 @@
         activeSitterDetailTrigger = trigger;
         activeSitterDetailData = populateSitterDetail(card);
         selectSitterDetailProfile('babysitting');
-        sitterDetailScreen.classList.remove('is-closing', 'is-over-thread');
+        sitterDetailScreen.classList.remove('is-closing', 'is-over-thread', 'is-pushed-under');
         sitterDetailScreen.classList.add('is-presented', 'is-booking-present');
         sitterDetailScreen.setAttribute('aria-hidden', 'false');
         presentationStack = ['profile'];
@@ -16038,6 +16060,7 @@
           // handed back to that conversation — not released, which would make
           // the base screen live underneath a sheet that is still on top.
           var backToThread = wasOverThread && sitterMessageSheet.classList.contains('is-open');
+          sitterMessageSheet.classList.remove('is-pushed-under');
           setBackgroundInert(backToThread ? sitterMessageSheet : null);
           sitterDetailScreen.classList.add('is-closing');
           if (backToThread) {
@@ -16856,7 +16879,13 @@
         } else {
           presentationStack = ['thread'];
         }
+        // Commit the off-screen start before opening. Both classes land in one
+        // block, so without this the browser never renders the panel at
+        // translateX(100%) and animates from wherever it was instead — which is
+        // the bottom, turning the push back into a sheet.
+        if (overPresentedProfile) void sitterMessageSheetDialog.offsetHeight;
         sitterMessageSheet.classList.add('is-open');
+        sitterDetailScreen.classList.toggle('is-pushed-under', overPresentedProfile);
         sitterMessageSheetDialog.classList.add('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'false');
         setBackgroundInert(sitterMessageSheet);
@@ -16868,12 +16897,13 @@
       function closeSitterMessageSheet(restoreFocus) {
         if (!sitterMessageSheet.classList.contains('is-open')) return;
         var wasOverProfile = sitterMessageSheet.classList.contains('is-over-profile');
-        sitterMessageSheet.classList.remove('is-open', 'is-over-profile');
+        sitterMessageSheet.classList.remove('is-open', 'is-over-profile', 'is-pushed-under');
         sitterMessageSheet.classList.add('is-closing');
         sitterMessageSheetDialog.classList.remove('is-open');
         sitterMessageSheet.setAttribute('aria-hidden', 'true');
         var threadIndex = presentationStack.lastIndexOf('thread');
         if (threadIndex !== -1) presentationStack.splice(threadIndex, 1);
+        sitterDetailScreen.classList.remove('is-pushed-under');
         // Popping back to the profile must hand the presentation back to it,
         // not release the whole frame — otherwise the base screen underneath
         // becomes live while a sheet is still on top of it.
