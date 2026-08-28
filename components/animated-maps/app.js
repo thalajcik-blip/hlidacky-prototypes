@@ -323,6 +323,20 @@ async function loadMap(mapKey) {
     if ([...regionPaths.values()].some(pathsForRegion => pathsForRegion.length === 0)) {
       throw new Error('Each region needs at least one SVG path')
     }
+    // Some source files carry a second copy of a region's geometry. If that copy
+    // is filled it paints over the animated one and no scheme can reach it,
+    // because nothing has it — Veszprém sat pink on a teal Hungary for exactly
+    // this reason. Only filled twins are dropped: Croatia's unfilled island
+    // details duplicate geometry too but paint nothing, and Slovakia's white
+    // shapes are artwork rather than duplicates.
+    const regionGeometry = new Set(mapPaths.map(path => path.getAttribute('d')))
+    paths.forEach(path => {
+      if (mapPaths.includes(path)) return
+      const fill = path.getAttribute('fill')
+      if (!fill || fill === 'none') return
+      if (!regionGeometry.has(path.getAttribute('d'))) return
+      path.remove()
+    })
     mapContentBox = mapArt.getBBox()
     buildLabels()
     updateLabelSizing()
