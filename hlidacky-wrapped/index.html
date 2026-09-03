@@ -973,6 +973,10 @@
         var target = slides[bounded];
         if (!target) return;
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced) {
+          // The reveal layer mutes its observer until we land — see 'story:jump' there.
+          story.dispatchEvent(new CustomEvent('story:jump', { detail: { target: target } }));
+        }
         try {
           scroller.scrollTo({ top: target.offsetTop, behavior: reduced ? 'auto' : 'smooth' });
         } catch (e) {
@@ -1090,7 +1094,61 @@
         return;
       }
 
+      // A smooth jump crosses every slide on the way at scroll speed. The observer
+      // was written for a viewport moving at human speed, so it fires on all of them
+      // — the landing slide included, ~600ms before it is actually on screen, which
+      // burns most of that slide's entrance. Mute it for the flight, reveal on arrival.
+      var story = document.getElementById('story');
+      var jumping = null;
+      var jumpGuard = null;
+      var idle = null;
+
+      story.addEventListener('story:jump', function(e) {
+        jumping = e.detail.target;
+        clearTimeout(jumpGuard);
+        // Clicking the segment of the slide you are already on scrolls nothing, so no
+        // scrollend is coming — reveal now rather than waiting for an event that never
+        // fires. A timer here would also beat scrollend on long jumps and cut the
+        // entrance short, which is the whole thing this code exists to prevent.
+        if (Math.abs(scroller.scrollTop - jumping.offsetTop) <= 4) { arrive(); return; }
+        // Net for the pathological case: a jump too small to move the scroller at all,
+        // which would otherwise leave the observer muted for good. Comfortably longer
+        // than the ~1.5s a full-length smooth scroll takes to settle.
+        jumpGuard = setTimeout(arrive, 2500);
+      });
+
+      function arrive() {
+        var slide = jumping;
+        jumping = null;
+        clearTimeout(jumpGuard);
+        clearTimeout(idle);
+        if (!slide) return;
+
+        // Re-observing delivers a fresh entry for every slide, so the ones we flew past
+        // are cleaned up by the ratio < 0.2 branch below instead of a second reset path.
+        slides.forEach(function(s) { io.unobserve(s); io.observe(s); });
+
+        if (Math.abs(scroller.scrollTop - slide.offsetTop) > 4) return;  // user took over
+
+        slide.classList.remove('in-view');
+        slide.querySelectorAll('[data-count]').forEach(function(el) { el.dataset.counted = ''; });
+        void slide.offsetWidth;   // reflow, or the keyframes never restart
+        slide.classList.add('in-view');
+        runCount(slide);
+      }
+
+      if ('onscrollend' in window) {
+        scroller.addEventListener('scrollend', function() { if (jumping) arrive(); });
+      } else {
+        scroller.addEventListener('scroll', function() {
+          if (!jumping) return;
+          clearTimeout(idle);
+          idle = setTimeout(arrive, 140);
+        }, { passive: true });
+      }
+
       var io = new IntersectionObserver(function(entries) {
+        if (jumping) return;
         entries.forEach(function(entry) {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
             entry.target.classList.add('in-view');
