@@ -929,13 +929,29 @@
         visibleGradientLayer = nextLayer;
       }
 
+      // Slide tops are measured, never derived from viewport height: slides use
+      // min-height:100% but taller content pushes them past it, so scrollTop/clientHeight
+      // drifts and lands on the wrong slide (and the wrong gradient) on short viewports.
+      var slideTops = [];
+
+      function measureSlides() {
+        slideTops = slides.map(function(slide) { return slide.offsetTop; });
+      }
+
       function updateProgress() {
-        var height = Math.max(scroller.clientHeight, 1);
         var maxScrollTop = Math.max(scroller.scrollHeight - scroller.clientHeight, 0);
         var atEnd = maxScrollTop > 0 && scroller.scrollTop >= maxScrollTop - 1;
-        var raw = scroller.scrollTop / height;
-        var index = Math.max(0, Math.min(slides.length - 1, Math.round(raw)));
-        var fill = Math.max(0, Math.min(1, raw - Math.floor(raw)));
+        var top = scroller.scrollTop;
+        var index = 0;
+        for (var i = 0; i < slideTops.length; i++) {
+          if (top >= slideTops[i] - 2) index = i;
+        }
+        if (atEnd) index = slides.length - 1;
+        var isLast = index === slides.length - 1;
+        var span = isLast ? 1 : Math.max(slideTops[index + 1] - slideTops[index], 1);
+        // Mandatory snap pins the last slide at its own top, so it never reports atEnd
+        // on short viewports — reaching it is what fills its segment.
+        var fill = (atEnd || isLast) ? 1 : Math.max(0, Math.min(1, (top - slideTops[index]) / span));
 
         if (index !== activeIndex) {
           activeIndex = index;
@@ -987,6 +1003,18 @@
         window.requestAnimationFrame(updateProgress);
       }, { passive: true });
 
+      function remeasure() {
+        measureSlides();
+        updateProgress();
+      }
+
+      window.addEventListener('resize', function() {
+        window.requestAnimationFrame(remeasure);
+      });
+      window.addEventListener('load', remeasure);
+      // Web fonts land after first paint and change slide heights.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+
       document.querySelectorAll('button:not(.progress-segment)').forEach(function(button) {
         button.addEventListener('click', function() {
           button.animate([
@@ -998,6 +1026,7 @@
       });
 
       setTheme(0);
+      measureSlides();
       updateProgress();
     })();
   </script>
