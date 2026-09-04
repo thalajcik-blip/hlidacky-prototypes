@@ -214,7 +214,8 @@
       var STAGGER = 70;         /* delay added per column (ms) */
       var STAGGER_MAX = 260;    /* no column waits longer than this */
       var ENTER = 420;          /* per-column fade + rise, mirrors the CSS */
-      var SCROLL_FOLLOW = true; /* ride the growth so the unfolded footer lands in view */
+      var SCROLL_FOLLOW = true; /* v1: ride the growth so the unfolded footer lands in view */
+      var SCROLL_TO_END = true; /* v2: ride the growth all the way to the foot of the page */
       var EASE = 'cubic-bezier(.33,1,.68,1)';
 
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -241,6 +242,31 @@
       function handOverFocus() {
         full.setAttribute('tabindex', '-1');
         full.focus({ preventScroll: true });
+      }
+
+      /* Carries the page on the same curve as the height, so the growth and the scroll land
+         together. Hands control straight back the moment the reader takes over. */
+      function rideScrollTo(target, duration) {
+        var from = window.scrollY;
+        if (target <= from + 4) return;
+        var riding = true;
+        function release() {
+          riding = false;
+          window.removeEventListener('wheel', release);
+          window.removeEventListener('touchstart', release);
+        }
+        window.addEventListener('wheel', release, { passive: true });
+        window.addEventListener('touchstart', release, { passive: true });
+        var started = performance.now();
+        requestAnimationFrame(function ride(now) {
+          if (!riding) return;
+          var progress = Math.min(Math.max((now - started) / duration, 0), 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          window.scrollTo(0, Math.min(from + (target - from) * eased,
+            document.documentElement.scrollHeight - window.innerHeight));
+          if (progress < 1) { requestAnimationFrame(ride); return; }
+          release();
+        });
       }
 
       /* Two frames: the first commits the state we animate from, the second starts the tween.
@@ -275,14 +301,18 @@
         if (reduce.matches) { markOpen(); handOverFocus(); return; }
 
         var endHeight = heightIn(markOpen, markClosed);
-        footer.style.height = footer.offsetHeight + 'px';
+        var startHeight = footer.offsetHeight;
+        footer.style.height = startHeight + 'px';
         footer.classList.add('is-v2-transitioning');
         markOpen();
+        /* Read the page before the footer grows into it; the target is where its foot ends up. */
+        var scrollTarget = document.documentElement.scrollHeight + (endHeight - startHeight) - window.innerHeight;
 
         nextFrame(function () {
           footer.style.transition = 'height ' + GROW + 'ms ' + EASE;
           footer.style.height = endHeight + 'px';
           footer.classList.add('is-v2-content-in');
+          if (SCROLL_TO_END) rideScrollTo(scrollTarget, GROW);
           finishV2Transition(handOverFocus);
         });
       }
@@ -332,42 +362,23 @@
         });
 
         var endHeight = footer.scrollHeight;
-        var scrollFrom = window.scrollY;
-        var scrollTo = footer.getBoundingClientRect().top + window.scrollY - 8;
-        var following = SCROLL_FOLLOW && scrollTo > scrollFrom + 4;
-        var stopFollowing = function () { following = false; };
-        window.addEventListener('wheel', stopFollowing, { passive: true, once: true });
-        window.addEventListener('touchstart', stopFollowing, { passive: true, once: true });
+        var scrollTarget = footer.getBoundingClientRect().top + window.scrollY - 8;
 
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            ghost.classList.add('is-out');
-            footer.style.transition = 'height ' + GROW + 'ms ' + EASE;
-            footer.style.height = endHeight + 'px';
-            footer.classList.add('is-entering');
+        nextFrame(function () {
+          ghost.classList.add('is-out');
+          footer.style.transition = 'height ' + GROW + 'ms ' + EASE;
+          footer.style.height = endHeight + 'px';
+          footer.classList.add('is-entering');
+          if (SCROLL_FOLLOW) rideScrollTo(scrollTarget, GROW);
 
-            var started = performance.now();
-            requestAnimationFrame(function ride(now) {
-              var p = Math.min(Math.max((now - started) / GROW, 0), 1);
-              if (following) {
-                var eased = 1 - Math.pow(1 - p, 3);  /* same curve as the height */
-                var max = document.documentElement.scrollHeight - window.innerHeight;
-                window.scrollTo(0, Math.min(scrollFrom + (scrollTo - scrollFrom) * eased, max));
-              }
-              if (p < 1) requestAnimationFrame(ride);
-            });
-
-            setTimeout(function () {
-              footer.style.transition = '';
-              footer.style.height = '';
-              footer.classList.remove('is-morphing', 'is-entering');
-              Array.prototype.forEach.call(items, function (item) { item.style.transitionDelay = ''; });
-              ghost.remove();
-              window.removeEventListener('wheel', stopFollowing);
-              window.removeEventListener('touchstart', stopFollowing);
-              handOverFocus();
-            }, Math.max(GROW, STAGGER_MAX + ENTER) + 40);
-          });
+          setTimeout(function () {
+            footer.style.transition = '';
+            footer.style.height = '';
+            footer.classList.remove('is-morphing', 'is-entering');
+            Array.prototype.forEach.call(items, function (item) { item.style.transitionDelay = ''; });
+            ghost.remove();
+            handOverFocus();
+          }, Math.max(GROW, STAGGER_MAX + ENTER) + 40);
         });
       });
 
