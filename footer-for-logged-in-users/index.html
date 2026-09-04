@@ -43,11 +43,41 @@
     /* Option A morph: the compact bar dissolves in place while the full footer unfolds from the same spot. */
     .expanded-footer { visibility:hidden; }.footer.is-open .expanded-footer { visibility:visible; }#full-footer:focus:not(:focus-visible) { outline:none; }
     .footer-toggle { transition:background .15s ease, box-shadow .12s ease, transform .12s ease; }.footer-toggle:active { box-shadow:inset 0 -1px 0 var(--line); transform:translateY(2px); }.chevron { transition:transform .2s ease; }.footer-toggle:hover .chevron { transform:translateY(2px); }
+
+    /* Footer V2 keeps the compact and complete layouts as two reversible states. */
+    .footer-collapse-wrap { display:none; }
+    .footer-how-heading { display:none; }
+    body[data-footer-version="v2"] .footer.is-v2-transitioning { overflow:hidden; }
+    body[data-footer-version="v2"] .footer.is-open .expanded-footer { padding-top:0; padding-bottom:0; }
+    body[data-footer-version="v2"] .footer.is-open .compact-footer { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; max-width:none; min-height:0; margin:0; padding:40px 40px 20px; }
+    body[data-footer-version="v2"] .footer.is-open .compact-top { flex:0 0 auto; width:100%; padding:20px 20px 8px; overflow:hidden; }
+    body[data-footer-version="v2"] .footer.is-open .compact-content { gap:8px; }
+    body[data-footer-version="v2"] .footer.is-open .compact-logo { display:block; width:128.388px; height:48.003px; }
+    body[data-footer-version="v2"] .footer.is-open .compact-logo-art { display:block; }
+    body[data-footer-version="v2"] .footer.is-open .compact-logo-large { display:block; }
+    body[data-footer-version="v2"] .footer.is-open .compact-logo-medium { display:none; }
+    body[data-footer-version="v2"] .footer.is-open .compact-links { gap:28px; padding:20px 0 0 20px; }
+    body[data-footer-version="v2"] .footer.is-open .compact-link { height:20px; font-size:14px; }
+    body[data-footer-version="v2"] .footer.is-open .compact-link-text { opacity:.8; }
+    body[data-footer-version="v2"] .footer.is-open .toggle-wrap { display:none; }
+    body[data-footer-version="v2"] .footer-logo { display:none; }
+    body[data-footer-version="v2"] .footer-how-heading { display:block; }
+    body[data-footer-version="v2"] .legal-company { display:none; }
+    body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap { display:flex; align-items:center; justify-content:center; gap:12px; width:calc(100% - 40px); max-width:1140px; margin:12px auto 0; }
+    body[data-footer-version="v2"] .footer-collapse-wrap::before { flex:1 0 0; min-width:1px; height:1px; background:var(--line); content:''; }
+    body[data-footer-version="v2"] .footer-collapse-wrap::after { flex:0 0 40px; height:1px; background:var(--line); content:''; }
+    @media (max-width:1000px) { body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap { width:100%; } }
+    @media (max-width:800px) { body[data-footer-version="v2"] .footer.is-open .compact-top { padding:0 0 8px; } body[data-footer-version="v2"] .footer.is-open .compact-logo { width:106.992px; height:40px; } body[data-footer-version="v2"] .footer.is-open .compact-logo-large { display:none; } body[data-footer-version="v2"] .footer.is-open .compact-logo-medium { display:block; } body[data-footer-version="v2"] .footer.is-open .compact-links { gap:12px; } body[data-footer-version="v2"] .footer.is-open .compact-link { height:18px; font-size:12px; } }
+    @media (max-width:640px) { body[data-footer-version="v2"] .footer.is-open .compact-content { flex-direction:column; justify-content:center; gap:8px; } body[data-footer-version="v2"] .footer.is-open .compact-links { justify-content:center; gap:8px; width:100%; padding:8px 0; } body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap::after { flex:1 0 0; min-width:1px; } }
     .footer.is-morphing { overflow:hidden; will-change:height; }
     .compact-ghost { position:absolute; z-index:60; margin:0; background:#fff; pointer-events:none; transition:opacity .2s ease, transform .24s cubic-bezier(.33,1,.68,1); }.compact-ghost.is-out { opacity:0; transform:translateY(-10px); }.compact-ghost .chevron { transform:rotate(180deg); }
     .footer.is-morphing .footer-column,.footer.is-morphing .footer-legal { opacity:0; transform:translateY(16px); }
     .footer.is-morphing.is-entering .footer-column,.footer.is-morphing.is-entering .footer-legal { opacity:1; transform:none; transition:opacity .42s ease, transform .42s cubic-bezier(.33,1,.68,1); }
     @media (prefers-reduced-motion:reduce) { .compact-ghost,.footer.is-morphing .footer-column,.footer.is-morphing .footer-legal { transition:none; } }
+
+    /* Shared prototype switch entry point from Mobile App Redesign. */
+    .switch-view-button { position:fixed; top:108px; right:0; z-index:120; display:inline-flex; width:48px; min-height:52px; height:52px; align-items:center; justify-content:flex-start; gap:13px; overflow:hidden; border:0; border-radius:999px 0 0 999px; padding:4px 4px 4px 16px; background:linear-gradient(90deg,#6c4ef8 0%,#7a57ff 100%); box-shadow:inset 0 -6px 0 rgba(67,25,224,.9); color:#fff; font:inherit; font-size:16px; font-weight:450; line-height:20px; white-space:nowrap; cursor:pointer; transition:width 240ms ease,filter .15s ease,transform .15s ease,box-shadow .15s ease; }.switch-view-button-icon { display:block; flex:0 0 24px; width:24px; height:24px; }.switch-view-button-label { opacity:0; pointer-events:none; transform:translateX(16px); transition:opacity 180ms ease,transform 240ms ease; }.switch-view-button:hover,.switch-view-button:focus-visible { outline:none; background:linear-gradient(90deg,#6245e5 0%,#704ef0 100%); }.switch-view-button:active { transform:translateY(1px); box-shadow:inset 0 -3px 0 rgba(67,25,224,.9); }
+    body.footer-version-modal-open { overflow:hidden; }.footer-version-modal-backdrop[hidden],.footer-version-modal[hidden] { display:none; }.footer-version-modal-backdrop { position:fixed; z-index:260; inset:0; background:rgba(42,53,57,.42); backdrop-filter:blur(4px); }.footer-version-modal { position:fixed; top:50%; left:50%; z-index:270; display:grid; width:min(520px,calc(100vw - 32px)); max-height:min(80vh,680px); overflow:hidden; transform:translate(-50%,-50%); border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 24px 60px rgba(42,53,57,.24); }.footer-version-modal__header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 24px 18px; border-bottom:1px solid var(--line); }.footer-version-modal__header h2 { margin:0; color:var(--ink); font-size:24px; font-weight:450; letter-spacing:-.3px; line-height:1.2; }.footer-version-modal__close { display:inline-flex; width:40px; height:40px; flex:0 0 40px; align-items:center; justify-content:center; border:0; border-radius:50%; padding:0; background:transparent; cursor:pointer; }.footer-version-modal__close img { display:block; width:20px; height:20px; }.footer-version-modal__close:hover,.footer-version-modal__close:focus-visible { outline:none; background:#f2f3f5; }.footer-version-modal__body { padding:20px 24px 24px; overflow-y:auto; }.footer-version-group { display:grid; gap:12px; margin:0; border:0; padding:0; }.footer-version-group legend { color:var(--ink); font-size:16px; font-weight:700; letter-spacing:-.2px; line-height:1.4; }.footer-version-option-list { display:grid; gap:10px; }.footer-version-option { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:12px; border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:#f7f7f8; cursor:pointer; }.footer-version-option:has(input:checked) { border-color:#6c4ef8; background:#f2efff; }.footer-version-option input { margin:4px 0 0; accent-color:#6c4ef8; }.footer-version-option strong,.footer-version-option small { display:block; }.footer-version-option strong { color:var(--ink); font-size:15px; line-height:1.4; }.footer-version-option small { margin-top:2px; color:#6b7176; font-size:14px; line-height:1.45; }@media (max-width:600px) { .footer-version-modal { width:calc(100vw - 16px); max-height:calc(100dvh - 16px); border-radius:12px; }.footer-version-modal__header { padding:18px 16px 16px; }.footer-version-modal__header h2 { font-size:20px; }.footer-version-modal__body { padding:16px; } }
   </style>
 </head>
 <body>
@@ -88,6 +118,7 @@
       <div class="full-footer-top">
         <section class="footer-column footer-primary">
           <img class="footer-logo" src="assets/account-footer-logo.svg" alt="hlidacky.cz">
+          <h2 class="footer-heading footer-how-heading">How Hlídačky.cz works</h2>
           <ul class="footer-list"><li><a href="#footer">How does it work? (for families)</a></li><li><a href="#footer">How does it work? (for care providers)</a></li><li><a href="#footer">How to get a trade license?</a></li><li><a href="#footer">Trust &amp; Safety</a></li><li><a href="#footer">Guarantee of finding a sitter</a></li></ul>
           <img class="footer-brand" src="assets/account-protect.svg" alt="Hlídačky Protect">
           <ul class="footer-list"><li><a class="strong" href="#footer">What is CareProtect?</a></li><li><a href="#footer">Babysitting insurance</a></li><li><a href="#footer">Cleaning insurance</a></li><li><a href="#footer">Pet care insurance</a></li></ul>
@@ -132,13 +163,35 @@
         <section class="footer-column"><h2 class="footer-heading">Inspiration</h2><ul class="footer-list"><li><a href="#footer">Tips for activities - autumn</a></li><li><a href="#footer">Girl or boy?</a></li><li><a href="#footer">Prevention of childhood overweight</a></li><li><a href="#footer">How to prepare a child for a sibling</a></li><li><a href="#footer">Where to go for a trip in Czechia</a></li><li><a href="#footer">Babysitter Annie Baby Monitor for Mobile</a></li><li><a href="#footer">How to talk to children about COVID</a></li><li><a href="#footer">Where to go with children in winter?</a></li><li><a href="#footer">Wasps nests five times differently</a></li><li><a href="#footer">Road to freedom with keys and tricolor</a></li></ul></section>
       </div>
 
-      <section class="legal footer-legal"><div class="legal-links"><a href="#footer">Terms &amp; Conditions</a><a href="#footer">Privacy policy</a><a href="#footer">Cookie policy</a></div><p>Hlídačky.cz is a place that connects families with caregivers.</p><p>Each user is solely responsible for selecting and verifying the appropriate care provider or care seeker for themselves, their families or households, and observing all applicable laws in connection with any employment relationship they establish.</p><p>Hlídačky.cz is not an agency and does not recommend any specific providers.</p><p>The platform operation is provided by Hlídačky.cz s.r.o., while the care provider and contractual partner is Hlídačky CZ Care Services s.r.o.</p><span class="family"><span>Hlídačky.cz is a part of</span><span class="family-logo" aria-label="FamilyCare Group"><img class="family-logo-symbol" src="assets/familycare-logo-symbol.svg" alt=""><img class="family-logo-group" src="assets/familycare-logo-group.svg" alt=""><img class="family-logo-familycare" src="assets/familycare-logo-familycare.svg" alt=""><img class="family-logo-wordmark" src="assets/familycare-logo-wordmark.svg" alt=""></span></span></section>
+      <section class="legal footer-legal"><div class="legal-links"><a href="#footer">Terms &amp; Conditions</a><a href="#footer">Privacy policy</a><a href="#footer">Cookie policy</a></div><p>Hlídačky.cz is a place that connects families with caregivers.</p><p>Each user is solely responsible for selecting and verifying the appropriate care provider or care seeker for themselves, their families or households, and observing all applicable laws in connection with any employment relationship they establish.</p><p>Hlídačky.cz is not an agency and does not recommend any specific providers.</p><p class="legal-company">The platform operation is provided by Hlídačky.cz s.r.o., while the care provider and contractual partner is Hlídačky CZ Care Services s.r.o.</p><span class="family"><span>Hlídačky.cz is a part of</span><span class="family-logo" aria-label="FamilyCare Group"><img class="family-logo-symbol" src="assets/familycare-logo-symbol.svg" alt=""><img class="family-logo-group" src="assets/familycare-logo-group.svg" alt=""><img class="family-logo-familycare" src="assets/familycare-logo-familycare.svg" alt=""><img class="family-logo-wordmark" src="assets/familycare-logo-wordmark.svg" alt=""></span></span></section>
+      <div class="footer-collapse-wrap"><button class="footer-toggle footer-collapse-toggle" type="button" aria-controls="full-footer" aria-expanded="false"><span class="toggle-label">show less</span><span class="chevron" aria-hidden="true">⌄</span></button></div>
     </div>
   </footer>
+  <button class="switch-view-button" id="footerVersionSwitchButton" type="button" aria-label="Switch footer version" aria-controls="footerVersionModal" aria-expanded="false" aria-haspopup="dialog" data-footer-version-switch>
+    <img class="switch-view-button-icon" src="../notification-center/assets/icon-gear.svg" alt="">
+    <span class="switch-view-button-label">Footer versions</span>
+  </button>
+  <div class="footer-version-modal-backdrop" id="footerVersionBackdrop" hidden></div>
+  <section class="footer-version-modal" id="footerVersionModal" aria-labelledby="footerVersionTitle" aria-modal="true" role="dialog" hidden>
+    <header class="footer-version-modal__header">
+      <h2 id="footerVersionTitle">Footer versions</h2>
+      <button class="footer-version-modal__close" id="footerVersionClose" type="button" aria-label="Close footer versions"><img src="../notification-center/assets/xicon.svg" alt=""></button>
+    </header>
+    <form class="footer-version-modal__body" aria-label="Footer version selection">
+      <fieldset class="footer-version-group">
+        <legend>Choose a prototype version</legend>
+        <div class="footer-version-option-list">
+          <label class="footer-version-option"><input type="radio" name="footer-version" value="v1"><span><strong>Footer V1</strong><small>Current compact and full-footer interaction.</small></span></label>
+          <label class="footer-version-option"><input type="radio" name="footer-version" value="v2"><span><strong>Footer V2</strong><small>Second version, ready for its upcoming design.</small></span></label>
+        </div>
+      </fieldset>
+    </form>
+  </section>
   <script>
     (function () {
       var footer = document.querySelector('.footer');
       var button = document.querySelector('.footer-toggle');
+      var collapseButton = document.querySelector('.footer-collapse-toggle');
       var compact = document.querySelector('.compact-footer');
       var full = document.getElementById('full-footer');
 
@@ -154,7 +207,19 @@
       function markOpen() {
         footer.classList.add('is-open');
         button.setAttribute('aria-expanded', 'true');
+        if (collapseButton) collapseButton.setAttribute('aria-expanded', 'true');
         full.setAttribute('aria-hidden', 'false');
+      }
+
+      function markClosed() {
+        footer.classList.remove('is-open');
+        button.setAttribute('aria-expanded', 'false');
+        if (collapseButton) collapseButton.setAttribute('aria-expanded', 'false');
+        full.setAttribute('aria-hidden', 'true');
+      }
+
+      function isV2() {
+        return document.body.dataset.footerVersion === 'v2';
       }
 
       /* The trigger disappears with the compact bar, so hand focus to what replaced it. */
@@ -163,7 +228,53 @@
         full.focus({ preventScroll: true });
       }
 
+      function finishV2Transition(callback) {
+        setTimeout(function () {
+          footer.style.transition = '';
+          footer.style.height = '';
+          footer.classList.remove('is-v2-transitioning', 'is-v2-closing');
+          callback();
+        }, GROW + 40);
+      }
+
+      function openV2() {
+        if (footer.classList.contains('is-open') || footer.classList.contains('is-v2-transitioning')) return;
+        if (reduce.matches) { markOpen(); handOverFocus(); return; }
+
+        footer.style.height = footer.offsetHeight + 'px';
+        footer.classList.add('is-v2-transitioning');
+        markOpen();
+        var endHeight = footer.scrollHeight;
+
+        requestAnimationFrame(function () {
+          footer.style.transition = 'height ' + GROW + 'ms cubic-bezier(.33,1,.68,1)';
+          footer.style.height = endHeight + 'px';
+          finishV2Transition(handOverFocus);
+        });
+      }
+
+      function closeV2() {
+        if (!footer.classList.contains('is-open') || footer.classList.contains('is-v2-transitioning')) return;
+        if (reduce.matches) { markClosed(); button.focus({ preventScroll: true }); return; }
+
+        footer.style.height = footer.offsetHeight + 'px';
+        markClosed();
+        var endHeight = footer.scrollHeight;
+        markOpen();
+        footer.classList.add('is-v2-transitioning', 'is-v2-closing');
+
+        requestAnimationFrame(function () {
+          footer.style.transition = 'height ' + GROW + 'ms cubic-bezier(.33,1,.68,1)';
+          footer.style.height = endHeight + 'px';
+          finishV2Transition(function () {
+            markClosed();
+            button.focus({ preventScroll: true });
+          });
+        });
+      }
+
       button.addEventListener('click', function () {
+        if (isV2()) { openV2(); return; }
         if (footer.classList.contains('is-open')) return;
         if (reduce.matches) { markOpen(); handOverFocus(); return; }
 
@@ -226,6 +337,70 @@
           });
         });
       });
+
+      collapseButton.addEventListener('click', function () {
+        if (isV2()) closeV2();
+      });
+    }());
+  </script>
+  <script>
+    (function () {
+      var switchButton = document.getElementById('footerVersionSwitchButton');
+      var backdrop = document.getElementById('footerVersionBackdrop');
+      var modal = document.getElementById('footerVersionModal');
+      var closeButton = document.getElementById('footerVersionClose');
+      var versionInputs = Array.prototype.slice.call(document.querySelectorAll('[name="footer-version"]'));
+      var version = new URLSearchParams(window.location.search).get('footer-version') === 'v2' ? 'v2' : 'v1';
+
+      function syncVersion(nextVersion) {
+        version = nextVersion;
+        document.body.dataset.footerVersion = version;
+        document.title = version === 'v2' ? 'Account Footer V2 | Hlídačky.cz' : 'Account | Hlídačky.cz';
+        versionInputs.forEach(function (input) { input.checked = input.value === version; });
+      }
+
+      function closeModal(restoreFocus) {
+        if (modal.hidden) return;
+        modal.hidden = true;
+        backdrop.hidden = true;
+        switchButton.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('footer-version-modal-open');
+        if (restoreFocus) switchButton.focus({ preventScroll: true });
+      }
+
+      function openModal() {
+        modal.hidden = false;
+        backdrop.hidden = false;
+        switchButton.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('footer-version-modal-open');
+        requestAnimationFrame(function () { versionInputs.find(function (input) { return input.checked; }).focus({ preventScroll: true }); });
+      }
+
+      switchButton.addEventListener('click', openModal);
+      closeButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        closeModal(true);
+      });
+      backdrop.addEventListener('pointerdown', function (event) {
+        if (event.target === backdrop) closeModal(true);
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.hidden) {
+          event.preventDefault();
+          closeModal(true);
+        }
+      });
+      versionInputs.forEach(function (input) {
+        input.addEventListener('change', function () {
+          if (!input.checked) return;
+          var url = new URL(window.location.href);
+          url.searchParams.set('footer-version', input.value);
+          window.history.replaceState({}, '', url);
+          syncVersion(input.value);
+          closeModal(false);
+        });
+      });
+      syncVersion(version);
     }());
   </script>
 </body>
