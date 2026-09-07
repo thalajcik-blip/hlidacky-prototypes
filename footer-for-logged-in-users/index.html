@@ -67,6 +67,8 @@
     body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap,body[data-footer-version="v2"] .footer.is-v2-closing .footer-collapse-wrap { display:flex; align-items:center; justify-content:center; gap:12px; width:calc(100% - 40px); max-width:1140px; margin:12px auto 0; }
     body[data-footer-version="v2"] .footer-collapse-wrap::before { flex:1 0 0; min-width:1px; height:1px; background:var(--line); content:''; }
     body[data-footer-version="v2"] .footer-collapse-wrap::after { flex:0 0 40px; height:1px; background:var(--line); content:''; }
+    /* Above the compact-footer breakpoint, keep the collapse control on the same x-axis as Show more. */
+    @media (min-width:1181px) { body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap,body[data-footer-version="v2"] .footer.is-v2-closing .footer-collapse-wrap { max-width:none; margin:12px 20px 0; } }
     @media (max-width:1180px) { body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap::after,body[data-footer-version="v2"] .footer.is-v2-closing .footer-collapse-wrap::after { flex:1 0 0; min-width:1px; } }
     @media (max-width:1000px) { body[data-footer-version="v2"] .footer.is-open .footer-collapse-wrap,body[data-footer-version="v2"] .footer.is-v2-closing .footer-collapse-wrap { width:100%; } }
     @media (min-width:801px) and (max-width:1000px) { body[data-footer-version="v2"] .footer.is-open .compact-links { gap:16px 20px; } }
