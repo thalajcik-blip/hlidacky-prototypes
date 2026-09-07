@@ -42,7 +42,9 @@
     @media (max-width:400px) { .footer.is-open .expanded-footer,.footer.is-v2-closing .expanded-footer { padding:20px; }.full-footer-top,.footer-content-middle,.footer-legal { padding:20px; }.store-row img { width:calc((100vw - 96px) / 2); height:auto; }.socials { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }.social-counter { gap:4px; }.social-count { font-size:12px; }.footer-legal { font-size:12px; line-height:18px; }.footer-legal p { margin-bottom:12px; } }
     /* Option A morph: the compact bar dissolves in place while the full footer unfolds from the same spot. */
     .expanded-footer { visibility:hidden; }.footer.is-open .expanded-footer,.footer.is-v2-closing .expanded-footer { visibility:visible; }#full-footer:focus:not(:focus-visible) { outline:none; }
-    .footer-toggle { transition:background .15s ease, box-shadow .12s ease, transform .12s ease; }.footer-toggle:active { box-shadow:inset 0 -1px 0 var(--line); transform:translateY(2px); }.footer-collapse-toggle .chevron { transform:rotate(180deg); }
+    /* Figma standalone link variant used for the compact and collapse controls. */
+    .footer-toggle { display:inline-flex; align-items:center; justify-content:center; gap:2px; min-height:20px; height:20px; border:0; border-radius:0; padding:0; background:transparent; box-shadow:none; color:#6c757d; font-family:Soleil, soleil, Inter, Arial, sans-serif; font-feature-settings:'lnum' 1, 'tnum' 1; font-size:14px; font-weight:400; line-height:1.4; opacity:.8; text-decoration:none; cursor:pointer; transition:color .15s ease, opacity .15s ease; }.footer-toggle:hover { background:transparent; }.footer-toggle:active { box-shadow:none; transform:none; }.footer-toggle:focus-visible { outline:2px solid var(--ink); outline-offset:4px; }.footer-toggle .toggle-label { text-decoration-line:underline; text-decoration-color:#bec2ce; text-decoration-thickness:8%; text-underline-offset:2px; }.footer-toggle .chevron { display:block; flex:0 0 16px; width:16px; height:16px; }.footer-collapse-toggle .chevron { transform:rotate(180deg); }
+    @media (max-width:800px) { .footer-toggle { min-height:18px; height:18px; font-size:12px; } }
 
     /* Footer V2 keeps the compact and complete layouts as two reversible states. */
     .footer-collapse-wrap { display:none; }
@@ -93,6 +95,10 @@
     body[data-footer-version="v2"] .footer.is-v2-closing .footer-column,body[data-footer-version="v2"] .footer.is-v2-closing .footer-legal { transform:none; transition:opacity .42s ease; }
     .footer.is-no-anim,.footer.is-no-anim * { transition:none !important; }
     @media (prefers-reduced-motion:reduce) { body[data-footer-version="v2"] .compact-footer,body[data-footer-version="v2"] .compact-top,body[data-footer-version="v2"] .compact-links,body[data-footer-version="v2"] .toggle-wrap,body[data-footer-version="v2"] .footer-collapse-wrap,body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-column,body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { transition:none; } }
+    /* Keep either footer version at the bottom of short pages without affecting long-page scrolling. */
+    body { min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }.header,.footer { flex:0 0 auto; }.account { flex:1 0 auto; }
+    /* Figma grayscale 2x-small symbol replaces the compact footer wordmark. */
+    .compact-logo { flex:0 0 40px; width:40px; height:40px; }.compact-logo-symbol-only { display:block; width:40px; height:40px; }body[data-footer-version="v2"] .footer.is-open .compact-logo { flex-basis:40px; width:40px; height:40px; }@media (max-width:800px) { .compact-logo { flex-basis:32px; width:32px; height:32px; }.compact-logo-symbol-only { width:32px; height:32px; }body[data-footer-version="v2"] .footer.is-open .compact-logo { flex-basis:32px; width:32px; height:32px; } }
   </style>
 </head>
 <body>
@@ -125,8 +131,8 @@
 
   <footer class="footer" id="footer">
     <div class="compact-footer">
-      <div class="compact-top"><div class="compact-content"><a class="compact-logo" href="#top" aria-label="Hlídačky.cz home"><span class="compact-logo-art compact-logo-large" aria-hidden="true"><img class="compact-logo-wordmark" src="assets/footer-compact-logo-large-wordmark.svg" alt=""><img class="compact-logo-symbol" src="assets/footer-compact-logo-large-symbol.svg" alt=""></span><span class="compact-logo-art compact-logo-medium" aria-hidden="true"><img class="compact-logo-wordmark" src="assets/footer-compact-logo-medium-wordmark.svg" alt=""><img class="compact-logo-symbol" src="assets/footer-compact-logo-medium-symbol.svg" alt=""></span></a><nav class="compact-links" aria-label="Footer shortcuts"><a class="compact-link compact-link-text" href="#footer">What is CareProtect?</a><a class="compact-link compact-link-text" href="#footer">What is CareVerify?</a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-mobile-screen-button" aria-hidden="true"></i><span class="compact-link-copy">Download our app</span></a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-envelope" aria-hidden="true"></i><span class="compact-link-copy">Contact us</span></a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-globe" aria-hidden="true"></i><span class="compact-link-copy">English</span></a></nav></div></div>
-      <div class="toggle-wrap"><button class="footer-toggle" type="button" aria-controls="full-footer" aria-expanded="false"><span class="toggle-label">show more</span><img class="chevron" src="assets/chevron-down+s.svg" alt="" aria-hidden="true"></button></div>
+      <div class="compact-top"><div class="compact-content"><a class="compact-logo" href="#top" aria-label="Hlídačky.cz home"><img class="compact-logo-symbol-only" src="assets/footer-hlidacky-symbol.svg" alt=""></a><nav class="compact-links" aria-label="Footer shortcuts"><a class="compact-link compact-link-text" href="#footer">What is CareProtect?</a><a class="compact-link compact-link-text" href="#footer">What is CareVerify?</a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-mobile-screen-button" aria-hidden="true"></i><span class="compact-link-copy">Download our app</span></a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-envelope" aria-hidden="true"></i><span class="compact-link-copy">Contact us</span></a><a class="compact-link compact-link-iconlink" href="#footer"><i class="compact-link-icon fa-regular fa-globe" aria-hidden="true"></i><span class="compact-link-copy">English</span></a></nav></div></div>
+      <div class="toggle-wrap"><button class="footer-toggle" type="button" aria-controls="full-footer" aria-expanded="false"><span class="toggle-label">Show more</span><img class="chevron" src="assets/chevron-down+s.svg" alt="" aria-hidden="true"></button></div>
     </div>
 
     <div class="expanded-footer" id="full-footer" aria-hidden="true">
@@ -179,7 +185,7 @@
       </div>
 
       <section class="legal footer-legal"><div class="legal-links"><a href="#footer">Terms &amp; Conditions</a><a href="#footer">Privacy policy</a><a href="#footer">Cookie policy</a></div><p>Hlídačky.cz is a place that connects families with caregivers.</p><p>Each user is solely responsible for selecting and verifying the appropriate care provider or care seeker for themselves, their families or households, and observing all applicable laws in connection with any employment relationship they establish.</p><p>Hlídačky.cz is not an agency and does not recommend any specific providers.</p><p class="legal-company">The platform operation is provided by Hlídačky.cz s.r.o., while the care provider and contractual partner is Hlídačky CZ Care Services s.r.o.</p><span class="family"><span>Hlídačky.cz is a part of</span><span class="family-logo" aria-label="FamilyCare Group"><img class="family-logo-symbol" src="assets/familycare-logo-symbol.svg" alt=""><img class="family-logo-group" src="assets/familycare-logo-group.svg" alt=""><img class="family-logo-familycare" src="assets/familycare-logo-familycare.svg" alt=""><img class="family-logo-wordmark" src="assets/familycare-logo-wordmark.svg" alt=""></span></span></section>
-      <div class="footer-collapse-wrap"><button class="footer-toggle footer-collapse-toggle" type="button" aria-controls="full-footer" aria-expanded="false"><span class="toggle-label">show less</span><img class="chevron" src="assets/chevron-down+s.svg" alt="" aria-hidden="true"></button></div>
+      <div class="footer-collapse-wrap"><button class="footer-toggle footer-collapse-toggle" type="button" aria-controls="full-footer" aria-expanded="false"><span class="toggle-label">Show less</span><img class="chevron" src="assets/chevron-down+s.svg" alt="" aria-hidden="true"></button></div>
     </div>
   </footer>
   <button class="switch-view-button" id="footerVersionSwitchButton" type="button" aria-label="Switch footer version" aria-controls="footerVersionModal" aria-expanded="false" aria-haspopup="dialog" data-footer-version-switch>
@@ -404,6 +410,27 @@
         versionInputs.forEach(function (input) { input.checked = input.value === version; });
       }
 
+      function resetFooterToCompact() {
+        var footer = document.getElementById('footer');
+        var fullFooter = document.getElementById('full-footer');
+        if (!footer || !fullFooter) return;
+
+        footer.classList.add('is-no-anim');
+        footer.classList.remove('is-open', 'is-morphing', 'is-entering', 'is-v2-transitioning', 'is-v2-closing', 'is-v2-content-in');
+        footer.style.transition = '';
+        footer.style.height = '';
+        fullFooter.setAttribute('aria-hidden', 'true');
+        Array.prototype.forEach.call(footer.querySelectorAll('.footer-toggle'), function (toggle) {
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+        Array.prototype.forEach.call(fullFooter.querySelectorAll('.footer-column, .footer-legal'), function (item) {
+          item.style.transitionDelay = '';
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.compact-ghost'), function (ghost) { ghost.remove(); });
+        void footer.offsetHeight;
+        footer.classList.remove('is-no-anim');
+      }
+
       function closeModal(restoreFocus) {
         if (modal.hidden) return;
         modal.hidden = true;
@@ -442,6 +469,7 @@
           url.searchParams.set('footer-version', input.value);
           window.history.replaceState({}, '', url);
           syncVersion(input.value);
+          resetFooterToCompact();
           closeModal(false);
         });
       });
