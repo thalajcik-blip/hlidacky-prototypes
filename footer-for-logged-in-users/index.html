@@ -221,8 +221,7 @@
       var STAGGER = 70;         /* delay added per column (ms) */
       var STAGGER_MAX = 260;    /* no column waits longer than this */
       var ENTER = 420;          /* per-column fade + rise, mirrors the CSS */
-      var SCROLL_FOLLOW = true; /* v1: ride the growth so the unfolded footer lands in view */
-      var SCROLL_TO_END = true; /* v2: ride the growth all the way to the foot of the page */
+      var SCROLL_FOLLOW = true; /* ride the growth so the footer's top edge lands in view */
       var EASE = 'cubic-bezier(.33,1,.68,1)';
 
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -283,8 +282,8 @@
       }
 
       /* Measures the layout we are animating into. The page is a sticky-footer column, so as
-         the footer grows the content above gives back its slack: the footer's top and the page
-         height both move, and neither can be extrapolated from the growth on its own. */
+         the footer grows the content above gives back its slack, so where the footer's top
+         lands cannot be extrapolated from the growth on its own. */
       function probe(state, back) {
         footer.classList.add('is-no-anim');
         var held = footer.style.height;
@@ -292,8 +291,7 @@
         state();
         var reading = {
           height: footer.offsetHeight,
-          top: footer.getBoundingClientRect().top + window.scrollY,
-          docHeight: document.documentElement.scrollHeight
+          top: footer.getBoundingClientRect().top + window.scrollY
         };
         back();
         footer.style.height = held;
@@ -336,7 +334,7 @@
           footer.style.transition = 'height ' + GROW + 'ms ' + EASE;
           footer.style.height = opened.height + 'px';
           footer.classList.add('is-v2-content-in');
-          if (SCROLL_TO_END) rideScrollTo(opened.docHeight - window.innerHeight, GROW);
+          if (SCROLL_FOLLOW) rideScrollTo(opened.top - 8, GROW);
           finishV2Transition(handOverFocus);
         });
       }
