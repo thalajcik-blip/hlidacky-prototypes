@@ -719,6 +719,7 @@ async function replay() {
 // are carried as base64 rather than referenced.
 const SVG_NS = 'http://www.w3.org/2000/svg'
 const EXPORT_FONTS = [
+  { family: 'Soleil', weight: 400, file: 'soleil-book.otf', format: 'opentype', mime: 'font/otf' },
   { family: 'Soleil', weight: 600, file: 'soleil-600.woff2' },
   { family: 'Soleil', weight: 700, file: 'soleil-700.woff2' },
   { family: 'DM Sans', weight: 400, file: 'dmsans-400.woff2' },
@@ -744,7 +745,7 @@ async function fontCss() {
     let binary = ''
     for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i])
     return `@font-face{font-family:'${face.family}';font-style:normal;font-weight:${face.weight};` +
-           `src:url(data:font/woff2;base64,${btoa(binary)}) format('woff2');}`
+           `src:url(data:${face.mime || 'font/woff2'};base64,${btoa(binary)}) format('${face.format || 'woff2'}');}`
   }))
   embeddedFontCss = faces.join('')
   return embeddedFontCss
