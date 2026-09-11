@@ -148,6 +148,7 @@ const ranges = {
   lineWidth: range('line-width'),
   donutThickness: range('donut-thickness'),
   sliceGap: range('slice-gap'),
+  chartSize: range('chart-size'),
 }
 
 function range(name) {
@@ -495,11 +496,24 @@ function layoutCopy() {
   if (sourceMatch) sourceLink.setAttribute('href', sourceMatch[3])
   else sourceLink.removeAttribute('href')
 
-  plot = {
+  const box = {
     x0: margin,
     x1: artboardSize.w - margin,
     y0: subheadlineBaseline + 56 * unit,
     y1: artboardSize.h - base.bottom * unit,
+  }
+  /* Pulling the plot in about its centre is the one move that means the same
+     thing to all five types: the chart gets smaller and the artboard keeps the
+     room. It is what makes space for slice labels dragged clear of the pie,
+     which would otherwise have nowhere to go but off the edge. */
+  const shrink = scaleOf(ranges.chartSize)
+  const width = (box.x1 - box.x0) * shrink
+  const height = (box.y1 - box.y0) * shrink
+  plot = {
+    x0: (box.x0 + box.x1) / 2 - width / 2,
+    x1: (box.x0 + box.x1) / 2 + width / 2,
+    y0: (box.y0 + box.y1) / 2 - height / 2,
+    y1: (box.y0 + box.y1) / 2 + height / 2,
   }
 }
 
@@ -620,6 +634,11 @@ function buildBars() {
     if (valueStyleInput.value !== 'none') area.y0 += 44 * unit * scaleOf(ranges.value)
   }
 
+  // The gutters are measured off text, which does not shrink with the plot, so
+  // a small enough chart would otherwise invert the drawing area.
+  area.x1 = Math.max(area.x1, area.x0 + 1)
+  area.y1 = Math.max(area.y1, area.y0 + 1)
+
   const span = scale.max - scale.min || 1
   const across = horizontal ? area.y1 - area.y0 : area.x1 - area.x0
   const along = horizontal ? area.x1 - area.x0 : area.y1 - area.y0
@@ -715,6 +734,9 @@ function buildLine() {
     measureText(`${formatValue(row.value)} ${text.unit.value}`, { size: sizes.value, family: FONT_SOLEIL }))) / 2 + 22 * unit
   area.x0 += Math.min(overhang, (area.x1 - area.x0) * .12)
   area.x1 -= Math.min(overhang, (area.x1 - area.x0) * .12)
+
+  area.x1 = Math.max(area.x1, area.x0 + 1)
+  area.y1 = Math.max(area.y1, area.y0 + 1)
 
   const span = scale.max - scale.min || 1
   const yOf = value => area.y1 - ((value - scale.min) / span) * (area.y1 - area.y0)
