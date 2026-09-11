@@ -728,7 +728,7 @@ const EXPORT_FONTS = [
 const EXPORT_STYLE_PROPS = [
   'fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-linejoin',
   'opacity', 'font-family', 'font-size', 'font-weight', 'font-style',
-  'letter-spacing', 'text-anchor', 'filter',
+  'letter-spacing', 'font-variant-numeric', 'font-feature-settings', 'text-anchor', 'filter',
 ]
 const exportStatus = document.querySelector('#export-status')
 const exportScaleInput = document.querySelector('#export-scale-input')
