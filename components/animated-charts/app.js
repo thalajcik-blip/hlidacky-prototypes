@@ -1082,9 +1082,9 @@ function applyFrame(t) {
   })
 
   if (frameGeometry.kind === 'pie' && frameGeometry.center) {
-    // The total counts up with the slice that finishes last, so the number in
-    // the middle lands with the ring rather than ahead of it.
-    const counted = rows.reduce((slowest, row, index) => Math.min(slowest, sliceProgress(index, t).counted), 1)
+    // The total follows the pen's linear sweep, so it reaches its final value
+    // exactly as the ring completes instead of waiting for the final label.
+    const counted = Math.min(1, t / frameGeometry.timing.sweep)
     frameGeometry.center.value.textContent = `${formatValue(frameGeometry.center.total * counted)}${unitText}`
   }
 }
@@ -1475,7 +1475,7 @@ function buildEmbedSvg() {
 
   if (frameGeometry.kind === 'pie' && frameGeometry.center) {
     const totalNode = clone.querySelector('.center-total .total-value')
-    if (totalNode) buildEmbedTotal(totalNode, frameGeometry.center.total, duration)
+    if (totalNode) buildEmbedTotal(totalNode, frameGeometry.center.total, frameGeometry.timing.sweep)
   }
 
   if (frameGeometry.kind === 'bars') {
@@ -1536,7 +1536,7 @@ function buildEmbedTotal(totalNode, total, duration) {
   const unitText = text.unit.value ? ` ${text.unit.value}` : ''
   for (let i = 0; i < EMBED_STEPS; i += 1) {
     const frameText = totalNode.cloneNode(true)
-    frameText.textContent = `${formatValue(total * easeCount((i + 1) / EMBED_STEPS))}${unitText}`
+    frameText.textContent = `${formatValue(total * ((i + 1) / EMBED_STEPS))}${unitText}`
     const last = i === EMBED_STEPS - 1
     frameText.setAttribute('style', `${totalNode.getAttribute('style') || ''};opacity:0;` +
       `animation:hold ${step}ms ${i * step}ms linear ${last ? 'forwards' : ''}`)
