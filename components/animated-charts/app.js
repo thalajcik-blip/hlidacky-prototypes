@@ -287,6 +287,31 @@ function svg(name, attributes = {}, parent = null) {
   return node
 }
 
+// A vertical bar keeps its base visually anchored to the axis, so its lower
+// corners are intentionally square. SVG rect only supports one radius for all
+// four corners; this path rounds the top pair without affecting the bottom.
+function topRoundedBarPath(x, y, width, height, radius) {
+  const right = x + width
+  const bottom = y + height
+  const r = Math.min(radius, width / 2, height)
+  if (r <= 0) return `M${x} ${y}H${right}V${bottom}H${x}Z`
+  return `M${x} ${bottom}H${right}V${y + r}` +
+    `Q${right} ${y} ${right - r} ${y}H${x + r}` +
+    `Q${x} ${y} ${x} ${y + r}V${bottom}Z`
+}
+
+// Horizontal bars use the same visual rule on their axis edge: their left
+// pair of corners stays square while the value end keeps the chosen roundness.
+function rightRoundedBarPath(x, y, width, height, radius) {
+  const right = x + width
+  const bottom = y + height
+  const r = Math.min(radius, width, height / 2)
+  if (r <= 0) return `M${x} ${y}H${right}V${bottom}H${x}Z`
+  return `M${x} ${y}H${right - r}` +
+    `Q${right} ${y} ${right} ${y + r}V${bottom - r}` +
+    `Q${right} ${bottom} ${right - r} ${bottom}H${x}Z`
+}
+
 // SVG text does not wrap, so a name breaks where the author breaks it.
 function setLines(node, value, x, lineHeight) {
   node.replaceChildren()
@@ -694,13 +719,15 @@ function buildBars() {
     const color = colorForRow(row, index)
     const radius = Math.min(thickness * radiusRatio, Math.abs(end - zero) || 0)
 
-    const rect = svg('rect', {
-      fill: color, rx: radius, ry: radius,
-      x: horizontal ? Math.min(zero, end) : center - thickness / 2,
-      y: horizontal ? center - thickness / 2 : Math.min(zero, end),
-      width: horizontal ? Math.abs(end - zero) : thickness,
-      height: horizontal ? thickness : Math.abs(end - zero),
-    }, seriesLayer)
+    const bar = horizontal
+      ? svg('path', {
+        class: 'bar-shape', fill: color,
+        d: rightRoundedBarPath(Math.min(zero, end), center - thickness / 2, Math.abs(end - zero), thickness, radius),
+      }, seriesLayer)
+      : svg('path', {
+        class: 'bar-shape', fill: color,
+        d: topRoundedBarPath(center - thickness / 2, Math.min(zero, end), thickness, Math.abs(end - zero), radius),
+      }, seriesLayer)
 
     const name = svg('text', {
       class: 'category-name', 'font-size': sizes.category, 'font-family': FONT_SOLEIL,
@@ -715,7 +742,7 @@ function buildBars() {
       : buildLabel(row, { chip: valueStyleInput.value === 'chip' })
     if (node) nodes.set(row.id, node)
 
-    geometry.set(row.id, { rect, center, zero, end, value, negative: value < 0, color, thickness })
+    geometry.set(row.id, { bar, center, zero, end, value, negative: value < 0, color, thickness, radius })
   })
 
   frameGeometry = { kind: 'bars', horizontal, zero, geometry, sizes }
@@ -1082,15 +1109,13 @@ function applyFrame(t) {
     const value = Number(row.value) || 0
 
     if (frameGeometry.kind === 'bars') {
-      const { rect, center, zero, end } = geometry
+      const { bar, center, zero, end, thickness, radius } = geometry
       const tip = zero + (end - zero) * grow
       const size = Math.abs(tip - zero)
       if (frameGeometry.horizontal) {
-        rect.setAttribute('x', Math.min(zero, tip))
-        rect.setAttribute('width', size)
+        bar.setAttribute('d', rightRoundedBarPath(Math.min(zero, tip), center - thickness / 2, size, thickness, radius))
       } else {
-        rect.setAttribute('y', Math.min(zero, tip))
-        rect.setAttribute('height', size)
+        bar.setAttribute('d', topRoundedBarPath(center - thickness / 2, Math.min(zero, tip), thickness, size, radius))
       }
       if (node) {
         const away = (value < 0 ? -1 : 1) * (34 * unit * scaleOf(ranges.value))
@@ -1122,9 +1147,9 @@ function applyFrame(t) {
   })
 
   if (frameGeometry.kind === 'pie' && frameGeometry.center) {
-    // The total counts up with the slice that finishes last, so the number in
-    // the middle lands with the ring rather than ahead of it.
-    const counted = rows.reduce((slowest, row, index) => Math.min(slowest, sliceProgress(index, t).counted), 1)
+    // The total follows the pen's linear sweep, so it reaches its final value
+    // exactly as the ring completes instead of waiting for the final label.
+    const counted = Math.min(1, t / frameGeometry.timing.sweep)
     frameGeometry.center.value.textContent = `${formatValue(frameGeometry.center.total * counted)}${unitText}`
   }
 }
@@ -1454,7 +1479,7 @@ function buildEmbedSvg() {
       : Number(row.delay) || 0
 
     if (frameGeometry.kind === 'bars') {
-      const bar = clone.querySelectorAll('#chart-series rect')[index]
+      const bar = clone.querySelectorAll('#chart-series .bar-shape')[index]
       const grows = frameGeometry.horizontal ? 'scaleX' : 'scaleY'
       const origin = frameGeometry.horizontal
         ? (geometry.end < geometry.zero ? 'right center' : 'left center')
@@ -1522,7 +1547,7 @@ function buildEmbedSvg() {
 
   if (frameGeometry.kind === 'pie' && frameGeometry.center) {
     const totalNode = clone.querySelector('.center-total .total-value')
-    if (totalNode) buildEmbedTotal(totalNode, frameGeometry.center.total, duration)
+    if (totalNode) buildEmbedTotal(totalNode, frameGeometry.center.total, frameGeometry.timing.sweep)
   }
 
   if (frameGeometry.kind === 'bars') {
@@ -1583,7 +1608,7 @@ function buildEmbedTotal(totalNode, total, duration) {
   const unitText = text.unit.value ? ` ${text.unit.value}` : ''
   for (let i = 0; i < EMBED_STEPS; i += 1) {
     const frameText = totalNode.cloneNode(true)
-    frameText.textContent = `${formatValue(total * easeCount((i + 1) / EMBED_STEPS))}${unitText}`
+    frameText.textContent = `${formatValue(total * ((i + 1) / EMBED_STEPS))}${unitText}`
     const last = i === EMBED_STEPS - 1
     frameText.setAttribute('style', `${totalNode.getAttribute('style') || ''};opacity:0;` +
       `animation:hold ${step}ms ${i * step}ms linear ${last ? 'forwards' : ''}`)
