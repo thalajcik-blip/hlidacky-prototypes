@@ -202,3 +202,8 @@ td input { width: 100%; padding: 6px 7px; text-align: right; border-radius: 5px;
   .appearance-panel { position: fixed; top: auto; right: 16px; bottom: 16px; left: 16px; width: auto; max-height: calc(100vh - 32px); overflow: auto; }
   .appearance-scroll { max-height: none; overflow: visible; }
 }
+
+/* Both hints sit under the control they explain. .field-hint pulls itself up
+   to meet a field; under the export buttons that would overlap the grid. */
+.format-hint { margin: -6px 0 13px; }
+.export-hint { margin: 10px 0 0; }

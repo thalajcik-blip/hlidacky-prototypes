@@ -35,8 +35,10 @@
                 <option value="1:1">1080 × 1080 · square</option>
                 <option value="4:5">1080 × 1350 · portrait</option>
                 <option value="9:16">1080 × 1920 · story</option>
+                <option value="mobile">1080 × 1350 · mobile web</option>
               </select></span>
             </label>
+            <p class="field-hint format-hint" id="mobile-bars-hint" hidden>Vertical bars run horizontally in this format — eight category names need more width than a phone has.</p>
             <label>Headline<textarea id="title-input" rows="3">Hourly rate for babysitting</textarea></label>
             <label>Subheadline<input id="subtitle-input" value="Average hourly rate by city"></label>
             <label>Source<input id="source-input" value="Source: [Hlídačky.cz](https://www.hlidacky.cz/)"></label>
@@ -158,7 +160,9 @@
             <button class="export-button" type="button" data-export="svg">SVG</button>
             <button class="export-button export-button--video" type="button" data-export="mp4">MP4 video</button>
             <button class="export-button export-button--video" type="button" data-export="embed">Animated SVG · embed</button>
+            <button class="export-button export-button--video" type="button" data-export="web">Web embed · desktop + mobile</button>
           </div>
+          <p class="field-hint export-hint">Web embed is a .zip: a 16:9 file, a mobile file, and the &lt;picture&gt; that switches between them.</p>
         </div>
       </section>
 

@@ -80,6 +80,17 @@ const formats = {
   '1:1': { w: 1080, h: 1080 },
   '4:5': { w: 1080, h: 1350 },
   '9:16': { w: 1080, h: 1920 },
+  /* The one format that breaks the width rule. The others are posted full
+     screen, so type proportional to the frame reads the same everywhere; this
+     one is embedded in a page and shown about 375px wide, where the proportional
+     headline comes out at 10px and the axis at 4. So it carries its own `unit`,
+     sized for that width, and — because a bigger unit would also fatten the
+     margins until they ate a fifth of a phone — its own margins, in base units.
+     The smallest text (axis numbers, the unit beside a value, the source) gets a
+     further lift, since what is merely small on a desktop is unreadable here.
+     Vertical bars run horizontally: eight category names do not fit side by
+     side at any legible size, and the names need the width a phone lacks. */
+  mobile: { w: 1080, h: 1350, unit: 1.25, margin: 32, top: 40, bottom: 72, smallText: 1.3, horizontalBars: true },
 }
 const base = {
   margin: 80, top: 72, bottom: 96,
@@ -445,7 +456,7 @@ let plot = { x0: 0, y0: 0, x1: 0, y1: 0 }
 function updateArtboardSize() {
   const format = formats[artboardPicker.value] || formats['16:9']
   artboardSize = { ...format }
-  unit = artboardSize.w / 1920
+  unit = artboardSize.unit ?? artboardSize.w / 1920
   artboard.setAttribute('viewBox', `0 0 ${artboardSize.w} ${artboardSize.h}`)
   artboard.querySelector('.artboard-bg').setAttribute('width', artboardSize.w)
   artboard.querySelector('.artboard-bg').setAttribute('height', artboardSize.h)
@@ -468,16 +479,16 @@ function updateArtboardSize() {
 function layoutCopy() {
   const headlineSize = base.headline * unit * scaleOf(ranges.headline)
   const subheadlineSize = base.subheadline * unit * scaleOf(ranges.subheadline)
-  const margin = base.margin * unit
+  const margin = (artboardSize.margin ?? base.margin) * unit
 
   headline.setAttribute('font-size', headlineSize)
   subheadline.setAttribute('font-size', subheadlineSize)
-  sourceText.setAttribute('font-size', base.source * unit)
+  sourceText.setAttribute('font-size', base.source * unit * (artboardSize.smallText || 1))
 
   const lines = (text.title.value || 'Untitled chart').split('\n')
   headline.replaceChildren()
   const lineHeight = headlineSize * 1.06
-  const firstBaseline = base.top * unit + headlineSize
+  const firstBaseline = (artboardSize.top ?? base.top) * unit + headlineSize
   lines.forEach((line, index) => {
     const tspan = svg('tspan', { x: artboardSize.w / 2, y: firstBaseline + index * lineHeight }, headline)
     tspan.textContent = line
@@ -500,7 +511,7 @@ function layoutCopy() {
     x0: margin,
     x1: artboardSize.w - margin,
     y0: subheadlineBaseline + 56 * unit,
-    y1: artboardSize.h - base.bottom * unit,
+    y1: artboardSize.h - (artboardSize.bottom ?? base.bottom) * unit,
   }
   /* Pulling the plot in about its centre is the one move that means the same
      thing to all five types: the chart gets smaller and the artboard keeps the
@@ -524,11 +535,12 @@ let nodes = new Map()          // row id -> the elements that animate
 let frameGeometry = null       // everything applyFrame needs that is not a node
 
 function valueFontSizes() {
+  const small = artboardSize.smallText || 1
   return {
     value: base.value * unit * scaleOf(ranges.value),
-    unit: base.unit * unit * scaleOf(ranges.unit),
+    unit: base.unit * unit * small * scaleOf(ranges.unit),
     category: base.category * unit * scaleOf(ranges.category),
-    axis: base.axis * unit * scaleOf(ranges.category),
+    axis: base.axis * unit * small * scaleOf(ranges.category),
   }
 }
 
@@ -602,7 +614,7 @@ function rebuild() {
    Vertical and horizontal share every decision except which axis carries the
    values, so they share the builder and swap the two at the end. */
 function buildBars() {
-  const horizontal = chartType === 'bar-h'
+  const horizontal = chartType === 'bar-h' || (chartType === 'bar' && artboardSize.horizontalBars === true)
   const sizes = valueFontSizes()
   const values = rows.map(row => Number(row.value) || 0)
   const scale = niceTicks(Math.min(0, ...values), Math.max(0, ...values))
@@ -795,6 +807,55 @@ function buildLine() {
   ruler.remove()
   path.setAttribute('stroke-dasharray', totalLength)
 
+  /* A narrow artboard has more labels than room: twelve chips side by side need
+     more width than a phone has, and numbers printed over numbers are worse than
+     numbers left out. So labels are placed by priority — the latest reading
+     first, because a trend is read to its end, then the first, the peak and the
+     low, then the rest left to right — and one that would land on a label
+     already placed is not drawn. Its point stays; only the number goes. Where
+     there is room nothing is dropped. Category names get the same treatment
+     along the axis, anchored on the last one. */
+  const valueScale = scaleOf(ranges.value)
+  const labelUnit = text.unit.value ? ` ${text.unit.value}` : ''
+  const labelBoxes = rows.map((row, index) => ({
+    x: points[index].x,
+    y: points[index].y - 34 * unit * valueScale,
+    // Measured the way the chip is built: number and unit at their own sizes and
+    // letter-spacing, the gap between them, and the chip's padding.
+    w: measureText(formatValue(row.value), { size: sizes.value, family: FONT_SOLEIL, spacing: -2 })
+      + measureText(labelUnit, { size: sizes.unit, family: FONT_DM, weight: 700, spacing: -1 })
+      + 4 * unit + 40 * unit * valueScale,
+    h: Math.max(60 * unit * valueScale, Math.max(sizes.value, sizes.unit) * 1.58),
+  }))
+  const ranked = rows.map((_, index) => index).sort((a, b) => values[b] - values[a])
+  const priority = [rows.length - 1, 0, ranked[0], ranked[ranked.length - 1], ...rows.map((_, index) => index)]
+  const placed = []
+  const keepLabel = new Set()
+  priority.forEach(index => {
+    if (keepLabel.has(index)) return
+    const box = labelBoxes[index]
+    const collides = placed.some(other =>
+      Math.abs(other.x - box.x) < (other.w + box.w) / 2 + 4 * unit &&
+      Math.abs(other.y - box.y) < (other.h + box.h) / 2)
+    if (collides) return
+    placed.push(box)
+    keepLabel.add(index)
+  })
+
+  const nameWidths = rows.map(row => Math.max(...String(row.name).split('\n')
+    .map(line => measureText(line, { size: sizes.category, family: FONT_SOLEIL, weight: 600, spacing: -.7 }))))
+  const namesClear = (a, b) => Math.abs(points[a].x - points[b].x) >= (nameWidths[a] + nameWidths[b]) / 2 + 16 * unit
+  const lastIndex = rows.length - 1
+  const keepName = new Set([lastIndex])
+  let previousName = null
+  rows.forEach((_, index) => {
+    if (index === lastIndex) return
+    if (previousName !== null && !namesClear(index, previousName)) return
+    if (!namesClear(index, lastIndex)) return
+    keepName.add(index)
+    previousName = index
+  })
+
   const geometry = new Map()
   rows.forEach((row, index) => {
     const point = points[index]
@@ -802,13 +863,17 @@ function buildLine() {
       ? svg('circle', { cx: point.x, cy: point.y, r: strokeWidth * .78, fill: '#fff', stroke: activeColorScheme.high, 'stroke-width': strokeWidth * .58 }, seriesLayer)
       : null
 
-    const name = svg('text', {
-      class: 'category-name', 'font-size': sizes.category, 'font-family': FONT_SOLEIL, 'text-anchor': 'middle',
-      x: point.x, y: area.y1 + sizes.category * 1.1 + 16 * unit,
-    }, axisLayer)
-    setLines(name, row.name, point.x, `${sizes.category * 1.15}px`)
+    if (keepName.has(index)) {
+      const name = svg('text', {
+        class: 'category-name', 'font-size': sizes.category, 'font-family': FONT_SOLEIL, 'text-anchor': 'middle',
+        x: point.x, y: area.y1 + sizes.category * 1.1 + 16 * unit,
+      }, axisLayer)
+      setLines(name, row.name, point.x, `${sizes.category * 1.15}px`)
+    }
 
-    const node = valueStyleInput.value === 'none' ? null : buildLabel(row, { chip: valueStyleInput.value === 'chip' })
+    const node = valueStyleInput.value === 'none' || !keepLabel.has(index)
+      ? null
+      : buildLabel(row, { chip: valueStyleInput.value === 'chip' })
     if (node) {
       node.group.setAttribute('transform', `translate(${point.x} ${point.y - 34 * unit * scaleOf(ranges.value)})`)
       nodes.set(row.id, node)
@@ -1230,6 +1295,9 @@ async function runExport(format) {
       await fontCss()
       saveBlob(new Blob([buildEmbedSvg()], { type: 'image/svg+xml;charset=utf-8' }), exportFileName('animated.svg'))
       rebuild()                                    // the embed rewrites the live DOM
+    } else if (format === 'web') {
+      await fontCss()
+      saveBlob(await buildWebBundle(), exportFileName('web.zip'))
     } else if (format === 'mp4') {
       saveBlob(await exportVideo(), exportFileName('mp4'))
     } else {
@@ -1350,8 +1418,12 @@ function buildEmbedSvg() {
   applyFrame(duration)                      // the final state supplies geometry and colour
   const clone = artboard.cloneNode(true)
   clone.setAttribute('xmlns', SVG_NS)
-  clone.setAttribute('width', artboardSize.w)
-  clone.setAttribute('height', artboardSize.h)
+  /* The embed carries a viewBox and nothing else — no width, no height. With
+     them the file has an intrinsic size of 1920 x 1080 and overflows anything
+     that does not size it in CSS: an inline <svg>, or an <img> dropped in bare.
+     Without them it takes the width of whatever holds it and keeps the
+     viewBox's proportions, whichever way the page embeds it. The still SVG
+     keeps its size, because it goes to design tools rather than to a page. */
   inlineStyles(artboard, clone)
 
   const keyframes = ['@keyframes label-appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}',
@@ -1520,6 +1592,140 @@ function buildEmbedTotal(totalNode, total, duration) {
   totalNode.remove()
 }
 
+// --- web embed: one file for wide screens, one for phones ---------------------
+/* A single SVG can scale, but it cannot reflow: every position in it was
+   computed at export from measured text, and its aspect ratio is a viewBox,
+   which CSS cannot reach. So a chart that has to read on a phone ships as two
+   files and lets the page choose. <picture> fetches only the one whose media
+   query matches and takes that file's aspect ratio with it — which is exactly
+   what a media query inside the SVG cannot do. The mobile file is laid out on
+   its own format rather than scaled down from the wide one. */
+const WEB_BREAKPOINT = 600
+
+async function buildWebBundle() {
+  const chosen = artboardPicker.value
+  const files = []
+  try {
+    for (const [variant, format] of [['desktop', '16:9'], ['mobile', 'mobile']]) {
+      artboardPicker.value = format
+      updateArtboardSize()
+      rebuild()
+      files.push({ name: exportFileName(`${variant}.svg`), data: buildEmbedSvg() })
+    }
+  } finally {
+    // The export borrowed the preview's format; hand it back as it was.
+    artboardPicker.value = chosen
+    updateArtboardSize()
+    rebuild()
+  }
+  files.push({ name: exportFileName('html'), data: webPage(files[0].name, files[1].name) })
+  return zipFiles(files)
+}
+
+function webPage(desktop, mobile) {
+  const title = text.title.value.replace(/\s*\n\s*/g, ' ').trim()
+  const alt = [title, text.subtitle.value.trim()].filter(Boolean).join(' — ')
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeAttribute(title || 'Chart')}</title>
+</head>
+<body style="margin:0;padding:24px">
+<!--
+  Copy the <picture> element into your page and put the two SVG files next to it.
+  Below ${WEB_BREAKPOINT}px of window width the browser loads the mobile file, above
+  it the desktop one, and never both. Opened as it is, this file is a preview:
+  narrow the window past ${WEB_BREAKPOINT}px to watch it switch.
+-->
+<picture>
+  <source media="(max-width: ${WEB_BREAKPOINT}px)" srcset="${mobile}">
+  <img src="${desktop}" alt="${escapeAttribute(alt || 'Chart')}" style="display:block;width:100%;height:auto">
+</picture>
+</body>
+</html>
+`
+}
+
+/* Three files, so a zip rather than three downloads — Chrome asks before a
+   page may start several. No library: the format is a header per file and a
+   directory at the end, and the browser deflates natively. Anything that does
+   not shrink is stored as it is. */
+const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
+  let c = n
+  for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1
+  return c >>> 0
+})
+
+function crc32(bytes) {
+  let crc = 0xFFFFFFFF
+  for (let i = 0; i < bytes.length; i += 1) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8)
+  return (crc ^ 0xFFFFFFFF) >>> 0
+}
+
+async function deflateRaw(bytes) {
+  if (typeof CompressionStream === 'undefined') return null
+  const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))
+  return new Uint8Array(await new Response(stream).arrayBuffer())
+}
+
+async function zipFiles(files) {
+  const encoder = new TextEncoder()
+  const now = new Date()
+  const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)
+  const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()
+  const parts = []
+  const directory = []
+  let offset = 0
+  for (const file of files) {
+    const name = encoder.encode(file.name)
+    const raw = encoder.encode(file.data)
+    const packed = await deflateRaw(raw)
+    const method = packed && packed.length < raw.length ? 8 : 0
+    const body = method ? packed : raw
+    const crc = crc32(raw)
+
+    const local = new DataView(new ArrayBuffer(30))
+    local.setUint32(0, 0x04034b50, true)
+    local.setUint16(4, 20, true)                  // version needed
+    local.setUint16(6, 0x0800, true)              // names are UTF-8
+    local.setUint16(8, method, true)
+    local.setUint16(10, time, true)
+    local.setUint16(12, date, true)
+    local.setUint32(14, crc, true)
+    local.setUint32(18, body.length, true)
+    local.setUint32(22, raw.length, true)
+    local.setUint16(26, name.length, true)
+    parts.push(local, name, body)
+
+    const entry = new DataView(new ArrayBuffer(46))
+    entry.setUint32(0, 0x02014b50, true)
+    entry.setUint16(4, 20, true)                  // version made by
+    entry.setUint16(6, 20, true)                  // version needed
+    entry.setUint16(8, 0x0800, true)
+    entry.setUint16(10, method, true)
+    entry.setUint16(12, time, true)
+    entry.setUint16(14, date, true)
+    entry.setUint32(16, crc, true)
+    entry.setUint32(20, body.length, true)
+    entry.setUint32(24, raw.length, true)
+    entry.setUint16(28, name.length, true)
+    entry.setUint32(42, offset, true)             // where its local header starts
+    directory.push(entry, name)
+
+    offset += 30 + name.length + body.length
+  }
+  const directorySize = directory.reduce((sum, part) => sum + part.byteLength, 0)
+  const end = new DataView(new ArrayBuffer(22))
+  end.setUint32(0, 0x06054b50, true)
+  end.setUint16(8, files.length, true)
+  end.setUint16(10, files.length, true)
+  end.setUint32(12, directorySize, true)
+  end.setUint32(16, offset, true)
+  return new Blob([...parts, ...directory, end], { type: 'application/zip' })
+}
+
 // --- panels ------------------------------------------------------------------
 const chartSettings = {
   toggle: document.querySelector('#chart-settings-toggle'),
@@ -1564,7 +1770,10 @@ document.addEventListener('keydown', event => {
 // Only the settings that mean something for the current type are shown; a bar
 // gap on a pie chart is a control that does nothing, which is worse than a
 // control that is not there.
+const mobileBarsHint = document.querySelector('#mobile-bars-hint')
+
 function syncTypeControls() {
+  mobileBarsHint.hidden = !(chartType === 'bar' && artboardPicker.value === 'mobile')
   document.querySelectorAll('[data-types]').forEach(node => {
     node.hidden = !node.dataset.types.split(' ').includes(chartType)
   })
@@ -1582,6 +1791,7 @@ chartTypePicker.addEventListener('change', () => {
 })
 artboardPicker.addEventListener('change', () => {
   updateArtboardSize()
+  syncTypeControls()
   rebuild()
 })
 
