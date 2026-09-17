@@ -20,6 +20,8 @@
       --orange-300: #FFB569;
       --orange-500: #F28A2E;
       --blue-300: #6AAFFF;
+      --slate-100: #F1F5FB;
+      --slate-400: #94A3B7;
       --blue-400: #3B8BFF;
       --purple-100: #F4EEFF;
       --purple-300: #DCCBFF;
@@ -932,6 +934,70 @@
 
     .negative-feedback-other-input.sitter-feedback-textarea:focus {
       border-color: var(--blue-300);
+    }
+
+    /* Booking summary at the top of the sitter modals (Figma 4886:387161). */
+    .sitter-feedback-booking {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 60px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--slate-100);
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .sitter-feedback-booking-date {
+      display: flex;
+      flex: 1 1 0;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .sitter-feedback-booking-day {
+      overflow: hidden;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sitter-feedback-booking-hours {
+      display: flex;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.32px;
+      white-space: nowrap;
+    }
+
+    .sitter-feedback-booking-duration {
+      color: var(--slate-400);
+      font-weight: 300;
+    }
+
+    .sitter-feedback-booking-avatar {
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--white);
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(42, 53, 57, 0.2);
+    }
+
+    .sitter-feedback-booking-name {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.32px;
+      white-space: nowrap;
     }
 
     .feedback-selector-group {
@@ -6820,6 +6886,14 @@
       <h2 class="positive-feedback-title" id="sitter-positive-feedback-title">What did you like about this booking?</h2>
     </header>
     <div class="sitter-feedback-content">
+      <div class="sitter-feedback-booking">
+        <div class="sitter-feedback-booking-date">
+          <span class="sitter-feedback-booking-day">Wednesday, 29. 11.</span>
+          <span class="sitter-feedback-booking-hours"><span>18:00 – 22:00</span><span class="sitter-feedback-booking-duration">(4 hrs.)</span></span>
+        </div>
+        <img class="sitter-feedback-booking-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-02.jpg" alt="">
+        <span class="sitter-feedback-booking-name">Anastázie<br>Nekonečná</span>
+      </div>
       <div class="sitter-feedback-group" role="group" aria-labelledby="sitter-positive-feedback-label">
         <span class="sitter-feedback-label" id="sitter-positive-feedback-label">Feedback is 100% private</span>
         <div class="feedback-selector-group">
@@ -6879,6 +6953,14 @@
       <h2 class="positive-feedback-title" id="sitter-negative-feedback-title">What went wrong?</h2>
     </header>
     <div class="sitter-feedback-content">
+      <div class="sitter-feedback-booking">
+        <div class="sitter-feedback-booking-date">
+          <span class="sitter-feedback-booking-day">Wednesday, 29. 11.</span>
+          <span class="sitter-feedback-booking-hours"><span>18:00 – 22:00</span><span class="sitter-feedback-booking-duration">(4 hrs.)</span></span>
+        </div>
+        <img class="sitter-feedback-booking-avatar" src="/sitter-approval-workflow/assets/avatars/avatar-02.jpg" alt="">
+        <span class="sitter-feedback-booking-name">Anastázie<br>Nekonečná</span>
+      </div>
       <div class="sitter-feedback-group" role="group" aria-labelledby="sitter-negative-feedback-label">
         <span class="sitter-feedback-label" id="sitter-negative-feedback-label">Feedback is 100% private</span>
         <div class="feedback-selector-group">
