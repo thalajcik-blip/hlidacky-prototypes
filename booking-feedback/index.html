@@ -847,7 +847,8 @@
       line-height: 1;
     }
 
-    .review-success-toast {
+    .review-success-toast,
+    .negative-feedback-success-toast {
       position: fixed;
       right: 24px;
       bottom: 24px;
@@ -863,34 +864,42 @@
       transition: opacity 300ms ease, transform 300ms ease;
     }
 
-    .review-success-toast[hidden] {
+    .review-success-toast[hidden],
+    .negative-feedback-success-toast[hidden] {
       display: none;
     }
 
     .review-success-toast.is-entering,
-    .review-success-toast.is-exiting {
+    .review-success-toast.is-exiting,
+    .negative-feedback-success-toast.is-entering,
+    .negative-feedback-success-toast.is-exiting {
       display: block;
     }
 
     .review-success-toast.is-entering,
-    .review-success-toast.is-exiting {
+    .review-success-toast.is-exiting,
+    .negative-feedback-success-toast.is-entering,
+    .negative-feedback-success-toast.is-exiting {
       opacity: 0;
       transform: translateY(12px);
     }
 
-    .review-success-toast.is-entering.is-visible {
+    .review-success-toast.is-entering.is-visible,
+    .negative-feedback-success-toast.is-entering.is-visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    .review-success-toast-header {
+    .review-success-toast-header,
+    .negative-feedback-success-toast-header {
       display: flex;
       align-items: flex-start;
       gap: 8px;
       width: 100%;
     }
 
-    .review-success-toast-content {
+    .review-success-toast-content,
+    .negative-feedback-success-toast-content {
       display: flex;
       flex: 1 1 auto;
       min-width: 0;
@@ -898,7 +907,8 @@
       align-items: flex-start;
     }
 
-    .review-success-toast-doodle {
+    .review-success-toast-doodle,
+    .negative-feedback-success-toast-doodle {
       position: relative;
       flex: 0 0 40px;
       width: 40px;
@@ -906,12 +916,14 @@
       overflow: hidden;
     }
 
-    .review-success-toast-doodle img {
+    .review-success-toast-doodle img,
+    .negative-feedback-success-toast-doodle img {
       position: absolute;
       display: block;
     }
 
-    .review-success-toast-doodle img:nth-child(1) {
+    .review-success-toast-doodle img:nth-child(1),
+    .negative-feedback-success-toast-doodle img:nth-child(1) {
       top: 19.52%;
       right: 9.35%;
       bottom: 17.97%;
@@ -920,7 +932,8 @@
       height: 62.51%;
     }
 
-    .review-success-toast-doodle img:nth-child(2) {
+    .review-success-toast-doodle img:nth-child(2),
+    .negative-feedback-success-toast-doodle img:nth-child(2) {
       top: 32.49%;
       right: 10.04%;
       bottom: 13.75%;
@@ -929,7 +942,8 @@
       height: 53.76%;
     }
 
-    .review-success-toast-doodle img:nth-child(3) {
+    .review-success-toast-doodle img:nth-child(3),
+    .negative-feedback-success-toast-doodle img:nth-child(3) {
       top: 6.94%;
       right: 9.15%;
       bottom: 11.9%;
@@ -938,7 +952,8 @@
       height: 81.16%;
     }
 
-    .review-success-toast-copy {
+    .review-success-toast-copy,
+    .negative-feedback-success-toast-copy {
       display: grid;
       flex: 1 1 auto;
       min-width: 0;
@@ -946,13 +961,15 @@
     }
 
     .review-success-toast-heading,
+    .negative-feedback-success-toast-heading,
     .review-success-toast-description {
       margin: 0;
       color: var(--gray-800);
       font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .review-success-toast-heading {
+    .review-success-toast-heading,
+    .negative-feedback-success-toast-heading {
       font-size: 16px;
       font-weight: 400;
       line-height: 1.4;
@@ -967,7 +984,8 @@
       letter-spacing: -0.16px;
     }
 
-    .review-success-toast-close {
+    .review-success-toast-close,
+    .negative-feedback-success-toast-close {
       display: grid;
       flex: 0 0 24px;
       width: 24px;
@@ -984,7 +1002,8 @@
       cursor: pointer;
     }
 
-    .review-success-toast-close:focus-visible {
+    .review-success-toast-close:focus-visible,
+    .negative-feedback-success-toast-close:focus-visible {
       outline: 2px solid var(--blue-400);
       outline-offset: 2px;
     }
@@ -3845,7 +3864,8 @@
         font-size: 16px;
       }
 
-      .review-success-toast {
+      .review-success-toast,
+      .negative-feedback-success-toast {
         right: auto;
         bottom: max(20px, env(safe-area-inset-bottom));
         left: max(20px, env(safe-area-inset-left));
@@ -6426,9 +6446,25 @@
       </div>
     </div>
     <footer class="negative-feedback-footer">
-      <button class="negative-feedback-submit" type="button" data-negative-feedback-submit><span class="negative-feedback-submit-check" aria-hidden="true">✓</span><span data-negative-feedback-submit-label>Submit your review</span></button>
+      <button class="negative-feedback-submit" type="button" data-negative-feedback-submit><span class="negative-feedback-submit-check" aria-hidden="true">✓</span><span data-negative-feedback-submit-label>Submit to support</span></button>
     </footer>
   </section>
+
+  <aside class="negative-feedback-success-toast" data-negative-feedback-success-toast hidden aria-live="polite" aria-atomic="true">
+    <div class="negative-feedback-success-toast-header">
+      <div class="negative-feedback-success-toast-content">
+        <div class="negative-feedback-success-toast-doodle" aria-hidden="true">
+          <img src="./assets/negative-review-toast-layer-2.svg" alt="">
+          <img src="./assets/negative-review-toast-layer-3.svg" alt="">
+          <img src="./assets/negative-review-toast-layer-1.svg" alt="">
+        </div>
+        <div class="negative-feedback-success-toast-copy">
+          <p class="negative-feedback-success-toast-heading">Your review was submitted</p>
+        </div>
+      </div>
+      <button class="negative-feedback-success-toast-close" type="button" aria-label="Close notification" data-negative-feedback-success-toast-close>×</button>
+    </div>
+  </aside>
 
   <div class="positive-feedback-backdrop" data-positive-feedback-backdrop hidden></div>
   <section class="positive-feedback-modal" aria-labelledby="positive-feedback-title" aria-modal="true" role="dialog" data-positive-feedback-modal hidden>
@@ -9117,6 +9153,10 @@
       var negativeFeedbackTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="negative"]'));
       var negativeFeedbackReasonInputs = Array.prototype.slice.call(document.querySelectorAll('.negative-feedback-reason-input'));
       var negativeFeedbackLastTrigger = null;
+      var negativeFeedbackSuccessToast = document.querySelector('[data-negative-feedback-success-toast]');
+      var negativeFeedbackSuccessToastClose = document.querySelector('[data-negative-feedback-success-toast-close]');
+      var negativeFeedbackSuccessToastTimer = null;
+      var negativeFeedbackSuccessToastHideTimer = null;
       var positiveFeedbackBackdrop = document.querySelector('[data-positive-feedback-backdrop]');
       var positiveFeedbackModal = document.querySelector('[data-positive-feedback-modal]');
       var positiveFeedbackClose = document.querySelector('[data-positive-feedback-close]');
@@ -9150,9 +9190,7 @@
       function updateNegativeFeedbackOther(shouldFocus) {
         var hasOtherReason = Boolean(negativeFeedbackOtherToggle && negativeFeedbackOtherToggle.checked);
         if (negativeFeedbackOther) negativeFeedbackOther.hidden = !hasOtherReason;
-        if (negativeFeedbackSubmitLabel) {
-          negativeFeedbackSubmitLabel.textContent = hasOtherReason ? 'Submit to support' : 'Submit your review';
-        }
+        if (negativeFeedbackSubmitLabel) negativeFeedbackSubmitLabel.textContent = 'Submit to support';
         if (hasOtherReason && shouldFocus && negativeFeedbackOtherInput) {
           window.requestAnimationFrame(function() {
             negativeFeedbackOtherInput.focus();
@@ -9214,7 +9252,12 @@
         negativeFeedbackSubmit.addEventListener('click', function() {
           closeNegativeFeedback(false);
           if (feedbackCard) feedbackCard.hidden = true;
+          showNegativeFeedbackSuccessToast();
         });
+      }
+
+      if (negativeFeedbackSuccessToastClose) {
+        negativeFeedbackSuccessToastClose.addEventListener('click', hideNegativeFeedbackSuccessToast);
       }
 
       document.addEventListener('keydown', function(event) {
@@ -9232,6 +9275,39 @@
         if (restoreFocus !== false && positiveFeedbackLastTrigger) {
           positiveFeedbackLastTrigger.focus();
         }
+      }
+
+      function hideNegativeFeedbackSuccessToast() {
+        if (!negativeFeedbackSuccessToast || negativeFeedbackSuccessToast.hidden) return;
+        if (negativeFeedbackSuccessToastTimer) {
+          window.clearTimeout(negativeFeedbackSuccessToastTimer);
+          negativeFeedbackSuccessToastTimer = null;
+        }
+        if (negativeFeedbackSuccessToastHideTimer) {
+          window.clearTimeout(negativeFeedbackSuccessToastHideTimer);
+        }
+        negativeFeedbackSuccessToast.classList.remove('is-entering', 'is-visible');
+        negativeFeedbackSuccessToast.classList.add('is-exiting');
+        negativeFeedbackSuccessToastHideTimer = window.setTimeout(function() {
+          negativeFeedbackSuccessToast.hidden = true;
+          negativeFeedbackSuccessToast.classList.remove('is-exiting');
+          negativeFeedbackSuccessToastHideTimer = null;
+        }, 300);
+      }
+
+      function showNegativeFeedbackSuccessToast() {
+        if (!negativeFeedbackSuccessToast) return;
+        if (negativeFeedbackSuccessToastTimer) window.clearTimeout(negativeFeedbackSuccessToastTimer);
+        if (negativeFeedbackSuccessToastHideTimer) window.clearTimeout(negativeFeedbackSuccessToastHideTimer);
+        negativeFeedbackSuccessToastTimer = null;
+        negativeFeedbackSuccessToastHideTimer = null;
+        negativeFeedbackSuccessToast.hidden = false;
+        negativeFeedbackSuccessToast.classList.remove('is-exiting', 'is-visible');
+        negativeFeedbackSuccessToast.classList.add('is-entering');
+        window.requestAnimationFrame(function() {
+          negativeFeedbackSuccessToast.classList.add('is-visible');
+        });
+        negativeFeedbackSuccessToastTimer = window.setTimeout(hideNegativeFeedbackSuccessToast, 5000);
       }
 
       function hideReviewSuccessToast() {
