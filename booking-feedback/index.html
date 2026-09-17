@@ -253,8 +253,8 @@
 
     .hero {
       width: min(100%, 856px);
-      padding-top: 60px;
-      padding-bottom: 20px;
+      padding-top: 40px;
+      padding-bottom: 0;
       margin-bottom: 26px;
       margin-left: auto;
       margin-right: auto;
@@ -548,6 +548,471 @@
       font-weight: 200;
       line-height: 1;
       opacity: 0.4;
+    }
+
+    body.positive-feedback-open {
+      overflow: hidden;
+    }
+
+    .positive-feedback-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .positive-feedback-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 510;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: min(560px, calc(100vw - 48px));
+      max-height: calc(100dvh - 48px);
+      padding: 40px;
+      overflow: auto;
+      border: 0;
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 10px 32px -4px rgba(42, 53, 57, 0.2);
+      color: var(--gray-800);
+      transform: translate(-50%, -50%);
+    }
+
+    .positive-feedback-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      padding-right: 28px;
+    }
+
+    .positive-feedback-avatar {
+      display: block;
+      flex: 0 0 56px;
+      width: 56px;
+      height: 56px;
+      border: 0.778px solid var(--white);
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3.111px 6.222px rgba(42, 53, 57, 0.2);
+    }
+
+    .positive-feedback-title {
+      margin: 8px 0 0;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .positive-feedback-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      opacity: 0.4;
+    }
+
+    .positive-feedback-close img {
+      display: block;
+      width: 28px;
+      height: 28px;
+    }
+
+    .positive-feedback-close:focus-visible,
+    .positive-feedback-clear:focus-visible,
+    .positive-feedback-generate:focus-visible,
+    .positive-feedback-star:focus-visible {
+      outline: 2px solid var(--pink-400);
+      outline-offset: 2px;
+    }
+
+    .positive-feedback-rating {
+      display: none;
+    }
+
+    .positive-feedback-review {
+      width: 100%;
+    }
+
+    .positive-feedback-review-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 0 2px 12px;
+    }
+
+    .positive-feedback-review-heading label {
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .positive-feedback-clear,
+    .positive-feedback-generate {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-decoration: underline;
+      text-decoration-color: #ff9ba7;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    .positive-feedback-clear {
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.4;
+      opacity: 0.8;
+      text-decoration-color: var(--gray-400);
+    }
+
+    .positive-feedback-clear img {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    .positive-feedback-textarea-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .positive-feedback-textarea {
+      display: block;
+      width: 100%;
+      height: 144px;
+      min-height: 144px;
+      padding: 10px 16px;
+      resize: none;
+      border: 1px solid var(--blue-400);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: 0 0 0 2px #cbdafc;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.32;
+      letter-spacing: 0.2px;
+      outline: 0;
+    }
+
+    .positive-feedback-textarea::placeholder {
+      color: var(--gray-500);
+      opacity: 1;
+    }
+
+    .positive-feedback-template {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: -1px;
+      padding: 8px;
+      border: 1px solid #ccd5e2;
+      border-radius: 0 0 4px 4px;
+      background: #f1f5fb;
+    }
+
+    .positive-feedback-generate {
+      height: 24px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.4;
+      opacity: 0.8;
+    }
+
+    .positive-feedback-generate img {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .positive-feedback-footer {
+      display: flex;
+      width: 100%;
+      padding-top: 8px;
+    }
+
+    .positive-feedback-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      height: 52px;
+      padding: 14px 24px 16px 20px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      color: var(--white);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 22px;
+    }
+
+    .positive-feedback-submit:hover {
+      background: var(--green-600);
+    }
+
+    .positive-feedback-submit:focus-visible {
+      outline: 2px solid var(--blue-400);
+      outline-offset: 3px;
+    }
+
+    .positive-feedback-submit-check {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    body.negative-feedback-open {
+      overflow: hidden;
+    }
+
+    .negative-feedback-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .negative-feedback-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 510;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: min(560px, calc(100vw - 48px));
+      max-height: calc(100dvh - 48px);
+      padding: 40px;
+      overflow: auto;
+      border: 0;
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 10px 32px -4px rgba(42, 53, 57, 0.2);
+      color: var(--gray-800);
+      transform: translate(-50%, -50%);
+    }
+
+    .negative-feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding-right: 28px;
+    }
+
+    .negative-feedback-avatar {
+      display: block;
+      flex: 0 0 56px;
+      width: 56px;
+      height: 56px;
+      border: 0.778px solid var(--white);
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3.111px 6.222px rgba(42, 53, 57, 0.2);
+    }
+
+    .negative-feedback-title {
+      margin: 8px 0 0;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .negative-feedback-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      opacity: 0.4;
+    }
+
+    .negative-feedback-close img {
+      display: block;
+      width: 28px;
+      height: 28px;
+    }
+
+    .negative-feedback-close:focus-visible,
+    .negative-feedback-reason-input:focus-visible,
+    .negative-feedback-other-input:focus-visible {
+      outline: 2px solid var(--pink-400);
+      outline-offset: 2px;
+    }
+
+    .negative-feedback-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .negative-feedback-description {
+      width: 100%;
+      margin: 0;
+      color: #000;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 350;
+      line-height: 1.5;
+      letter-spacing: -0.24px;
+    }
+
+    .negative-feedback-reasons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 8px 20px;
+    }
+
+    .negative-feedback-reason {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 20px;
+      color: var(--gray-700);
+      cursor: pointer;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.32px;
+    }
+
+    .negative-feedback-reason-input {
+      -webkit-appearance: none;
+      appearance: none;
+      position: relative;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      border: 0;
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1.5px var(--gray-400);
+      cursor: pointer;
+    }
+
+    .negative-feedback-reason-input:checked {
+      background: var(--pink-400);
+      box-shadow: inset 0 0 0 1.5px var(--pink-400);
+    }
+
+    .negative-feedback-reason-input:checked::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 9px;
+      height: 5px;
+      border-bottom: 2px solid var(--white);
+      border-left: 2px solid var(--white);
+      content: "";
+      transform: translate(-50%, -62%) rotate(-45deg);
+    }
+
+    .negative-feedback-other {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .negative-feedback-other-input {
+      display: block;
+      width: 100%;
+      height: 72px;
+      min-height: 72px;
+      padding: 10px 16px;
+      resize: vertical;
+      border: 1px solid var(--blue-400);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: 0 0 0 2px #cbdafc;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.32;
+      letter-spacing: 0.2px;
+    }
+
+    .negative-feedback-other-input::placeholder {
+      color: var(--gray-500);
+      opacity: 1;
+    }
+
+    .negative-feedback-footer {
+      display: flex;
+      width: 100%;
+      padding-top: 8px;
+    }
+
+    .negative-feedback-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      height: 52px;
+      padding: 14px 24px 16px 20px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--green-500);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16);
+      color: var(--white);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 22px;
+    }
+
+    .negative-feedback-submit:hover {
+      background: var(--green-600);
+    }
+
+    .negative-feedback-submit:focus-visible {
+      outline: 2px solid var(--blue-400);
+      outline-offset: 3px;
+    }
+
+    .negative-feedback-submit-check {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
     }
 
     .sitters-section {
@@ -3078,6 +3543,146 @@
         letter-spacing: -0.32px;
       }
 
+      .positive-feedback-backdrop {
+        background: transparent;
+      }
+
+      .positive-feedback-modal {
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-height: none;
+        height: 100dvh;
+        padding: 48px 20px max(20px, env(safe-area-inset-bottom));
+        border-radius: 0;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .positive-feedback-header {
+        gap: 8px;
+        padding-right: 28px;
+      }
+
+      .positive-feedback-avatar {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+        border-width: 0.583px;
+        box-shadow: 0 2.333px 4.667px rgba(42, 53, 57, 0.2);
+      }
+
+      .positive-feedback-title {
+        margin-top: 4px;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 1.32;
+      }
+
+      .positive-feedback-rating {
+        display: block;
+        width: 100%;
+        padding-bottom: 8px;
+      }
+
+      .positive-feedback-rating-label {
+        display: block;
+        padding: 8px 2px;
+        color: var(--gray-800);
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .positive-feedback-stars {
+        display: flex;
+        width: 320px;
+        max-width: calc(100% + 24px);
+        height: 64px;
+        margin: 0 0 0 -12px;
+      }
+
+      .positive-feedback-star {
+        display: grid;
+        flex: 0 0 64px;
+        width: 64px;
+        height: 64px;
+        padding: 12px;
+        place-items: center;
+        border: 0;
+        border-radius: 40px;
+        background: var(--white);
+      }
+
+      .positive-feedback-star img {
+        display: block;
+        width: 40px;
+        height: 40px;
+      }
+
+      .positive-feedback-star[aria-pressed="true"] {
+        background: #fff8e8;
+      }
+
+      .positive-feedback-review {
+        flex: 0 0 auto;
+      }
+
+      .positive-feedback-footer {
+        margin-top: auto;
+      }
+
+      .positive-feedback-submit {
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .negative-feedback-backdrop {
+        background: transparent;
+      }
+
+      .negative-feedback-modal {
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-height: none;
+        height: 100dvh;
+        padding: 48px 20px max(20px, env(safe-area-inset-bottom));
+        border-radius: 0;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .negative-feedback-header {
+        align-items: flex-start;
+        gap: 8px;
+        padding-right: 28px;
+      }
+
+      .negative-feedback-avatar {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+        border-width: 0.583px;
+        box-shadow: 0 2.333px 4.667px rgba(42, 53, 57, 0.2);
+      }
+
+      .negative-feedback-title {
+        margin-top: 4px;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 1.32;
+      }
+
+      .negative-feedback-footer {
+        margin-top: auto;
+      }
+
+      .negative-feedback-submit {
+        width: 100%;
+        font-size: 16px;
+      }
+
       .sitters-section {
         width: calc(100% + 20px);
         margin-right: -20px;
@@ -5581,6 +6186,70 @@
       </div>
     </main>
   </div>
+
+  <div class="negative-feedback-backdrop" data-negative-feedback-backdrop hidden></div>
+  <section class="negative-feedback-modal" aria-labelledby="negative-feedback-title" aria-modal="true" role="dialog" data-negative-feedback-modal hidden>
+    <button class="negative-feedback-close" type="button" aria-label="Close negative feedback" data-negative-feedback-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="negative-feedback-header">
+      <img class="negative-feedback-avatar" src="./assets/feedback-card-avatar.png" alt="Anastázie">
+      <h2 class="negative-feedback-title" id="negative-feedback-title">What could have been better?</h2>
+    </header>
+    <div class="negative-feedback-content">
+      <p class="negative-feedback-description">Your feedback helps the sitter improve their service. Your response stays private unless you choose to publish a review.</p>
+      <div class="negative-feedback-reasons" role="group" aria-label="Select feedback reasons">
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Late arrival"><span>Late arrival</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Problems in communication"><span>Problems in communication</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Approach to kids"><span>Approach to kids</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Cleanliness"><span>Cleanliness</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Other reason" data-negative-feedback-other-toggle><span>Other reason</span></label>
+        <div class="negative-feedback-other" data-negative-feedback-other hidden>
+          <label class="sr-only" for="negative-feedback-other-input">Please specify your reason</label>
+          <textarea class="negative-feedback-other-input" id="negative-feedback-other-input" data-negative-feedback-other-input placeholder="Please specify your reason..."></textarea>
+        </div>
+      </div>
+    </div>
+    <footer class="negative-feedback-footer">
+      <button class="negative-feedback-submit" type="button" data-negative-feedback-submit><span class="negative-feedback-submit-check" aria-hidden="true">✓</span><span data-negative-feedback-submit-label>Submit your review</span></button>
+    </footer>
+  </section>
+
+  <div class="positive-feedback-backdrop" data-positive-feedback-backdrop hidden></div>
+  <section class="positive-feedback-modal" aria-labelledby="positive-feedback-title" aria-modal="true" role="dialog" data-positive-feedback-modal hidden>
+    <button class="positive-feedback-close" type="button" aria-label="Close positive feedback" data-positive-feedback-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="positive-feedback-header">
+      <img class="positive-feedback-avatar" src="./assets/feedback-card-avatar.png" alt="Anastázie">
+      <h2 class="positive-feedback-title" id="positive-feedback-title">Rate Anastázie</h2>
+    </header>
+    <div class="positive-feedback-rating" aria-label="Your overall rating">
+      <span class="positive-feedback-rating-label">Your overall rating</span>
+      <div class="positive-feedback-stars" role="group" aria-label="Select an overall rating">
+        <button class="positive-feedback-star" type="button" aria-label="1 star" aria-pressed="false" data-positive-feedback-star="1"><img src="./assets/review-star.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="2 stars" aria-pressed="false" data-positive-feedback-star="2"><img src="./assets/review-star.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="3 stars" aria-pressed="false" data-positive-feedback-star="3"><img src="./assets/review-star.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="4 stars" aria-pressed="false" data-positive-feedback-star="4"><img src="./assets/review-star.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="5 stars" aria-pressed="true" data-positive-feedback-star="5"><img src="./assets/review-star.svg" alt=""></button>
+      </div>
+    </div>
+    <div class="positive-feedback-review">
+      <div class="positive-feedback-review-heading">
+        <label for="positive-feedback-review-input">Your review</label>
+        <button class="positive-feedback-clear" type="button" data-positive-feedback-clear><img src="./assets/icon-erase.svg" alt="" aria-hidden="true"><span>Clear</span></button>
+      </div>
+      <div class="positive-feedback-textarea-wrap">
+        <textarea class="positive-feedback-textarea" id="positive-feedback-review-input" data-positive-feedback-input placeholder="How did the sitter do? Share your experience and let us know what you liked the most."></textarea>
+      </div>
+      <div class="positive-feedback-template">
+        <button class="positive-feedback-generate" type="button" data-positive-feedback-generate><img src="./assets/icon-ai.svg" alt="" aria-hidden="true"><span>Generate from my communication</span></button>
+      </div>
+    </div>
+    <footer class="positive-feedback-footer">
+      <button class="positive-feedback-submit" type="button" data-positive-feedback-submit><span class="positive-feedback-submit-check" aria-hidden="true">✓</span><span>Submit your review</span></button>
+    </footer>
+  </section>
 
   <div class="modal-backdrop" data-modal-backdrop hidden></div>
   <section class="modal" aria-labelledby="reject-modal-title" aria-modal="true" role="dialog" data-reject-modal hidden>
@@ -8176,6 +8845,27 @@
     (function() {
       var feedbackCard = document.querySelector('.feedback-card');
       var feedbackCardClose = document.querySelector('[data-feedback-card-close]');
+      var negativeFeedbackBackdrop = document.querySelector('[data-negative-feedback-backdrop]');
+      var negativeFeedbackModal = document.querySelector('[data-negative-feedback-modal]');
+      var negativeFeedbackClose = document.querySelector('[data-negative-feedback-close]');
+      var negativeFeedbackOtherToggle = document.querySelector('[data-negative-feedback-other-toggle]');
+      var negativeFeedbackOther = document.querySelector('[data-negative-feedback-other]');
+      var negativeFeedbackOtherInput = document.querySelector('[data-negative-feedback-other-input]');
+      var negativeFeedbackSubmit = document.querySelector('[data-negative-feedback-submit]');
+      var negativeFeedbackSubmitLabel = document.querySelector('[data-negative-feedback-submit-label]');
+      var negativeFeedbackTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="negative"]'));
+      var negativeFeedbackReasonInputs = Array.prototype.slice.call(document.querySelectorAll('.negative-feedback-reason-input'));
+      var negativeFeedbackLastTrigger = null;
+      var positiveFeedbackBackdrop = document.querySelector('[data-positive-feedback-backdrop]');
+      var positiveFeedbackModal = document.querySelector('[data-positive-feedback-modal]');
+      var positiveFeedbackClose = document.querySelector('[data-positive-feedback-close]');
+      var positiveFeedbackInput = document.querySelector('[data-positive-feedback-input]');
+      var positiveFeedbackClear = document.querySelector('[data-positive-feedback-clear]');
+      var positiveFeedbackGenerate = document.querySelector('[data-positive-feedback-generate]');
+      var positiveFeedbackSubmit = document.querySelector('[data-positive-feedback-submit]');
+      var positiveFeedbackStars = Array.prototype.slice.call(document.querySelectorAll('[data-positive-feedback-star]'));
+      var positiveFeedbackTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="positive"]'));
+      var positiveFeedbackLastTrigger = null;
       var sittersSection = document.querySelector('[data-sitters-section]');
       var sittersScroll = document.querySelector('[data-sitters-scroll]');
 
@@ -8189,6 +8879,161 @@
           feedbackCard.hidden = true;
         });
       }
+
+      function updateNegativeFeedbackOther(shouldFocus) {
+        var hasOtherReason = Boolean(negativeFeedbackOtherToggle && negativeFeedbackOtherToggle.checked);
+        if (negativeFeedbackOther) negativeFeedbackOther.hidden = !hasOtherReason;
+        if (negativeFeedbackSubmitLabel) {
+          negativeFeedbackSubmitLabel.textContent = hasOtherReason ? 'Submit to support' : 'Submit your review';
+        }
+        if (hasOtherReason && shouldFocus && negativeFeedbackOtherInput) {
+          window.requestAnimationFrame(function() {
+            negativeFeedbackOtherInput.focus();
+          });
+        }
+      }
+
+      function closeNegativeFeedback(restoreFocus) {
+        if (!negativeFeedbackModal || !negativeFeedbackBackdrop) return;
+        negativeFeedbackModal.hidden = true;
+        negativeFeedbackBackdrop.hidden = true;
+        document.body.classList.remove('negative-feedback-open');
+
+        if (restoreFocus !== false && negativeFeedbackLastTrigger) {
+          negativeFeedbackLastTrigger.focus();
+        }
+      }
+
+      function openNegativeFeedback(trigger) {
+        if (!negativeFeedbackModal || !negativeFeedbackBackdrop) return;
+        negativeFeedbackLastTrigger = trigger || null;
+        negativeFeedbackReasonInputs.forEach(function(input) { input.checked = false; });
+        if (negativeFeedbackOtherInput) negativeFeedbackOtherInput.value = '';
+        updateNegativeFeedbackOther(false);
+        negativeFeedbackModal.hidden = false;
+        negativeFeedbackBackdrop.hidden = false;
+        document.body.classList.add('negative-feedback-open');
+
+        window.requestAnimationFrame(function() {
+          if (negativeFeedbackClose) negativeFeedbackClose.focus();
+        });
+      }
+
+      negativeFeedbackTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          openNegativeFeedback(trigger);
+        });
+      });
+
+      if (negativeFeedbackClose) {
+        negativeFeedbackClose.addEventListener('click', function() {
+          closeNegativeFeedback();
+        });
+      }
+
+      if (negativeFeedbackBackdrop) {
+        negativeFeedbackBackdrop.addEventListener('click', function() {
+          closeNegativeFeedback();
+        });
+      }
+
+      if (negativeFeedbackOtherToggle) {
+        negativeFeedbackOtherToggle.addEventListener('change', function() {
+          updateNegativeFeedbackOther(negativeFeedbackOtherToggle.checked);
+        });
+      }
+
+      if (negativeFeedbackSubmit) {
+        negativeFeedbackSubmit.addEventListener('click', function() {
+          closeNegativeFeedback(false);
+          if (feedbackCard) feedbackCard.hidden = true;
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && negativeFeedbackModal && !negativeFeedbackModal.hidden) {
+          closeNegativeFeedback();
+        }
+      });
+
+      function closePositiveFeedback(restoreFocus) {
+        if (!positiveFeedbackModal || !positiveFeedbackBackdrop) return;
+        positiveFeedbackModal.hidden = true;
+        positiveFeedbackBackdrop.hidden = true;
+        document.body.classList.remove('positive-feedback-open');
+
+        if (restoreFocus !== false && positiveFeedbackLastTrigger) {
+          positiveFeedbackLastTrigger.focus();
+        }
+      }
+
+      function openPositiveFeedback(trigger) {
+        if (!positiveFeedbackModal || !positiveFeedbackBackdrop) return;
+        positiveFeedbackLastTrigger = trigger || null;
+        positiveFeedbackModal.hidden = false;
+        positiveFeedbackBackdrop.hidden = false;
+        document.body.classList.add('positive-feedback-open');
+
+        window.requestAnimationFrame(function() {
+          if (positiveFeedbackInput) positiveFeedbackInput.focus();
+        });
+      }
+
+      positiveFeedbackTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          openPositiveFeedback(trigger);
+        });
+      });
+
+      if (positiveFeedbackClose) {
+        positiveFeedbackClose.addEventListener('click', function() {
+          closePositiveFeedback();
+        });
+      }
+
+      if (positiveFeedbackBackdrop) {
+        positiveFeedbackBackdrop.addEventListener('click', function() {
+          closePositiveFeedback();
+        });
+      }
+
+      if (positiveFeedbackClear && positiveFeedbackInput) {
+        positiveFeedbackClear.addEventListener('click', function() {
+          positiveFeedbackInput.value = '';
+          positiveFeedbackInput.focus();
+        });
+      }
+
+      if (positiveFeedbackGenerate && positiveFeedbackInput) {
+        positiveFeedbackGenerate.addEventListener('click', function() {
+          positiveFeedbackInput.value = 'We were very pleased with Anastázie. She handled our 4-year-old daughter wonderfully, and the entire booking process was smooth and easy. I would definitely recommend her.';
+          positiveFeedbackInput.focus();
+        });
+      }
+
+      positiveFeedbackStars.forEach(function(star) {
+        star.addEventListener('click', function() {
+          var selectedRating = Number(star.getAttribute('data-positive-feedback-star'));
+          positiveFeedbackStars.forEach(function(item) {
+            item.setAttribute('aria-pressed', item === star ? 'true' : 'false');
+            item.setAttribute('aria-label', item.getAttribute('data-positive-feedback-star') + ' stars' + (item === star ? ', selected' : ''));
+          });
+          positiveFeedbackModal.setAttribute('data-rating', String(selectedRating));
+        });
+      });
+
+      if (positiveFeedbackSubmit) {
+        positiveFeedbackSubmit.addEventListener('click', function() {
+          closePositiveFeedback(false);
+          if (feedbackCard) feedbackCard.hidden = true;
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && positiveFeedbackModal && !positiveFeedbackModal.hidden) {
+          closePositiveFeedback();
+        }
+      });
 
       updateSittersOverflow();
       window.addEventListener('resize', updateSittersOverflow);
