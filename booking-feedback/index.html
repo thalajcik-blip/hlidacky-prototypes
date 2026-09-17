@@ -11,6 +11,8 @@
       --pink-400: #F96073;
       --red-100: #FFF1F3;
       --pink-500: #E6213A;
+      --green-100: #EFF9EF;
+      --green-300: #7EEA7C;
       --green-500: #0BA825;
       --green-600: #078E1D;
       --orange-300: #FFB569;
@@ -858,7 +860,7 @@
       right: 24px;
       bottom: 24px;
       z-index: 600;
-      width: 320px;
+      width: 280px;
       padding: 12px 12px 12px 8px;
       border: 1px solid var(--green-300);
       border-radius: 4px;
@@ -909,7 +911,7 @@
       flex: 1 1 auto;
       min-width: 0;
       gap: 8px;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .review-success-toast-doodle,
@@ -3874,7 +3876,7 @@
         right: auto;
         bottom: max(20px, env(safe-area-inset-bottom));
         left: max(20px, env(safe-area-inset-left));
-        width: min(320px, calc(100vw - 40px));
+        width: min(280px, calc(100vw - 40px));
       }
 
       .negative-feedback-backdrop {
@@ -6483,7 +6485,7 @@
           <img src="./assets/negative-review-toast-layer-1.svg" alt="">
         </div>
         <div class="negative-feedback-success-toast-copy">
-          <p class="negative-feedback-success-toast-heading">Your review was submitted</p>
+          <p class="negative-feedback-success-toast-heading">Your feedback was submitted</p>
         </div>
       </div>
       <button class="negative-feedback-success-toast-close" type="button" aria-label="Close notification" data-negative-feedback-success-toast-close>×</button>
