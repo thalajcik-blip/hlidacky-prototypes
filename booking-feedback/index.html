@@ -1022,11 +1022,6 @@
       letter-spacing: -0.3px;
     }
 
-    /* The mockups use different submit copy per viewport. */
-    .positive-feedback-submit .sitter-feedback-mobile-only {
-      display: none;
-    }
-
     /* Desktop: keep room for the "Something else" note while it's hidden,
        so checking it never changes the modal height. Overrides the global [hidden] rule. */
     @media (min-width: 901px) {
@@ -1054,12 +1049,9 @@
         gap: 18px;
       }
 
+      /* The mobile mockup's submit button has no check icon. */
       .positive-feedback-submit .sitter-feedback-desktop-only {
         display: none;
-      }
-
-      .positive-feedback-submit .sitter-feedback-mobile-only {
-        display: inline;
       }
     }
 
@@ -6831,7 +6823,7 @@
       </div>
     </div>
     <footer class="positive-feedback-footer">
-      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span class="sitter-feedback-desktop-only">Submit your review</span><span class="sitter-feedback-mobile-only">Submit to support</span></button>
+      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span>Submit to support</span></button>
     </footer>
   </section>
 
@@ -6897,7 +6889,7 @@
       </div>
     </div>
     <footer class="positive-feedback-footer">
-      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span class="sitter-feedback-desktop-only">Submit your review</span><span class="sitter-feedback-mobile-only">Submit to support</span></button>
+      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span>Submit to support</span></button>
     </footer>
   </section>
 
