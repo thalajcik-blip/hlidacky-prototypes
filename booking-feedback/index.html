@@ -696,6 +696,11 @@
       height: 48px;
     }
 
+    .positive-feedback-star:not(.is-empty) .positive-feedback-star-empty,
+    .positive-feedback-star.is-empty .positive-feedback-star-full {
+      display: none;
+    }
+
     .positive-feedback-review {
       width: 100%;
     }
@@ -5998,6 +6003,25 @@
               </label>
             </div>
           </div>
+          <div class="settings-group" data-page-audience-target="families">
+            <h3 class="settings-group-title">Feedback modal animation</h3>
+            <div class="settings-option-list">
+              <label class="settings-option">
+                <input type="radio" name="prototype-modal-motion" value="basic" checked data-modal-motion-input>
+                <span>
+                  <strong>Basic</strong>
+                  <span>Backdrop fades in and the modal rises into place (slides up from the bottom on mobile). After submitting, the card collapses before the toast appears.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-modal-motion" value="playful" data-modal-motion-input>
+                <span>
+                  <strong>Playful</strong>
+                  <span>Basic, plus the emoji bounces when clicked and the rating stars fill in one by one.</span>
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -6478,11 +6502,11 @@
     <div class="positive-feedback-rating" aria-label="Your overall rating">
       <span class="positive-feedback-rating-label">Your overall rating</span>
       <div class="positive-feedback-stars" role="group" aria-label="Select an overall rating">
-        <button class="positive-feedback-star" type="button" aria-label="1 star" aria-pressed="false" data-positive-feedback-star="1"><img src="./assets/review-star-full.svg" alt=""></button>
-        <button class="positive-feedback-star" type="button" aria-label="2 stars" aria-pressed="false" data-positive-feedback-star="2"><img src="./assets/review-star-full.svg" alt=""></button>
-        <button class="positive-feedback-star" type="button" aria-label="3 stars" aria-pressed="false" data-positive-feedback-star="3"><img src="./assets/review-star-full.svg" alt=""></button>
-        <button class="positive-feedback-star" type="button" aria-label="4 stars" aria-pressed="false" data-positive-feedback-star="4"><img src="./assets/review-star-full.svg" alt=""></button>
-        <button class="positive-feedback-star" type="button" aria-label="5 stars, selected" aria-pressed="true" data-positive-feedback-star="5"><img src="./assets/review-star-full.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="1 star" aria-pressed="false" data-positive-feedback-star="1"><img class="positive-feedback-star-full" src="./assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="./assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="2 stars" aria-pressed="false" data-positive-feedback-star="2"><img class="positive-feedback-star-full" src="./assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="./assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="3 stars" aria-pressed="false" data-positive-feedback-star="3"><img class="positive-feedback-star-full" src="./assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="./assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="4 stars" aria-pressed="false" data-positive-feedback-star="4"><img class="positive-feedback-star-full" src="./assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="./assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="5 stars, selected" aria-pressed="true" data-positive-feedback-star="5"><img class="positive-feedback-star-full" src="./assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="./assets/review-star-empty.svg" alt=""></button>
       </div>
     </div>
     <div class="positive-feedback-review">
@@ -9140,8 +9164,39 @@
   </script>
   <script>
     (function() {
+      // Motion tuning (ms). Desktop = centered dialog, mobile (≤900px) = full-screen sheet sliding up.
+      var DIALOG_ENTER = 260;
+      var DIALOG_EXIT = 160;
+      var DIALOG_SHIFT = '16px';
+      var DIALOG_SCALE = 0.98;
+      var BACKDROP_ENTER = 200;
+      var SHEET_ENTER = 360;
+      var SHEET_EXIT = 260;
+      var SHEET_BACKDROP = 'rgba(0, 0, 0, 0.4)';
+      var REDUCED_FADE = 150;
+      var CARD_FADE = 160;
+      var CARD_COLLAPSE = 320;
+      // Playful mode only.
+      var EMOJI_POP = 260;
+      var EMOJI_POP_LEAD = 140;
+      var STAR_INTRO_DELAY = 120;
+      var STAR_STAGGER = 70;
+      var STAR_POP = 280;
+      var EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
+      var EASE_IN = 'cubic-bezier(0.4, 0, 1, 1)';
+      var SHEET_EASE_OUT = 'cubic-bezier(0.32, 0.72, 0, 1)';
+      var SHEET_EASE_IN = 'cubic-bezier(0.32, 0, 0.67, 0)';
+      var COLLAPSE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+      var MODAL_MOTION_STORAGE_KEY = 'booking-feedback-modal-motion';
+      var mobileQuery = window.matchMedia('(max-width: 900px)');
+      var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
       var feedbackCard = document.querySelector('.feedback-card');
       var feedbackCardClose = document.querySelector('[data-feedback-card-close]');
+      var feedbackCardCollapse = null;
+      var pendingOpenTimer = null;
+      var modalMotionInputs = Array.prototype.slice.call(document.querySelectorAll('[data-modal-motion-input]'));
+      var modalMotion = 'basic';
       var negativeFeedbackBackdrop = document.querySelector('[data-negative-feedback-backdrop]');
       var negativeFeedbackModal = document.querySelector('[data-negative-feedback-modal]');
       var negativeFeedbackClose = document.querySelector('[data-negative-feedback-close]');
@@ -9169,6 +9224,8 @@
       var positiveFeedbackLastTrigger = null;
       var positiveFeedbackRating = 5;
       var positiveFeedbackHoveredStar = null;
+      var positiveFeedbackIntroRating = null;
+      var positiveFeedbackIntroTimers = [];
       var reviewSuccessToast = document.querySelector('[data-review-success-toast]');
       var reviewSuccessToastClose = document.querySelector('[data-review-success-toast-close]');
       var reviewSuccessToastTimer = null;
@@ -9181,10 +9238,205 @@
         sittersSection.classList.toggle('is-overflowing', sittersScroll.scrollWidth > sittersScroll.clientWidth + 1);
       }
 
-      if (feedbackCard && feedbackCardClose) {
-        feedbackCardClose.addEventListener('click', function() {
-          feedbackCard.hidden = true;
+      function isPlayfulMotion() {
+        return modalMotion === 'playful' && !reducedMotionQuery.matches;
+      }
+
+      function setModalMotion(nextMotion) {
+        modalMotion = nextMotion === 'playful' ? 'playful' : 'basic';
+        modalMotionInputs.forEach(function(input) {
+          input.checked = input.value === modalMotion;
         });
+        try {
+          window.localStorage.setItem(MODAL_MOTION_STORAGE_KEY, modalMotion);
+        } catch (error) {}
+      }
+
+      function readStoredModalMotion() {
+        try {
+          return window.localStorage.getItem(MODAL_MOTION_STORAGE_KEY);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function dialogMotion() {
+        if (reducedMotionQuery.matches) {
+          return {
+            modal: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+            backdrop: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+            enter: REDUCED_FADE, exit: REDUCED_FADE, backdropEnter: REDUCED_FADE,
+            easeOut: 'ease', easeIn: 'ease'
+          };
+        }
+
+        if (mobileQuery.matches) {
+          // The mobile backdrop is transparent at rest; it only dims the page while the sheet travels.
+          return {
+            modal: { hidden: { transform: 'translateY(100%)' }, rest: { transform: 'translateY(0)' } },
+            backdrop: { hidden: { backgroundColor: 'rgba(0, 0, 0, 0)' }, rest: { backgroundColor: SHEET_BACKDROP } },
+            enter: SHEET_ENTER, exit: SHEET_EXIT, backdropEnter: SHEET_ENTER,
+            easeOut: SHEET_EASE_OUT, easeIn: SHEET_EASE_IN
+          };
+        }
+
+        return {
+          modal: {
+            hidden: { opacity: 0, transform: 'translate(-50%, calc(-50% + ' + DIALOG_SHIFT + ')) scale(' + DIALOG_SCALE + ')' },
+            rest: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' }
+          },
+          backdrop: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+          enter: DIALOG_ENTER, exit: DIALOG_EXIT, backdropEnter: BACKDROP_ENTER,
+          easeOut: EASE_OUT, easeIn: EASE_IN
+        };
+      }
+
+      function createFeedbackDialog(modal, backdrop, bodyClass) {
+        var isOpen = false;
+        var running = [];
+
+        function readFrame(element, template) {
+          var style = window.getComputedStyle(element);
+          var frame = {};
+          Object.keys(template).forEach(function(property) {
+            frame[property] = style[property];
+          });
+          return frame;
+        }
+
+        function play(opening, onFinish) {
+          var motion = dialogMotion();
+          var target = opening ? 'rest' : 'hidden';
+          // Reversing mid-animation starts from wherever the dialog currently is instead of jumping.
+          var interrupted = running.length > 0;
+          var modalFrom = interrupted ? readFrame(modal, motion.modal.rest) : motion.modal[opening ? 'hidden' : 'rest'];
+          var backdropFrom = interrupted ? readFrame(backdrop, motion.backdrop.rest) : motion.backdrop[opening ? 'hidden' : 'rest'];
+          var current;
+
+          running.forEach(function(animation) { animation.cancel(); });
+          current = running = [
+            modal.animate([modalFrom, motion.modal[target]], {
+              duration: opening ? motion.enter : motion.exit,
+              easing: opening ? motion.easeOut : motion.easeIn,
+              fill: 'forwards'
+            }),
+            backdrop.animate([backdropFrom, motion.backdrop[target]], {
+              duration: opening ? motion.backdropEnter : motion.exit,
+              // On exit the backdrop shares the dialog curve so the dialog never floats over an undimmed page.
+              easing: opening ? 'ease-out' : motion.easeIn,
+              fill: 'forwards'
+            })
+          ];
+
+          return Promise.all(current.map(function(animation) { return animation.finished; })).then(function() {
+            if (running !== current) return false;
+            running = [];
+            if (onFinish) onFinish();
+            // Fill kept the end frame on screen until onFinish ran; drop it so CSS owns the element again.
+            current.forEach(function(animation) { animation.cancel(); });
+            return true;
+          }, function() {
+            return false;
+          });
+        }
+
+        return {
+          isOpen: function() {
+            return isOpen;
+          },
+          open: function() {
+            if (isOpen) return Promise.resolve(false);
+            isOpen = true;
+            modal.hidden = false;
+            backdrop.hidden = false;
+            document.body.classList.add(bodyClass);
+            return play(true);
+          },
+          close: function() {
+            if (!isOpen) return Promise.resolve(false);
+            isOpen = false;
+            return play(false, function() {
+              modal.hidden = true;
+              backdrop.hidden = true;
+              document.body.classList.remove(bodyClass);
+            });
+          }
+        };
+      }
+
+      var negativeDialog = negativeFeedbackModal && negativeFeedbackBackdrop
+        ? createFeedbackDialog(negativeFeedbackModal, negativeFeedbackBackdrop, 'negative-feedback-open')
+        : null;
+      var positiveDialog = positiveFeedbackModal && positiveFeedbackBackdrop
+        ? createFeedbackDialog(positiveFeedbackModal, positiveFeedbackBackdrop, 'positive-feedback-open')
+        : null;
+
+      function collapseFeedbackCard() {
+        if (!feedbackCard || feedbackCard.hidden) return Promise.resolve();
+        if (feedbackCardCollapse) return feedbackCardCollapse;
+
+        if (reducedMotionQuery.matches) {
+          feedbackCard.hidden = true;
+          return Promise.resolve();
+        }
+
+        var style = window.getComputedStyle(feedbackCard);
+        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginBottom: '0px' };
+        var expanded = {
+          height: feedbackCard.offsetHeight + 'px',
+          minHeight: '0px',
+          paddingTop: style.paddingTop,
+          paddingBottom: style.paddingBottom,
+          marginBottom: style.marginBottom
+        };
+
+        // Fade the card out first, then close the gap so the content below slides up instead of jumping.
+        feedbackCard.style.overflow = 'hidden';
+        feedbackCard.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(0.96)' }
+        ], { duration: CARD_FADE, easing: EASE_IN, fill: 'forwards' });
+
+        feedbackCardCollapse = feedbackCard.animate([expanded, collapsed], {
+          duration: CARD_COLLAPSE,
+          delay: CARD_FADE / 2,
+          easing: COLLAPSE_EASE,
+          fill: 'forwards'
+        }).finished.then(function() {
+          feedbackCard.hidden = true;
+          feedbackCard.style.overflow = '';
+          feedbackCard.getAnimations().forEach(function(animation) { animation.cancel(); });
+          feedbackCardCollapse = null;
+        });
+
+        return feedbackCardCollapse;
+      }
+
+      function openWithMotion(trigger, open) {
+        if (pendingOpenTimer) return;
+        if (!isPlayfulMotion()) {
+          open(trigger);
+          return;
+        }
+
+        var face = trigger.querySelector('.feedback-card-emoji-face');
+        if (face) {
+          face.animate([
+            { translate: '0 0', scale: '1' },
+            { translate: '0 -6px', scale: '1.3', offset: 0.45 },
+            { translate: '0 0', scale: '1' }
+          ], { duration: EMOJI_POP, easing: 'ease-out' });
+        }
+
+        // Let the pop peak before the backdrop covers the emoji.
+        pendingOpenTimer = window.setTimeout(function() {
+          pendingOpenTimer = null;
+          open(trigger);
+        }, EMOJI_POP_LEAD);
+      }
+
+      if (feedbackCard && feedbackCardClose) {
+        feedbackCardClose.addEventListener('click', collapseFeedbackCard);
       }
 
       function updateNegativeFeedbackOther(shouldFocus) {
@@ -9199,34 +9451,30 @@
       }
 
       function closeNegativeFeedback(restoreFocus) {
-        if (!negativeFeedbackModal || !negativeFeedbackBackdrop) return;
-        negativeFeedbackModal.hidden = true;
-        negativeFeedbackBackdrop.hidden = true;
-        document.body.classList.remove('negative-feedback-open');
-
-        if (restoreFocus !== false && negativeFeedbackLastTrigger) {
-          negativeFeedbackLastTrigger.focus();
-        }
+        if (!negativeDialog) return Promise.resolve(false);
+        return negativeDialog.close().then(function(closed) {
+          if (closed && restoreFocus !== false && negativeFeedbackLastTrigger) {
+            negativeFeedbackLastTrigger.focus({ preventScroll: true });
+          }
+          return closed;
+        });
       }
 
       function openNegativeFeedback(trigger) {
-        if (!negativeFeedbackModal || !negativeFeedbackBackdrop) return;
+        if (!negativeDialog || negativeDialog.isOpen()) return;
         negativeFeedbackLastTrigger = trigger || null;
         negativeFeedbackReasonInputs.forEach(function(input) { input.checked = false; });
         if (negativeFeedbackOtherInput) negativeFeedbackOtherInput.value = '';
         updateNegativeFeedbackOther(false);
-        negativeFeedbackModal.hidden = false;
-        negativeFeedbackBackdrop.hidden = false;
-        document.body.classList.add('negative-feedback-open');
 
-        window.requestAnimationFrame(function() {
-          if (negativeFeedbackClose) negativeFeedbackClose.focus();
+        negativeDialog.open().then(function(opened) {
+          if (opened && negativeFeedbackClose) negativeFeedbackClose.focus({ preventScroll: true });
         });
       }
 
       negativeFeedbackTriggers.forEach(function(trigger) {
         trigger.addEventListener('click', function() {
-          openNegativeFeedback(trigger);
+          openWithMotion(trigger, openNegativeFeedback);
         });
       });
 
@@ -9250,9 +9498,11 @@
 
       if (negativeFeedbackSubmit) {
         negativeFeedbackSubmit.addEventListener('click', function() {
-          closeNegativeFeedback(false);
-          if (feedbackCard) feedbackCard.hidden = true;
-          showNegativeFeedbackSuccessToast();
+          if (!negativeDialog || !negativeDialog.isOpen()) return;
+          closeNegativeFeedback(false).then(function(closed) {
+            if (!closed) return;
+            return collapseFeedbackCard().then(showNegativeFeedbackSuccessToast);
+          });
         });
       }
 
@@ -9260,21 +9510,52 @@
         negativeFeedbackSuccessToastClose.addEventListener('click', hideNegativeFeedbackSuccessToast);
       }
 
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && negativeFeedbackModal && !negativeFeedbackModal.hidden) {
-          closeNegativeFeedback();
+      function clearPositiveFeedbackIntro() {
+        positiveFeedbackIntroTimers.forEach(function(timer) { window.clearTimeout(timer); });
+        positiveFeedbackIntroTimers = [];
+      }
+
+      function stopPositiveFeedbackIntro() {
+        clearPositiveFeedbackIntro();
+        if (positiveFeedbackIntroRating !== null) {
+          positiveFeedbackIntroRating = null;
+          renderPositiveFeedbackStars();
         }
-      });
+      }
+
+      function playPositiveFeedbackIntro() {
+        stopPositiveFeedbackIntro();
+        positiveFeedbackIntroRating = 0;
+        renderPositiveFeedbackStars();
+
+        positiveFeedbackStars.slice(0, positiveFeedbackRating).forEach(function(star, index) {
+          positiveFeedbackIntroTimers.push(window.setTimeout(function() {
+            var filled = index + 1;
+            var image = star.querySelector('.positive-feedback-star-full');
+
+            positiveFeedbackIntroRating = filled < positiveFeedbackRating ? filled : null;
+            renderPositiveFeedbackStars();
+            if (image) {
+              image.animate([
+                { transform: 'scale(0.4)' },
+                { transform: 'scale(1.18)', offset: 0.6 },
+                { transform: 'scale(1)' }
+              ], { duration: STAR_POP, easing: 'ease-out' });
+            }
+          }, STAR_INTRO_DELAY + index * STAR_STAGGER));
+        });
+      }
 
       function closePositiveFeedback(restoreFocus) {
-        if (!positiveFeedbackModal || !positiveFeedbackBackdrop) return;
-        positiveFeedbackModal.hidden = true;
-        positiveFeedbackBackdrop.hidden = true;
-        document.body.classList.remove('positive-feedback-open');
-
-        if (restoreFocus !== false && positiveFeedbackLastTrigger) {
-          positiveFeedbackLastTrigger.focus();
-        }
+        if (!positiveDialog) return Promise.resolve(false);
+        // Only cancel pending stars; re-rendering here would flash the full rating on the way out.
+        clearPositiveFeedbackIntro();
+        return positiveDialog.close().then(function(closed) {
+          if (closed && restoreFocus !== false && positiveFeedbackLastTrigger) {
+            positiveFeedbackLastTrigger.focus({ preventScroll: true });
+          }
+          return closed;
+        });
       }
 
       function hideNegativeFeedbackSuccessToast() {
@@ -9344,47 +9625,43 @@
       }
 
       function renderPositiveFeedbackStars() {
-        var previewRating = positiveFeedbackHoveredStar || positiveFeedbackRating;
+        var shownRating = positiveFeedbackIntroRating !== null ? positiveFeedbackIntroRating : positiveFeedbackRating;
+        var previewRating = positiveFeedbackHoveredStar || shownRating;
 
         positiveFeedbackStars.forEach(function(star) {
           var starRating = Number(star.getAttribute('data-positive-feedback-star'));
           var isFull = starRating <= previewRating;
           var isHovered = starRating === positiveFeedbackHoveredStar;
-          var image = star.querySelector('img');
 
+          // Both variants are already in the DOM; toggling a class avoids re-fetching the SVG on every src swap.
+          star.classList.toggle('is-empty', !isFull);
           star.classList.toggle('is-hovered', isHovered);
           star.setAttribute('aria-pressed', String(starRating === positiveFeedbackRating));
           star.setAttribute('aria-label', starRating + (starRating === 1 ? ' star' : ' stars') + (starRating === positiveFeedbackRating ? ', selected' : ''));
-
-          if (image) {
-            if (isHovered) {
-              image.src = isFull ? './assets/review-star-full-hover.svg' : './assets/review-star-empty-hover.svg';
-            } else {
-              image.src = isFull ? './assets/review-star-full.svg' : './assets/review-star-empty.svg';
-            }
-          }
         });
         if (positiveFeedbackModal) positiveFeedbackModal.setAttribute('data-rating', String(positiveFeedbackRating));
       }
 
       function openPositiveFeedback(trigger) {
-        if (!positiveFeedbackModal || !positiveFeedbackBackdrop) return;
+        if (!positiveDialog || positiveDialog.isOpen()) return;
         positiveFeedbackLastTrigger = trigger || null;
         positiveFeedbackRating = 5;
         positiveFeedbackHoveredStar = null;
+        stopPositiveFeedbackIntro();
         renderPositiveFeedbackStars();
-        positiveFeedbackModal.hidden = false;
-        positiveFeedbackBackdrop.hidden = false;
-        document.body.classList.add('positive-feedback-open');
+        if (isPlayfulMotion()) playPositiveFeedbackIntro();
 
-        window.requestAnimationFrame(function() {
-          if (positiveFeedbackInput) positiveFeedbackInput.focus();
+        positiveDialog.open().then(function(opened) {
+          if (!opened) return;
+          // Focusing the textarea on mobile would pop the keyboard over the stars.
+          var focusTarget = mobileQuery.matches ? positiveFeedbackClose : positiveFeedbackInput;
+          if (focusTarget) focusTarget.focus({ preventScroll: true });
         });
       }
 
       positiveFeedbackTriggers.forEach(function(trigger) {
         trigger.addEventListener('click', function() {
-          openPositiveFeedback(trigger);
+          openWithMotion(trigger, openPositiveFeedback);
         });
       });
 
@@ -9424,6 +9701,8 @@
           renderPositiveFeedbackStars();
         });
         star.addEventListener('click', function() {
+          clearPositiveFeedbackIntro();
+          positiveFeedbackIntroRating = null;
           positiveFeedbackRating = Number(star.getAttribute('data-positive-feedback-star'));
           renderPositiveFeedbackStars();
         });
@@ -9431,9 +9710,11 @@
 
       if (positiveFeedbackSubmit) {
         positiveFeedbackSubmit.addEventListener('click', function() {
-          closePositiveFeedback(false);
-          if (feedbackCard) feedbackCard.hidden = true;
-          showReviewSuccessToast();
+          if (!positiveDialog || !positiveDialog.isOpen()) return;
+          closePositiveFeedback(false).then(function(closed) {
+            if (!closed) return;
+            return collapseFeedbackCard().then(showReviewSuccessToast);
+          });
         });
       }
 
@@ -9442,11 +9723,18 @@
       }
 
       document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && positiveFeedbackModal && !positiveFeedbackModal.hidden) {
-          closePositiveFeedback();
-        }
+        if (event.key !== 'Escape') return;
+        if (positiveDialog && positiveDialog.isOpen()) closePositiveFeedback();
+        if (negativeDialog && negativeDialog.isOpen()) closeNegativeFeedback();
       });
 
+      modalMotionInputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+          if (input.checked) setModalMotion(input.value);
+        });
+      });
+
+      setModalMotion(readStoredModalMotion());
       updateSittersOverflow();
       window.addEventListener('resize', updateSittersOverflow);
     })();
