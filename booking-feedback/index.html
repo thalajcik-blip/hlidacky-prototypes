@@ -2475,7 +2475,7 @@
       top: 50%;
       left: 50%;
       z-index: 270;
-      width: min(1120px, calc(100vw - 32px));
+      width: min(568px, calc(100vw - 32px));
       max-height: min(80vh, 860px);
       transform: translate(-50%, -50%);
       border: 1px solid var(--gray-300);
@@ -4332,7 +4332,7 @@
       }
 
       .settings-modal {
-        width: calc(100vw - 16px);
+        width: min(568px, calc(100vw - 16px));
         max-height: calc(100dvh - 16px);
         border-radius: 12px;
       }
@@ -6214,21 +6214,22 @@
               </label>
             </div>
           </div>
-          <div class="settings-group" data-page-audience-target="families">
+          <div class="settings-group">
             <h3 class="settings-group-title">Feedback modal animation</h3>
             <div class="settings-option-list">
               <label class="settings-option">
-                <input type="radio" name="prototype-modal-motion" value="basic" checked data-modal-motion-input>
+                <input type="radio" name="prototype-modal-motion" value="playful" checked data-modal-motion-input>
                 <span>
-                  <strong>Basic</strong>
-                  <span>Backdrop fades in and the modal rises into place (slides up from the bottom on mobile). After submitting, the card collapses before the toast appears.</span>
+                  <strong>Playful</strong>
+                  <span class="families-only">Basic, plus the emoji bounces when clicked and the rating stars fill in one by one.</span>
+                  <span class="sitters-only">Basic, plus the emoji bounces when clicked.</span>
                 </span>
               </label>
               <label class="settings-option">
-                <input type="radio" name="prototype-modal-motion" value="playful" data-modal-motion-input>
+                <input type="radio" name="prototype-modal-motion" value="basic" data-modal-motion-input>
                 <span>
-                  <strong>Playful</strong>
-                  <span>Basic, plus the emoji bounces when clicked and the rating stars fill in one by one.</span>
+                  <strong>Basic</strong>
+                  <span>Backdrop fades in and the modal rises into place (slides up from the bottom on mobile). After submitting, the card collapses before the toast appears.</span>
                 </span>
               </label>
             </div>
@@ -9537,7 +9538,7 @@
       var SHEET_EASE_OUT = 'cubic-bezier(0.32, 0.72, 0, 1)';
       var SHEET_EASE_IN = 'cubic-bezier(0.32, 0, 0.67, 0)';
       var COLLAPSE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
-      var MODAL_MOTION_STORAGE_KEY = 'booking-feedback-modal-motion';
+      var MODAL_MOTION_STORAGE_KEY = 'booking-feedback-modal-motion-choice';
       var mobileQuery = window.matchMedia('(max-width: 900px)');
       var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -9545,7 +9546,7 @@
       var feedbackCardCollapses = new WeakMap();
       var pendingOpenTimer = null;
       var modalMotionInputs = Array.prototype.slice.call(document.querySelectorAll('[data-modal-motion-input]'));
-      var modalMotion = 'basic';
+      var modalMotion = 'playful';
       var negativeFeedbackBackdrop = document.querySelector('[data-negative-feedback-backdrop]');
       var negativeFeedbackModal = document.querySelector('[data-negative-feedback-modal]');
       var negativeFeedbackClose = document.querySelector('[data-negative-feedback-close]');
@@ -9591,11 +9592,12 @@
         return modalMotion === 'playful' && !reducedMotionQuery.matches;
       }
 
-      function setModalMotion(nextMotion) {
-        modalMotion = nextMotion === 'playful' ? 'playful' : 'basic';
+      function setModalMotion(nextMotion, remember) {
+        modalMotion = nextMotion === 'basic' ? 'basic' : 'playful';
         modalMotionInputs.forEach(function(input) {
           input.checked = input.value === modalMotion;
         });
+        if (!remember) return;
         try {
           window.localStorage.setItem(MODAL_MOTION_STORAGE_KEY, modalMotion);
         } catch (error) {}
@@ -10172,7 +10174,7 @@
 
       modalMotionInputs.forEach(function(input) {
         input.addEventListener('change', function() {
-          if (input.checked) setModalMotion(input.value);
+          if (input.checked) setModalMotion(input.value, true);
         });
       });
 
