@@ -705,10 +705,10 @@
       min-height: 144px;
       padding: 10px 16px;
       resize: none;
-      border: 1px solid var(--blue-400);
+      border: 1px solid var(--gray-400);
       border-radius: 4px;
       background: var(--white);
-      box-shadow: 0 0 0 2px #cbdafc;
+      box-shadow: none;
       color: var(--gray-800);
       font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 16px;
@@ -716,6 +716,11 @@
       line-height: 1.32;
       letter-spacing: 0.2px;
       outline: 0;
+    }
+
+    .positive-feedback-textarea:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 2px #cbdafc;
     }
 
     .positive-feedback-textarea::placeholder {
@@ -959,16 +964,22 @@
       min-height: 72px;
       padding: 10px 16px;
       resize: vertical;
-      border: 1px solid var(--blue-400);
+      border: 1px solid var(--gray-400);
       border-radius: 4px;
       background: var(--white);
-      box-shadow: 0 0 0 2px #cbdafc;
+      box-shadow: none;
       color: var(--gray-800);
       font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 16px;
       font-weight: 400;
       line-height: 1.32;
       letter-spacing: 0.2px;
+    }
+
+    .negative-feedback-other-input:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 2px #cbdafc;
+      outline: 0;
     }
 
     .negative-feedback-other-input::placeholder {
