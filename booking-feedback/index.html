@@ -47,6 +47,16 @@
     html,
     body {
       max-width: 100%;
+    }
+
+    /* overflow-x stays on body only: any overflow on html stops body's overflow from reaching the
+       viewport, and then the modals' `overflow: hidden` on body no longer locks page scrolling.
+       The stable gutter keeps the page from shifting when the scrollbar disappears. */
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
       overflow-x: hidden;
     }
 
@@ -1180,7 +1190,7 @@
     .negative-feedback-success-toast-heading {
       font-size: 16px;
       font-weight: 400;
-      line-height: 1.4;
+      line-height: 1.32;
       letter-spacing: -0.2px;
     }
 
@@ -1190,6 +1200,36 @@
       font-weight: 300;
       line-height: 1.32;
       letter-spacing: -0.16px;
+    }
+
+    /* "Undo submission" link (Figma 4886:386750, 4886:386825). */
+    .feedback-toast-undo {
+      justify-self: start;
+      margin-top: 4px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--pink-400);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-decoration-color: var(--pink-300);
+      text-decoration-thickness: 0.08em;
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    .feedback-toast-undo:hover {
+      opacity: 1;
+    }
+
+    .feedback-toast-undo:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid var(--blue-400);
+      outline-offset: 2px;
+      opacity: 1;
     }
 
     .review-success-toast-close,
@@ -6199,17 +6239,17 @@
             <h3 class="settings-group-title">Booking page version</h3>
             <div class="settings-option-list">
               <label class="settings-option">
-                <input type="radio" name="prototype-page-audience" value="families" checked data-page-audience-input>
-                <span>
-                  <strong>For families</strong>
-                  <span>Includes credits and quick booking shortcuts.</span>
-                </span>
-              </label>
-              <label class="settings-option">
-                <input type="radio" name="prototype-page-audience" value="sitters" data-page-audience-input>
+                <input type="radio" name="prototype-page-audience" value="sitters" checked data-page-audience-input>
                 <span>
                   <strong>For sitters</strong>
                   <span>Hides credits and quick booking shortcuts, and changes the waiting booking actions.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-page-audience" value="families" data-page-audience-input>
+                <span>
+                  <strong>For families</strong>
+                  <span>Includes credits and quick booking shortcuts.</span>
                 </span>
               </label>
             </div>
@@ -6710,6 +6750,7 @@
         </div>
         <div class="negative-feedback-success-toast-copy">
           <p class="negative-feedback-success-toast-heading">Your feedback was submitted</p>
+          <button class="feedback-toast-undo" type="button" data-feedback-toast-undo>Undo submission</button>
         </div>
       </div>
       <button class="negative-feedback-success-toast-close" type="button" aria-label="Close notification" data-negative-feedback-success-toast-close>×</button>
@@ -6763,6 +6804,7 @@
         <div class="review-success-toast-copy">
           <p class="review-success-toast-heading">Your review was submitted</p>
           <p class="review-success-toast-description">We will post it to Anastázie’s profile shortly</p>
+          <button class="feedback-toast-undo" type="button" data-feedback-toast-undo>Undo submission</button>
         </div>
       </div>
       <button class="review-success-toast-close" type="button" aria-label="Close notification" data-review-success-toast-close>×</button>
@@ -7279,7 +7321,7 @@
       });
 
       var VIEW_STATE_STORAGE_KEY = 'booking-feedback-view-state';
-      var PAGE_AUDIENCE_STORAGE_KEY = 'booking-feedback-page-audience';
+      var PAGE_AUDIENCE_STORAGE_KEY = 'booking-feedback-page-audience-choice';
       var mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
       var mobileNav = document.querySelector('[data-mobile-nav]');
       var mobileNavBackdrop = document.querySelector('[data-mobile-nav-backdrop]');
@@ -7391,7 +7433,7 @@
       var liveRegion = document.querySelector('[data-modal-live]');
       var currentStep = 1;
       var currentViewState = 'normal';
-      var currentPageAudience = 'families';
+      var currentPageAudience = 'sitters';
 
       function readStoredViewState() {
         return 'normal';
@@ -7400,9 +7442,9 @@
       function readStoredPageAudience() {
         try {
           var storedValue = window.localStorage.getItem(PAGE_AUDIENCE_STORAGE_KEY);
-          return storedValue === 'sitters' ? 'sitters' : 'families';
+          return storedValue === 'families' ? 'families' : 'sitters';
         } catch (error) {
-          return 'families';
+          return 'sitters';
         }
       }
 
@@ -7447,14 +7489,15 @@
         syncViewStateInputs(currentViewState);
       }
 
-      function setPrototypePageAudience(nextAudience) {
-        currentPageAudience = nextAudience === 'sitters' ? 'sitters' : 'families';
+      function setPrototypePageAudience(nextAudience, remember) {
+        currentPageAudience = nextAudience === 'families' ? 'families' : 'sitters';
         pageAudienceTargets.forEach(function(node) {
           node.hidden = currentPageAudience !== node.getAttribute('data-page-audience-target');
         });
         document.body.setAttribute('data-page-audience', currentPageAudience);
         syncPageAudienceInputs(currentPageAudience);
-        writeStoredPageAudience(currentPageAudience);
+        // Only an explicit pick is remembered, so the sitters default applies until someone chooses.
+        if (remember) writeStoredPageAudience(currentPageAudience);
       }
 
       function closeMobileNav() {
@@ -7537,7 +7580,7 @@
       pageAudienceInputs.forEach(function(input) {
         input.addEventListener('change', function() {
           if (input.checked) {
-            setPrototypePageAudience(input.value);
+            setPrototypePageAudience(input.value, true);
           }
         });
       });
@@ -9527,6 +9570,7 @@
       var REDUCED_FADE = 150;
       var CARD_FADE = 160;
       var CARD_COLLAPSE = 320;
+      var TOAST_DURATION = 8000;
       // Playful mode only.
       var EMOJI_POP = 260;
       var EMOJI_POP_LEAD = 140;
@@ -9544,6 +9588,7 @@
 
       var feedbackCardCloses = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-card-close]'));
       var feedbackCardCollapses = new WeakMap();
+      var lastSubmittedCard = null;
       var pendingOpenTimer = null;
       var modalMotionInputs = Array.prototype.slice.call(document.querySelectorAll('[data-modal-motion-input]'));
       var modalMotion = 'playful';
@@ -9769,6 +9814,61 @@
         return trigger ? trigger.closest('.feedback-card') : null;
       }
 
+      function finishFeedback(feedbackCard, showToast) {
+        return collapseFeedbackCard(feedbackCard).then(function() {
+          lastSubmittedCard = feedbackCard;
+          showToast();
+        });
+      }
+
+      // Reverse of collapseFeedbackCard: open the gap first, then fade the card in.
+      function expandFeedbackCard(feedbackCard) {
+        if (!feedbackCard || !feedbackCard.hidden) return Promise.resolve();
+        feedbackCard.hidden = false;
+        if (reducedMotionQuery.matches) return Promise.resolve();
+
+        var style = window.getComputedStyle(feedbackCard);
+        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px' };
+        var expanded = {
+          height: feedbackCard.offsetHeight + 'px',
+          minHeight: '0px',
+          paddingTop: style.paddingTop,
+          paddingBottom: style.paddingBottom,
+          marginTop: style.marginTop,
+          marginBottom: style.marginBottom
+        };
+
+        feedbackCard.style.overflow = 'hidden';
+        feedbackCard.animate([
+          { opacity: 0, transform: 'scale(0.96)' },
+          { opacity: 1, transform: 'scale(1)' }
+        ], { duration: CARD_FADE, delay: CARD_COLLAPSE / 2, easing: EASE_OUT, fill: 'backwards' });
+
+        return feedbackCard.animate([collapsed, expanded], {
+          duration: CARD_COLLAPSE,
+          easing: COLLAPSE_EASE
+        }).finished.then(function() {
+          feedbackCard.style.overflow = '';
+        });
+      }
+
+      function undoFeedback(hideToast) {
+        var feedbackCard = lastSubmittedCard;
+        lastSubmittedCard = null;
+        hideToast();
+        if (!feedbackCard) return;
+
+        var restored = expandFeedbackCard(feedbackCard);
+        var top = feedbackCard.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight - 80) {
+          feedbackCard.scrollIntoView({ block: 'center', behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+        }
+        restored.then(function() {
+          var firstEmoji = feedbackCard.querySelector('.feedback-card-emoji');
+          if (firstEmoji) firstEmoji.focus({ preventScroll: true });
+        });
+      }
+
       function openWithMotion(trigger, open) {
         if (pendingOpenTimer) return;
         if (!isPlayfulMotion()) {
@@ -9860,7 +9960,7 @@
           if (!negativeDialog || !negativeDialog.isOpen()) return;
           closeNegativeFeedback(false).then(function(closed) {
             if (!closed) return;
-            return collapseFeedbackCard(cardOf(negativeFeedbackLastTrigger)).then(showNegativeFeedbackSuccessToast);
+            return finishFeedback(cardOf(negativeFeedbackLastTrigger), showNegativeFeedbackSuccessToast);
           });
         });
       }
@@ -9868,6 +9968,17 @@
       if (negativeFeedbackSuccessToastClose) {
         negativeFeedbackSuccessToastClose.addEventListener('click', hideNegativeFeedbackSuccessToast);
       }
+
+      [
+        [negativeFeedbackSuccessToast, hideNegativeFeedbackSuccessToast],
+        [reviewSuccessToast, hideReviewSuccessToast]
+      ].forEach(function(pair) {
+        var undoButton = pair[0] && pair[0].querySelector('[data-feedback-toast-undo]');
+        if (!undoButton) return;
+        undoButton.addEventListener('click', function() {
+          undoFeedback(pair[1]);
+        });
+      });
 
       function clearPositiveFeedbackIntro() {
         positiveFeedbackIntroTimers.forEach(function(timer) { window.clearTimeout(timer); });
@@ -9947,7 +10058,7 @@
         window.requestAnimationFrame(function() {
           negativeFeedbackSuccessToast.classList.add('is-visible');
         });
-        negativeFeedbackSuccessToastTimer = window.setTimeout(hideNegativeFeedbackSuccessToast, 5000);
+        negativeFeedbackSuccessToastTimer = window.setTimeout(hideNegativeFeedbackSuccessToast, TOAST_DURATION);
       }
 
       function hideReviewSuccessToast() {
@@ -9980,7 +10091,7 @@
         window.requestAnimationFrame(function() {
           reviewSuccessToast.classList.add('is-visible');
         });
-        reviewSuccessToastTimer = window.setTimeout(hideReviewSuccessToast, 5000);
+        reviewSuccessToastTimer = window.setTimeout(hideReviewSuccessToast, TOAST_DURATION);
       }
 
       function renderPositiveFeedbackStars() {
@@ -10072,7 +10183,7 @@
           if (!positiveDialog || !positiveDialog.isOpen()) return;
           closePositiveFeedback(false).then(function(closed) {
             if (!closed) return;
-            return collapseFeedbackCard(cardOf(positiveFeedbackLastTrigger)).then(showReviewSuccessToast);
+            return finishFeedback(cardOf(positiveFeedbackLastTrigger), showReviewSuccessToast);
           });
         });
       }
@@ -10155,7 +10266,7 @@
             if (!dialog.isOpen()) return;
             close(false).then(function(closed) {
               if (!closed) return;
-              return collapseFeedbackCard(cardOf(lastTrigger)).then(showNegativeFeedbackSuccessToast);
+              return finishFeedback(cardOf(lastTrigger), showNegativeFeedbackSuccessToast);
             });
           });
         }

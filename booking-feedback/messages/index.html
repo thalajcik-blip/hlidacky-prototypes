@@ -1538,17 +1538,17 @@
             <h3 class="settings-group-title">Booking page version</h3>
             <div class="settings-option-list">
               <label class="settings-option">
-                <input type="radio" name="prototype-page-audience" value="families" checked data-page-audience-input>
-                <span>
-                  <strong>For families</strong>
-                  <span>Includes credits and quick booking shortcuts.</span>
-                </span>
-              </label>
-              <label class="settings-option">
-                <input type="radio" name="prototype-page-audience" value="sitters" data-page-audience-input>
+                <input type="radio" name="prototype-page-audience" value="sitters" checked data-page-audience-input>
                 <span>
                   <strong>For sitters</strong>
                   <span>Hides credits and quick booking shortcuts, and changes the waiting booking actions.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-page-audience" value="families" data-page-audience-input>
+                <span>
+                  <strong>For families</strong>
+                  <span>Includes credits and quick booking shortcuts.</span>
                 </span>
               </label>
             </div>
@@ -1824,8 +1824,16 @@
         document.body.classList.remove('settings-modal-open');
       }
 
-      var PAGE_AUDIENCE_STORAGE_KEY = 'booking-feedback-page-audience';
+      var PAGE_AUDIENCE_STORAGE_KEY = 'booking-feedback-page-audience-choice';
       var BOOKINGS_URL = '/booking-feedback/';
+
+      // Show the version the bookings page will open with (sitters unless families was picked).
+      try {
+        if (window.localStorage.getItem(PAGE_AUDIENCE_STORAGE_KEY) === 'families') {
+          var familiesInput = document.querySelector('input[name="prototype-page-audience"][value="families"]');
+          if (familiesInput) familiesInput.checked = true;
+        }
+      } catch (error) {}
 
       function redirectToBookings() {
         window.location.href = BOOKINGS_URL;
