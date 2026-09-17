@@ -7,16 +7,19 @@
   <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
   <style>
     :root {
+      --pink-100: #FEECEE;
       --pink-300: #FF9BA7;
       --pink-400: #F96073;
       --red-100: #FFF1F3;
       --pink-500: #E6213A;
       --green-100: #EFF9EF;
       --green-300: #7EEA7C;
+      --green-400: #22BF1E;
       --green-500: #0BA825;
       --green-600: #078E1D;
       --orange-300: #FFB569;
       --orange-500: #F28A2E;
+      --blue-300: #6AAFFF;
       --blue-400: #3B8BFF;
       --purple-100: #F4EEFF;
       --purple-300: #DCCBFF;
@@ -430,6 +433,29 @@
       display: block;
       width: 16px;
       height: 16px;
+    }
+
+    .feedback-card-initials {
+      display: grid;
+      flex: 0 0 48px;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid var(--pink-300);
+      border-radius: 42px;
+      background: var(--pink-100);
+      color: var(--pink-400);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    @media (max-width: 900px) {
+      /* Sitters have no credits under the heading, so the card sits tight under it (Figma 4319:36085). */
+      .feedback-card[data-page-audience-target="sitters"] {
+        margin-top: -16px;
+      }
     }
 
     .feedback-card-title {
@@ -852,6 +878,189 @@
       font-size: 18px;
       font-weight: 700;
       line-height: 1;
+    }
+
+    /* Sitter feedback checklist modals (Figma 4319:36276 mobile, 4883:384600 desktop).
+       Frame, close button, title and submit reuse the .positive-feedback-* modal styles. */
+    body.checklist-feedback-open {
+      overflow: hidden;
+    }
+
+    .sitter-feedback-modal .positive-feedback-title {
+      max-width: 416px;
+    }
+
+    .sitter-feedback-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      padding: 8px 0 16px;
+    }
+
+    .sitter-feedback-group,
+    .sitter-feedback-other {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sitter-feedback-label {
+      display: block;
+      padding-top: 8px;
+      color: var(--gray-800);
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .negative-feedback-other-input.sitter-feedback-textarea {
+      height: 64px;
+      min-height: 64px;
+    }
+
+    .negative-feedback-other-input.sitter-feedback-textarea:focus {
+      border-color: var(--blue-300);
+    }
+
+    .feedback-selector-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Inset shadow instead of a border, so the 1px → 2px selected outline doesn't shift the content. */
+    .feedback-selector {
+      display: flex;
+      flex: 0 0 88px;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 88px;
+      height: 80px;
+      padding: 9px 9px 7px;
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1px var(--gray-400);
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: box-shadow 120ms ease, color 120ms ease;
+    }
+
+    .feedback-selector:hover {
+      box-shadow: inset 0 0 0 1px var(--gray-500);
+    }
+
+    .feedback-selector:has(.feedback-selector-input:checked) {
+      box-shadow: inset 0 0 0 2px var(--green-400);
+      color: var(--green-400);
+    }
+
+    .feedback-selector:has(.feedback-selector-input:focus-visible) {
+      outline: 2px solid var(--blue-400);
+      outline-offset: 2px;
+    }
+
+    .feedback-selector-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .feedback-selector-input {
+      -webkit-appearance: none;
+      appearance: none;
+      position: relative;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1px var(--gray-400);
+      cursor: pointer;
+    }
+
+    .feedback-selector-input:focus {
+      outline: none;
+    }
+
+    .feedback-selector-input:checked {
+      background: var(--green-400);
+      box-shadow: none;
+    }
+
+    .feedback-selector-input:checked::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 9px;
+      height: 5px;
+      border-bottom: 2px solid var(--white);
+      border-left: 2px solid var(--white);
+      content: "";
+      transform: translate(-50%, -62%) rotate(-45deg);
+    }
+
+    .feedback-selector-icon {
+      width: 24px;
+      height: 24px;
+      font-size: 18px;
+      line-height: 24px;
+      text-align: center;
+    }
+
+    .feedback-selector-text {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      font-family: Soleil, soleil, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.16;
+      letter-spacing: -0.3px;
+    }
+
+    /* The mockups use different submit copy per viewport. */
+    .positive-feedback-submit .sitter-feedback-mobile-only {
+      display: none;
+    }
+
+    /* Desktop: keep room for the "Something else" note while it's hidden,
+       so checking it never changes the modal height. Overrides the global [hidden] rule. */
+    @media (min-width: 901px) {
+      .sitter-feedback-other[hidden] {
+        display: flex !important;
+        visibility: hidden;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sitter-feedback-modal .positive-feedback-title {
+        margin-top: 0;
+      }
+
+      .sitter-feedback-content {
+        gap: 10px;
+        padding-bottom: 0;
+      }
+
+      .sitter-feedback-group {
+        gap: 10px;
+      }
+
+      .sitter-feedback-other {
+        gap: 18px;
+      }
+
+      .positive-feedback-submit .sitter-feedback-desktop-only {
+        display: none;
+      }
+
+      .positive-feedback-submit .sitter-feedback-mobile-only {
+        display: inline;
+      }
     }
 
     .review-success-toast,
@@ -2247,6 +2456,14 @@
     .switch-view-button:active {
       transform: translateY(1px);
       box-shadow: inset 0 -3px 0 rgba(67, 25, 224, 0.9);
+    }
+
+    @media (max-width: 480px) {
+      /* At the top of the page the gear covered the sitter feedback card's close button. */
+      .switch-view-button {
+        top: auto;
+        bottom: max(20px, env(safe-area-inset-bottom));
+      }
     }
 
     body.settings-modal-open {
@@ -6067,6 +6284,20 @@
           <button class="feedback-card-close" type="button" data-feedback-card-close aria-label="Dismiss feedback invitation" title="Dismiss feedback invitation">×</button>
         </section>
 
+        <section class="feedback-card" data-page-audience-target="sitters" aria-labelledby="sitter-feedback-card-title">
+          <div class="feedback-card-header">
+            <span class="feedback-card-initials" aria-hidden="true">AB</span>
+            <h2 class="feedback-card-title" id="sitter-feedback-card-title">How was your latest booking experience?</h2>
+          </div>
+          <div class="feedback-card-emojis" role="group" aria-label="Rate your latest booking">
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="sitter-positive" aria-label="Perfect — give positive feedback" aria-describedby="sitter-feedback-rating-perfect"><span class="feedback-card-emoji-face">😍</span><span class="feedback-card-popover" id="sitter-feedback-rating-perfect" role="tooltip">Perfect</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="sitter-positive" aria-label="Good — give positive feedback" aria-describedby="sitter-feedback-rating-good"><span class="feedback-card-emoji-face">😊</span><span class="feedback-card-popover" id="sitter-feedback-rating-good" role="tooltip">Good</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="sitter-negative" aria-label="Not great — give negative feedback" aria-describedby="sitter-feedback-rating-not-great"><span class="feedback-card-emoji-face">😐</span><span class="feedback-card-popover" id="sitter-feedback-rating-not-great" role="tooltip">Not great</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="sitter-negative" aria-label="Bad — give negative feedback" aria-describedby="sitter-feedback-rating-bad"><span class="feedback-card-emoji-face">😡</span><span class="feedback-card-popover" id="sitter-feedback-rating-bad" role="tooltip">Bad</span></button>
+          </div>
+          <button class="feedback-card-close" type="button" data-feedback-card-close aria-label="Dismiss feedback invitation" title="Dismiss feedback invitation">×</button>
+        </section>
+
         <section class="sitters-section" data-sitters-section data-page-audience-target="families" aria-label="Sitters">
           <div class="sitters-scroll" data-sitters-scroll>
             <div class="sitters-list">
@@ -6544,6 +6775,131 @@
       <button class="review-success-toast-close" type="button" aria-label="Close notification" data-review-success-toast-close>×</button>
     </div>
   </aside>
+
+  <div class="positive-feedback-backdrop" data-checklist-feedback-backdrop="sitter-positive" hidden></div>
+  <section class="positive-feedback-modal sitter-feedback-modal" aria-labelledby="sitter-positive-feedback-title" aria-modal="true" role="dialog" data-checklist-feedback="sitter-positive" hidden>
+    <button class="positive-feedback-close" type="button" aria-label="Close feedback" data-checklist-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="positive-feedback-header">
+      <h2 class="positive-feedback-title" id="sitter-positive-feedback-title">What did you like about this booking?</h2>
+    </header>
+    <div class="sitter-feedback-content">
+      <div class="sitter-feedback-group" role="group" aria-labelledby="sitter-positive-feedback-label">
+        <span class="sitter-feedback-label" id="sitter-positive-feedback-label">Feedback is 100% private</span>
+        <div class="feedback-selector-group">
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-positive-feedback" value="Very kind family">
+              <span class="feedback-selector-icon" aria-hidden="true">👪</span>
+            </span>
+            <span class="feedback-selector-text">Very kind family</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-positive-feedback" value="Clear instructions">
+              <span class="feedback-selector-icon" aria-hidden="true">📋</span>
+            </span>
+            <span class="feedback-selector-text">Clear instructions</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-positive-feedback" value="Great children">
+              <span class="feedback-selector-icon" aria-hidden="true">👶</span>
+            </span>
+            <span class="feedback-selector-text">Great children</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-positive-feedback" value="Fair payment">
+              <span class="feedback-selector-icon" aria-hidden="true">💵</span>
+            </span>
+            <span class="feedback-selector-text">Fair payment</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-positive-feedback" value="Something else" data-checklist-other-toggle>
+              <span class="feedback-selector-icon" aria-hidden="true">✍️</span>
+            </span>
+            <span class="feedback-selector-text">Something else</span>
+          </label>
+        </div>
+      </div>
+      <div class="sitter-feedback-other" data-checklist-other hidden>
+        <label class="sitter-feedback-label" for="sitter-positive-feedback-other-input">You can specify your feedback here</label>
+        <textarea class="negative-feedback-other-input sitter-feedback-textarea" id="sitter-positive-feedback-other-input" data-checklist-other-input placeholder="Please specify your feedback..."></textarea>
+      </div>
+    </div>
+    <footer class="positive-feedback-footer">
+      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span class="sitter-feedback-desktop-only">Submit your review</span><span class="sitter-feedback-mobile-only">Submit to support</span></button>
+    </footer>
+  </section>
+
+  <div class="positive-feedback-backdrop" data-checklist-feedback-backdrop="sitter-negative" hidden></div>
+  <section class="positive-feedback-modal sitter-feedback-modal" aria-labelledby="sitter-negative-feedback-title" aria-modal="true" role="dialog" data-checklist-feedback="sitter-negative" hidden>
+    <button class="positive-feedback-close" type="button" aria-label="Close feedback" data-checklist-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="positive-feedback-header">
+      <h2 class="positive-feedback-title" id="sitter-negative-feedback-title">What went wrong?</h2>
+    </header>
+    <div class="sitter-feedback-content">
+      <div class="sitter-feedback-group" role="group" aria-labelledby="sitter-negative-feedback-label">
+        <span class="sitter-feedback-label" id="sitter-negative-feedback-label">Feedback is 100% private</span>
+        <div class="feedback-selector-group">
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="Difficult family">
+              <span class="feedback-selector-icon" aria-hidden="true">👪</span>
+            </span>
+            <span class="feedback-selector-text">Difficult family</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="Misleading instructions">
+              <span class="feedback-selector-icon" aria-hidden="true">❌</span>
+            </span>
+            <span class="feedback-selector-text">Misleading instructions</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="Too demanding instructions">
+              <span class="feedback-selector-icon" aria-hidden="true">📜</span>
+            </span>
+            <span class="feedback-selector-text">Too demanding instructions</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="Low or delayed payment">
+              <span class="feedback-selector-icon" aria-hidden="true">💸</span>
+            </span>
+            <span class="feedback-selector-text">Low or delayed payment</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="I felt unsafe">
+              <span class="feedback-selector-icon" aria-hidden="true">🚨</span>
+            </span>
+            <span class="feedback-selector-text">I felt unsafe</span>
+          </label>
+          <label class="feedback-selector">
+            <span class="feedback-selector-top">
+              <input class="feedback-selector-input" type="checkbox" name="sitter-negative-feedback" value="Something else…" data-checklist-other-toggle>
+              <span class="feedback-selector-icon" aria-hidden="true">✍️</span>
+            </span>
+            <span class="feedback-selector-text">Something else…</span>
+          </label>
+        </div>
+      </div>
+      <div class="sitter-feedback-other" data-checklist-other hidden>
+        <label class="sitter-feedback-label" for="sitter-negative-feedback-other-input">You can specify your feedback here</label>
+        <textarea class="negative-feedback-other-input sitter-feedback-textarea" id="sitter-negative-feedback-other-input" data-checklist-other-input placeholder="Please specify your feedback..."></textarea>
+      </div>
+    </div>
+    <footer class="positive-feedback-footer">
+      <button class="positive-feedback-submit" type="button" data-checklist-submit><span class="positive-feedback-submit-check sitter-feedback-desktop-only" aria-hidden="true">✓</span><span class="sitter-feedback-desktop-only">Submit your review</span><span class="sitter-feedback-mobile-only">Submit to support</span></button>
+    </footer>
+  </section>
 
   <div class="modal-backdrop" data-modal-backdrop hidden></div>
   <section class="modal" aria-labelledby="reject-modal-title" aria-modal="true" role="dialog" data-reject-modal hidden>
@@ -9193,9 +9549,8 @@
       var mobileQuery = window.matchMedia('(max-width: 900px)');
       var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-      var feedbackCard = document.querySelector('.feedback-card');
-      var feedbackCardClose = document.querySelector('[data-feedback-card-close]');
-      var feedbackCardCollapse = null;
+      var feedbackCardCloses = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-card-close]'));
+      var feedbackCardCollapses = new WeakMap();
       var pendingOpenTimer = null;
       var modalMotionInputs = Array.prototype.slice.call(document.querySelectorAll('[data-modal-motion-input]'));
       var modalMotion = 'basic';
@@ -9373,9 +9728,9 @@
         ? createFeedbackDialog(positiveFeedbackModal, positiveFeedbackBackdrop, 'positive-feedback-open')
         : null;
 
-      function collapseFeedbackCard() {
+      function collapseFeedbackCard(feedbackCard) {
         if (!feedbackCard || feedbackCard.hidden) return Promise.resolve();
-        if (feedbackCardCollapse) return feedbackCardCollapse;
+        if (feedbackCardCollapses.has(feedbackCard)) return feedbackCardCollapses.get(feedbackCard);
 
         if (reducedMotionQuery.matches) {
           feedbackCard.hidden = true;
@@ -9383,12 +9738,13 @@
         }
 
         var style = window.getComputedStyle(feedbackCard);
-        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginBottom: '0px' };
+        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px' };
         var expanded = {
           height: feedbackCard.offsetHeight + 'px',
           minHeight: '0px',
           paddingTop: style.paddingTop,
           paddingBottom: style.paddingBottom,
+          marginTop: style.marginTop,
           marginBottom: style.marginBottom
         };
 
@@ -9399,7 +9755,7 @@
           { opacity: 0, transform: 'scale(0.96)' }
         ], { duration: CARD_FADE, easing: EASE_IN, fill: 'forwards' });
 
-        feedbackCardCollapse = feedbackCard.animate([expanded, collapsed], {
+        var collapse = feedbackCard.animate([expanded, collapsed], {
           duration: CARD_COLLAPSE,
           delay: CARD_FADE / 2,
           easing: COLLAPSE_EASE,
@@ -9408,10 +9764,15 @@
           feedbackCard.hidden = true;
           feedbackCard.style.overflow = '';
           feedbackCard.getAnimations().forEach(function(animation) { animation.cancel(); });
-          feedbackCardCollapse = null;
+          feedbackCardCollapses.delete(feedbackCard);
         });
 
-        return feedbackCardCollapse;
+        feedbackCardCollapses.set(feedbackCard, collapse);
+        return collapse;
+      }
+
+      function cardOf(trigger) {
+        return trigger ? trigger.closest('.feedback-card') : null;
       }
 
       function openWithMotion(trigger, open) {
@@ -9437,9 +9798,11 @@
         }, EMOJI_POP_LEAD);
       }
 
-      if (feedbackCard && feedbackCardClose) {
-        feedbackCardClose.addEventListener('click', collapseFeedbackCard);
-      }
+      feedbackCardCloses.forEach(function(closeButton) {
+        closeButton.addEventListener('click', function() {
+          collapseFeedbackCard(cardOf(closeButton));
+        });
+      });
 
       function updateNegativeFeedbackOther(shouldFocus) {
         var hasOtherReason = Boolean(negativeFeedbackOtherToggle && negativeFeedbackOtherToggle.checked);
@@ -9503,7 +9866,7 @@
           if (!negativeDialog || !negativeDialog.isOpen()) return;
           closeNegativeFeedback(false).then(function(closed) {
             if (!closed) return;
-            return collapseFeedbackCard().then(showNegativeFeedbackSuccessToast);
+            return collapseFeedbackCard(cardOf(negativeFeedbackLastTrigger)).then(showNegativeFeedbackSuccessToast);
           });
         });
       }
@@ -9715,7 +10078,7 @@
           if (!positiveDialog || !positiveDialog.isOpen()) return;
           closePositiveFeedback(false).then(function(closed) {
             if (!closed) return;
-            return collapseFeedbackCard().then(showReviewSuccessToast);
+            return collapseFeedbackCard(cardOf(positiveFeedbackLastTrigger)).then(showReviewSuccessToast);
           });
         });
       }
@@ -9724,10 +10087,95 @@
         reviewSuccessToastClose.addEventListener('click', hideReviewSuccessToast);
       }
 
+      // Checklist modals (sitter feedback): tiles + optional "Something else" note, submitted to support.
+      var checklistDialogs = Array.prototype.slice.call(document.querySelectorAll('[data-checklist-feedback]')).map(function(modal) {
+        var name = modal.getAttribute('data-checklist-feedback');
+        var backdrop = document.querySelector('[data-checklist-feedback-backdrop="' + name + '"]');
+        if (!backdrop) return null;
+
+        var dialog = createFeedbackDialog(modal, backdrop, 'checklist-feedback-open');
+        var closeButton = modal.querySelector('[data-checklist-close]');
+        var inputs = Array.prototype.slice.call(modal.querySelectorAll('input[type="checkbox"]'));
+        var otherToggle = modal.querySelector('[data-checklist-other-toggle]');
+        var other = modal.querySelector('[data-checklist-other]');
+        var otherInput = modal.querySelector('[data-checklist-other-input]');
+        var submit = modal.querySelector('[data-checklist-submit]');
+        var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="' + name + '"]'));
+        var lastTrigger = null;
+
+        function updateOther(shouldFocus) {
+          var hasOther = Boolean(otherToggle && otherToggle.checked);
+          if (other) other.hidden = !hasOther;
+          if (hasOther && shouldFocus && otherInput) {
+            window.requestAnimationFrame(function() {
+              otherInput.focus();
+            });
+          }
+        }
+
+        function close(restoreFocus) {
+          return dialog.close().then(function(closed) {
+            if (closed && restoreFocus !== false && lastTrigger) {
+              lastTrigger.focus({ preventScroll: true });
+            }
+            return closed;
+          });
+        }
+
+        function open(trigger) {
+          if (dialog.isOpen()) return;
+          lastTrigger = trigger || null;
+          inputs.forEach(function(input) { input.checked = false; });
+          if (otherInput) otherInput.value = '';
+          updateOther(false);
+
+          dialog.open().then(function(opened) {
+            if (opened && closeButton) closeButton.focus({ preventScroll: true });
+          });
+        }
+
+        triggers.forEach(function(trigger) {
+          trigger.addEventListener('click', function() {
+            openWithMotion(trigger, open);
+          });
+        });
+
+        if (closeButton) {
+          closeButton.addEventListener('click', function() {
+            close();
+          });
+        }
+
+        backdrop.addEventListener('click', function() {
+          close();
+        });
+
+        if (otherToggle) {
+          otherToggle.addEventListener('change', function() {
+            updateOther(otherToggle.checked);
+          });
+        }
+
+        if (submit) {
+          submit.addEventListener('click', function() {
+            if (!dialog.isOpen()) return;
+            close(false).then(function(closed) {
+              if (!closed) return;
+              return collapseFeedbackCard(cardOf(lastTrigger)).then(showNegativeFeedbackSuccessToast);
+            });
+          });
+        }
+
+        return { isOpen: dialog.isOpen, close: close };
+      }).filter(Boolean);
+
       document.addEventListener('keydown', function(event) {
         if (event.key !== 'Escape') return;
         if (positiveDialog && positiveDialog.isOpen()) closePositiveFeedback();
         if (negativeDialog && negativeDialog.isOpen()) closeNegativeFeedback();
+        checklistDialogs.forEach(function(checklistDialog) {
+          if (checklistDialog.isOpen()) checklistDialog.close();
+        });
       });
 
       modalMotionInputs.forEach(function(input) {
