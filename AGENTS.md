@@ -86,6 +86,53 @@ there, and grep the deployed HTML for the change itself.
 **Never deploy or push without being asked.** Both are visible to everyone who has a
 QR code.
 
+### Keep deployments small — Vercel storage limit
+
+The Vercel team is on the free Hobby plan, capped at **10 GB of Deployment Storage**
+shared by all projects. Every deployment stores a full copy of this site (~50 MB),
+whether it came from a push or from the CLI. In September 2026 this repo alone filled
+the cap (10–15 GB) and old deployments had to be deleted by hand. Retention is now
+7 days, but Vercel always keeps the last 10 deployments per project.
+
+Rules:
+
+- **One deploy path per change.** Push to `main` and let the git deploy run. Don't
+  also run `npx vercel --prod` for the same change — that stores it twice. Use the CLI
+  only when explicitly asked, and only from an up-to-date clone (`git pull --ff-only`
+  first; a stale clone reverts production).
+- **Batch your pushes.** Every push is a new deployment. Commit as often as you like,
+  push once when the work is done.
+- **No automated or scheduled deploys.** A deploy cron once created a new deployment
+  every 5 minutes; it must stay off.
+- **Size images for how they render.** Store each image at about 3× its largest
+  on-screen CSS size — ~600 px for avatars and photos, ~1200 px for full-screen
+  backgrounds — never the 1000–3000 px camera or export original. Photos without
+  transparency should be JPEG, not PNG. Resize in place with `sips -Z <px> <file>`
+  (keeps name, format and alpha). Keep full-resolution sources in an `originals/`
+  directory: `.vercelignore` keeps those out of deployments.
+- **Nothing big without a reason.** No videos, archives or design exports in the repo;
+  any single file over ~500 KB needs a justification in the commit body.
+- **Keep `.vercelignore` current.** Tooling, docs and data that no page requests
+  (`scripts/`, `supabase/`, `*.md`, `.claude/`) are excluded; add new paths of that
+  kind there too.
+
+### Deploy checklist
+
+1. `git status` — only your intended changes are staged.
+2. Check staged files for size; each hit needs a reason or a resize:
+
+   ```bash
+   git diff --cached --name-only --diff-filter=AM -z | xargs -0 stat -f '%z %N' \
+     | awk '$1 > 500000 {printf "%6.0f KB  %s\n", $1/1024, $2}'
+   ```
+
+3. Run the hub `MISSING` check above.
+4. Commit with an explicit pathspec, then push **once**: `git push origin main`.
+5. Wait for the Vercel deployment to reach `READY`, then verify production as
+   described above.
+6. If this repo is cloned twice on the machine, `git pull --ff-only` in the other
+   clone so a later CLI deploy from it doesn't revert your change.
+
 ## Adding a prototype
 
 The new directory and its hub card in the root `index.html` go in the **same commit** —
