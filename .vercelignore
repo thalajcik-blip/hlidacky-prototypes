@@ -1,0 +1,17 @@
+# Keep deployments small: only files the prototypes actually serve.
+# Applies to both Git and CLI (`npx vercel --prod`) deployments.
+
+# Full-resolution image sources; pages reference the resized copies
+**/originals/
+
+# Repo tooling, docs and DB schema — never requested by a page
+.claude/
+scripts/
+supabase/
+*.md
+.env.example
+$CODEX_HOME/
+
+# macOS
+.DS_Store
+**/.DS_Store
