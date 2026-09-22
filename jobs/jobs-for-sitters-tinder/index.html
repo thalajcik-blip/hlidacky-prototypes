@@ -15,7 +15,7 @@
    Hlídačky · Jobs for sitters · Tinder-like UI
    Interaction prototype (mobile): stack card → detail sheet / reply sheet
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
-     stack  3574:132582 · detail 3574:133099 · reply 3574:203565
+     stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
@@ -36,6 +36,7 @@
   --pager-line:#ccd5e2;
   --focus:#348cf3;
   --ease:cubic-bezier(.22,.8,.24,1);
+  --hero-h:160px;
   --font:"Soleil","Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -79,8 +80,10 @@ svg{display:block;flex:none}
   box-shadow:0 0 0 2px #fff}
 
 /* ---------- stack ---------- */
-.peek{position:absolute;z-index:1;background:#fff;border:1px solid var(--line);border-radius:12px;
+/* the next two cards peek out above the top one, showing the top edge of their picture */
+.peek{position:absolute;z-index:1;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;
   box-shadow:0 1px 2px rgba(39,46,50,.04);transition:opacity .28s var(--ease),transform .35s var(--ease)}
+.peek-hero{display:block;height:var(--hero-h);background:#eceef2 50% 50%/cover no-repeat}
 
 .card{
   position:absolute;z-index:3;background:#fff;border:1px solid var(--line);border-radius:12px;
@@ -91,7 +94,7 @@ svg{display:block;flex:none}
 }
 .m-stack .card{touch-action:none}
 .expanded .hero{touch-action:none}
-.hero{position:relative;height:179px;flex:none}
+.hero{position:relative;height:var(--hero-h);flex:none}
 .hero-img{position:absolute;inset:0;overflow:hidden;background:#eceef2}
 .hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;pointer-events:none}
 .chips{position:absolute;left:16px;top:15px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
@@ -103,21 +106,23 @@ svg{display:block;flex:none}
 .hero-close{position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;color:#fff;
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease);filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
 
-.body{flex:1;display:flex;flex-direction:column;min-height:0;padding:22px 20px 0;position:relative}
+.body{flex:1;display:flex;flex-direction:column;min-height:0;padding:20px 20px 0;position:relative}
 .title{margin:0;font-weight:400;font-size:20px;line-height:26.4px;letter-spacing:-.32px;flex:none}
-.meta{display:flex;align-items:center;gap:8px;margin-top:4px;height:22px;font-size:14px;color:var(--muted);white-space:nowrap;flex:none}
+.meta{display:flex;align-items:center;gap:8px;margin-top:4px;height:24px;font-size:14px;color:var(--muted);white-space:nowrap;flex:none}
 .avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 1px 5px rgba(39,46,50,.22)}
 .author{color:var(--muted);text-decoration:underline;text-decoration-color:#c3c8cd;text-underline-offset:3px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--pink)}
-.rule{height:1px;background:var(--line);margin:14px -20px 0;flex:none;transition:opacity .25s var(--ease)}
+.rule{height:1px;background:var(--line);margin:12px -20px 0;flex:none;transition:opacity .25s var(--ease)}
 
-.desc-wrap{position:relative;padding:14px 0 21px;min-height:0;flex:none}
+.desc-wrap{position:relative;padding:12px 0 24px;min-height:0;flex:none}
+/* up to 8 lines (fewer on short screens, see fitDesc); longer text scrolls inside the card */
 .desc{margin:0;font-size:15.5px;line-height:21px;color:var(--ink);
-  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.more{position:absolute;right:0;bottom:21px;height:21px;padding-left:46px;
-  background:linear-gradient(90deg,rgba(255,255,255,0),#fff 42px);
-  font-size:15.5px;line-height:21px;color:var(--pink);text-decoration:underline;text-underline-offset:3px;
-  text-decoration-color:rgba(249,96,115,.55);transition:opacity .2s}
+  max-height:calc(var(--desc-lines,8) * 21px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.desc::-webkit-scrollbar{display:none}
+.m-stack .desc{touch-action:pan-y}
+/* the last visible line fades while more text waits below it */
+.desc.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15));
+  mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15))}
 
 /* composer (reply) */
 .composer{display:none;flex-direction:column;flex:1;min-height:0;padding-bottom:170px}
@@ -186,10 +191,8 @@ svg{display:block;flex:none}
 .expanded .card{border-color:transparent;box-shadow:0 -10px 34px rgba(0,0,0,.14);cursor:default}
 .expanded .peek{opacity:0;transform:translateY(12px)}
 .expanded .hero-close{opacity:1;pointer-events:auto;transition-delay:.12s}
-.expanded .more{opacity:0;pointer-events:none}
 .expanded .rule{opacity:0}
-.expanded .desc,.collapsing .desc{display:block;-webkit-line-clamp:unset;overflow:visible}
-.collapsing .more{opacity:0}
+.expanded .desc,.collapsing .desc{max-height:none;overflow:visible;-webkit-mask-image:none;mask-image:none}
 .m-detail .desc-wrap{flex:1;overflow:auto;padding-bottom:112px;-webkit-overflow-scrolling:touch}
 .m-detail .desc-wrap::-webkit-scrollbar{display:none}
 .m-reply .desc-wrap{display:none}
@@ -265,8 +268,8 @@ svg{display:block;flex:none}
     </div>
   </div>
 
-  <div class="peek" id="peek2"></div>
-  <div class="peek" id="peek1"></div>
+  <div class="peek" id="peek2"><i class="peek-hero"></i></div>
+  <div class="peek" id="peek1"><i class="peek-hero"></i></div>
 
   <article class="card" id="card" aria-label="Job">
     <div class="hero" id="hero">
@@ -290,7 +293,6 @@ svg{display:block;flex:none}
 
       <div class="desc-wrap" id="descWrap">
         <p class="desc" id="desc"></p>
-        <button class="more" id="more">Read more</button>
       </div>
 
       <section class="composer" id="composer">
@@ -366,7 +368,7 @@ const heroImg = $("#heroImg"), chipsEl = $("#chips"), badgeEl = $("#badge"), tit
 const dotEl = $("#dot"), addrEl = $("#addr"), descEl = $("#desc");
 const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
-const descWrap = $("#descWrap"), composer = $("#composer");
+const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
 const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
 
 const PINK = "rgb(249, 96, 115)", GREEN = "rgb(11, 168, 37)";
@@ -374,6 +376,8 @@ const SH_PINK  = "0px 8px 20px 0px rgba(249, 96, 115, 0.28), inset 0px 0px 0px 0
 const SH_GREEN = "0px 0px 0px 0px rgba(249, 96, 115, 0), inset 0px -3px 0px 0px rgb(10, 141, 29)";
 const EASE = "cubic-bezier(.22,.8,.24,1)";
 const DUR = 480;
+const PEEK = 9;           // how far each card behind the top one shows above it
+const LINE = 21;          // description line height
 
 /* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
 const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
@@ -458,7 +462,7 @@ function layout(){
   const nav = document.querySelector(".tabbar").offsetHeight;
   const ctrl = $("#controls");
   G.W = W; G.H = H; G.nav = nav;
-  G.cardTop = ctrl.offsetTop + ctrl.offsetHeight + 10;
+  G.cardTop = ctrl.offsetTop + ctrl.offsetHeight + 16 + 2 * PEEK;   // room for the two peeking cards
   G.btnW = (W - 40 - 21) / 2;
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
@@ -523,25 +527,45 @@ function placeStatic(){
   const cg = cardGeom(mode); setBox(card, cg);
   const b = btnGeom(mode); setBox(btnNo, b.no); setBox(btnYes, b.yes);
   showDesc.style.top = G.linkTop + "px";
+  fitDesc();
   placePeeks();
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
   empty.style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
   $("#toast").style.top = (G.stackBtnTop - 56) + "px";   // floats above the action buttons
 }
+// Up to 8 lines of description; fewer on a short screen, so the text never runs under the buttons.
+function fitDesc(){
+  if (mode !== "stack") return;
+  const top = G.cardTop + card.clientTop + bodyEl.offsetTop + descWrap.offsetTop + descEl.offsetTop;
+  const lines = Math.max(3, Math.min(8, Math.floor((G.stackBtnTop - 2 - top) / LINE)));
+  card.style.setProperty("--desc-lines", lines);
+  updateDescFade();
+}
+function updateDescFade(){
+  descEl.classList.toggle("fade", descEl.scrollHeight - descEl.scrollTop - descEl.clientHeight > 1);
+}
+descEl.addEventListener("scroll", updateDescFade, { passive:true });
+
+// Figma: each card behind is 15px narrower and sits PEEK px higher.
+const peekInset = i => 20 + 7.5 * (i + 1);
 function placePeeks(){
   const h = mode === "stack" || mode === "gone" ? card.offsetHeight : 410;
-  const W = G.W;
-  Object.assign(peek1.style, { left:"28px", width:(W-56)+"px", top:(G.cardTop+20)+"px", height:h+"px" });
-  Object.assign(peek2.style, { left:"36px", width:(W-72)+"px", top:(G.cardTop+39)+"px", height:h+"px" });
+  [peek1, peek2].forEach((p, i) => Object.assign(p.style, {
+    left:peekInset(i)+"px", width:(G.W - 2*peekInset(i))+"px", top:(G.cardTop - PEEK*(i+1))+"px", height:h+"px"
+  }));
 }
-// how many cards peek out under the top one
+// how many cards peek out above the top one
 function showPeeks(animate){
   const rem = mode === "gone" ? 0 : JOBS.length - idx - 1;
-  peek1.style.opacity = rem >= 1 ? "" : "0";
-  peek2.style.opacity = rem >= 2 ? "" : "0";
+  [peek1, peek2].forEach((p, i) => {
+    p.style.opacity = rem > i ? "" : "0";
+    const j = JOBS[idx + 1 + i];
+    if (j) p.firstElementChild.style.backgroundImage = `url(${IMG[j.v]})`;
+  });
   if (animate){
-    if (rem >= 1) peek1.animate([{transform:"translateY(19px) scaleX(.95)"},{transform:"none"}], {duration:380, easing:EASE});
-    if (rem >= 2) peek2.animate([{opacity:0, transform:"translateY(16px)"},{opacity:1, transform:"none"}], {duration:380, easing:EASE});
+    const sx = (G.W - 2*peekInset(1)) / (G.W - 2*peekInset(0));
+    if (rem >= 1) peek1.animate([{transform:`translateY(${-PEEK}px) scaleX(${sx})`},{transform:"none"}], {duration:380, easing:EASE});
+    if (rem >= 2) peek2.animate([{opacity:0, transform:`translateY(${-PEEK}px)`},{opacity:1, transform:"none"}], {duration:380, easing:EASE});
   }
 }
 
@@ -556,6 +580,7 @@ function fillCard(j){
   dotEl.style.background = v.color;
   addrEl.textContent = j.addr;
   descEl.textContent = j.desc;
+  descEl.scrollTop = 0;
   card.setAttribute("aria-label", "Job: " + j.title);
   descWrap.scrollTop = 0;
   // composer belongs to this job
@@ -628,6 +653,7 @@ function go(target){
       return Promise.all([a1,a2,a3]).then(() => {
         phone.classList.remove("collapsing");
         card.style.height = "auto";
+        updateDescFade();
         busy = false;
       });
     };
@@ -696,6 +722,7 @@ function flyGhost(dir){
   g.style.zIndex = 6; g.style.pointerEvents = "none";
   const cur = card.style.transform || "none";
   phone.appendChild(g);
+  g.querySelector(".desc").scrollTop = descEl.scrollTop;
   const a = g.animate([
     { transform: cur === "none" ? "translate(0,0) rotate(0deg)" : cur },
     { transform:`translate(${dir * G.W * 1.25}px, 40px) rotate(${dir * 16}deg)` }
@@ -727,8 +754,10 @@ function bringNext(n){
   fillCard(job());
   placeStatic();
   showPeeks(true);
-  card.style.transformOrigin = "50% 100%";
-  const a = card.animate([{transform:"translateY(20px) scale(.952)"},{transform:"none"}], {duration:400, easing:EASE});
+  // the new top card comes forward from the first peek position above
+  card.style.transformOrigin = "50% 0";
+  const s = (G.W - 2*peekInset(0)) / (G.W - 40);
+  const a = card.animate([{transform:`translateY(${-PEEK}px) scale(${s})`},{transform:"none"}], {duration:400, easing:EASE});
   [btnNo, btnYes].forEach(b => b.animate([{opacity:0, transform:"scale(.92)"},{opacity:1, transform:"none"}], {duration:260, delay:140, easing:EASE, fill:"backwards"}));
   return a.finished.then(() => { card.style.transformOrigin = ""; });
 }
@@ -810,7 +839,6 @@ btnYes.onclick = () => {
 $("#heroClose").onclick = e => { e.stopPropagation(); go("stack"); };
 $("#scrim").onclick = () => go("stack");
 showDesc.onclick = () => go("detail");
-$("#more").onclick = e => { e.stopPropagation(); go("detail"); };
 document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
@@ -879,8 +907,17 @@ function endDrag(e){
     [btnNo, btnYes, showDesc].forEach(b => b.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE}));
   }
 }
+// The browser took the gesture over (a vertical scroll of the description): spring back, never treat it as a tap.
+function cancelDrag(){
+  if (!drag) return;
+  const d = drag; drag = null;
+  const cur = card.style.transform;
+  card.style.transform = ""; btnYes.style.transform = btnNo.style.transform = "";
+  if (d.kind === "sheet"){ $("#scrim").style.opacity = ""; showDesc.style.transform = ""; }
+  if (d.moved && cur) card.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE});
+}
 card.addEventListener("pointerup", endDrag);
-card.addEventListener("pointercancel", endDrag);
+card.addEventListener("pointercancel", cancelDrag);
 
 /* ---------------- boot ---------------- */
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
