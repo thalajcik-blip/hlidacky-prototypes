@@ -17,9 +17,10 @@
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
      stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
-   Prototype versions (gear button in the header), both on by default:
+   Prototype versions (gear button in the header), all on by default:
    - reply variant: while replying the photo shrinks and the job description stays above the reply
    - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
+   - toasts at the top (A): under the filter controls, above the card; off (B): above the action buttons
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -241,6 +242,8 @@ svg{display:block;flex:none}
   display:flex;gap:16px;align-items:center;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);
   transition:opacity .25s var(--ease),transform .3s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.v-toast-top .toast{transform:translate(-50%,-16px)}
+.v-toast-top .toast.show{transform:translate(-50%,0)}
 .toast button{color:#f6a8ae;font-weight:600}
 
 /* ---------- prototype versions modal ---------- */
@@ -248,7 +251,7 @@ svg{display:block;flex:none}
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
 .ver-modal.open{opacity:1;pointer-events:auto}
 .ver-scrim{position:absolute;inset:0;background:rgba(21,25,29,.46)}
-.ver-card{position:relative;width:100%;background:#fff;border-radius:16px;padding:22px 20px 20px;
+.ver-card{position:relative;width:100%;max-height:calc(100% - 40px);overflow-y:auto;background:#fff;border-radius:16px;padding:22px 20px 20px;
   box-shadow:0 20px 50px rgba(0,0,0,.25);transform:translateY(12px) scale(.98);transition:transform .3s var(--ease)}
 .ver-modal.open .ver-card{transform:none}
 .ver-card h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
@@ -412,6 +415,10 @@ svg{display:block;flex:none}
         <span><b>Open the next job in detail</b><small>After Skip or Send reply in a job's detail, the next job opens straight in its detail instead of the stack.</small></span>
         <input type="checkbox" role="switch" id="nextSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
+      <label class="ver-row">
+        <span><b>Toasts at the top</b><small>Undo and confirmation messages appear under the filters, above the job card. Off: above the Skip and Reply buttons.</small></span>
+        <input type="checkbox" role="switch" id="toastSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
   </div>
@@ -539,6 +546,7 @@ function layout(){
   const ctrl = $("#controls");
   G.W = W; G.H = H; G.nav = nav;
   G.cardTop = ctrl.offsetTop + ctrl.offsetHeight + 16 + 2 * PEEK;   // room for the two peeking cards
+  G.toastTop = ctrl.offsetTop + ctrl.offsetHeight + 8;                // just under the filter controls
   G.btnW = (W - 40 - 21) / 2;
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
@@ -603,6 +611,8 @@ function setModeClass(m){
 const inline = () => phone.classList.contains("v-inline");
 // after Skip / Send reply in an open sheet, the next job opens in its detail (prototype versions modal)
 const nextInDetail = () => phone.classList.contains("v-next");
+// toasts under the filter controls (A) instead of above the action buttons (B)
+const toastAtTop = () => phone.classList.contains("v-toast-top");
 // the hero is shorter while replying in the variant: animate its height along with the card
 function animateHero(h0, duration){
   const h1 = heroEl.offsetHeight;
@@ -618,7 +628,8 @@ function placeStatic(){
   placePeeks();
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
   empty.style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
-  $("#toast").style.top = (G.stackBtnTop - 56) + "px";   // floats above the action buttons
+  // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
+  $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
 }
 // Up to 8 lines of description; fewer on a short screen, so the text never runs under the buttons.
 function fitDesc(){
@@ -967,11 +978,13 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
-// Both switches are on by default. A choice made in the modal is remembered per device, and the URL
-// parameter wins over both: ?variant=ab|classic (the name the first shared links use), ?next=detail|stack.
+// All switches are on by default. A choice made in the modal is remembered per device, and the URL
+// parameter wins over both: ?variant=ab|classic (the name the first shared links use), ?next=detail|stack,
+// ?toast=top|bottom.
 const SETTINGS = [
   { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", def:true, input:$("#verSwitch") },
-  { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") }
+  { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") },
+  { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
