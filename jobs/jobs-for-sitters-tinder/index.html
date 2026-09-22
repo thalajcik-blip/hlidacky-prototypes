@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<title>Jobs for sitters – Tinder UI</title>
+<link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------
+   Hlídačky · Jobs for sitters · Tinder-like UI
+   Interaction prototype (mobile): stack card → detail sheet / reply sheet
+   Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
+     stack  3574:132582 · detail 3574:133099 · reply 3574:203565
+     cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
+   Font: Soleil (used if installed locally), Figtree as fallback.
+   ------------------------------------------------------------------ */
+/* Soleil is served from the repo root (shared with components/animated-charts). */
+@font-face{font-family:"Soleil";font-style:normal;font-weight:400;font-display:swap;src:url("/components/animated-charts/assets/fonts/soleil-book.otf") format("opentype")}
+@font-face{font-family:"Soleil";font-style:normal;font-weight:600;font-display:swap;src:url("/components/animated-charts/assets/fonts/soleil-600.woff2") format("woff2")}
+:root{
+  --pink:#f96073;
+  --green:#0ba825;
+  --green-d:#0a8d1d;
+  --ink:#2a3539;
+  --ink-2:#4a5a61;
+  --muted:#6c757d;
+  --icon:#8b91a3;
+  --line:#e5e5ea;
+  --line-2:#e5e5ea;
+  --pager:#f1f5fb;
+  --pager-line:#ccd5e2;
+  --focus:#348cf3;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --font:"Soleil","Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--font);color:var(--ink);background:#dadada;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100%;-webkit-font-smoothing:antialiased;overflow:hidden;
+}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cursor:pointer}
+svg{display:block;flex:none}
+
+/* ---------- device ---------- */
+.stage{transform-origin:50% 50%}
+.phone{
+  position:relative;width:375px;height:787px;background:#fff;overflow:hidden;
+  border-radius:46px;isolation:isolate;
+  box-shadow:0 0 0 11px #16191c,0 0 0 12px #3a3f44,0 40px 90px rgba(0,0,0,.28);
+  user-select:none;-webkit-user-select:none;
+}
+.caption{margin-top:34px;font:500 13px/1.6 var(--font);color:#5d646a;text-align:center}
+.caption b{color:#272e32;font-weight:600}
+.caption button{color:var(--pink);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+
+/* ---------- status + app bar ---------- */
+.statusbar{height:47px;display:flex;align-items:center;justify-content:space-between;padding:6px 22px 0 30px}
+.statusbar .time{font:600 15.5px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",var(--font);letter-spacing:-.2px}
+.statusbar .sys{display:flex;gap:6px;align-items:center}
+.appbar{height:45px;display:flex;align-items:center;justify-content:center;gap:7px;
+  border-bottom:1px solid var(--line-2);font-size:17px;letter-spacing:-.2px}
+.appbar svg{color:var(--pink)}
+
+.controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;height:38px}
+.pill-new{height:27px;padding:0 10px 0 13px;border-radius:14px;background:var(--pink);color:#fff;
+  display:flex;align-items:center;gap:4px;font-size:15px;letter-spacing:-.1px}
+.ctrl-right{display:flex;gap:8px}
+.icon-btn{position:relative;width:40px;height:38px;border-radius:7px;background:#fff;
+  border:1px solid var(--line);border-bottom-width:3px;display:grid;place-items:center;color:var(--ink)}
+.icon-btn .count{position:absolute;top:-10px;right:-10px;width:24px;height:24px;border-radius:50%;
+  background:var(--pink);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center;
+  box-shadow:0 0 0 2px #fff}
+
+/* ---------- stack ---------- */
+.peek{position:absolute;z-index:1;background:#fff;border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 1px 2px rgba(39,46,50,.04);transition:opacity .28s var(--ease),transform .35s var(--ease)}
+
+.card{
+  position:absolute;z-index:3;background:#fff;border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 1px 2px rgba(39,46,50,.05);
+  transition:border-color .3s var(--ease),box-shadow .35s var(--ease);
+  cursor:pointer;
+}
+.m-stack .card{touch-action:none}
+.expanded .hero{touch-action:none}
+.hero{position:relative;height:179px;flex:none}
+.hero-img{position:absolute;inset:0;overflow:hidden;background:#eceef2}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;pointer-events:none}
+.chips{position:absolute;left:16px;top:15px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.chip{height:21px;padding:0 8px;border-radius:11px;background:#fff;border:1px solid var(--line);
+  font-size:12.5px;line-height:19px;color:var(--ink-2);white-space:nowrap}
+.badge{position:absolute;left:14px;bottom:-11px;z-index:2;height:21px;padding:0 8px 0 6px;border-radius:11px;
+  background:var(--pink);color:#fff;font-size:12.5px;display:flex;align-items:center;gap:4px;
+  box-shadow:0 0 0 2px #fff}
+.hero-close{position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;color:#fff;
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease);filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
+
+.body{flex:1;display:flex;flex-direction:column;min-height:0;padding:22px 20px 0;position:relative}
+.title{margin:0;font-weight:400;font-size:20px;line-height:26.4px;letter-spacing:-.32px;flex:none}
+.meta{display:flex;align-items:center;gap:8px;margin-top:4px;height:22px;font-size:14px;color:var(--muted);white-space:nowrap;flex:none}
+.avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 1px 5px rgba(39,46,50,.22)}
+.author{color:var(--muted);text-decoration:underline;text-decoration-color:#c3c8cd;text-underline-offset:3px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--pink)}
+.rule{height:1px;background:var(--line);margin:14px -20px 0;flex:none;transition:opacity .25s var(--ease)}
+
+.desc-wrap{position:relative;padding:14px 0 21px;min-height:0;flex:none}
+.desc{margin:0;font-size:15.5px;line-height:21px;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.more{position:absolute;right:0;bottom:21px;height:21px;padding-left:46px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),#fff 42px);
+  font-size:15.5px;line-height:21px;color:var(--pink);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(249,96,115,.55);transition:opacity .2s}
+
+/* composer (reply) */
+.composer{display:none;flex-direction:column;flex:1;min-height:0;padding-bottom:170px}
+.c-rule{height:1px;background:var(--line);margin-top:23px;flex:none}
+.c-head{display:flex;align-items:center;justify-content:space-between;margin-top:17px;height:22px;flex:none}
+.c-title{display:flex;align-items:center;gap:8px;font-size:17px;letter-spacing:-.2px}
+.c-title svg{color:var(--pink)}
+.c-title svg.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.18) rotate(8deg);opacity:.7}}
+.c-clear{display:flex;align-items:center;gap:6px;font-size:16px;color:var(--muted);
+  text-decoration:underline;text-decoration-color:#c3c8cd;text-underline-offset:3px}
+.c-clear svg{color:var(--pink)}
+.c-box{margin-top:13px;flex:1;min-height:92px;max-height:196px;display:flex;flex-direction:column}
+.c-ta{position:relative;flex:1;min-height:0}
+.c-ta textarea{
+  width:100%;height:100%;resize:none;display:block;border:1.5px solid #cdd2da;border-radius:6px 6px 0 0;
+  padding:11px 13px;font:inherit;font-size:16.5px;line-height:21px;color:var(--ink);background:#fff;outline:none;
+  -webkit-user-select:text;user-select:text;transition:border-color .2s;
+}
+.c-ta textarea:focus{border:2px solid var(--focus);padding:10.5px 12.5px}
+.c-gen{position:absolute;inset:2px 2px 0;border-radius:5px 5px 0 0;background:#fff;padding:13px 13px;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.c-gen.on{opacity:1}
+.c-gen i{display:block;height:11px;border-radius:6px;margin:0 0 11px;
+  background:linear-gradient(90deg,#eef0f4 25%,#fbe3e5 45%,#eef0f4 65%);background-size:300% 100%;
+  animation:shimmer 1.1s linear infinite}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+.c-pager{height:36px;flex:none;background:var(--pager);border:1px solid var(--pager-line);border-top:0;
+  border-radius:0 0 6px 6px;display:flex;align-items:center;gap:6px;padding:0 6px;font-size:14.5px;color:var(--muted)}
+.c-pager button{width:26px;height:28px;display:grid;place-items:center;color:var(--pink)}
+.c-pager button:disabled{opacity:.35;cursor:default}
+
+/* ---------- action buttons (float above everything) ---------- */
+.act{position:absolute;z-index:12;display:flex;align-items:center;justify-content:center;border-radius:25px;overflow:hidden}
+.act-no{background:#fff;color:var(--icon);box-shadow:0 8px 20px rgba(39,46,50,.10),0 1px 3px rgba(39,46,50,.06)}
+.act-yes{background:var(--pink);color:#fff}
+.act-yes .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;
+  white-space:nowrap;transition:opacity .1s linear,transform .2s var(--ease)}
+.act-yes .f-send,.act-yes .f-busy,.act-yes .f-done{opacity:0;font-size:17px;letter-spacing:-.1px}
+.act-yes .f-send{transform:translateY(6px)}
+/* outgoing face leaves fast, incoming face waits a beat, so the two never overlap */
+.act-yes .f-heart{transition:opacity .2s var(--ease) .12s,transform .3s var(--ease) .12s}
+.send-face .act-yes .f-heart{opacity:0;transform:scale(.6);transition:opacity .1s linear,transform .2s var(--ease)}
+.send-face .act-yes .f-send{opacity:1;transform:none;transition:opacity .2s var(--ease) .12s,transform .3s var(--ease) .12s}
+.act-yes.sending .f-send{opacity:0}
+.act-yes.sending .f-busy{opacity:1}
+.act-yes.done .f-send,.act-yes.done .f-busy{opacity:0}
+.act-yes.done .f-done{opacity:1}
+/* disabled send (while the reply is generating or the field is empty): white veil, colour stays true */
+.act-yes::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.42);opacity:0;pointer-events:none;transition:opacity .2s}
+.send-face .act-yes[aria-disabled="true"]::after{opacity:1}
+.send-face .act-yes[aria-disabled="true"]{cursor:default}
+.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.show-desc{position:absolute;z-index:12;left:0;right:0;height:26px;text-align:center;font-size:17px;color:var(--pink);
+  text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(249,96,115,.55);
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.send-face .show-desc{opacity:1;pointer-events:auto;transition-delay:.12s}
+
+/* ---------- expanded (sheet) ---------- */
+.scrim{position:absolute;inset:0;z-index:8;background:rgba(21,25,29,.46);opacity:0;pointer-events:none;
+  transition:opacity .38s var(--ease)}
+.expanded .scrim{opacity:1;pointer-events:auto}
+.expanded .card,.collapsing .card{z-index:10}
+.expanded .card{border-color:transparent;box-shadow:0 -10px 34px rgba(0,0,0,.14);cursor:default}
+.expanded .peek{opacity:0;transform:translateY(12px)}
+.expanded .hero-close{opacity:1;pointer-events:auto;transition-delay:.12s}
+.expanded .more{opacity:0;pointer-events:none}
+.expanded .rule{opacity:0}
+.expanded .desc,.collapsing .desc{display:block;-webkit-line-clamp:unset;overflow:visible}
+.collapsing .more{opacity:0}
+.m-detail .desc-wrap{flex:1;overflow:auto;padding-bottom:112px;-webkit-overflow-scrolling:touch}
+.m-detail .desc-wrap::-webkit-scrollbar{display:none}
+.m-reply .desc-wrap{display:none}
+.m-reply .rule{display:none}
+.m-reply .composer{display:flex}
+
+/* ---------- empty + toast ---------- */
+.empty{position:absolute;left:28px;right:28px;z-index:2;text-align:center;opacity:0;pointer-events:none;
+  transition:opacity .35s var(--ease),transform .35s var(--ease);transform:translateY(8px)}
+.empty.show{opacity:1;pointer-events:auto;transform:none}
+.e-ico{width:64px;height:64px;border-radius:50%;background:#fdeeef;color:var(--pink);display:grid;place-items:center;margin:0 auto 16px}
+.empty h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
+.empty p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
+.e-btn{height:44px;padding:0 20px;border-radius:22px;border:1px solid var(--line);border-bottom-width:3px;background:#fff;font-size:15.5px}
+
+.toast{position:absolute;left:50%;z-index:20;transform:translate(-50%,16px);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;border-radius:12px;padding:12px 14px 12px 16px;font-size:14.5px;
+  display:flex;gap:16px;align-items:center;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);
+  transition:opacity .25s var(--ease),transform .3s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{color:#f6a8ae;font-weight:600}
+
+/* ---------- tab bar ---------- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;z-index:2;height:83px;background:#fbfbfb;border-top:1px solid #e2e2e6;
+  display:flex;padding-top:9px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11.5px;color:var(--ink)}
+.tab.on{color:var(--pink)}
+.home-ind{position:absolute;left:50%;bottom:9px;width:135px;height:5px;margin-left:-67.5px;border-radius:3px;background:var(--ink)}
+
+/* ---------- real phone ---------- */
+@media (max-width:500px){
+  body{background:#fff;display:block}
+  .stage{transform:none!important}
+  .phone{width:100vw;height:var(--vh,100vh);border-radius:0;box-shadow:none}
+  .statusbar{height:env(safe-area-inset-top,0px);padding:0}
+  .statusbar .time,.statusbar .sys{display:none}
+  .tabbar{height:calc(49px + env(safe-area-inset-bottom,0px))}
+  .home-ind,.caption{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+<div class="phone m-stack" id="phone">
+
+  <div class="statusbar">
+    <span class="time">7:47</span>
+    <span class="sys">
+      <svg width="18" height="12" viewBox="0 0 18 12" fill="#2a3539"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="#2a3539"><path d="M8 2.6c2.2 0 4.2.8 5.7 2.2l1.2-1.3A10 10 0 0 0 8 .8 10 10 0 0 0 1.1 3.5l1.2 1.3A8.3 8.3 0 0 1 8 2.6Zm0 3.6c1.2 0 2.3.4 3.1 1.2l1.3-1.3A6.3 6.3 0 0 0 8 4.4c-1.7 0-3.2.6-4.4 1.7l1.3 1.3C5.7 6.6 6.8 6.2 8 6.2Zm0 3.4L10 7.6a2.8 2.8 0 0 0-4 0L8 9.6Z"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#2a3539" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2.2" fill="#2a3539"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="#2a3539" opacity=".45"/></svg>
+    </span>
+  </div>
+
+  <header class="appbar">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg>
+    Jobs
+  </header>
+
+  <div class="controls" id="controls">
+    <button class="pill-new" data-soon>New
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="ctrl-right">
+      <button class="icon-btn" aria-label="Notifications" data-soon>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.6 1.8H4.4L6 16.5Z"/><path d="M10 20.8a2.2 2.2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Filters, 1 active" data-soon>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/><circle cx="15.5" cy="6.5" r="2.2" fill="#fff"/><circle cx="8.5" cy="12" r="2.2" fill="#fff"/><circle cx="13" cy="17.5" r="2.2" fill="#fff"/></svg>
+        <span class="count">1</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="peek" id="peek2"></div>
+  <div class="peek" id="peek1"></div>
+
+  <article class="card" id="card" aria-label="Job">
+    <div class="hero" id="hero">
+      <div class="hero-img"><img id="heroImg" alt=""></div>
+      <div class="chips" id="chips"></div>
+      <button class="hero-close" id="heroClose" aria-label="Close">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+      <span class="badge" id="badge"></span>
+    </div>
+
+    <div class="body" id="body">
+      <h2 class="title" id="title"></h2>
+      <div class="meta">
+        <img class="avatar" alt="" src="assets/avatar-jana.jpg">
+        <span class="author" id="author">Jana P.</span>
+        <i class="dot" id="dot"></i>
+        <span id="addr"></span>
+      </div>
+      <div class="rule"></div>
+
+      <div class="desc-wrap" id="descWrap">
+        <p class="desc" id="desc"></p>
+        <button class="more" id="more">Read more</button>
+      </div>
+
+      <section class="composer" id="composer">
+        <div class="c-rule"></div>
+        <div class="c-head">
+          <div class="c-title">
+            <svg id="sparkle" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M9.5 4 11 8.6l4.5 1.4L11 11.4 9.5 16 8 11.4 3.5 10 8 8.6 9.5 4Z"/><path d="M18 2.5v4M16 4.5h4M18 15.5v5M15.5 18h5"/></svg>
+            Your reply
+          </div>
+          <button class="c-clear" id="clear">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M9 20.5h11.5"/><path d="M4.4 14.6 14 5a1.9 1.9 0 0 1 2.7 0l2.8 2.8a1.9 1.9 0 0 1 0 2.7l-9.3 9.4a1.9 1.9 0 0 1-1.4.6H7.3a1.9 1.9 0 0 1-1.3-.6l-1.6-1.6a1.9 1.9 0 0 1 0-2.7Z"/><path d="m9.3 9.8 5.4 5.4"/></svg>
+            Clear
+          </button>
+        </div>
+        <div class="c-box">
+          <div class="c-ta">
+            <textarea id="ta" rows="6" aria-label="Your reply"></textarea>
+            <div class="c-gen" id="gen" aria-hidden="true"><i style="width:94%"></i><i style="width:100%"></i><i style="width:88%"></i><i style="width:97%"></i><i style="width:62%"></i></div>
+          </div>
+          <div class="c-pager">
+            <button id="prev" aria-label="Previous template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <span id="pagerLabel">template 1 / 3</span>
+            <button id="next" aria-label="Next template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <div class="empty" id="empty">
+    <div class="e-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+    <h3 id="emptyTitle">You're all caught up</h3>
+    <p id="emptyText">New jobs usually come in the morning.<br>We'll let you know.</p>
+    <button class="e-btn" id="replay">Replay demo</button>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <button class="act act-no" id="no" aria-label="Not interested">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
+  </button>
+  <button class="act act-yes" id="yes" aria-label="Interested">
+    <span class="face f-heart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.3 4.6 13a4.9 4.9 0 0 1 0-7 4.9 4.9 0 0 1 7 0l.4.4.4-.4a4.9 4.9 0 0 1 7 0 4.9 4.9 0 0 1 0 7L12 20.3Z"/></svg></span>
+    <span class="face f-send"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg>Send reply</span>
+    <span class="face f-busy"><svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Sending…</span>
+    <span class="face f-done"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Sent</span>
+  </button>
+  <button class="show-desc" id="showDesc">Show job description</button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAct" hidden>Undo</button></div>
+
+  <nav class="tabbar">
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m15.6 15.6 5.4 5.4"/></svg>Search</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.3 4.6 13a4.9 4.9 0 0 1 0-7 4.9 4.9 0 0 1 7 0l.4.4.4-.4a4.9 4.9 0 0 1 7 0 4.9 4.9 0 0 1 0 7L12 20.3Z"/></svg>Favourites</div>
+    <div class="tab"><svg width="24" height="22" viewBox="0 0 26 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 5A2.5 2.5 0 0 1 5 2.5h9A2.5 2.5 0 0 1 16.5 5v5.5A2.5 2.5 0 0 1 14 13H8.2l-3.7 3.2V13A2.5 2.5 0 0 1 2.5 10.5V5Z"/><path d="M16.5 7.5H21A2.5 2.5 0 0 1 23.5 10v5.5A2.5 2.5 0 0 1 21 18v3.2L17.3 18H12a2.5 2.5 0 0 1-2.5-2.5V13"/></svg>Messages</div>
+    <div class="tab on"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M22.2 1.8 1.9 10.2c-.9.4-.9 1.7 0 2l6.6 2.7 2.7 6.6c.4.9 1.6.9 2 0l9-19.7ZM9.6 14.4l5.8-5.8"/></svg>Jobs</div>
+    <div class="tab"><svg width="23" height="22" viewBox="0 0 25 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="15" height="15" rx="2.2"/><path d="M2.5 9h15M6.5 2.5v4M13.5 2.5v4"/><circle cx="18.5" cy="17.5" r="4.6" fill="#fbfbfb"/><path d="M18.5 15.4v2.3l1.5 1"/></svg>Bookings</div>
+    <i class="home-ind"></i>
+  </nav>
+</div>
+</div>
+
+<p class="caption"><b>Tap the card</b> for details · <b>♥</b> to reply · <b>✕</b> to decline · swipe works too<br>
+Drag the picture down to close · 5 jobs in the stack · <button id="replay2">Reset</button></p>
+
+<script>
+(() => {
+"use strict";
+
+const $ = s => document.querySelector(s);
+const phone = $("#phone"), stage = $("#stage"), card = $("#card");
+const heroImg = $("#heroImg"), chipsEl = $("#chips"), badgeEl = $("#badge"), titleEl = $("#title");
+const dotEl = $("#dot"), addrEl = $("#addr"), descEl = $("#desc");
+const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
+const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
+const descWrap = $("#descWrap"), composer = $("#composer");
+const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
+
+const PINK = "rgb(249, 96, 115)", GREEN = "rgb(11, 168, 37)";
+const SH_PINK  = "0px 8px 20px 0px rgba(249, 96, 115, 0.28), inset 0px 0px 0px 0px rgba(10, 141, 29, 0)";
+const SH_GREEN = "0px 0px 0px 0px rgba(249, 96, 115, 0), inset 0px -3px 0px 0px rgb(10, 141, 29)";
+const EASE = "cubic-bezier(.22,.8,.24,1)";
+const DUR = 480;
+
+/* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
+const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
+const VERT = {
+  baby:   { label:"Babysitting",        color:"#f96073", icon:ICON('<circle cx="12" cy="3.8" r="2.7"/><path d="M5.4 3.7a1.3 1.3 0 0 1 1.8.3l2.3 3.2h5l2.3-3.2a1.3 1.3 0 1 1 2.1 1.5l-3 4.1v3.4l1.4 7.1a1.35 1.35 0 0 1-2.6.6L13.4 15h-2.8l-1.3 5.7a1.35 1.35 0 0 1-2.6-.6l1.4-7.1V9.6l-3-4.1a1.3 1.3 0 0 1 .3-1.8Z"/>') },
+  pet:    { label:"Pet care",           color:"#00bd79", icon:ICON('<ellipse cx="5.6" cy="10" rx="2.3" ry="2.9" transform="rotate(-18 5.6 10)"/><ellipse cx="9.6" cy="5" rx="2.3" ry="3"/><ellipse cx="14.6" cy="5" rx="2.3" ry="3"/><ellipse cx="18.6" cy="10" rx="2.3" ry="2.9" transform="rotate(18 18.6 10)"/><path d="M12.1 11.2c-3 0-6.3 4.6-6.3 7.3 0 1.8 1.4 2.7 3 2.7 1.3 0 2.2-.7 3.3-.7s2 .7 3.3.7c1.6 0 3-.9 3-2.7 0-2.7-3.3-7.3-6.3-7.3Z"/>') },
+  senior: { label:"Senior care",        color:"#ed7000", icon:ICON('<circle cx="9.6" cy="3.6" r="2.5"/><path d="M8 7.3h2.5c.9 0 1.6.5 2 1.2l1.3 2.6 2 .6a1.05 1.05 0 0 1-.6 2l-2.4-.7a1.3 1.3 0 0 1-.8-.7l-.5-1v3.3l1.7 2.4c.2.3.3.6.3.9v3.6a1.3 1.3 0 0 1-2.6 0v-3.2l-1.3-1.9-.9 2.9a1.3 1.3 0 0 1-.3.5l-2.3 2.4a1.3 1.3 0 0 1-1.9-1.8l2.1-2.2 1.2-3.9V10l-.9.9v2.1a1.3 1.3 0 0 1-2.6 0v-2.6c0-.3.1-.7.4-.9L7 7.7c.3-.3.6-.4 1-.4Z"/><path d="M17.9 13.4v8.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M15.8 13.6c0-1.5 2.1-1.5 2.1-.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/>') },
+  clean:  { label:"Household cleaning", color:"#00b8d8", icon:ICON('<path d="M21 2.3a1.1 1.1 0 0 1 0 1.6l-6 6 1 1a1.1 1.1 0 0 1 0 1.5l-.8.8-6.4-6.4.8-.8a1.1 1.1 0 0 1 1.5 0l1 1 6-6a1.1 1.1 0 0 1 1.6 0l1.3 1.3Z"/><path d="M8.1 8.1l7.8 7.8-1.2 2.8c-.2.4-.4.8-.7 1.1l-2.7 2.7a1.3 1.3 0 0 1-1.7.1l-6.3-4.7a1.3 1.3 0 0 1-.1-2l3-3c.3-.3.7-.5 1.1-.7l.8-4.1Z"/>') },
+  tutor:  { label:"Tutoring",           color:"#a533ff", icon:ICON('<path d="M12 1.6 2.8 5.2 12 8.8l6.4-2.5v4.4a.95.95 0 0 0 1.9 0V5.6l.9-.4L12 1.6Z"/><path d="M7 8.1v1.8a5 5 0 0 0 10 0V8.1l-5 1.9-5-1.9Z"/><path d="M5.6 22.4c-1 0-1.8-.9-1.6-1.9.6-3.2 3.4-5.6 6.7-5.6h2.6c3.3 0 6.1 2.4 6.7 5.6.2 1-.6 1.9-1.6 1.9H5.6Z"/>') }
+};
+const IMG = {
+  baby:"assets/hero-babysitting.jpg", pet:"assets/hero-pet-care.jpg",
+  senior:"assets/hero-senior-care.jpg", clean:"assets/hero-household-cleaning.jpg",
+  tutor:"assets/hero-tutoring.jpg"
+};
+
+const JOBS = [
+  { id:"baby", v:"baby", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
+    title:"2 girls, 6 and 4, every second Tuesday afternoon",
+    desc:"Hello, I am looking for a nanny for regular babysitting from December for the next school year for two children, Matilda (6 years old in November) and Anna (4 years old). Initial session on Tuesday 14:00. After agreement possible babysitting every 2 weeks. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement.",
+    replies:[
+      "Hello Jana, I'd love to look after Matilda and Anna. Every second Tuesday afternoon suits me well, and I can come for the first session on Tuesday at 14:00. Could we have a quick call before then? Thank you, Irena",
+      "Hi Jana, your job fits my schedule perfectly and I live just 2.5 km away. I have several years of experience with girls this age. I'd be happy to meet you and the girls before we start. Irena",
+      "Hello, I'm interested in babysitting Matilda and Anna from December. I can start with the Tuesday session at 14:00, and I'm open to helping during a joint holiday too. When would suit you to talk? Irena"
+    ] },
+  { id:"pet", v:"pet", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
+    title:"Energetic Golden Retriever, weekday morning walks",
+    desc:"Hi everyone, we need a reliable pet sitter to drop by our place every weekday morning around 8:00 AM to walk our friendly 3-year-old dog, Max. I would really like to find someone who can stay for a proper walk of about 45 minutes, top up his water and give him a quick brush afterwards. Max is well trained, loves other dogs and walks nicely on the lead.",
+    replies:[
+      "Hello Jana, I'd be happy to walk Max every weekday morning at 8:00. I've looked after several large dogs, including a golden retriever, and I live just 2.5 km away. Could we meet so Max can get to know me first? Irena",
+      "Hi Jana, morning walks with Max fit my schedule perfectly. I'm reliable, I love energetic dogs, and a quick brush and fresh water after the walk are no problem. When would suit you to talk? Irena",
+      "Hello, I'm interested in walking Max on weekday mornings. I'm an experienced dog sitter and happy to share references. Would a trial walk together help before we start? Thank you, Irena"
+    ] },
+  { id:"senior", v:"senior", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
+    title:"Daily companionship and errands for my mother",
+    desc:"Looking for a kind, patient person to assist my grandmother with afternoon walks, light grocery shopping, and pleasant conversation 3 times a week. She is cheerful and independent, but walking has become harder and she really enjoys having someone to talk to. Ideally Monday, Wednesday and Friday afternoons.",
+    replies:[
+      "Hello Jana, I'd love to keep your family member company. I have experience with seniors and enjoy walks, errands and a good conversation. Afternoons three times a week work well for me. Could we arrange a short call? Irena",
+      "Hi Jana, I'm patient and calm, and I've helped older people with shopping and daily walks before. I live just 2.5 km away, so I can come reliably. I'd be happy to meet her first. Irena",
+      "Hello, I'm interested in this job. Afternoon walks, light shopping and conversation suit me well, and I can start next week. When would it suit you to talk about the details? Irena"
+    ] },
+  { id:"clean", v:"clean", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
+    title:"Weekly deep clean for a 3-bedroom family house",
+    desc:"Hello, we are searching for a thorough and trustworthy helper to manage regular cleaning, ironing, and tidying up our home every Thursday morning. The house has three bedrooms, two bathrooms and a small garden terrace. All cleaning products and equipment are provided, and we have a friendly cat.",
+    replies:[
+      "Hello Jana, I'd be glad to take care of the weekly clean on Thursday mornings. I have several years of experience with family houses, including ironing, and I'm comfortable with cats. Could we have a quick call? Irena",
+      "Hi Jana, Thursday mornings fit my schedule and I live just 2.5 km away. I work thoroughly and reliably, and I'm happy to agree on a checklist so everything is done the way you like it. Irena",
+      "Hello, I'm interested in regular cleaning for your family house. I can start this Thursday and I'm happy to do a first visit so we can agree on the details. When would suit you? Irena"
+    ] },
+  { id:"tutor", v:"tutor", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
+    title:"High school math and physics support for 15-year-old",
+    desc:"Seeking an experienced university student or tutor to help our son catch up with algebra and physics formulas twice a week before his final exams. Lessons can take place at our home in the afternoon or online, whichever suits you better. He is motivated, he just needs someone patient to explain things step by step.",
+    replies:[
+      "Hello Jana, I'd be happy to help your son with algebra and physics before his exams. I study at university and have tutored high school students for two years. Twice a week works well for me. Irena",
+      "Hi Jana, I enjoy explaining maths and physics step by step, and I can come to your home or teach online. Could we start with a first lesson to see what your son needs most? Irena",
+      "Hello, I'm interested in tutoring your son. I can help him catch up on formulas and practise exam questions twice a week. When would it suit you to talk? Irena"
+    ] }
+];
+
+let idx = 0;              // job on top of the stack
+let mode = "stack";       // stack | detail | reply | gone
+let busy = false;
+let genToken = 0;
+let lastDeclined = null;  // index that Undo brings back
+const CS = {};            // composer state per job
+const G = {};
+
+const job = () => JOBS[idx];
+const cs  = () => CS[job().id] || (CS[job().id] = { text:"", tpl:0, generated:false });
+
+/* ---------------- geometry ---------------- */
+const mobile = () => matchMedia("(max-width:500px)").matches;
+
+function layout(){
+  if (mobile()) { phone.style.setProperty("--vh", window.innerHeight + "px"); stage.style.transform = ""; G.scale = 1; }
+  else {
+    const s = Math.min(1, (window.innerHeight - 120) / 810);
+    stage.style.transform = s < 1 ? `scale(${s})` : ""; G.scale = s < 1 ? s : 1;
+  }
+  const W = phone.clientWidth, H = phone.clientHeight;
+  const top = document.querySelector(".statusbar").offsetHeight;
+  const nav = document.querySelector(".tabbar").offsetHeight;
+  const ctrl = $("#controls");
+  G.W = W; G.H = H; G.nav = nav;
+  G.cardTop = ctrl.offsetTop + ctrl.offsetHeight + 10;
+  G.btnW = (W - 40 - 21) / 2;
+  G.stackBtnTop = H - nav - 17 - 50;
+  G.S = Math.max(top + 20, H - 720);            // sheet top
+  G.detailBtnTop = H - 92;
+  G.sendTop = H - 141;
+  G.linkTop = H - 66;
+}
+
+function cardGeom(m){
+  if (m === "stack" || m === "gone") return { left:20, top:G.cardTop, width:G.W - 40, height:null, r:"12px" };
+  return { left:0, top:G.S, width:G.W, height:G.H - G.S, r:"20px 20px 0px 0px" };
+}
+function btnGeom(m){
+  const L2 = 20 + G.btnW + 21;
+  const stack = m === "stack" || m === "gone";
+  const t = stack ? G.stackBtnTop : G.detailBtnTop;
+  const hide = m === "gone";
+  const no  = { left:20, top:t, width:G.btnW, height:50, o: (m === "reply" || hide) ? 0 : 1, r:"25px" };
+  const yes = m === "reply"
+    ? { left:20, top:G.sendTop, width:G.W - 40, height:52, o:1, r:"4px", bg:GREEN, sh:SH_GREEN }
+    : { left:L2, top:t, width:G.btnW, height:50, o: hide ? 0 : 1, r:"25px", bg:PINK, sh:SH_PINK };
+  return { no, yes };
+}
+
+function rectOf(el){
+  const p = phone.getBoundingClientRect(), r = el.getBoundingClientRect(), s = G.scale || 1;
+  return { left:(r.left - p.left)/s, top:(r.top - p.top)/s, width:r.width/s, height:r.height/s };
+}
+function snap(el){
+  const cs = getComputedStyle(el);
+  return { ...rectOf(el), r:cs.borderRadius, bg:cs.backgroundColor, sh:cs.boxShadow, o:+cs.opacity };
+}
+function setBox(el, g){
+  el.style.left = g.left + "px"; el.style.top = g.top + "px"; el.style.width = g.width + "px";
+  el.style.height = g.height == null ? "auto" : g.height + "px";
+  if (g.r)  el.style.borderRadius = g.r;
+  if (g.bg) el.style.backgroundColor = g.bg;
+  if (g.sh) el.style.boxShadow = g.sh;
+  if (g.o != null) { el.style.opacity = g.o; el.style.pointerEvents = g.o ? "" : "none"; }
+}
+function boxFrames(from, to){
+  return [
+    { left:from.left+"px", top:from.top+"px", width:from.width+"px", height:from.height+"px", borderRadius:from.r, opacity:from.o },
+    { left:to.left+"px",   top:to.top+"px",   width:to.width+"px",   height:to.height+"px",   borderRadius:to.r,   opacity:to.o ?? 1 }
+  ];
+}
+// colour swap (pink <-> green) runs short and late, so the muddy midpoint is barely visible
+function paint(el, from, to){
+  return el.animate([{backgroundColor:from.bg, boxShadow:from.sh},{backgroundColor:to.bg, boxShadow:to.sh}],
+                    {duration:170, delay:110, easing:"linear", fill:"backwards"}).finished;
+}
+
+function setModeClass(m){
+  phone.classList.remove("m-stack","m-detail","m-reply","m-gone");
+  phone.classList.add("m-" + m);
+  phone.classList.toggle("expanded", m === "detail" || m === "reply");
+  phone.classList.toggle("send-face", m === "reply");
+}
+
+function placeStatic(){
+  layout();
+  const cg = cardGeom(mode); setBox(card, cg);
+  const b = btnGeom(mode); setBox(btnNo, b.no); setBox(btnYes, b.yes);
+  showDesc.style.top = G.linkTop + "px";
+  placePeeks();
+  const midTop = G.cardTop, midBottom = G.stackBtnTop;
+  empty.style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
+  $("#toast").style.top = (G.stackBtnTop - 56) + "px";   // floats above the action buttons
+}
+function placePeeks(){
+  const h = mode === "stack" || mode === "gone" ? card.offsetHeight : 410;
+  const W = G.W;
+  Object.assign(peek1.style, { left:"28px", width:(W-56)+"px", top:(G.cardTop+20)+"px", height:h+"px" });
+  Object.assign(peek2.style, { left:"36px", width:(W-72)+"px", top:(G.cardTop+39)+"px", height:h+"px" });
+}
+// how many cards peek out under the top one
+function showPeeks(animate){
+  const rem = mode === "gone" ? 0 : JOBS.length - idx - 1;
+  peek1.style.opacity = rem >= 1 ? "" : "0";
+  peek2.style.opacity = rem >= 2 ? "" : "0";
+  if (animate){
+    if (rem >= 1) peek1.animate([{transform:"translateY(19px) scaleX(.95)"},{transform:"none"}], {duration:380, easing:EASE});
+    if (rem >= 2) peek2.animate([{opacity:0, transform:"translateY(16px)"},{opacity:1, transform:"none"}], {duration:380, easing:EASE});
+  }
+}
+
+/* ---------------- card content ---------------- */
+function fillCard(j){
+  const v = VERT[j.v];
+  heroImg.src = IMG[j.v];
+  chipsEl.innerHTML = j.chips.map(c => `<span class="chip">${c}</span>`).join("");
+  badgeEl.style.backgroundColor = v.color;
+  badgeEl.innerHTML = v.icon + v.label;
+  titleEl.textContent = j.title;
+  dotEl.style.background = v.color;
+  addrEl.textContent = j.addr;
+  descEl.textContent = j.desc;
+  card.setAttribute("aria-label", "Job: " + j.title);
+  descWrap.scrollTop = 0;
+  // composer belongs to this job
+  genToken++;
+  gen.classList.remove("on"); sparkle.classList.remove("pulse");
+  ta.readOnly = false; ta.value = cs().text;
+  updatePager();
+}
+
+/* ---------------- transitions ---------------- */
+function go(target){
+  if (busy || target === mode || mode === "gone") return Promise.resolve();
+  busy = true;
+  hideToast();
+
+  const from = { card:snap(card), no:snap(btnNo), yes:snap(btnYes) };
+  const prev = mode;
+  const expandedBefore = prev === "detail" || prev === "reply";
+  const expandedAfter  = target === "detail" || target === "reply";
+  const anims = [];
+
+  // content swap inside an open sheet (detail <-> reply)
+  if (expandedBefore && expandedAfter){
+    const out = prev === "detail" ? descWrap : composer;
+    const inn = target === "detail" ? descWrap : composer;
+    mode = target;
+    phone.classList.toggle("send-face", target === "reply");   // heart <-> send face swaps right away
+    const b = btnGeom(target);
+    setBox(btnNo, b.no); setBox(btnYes, b.yes);
+    anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
+    anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
+    const fadeOut = out.animate([{opacity:1, transform:"none"},{opacity:0, transform:"translateY(-6px)"}], {duration:150, easing:"ease-in", fill:"forwards"});
+    anims.push(fadeOut.finished.then(() => {
+      setModeClass(target);                     // content classes switch only after the old block faded
+      fadeOut.cancel();
+      if (target === "reply") startGeneration();
+      return inn.animate([{opacity:0, transform:"translateY(12px)"},{opacity:1, transform:"none"}], {duration:280, easing:EASE}).finished;
+    }));
+    return Promise.all(anims).then(() => { busy = false; });
+  }
+
+  // open: stack -> detail / reply
+  if (!expandedBefore && expandedAfter){
+    mode = target; setModeClass(target);
+    const cg = cardGeom(target); setBox(card, cg);
+    const b = btnGeom(target); setBox(btnNo, b.no); setBox(btnYes, b.yes);
+    anims.push(card.animate(boxFrames(from.card, cg), {duration:DUR, easing:EASE}).finished);
+    anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
+    anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
+    if (target === "reply"){
+      composer.animate([{opacity:0, transform:"translateY(18px)"},{opacity:1, transform:"none"}], {duration:360, delay:140, easing:EASE, fill:"backwards"});
+      startGeneration();
+    }
+    return Promise.all(anims).then(() => { busy = false; });
+  }
+
+  // close: detail / reply -> stack
+  if (expandedBefore && !expandedAfter){
+    const doClose = () => {
+      mode = "stack"; setModeClass("stack");
+      const cg = cardGeom("stack"); setBox(card, cg);
+      const h = card.offsetHeight; cg.height = h; card.style.height = h + "px";
+      phone.classList.add("collapsing");
+      const b = btnGeom("stack"); setBox(btnNo, b.no); setBox(btnYes, b.yes);
+      placePeeks(); showPeeks(false);
+      const a1 = card.animate(boxFrames(from.card, cg), {duration:DUR-40, easing:EASE}).finished;
+      const a2 = btnNo.animate(boxFrames(from.no, b.no), {duration:DUR-40, easing:EASE}).finished;
+      const a3 = Promise.all([btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR-40, easing:EASE}).finished, paint(btnYes, from.yes, b.yes)]);
+      if (prev === "reply") descWrap.animate([{opacity:0},{opacity:1}], {duration:240, delay:40, easing:EASE, fill:"backwards"});
+      return Promise.all([a1,a2,a3]).then(() => {
+        phone.classList.remove("collapsing");
+        card.style.height = "auto";
+        busy = false;
+      });
+    };
+    if (prev === "reply"){
+      return composer.animate([{opacity:1},{opacity:0}], {duration:110, easing:"ease-in"}).finished.then(doClose);
+    }
+    return doClose();
+  }
+
+  busy = false;
+  return Promise.resolve();
+}
+
+/* ---------------- AI reply ---------------- */
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function setSendEnabled(on){ btnYes.setAttribute("aria-disabled", on ? "false" : "true"); }
+function updatePager(){ $("#pagerLabel").textContent = `template ${cs().tpl + 1} / ${job().replies.length}`; }
+
+async function streamReply(delay){
+  const my = ++genToken, st = cs(), j = job();
+  ta.value = ""; st.text = ""; ta.readOnly = true;
+  gen.classList.add("on"); sparkle.classList.add("pulse"); setSendEnabled(false);
+  await wait(delay);
+  if (my !== genToken){ if (!st.generated) st.text = ""; return; }
+  gen.classList.remove("on");
+  const words = j.replies[st.tpl].split(" ");
+  for (let i = 0; i < words.length; i++){
+    if (my !== genToken){ if (!st.generated) st.text = ""; return; }
+    ta.value += (i ? " " : "") + words[i];
+    st.text = ta.value;
+    await wait(14);
+  }
+  ta.readOnly = false; sparkle.classList.remove("pulse");
+  setSendEnabled(true); st.generated = true;
+}
+function startGeneration(){
+  const st = cs();
+  if (st.generated || st.text.trim()){ ta.value = st.text; setSendEnabled(!!st.text.trim()); return; }
+  updatePager();
+  streamReply(950);
+}
+$("#prev").onclick = () => { const st = cs(), n = job().replies.length; st.tpl = (st.tpl + n - 1) % n; updatePager(); streamReply(320); };
+$("#next").onclick = () => { const st = cs(), n = job().replies.length; st.tpl = (st.tpl + 1) % n; updatePager(); streamReply(320); };
+$("#clear").onclick = () => {
+  genToken++; gen.classList.remove("on"); sparkle.classList.remove("pulse");
+  const st = cs(); st.text = ""; st.generated = true;
+  ta.readOnly = false; ta.value = ""; setSendEnabled(false); ta.focus();
+};
+ta.addEventListener("input", () => { cs().text = ta.value; setSendEnabled(!!ta.value.trim()); });
+
+/* ---------------- toast ---------------- */
+function toast(text, action, fn){
+  const t = $("#toast"), a = $("#toastAct");
+  $("#toastText").textContent = text;
+  a.hidden = !action; if (action){ a.textContent = action; a.onclick = () => { hideToast(); fn(); }; }
+  t.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(hideToast, 4200);
+}
+function hideToast(){ $("#toast").classList.remove("show"); }
+
+/* ---------------- leaving a card ---------------- */
+// Stack: a copy of the card flies off while the real card is refilled and comes forward from underneath.
+function flyGhost(dir){
+  const g = card.cloneNode(true);
+  g.removeAttribute("id"); g.querySelectorAll("[id]").forEach(n => n.removeAttribute("id"));
+  g.style.zIndex = 6; g.style.pointerEvents = "none";
+  const cur = card.style.transform || "none";
+  phone.appendChild(g);
+  const a = g.animate([
+    { transform: cur === "none" ? "translate(0,0) rotate(0deg)" : cur },
+    { transform:`translate(${dir * G.W * 1.25}px, 40px) rotate(${dir * 16}deg)` }
+  ], { duration:360, easing:"cubic-bezier(.45,0,.8,.45)", fill:"forwards" });
+  return a.finished.then(() => g.remove());
+}
+// Open sheet: the sheet itself flies off, then the next card comes up.
+function flySheet(dir){
+  const a = card.animate([
+    { transform:"translate(0,0) rotate(0deg)" },
+    { transform:`translate(${dir * G.W * 1.25}px, 30px) rotate(${dir * 7}deg)` }
+  ], { duration:420, easing:"cubic-bezier(.45,0,.8,.45)", fill:"forwards" });
+  [btnNo, btnYes].forEach(b => b.animate([{opacity:getComputedStyle(b).opacity},{opacity:0}], {duration:200, fill:"forwards"}));
+  $("#scrim").style.opacity = "0"; showDesc.style.opacity = "0";
+  peek1.style.opacity = peek2.style.opacity = "0";
+  return a.finished;
+}
+
+function bringNext(n){
+  idx = n;
+  [card, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  card.style.transform = "";
+  $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
+  btnYes.classList.remove("sending","done");
+
+  if (idx >= JOBS.length){ toGone(); return Promise.resolve(); }
+
+  mode = "stack"; setModeClass("stack");
+  fillCard(job());
+  placeStatic();
+  showPeeks(true);
+  card.style.transformOrigin = "50% 100%";
+  const a = card.animate([{transform:"translateY(20px) scale(.952)"},{transform:"none"}], {duration:400, easing:EASE});
+  [btnNo, btnYes].forEach(b => b.animate([{opacity:0, transform:"scale(.92)"},{opacity:1, transform:"none"}], {duration:260, delay:140, easing:EASE, fill:"backwards"}));
+  return a.finished.then(() => { card.style.transformOrigin = ""; });
+}
+
+function toGone(){
+  mode = "gone"; setModeClass("gone");
+  card.getAnimations().forEach(a => a.cancel());
+  card.style.transform = ""; card.style.visibility = "hidden";
+  placeStatic(); showPeeks(false);
+  empty.classList.add("show");
+}
+
+async function decline(){
+  if (busy || mode === "gone") return;
+  busy = true; hideToast();
+  const from = idx;
+  if (mode === "stack"){
+    const ghost = flyGhost(-1);
+    await bringNext(idx + 1);
+    await ghost;
+  } else {
+    ta.blur();
+    await flySheet(-1);
+    await bringNext(idx + 1);
+  }
+  lastDeclined = from;
+  toast("Moved to Archive", "Undo", undo);
+  busy = false;
+}
+
+async function send(){
+  if (busy || btnYes.getAttribute("aria-disabled") === "true") return;
+  busy = true; ta.blur(); hideToast();
+  btnYes.classList.add("sending");
+  await wait(750);
+  btnYes.classList.remove("sending"); btnYes.classList.add("done");
+  await wait(480);
+  await flySheet(1);
+  lastDeclined = null;
+  await bringNext(idx + 1);
+  toast("Reply sent to Jana P.");
+  busy = false;
+}
+
+function undo(){
+  if (busy || lastDeclined == null) return;
+  busy = true;
+  idx = lastDeclined; lastDeclined = null;
+  [card, btnNo, btnYes].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  empty.classList.remove("show"); card.style.visibility = "";
+  mode = "stack"; setModeClass("stack");
+  fillCard(job()); placeStatic(); showPeeks(false);
+  card.animate([{transform:`translate(${-G.W * 1.2}px, 40px) rotate(-16deg)`},{transform:"none"}], {duration:420, easing:EASE})
+      .finished.then(() => { busy = false; });
+  [btnNo, btnYes].forEach(b => b.animate([{opacity:0},{opacity:1}], {duration:280, delay:120, fill:"backwards"}));
+}
+
+function replay(){
+  hideToast(); busy = false; lastDeclined = null;
+  Object.keys(CS).forEach(k => delete CS[k]);
+  document.querySelectorAll(".phone > .card:not(#card)").forEach(n => n.remove());
+  btnYes.classList.remove("sending","done");
+  [card, btnNo, btnYes, descWrap, composer, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  card.style.transform = ""; $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
+  idx = 0; mode = "stack"; setModeClass("stack");
+  empty.classList.remove("show"); card.style.visibility = "";
+  fillCard(job()); placeStatic(); showPeeks(false);
+  card.animate([{opacity:0, transform:"translateY(24px) scale(.97)"},{opacity:1, transform:"none"}], {duration:380, easing:EASE});
+}
+$("#replay").onclick = replay;
+$("#replay2").onclick = replay;
+
+/* ---------------- buttons ---------------- */
+btnNo.onclick = decline;
+btnYes.onclick = () => {
+  if (mode === "stack" || mode === "detail") return go("reply");
+  if (mode === "reply") return send();
+};
+$("#heroClose").onclick = e => { e.stopPropagation(); go("stack"); };
+$("#scrim").onclick = () => go("stack");
+showDesc.onclick = () => go("detail");
+$("#more").onclick = e => { e.stopPropagation(); go("detail"); };
+document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
+});
+
+/* ---------------- gestures ---------------- */
+// Stack: drag the card left / right, tap to open the detail.
+// Sheet: drag the picture down to close.
+let drag = null;
+card.addEventListener("pointerdown", e => {
+  if (busy) return;
+  if (e.target.closest("button, textarea, .author")) return;
+  if (mode === "stack"){
+    drag = { kind:"swipe", x:e.clientX, y:e.clientY, dx:0, dy:0, moved:false };
+  } else if ((mode === "detail" || mode === "reply") && e.target.closest("#hero")){
+    drag = { kind:"sheet", x:e.clientX, y:e.clientY, dx:0, dy:0, moved:false };
+  } else return;
+  card.setPointerCapture(e.pointerId);
+});
+card.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const s = G.scale || 1;
+  drag.dx = (e.clientX - drag.x) / s; drag.dy = (e.clientY - drag.y) / s;
+  if (Math.abs(drag.dx) > 5 || Math.abs(drag.dy) > 5) drag.moved = true;
+  if (!drag.moved) return;
+  if (drag.kind === "swipe"){
+    card.style.transform = `translate(${drag.dx}px, ${drag.dy * .25}px) rotate(${drag.dx / 20}deg)`;
+    const p = Math.max(-1, Math.min(1, drag.dx / 110));
+    btnYes.style.transform = `scale(${1 + Math.max(0, p) * .08})`;
+    btnNo.style.transform  = `scale(${1 + Math.max(0, -p) * .08})`;
+  } else {
+    const d = Math.max(0, drag.dy);
+    card.style.transform = `translateY(${d}px)`;
+    $("#scrim").style.opacity = String(Math.max(0, 1 - d / 400));
+    [btnNo, btnYes, showDesc].forEach(b => b.style.transform = `translateY(${d}px)`);
+  }
+});
+function endDrag(e){
+  if (!drag) return;
+  const d = drag; drag = null;
+  try { card.releasePointerCapture(e.pointerId); } catch(_){}
+  btnYes.style.transform = btnNo.style.transform = "";
+
+  if (d.kind === "swipe"){
+    if (!d.moved){ card.style.transform = ""; go("detail"); return; }
+    if (d.dx < -100){ decline(); return; }
+    if (d.dx > 100){
+      const back = card.animate([{transform:card.style.transform},{transform:"none"}], {duration:180, easing:EASE});
+      card.style.transform = "";
+      back.finished.then(() => go("reply"));
+      return;
+    }
+    card.animate([{transform:card.style.transform},{transform:"none"}], {duration:260, easing:"cubic-bezier(.2,1.3,.4,1)"});
+    card.style.transform = "";
+    return;
+  }
+
+  // sheet drag
+  const scrim = $("#scrim");
+  const release = () => { card.style.transform = ""; scrim.style.opacity = ""; [btnNo, btnYes, showDesc].forEach(b => b.style.transform = ""); };
+  if (d.moved && d.dy > 110){ release(); go("stack"); return; }
+  const cur = card.style.transform;
+  release();
+  if (d.moved){
+    card.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE});
+    [btnNo, btnYes, showDesc].forEach(b => b.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE}));
+  }
+}
+card.addEventListener("pointerup", endDrag);
+card.addEventListener("pointercancel", endDrag);
+
+/* ---------------- boot ---------------- */
+window.addEventListener("resize", () => { if (!busy) placeStatic(); });
+setModeClass("stack");
+fillCard(job());
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!busy) placeStatic(); });
+placeStatic();
+showPeeks(false);
+})();
+</script>
+</body>
+</html>
