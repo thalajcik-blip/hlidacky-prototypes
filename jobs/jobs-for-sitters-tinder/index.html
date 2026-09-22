@@ -17,8 +17,8 @@
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
      stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
-   Variant A+B (flask button in the header): while replying the photo shrinks, the job
-   description and tappable key details stay above the reply. Off by default.
+   Reply variant (flask button in the header): while replying the photo shrinks and the
+   job description stays above the reply. Off by default.
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -210,28 +210,20 @@ svg{display:block;flex:none}
 .m-reply .rule{display:none}
 .m-reply .composer{display:flex}
 
-/* ---------- variant A+B: job description + key details while replying ---------- */
-/* the photo shrinks to a strip, the description stays above the reply (4 lines, scrolls) and
-   key details from the job can be tapped into the reply, so Show job description is not needed */
+/* ---------- reply variant: job description while replying ---------- */
+/* the photo shrinks to a strip and the description stays above the reply (6 lines, scrolls),
+   so Show job description is not needed */
 .v-inline.m-reply .hero{height:var(--hero-compact)}
 .v-inline.m-reply .hero-img img{object-position:50% var(--strip-y,35%)}   /* the strip keeps the faces, not the middle */
 .v-inline.m-reply .chips{opacity:0}
 .v-inline.m-reply .rule{display:block;opacity:1}
 .v-inline.m-reply .desc-wrap{display:block;padding:12px 0 0}
-.v-inline.m-reply .desc{max-height:calc(4 * 21px);overflow-y:auto}
+.v-inline.m-reply .desc{max-height:calc(6 * 21px);overflow-y:auto}
 .v-inline.m-reply .desc.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15));
   mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15))}
 .v-inline .composer{padding-bottom:123px}
 .v-inline .c-rule{margin-top:14px}
 .v-inline .show-desc{display:none}
-.facts{display:none}
-.v-inline .facts{display:flex;align-items:center;gap:6px;flex:none;margin:12px -20px 0;padding:0 20px;
-  overflow-x:auto;scrollbar-width:none;overscroll-behavior:contain}
-.facts::-webkit-scrollbar{display:none}
-.facts svg{color:var(--pink);margin-right:2px}
-.fact{flex:none;height:28px;padding:0 11px;border-radius:14px;background:var(--pager);border:1px solid var(--pager-line);
-  font-size:14px;color:var(--ink);white-space:nowrap;transition:background-color .2s,border-color .2s,color .2s}
-.fact.hit{background:#fdeeef;border-color:var(--pink);color:var(--pink)}
 
 /* ---------- empty + toast ---------- */
 .empty{position:absolute;left:28px;right:28px;z-index:2;text-align:center;opacity:0;pointer-events:none;
@@ -358,7 +350,6 @@ svg{display:block;flex:none}
       </div>
 
       <section class="composer" id="composer">
-        <div class="facts" id="facts" aria-label="Key details from the job"></div>
         <div class="c-rule"></div>
         <div class="c-head">
           <div class="c-title">
@@ -413,7 +404,7 @@ svg{display:block;flex:none}
       <h3 id="verTitle">Prototype versions</h3>
       <p>Try another way of replying to a job. The choice is remembered on this device.</p>
       <label class="ver-row">
-        <span><b>Job details while replying</b><small>The photo shrinks, the job description stays above your reply and key details can be tapped into it.</small></span>
+        <span><b>Job description while replying</b><small>The photo shrinks and the job description stays above your reply, so you don't have to switch back to it.</small></span>
         <input type="checkbox" role="switch" id="verSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
       <button class="ver-done" id="verDone">Done</button>
@@ -446,7 +437,7 @@ const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
 const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
 const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
-const heroEl = $("#hero"), factsEl = $("#facts");
+const heroEl = $("#hero");
 
 const PINK = "rgb(249, 96, 115)", GREEN = "rgb(11, 168, 37)";
 const SH_PINK  = "0px 8px 20px 0px rgba(249, 96, 115, 0.28), inset 0px 0px 0px 0px rgba(10, 141, 29, 0)";
@@ -457,7 +448,6 @@ const PEEK = 9;           // how far each card behind the top one shows above it
 const LINE = 21;          // description line height
 
 /* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
-const SPARK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M9.5 4 11 8.6l4.5 1.4L11 11.4 9.5 16 8 11.4 3.5 10 8 8.6 9.5 4Z"/><path d="M18 2.5v4M16 4.5h4M18 15.5v5M15.5 18h5"/></svg>';
 const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
 const VERT = {
   baby:   { label:"Babysitting",        color:"#f96073", icon:ICON('<circle cx="12" cy="3.8" r="2.7"/><path d="M5.4 3.7a1.3 1.3 0 0 1 1.8.3l2.3 3.2h5l2.3-3.2a1.3 1.3 0 1 1 2.1 1.5l-3 4.1v3.4l1.4 7.1a1.35 1.35 0 0 1-2.6.6L13.4 15h-2.8l-1.3 5.7a1.35 1.35 0 0 1-2.6-.6l1.4-7.1V9.6l-3-4.1a1.3 1.3 0 0 1 .3-1.8Z"/>') },
@@ -471,14 +461,13 @@ const IMG = {
   senior:"assets/hero-senior-care.jpg", clean:"assets/hero-household-cleaning.jpg",
   tutor:"assets/hero-tutoring.jpg"
 };
-// where the faces are, for the compact picture strip while replying in A+B
+// where the faces are, for the compact picture strip in the reply variant
 const STRIP_Y = { baby:"35%", pet:"35%", senior:"12%", clean:"35%", tutor:"20%" };
 
 const JOBS = [
   { id:"baby", v:"baby", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"2 girls, 6 and 4, every second Tuesday afternoon",
     desc:"Hello, I am looking for a nanny for regular babysitting from December for the next school year for two children, Matilda (6 years old in November) and Anna (4 years old). Initial session on Tuesday 14:00. After agreement possible babysitting every 2 weeks. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facts:[["Matilda, 6","Matilda"],["Anna, 4","Anna"],["Tue 14:00","Tuesday at 14:00"],["Every 2 weeks","every second week"],["From December","from December"]],
     replies:[
       "Hello Jana, I'd love to look after Matilda and Anna. Every second Tuesday afternoon suits me well, and I can come for the first session on Tuesday at 14:00. Could we have a quick call before then? Thank you, Irena",
       "Hi Jana, your job fits my schedule perfectly and I live just 2.5 km away. I have several years of experience with girls this age. I'd be happy to meet you and the girls before we start. Irena",
@@ -487,7 +476,6 @@ const JOBS = [
   { id:"pet", v:"pet", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Energetic Golden Retriever, weekday morning walks",
     desc:"Hi everyone, we need a reliable pet sitter to drop by our place every weekday morning around 8:00 AM to walk our friendly 3-year-old dog, Max. I would really like to find someone who can stay for a proper walk of about 45 minutes, top up his water and give him a quick brush afterwards. Max is well trained, loves other dogs and walks nicely on the lead.",
-    facts:[["Max, 3 y","Max"],["Golden retriever","golden retriever"],["Weekdays 8:00","weekday mornings at 8:00"],["45 min walks","45-minute walks"],["Brush & water","a quick brush and fresh water"]],
     replies:[
       "Hello Jana, I'd be happy to walk Max every weekday morning at 8:00. I've looked after several large dogs, including a golden retriever, and I live just 2.5 km away. Could we meet so Max can get to know me first? Irena",
       "Hi Jana, morning walks with Max fit my schedule perfectly. I'm reliable, I love energetic dogs, and a quick brush and fresh water after the walk are no problem. When would suit you to talk? Irena",
@@ -496,7 +484,6 @@ const JOBS = [
   { id:"senior", v:"senior", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Daily companionship and errands for my mother",
     desc:"Looking for a kind, patient person to assist my grandmother with afternoon walks, light grocery shopping, and pleasant conversation 3 times a week. She is cheerful and independent, but walking has become harder and she really enjoys having someone to talk to. Ideally Monday, Wednesday and Friday afternoons. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facts:[["Mon, Wed, Fri","Monday, Wednesday and Friday"],["Afternoons","afternoons"],["3× a week","three times a week"],["Walks","afternoon walks"],["Light shopping","light grocery shopping"]],
     replies:[
       "Hello Jana, I'd love to keep your family member company. I have experience with seniors and enjoy walks, errands and a good conversation. Afternoons three times a week work well for me. Could we arrange a short call? Irena",
       "Hi Jana, I'm patient and calm, and I've helped older people with shopping and daily walks before. I live just 2.5 km away, so I can come reliably. I'd be happy to meet her first. Irena",
@@ -505,7 +492,6 @@ const JOBS = [
   { id:"clean", v:"clean", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Weekly deep clean for a 3-bedroom family house",
     desc:"Hello, we are searching for a thorough and trustworthy helper to manage regular cleaning, ironing, and tidying up our home every Thursday morning. The house has three bedrooms, two bathrooms and a small garden terrace. All cleaning products and equipment are provided, and we have a friendly cat.",
-    facts:[["Thursday mornings","Thursday mornings"],["3 bedrooms","three bedrooms"],["2 bathrooms","two bathrooms"],["Ironing","ironing"],["Friendly cat","your cat"]],
     replies:[
       "Hello Jana, I'd be glad to take care of the weekly clean on Thursday mornings. I have several years of experience with family houses, including ironing, and I'm comfortable with cats. Could we have a quick call? Irena",
       "Hi Jana, Thursday mornings fit my schedule and I live just 2.5 km away. I work thoroughly and reliably, and I'm happy to agree on a checklist so everything is done the way you like it. Irena",
@@ -514,7 +500,6 @@ const JOBS = [
   { id:"tutor", v:"tutor", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"High school math and physics support for 15-year-old",
     desc:"Seeking an experienced university student or tutor to help our son catch up with algebra and physics formulas twice a week before his final exams. Lessons can take place at our home in the afternoon or online, whichever suits you better. He is motivated, he just needs someone patient to explain things step by step.",
-    facts:[["Algebra","algebra"],["Physics","physics"],["2× a week","twice a week"],["Before final exams","before his final exams"],["Home or online","at your home or online"]],
     replies:[
       "Hello Jana, I'd be happy to help your son with algebra and physics before his exams. I study at university and have tutored high school students for two years. Twice a week works well for me. Irena",
       "Hi Jana, I enjoy explaining maths and physics step by step, and I can come to your home or teach online. Could we start with a first lesson to see what your son needs most? Irena",
@@ -552,7 +537,7 @@ function layout(){
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
   G.detailBtnTop = H - 92;
-  G.sendTop = H - (inline() ? 94 : 141);   // A+B has no Show job description link under Send
+  G.sendTop = H - (inline() ? 94 : 141);   // the reply variant has no Show job description link under Send
   G.linkTop = H - 66;
 }
 
@@ -607,9 +592,9 @@ function setModeClass(m){
   phone.classList.toggle("send-face", m === "reply");
   syncDesc();
 }
-// variant A+B is on (see the prototype versions modal)
+// the reply variant is on (see the prototype versions modal)
 const inline = () => phone.classList.contains("v-inline");
-// the hero is shorter while replying in A+B: animate its height along with the card
+// the hero is shorter while replying in the variant: animate its height along with the card
 function animateHero(h0, duration){
   const h1 = heroEl.offsetHeight;
   if (Math.abs(h1 - h0) > 1) heroEl.animate([{height:h0 + "px"},{height:h1 + "px"}], {duration, easing:EASE});
@@ -679,8 +664,6 @@ function fillCard(j){
   descEl.scrollTop = 0;
   card.setAttribute("aria-label", "Job: " + j.title);
   descWrap.scrollTop = 0;
-  factsEl.innerHTML = SPARK + j.facts.map(([label, text]) => `<button class="fact" data-text="${text}">${label}</button>`).join("");
-  factsEl.scrollLeft = 0;
   // composer belongs to this job
   genToken++;
   gen.classList.remove("on"); sparkle.classList.remove("pulse");
@@ -703,7 +686,7 @@ function go(target){
 
   // content swap inside an open sheet (detail <-> reply)
   if (expandedBefore && expandedAfter){
-    // A+B keeps the description in the reply, so it leaves and comes back with the composer
+    // the reply variant keeps the description in the reply, so it leaves and comes back with the composer
     const outs = prev === "detail" ? [descWrap] : inline() ? [descWrap, composer] : [composer];
     const ins  = target === "detail" ? [descWrap] : inline() ? [descWrap, composer] : [composer];
     mode = target;
@@ -806,21 +789,6 @@ $("#clear").onclick = () => {
   ta.readOnly = false; ta.value = ""; setSendEnabled(false); ta.focus();
 };
 ta.addEventListener("input", () => { cs().text = ta.value; setSendEnabled(!!ta.value.trim()); });
-
-// Key details (A+B): tap one to put it into the reply at the cursor
-factsEl.addEventListener("pointerdown", e => { if (e.target.closest(".fact")) e.preventDefault(); });   // keep focus + caret in the reply
-factsEl.addEventListener("click", e => {
-  const f = e.target.closest(".fact");
-  if (!f || ta.readOnly) return;                // not while the AI is still writing
-  const v = ta.value, a = ta.selectionStart ?? v.length, z = ta.selectionEnd ?? a;
-  const before = v.slice(0, a), after = v.slice(z);
-  const piece = (before && !/\s$/.test(before) ? " " : "") + f.dataset.text + (after && !/^[\s.,!?;:]/.test(after) ? " " : "");
-  ta.value = before + piece + after;
-  ta.setSelectionRange(before.length + piece.length, before.length + piece.length);
-  const st = cs(); st.text = ta.value; st.generated = true;
-  setSendEnabled(!!ta.value.trim());
-  f.classList.add("hit"); setTimeout(() => f.classList.remove("hit"), 450);
-});
 
 /* ---------------- toast ---------------- */
 function toast(text, action, fn){
@@ -964,7 +932,8 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
-// Switches variant A+B on and off. Remembered per device; ?variant=ab or ?variant=classic in the URL wins.
+// Switches the reply variant on and off. Remembered per device; ?variant=ab or ?variant=classic in the URL wins
+// ("ab" is the name the first shared links use).
 const VKEY = "jobs-tinder-reply-variant";
 const verModal = $("#verModal"), verSwitch = $("#verSwitch"), verBtn = $("#verBtn");
 function initialVariant(){
