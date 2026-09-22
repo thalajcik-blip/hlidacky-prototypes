@@ -17,6 +17,8 @@
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
      stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
+   Variant A+B (flask button in the header): while replying the photo shrinks, the job
+   description and tappable key details stay above the reply. Off by default.
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -37,6 +39,7 @@
   --focus:#348cf3;
   --ease:cubic-bezier(.22,.8,.24,1);
   --hero-h:160px;
+  --hero-compact:56px;
   --font:"Soleil","Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -65,9 +68,15 @@ svg{display:block;flex:none}
 .statusbar{height:47px;display:flex;align-items:center;justify-content:space-between;padding:6px 22px 0 30px}
 .statusbar .time{font:600 15.5px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",var(--font);letter-spacing:-.2px}
 .statusbar .sys{display:flex;gap:6px;align-items:center}
-.appbar{height:45px;display:flex;align-items:center;justify-content:center;gap:7px;
+.appbar{position:relative;height:45px;display:flex;align-items:center;justify-content:center;gap:7px;
   border-bottom:1px solid var(--line-2);font-size:17px;letter-spacing:-.2px}
 .appbar svg{color:var(--pink)}
+/* prototype versions entry point: a prototype control, not part of the app */
+.ver-btn{position:absolute;right:6px;top:50%;margin-top:-20px;width:40px;height:40px;display:grid;place-items:center;color:var(--icon)}
+.appbar .ver-btn svg{color:currentColor}
+.ver-dot{position:absolute;top:8px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 2px #fff;
+  opacity:0;transform:scale(.5);transition:opacity .2s,transform .25s var(--ease)}
+.v-inline .ver-dot{opacity:1;transform:none}
 
 .controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;height:38px}
 .pill-new{height:27px;padding:0 10px 0 13px;border-radius:14px;background:var(--pink);color:#fff;
@@ -96,8 +105,8 @@ svg{display:block;flex:none}
 .expanded .hero{touch-action:none}
 .hero{position:relative;height:var(--hero-h);flex:none}
 .hero-img{position:absolute;inset:0;overflow:hidden;background:#eceef2}
-.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;pointer-events:none}
-.chips{position:absolute;left:16px;top:15px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;pointer-events:none;transition:object-position .42s var(--ease)}
+.chips{position:absolute;left:16px;top:15px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;transition:opacity .2s var(--ease)}
 .chip{height:21px;padding:0 8px;border-radius:11px;background:#fff;border:1px solid var(--line);
   font-size:12.5px;line-height:19px;color:var(--ink-2);white-space:nowrap}
 .badge{position:absolute;left:14px;bottom:-11px;z-index:2;height:21px;padding:0 8px 0 6px;border-radius:11px;
@@ -201,6 +210,29 @@ svg{display:block;flex:none}
 .m-reply .rule{display:none}
 .m-reply .composer{display:flex}
 
+/* ---------- variant A+B: job description + key details while replying ---------- */
+/* the photo shrinks to a strip, the description stays above the reply (4 lines, scrolls) and
+   key details from the job can be tapped into the reply, so Show job description is not needed */
+.v-inline.m-reply .hero{height:var(--hero-compact)}
+.v-inline.m-reply .hero-img img{object-position:50% var(--strip-y,35%)}   /* the strip keeps the faces, not the middle */
+.v-inline.m-reply .chips{opacity:0}
+.v-inline.m-reply .rule{display:block;opacity:1}
+.v-inline.m-reply .desc-wrap{display:block;padding:12px 0 0}
+.v-inline.m-reply .desc{max-height:calc(4 * 21px);overflow-y:auto}
+.v-inline.m-reply .desc.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15));
+  mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15))}
+.v-inline .composer{padding-bottom:123px}
+.v-inline .c-rule{margin-top:14px}
+.v-inline .show-desc{display:none}
+.facts{display:none}
+.v-inline .facts{display:flex;align-items:center;gap:6px;flex:none;margin:12px -20px 0;padding:0 20px;
+  overflow-x:auto;scrollbar-width:none;overscroll-behavior:contain}
+.facts::-webkit-scrollbar{display:none}
+.facts svg{color:var(--pink);margin-right:2px}
+.fact{flex:none;height:28px;padding:0 11px;border-radius:14px;background:var(--pager);border:1px solid var(--pager-line);
+  font-size:14px;color:var(--ink);white-space:nowrap;transition:background-color .2s,border-color .2s,color .2s}
+.fact.hit{background:#fdeeef;border-color:var(--pink);color:var(--pink)}
+
 /* ---------- empty + toast ---------- */
 .empty{position:absolute;left:28px;right:28px;z-index:2;text-align:center;opacity:0;pointer-events:none;
   transition:opacity .35s var(--ease),transform .35s var(--ease);transform:translateY(8px)}
@@ -216,6 +248,29 @@ svg{display:block;flex:none}
   transition:opacity .25s var(--ease),transform .3s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{color:#f6a8ae;font-weight:600}
+
+/* ---------- prototype versions modal ---------- */
+.ver-modal{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:0 20px;
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.ver-modal.open{opacity:1;pointer-events:auto}
+.ver-scrim{position:absolute;inset:0;background:rgba(21,25,29,.46)}
+.ver-card{position:relative;width:100%;background:#fff;border-radius:16px;padding:22px 20px 20px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);transform:translateY(12px) scale(.98);transition:transform .3s var(--ease)}
+.ver-modal.open .ver-card{transform:none}
+.ver-card h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
+.ver-card > p{margin:0 0 16px;font-size:14.5px;line-height:20px;color:var(--muted)}
+.ver-row{position:relative;display:flex;gap:14px;align-items:flex-start;padding:14px 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer}
+.ver-row b{display:block;font-weight:500;font-size:16px;line-height:22px}
+.ver-row small{display:block;margin-top:3px;font-size:13.5px;line-height:19px;color:var(--muted)}
+.ver-row input{position:absolute;opacity:0;pointer-events:none}
+.sw{flex:none;position:relative;width:51px;height:31px;border-radius:16px;background:#e5e5ea;transition:background-color .2s}
+.sw::after{content:"";position:absolute;left:2px;top:2px;width:27px;height:27px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .25s var(--ease)}
+.ver-row input:checked + .sw{background:var(--pink)}
+.ver-row input:checked + .sw::after{transform:translateX(20px)}
+.ver-row input:focus-visible + .sw{outline:2px solid var(--focus);outline-offset:2px}
+.ver-done{margin-top:18px;width:100%;height:46px;border-radius:8px;background:var(--pink);color:#fff;font-size:16px}
 
 /* ---------- tab bar ---------- */
 .tabbar{position:absolute;left:0;right:0;bottom:0;z-index:2;height:83px;background:#fbfbfb;border-top:1px solid #e2e2e6;
@@ -254,6 +309,10 @@ svg{display:block;flex:none}
   <header class="appbar">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg>
     Jobs
+    <button class="ver-btn" id="verBtn" aria-label="Prototype versions" aria-haspopup="dialog">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5h6M10.2 2.5v6.3L4.9 18.4a2 2 0 0 0 1.8 3h10.6a2 2 0 0 0 1.8-3l-5.3-9.6V2.5"/><path d="M7.2 14.6h9.6"/></svg>
+      <i class="ver-dot"></i>
+    </button>
   </header>
 
   <div class="controls" id="controls">
@@ -299,6 +358,7 @@ svg{display:block;flex:none}
       </div>
 
       <section class="composer" id="composer">
+        <div class="facts" id="facts" aria-label="Key details from the job"></div>
         <div class="c-rule"></div>
         <div class="c-head">
           <div class="c-title">
@@ -347,6 +407,19 @@ svg{display:block;flex:none}
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAct" hidden>Undo</button></div>
 
+  <div class="ver-modal" id="verModal" role="dialog" aria-modal="true" aria-labelledby="verTitle" aria-hidden="true">
+    <div class="ver-scrim" id="verScrim"></div>
+    <div class="ver-card">
+      <h3 id="verTitle">Prototype versions</h3>
+      <p>Try another way of replying to a job. The choice is remembered on this device.</p>
+      <label class="ver-row">
+        <span><b>Job details while replying</b><small>The photo shrinks, the job description stays above your reply and key details can be tapped into it.</small></span>
+        <input type="checkbox" role="switch" id="verSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
+      <button class="ver-done" id="verDone">Done</button>
+    </div>
+  </div>
+
   <nav class="tabbar">
     <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M20 13.625C20 11.2031 18.6719 8.9375 16.5625 7.6875C14.4141 6.47656 11.7969 6.47656 9.6875 7.6875C7.53906 8.9375 6.25 11.2031 6.25 13.625C6.25 16.0859 7.53906 18.3516 9.6875 19.6016C11.7969 20.8125 14.4141 20.8125 16.5625 19.6016C18.6719 18.3516 20 16.0859 20 13.625ZM18.3984 19.7969C16.9922 21.0469 15.1172 21.75 13.125 21.75C8.63281 21.75 5 18.1172 5 13.625C5 9.17188 8.63281 5.5 13.125 5.5C17.5781 5.5 21.25 9.17188 21.25 13.625C21.25 15.6562 20.5078 17.4922 19.2969 18.9375L24.8047 24.4453C25.0391 24.6797 25.0391 25.1094 24.8047 25.3438C24.5703 25.5781 24.1406 25.5781 23.9062 25.3438L18.3984 19.7969Z"/></svg>Search</div>
     <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M14.0312 9.61719L13.5625 9.10938L13.3672 8.91406C12.3516 7.78125 10.8281 7.23438 9.34375 7.50781C7.23438 7.89844 5.75 9.69531 5.75 11.8047V11.9609C5.75 13.2109 6.25781 14.4219 7.19531 15.2813L14.3828 21.9609C14.3828 22 14.4219 22 14.5 22C14.5391 22 14.5781 22 14.6172 21.9609L21.8047 15.2813C22.7031 14.4219 23.25 13.2109 23.25 11.9609V11.8047C23.25 9.69531 21.7266 7.89844 19.6562 7.50781C18.1328 7.23438 16.6094 7.78125 15.5938 8.91406L15.4375 9.10938L14.9688 9.61719C14.8516 9.73438 14.6562 9.8125 14.5 9.8125C14.3047 9.8125 14.1484 9.73438 14.0312 9.61719ZM15.3594 7.39063C16.6484 6.41406 18.25 5.98438 19.8516 6.29688C22.5469 6.76563 24.5 9.10938 24.5 11.8047V11.9609C24.5 13.3672 23.9531 14.6953 23.0547 15.75C22.9375 15.9063 22.7812 16.0625 22.625 16.1797L15.4375 22.8984C15.3984 22.8984 15.3984 22.9375 15.3594 22.9766C15.0859 23.1719 14.8125 23.25 14.5 23.25C14.1094 23.25 13.7969 23.1328 13.5234 22.8984L6.33594 16.1797C6.17969 16.0625 6.02344 15.9063 5.90625 15.75C5.00781 14.6953 4.5 13.3672 4.5 11.9609V11.8047C4.5 9.10938 6.41406 6.76563 9.10938 6.29688C10.7109 5.98438 12.3125 6.41406 13.6016 7.39063C13.8359 7.58594 14.1094 7.82031 14.3047 8.09375L14.4609 8.25L14.6562 8.09375C14.8125 7.89844 14.9688 7.70313 15.1641 7.54688C15.2422 7.50781 15.3203 7.42969 15.3594 7.39063Z"/></svg>Favourites</div>
@@ -373,6 +446,7 @@ const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
 const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
 const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
+const heroEl = $("#hero"), factsEl = $("#facts");
 
 const PINK = "rgb(249, 96, 115)", GREEN = "rgb(11, 168, 37)";
 const SH_PINK  = "0px 8px 20px 0px rgba(249, 96, 115, 0.28), inset 0px 0px 0px 0px rgba(10, 141, 29, 0)";
@@ -383,6 +457,7 @@ const PEEK = 9;           // how far each card behind the top one shows above it
 const LINE = 21;          // description line height
 
 /* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
+const SPARK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M9.5 4 11 8.6l4.5 1.4L11 11.4 9.5 16 8 11.4 3.5 10 8 8.6 9.5 4Z"/><path d="M18 2.5v4M16 4.5h4M18 15.5v5M15.5 18h5"/></svg>';
 const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
 const VERT = {
   baby:   { label:"Babysitting",        color:"#f96073", icon:ICON('<circle cx="12" cy="3.8" r="2.7"/><path d="M5.4 3.7a1.3 1.3 0 0 1 1.8.3l2.3 3.2h5l2.3-3.2a1.3 1.3 0 1 1 2.1 1.5l-3 4.1v3.4l1.4 7.1a1.35 1.35 0 0 1-2.6.6L13.4 15h-2.8l-1.3 5.7a1.35 1.35 0 0 1-2.6-.6l1.4-7.1V9.6l-3-4.1a1.3 1.3 0 0 1 .3-1.8Z"/>') },
@@ -396,11 +471,14 @@ const IMG = {
   senior:"assets/hero-senior-care.jpg", clean:"assets/hero-household-cleaning.jpg",
   tutor:"assets/hero-tutoring.jpg"
 };
+// where the faces are, for the compact picture strip while replying in A+B
+const STRIP_Y = { baby:"35%", pet:"35%", senior:"12%", clean:"35%", tutor:"20%" };
 
 const JOBS = [
   { id:"baby", v:"baby", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"2 girls, 6 and 4, every second Tuesday afternoon",
     desc:"Hello, I am looking for a nanny for regular babysitting from December for the next school year for two children, Matilda (6 years old in November) and Anna (4 years old). Initial session on Tuesday 14:00. After agreement possible babysitting every 2 weeks. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facts:[["Matilda, 6","Matilda"],["Anna, 4","Anna"],["Tue 14:00","Tuesday at 14:00"],["Every 2 weeks","every second week"],["From December","from December"]],
     replies:[
       "Hello Jana, I'd love to look after Matilda and Anna. Every second Tuesday afternoon suits me well, and I can come for the first session on Tuesday at 14:00. Could we have a quick call before then? Thank you, Irena",
       "Hi Jana, your job fits my schedule perfectly and I live just 2.5 km away. I have several years of experience with girls this age. I'd be happy to meet you and the girls before we start. Irena",
@@ -409,6 +487,7 @@ const JOBS = [
   { id:"pet", v:"pet", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Energetic Golden Retriever, weekday morning walks",
     desc:"Hi everyone, we need a reliable pet sitter to drop by our place every weekday morning around 8:00 AM to walk our friendly 3-year-old dog, Max. I would really like to find someone who can stay for a proper walk of about 45 minutes, top up his water and give him a quick brush afterwards. Max is well trained, loves other dogs and walks nicely on the lead.",
+    facts:[["Max, 3 y","Max"],["Golden retriever","golden retriever"],["Weekdays 8:00","weekday mornings at 8:00"],["45 min walks","45-minute walks"],["Brush & water","a quick brush and fresh water"]],
     replies:[
       "Hello Jana, I'd be happy to walk Max every weekday morning at 8:00. I've looked after several large dogs, including a golden retriever, and I live just 2.5 km away. Could we meet so Max can get to know me first? Irena",
       "Hi Jana, morning walks with Max fit my schedule perfectly. I'm reliable, I love energetic dogs, and a quick brush and fresh water after the walk are no problem. When would suit you to talk? Irena",
@@ -417,6 +496,7 @@ const JOBS = [
   { id:"senior", v:"senior", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Daily companionship and errands for my mother",
     desc:"Looking for a kind, patient person to assist my grandmother with afternoon walks, light grocery shopping, and pleasant conversation 3 times a week. She is cheerful and independent, but walking has become harder and she really enjoys having someone to talk to. Ideally Monday, Wednesday and Friday afternoons. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facts:[["Mon, Wed, Fri","Monday, Wednesday and Friday"],["Afternoons","afternoons"],["3× a week","three times a week"],["Walks","afternoon walks"],["Light shopping","light grocery shopping"]],
     replies:[
       "Hello Jana, I'd love to keep your family member company. I have experience with seniors and enjoy walks, errands and a good conversation. Afternoons three times a week work well for me. Could we arrange a short call? Irena",
       "Hi Jana, I'm patient and calm, and I've helped older people with shopping and daily walks before. I live just 2.5 km away, so I can come reliably. I'd be happy to meet her first. Irena",
@@ -425,6 +505,7 @@ const JOBS = [
   { id:"clean", v:"clean", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Weekly deep clean for a 3-bedroom family house",
     desc:"Hello, we are searching for a thorough and trustworthy helper to manage regular cleaning, ironing, and tidying up our home every Thursday morning. The house has three bedrooms, two bathrooms and a small garden terrace. All cleaning products and equipment are provided, and we have a friendly cat.",
+    facts:[["Thursday mornings","Thursday mornings"],["3 bedrooms","three bedrooms"],["2 bathrooms","two bathrooms"],["Ironing","ironing"],["Friendly cat","your cat"]],
     replies:[
       "Hello Jana, I'd be glad to take care of the weekly clean on Thursday mornings. I have several years of experience with family houses, including ironing, and I'm comfortable with cats. Could we have a quick call? Irena",
       "Hi Jana, Thursday mornings fit my schedule and I live just 2.5 km away. I work thoroughly and reliably, and I'm happy to agree on a checklist so everything is done the way you like it. Irena",
@@ -433,6 +514,7 @@ const JOBS = [
   { id:"tutor", v:"tutor", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"High school math and physics support for 15-year-old",
     desc:"Seeking an experienced university student or tutor to help our son catch up with algebra and physics formulas twice a week before his final exams. Lessons can take place at our home in the afternoon or online, whichever suits you better. He is motivated, he just needs someone patient to explain things step by step.",
+    facts:[["Algebra","algebra"],["Physics","physics"],["2× a week","twice a week"],["Before final exams","before his final exams"],["Home or online","at your home or online"]],
     replies:[
       "Hello Jana, I'd be happy to help your son with algebra and physics before his exams. I study at university and have tutored high school students for two years. Twice a week works well for me. Irena",
       "Hi Jana, I enjoy explaining maths and physics step by step, and I can come to your home or teach online. Could we start with a first lesson to see what your son needs most? Irena",
@@ -470,7 +552,7 @@ function layout(){
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
   G.detailBtnTop = H - 92;
-  G.sendTop = H - 141;
+  G.sendTop = H - (inline() ? 94 : 141);   // A+B has no Show job description link under Send
   G.linkTop = H - 66;
 }
 
@@ -523,6 +605,14 @@ function setModeClass(m){
   phone.classList.add("m-" + m);
   phone.classList.toggle("expanded", m === "detail" || m === "reply");
   phone.classList.toggle("send-face", m === "reply");
+  syncDesc();
+}
+// variant A+B is on (see the prototype versions modal)
+const inline = () => phone.classList.contains("v-inline");
+// the hero is shorter while replying in A+B: animate its height along with the card
+function animateHero(h0, duration){
+  const h1 = heroEl.offsetHeight;
+  if (Math.abs(h1 - h0) > 1) heroEl.animate([{height:h0 + "px"},{height:h1 + "px"}], {duration, easing:EASE});
 }
 
 function placeStatic(){
@@ -578,6 +668,7 @@ function showPeeks(animate){
 function fillCard(j){
   const v = VERT[j.v];
   heroImg.src = IMG[j.v];
+  heroImg.style.setProperty("--strip-y", STRIP_Y[j.v]);
   chipsEl.innerHTML = j.chips.map(c => `<span class="chip">${c}</span>`).join("");
   badgeEl.style.backgroundColor = v.color;
   badgeEl.innerHTML = v.icon + v.label;
@@ -588,6 +679,8 @@ function fillCard(j){
   descEl.scrollTop = 0;
   card.setAttribute("aria-label", "Job: " + j.title);
   descWrap.scrollTop = 0;
+  factsEl.innerHTML = SPARK + j.facts.map(([label, text]) => `<button class="fact" data-text="${text}">${label}</button>`).join("");
+  factsEl.scrollLeft = 0;
   // composer belongs to this job
   genToken++;
   gen.classList.remove("on"); sparkle.classList.remove("pulse");
@@ -602,6 +695,7 @@ function go(target){
   hideToast();
 
   const from = { card:snap(card), no:snap(btnNo), yes:snap(btnYes) };
+  const heroH0 = heroEl.offsetHeight;
   const prev = mode;
   const expandedBefore = prev === "detail" || prev === "reply";
   const expandedAfter  = target === "detail" || target === "reply";
@@ -609,20 +703,22 @@ function go(target){
 
   // content swap inside an open sheet (detail <-> reply)
   if (expandedBefore && expandedAfter){
-    const out = prev === "detail" ? descWrap : composer;
-    const inn = target === "detail" ? descWrap : composer;
+    // A+B keeps the description in the reply, so it leaves and comes back with the composer
+    const outs = prev === "detail" ? [descWrap] : inline() ? [descWrap, composer] : [composer];
+    const ins  = target === "detail" ? [descWrap] : inline() ? [descWrap, composer] : [composer];
     mode = target;
     phone.classList.toggle("send-face", target === "reply");   // heart <-> send face swaps right away
     const b = btnGeom(target);
     setBox(btnNo, b.no); setBox(btnYes, b.yes);
     anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
     anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
-    const fadeOut = out.animate([{opacity:1, transform:"none"},{opacity:0, transform:"translateY(-6px)"}], {duration:150, easing:"ease-in", fill:"forwards"});
-    anims.push(fadeOut.finished.then(() => {
+    const fades = outs.map(el => el.animate([{opacity:1, transform:"none"},{opacity:0, transform:"translateY(-6px)"}], {duration:150, easing:"ease-in", fill:"forwards"}));
+    anims.push(fades[0].finished.then(() => {
       setModeClass(target);                     // content classes switch only after the old block faded
-      fadeOut.cancel();
+      fades.forEach(f => f.cancel());
+      animateHero(heroH0, 320);
       if (target === "reply") startGeneration();
-      return inn.animate([{opacity:0, transform:"translateY(12px)"},{opacity:1, transform:"none"}], {duration:280, easing:EASE}).finished;
+      return Promise.all(ins.map(el => el.animate([{opacity:0, transform:"translateY(12px)"},{opacity:1, transform:"none"}], {duration:280, easing:EASE}).finished));
     }));
     return Promise.all(anims).then(() => { busy = false; });
   }
@@ -635,6 +731,7 @@ function go(target){
     anims.push(card.animate(boxFrames(from.card, cg), {duration:DUR, easing:EASE}).finished);
     anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
     anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
+    animateHero(heroH0, DUR);
     if (target === "reply"){
       composer.animate([{opacity:0, transform:"translateY(18px)"},{opacity:1, transform:"none"}], {duration:360, delay:140, easing:EASE, fill:"backwards"});
       startGeneration();
@@ -648,13 +745,14 @@ function go(target){
       mode = "stack"; setModeClass("stack");
       const cg = cardGeom("stack"); setBox(card, cg);
       const h = card.offsetHeight; cg.height = h; card.style.height = h + "px";
+      animateHero(heroH0, DUR - 40);
       phone.classList.add("collapsing");
       const b = btnGeom("stack"); setBox(btnNo, b.no); setBox(btnYes, b.yes);
       placePeeks(); showPeeks(false);
       const a1 = card.animate(boxFrames(from.card, cg), {duration:DUR-40, easing:EASE}).finished;
       const a2 = btnNo.animate(boxFrames(from.no, b.no), {duration:DUR-40, easing:EASE}).finished;
       const a3 = Promise.all([btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR-40, easing:EASE}).finished, paint(btnYes, from.yes, b.yes)]);
-      if (prev === "reply") descWrap.animate([{opacity:0},{opacity:1}], {duration:240, delay:40, easing:EASE, fill:"backwards"});
+      if (prev === "reply" && !inline()) descWrap.animate([{opacity:0},{opacity:1}], {duration:240, delay:40, easing:EASE, fill:"backwards"});
       return Promise.all([a1,a2,a3]).then(() => {
         phone.classList.remove("collapsing");
         card.style.height = "auto";
@@ -709,6 +807,21 @@ $("#clear").onclick = () => {
 };
 ta.addEventListener("input", () => { cs().text = ta.value; setSendEnabled(!!ta.value.trim()); });
 
+// Key details (A+B): tap one to put it into the reply at the cursor
+factsEl.addEventListener("pointerdown", e => { if (e.target.closest(".fact")) e.preventDefault(); });   // keep focus + caret in the reply
+factsEl.addEventListener("click", e => {
+  const f = e.target.closest(".fact");
+  if (!f || ta.readOnly) return;                // not while the AI is still writing
+  const v = ta.value, a = ta.selectionStart ?? v.length, z = ta.selectionEnd ?? a;
+  const before = v.slice(0, a), after = v.slice(z);
+  const piece = (before && !/\s$/.test(before) ? " " : "") + f.dataset.text + (after && !/^[\s.,!?;:]/.test(after) ? " " : "");
+  ta.value = before + piece + after;
+  ta.setSelectionRange(before.length + piece.length, before.length + piece.length);
+  const st = cs(); st.text = ta.value; st.generated = true;
+  setSendEnabled(!!ta.value.trim());
+  f.classList.add("hit"); setTimeout(() => f.classList.remove("hit"), 450);
+});
+
 /* ---------------- toast ---------------- */
 function toast(text, action, fn){
   const t = $("#toast"), a = $("#toastAct");
@@ -748,7 +861,7 @@ function flySheet(dir){
 
 function bringNext(n){
   idx = n;
-  [card, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  [card, heroEl, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
   card.style.transform = "";
   $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
   btnYes.classList.remove("sending","done");
@@ -825,7 +938,7 @@ function replay(){
   Object.keys(CS).forEach(k => delete CS[k]);
   document.querySelectorAll(".phone > .card:not(#card)").forEach(n => n.remove());
   btnYes.classList.remove("sending","done");
-  [card, btnNo, btnYes, descWrap, composer, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  [card, heroEl, btnNo, btnYes, descWrap, composer, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
   card.style.transform = ""; $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
   idx = 0; mode = "stack"; setModeClass("stack");
   empty.classList.remove("show"); card.style.visibility = "";
@@ -846,7 +959,38 @@ $("#scrim").onclick = () => go("stack");
 showDesc.onclick = () => go("detail");
 document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
 document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && verModal.classList.contains("open")) return closeVersions();
   if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
+});
+
+/* ---------------- prototype versions (header entry point) ---------------- */
+// Switches variant A+B on and off. Remembered per device; ?variant=ab or ?variant=classic in the URL wins.
+const VKEY = "jobs-tinder-reply-variant";
+const verModal = $("#verModal"), verSwitch = $("#verSwitch"), verBtn = $("#verBtn");
+function initialVariant(){
+  const q = new URLSearchParams(location.search).get("variant");
+  if (q === "ab" || q === "classic") return q === "ab";
+  try { return localStorage.getItem(VKEY) === "ab"; } catch(_){ return false; }
+}
+function applyVariant(on){
+  phone.classList.toggle("v-inline", on);
+  verSwitch.checked = on;
+  if (!busy) placeStatic();
+}
+function openVersions(){
+  verModal.classList.add("open"); verModal.setAttribute("aria-hidden", "false");
+  verSwitch.focus({ preventScroll:true });
+}
+function closeVersions(){
+  verModal.classList.remove("open"); verModal.setAttribute("aria-hidden", "true");
+  verBtn.focus({ preventScroll:true });
+}
+verBtn.onclick = openVersions;
+$("#verDone").onclick = closeVersions;
+$("#verScrim").onclick = closeVersions;
+verSwitch.addEventListener("change", () => {
+  applyVariant(verSwitch.checked);
+  try { localStorage.setItem(VKEY, verSwitch.checked ? "ab" : "classic"); } catch(_){}
 });
 
 /* ---------------- gestures ---------------- */
@@ -932,6 +1076,8 @@ card.addEventListener("pointercancel", cancelDrag);
 
 /* ---------------- boot ---------------- */
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
+phone.classList.toggle("v-inline", initialVariant());
+verSwitch.checked = inline();
 setModeClass("stack");
 fillCard(job());
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!busy) placeStatic(); });
