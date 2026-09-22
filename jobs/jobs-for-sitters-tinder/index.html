@@ -17,8 +17,9 @@
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
      stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
-   Reply variant (flask button in the header): while replying the photo shrinks and the
-   job description stays above the reply. Off by default.
+   Prototype versions (flask button in the header), both off by default:
+   - reply variant: while replying the photo shrinks and the job description stays above the reply
+   - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -76,7 +77,7 @@ svg{display:block;flex:none}
 .appbar .ver-btn svg{color:currentColor}
 .ver-dot{position:absolute;top:8px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 2px #fff;
   opacity:0;transform:scale(.5);transition:opacity .2s,transform .25s var(--ease)}
-.v-inline .ver-dot{opacity:1;transform:none}
+.v-inline .ver-dot,.v-next .ver-dot{opacity:1;transform:none}
 
 .controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;height:38px}
 .pill-new{height:27px;padding:0 10px 0 13px;border-radius:14px;background:var(--pink);color:#fff;
@@ -254,6 +255,7 @@ svg{display:block;flex:none}
 .ver-card > p{margin:0 0 16px;font-size:14.5px;line-height:20px;color:var(--muted)}
 .ver-row{position:relative;display:flex;gap:14px;align-items:flex-start;padding:14px 0;
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer}
+.ver-row + .ver-row{border-top:0}
 .ver-row b{display:block;font-weight:500;font-size:16px;line-height:22px}
 .ver-row small{display:block;margin-top:3px;font-size:13.5px;line-height:19px;color:var(--muted)}
 .ver-row input{position:absolute;opacity:0;pointer-events:none}
@@ -401,10 +403,14 @@ svg{display:block;flex:none}
     <div class="ver-scrim" id="verScrim"></div>
     <div class="ver-card">
       <h3 id="verTitle">Prototype versions</h3>
-      <p>Try another way of replying to a job. The choice is remembered on this device.</p>
+      <p>Try other ways of going through jobs. Your choices are remembered on this device.</p>
       <label class="ver-row">
         <span><b>Job description while replying</b><small>The photo shrinks and the job description stays above your reply, so you don't have to switch back to it.</small></span>
         <input type="checkbox" role="switch" id="verSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
+      <label class="ver-row">
+        <span><b>Open the next job in detail</b><small>After Skip or Send reply in a job's detail, the next job opens straight in its detail instead of the stack.</small></span>
+        <input type="checkbox" role="switch" id="nextSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
@@ -511,6 +517,7 @@ let mode = "stack";       // stack | detail | reply | gone
 let busy = false;
 let genToken = 0;
 let lastDeclined = null;  // index that Undo brings back
+let undoToDetail = false; // Undo returns that job into its detail (next job in detail)
 const CS = {};            // composer state per job
 const G = {};
 
@@ -594,6 +601,8 @@ function setModeClass(m){
 }
 // the reply variant is on (see the prototype versions modal)
 const inline = () => phone.classList.contains("v-inline");
+// after Skip / Send reply in an open sheet, the next job opens in its detail (prototype versions modal)
+const nextInDetail = () => phone.classList.contains("v-next");
 // the hero is shorter while replying in the variant: animate its height along with the card
 function animateHero(h0, duration){
   const h1 = heroEl.offsetHeight;
@@ -815,14 +824,15 @@ function flyGhost(dir){
   ], { duration:360, easing:"cubic-bezier(.45,0,.8,.45)", fill:"forwards" });
   return a.finished.then(() => g.remove());
 }
-// Open sheet: the sheet itself flies off, then the next card comes up.
-function flySheet(dir){
+// Open sheet: the sheet itself flies off, then the next card comes up (or, with keepScrim, the next detail).
+function flySheet(dir, keepScrim){
   const a = card.animate([
     { transform:"translate(0,0) rotate(0deg)" },
     { transform:`translate(${dir * G.W * 1.25}px, 30px) rotate(${dir * 7}deg)` }
   ], { duration:420, easing:"cubic-bezier(.45,0,.8,.45)", fill:"forwards" });
   [btnNo, btnYes].forEach(b => b.animate([{opacity:getComputedStyle(b).opacity},{opacity:0}], {duration:200, fill:"forwards"}));
-  $("#scrim").style.opacity = "0"; showDesc.style.opacity = "0";
+  if (!keepScrim) $("#scrim").style.opacity = "0";
+  showDesc.style.opacity = "0";
   peek1.style.opacity = peek2.style.opacity = "0";
   return a.finished;
 }
@@ -848,6 +858,24 @@ function bringNext(n){
   return a.finished.then(() => { card.style.transformOrigin = ""; });
 }
 
+// Next job in detail: its sheet rises from below over the same scrim, the stack stays out of sight.
+function openNextDetail(n){
+  idx = n;
+  [card, heroEl, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  card.style.transform = "";
+  $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
+  btnYes.classList.remove("sending","done");
+
+  if (idx >= JOBS.length){ toGone(); return Promise.resolve(); }
+
+  mode = "detail"; setModeClass("detail");
+  fillCard(job());
+  placeStatic(); showPeeks(false);
+  const a = card.animate([{transform:`translateY(${G.H - G.S}px)`},{transform:"none"}], {duration:460, easing:EASE});
+  [btnNo, btnYes].forEach(b => b.animate([{opacity:0, transform:"translateY(16px)"},{opacity:1, transform:"none"}], {duration:300, delay:180, easing:EASE, fill:"backwards"}));
+  return a.finished;
+}
+
 function toGone(){
   mode = "gone"; setModeClass("gone");
   card.getAnimations().forEach(a => a.cancel());
@@ -864,10 +892,13 @@ async function decline(){
     const ghost = flyGhost(-1);
     await bringNext(idx + 1);
     await ghost;
+    undoToDetail = false;
   } else {
+    const stay = nextInDetail();
     ta.blur();
-    await flySheet(-1);
-    await bringNext(idx + 1);
+    await flySheet(-1, stay);
+    await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
+    undoToDetail = stay;
   }
   lastDeclined = from;
   toast("Moved to Archive", "Undo", undo);
@@ -881,9 +912,10 @@ async function send(){
   await wait(750);
   btnYes.classList.remove("sending"); btnYes.classList.add("done");
   await wait(480);
-  await flySheet(1);
+  const stay = nextInDetail();
+  await flySheet(1, stay);
   lastDeclined = null;
-  await bringNext(idx + 1);
+  await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
   toast("Reply sent to Jana P.");
   busy = false;
 }
@@ -892,11 +924,14 @@ function undo(){
   if (busy || lastDeclined == null) return;
   busy = true;
   idx = lastDeclined; lastDeclined = null;
-  [card, btnNo, btnYes].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  [card, heroEl, btnNo, btnYes].forEach(el => el.getAnimations().forEach(a => a.cancel()));
   empty.classList.remove("show"); card.style.visibility = "";
-  mode = "stack"; setModeClass("stack");
+  // back where it was declined: the stack, or its detail when the next job opened in detail
+  mode = undoToDetail ? "detail" : "stack"; setModeClass(mode);
+  $("#scrim").style.opacity = "";
   fillCard(job()); placeStatic(); showPeeks(false);
-  card.animate([{transform:`translate(${-G.W * 1.2}px, 40px) rotate(-16deg)`},{transform:"none"}], {duration:420, easing:EASE})
+  const off = undoToDetail ? `translate(${-G.W * 1.25}px, 30px) rotate(-7deg)` : `translate(${-G.W * 1.2}px, 40px) rotate(-16deg)`;
+  card.animate([{transform:off},{transform:"none"}], {duration:420, easing:EASE})
       .finished.then(() => { busy = false; });
   [btnNo, btnYes].forEach(b => b.animate([{opacity:0},{opacity:1}], {duration:280, delay:120, fill:"backwards"}));
 }
@@ -932,23 +967,25 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
-// Switches the reply variant on and off. Remembered per device; ?variant=ab or ?variant=classic in the URL wins
-// ("ab" is the name the first shared links use).
-const VKEY = "jobs-tinder-reply-variant";
-const verModal = $("#verModal"), verSwitch = $("#verSwitch"), verBtn = $("#verBtn");
-function initialVariant(){
-  const q = new URLSearchParams(location.search).get("variant");
-  if (q === "ab" || q === "classic") return q === "ab";
-  try { return localStorage.getItem(VKEY) === "ab"; } catch(_){ return false; }
+// Each switch is remembered per device; its URL parameter wins: ?variant=ab|classic (the name the first
+// shared links use) and ?next=detail|stack.
+const SETTINGS = [
+  { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", input:$("#verSwitch") },
+  { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   input:$("#nextSwitch") }
+];
+const verModal = $("#verModal"), verBtn = $("#verBtn");
+function initialSetting(st){
+  const q = new URLSearchParams(location.search).get(st.param);
+  if (q === st.on || q === st.off) return q === st.on;
+  try { return localStorage.getItem(st.key) === st.on; } catch(_){ return false; }
 }
-function applyVariant(on){
-  phone.classList.toggle("v-inline", on);
-  verSwitch.checked = on;
-  if (!busy) placeStatic();
+function applySetting(st, on){
+  phone.classList.toggle(st.cls, on);
+  st.input.checked = on;
 }
 function openVersions(){
   verModal.classList.add("open"); verModal.setAttribute("aria-hidden", "false");
-  verSwitch.focus({ preventScroll:true });
+  SETTINGS[0].input.focus({ preventScroll:true });
 }
 function closeVersions(){
   verModal.classList.remove("open"); verModal.setAttribute("aria-hidden", "true");
@@ -957,10 +994,11 @@ function closeVersions(){
 verBtn.onclick = openVersions;
 $("#verDone").onclick = closeVersions;
 $("#verScrim").onclick = closeVersions;
-verSwitch.addEventListener("change", () => {
-  applyVariant(verSwitch.checked);
-  try { localStorage.setItem(VKEY, verSwitch.checked ? "ab" : "classic"); } catch(_){}
-});
+SETTINGS.forEach(st => st.input.addEventListener("change", () => {
+  applySetting(st, st.input.checked);
+  if (!busy) placeStatic();
+  try { localStorage.setItem(st.key, st.input.checked ? st.on : st.off); } catch(_){}
+}));
 
 /* ---------------- gestures ---------------- */
 // Stack: drag the card left / right, tap to open the detail.
@@ -1045,8 +1083,7 @@ card.addEventListener("pointercancel", cancelDrag);
 
 /* ---------------- boot ---------------- */
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
-phone.classList.toggle("v-inline", initialVariant());
-verSwitch.checked = inline();
+SETTINGS.forEach(st => applySetting(st, initialSetting(st)));
 setModeClass("stack");
 fillCard(job());
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!busy) placeStatic(); });
