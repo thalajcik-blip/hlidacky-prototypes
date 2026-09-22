@@ -17,7 +17,7 @@
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
      stack  3603:1980 · detail 3574:133099 · reply 3574:203565
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
-   Prototype versions (gear button in the header), both off by default:
+   Prototype versions (gear button in the header), both on by default:
    - reply variant: while replying the photo shrinks and the job description stays above the reply
    - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
    Font: Soleil (used if installed locally), Figtree as fallback.
@@ -77,7 +77,7 @@ svg{display:block;flex:none}
 .appbar .ver-btn svg{color:currentColor}
 .ver-dot{position:absolute;top:8px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 2px #fff;
   opacity:0;transform:scale(.5);transition:opacity .2s,transform .25s var(--ease)}
-.v-inline .ver-dot,.v-next .ver-dot{opacity:1;transform:none}
+.v-custom .ver-dot{opacity:1;transform:none}   /* a switch differs from its default */
 
 .controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;height:38px}
 .pill-new{height:27px;padding:0 10px 0 13px;border-radius:14px;background:var(--pink);color:#fff;
@@ -967,21 +967,23 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
-// Each switch is remembered per device; its URL parameter wins: ?variant=ab|classic (the name the first
-// shared links use) and ?next=detail|stack.
+// Both switches are on by default. A choice made in the modal is remembered per device, and the URL
+// parameter wins over both: ?variant=ab|classic (the name the first shared links use), ?next=detail|stack.
 const SETTINGS = [
-  { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", input:$("#verSwitch") },
-  { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   input:$("#nextSwitch") }
+  { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", def:true, input:$("#verSwitch") },
+  { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
   const q = new URLSearchParams(location.search).get(st.param);
   if (q === st.on || q === st.off) return q === st.on;
-  try { return localStorage.getItem(st.key) === st.on; } catch(_){ return false; }
+  try { const v = localStorage.getItem(st.key); if (v === st.on || v === st.off) return v === st.on; } catch(_){}
+  return st.def;
 }
 function applySetting(st, on){
   phone.classList.toggle(st.cls, on);
   st.input.checked = on;
+  phone.classList.toggle("v-custom", SETTINGS.some(x => x.input.checked !== x.def));
 }
 function openVersions(){
   verModal.classList.add("open"); verModal.setAttribute("aria-hidden", "false");
