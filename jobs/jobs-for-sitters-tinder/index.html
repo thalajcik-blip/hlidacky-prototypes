@@ -22,7 +22,8 @@
    - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
    - toasts at the top (A): under the filter controls, above the card; off (B): above the action buttons
    The New pill opens the category menu (New / Replied / Archived); the other two are
-   placeholders until their mockups arrive.
+   placeholders until their mockups arrive. The bell opens the notification settings
+   sheet (Figma Modal Window 3613:91378).
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -268,6 +269,48 @@ svg{display:block;flex:none}
 .v-toast-top .toast.show{transform:translate(-50%,0)}
 .toast button{color:#f6a8ae;font-weight:600}
 
+/* ---------- notification settings sheet (Figma 3613:91378) ---------- */
+.note-sheet{position:absolute;left:0;right:0;bottom:0;z-index:22;display:flex;flex-direction:column;gap:16px;
+  background:#fff;padding:48px 20px 20px;opacity:0;pointer-events:none;transform:translateY(18px);
+  transition:opacity .28s var(--ease),transform .34s var(--ease)}
+.note-sheet.open{opacity:1;pointer-events:auto;transform:none}
+.note-close{position:absolute;right:12px;top:12px;width:32px;height:32px;display:grid;place-items:center;color:var(--ink);opacity:.4}
+.note-head{display:flex;align-items:center;gap:8px}
+.note-head h2{margin:0;padding-top:4px;font-weight:400;font-size:24px;line-height:1.32;letter-spacing:-.2px}
+.note-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:16px}
+.f-group{position:relative;display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.f-label{padding:0 2px;font-size:16px;line-height:1.4}
+.field{display:flex;align-items:center;gap:8px;width:100%;height:52px;padding:0 16px 0 20px;text-align:left;
+  background:#fff;border:1px solid var(--line);border-radius:4px;font-size:16px;line-height:1.4;letter-spacing:.2px;color:var(--ink);
+  transition:border-color .15s,box-shadow .15s}
+.field span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.field svg{color:var(--pink);transition:transform .2s var(--ease)}
+.f-group.open .field{border-color:#6aafff;box-shadow:0 0 0 2px #cbdafc}
+.f-group.open .field svg{transform:rotate(180deg)}
+.opt-menu{position:absolute;left:0;right:0;top:100%;z-index:3;margin-top:6px;padding:8px 0;background:#fff;border-radius:12px;
+  box-shadow:0 8px 24px rgba(39,46,50,.16),0 1px 3px rgba(39,46,50,.10);
+  opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .16s var(--ease),transform .2s var(--ease)}
+.f-group.open .opt-menu{opacity:1;pointer-events:auto;transform:none}
+.opt{display:flex;align-items:center;width:100%;height:44px;padding:0 20px;font-size:16px;color:var(--ink);text-align:left}
+.opt.on{background:#ffecee}
+.extra{display:flex;flex-direction:column;gap:20px;padding-top:8px}
+.check-row{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.check-row input{position:absolute;opacity:0;pointer-events:none}
+.check-row .box{flex:none;width:24px;height:24px;border-radius:4px;border:1.5px solid #cdd2da;background:#fff;
+  display:grid;place-items:center;transition:background-color .15s,border-color .15s}
+.check-row .box svg{opacity:0;color:#fff;transition:opacity .15s}
+.check-row input:checked + .box{background:var(--pink);border-color:var(--pink)}
+.check-row input:checked + .box svg{opacity:1}
+.check-row input:focus-visible + .box{outline:2px solid var(--focus);outline-offset:2px}
+.check-row span{font-size:16px;line-height:24px;letter-spacing:-.32px;color:var(--ink-2)}
+.note-rule{height:1px;background:var(--line)}
+/* Soleil Light is not served here, so the note keeps the book weight */
+.note-p{margin:0;font-size:14px;line-height:1.5;letter-spacing:-.16px;color:var(--ink-2)}
+.note-p a{color:var(--pink);text-decoration:underline;text-underline-offset:2px}
+.note-foot{padding-top:8px}
+.note-save{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:52px;border-radius:4px;
+  background:var(--green);color:#fff;font-size:16px;line-height:22px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.16)}
+
 /* ---------- prototype versions modal ---------- */
 .ver-modal{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:0 20px;
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
@@ -340,7 +383,7 @@ svg{display:block;flex:none}
       <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="ctrl-right">
-      <button class="icon-btn" aria-label="Notifications" data-soon>
+      <button class="icon-btn" id="bell" aria-label="Notification settings" aria-haspopup="dialog">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.6 1.8H4.4L6 16.5Z"/><path d="M10 20.8a2.2 2.2 0 0 0 4 0"/></svg>
       </button>
       <button class="icon-btn" aria-label="Filters, 1 active" data-soon>
@@ -457,6 +500,50 @@ svg{display:block;flex:none}
       <button class="ver-done" id="verDone">Done</button>
     </div>
   </div>
+
+  <section class="note-sheet" id="noteSheet" role="dialog" aria-modal="true" aria-labelledby="noteTitle" aria-hidden="true">
+    <button class="note-close" id="noteClose" aria-label="Close">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+    </button>
+    <header class="note-head"><svg class="doodle" width="42" height="42" aria-hidden="true" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.1831 19.0167C33.5414 18.9 35.7581 18.2583 35.7581 18.2583L33.5997 17.85L35.4081 17.5583L37.1581 17.325L37.2747 16.975C35.6414 16.8 33.2497 16.5667 33.1914 16.5667C33.1331 16.5667 35.4664 16.1583 37.6247 15.8667V15.6333C38.3247 13.5917 37.0997 11.4333 35.0581 10.9667L13.5914 5.83333C11.6081 5.36666 9.56641 6.64999 9.15807 8.63333L8.04974 13.8833C9.91641 13.825 11.6664 14.4083 12.1331 14.4083C12.1331 14.4083 12.1914 14.4083 12.2497 14.4083C12.2497 14.4083 12.2497 14.4083 12.1331 14.4083C11.6081 14.4083 9.39141 14.8167 7.81641 15.05V15.4C8.51641 15.4 8.98307 15.5167 9.15807 15.5167C13.6497 15.4 8.22474 16.3917 7.46641 16.7417L5.71641 25.1417C5.24974 27.3 6.76641 29.3417 8.98307 29.575L29.6914 31.4417C31.3831 31.6167 33.0164 30.5667 33.5414 28.875L36.6331 19.1333C35.6997 19.1333 34.5914 19.0167 34.2414 18.9583L34.1831 19.0167Z" fill="#FFD5DA"/><path d="M31.3248 28.8167C33.1289 28.8167 34.5914 27.3541 34.5914 25.55C34.5914 23.7459 33.1289 22.2833 31.3248 22.2833C29.5206 22.2833 28.0581 23.7459 28.0581 25.55C28.0581 27.3541 29.5206 28.8167 31.3248 28.8167Z" fill="white"/><path d="M4.55054 24.5L30.5089 7.75833L30.0422 17.85C26.6005 18.2 23.9755 22.6333 25.3172 25.4917C26.6589 28.35 29.2255 29.3417 29.2255 29.3417L28.7005 34.3L20.8255 31.0917C20.8255 31.0917 16.6839 35.35 16.6839 35.0583C16.6839 34.7667 12.4255 27.7083 12.4255 27.7083L4.55054 24.4417V24.5Z" fill="white"/><path d="M6.29954 24.7333L30.3912 9.15833L29.8079 17.3833L29.1662 29.2833L28.6412 34.2417L20.7662 31.0333C20.7662 31.0333 16.5079 35.4083 16.6245 35C16.6829 34.65 12.3662 27.65 12.3662 27.65L6.24121 24.6167L6.29954 24.7333Z" fill="#FFF3CD"/><path d="M37.2755 24.0333L38.5588 23.3917L37.6255 21.1167L36.2255 21.5833C35.8755 21.0583 35.4088 20.5917 34.8838 20.2417L35.3505 18.8417L33.0755 17.9083L32.4338 19.1917C31.7921 19.075 31.1505 19.075 30.5088 19.1917L29.8671 17.9083L27.5921 18.8417L28.0588 20.2417C27.5338 20.5917 27.0671 21.0583 26.7171 21.5833L25.3171 21.1167L24.3838 23.3917L25.6671 24.0333C25.5505 24.675 25.5505 25.3167 25.6671 25.9583L24.3838 26.6L25.3171 28.875L26.7171 28.4083C27.0671 28.9333 27.5338 29.4 28.0588 29.75L27.5921 31.15L29.8671 32.0833L30.5088 30.8C31.1505 30.9167 31.7921 30.9167 32.4338 30.8L33.0755 32.0833L35.3505 31.15L34.8838 29.75C35.4088 29.4 35.8755 28.9333 36.2255 28.4083L37.6255 28.875L38.5588 26.6L37.2755 25.9583C37.3921 25.3167 37.3921 24.675 37.2755 24.0333ZM32.3755 27.125C31.1505 27.5917 29.8088 27.0667 29.2838 25.8417C28.8171 24.6167 29.3421 23.275 30.5671 22.75C31.7921 22.2833 33.1338 22.8083 33.6588 24.0333C34.1255 25.2583 33.6005 26.6 32.3755 27.125Z" fill="#FF9BA7"/><path d="M24.3838 23.3333L25.3171 21.0583L26.7171 21.525C27.1255 21 27.5921 20.5333 28.0588 20.1833L27.5921 18.7833L29.8671 17.85L30.5088 19.1333C31.1505 19.0167 31.7921 19.0167 32.4338 19.1333L33.0755 17.85L35.3505 18.7833L34.8838 20.1833C35.4088 20.5917 35.8755 21.0583 36.2255 21.525L37.6255 21.0583L38.5588 23.3333L37.2755 23.975C37.3921 24.6167 37.3921 25.2583 37.2755 25.9L38.5588 26.5417L37.6255 28.8167L36.2255 28.35C35.8171 28.875 35.4088 29.3417 34.8838 29.6917L35.3505 31.0917L33.0755 32.025L32.4338 30.7417C31.7921 30.8583 31.1505 30.8583 30.5088 30.7417L29.8671 32.025L27.5921 31.0917L28.0588 29.6917C27.5338 29.2833 27.0671 28.8167 26.7171 28.35L25.3171 28.8167L24.3838 26.5417L25.6671 25.9C25.5505 25.2583 25.5505 24.6167 25.6671 23.975L24.3838 23.3333Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.7589 33.3083V34.3C28.7005 34.3 16.9172 29.5167 16.9172 29.5167L26.0755 14.1167L12.4255 27.8833L4.55054 24.5L30.5089 7.75833L29.9255 16.5083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4255 27.8833L16.6839 35.0583L16.9755 29.5167" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.6831 35.0583L20.8248 31.15" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.78387 20.65L2.80054 21.875" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.7252 11.8417L6.94189 19.3083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.3423 25.8417C29.809 27.0667 31.209 27.5917 32.434 27.125C33.659 26.6 34.184 25.2583 33.7173 24.0333C33.2506 22.8083 31.8506 22.2833 30.6256 22.75C29.4006 23.2167 28.8756 24.6167 29.3423 25.8417Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.7163 3.09167L17.8496 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.7915 3.09167L19.6582 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.10007 32.9L7.2334 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.2334 32.9L9.10007 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M35.4077 33.3083V35.9917" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.0669 34.65H36.7502" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5917 7.99166C35.2334 7.99166 35.7001 7.46666 35.7001 6.88333C35.7001 6.29999 35.1751 5.77499 34.5917 5.77499C34.0084 5.77499 33.4834 6.29999 33.4834 6.88333C33.4834 7.46666 34.0084 7.99166 34.5917 7.99166Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.00848 11.6667C6.65015 11.6667 7.11681 11.1417 7.11681 10.5583C7.11681 9.975 6.59181 9.45 6.00848 9.45C5.42515 9.45 4.90015 9.975 4.90015 10.5583C4.90015 11.1417 5.42515 11.6667 6.00848 11.6667Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.2748 37.45C23.9165 37.45 24.3832 36.925 24.3832 36.3417C24.3832 35.7583 23.8582 35.2333 23.2748 35.2333C22.6915 35.2333 22.1665 35.7583 22.1665 36.3417C22.1665 36.925 22.6915 37.45 23.2748 37.45Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/></svg><h2 id="noteTitle">Notification settings</h2></header>
+
+    <div class="note-body">
+      <div class="f-group" id="emailGroup">
+        <span class="f-label" id="emailLabel">Email notifications</span>
+        <button class="field" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="emailLabel emailValue"><span class="f-val" id="emailValue">Immediately after publication</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="opt-menu" role="listbox" aria-labelledby="emailLabel">
+          <button class="opt on" role="option" aria-selected="true">Immediately after publication</button>
+          <button class="opt" role="option" aria-selected="false">Never</button>
+          <button class="opt" role="option" aria-selected="false">Summary once a day</button>
+          <button class="opt" role="option" aria-selected="false">Summary once a week</button>
+        </div>
+      </div>
+
+      <div class="f-group" id="mobileGroup">
+        <span class="f-label" id="mobileLabel">Mobile notifications</span>
+        <button class="field" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="mobileLabel mobileValue"><span class="f-val" id="mobileValue">Immediately after publication</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="opt-menu" role="listbox" aria-labelledby="mobileLabel">
+          <button class="opt on" role="option" aria-selected="true">Immediately after publication</button>
+          <button class="opt" role="option" aria-selected="false">Never</button>
+          <button class="opt" role="option" aria-selected="false">Summary once a day</button>
+          <button class="opt" role="option" aria-selected="false">Summary once a week</button>
+        </div>
+      </div>
+
+      <div class="extra">
+        <label class="check-row">
+          <input type="checkbox" id="farJobs" checked><i class="box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></i>
+          <span>Notify me also about jobs further away</span>
+        </label>
+        <div class="note-rule"></div>
+        <p class="note-p">You will receive job offers matching all your saved <a href="#" data-soon>addresses</a> and <a href="#" data-soon>profiles</a>.</p>
+      </div>
+    </div>
+
+    <footer class="note-foot">
+      <button class="note-save" id="noteSave"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Save changes</button>
+    </footer>
+  </section>
 
   <nav class="tabbar">
     <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M20 13.625C20 11.2031 18.6719 8.9375 16.5625 7.6875C14.4141 6.47656 11.7969 6.47656 9.6875 7.6875C7.53906 8.9375 6.25 11.2031 6.25 13.625C6.25 16.0859 7.53906 18.3516 9.6875 19.6016C11.7969 20.8125 14.4141 20.8125 16.5625 19.6016C18.6719 18.3516 20 16.0859 20 13.625ZM18.3984 19.7969C16.9922 21.0469 15.1172 21.75 13.125 21.75C8.63281 21.75 5 18.1172 5 13.625C5 9.17188 8.63281 5.5 13.125 5.5C17.5781 5.5 21.25 9.17188 21.25 13.625C21.25 15.6562 20.5078 17.4922 19.2969 18.9375L24.8047 24.4453C25.0391 24.6797 25.0391 25.1094 24.8047 25.3438C24.5703 25.5781 24.1406 25.5781 23.9062 25.3438L18.3984 19.7969Z"/></svg>Search</div>
@@ -576,7 +663,7 @@ function layout(){
     stage.style.transform = s < 1 ? `scale(${s})` : ""; G.scale = s < 1 ? s : 1;
   }
   const W = phone.clientWidth, H = phone.clientHeight;
-  const top = document.querySelector(".statusbar").offsetHeight;
+  const top = G.statusH = document.querySelector(".statusbar").offsetHeight;
   const nav = document.querySelector(".tabbar").offsetHeight;
   const ctrl = $("#controls");
   G.W = W; G.H = H; G.nav = nav;
@@ -664,6 +751,7 @@ function placeStatic(){
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
   empty.style.top = $("#blank").style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
   $("#catMenu").style.top = (catPill.offsetTop + catPill.offsetHeight + 8) + "px";
+  noteSheet.style.top = G.statusH + "px";                 // the sheet starts below the status bar
   // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
   $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
 }
@@ -1010,6 +1098,10 @@ showDesc.onclick = () => go("detail");
 document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && phone.classList.contains("menu-open")) return openMenu(false);
+  if (e.key === "Escape" && noteSheet.classList.contains("open")){
+    if (noteSheet.querySelector(".f-group.open")) return closeOptions();
+    return openNotes(false);
+  }
   if (e.key === "Escape" && verModal.classList.contains("open")) return closeVersions();
   if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
 });
@@ -1043,6 +1135,46 @@ $("#menuScrim").onclick = () => openMenu(false);
 catMenu.addEventListener("click", e => {
   const b = e.target.closest(".cat-item");
   if (b){ setCat(b.dataset.cat); openMenu(false); }
+});
+
+/* ---------------- notification settings (bell) ---------------- */
+// Figma Modal Window 3613:91378: a full-height sheet under the status bar with two selects.
+const noteSheet = $("#noteSheet");
+function closeOptions(){
+  noteSheet.querySelectorAll(".f-group").forEach(g => {
+    g.classList.remove("open");
+    g.querySelector(".field").setAttribute("aria-expanded", "false");
+  });
+}
+function openNotes(on){
+  noteSheet.classList.toggle("open", on);
+  noteSheet.setAttribute("aria-hidden", on ? "false" : "true");
+  if (!on) closeOptions();
+  else placeStatic();
+}
+$("#bell").onclick = () => openNotes(true);
+$("#noteClose").onclick = () => openNotes(false);
+$("#noteSave").onclick = () => { openNotes(false); toast("Notification settings saved"); };
+noteSheet.addEventListener("click", e => {
+  const field = e.target.closest(".field"), opt = e.target.closest(".opt");
+  if (field){
+    const g = field.closest(".f-group"), open = !g.classList.contains("open");
+    closeOptions();
+    g.classList.toggle("open", open);
+    field.setAttribute("aria-expanded", open ? "true" : "false");
+    return;
+  }
+  if (opt){
+    const g = opt.closest(".f-group");
+    g.querySelector(".f-val").textContent = opt.textContent;
+    g.querySelectorAll(".opt").forEach(o => {
+      o.classList.toggle("on", o === opt);
+      o.setAttribute("aria-selected", o === opt ? "true" : "false");
+    });
+    closeOptions();
+    return;
+  }
+  if (!e.target.closest(".opt-menu")) closeOptions();
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
