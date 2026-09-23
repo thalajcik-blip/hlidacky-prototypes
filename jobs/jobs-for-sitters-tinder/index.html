@@ -122,9 +122,10 @@ svg{display:block;flex:none}
   background:var(--pink);color:#fff;font-size:12.5px;display:flex;align-items:center;gap:4px;
   box-shadow:0 0 0 2px #fff}
 /* swipe stamps: 128x48 rects inside a 136x56 box (4px sides, 8px below for the shadow) */
-.stamp{position:absolute;bottom:19px;z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear}
-.stamp-no{left:12px}
-.stamp-yes{right:12px}
+/* centred rather than pinned to an edge: a stamp on the edge rides off screen with the
+   card, and at the commit distance only a third of it was still on the phone */
+.stamp{position:absolute;bottom:19px;left:50%;transform:translateX(-50%);
+  z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear}
 .m-reply .stamp{display:none}
 .hero-close{position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;color:#fff;
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease);filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
@@ -1107,6 +1108,7 @@ const DUR = 480;
 const PEEK = 9;           // how far each card behind the top one shows above it
 const LINE = 21;          // description line height
 const CTRL_PAD = 12;      // .controls padding-bottom: the feed scrolls under it, the stack ignores it
+const SWIPE = 100;        // commit distance for skip / reply; the stamp is fully opaque there
 
 /* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
 const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
@@ -1861,7 +1863,7 @@ card.addEventListener("pointermove", e => {
   if (drag.kind === "swipe"){
     if (drag.axis === "y") return;
     card.style.transform = `translate(${drag.dx}px, ${drag.dy * .25}px) rotate(${drag.dx / 20}deg)`;
-    const p = Math.max(-1, Math.min(1, drag.dx / 110));
+    const p = Math.max(-1, Math.min(1, drag.dx / SWIPE));
     btnYes.style.transform = `scale(${1 + Math.max(0, p) * .08})`;
     btnNo.style.transform  = `scale(${1 + Math.max(0, -p) * .08})`;
     // the stamp says what the swipe will do, and fades in with the distance
@@ -1870,7 +1872,7 @@ card.addEventListener("pointermove", e => {
   } else if (drag.axis === "x"){
     if (mode !== "detail") return;            // while replying the picture only closes the sheet
     card.style.transform = `translate(${drag.dx}px, ${drag.dy * .25}px) rotate(${drag.dx / 24}deg)`;
-    const p = Math.max(-1, Math.min(1, drag.dx / 110));
+    const p = Math.max(-1, Math.min(1, drag.dx / SWIPE));
     btnYes.style.transform = `scale(${1 + Math.max(0, p) * .08})`;
     btnNo.style.transform  = `scale(${1 + Math.max(0, -p) * .08})`;
     stampYes.style.opacity = Math.max(0, p);
@@ -1888,13 +1890,13 @@ function endDrag(e){
   try { card.releasePointerCapture(e.pointerId); } catch(_){}
   btnYes.style.transform = btnNo.style.transform = "";
   // only a card about to fly off to the left keeps its stamp
-  if (!(d.axis === "x" && d.dx < -100 && (d.kind === "swipe" || mode === "detail"))) clearStamps();
+  if (!(d.axis === "x" && d.dx < -SWIPE && (d.kind === "swipe" || mode === "detail"))) clearStamps();
 
   if (d.kind === "swipe"){
     if (!d.moved){ card.style.transform = ""; go("detail"); return; }
     if (d.axis === "y") return;
-    if (d.dx < -100){ decline(); return; }
-    if (d.dx > 100){
+    if (d.dx < -SWIPE){ decline(); return; }
+    if (d.dx > SWIPE){
       const back = card.animate([{transform:card.style.transform},{transform:"none"}], {duration:180, easing:EASE});
       card.style.transform = "";
       back.finished.then(() => go("reply"));
@@ -1907,9 +1909,9 @@ function endDrag(e){
 
   // sheet drag: sideways skips or replies from the detail, downwards closes it
   if (d.axis === "x" && mode === "detail"){
-    if (d.dx < -100){ decline(); return; }
+    if (d.dx < -SWIPE){ decline(); return; }
     const from = card.style.transform;
-    if (d.dx > 100){
+    if (d.dx > SWIPE){
       const back = card.animate([{transform:from},{transform:"none"}], {duration:180, easing:EASE});
       card.style.transform = "";
       back.finished.then(() => go("reply"));
