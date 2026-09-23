@@ -276,12 +276,19 @@ svg{display:block;flex:none}
   inset: 0;   /* top is set from JS, below the status bar */
   background: #FFF;
   z-index: 23;
-  display: none;
+  display: flex;
   flex-direction: column;
   min-height: 0;
+  /* shows and hides like the notification settings sheet */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
+  transition: opacity .28s var(--ease), transform .34s var(--ease);
 }
 .filters-modal.is-open {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
 }
 .filters-modal-header {
   display: flex;
