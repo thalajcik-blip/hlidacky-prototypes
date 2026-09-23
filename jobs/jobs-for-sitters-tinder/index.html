@@ -21,6 +21,8 @@
    - reply variant: while replying the photo shrinks and the job description stays above the reply
    - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
    - toasts at the top (A): under the filter controls, above the card; off (B): above the action buttons
+   The New pill opens the category menu (New / Replied / Archived); the other two are
+   placeholders until their mockups arrive.
    Font: Soleil (used if installed locally), Figtree as fallback.
    ------------------------------------------------------------------ */
 /* Soleil is served from the repo root (shared with components/animated-charts). */
@@ -228,13 +230,33 @@ svg{display:block;flex:none}
 .v-inline .c-rule{margin-top:14px}
 .v-inline .show-desc{display:none}
 
+/* ---------- category dropdown (New / Replied / Archived) ---------- */
+/* Figma 3611:31115: 160px wide, left-aligned with the pill, 8px below it, 36px rows */
+.pill-new .chev{transition:transform .22s var(--ease)}
+.menu-open .pill-new .chev{transform:rotate(180deg)}
+.menu-scrim{position:absolute;inset:0;z-index:14;pointer-events:none}
+.menu-open .menu-scrim{pointer-events:auto}
+.cat-menu{position:absolute;left:20px;z-index:15;width:160px;padding:8px 0;background:#fff;border-radius:12px;
+  box-shadow:0 8px 24px rgba(39,46,50,.16),0 1px 3px rgba(39,46,50,.10);
+  opacity:0;pointer-events:none;transform:translateY(-6px) scale(.98);transform-origin:24px 0;
+  transition:opacity .18s var(--ease),transform .22s var(--ease)}
+.menu-open .cat-menu{opacity:1;pointer-events:auto;transform:none}
+.cat-item{display:flex;align-items:center;gap:10px;width:100%;height:36px;padding:0 16px;font-size:16px;color:var(--ink)}
+.cat-item svg{color:var(--icon)}
+.cat-item.on{background:#ffecee}
+
 /* ---------- empty + toast ---------- */
 .empty{position:absolute;left:28px;right:28px;z-index:2;text-align:center;opacity:0;pointer-events:none;
   transition:opacity .35s var(--ease),transform .35s var(--ease);transform:translateY(8px)}
 .empty.show{opacity:1;pointer-events:auto;transform:none}
 .e-ico{width:64px;height:64px;border-radius:50%;background:#fdeeef;color:var(--pink);display:grid;place-items:center;margin:0 auto 16px}
-.empty h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
-.empty p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
+.empty h3,.blank h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
+.empty p,.blank p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
+/* placeholder screens for the other two categories, until their mockups arrive */
+.blank{position:absolute;left:28px;right:28px;z-index:2;text-align:center;display:none}
+.c-replied .blank,.c-archived .blank{display:block}
+.c-replied .card,.c-archived .card,.c-replied .peek,.c-archived .peek,
+.c-replied .act,.c-archived .act,.c-replied .empty,.c-archived .empty{display:none}
 .e-btn{height:44px;padding:0 20px;border-radius:8px;border:1px solid var(--line);border-bottom-width:3px;background:#fff;font-size:15.5px}
 
 .toast{position:absolute;left:50%;z-index:20;transform:translate(-50%,16px);opacity:0;pointer-events:none;
@@ -314,8 +336,8 @@ svg{display:block;flex:none}
   </header>
 
   <div class="controls" id="controls">
-    <button class="pill-new" data-soon>New
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    <button class="pill-new" id="catPill" aria-haspopup="menu" aria-expanded="false"><span id="catLabel">New</span>
+      <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="ctrl-right">
       <button class="icon-btn" aria-label="Notifications" data-soon>
@@ -326,6 +348,13 @@ svg{display:block;flex:none}
         <span class="count">1</span>
       </button>
     </div>
+  </div>
+
+  <div class="menu-scrim" id="menuScrim"></div>
+  <div class="cat-menu" id="catMenu" role="menu" aria-label="Job categories">
+    <button class="cat-item on" role="menuitemradio" aria-checked="true" data-cat="new"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.1992 0.421875C11.4453 0.585938 11.5547 0.886719 11.4727 1.1875L9.85938 6H13.168C13.6875 6 14.125 6.4375 14.125 6.95703C14.125 7.23047 14.0156 7.50391 13.7969 7.66797L5.59375 15.0234C5.375 15.2148 5.04688 15.2422 4.80078 15.0781C4.55469 14.9141 4.44531 14.6133 4.52734 14.3398L6.14062 9.5H2.83203C2.3125 9.5 1.875 9.0625 1.875 8.54297C1.875 8.26953 1.98438 8.02344 2.20312 7.83203L10.4062 0.476562C10.625 0.285156 10.9531 0.257812 11.1992 0.421875ZM3.76172 8.1875H7.04297C7.26172 8.1875 7.45312 8.29688 7.58984 8.46094C7.69922 8.625 7.75391 8.84375 7.67188 9.0625L6.55078 12.3984L12.2383 7.3125H8.95703C8.73828 7.3125 8.54688 7.20312 8.41016 7.03906C8.30078 6.875 8.27344 6.65625 8.32812 6.4375L9.44922 3.10156L3.76172 8.1875Z"/></svg>New</button>
+    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="replied"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.8125 4.25V3.12891L2.50391 6.4375L5.8125 9.74609V7.96875C5.8125 7.61328 6.11328 7.3125 6.46875 7.3125H9.75C11.5547 7.3125 13.0859 8.54297 13.5508 10.2109C13.6328 9.85547 13.6875 9.47266 13.6875 9.0625C13.6875 7.12109 12.1289 5.5625 10.1875 5.5625H6.46875C6.11328 5.5625 5.8125 5.26172 5.8125 4.90625V4.25ZM8 8.625H7.125V10.8125C7.125 11.168 6.90625 11.4688 6.57812 11.6055C6.25 11.7422 5.89453 11.6875 5.62109 11.4414L1.24609 7.06641C0.917969 6.71094 0.917969 6.16406 1.24609 5.80859L5.62109 1.43359C5.89453 1.1875 6.25 1.10547 6.57812 1.24219C6.90625 1.37891 7.125 1.70703 7.125 2.0625V4.25H10.1875C12.8398 4.25 15 6.41016 15 9.0625C15 11.1953 13.9609 12.5078 13.1133 13.2188C13.0039 13.3281 12.8945 13.4102 12.8125 13.4648C12.7031 13.5469 12.6211 13.6016 12.5664 13.6562C12.4297 13.7383 12.3477 13.793 12.2656 13.8203C12.1836 13.8477 12.1289 13.875 12.0469 13.875C11.7461 13.875 11.5 13.6289 11.5 13.3281C11.5 13.1367 11.6094 12.9727 11.7188 12.8359C11.7461 12.8359 11.7461 12.8086 11.7734 12.8086C11.8281 12.7539 11.9102 12.6719 11.9922 12.5625C12.0195 12.5078 12.0742 12.4258 12.1289 12.3438C12.2656 12.0977 12.375 11.7148 12.375 11.25C12.375 9.80078 11.1992 8.625 9.75 8.625H8Z"/></svg>Replied</button>
+    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="archived"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.8125 5.5625H3.1875V12.125C3.1875 12.3711 3.37891 12.5625 3.625 12.5625H12.375C12.6211 12.5625 12.8125 12.3711 12.8125 12.125V5.5625ZM12.5117 4.25L11.3906 2.69141C11.3086 2.58203 11.1719 2.5 11.0352 2.5H8.65625V4.25H12.5117ZM7.34375 4.25V2.5H4.96484C4.82812 2.5 4.69141 2.58203 4.60938 2.69141L3.48828 4.25H7.34375ZM2.20312 3.78516L3.54297 1.92578C3.87109 1.46094 4.39062 1.1875 4.96484 1.1875H11.0352C11.6094 1.1875 12.1289 1.46094 12.457 1.92578L13.7969 3.78516C14.0156 4.08594 14.125 4.44141 14.125 4.82422V12.125C14.125 13.082 13.332 13.875 12.375 13.875H3.625C2.66797 13.875 1.875 13.082 1.875 12.125V4.82422C1.875 4.44141 1.98438 4.08594 2.20312 3.78516Z"/></svg>Archived</button>
   </div>
 
   <div class="peek" id="peek2"><i class="peek-hero"></i></div>
@@ -387,6 +416,12 @@ svg{display:block;flex:none}
     <h3 id="emptyTitle">You're all caught up</h3>
     <p id="emptyText">New jobs usually come in the morning.<br>We'll let you know.</p>
     <button class="e-btn" id="replay">Replay demo</button>
+  </div>
+
+  <div class="blank" id="blank">
+    <div class="e-ico" id="blankIcon"></div>
+    <h3 id="blankTitle"></h3>
+    <p>The mockup for this screen is on its way.</p>
   </div>
 
   <div class="scrim" id="scrim"></div>
@@ -627,7 +662,8 @@ function placeStatic(){
   fitDesc();
   placePeeks();
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
-  empty.style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
+  empty.style.top = $("#blank").style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
+  $("#catMenu").style.top = (catPill.offsetTop + catPill.offsetHeight + 8) + "px";
   // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
   $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
 }
@@ -973,8 +1009,40 @@ $("#scrim").onclick = () => go("stack");
 showDesc.onclick = () => go("detail");
 document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
 document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && phone.classList.contains("menu-open")) return openMenu(false);
   if (e.key === "Escape" && verModal.classList.contains("open")) return closeVersions();
   if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
+});
+
+/* ---------------- category dropdown ---------------- */
+// New shows the stack; Replied and Archived are placeholders until their mockups arrive.
+const catPill = $("#catPill"), catMenu = $("#catMenu"), catLabel = $("#catLabel");
+const CATS = { new:"New", replied:"Replied", archived:"Archived" };
+const BIG = { replied:'<svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.8125 4.25V3.12891L2.50391 6.4375L5.8125 9.74609V7.96875C5.8125 7.61328 6.11328 7.3125 6.46875 7.3125H9.75C11.5547 7.3125 13.0859 8.54297 13.5508 10.2109C13.6328 9.85547 13.6875 9.47266 13.6875 9.0625C13.6875 7.12109 12.1289 5.5625 10.1875 5.5625H6.46875C6.11328 5.5625 5.8125 5.26172 5.8125 4.90625V4.25ZM8 8.625H7.125V10.8125C7.125 11.168 6.90625 11.4688 6.57812 11.6055C6.25 11.7422 5.89453 11.6875 5.62109 11.4414L1.24609 7.06641C0.917969 6.71094 0.917969 6.16406 1.24609 5.80859L5.62109 1.43359C5.89453 1.1875 6.25 1.10547 6.57812 1.24219C6.90625 1.37891 7.125 1.70703 7.125 2.0625V4.25H10.1875C12.8398 4.25 15 6.41016 15 9.0625C15 11.1953 13.9609 12.5078 13.1133 13.2188C13.0039 13.3281 12.8945 13.4102 12.8125 13.4648C12.7031 13.5469 12.6211 13.6016 12.5664 13.6562C12.4297 13.7383 12.3477 13.793 12.2656 13.8203C12.1836 13.8477 12.1289 13.875 12.0469 13.875C11.7461 13.875 11.5 13.6289 11.5 13.3281C11.5 13.1367 11.6094 12.9727 11.7188 12.8359C11.7461 12.8359 11.7461 12.8086 11.7734 12.8086C11.8281 12.7539 11.9102 12.6719 11.9922 12.5625C12.0195 12.5078 12.0742 12.4258 12.1289 12.3438C12.2656 12.0977 12.375 11.7148 12.375 11.25C12.375 9.80078 11.1992 8.625 9.75 8.625H8Z"/></svg>', archived:'<svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.8125 5.5625H3.1875V12.125C3.1875 12.3711 3.37891 12.5625 3.625 12.5625H12.375C12.6211 12.5625 12.8125 12.3711 12.8125 12.125V5.5625ZM12.5117 4.25L11.3906 2.69141C11.3086 2.58203 11.1719 2.5 11.0352 2.5H8.65625V4.25H12.5117ZM7.34375 4.25V2.5H4.96484C4.82812 2.5 4.69141 2.58203 4.60938 2.69141L3.48828 4.25H7.34375ZM2.20312 3.78516L3.54297 1.92578C3.87109 1.46094 4.39062 1.1875 4.96484 1.1875H11.0352C11.6094 1.1875 12.1289 1.46094 12.457 1.92578L13.7969 3.78516C14.0156 4.08594 14.125 4.44141 14.125 4.82422V12.125C14.125 13.082 13.332 13.875 12.375 13.875H3.625C2.66797 13.875 1.875 13.082 1.875 12.125V4.82422C1.875 4.44141 1.98438 4.08594 2.20312 3.78516Z"/></svg>' };
+function openMenu(on){
+  phone.classList.toggle("menu-open", on);
+  catPill.setAttribute("aria-expanded", on ? "true" : "false");
+}
+function setCat(id){
+  phone.classList.remove("c-new","c-replied","c-archived");
+  phone.classList.add("c-" + id);
+  catLabel.textContent = CATS[id];
+  catMenu.querySelectorAll(".cat-item").forEach(b => {
+    const on = b.dataset.cat === id;
+    b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false");
+  });
+  if (id !== "new"){
+    hideToast();
+    $("#blankIcon").innerHTML = BIG[id];
+    $("#blankTitle").textContent = CATS[id] + " jobs";
+  }
+  placeStatic();
+}
+catPill.onclick = () => openMenu(!phone.classList.contains("menu-open"));
+$("#menuScrim").onclick = () => openMenu(false);
+catMenu.addEventListener("click", e => {
+  const b = e.target.closest(".cat-item");
+  if (b){ setCat(b.dataset.cat); openMenu(false); }
 });
 
 /* ---------------- prototype versions (header entry point) ---------------- */
@@ -1099,6 +1167,7 @@ card.addEventListener("pointercancel", cancelDrag);
 /* ---------------- boot ---------------- */
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
 SETTINGS.forEach(st => applySetting(st, initialSetting(st)));
+setCat("new");
 setModeClass("stack");
 fillCard(job());
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!busy) placeStatic(); });
