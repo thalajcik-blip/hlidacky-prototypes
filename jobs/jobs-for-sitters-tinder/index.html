@@ -21,8 +21,8 @@
    - reply variant: while replying the photo shrinks and the job description stays above the reply
    - next job in detail: after Skip or Send reply in an open sheet, the next job opens in its detail
    - toasts at the top (A): under the filter controls, above the card; off (B): above the action buttons
-   The New pill opens the category menu (New / Replied / Archived); the other two are
-   placeholders until their mockups arrive. The bell opens the notification settings
+   The New pill opens the category menu (New / Replied / Archived): Replied is a scrolling
+   feed of answered jobs (Figma 3624:591971), Archived is still a placeholder. The bell opens the notification settings
    sheet (Figma Modal Window 3613:91378) and the filters button opens the filters modal
    ported from jobs-for-sitters (Figma 3562:126844); here it is a dummy that filters nothing.
    Font: Soleil (used if installed locally), Figtree as fallback.
@@ -46,6 +46,7 @@
   --ease:cubic-bezier(.22,.8,.24,1);
   --hero-h:160px;
   --hero-compact:56px;
+  --indigo:#7e5eff;
   --font:"Soleil","Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -232,6 +233,38 @@ svg{display:block;flex:none}
 .v-inline .c-rule{margin-top:14px}
 .v-inline .show-desc{display:none}
 
+/* ---------- replied feed (Figma 3624:591971) ---------- */
+/* A scrolling list of answered jobs: the card keeps the stack card's head and body, adds the
+   Replied flag, an ellipsis (context menu entry point) and a Show messages button. */
+.feed{position:absolute;left:0;right:0;z-index:2;display:none;flex-direction:column;gap:20px;
+  padding:16px 20px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.c-replied .feed{display:flex}
+.f-card{flex:none;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  box-shadow:0 4px 8px -4px rgba(42,53,57,.2)}
+.f-hero{position:relative;height:140px;padding:16px 0 16px 16px;display:flex;align-items:flex-start;justify-content:space-between}
+.f-hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.f-hero .chips{position:relative;left:auto;top:auto;gap:8px}
+.f-dots{position:relative;width:40px;height:40px;margin-right:8px;display:grid;place-items:center;color:#fff;
+  filter:drop-shadow(0 6px 16px rgba(42,53,57,.25))}
+.f-flag{position:absolute;right:0;bottom:20px;min-height:32px;padding:6px 12px;border-radius:4px 0 0 4px;
+  background:var(--indigo);color:#fff;font-size:14px;line-height:1.4;display:flex;align-items:center;
+  filter:drop-shadow(0 8px 12px rgba(42,53,57,.2))}
+.f-body{padding:20px 20px 12px;display:flex;flex-direction:column;gap:4px}
+.f-title{margin:0;font-weight:400;font-size:20px;line-height:1.32;letter-spacing:-.32px}
+.f-desc-wrap{position:relative;border-top:1px solid var(--line);padding:12px 20px 24px}
+.f-desc{margin:0;font-size:15px;line-height:21px;letter-spacing:-.16px;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.f-card.is-open .f-desc{display:block;-webkit-line-clamp:unset}
+.f-more{position:absolute;right:20px;bottom:24px;height:21px;padding-left:46px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),#fff 42px);
+  font-size:16px;line-height:21px;color:var(--pink);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(249,96,115,.55)}
+.f-card.is-open .f-more{display:none}
+.f-foot{padding:0 20px 16px}
+.f-msg{width:100%;padding:14px 24px 16px;border:1px solid var(--line);border-radius:4px;background:#fff;
+  font-size:16px;line-height:22px;color:var(--ink);box-shadow:inset 0 -3px 0 var(--line)}
+
 /* ---------- category dropdown (New / Replied / Archived) ---------- */
 /* Figma 3611:31115: 160px wide, left-aligned with the pill, 8px below it, 36px rows */
 .pill-new .chev{transition:transform .22s var(--ease)}
@@ -256,7 +289,7 @@ svg{display:block;flex:none}
 .empty p,.blank p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
 /* placeholder screens for the other two categories, until their mockups arrive */
 .blank{position:absolute;left:28px;right:28px;z-index:2;text-align:center;display:none}
-.c-replied .blank,.c-archived .blank{display:block}
+.c-archived .blank{display:block}
 .c-replied .card,.c-archived .card,.c-replied .peek,.c-archived .peek,
 .c-replied .act,.c-archived .act,.c-replied .empty,.c-archived .empty{display:none}
 .e-btn{height:44px;padding:0 20px;border-radius:8px;border:1px solid var(--line);border-bottom-width:3px;background:#fff;font-size:15.5px}
@@ -833,6 +866,8 @@ svg{display:block;flex:none}
     <button class="e-btn" id="replay">Replay demo</button>
   </div>
 
+  <div class="feed" id="feed"></div>
+
   <div class="blank" id="blank">
     <div class="e-ico" id="blankIcon"></div>
     <h3 id="blankTitle"></h3>
@@ -1154,7 +1189,8 @@ function layout(){
   const ctrl = $("#controls");
   G.W = W; G.H = H; G.nav = nav;
   G.cardTop = ctrl.offsetTop + ctrl.offsetHeight + 16 + 2 * PEEK;   // room for the two peeking cards
-  G.toastTop = ctrl.offsetTop + ctrl.offsetHeight + 8;                // just under the filter controls
+  G.ctrlBottom = ctrl.offsetTop + ctrl.offsetHeight;
+  G.toastTop = G.ctrlBottom + 8;                                      // just under the filter controls
   G.btnW = (W - 40 - 21) / 2;
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
@@ -1237,6 +1273,7 @@ function placeStatic(){
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
   empty.style.top = $("#blank").style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
   $("#catMenu").style.top = (catPill.offsetTop + catPill.offsetHeight + 8) + "px";
+  feedEl.style.top = G.ctrlBottom + "px"; feedEl.style.bottom = G.nav + "px";
   noteSheet.style.top = fModal.style.top = G.statusH + "px";   // both sheets start below the status bar
   // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
   $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
@@ -1592,6 +1629,46 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape" && verModal.classList.contains("open")) return closeVersions();
   if (e.key === "Escape" && (mode === "detail" || mode === "reply")) go("stack");
 });
+
+/* ---------------- replied feed ---------------- */
+// Jobs the sitter already answered. Nothing is wired up yet: the ellipsis is only the entry point
+// for a context menu that has no items, and Show messages does not lead anywhere either.
+const feedEl = $("#feed");
+const REPLIED = ["baby", "pet", "senior"];
+const DOTS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+function buildFeed(){
+  feedEl.innerHTML = REPLIED.map(id => {
+    const j = JOBS.find(x => x.id === id), v = VERT[j.v];
+    return `<article class="f-card" aria-label="Replied job: ${j.title}">
+      <div class="f-hero">
+        <img src="${IMG[j.v]}" alt="">
+        <div class="chips">${j.chips.map(c => `<span class="chip">${c}</span>`).join("")}</div>
+        <button class="f-dots" aria-label="More options">${DOTS}</button>
+        <span class="badge" style="background:${v.color}">${v.icon}${v.label}</span>
+        <span class="f-flag">Replied</span>
+      </div>
+      <div class="f-body">
+        <h2 class="f-title">${j.title}</h2>
+        <div class="meta">
+          <img class="avatar" alt="" src="assets/avatar-jana.jpg">
+          <span class="author">Jana P.</span>
+          <i class="dot" style="background:${v.color}"></i>
+          <span>${j.addr}</span>
+        </div>
+      </div>
+      <div class="f-desc-wrap">
+        <p class="f-desc">${j.desc}</p>
+        <button class="f-more">Read more</button>
+      </div>
+      <div class="f-foot"><button class="f-msg">Show messages</button></div>
+    </article>`;
+  }).join("");
+}
+feedEl.addEventListener("click", e => {
+  if (e.target.closest(".f-more")) return e.target.closest(".f-card").classList.add("is-open");
+  if (e.target.closest(".f-dots, .f-msg")) return toast("Not part of this prototype");
+});
+buildFeed();
 
 /* ---------------- category dropdown ---------------- */
 // New shows the stack; Replied and Archived are placeholders until their mockups arrive.
