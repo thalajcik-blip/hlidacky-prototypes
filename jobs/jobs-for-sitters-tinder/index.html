@@ -278,7 +278,9 @@ svg{display:block;flex:none}
 .menu-open .cat-menu{opacity:1;pointer-events:auto;transform:none}
 .cat-item{display:flex;align-items:center;gap:10px;width:100%;height:36px;padding:0 16px;font-size:16px;color:var(--ink)}
 .cat-item svg{color:var(--icon)}
-.cat-item.on{background:#ffecee}
+/* the tint marks the row under the pointer, not the current category (the pill already names it) */
+.cat-item:active,.cat-item:focus-visible{background:#ffecee;outline:0}
+@media (hover:hover){.cat-item:hover{background:#ffecee}}
 
 /* ---------- empty + toast ---------- */
 .empty{position:absolute;left:28px;right:28px;z-index:2;text-align:center;opacity:0;pointer-events:none;
