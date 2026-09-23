@@ -15,7 +15,7 @@
    Hlídačky · Jobs for sitters · Tinder-like UI
    Interaction prototype (mobile): stack card → detail sheet / reply sheet
    Source: Figma "Jobs" → Jobs for Sitters – Tinder-like UI
-     stack  3603:1980 · detail 3574:133099 · reply 3574:203565
+     stack  3603:1980 · detail 3574:133099 · reply 3574:203565 · swipe stamps 3624:594398/594412
      cards  Job Tinder Card 3571:130782 / 130832 / 130910 / 130949
    Prototype versions (gear button in the header), all on by default:
    - reply variant: while replying the photo shrinks and the job description stays above the reply
@@ -121,6 +121,11 @@ svg{display:block;flex:none}
 .badge{position:absolute;left:14px;bottom:-11px;z-index:2;height:21px;padding:0 8px 0 6px;border-radius:11px;
   background:var(--pink);color:#fff;font-size:12.5px;display:flex;align-items:center;gap:4px;
   box-shadow:0 0 0 2px #fff}
+/* swipe stamps: 128x48 rects inside a 136x56 box (4px sides, 8px below for the shadow) */
+.stamp{position:absolute;bottom:19px;z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear}
+.stamp-no{left:12px}
+.stamp-yes{right:12px}
+.expanded .stamp{display:none}
 .hero-close{position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;color:#fff;
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease);filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
 
@@ -816,6 +821,8 @@ svg{display:block;flex:none}
     <div class="hero" id="hero">
       <div class="hero-img"><img id="heroImg" alt=""></div>
       <div class="chips" id="chips"></div>
+      <img class="stamp stamp-no" src="assets/stamp-not-interested.svg" alt="" aria-hidden="true">
+      <img class="stamp stamp-yes" src="assets/stamp-interested.svg" alt="" aria-hidden="true">
       <button class="hero-close" id="heroClose" aria-label="Close">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
       </button>
@@ -1090,7 +1097,7 @@ const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
 const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
 const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
-const heroEl = $("#hero");
+const heroEl = $("#hero"), stampNo = $(".stamp-no"), stampYes = $(".stamp-yes");
 
 const PINK = "rgb(249, 96, 115)", GREEN = "rgb(11, 168, 37)";
 const SH_PINK  = "0px 8px 20px 0px rgba(249, 96, 115, 0.28), inset 0px 0px 0px 0px rgba(10, 141, 29, 0)";
@@ -1329,6 +1336,7 @@ function fillCard(j){
   addrEl.textContent = j.addr;
   descEl.textContent = j.desc;
   descEl.scrollTop = 0;
+  clearStamps();
   card.setAttribute("aria-label", "Job: " + j.title);
   descWrap.scrollTop = 0;
   // composer belongs to this job
@@ -1856,6 +1864,9 @@ card.addEventListener("pointermove", e => {
     const p = Math.max(-1, Math.min(1, drag.dx / 110));
     btnYes.style.transform = `scale(${1 + Math.max(0, p) * .08})`;
     btnNo.style.transform  = `scale(${1 + Math.max(0, -p) * .08})`;
+    // the stamp says what the swipe will do, and fades in with the distance
+    stampYes.style.opacity = Math.max(0, p);
+    stampNo.style.opacity = Math.max(0, -p);
   } else {
     const d = Math.max(0, drag.dy);
     card.style.transform = `translateY(${d}px)`;
@@ -1868,6 +1879,7 @@ function endDrag(e){
   const d = drag; drag = null;
   try { card.releasePointerCapture(e.pointerId); } catch(_){}
   btnYes.style.transform = btnNo.style.transform = "";
+  if (!(d.kind === "swipe" && d.dx < -100)) clearStamps();   // only the card flying off to the left keeps its stamp
 
   if (d.kind === "swipe"){
     if (!d.moved){ card.style.transform = ""; go("detail"); return; }
@@ -1896,11 +1908,12 @@ function endDrag(e){
   }
 }
 // The browser took the gesture over (a vertical scroll of the description): spring back, never treat it as a tap.
+function clearStamps(){ stampNo.style.opacity = stampYes.style.opacity = ""; }
 function cancelDrag(){
   if (!drag) return;
   const d = drag; drag = null;
   const cur = card.style.transform;
-  card.style.transform = ""; btnYes.style.transform = btnNo.style.transform = "";
+  card.style.transform = ""; btnYes.style.transform = btnNo.style.transform = ""; clearStamps();
   if (d.kind === "sheet"){ $("#scrim").style.opacity = ""; showDesc.style.transform = ""; }
   if (d.moved && cur) card.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE});
 }
