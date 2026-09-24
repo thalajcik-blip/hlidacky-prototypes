@@ -247,6 +247,18 @@ svg{display:block;flex:none}
 .v-inline .c-rule{margin-top:14px}
 .v-inline .show-desc{display:none}
 
+/* ---------- simplified version: what the current Hotwire Native app can build ---------- */
+/* The app only swaps the web content between its native top bar (status bar + Jobs) and its native
+   tab bar, so nothing may cover either of them. Both bars sit above all web content, and the detail
+   sheet, its scrim and the two modals are fitted in between (the numbers come from layout()). */
+.v-simple .statusbar,.v-simple .appbar{position:relative;z-index:25;background:#fff}
+.v-simple .tabbar{z-index:25}
+/* over the tab bar the buttons keep 22px below them instead of the 42px the home indicator needs,
+   so the room kept free under the text shrinks by the same 20px */
+.v-simple.m-detail .desc-wrap{padding-bottom:92px}
+.v-simple .composer{padding-bottom:150px}
+.v-simple.v-inline .composer{padding-bottom:103px}
+
 /* ---------- replied feed (Figma 3624:591971) ---------- */
 /* A scrolling list of answered jobs: the card keeps the stack card's head and body, adds the
    Replied flag, an ellipsis (context menu entry point) and a Show messages button. */
@@ -925,6 +937,10 @@ svg{display:block;flex:none}
         <span><b>Toasts at the top</b><small>Undo and confirmation messages appear under the filters, above the job card. Off: above the Skip and Reply buttons.</small></span>
         <input type="checkbox" role="switch" id="toastSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
+      <label class="ver-row">
+        <span><b>Simplified version</b><small>What the current Hotwire Native app can build: the job detail, notification settings and filters open between the top bar and the tab bar, which both stay visible.</small></span>
+        <input type="checkbox" role="switch" id="simpleSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
   </div>
@@ -1217,15 +1233,23 @@ function layout(){
   G.toastTop = ctrlEnd + 8;                                           // just under the filter controls
   G.btnW = (W - 40 - 21) / 2;
   G.stackBtnTop = H - nav - 17 - 50;
-  G.S = Math.max(top + 20, H - 720);            // sheet top
-  G.detailBtnTop = H - 92;
-  G.sendTop = H - (inline() ? 94 : 141);   // the reply variant has no Show job description link under Send
-  G.linkTop = H - 66;
+  const appbar = document.querySelector(".appbar");
+  G.webTop = appbar.offsetTop + appbar.offsetHeight;   // where the web content starts, under the native top bar
+  // The sheet runs down to the phone's bottom edge, or in the simplified version to the tab bar,
+  // and starts 32px under the top bar there (Figma: 124px on the 787px frame).
+  G.B = simplified() ? H - nav : H;
+  G.S = simplified() ? G.webTop + 32 : Math.max(top + 20, H - 720);   // sheet top
+  // everything at the foot of the sheet is laid out from here: 20px lower over the tab bar,
+  // which needs no room for the home indicator
+  const foot = simplified() ? G.B + 20 : H;
+  G.detailBtnTop = foot - 92;
+  G.sendTop = foot - (inline() ? 94 : 141);   // the reply variant has no Show job description link under Send
+  G.linkTop = foot - 66;
 }
 
 function cardGeom(m){
   if (m === "stack" || m === "gone") return { left:20, top:G.cardTop, width:G.W - 40, height:null, r:"12px" };
-  return { left:0, top:G.S, width:G.W, height:G.H - G.S, r:"20px 20px 0px 0px" };
+  return { left:0, top:G.S, width:G.W, height:G.B - G.S, r:"20px 20px 0px 0px" };
 }
 function btnGeom(m){
   const L2 = 20 + G.btnW + 21;
@@ -1281,6 +1305,8 @@ const inline = () => phone.classList.contains("v-inline");
 const nextInDetail = () => phone.classList.contains("v-next");
 // toasts under the filter controls (A) instead of above the action buttons (B)
 const toastAtTop = () => phone.classList.contains("v-toast-top");
+// nothing covers the native top bar or tab bar (the current Hotwire Native app)
+const simplified = () => phone.classList.contains("v-simple");
 // the hero is shorter while replying in the variant: animate its height along with the card
 function animateHero(h0, duration){
   const h1 = heroEl.offsetHeight;
@@ -1298,7 +1324,12 @@ function placeStatic(){
   empty.style.top = (midTop + (midBottom - midTop) / 2 - 110) + "px";
   $("#catMenu").style.top = (catPill.offsetTop + catPill.offsetHeight + 8) + "px";
   feedEl.style.top = G.ctrlBottom + "px"; feedEl.style.bottom = G.nav + "px";
-  noteSheet.style.top = fModal.style.top = G.statusH + "px";   // both sheets start below the status bar
+  // both sheets start below the status bar; in the simplified version the web view ends at the
+  // native bars, so they and the scrim stay between the top bar and the tab bar
+  const scrim = $("#scrim"), simple = simplified();
+  noteSheet.style.top = fModal.style.top = (simple ? G.webTop : G.statusH) + "px";
+  noteSheet.style.bottom = fModal.style.bottom = scrim.style.bottom = simple ? G.nav + "px" : "";
+  scrim.style.top = simple ? G.webTop + "px" : "";
   // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
   $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
 }
@@ -1554,7 +1585,7 @@ function openNextDetail(n){
   mode = "detail"; setModeClass("detail");
   fillCard(job());
   placeStatic(); showPeeks(false);
-  const a = card.animate([{transform:`translateY(${G.H - G.S}px)`},{transform:"none"}], {duration:460, easing:EASE});
+  const a = card.animate([{transform:`translateY(${G.B - G.S}px)`},{transform:"none"}], {duration:460, easing:EASE});
   [btnNo, btnYes].forEach(b => b.animate([{opacity:0, transform:"translateY(16px)"},{opacity:1, transform:"none"}], {duration:300, delay:180, easing:EASE, fill:"backwards"}));
   return a.finished;
 }
@@ -1844,7 +1875,8 @@ noteSheet.addEventListener("click", e => {
 const SETTINGS = [
   { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", def:true, input:$("#verSwitch") },
   { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") },
-  { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") }
+  { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") },
+  { cls:"v-simple", key:"jobs-tinder-simplified",    param:"simple",  on:"on",     off:"off",     def:false, input:$("#simpleSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
