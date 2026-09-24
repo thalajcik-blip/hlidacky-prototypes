@@ -279,9 +279,15 @@ svg{display:block;flex:none}
   text-decoration-color:rgba(249,96,115,.55)}
 .f-card.is-open .f-more{display:none}
 .f-foot{padding:0 20px 16px}
-/* archived: the photo loses its colour, the flag turns white and there is no button */
+/* archived: the photo loses its colour, the flag turns white and the footer is a plain Unarchive link */
 .f-card.is-archived .f-hero > img{filter:grayscale(1)}
 .f-card.is-archived .f-flag{background:#fff;color:var(--ink-2)}
+.f-unarchive{display:flex;align-items:center;justify-content:center;gap:2px;width:100%;height:22px;
+  font-size:16px;color:#899197}
+.f-unarchive svg{flex:none}
+.f-unarchive span{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(137,145,151,.5)}
+.f-card.is-leaving{pointer-events:none}
+.f-empty{margin:0;padding:48px 0;text-align:center;font-size:15px;line-height:21px;color:var(--muted)}
 .f-msg{width:100%;padding:14px 24px 16px;border:1px solid var(--line);border-radius:4px;background:#fff;
   font-size:16px;line-height:22px;color:var(--ink);box-shadow:inset 0 -3px 0 var(--line)}
 
@@ -1618,7 +1624,7 @@ function undo(){
 }
 
 function replay(){
-  hideToast(); busy = false; lastDeclined = null;
+  hideToast(); busy = false; lastDeclined = null; unarchived.clear();
   Object.keys(CS).forEach(k => delete CS[k]);
   document.querySelectorAll(".phone > .card:not(#card)").forEach(n => n.remove());
   btnYes.classList.remove("sending","done");
@@ -1659,13 +1665,18 @@ document.addEventListener("keydown", e => {
 const feedEl = $("#feed");
 const FEED_JOBS = ["baby", "pet", "senior"];
 const FEED_FLAG = { replied:"Replied", archived:"Declined" };
+const UNARCHIVE = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M9.34384 12.6758V12.6484C9.01572 13.0586 8.41416 13.1953 7.94931 12.9219L4.75009 11.0898V12.2109C4.75009 12.6211 4.96884 12.9766 5.32431 13.168L9.34384 15.4102V12.6758ZM9.15244 10.0234L4.25791 7.31641L3.43759 8.84766L8.38681 11.6641L9.15244 10.0234ZM5.24228 6.35938L10.0001 9.01172L14.7579 6.35938L10.5196 4.00781C10.1915 3.84375 9.80869 3.84375 9.48056 4.00781L5.24228 6.35938ZM16.5626 8.62891V12.2109C16.5626 13.0859 16.0977 13.9063 15.3321 14.3164L11.1759 16.6406C10.4376 17.0508 9.56259 17.0508 8.82431 16.6406L4.66806 14.3164C3.90244 13.9063 3.43759 13.0859 3.43759 12.2109V10.3516L2.61728 9.88672C2.09775 9.58594 1.90634 8.92969 2.17978 8.41016L3.32822 6.27734C3.51962 5.94922 3.79306 5.67578 4.12119 5.48438L8.82431 2.85938C9.56259 2.44922 10.4376 2.44922 11.1759 2.85938L15.9063 5.51172C16.2071 5.67578 16.4806 5.92188 16.6446 6.22266L17.7931 8.10938C17.9571 8.41016 17.8751 8.82031 17.547 9.01172C17.2462 9.17578 16.836 9.09375 16.6446 8.76563L16.5626 8.62891ZM10.6563 10.1328V15.4102L14.6759 13.168C15.0313 12.9766 15.2501 12.6211 15.2501 12.2109V7.58984L10.6563 10.1328Z" fill="#6C757D"/></svg>';
 const DOTS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+// Jobs taken out of Archived with Unarchive. The feed is a sample list, so this only lasts until Replay.
+const unarchived = new Set();
 // cat is "replied" (answered, with a Show messages button) or "archived" (declined, greyed out)
 function buildFeed(cat){
   const archived = cat === "archived";
-  feedEl.innerHTML = FEED_JOBS.map(id => {
+  const ids = archived ? FEED_JOBS.filter(id => !unarchived.has(id)) : FEED_JOBS;
+  if (!ids.length){ feedEl.innerHTML = '<p class="f-empty">No archived jobs</p>'; return; }
+  feedEl.innerHTML = ids.map(id => {
     const j = JOBS.find(x => x.id === id), v = VERT[j.v];
-    return `<article class="f-card${archived ? " is-archived" : ""}" aria-label="${FEED_FLAG[cat]} job: ${j.title}">
+    return `<article class="f-card${archived ? " is-archived" : ""}" data-id="${id}" aria-label="${FEED_FLAG[cat]} job: ${j.title}">
       <div class="f-hero">
         <img src="${IMG[j.v]}" alt="">
         <div class="chips">${j.chips.map(c => `<span class="chip">${c}</span>`).join("")}</div>
@@ -1686,12 +1697,31 @@ function buildFeed(cat){
         <p class="f-desc">${j.desc}</p>
         <button class="f-more">Read more</button>
       </div>
-      ${archived ? "" : `<div class="f-foot"><button class="f-msg">Show messages</button></div>`}
+      <div class="f-foot">${archived
+        ? `<button class="f-unarchive" aria-label="Unarchive job: ${j.title}">${UNARCHIVE}<span>Unarchive</span></button>`
+        : `<button class="f-msg">Show messages</button>`}</div>
     </article>`;
   }).join("");
 }
+// Unarchive: the card closes up and leaves the list, the sitter stays in Archived. The job goes back
+// to New in principle only, the stack is not touched (the feeds are sample lists, not linked to it).
+function unarchive(cardEl){
+  if (cardEl.classList.contains("is-leaving")) return;
+  cardEl.classList.add("is-leaving");
+  unarchived.add(cardEl.dataset.id);
+  toast("Moved to New");
+  const h = cardEl.offsetHeight;
+  cardEl.animate([
+    { height:h + "px", marginBottom:"0px", borderWidth:"1px", opacity:1 },
+    { height:"0px", marginBottom:"-20px", borderWidth:"0px", opacity:0 }
+  ], { duration:340, easing:EASE, fill:"forwards" }).finished.then(() => {
+    cardEl.remove();
+    if (!feedEl.querySelector(".f-card")) feedEl.innerHTML = '<p class="f-empty">No archived jobs</p>';
+  });
+}
 feedEl.addEventListener("click", e => {
   if (e.target.closest(".f-more")) return e.target.closest(".f-card").classList.add("is-open");
+  if (e.target.closest(".f-unarchive")) return unarchive(e.target.closest(".f-card"));
   if (e.target.closest(".f-dots, .f-msg")) return toast("Not part of this prototype");
 });
 buildFeed("replied");
