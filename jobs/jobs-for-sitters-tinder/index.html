@@ -263,7 +263,13 @@ svg{display:block;flex:none}
 .v-simple.m-detail .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:134px;pointer-events:none;
   background:linear-gradient(rgba(255,255,255,0),#fff 54px);opacity:0;transition:opacity .2s var(--ease)}
 .v-simple.m-detail .card.more-below::after{opacity:1}
-.v-simple.v-inline .composer{padding-bottom:103px}
+/* The reply with the job description above it showed only 1.9 lines of the reply between the bars.
+   To get 5 on the 375x787 frame: the description keeps 4 lines instead of 6 (it still scrolls),
+   the rule and Your reply move up 9px, and the reply box ends 15px above Send instead of 29px. */
+.v-simple.v-inline.m-reply .desc{max-height:calc(4 * 21px)}
+.v-simple.v-inline .c-rule{margin-top:10px}
+.v-simple.v-inline .c-head{margin-top:12px}
+.v-simple.v-inline .composer{padding-bottom:89px}
 /* Between the bars the reply without the job description showed only 1.5 lines of the reply.
    To get 5 on the 375x787 frame: the photo is 40px shorter, Send sits half as far above Show job
    description (see G.sendTop), the reply box ends 16px above Send instead of 29px, and the rule
