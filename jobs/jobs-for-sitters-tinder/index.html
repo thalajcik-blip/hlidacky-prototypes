@@ -256,8 +256,15 @@ svg{display:block;flex:none}
 /* over the tab bar the buttons keep 22px below them instead of the 42px the home indicator needs,
    so the room kept free under the text shrinks by the same 20px */
 .v-simple.m-detail .desc-wrap{padding-bottom:92px}
-.v-simple .composer{padding-bottom:150px}
 .v-simple.v-inline .composer{padding-bottom:103px}
+/* Between the bars the reply without the job description showed only 1.5 lines of the reply.
+   To get 5 on the 375x787 frame: the photo is 40px shorter, Send sits half as far above Show job
+   description (see G.sendTop), the reply box ends 16px above Send instead of 29px, and the rule
+   and Your reply move up 12px. */
+.v-simple:not(.v-inline).m-reply .hero{height:120px}
+.v-simple:not(.v-inline) .composer{padding-bottom:125px}
+.v-simple:not(.v-inline) .c-rule{margin-top:16px}
+.v-simple:not(.v-inline) .c-head{margin-top:12px}
 
 /* ---------- replied feed (Figma 3624:591971) ---------- */
 /* A scrolling list of answered jobs: the card keeps the stack card's head and body, adds the
@@ -1243,7 +1250,9 @@ function layout(){
   // which needs no room for the home indicator
   const foot = simplified() ? G.B + 20 : H;
   G.detailBtnTop = foot - 92;
-  G.sendTop = foot - (inline() ? 94 : 141);   // the reply variant has no Show job description link under Send
+  // the reply variant has no Show job description link under Send; between the bars Send sits
+  // half as far above that link (11px instead of 23px) to give the reply box the room
+  G.sendTop = foot - (inline() ? 94 : simplified() ? 129 : 141);
   G.linkTop = foot - 66;
 }
 
