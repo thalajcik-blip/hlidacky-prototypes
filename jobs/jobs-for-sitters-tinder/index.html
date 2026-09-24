@@ -127,6 +127,12 @@ svg{display:block;flex:none}
 .stamp{position:absolute;bottom:19px;left:50%;transform:translateX(-50%);
   z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear}
 .m-reply .stamp{display:none}
+/* entry point for the per-job actions (Figma 3622:591665): a 40px icon button centred on the picture's
+   bottom edge, 15px from the sheet's right edge; only the open detail carries it */
+.hero-more{position:absolute;right:14px;bottom:-20px;z-index:2;width:40px;height:40px;border-radius:7px;
+  background:#fff;border:1px solid var(--line);border-bottom-width:3px;display:grid;place-items:center;color:var(--ink);
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.m-detail .hero-more{opacity:1;pointer-events:auto;transition-delay:.12s}
 .hero-close{position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;color:#fff;
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease);filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
 
@@ -209,11 +215,6 @@ svg{display:block;flex:none}
   text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(249,96,115,.55);
   opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
 .send-face .show-desc{opacity:1;pointer-events:auto;transition-delay:.12s}
-/* the open sheet carries its own link under the buttons: the way into the per-job actions */
-.more-actions{position:absolute;z-index:12;left:0;right:0;height:26px;text-align:center;font-size:17px;color:#899197;
-  text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(137,145,151,.5);
-  opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
-.m-detail .more-actions{opacity:1;pointer-events:auto;transition-delay:.12s}
 
 /* ---------- expanded (sheet) ---------- */
 .scrim{position:absolute;inset:0;z-index:8;background:rgba(21,25,29,.46);opacity:0;pointer-events:none;
@@ -225,11 +226,7 @@ svg{display:block;flex:none}
 .expanded .hero-close{opacity:1;pointer-events:auto;transition-delay:.12s}
 .expanded .rule{opacity:0}
 .expanded .desc,.collapsing .desc{max-height:none;overflow:visible;-webkit-mask-image:none;mask-image:none}
-.m-detail .desc-wrap{flex:1;overflow:auto;padding-bottom:156px;-webkit-overflow-scrolling:touch;
-  /* the description stops 21px short of the buttons: behind them it was unreadable anyway, and it
-     used to run straight through the Other actions link below them */
-  -webkit-mask-image:linear-gradient(#000 calc(100% - 156px),transparent calc(100% - 135px));
-  mask-image:linear-gradient(#000 calc(100% - 156px),transparent calc(100% - 135px))}
+.m-detail .desc-wrap{flex:1;overflow:auto;padding-bottom:112px;-webkit-overflow-scrolling:touch}
 .m-detail .desc-wrap::-webkit-scrollbar{display:none}
 .m-reply .desc-wrap{display:none}
 .m-reply .rule{display:none}
@@ -843,6 +840,9 @@ svg{display:block;flex:none}
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
       </button>
       <span class="badge" id="badge"></span>
+      <button class="hero-more" id="heroMore" aria-label="More options" data-soon>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.04" cy="8" r="1.65"/><circle cx="8" cy="8" r="1.65"/><circle cx="12.96" cy="8" r="1.65"/></svg>
+      </button>
     </div>
 
     <div class="body" id="body">
@@ -905,7 +905,6 @@ svg{display:block;flex:none}
     <span class="face f-done"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Sent</span>
   </button>
   <button class="show-desc" id="showDesc">Show job description</button>
-  <button class="more-actions" id="moreBtn" data-soon>Other actions</button>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAct" hidden>Undo</button></div>
 
@@ -1110,8 +1109,7 @@ const $ = s => document.querySelector(s);
 const phone = $("#phone"), stage = $("#stage"), card = $("#card");
 const heroImg = $("#heroImg"), chipsEl = $("#chips"), badgeEl = $("#badge"), titleEl = $("#title");
 const dotEl = $("#dot"), addrEl = $("#addr"), descEl = $("#desc");
-const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc"), moreBtn = $("#moreBtn");
-const bottomLinks = [showDesc, moreBtn];          // both sit under the buttons and travel with them
+const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
 const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
 const peek1 = $("#peek1"), peek2 = $("#peek2"), empty = $("#empty");
@@ -1220,10 +1218,9 @@ function layout(){
   G.btnW = (W - 40 - 21) / 2;
   G.stackBtnTop = H - nav - 17 - 50;
   G.S = Math.max(top + 20, H - 720);            // sheet top
-  G.detailBtnTop = H - 136;                // the sheet keeps a line of links under its buttons
+  G.detailBtnTop = H - 92;
   G.sendTop = H - (inline() ? 94 : 141);   // the reply variant has no Show job description link under Send
   G.linkTop = H - 66;
-  G.moreTop = G.detailBtnTop + 50 + 19;    // Other actions, 19px under the buttons
 }
 
 function cardGeom(m){
@@ -1295,7 +1292,6 @@ function placeStatic(){
   const cg = cardGeom(mode); setBox(card, cg);
   const b = btnGeom(mode); setBox(btnNo, b.no); setBox(btnYes, b.yes);
   showDesc.style.top = G.linkTop + "px";
-  moreBtn.style.top = G.moreTop + "px";
   fitDesc();
   placePeeks();
   const midTop = G.cardTop, midBottom = G.stackBtnTop;
@@ -1519,7 +1515,7 @@ function flySheet(dir, keepScrim){
   ], { duration:420, easing:"cubic-bezier(.45,0,.8,.45)", fill:"forwards" });
   [btnNo, btnYes].forEach(b => b.animate([{opacity:getComputedStyle(b).opacity},{opacity:0}], {duration:200, fill:"forwards"}));
   if (!keepScrim) $("#scrim").style.opacity = "0";
-  bottomLinks.forEach(l => l.style.opacity = "0");
+  showDesc.style.opacity = "0";
   peek1.style.opacity = peek2.style.opacity = "0";
   return a.finished;
 }
@@ -1528,7 +1524,7 @@ function bringNext(n){
   idx = n;
   [card, heroEl, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
   card.style.transform = "";
-  $("#scrim").style.opacity = ""; bottomLinks.forEach(l => l.style.opacity = "");
+  $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
   btnYes.classList.remove("sending","done");
 
   if (idx >= JOBS.length){ toGone(); return Promise.resolve(); }
@@ -1550,7 +1546,7 @@ function openNextDetail(n){
   idx = n;
   [card, heroEl, btnNo, btnYes, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
   card.style.transform = "";
-  $("#scrim").style.opacity = ""; bottomLinks.forEach(l => l.style.opacity = "");
+  $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
   btnYes.classList.remove("sending","done");
 
   if (idx >= JOBS.length){ toGone(); return Promise.resolve(); }
@@ -1629,7 +1625,7 @@ function replay(){
   document.querySelectorAll(".phone > .card:not(#card)").forEach(n => n.remove());
   btnYes.classList.remove("sending","done");
   [card, heroEl, btnNo, btnYes, descWrap, composer, peek1, peek2].forEach(el => el.getAnimations().forEach(a => a.cancel()));
-  card.style.transform = ""; $("#scrim").style.opacity = ""; bottomLinks.forEach(l => l.style.opacity = "");
+  card.style.transform = ""; $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
   idx = 0; mode = "stack"; setModeClass("stack");
   empty.classList.remove("show"); card.style.visibility = "";
   fillCard(job()); placeStatic(); showPeeks(false);
@@ -1924,7 +1920,7 @@ card.addEventListener("pointermove", e => {
     const d = Math.max(0, drag.dy);
     card.style.transform = `translateY(${d}px)`;
     $("#scrim").style.opacity = String(Math.max(0, 1 - d / 400));
-    [btnNo, btnYes, ...bottomLinks].forEach(b => b.style.transform = `translateY(${d}px)`);
+    [btnNo, btnYes, showDesc].forEach(b => b.style.transform = `translateY(${d}px)`);
   }
 });
 function endDrag(e){
@@ -1965,13 +1961,13 @@ function endDrag(e){
     return;
   }
   const scrim = $("#scrim");
-  const release = () => { card.style.transform = ""; scrim.style.opacity = ""; [btnNo, btnYes, ...bottomLinks].forEach(b => b.style.transform = ""); };
+  const release = () => { card.style.transform = ""; scrim.style.opacity = ""; [btnNo, btnYes, showDesc].forEach(b => b.style.transform = ""); };
   if (d.moved && d.dy > 110){ release(); go("stack"); return; }
   const cur = card.style.transform;
   release();
   if (d.moved){
     card.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE});
-    [btnNo, btnYes, ...bottomLinks].forEach(b => b.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE}));
+    [btnNo, btnYes, showDesc].forEach(b => b.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE}));
   }
 }
 // The browser took the gesture over (a vertical scroll of the description): spring back, never treat it as a tap.
@@ -1981,7 +1977,7 @@ function cancelDrag(){
   const d = drag; drag = null;
   const cur = card.style.transform;
   card.style.transform = ""; btnYes.style.transform = btnNo.style.transform = ""; clearStamps();
-  if (d.kind === "sheet"){ $("#scrim").style.opacity = ""; bottomLinks.forEach(l => l.style.transform = ""); }
+  if (d.kind === "sheet"){ $("#scrim").style.opacity = ""; showDesc.style.transform = ""; }
   if (d.moved && cur) card.animate([{transform:cur},{transform:"none"}], {duration:240, easing:EASE});
 }
 card.addEventListener("pointerup", endDrag);
