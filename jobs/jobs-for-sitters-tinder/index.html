@@ -256,6 +256,13 @@ svg{display:block;flex:none}
 /* over the tab bar the buttons keep 22px below them instead of the 42px the home indicator needs,
    so the room kept free under the text shrinks by the same 20px */
 .v-simple.m-detail .desc-wrap{padding-bottom:92px}
+/* The description scrolls under the buttons. While more of it waits below, the foot of the sheet
+   fades to white so the buttons stand out: clear 62px above them, solid 8px above them and white
+   from there to the tab bar (measured on the Figma frame). The buttons sit 72px above the sheet's
+   bottom edge here, hence 62 + 72. Gone once the description is scrolled to its end. */
+.v-simple.m-detail .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:134px;pointer-events:none;
+  background:linear-gradient(rgba(255,255,255,0),#fff 54px);opacity:0;transition:opacity .2s var(--ease)}
+.v-simple.m-detail .card.more-below::after{opacity:1}
 .v-simple.v-inline .composer{padding-bottom:103px}
 /* Between the bars the reply without the job description showed only 1.5 lines of the reply.
    To get 5 on the 375x787 frame: the photo is 40px shorter, Send sits half as far above Show job
@@ -1341,6 +1348,7 @@ function placeStatic(){
   scrim.style.top = simple ? G.webTop + "px" : "";
   // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
   $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
+  syncMore();
 }
 // Up to 8 lines of description; fewer on a short screen, so the text never runs under the buttons.
 function fitDesc(){
@@ -1356,6 +1364,13 @@ function syncDesc(){
   descEl.classList.toggle("fade", rest - descEl.scrollTop > 1);
 }
 descEl.addEventListener("scroll", syncDesc, { passive:true });
+// the open sheet's description keeps going below the buttons (drives the fade in the simplified version)
+function syncMore(){
+  const rest = descWrap.scrollHeight - descWrap.clientHeight;
+  card.classList.toggle("more-below", rest > 1 && rest - descWrap.scrollTop > 1);
+}
+descWrap.addEventListener("scroll", syncMore, { passive:true });
+new ResizeObserver(syncMore).observe(descWrap);
 
 // Figma: each card behind is 15px narrower and sits PEEK px higher.
 const peekInset = i => 20 + 7.5 * (i + 1);
