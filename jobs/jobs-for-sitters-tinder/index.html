@@ -236,6 +236,14 @@ svg{display:block;flex:none}
 .expanded .desc,.collapsing .desc{max-height:none;overflow:visible;-webkit-mask-image:none;mask-image:none}
 .m-detail .desc-wrap{flex:1;overflow:auto;padding-bottom:112px;-webkit-overflow-scrolling:touch}
 .m-detail .desc-wrap::-webkit-scrollbar{display:none}
+/* The description and its tags scroll under Skip and Reply. While more of them waits below, the foot
+   of the sheet fades to white so the buttons stand out and the cut-off text shows there is more: clear
+   62px above the buttons, solid 8px above them and white from there down (measured on the Figma frame
+   of the simplified detail). The buttons sit 92px above the sheet's bottom edge, hence 62 + 92.
+   Gone once everything is scrolled into view, so the last lines stay readable above the buttons. */
+.m-detail .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:154px;pointer-events:none;
+  background:linear-gradient(rgba(255,255,255,0),#fff 54px);opacity:0;transition:opacity .2s var(--ease)}
+.m-detail .card.more-below::after{opacity:1}
 .m-reply .desc-wrap{display:none}
 .m-reply .rule{display:none}
 .m-reply .composer{display:flex}
@@ -264,13 +272,9 @@ svg{display:block;flex:none}
 /* over the tab bar the buttons keep 22px below them instead of the 42px the home indicator needs,
    so the room kept free under the text shrinks by the same 20px */
 .v-simple.m-detail .desc-wrap{padding-bottom:92px}
-/* The description scrolls under the buttons. While more of it waits below, the foot of the sheet
-   fades to white so the buttons stand out: clear 62px above them, solid 8px above them and white
-   from there to the tab bar (measured on the Figma frame). The buttons sit 72px above the sheet's
-   bottom edge here, hence 62 + 72. Gone once the description is scrolled to its end. */
-.v-simple.m-detail .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:134px;pointer-events:none;
-  background:linear-gradient(rgba(255,255,255,0),#fff 54px);opacity:0;transition:opacity .2s var(--ease)}
-.v-simple.m-detail .card.more-below::after{opacity:1}
+/* the fade at the foot of the detail (see .m-detail .card::after): the buttons sit 72px above the
+   sheet's bottom edge here, not 92px, so the same clear-62px-above profile is 62 + 72 tall */
+.v-simple.m-detail .card::after{height:134px}
 /* The reply with the job description above it showed only 1.9 lines of the reply between the bars.
    To get 5 on the 375x787 frame: the description keeps 4 lines instead of 6 (it still scrolls),
    the rule and Your reply move up 9px, and the reply box ends 15px above Send instead of 29px. */
