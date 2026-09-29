@@ -156,6 +156,14 @@ svg{display:block;flex:none}
 .desc.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15));
   mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15))}
 
+/* key facts pulled from the description, Figma 3645:47025: only in the open detail, never in the
+   stack card or the reply screen (the reply variant that keeps the description hides descWrap outright,
+   and the classic reply hides it too, so gating on m-detail alone covers every mode and setting) */
+.desc-tags{display:none;flex-wrap:wrap;gap:4px;padding:12px 0 8px}
+.m-detail .desc-tags{display:flex}
+.desc-tag{height:21px;padding:2px 8px;border-radius:64px;background:#f7f7f7;color:var(--muted);
+  font-size:12px;line-height:1.4;white-space:nowrap}
+
 /* composer (reply) */
 .composer{display:none;flex-direction:column;flex:1;min-height:0;padding-bottom:170px}
 .c-rule{height:1px;background:var(--line);margin-top:23px;flex:none}
@@ -889,6 +897,7 @@ svg{display:block;flex:none}
 
       <div class="desc-wrap" id="descWrap">
         <p class="desc" id="desc"></p>
+        <div class="desc-tags" id="descTags"></div>
       </div>
 
       <section class="composer" id="composer">
@@ -1144,7 +1153,7 @@ Drag the picture down to close · <span id="jobCount">5</span> jobs in the stack
 const $ = s => document.querySelector(s);
 const phone = $("#phone"), stage = $("#stage"), card = $("#card");
 const heroImg = $("#heroImg"), chipsEl = $("#chips"), badgeEl = $("#badge"), titleEl = $("#title");
-const dotEl = $("#dot"), addrEl = $("#addr"), descEl = $("#desc");
+const dotEl = $("#dot"), addrEl = $("#addr"), descEl = $("#desc"), descTagsEl = $("#descTags");
 const btnNo = $("#no"), btnYes = $("#yes"), showDesc = $("#showDesc");
 const ta = $("#ta"), gen = $("#gen"), sparkle = $("#sparkle");
 const descWrap = $("#descWrap"), composer = $("#composer"), bodyEl = $("#body");
@@ -1176,6 +1185,7 @@ const JOBS = [
   { id:"baby", v:"baby", img:"assets/hero-babysitting.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"2 girls, 6 and 4, every second Tuesday afternoon",
     desc:"Hello, I am looking for a nanny for regular babysitting from December for the next school year for two children, Matilda (6 years old in November) and Anna (4 years old). Initial session on Tuesday 14:00. After agreement possible babysitting every 2 weeks. It is also possible to use the services of a babysitter for a joint holiday, but all by mutual agreement. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    tags:["2 children", "Ages 4-6", "From December", "Every 2 weeks"],
     replies:[
       "Hello Jana, I'd love to look after Matilda and Anna. Every second Tuesday afternoon suits me well, and I can come for the first session on Tuesday at 14:00. Could we have a quick call before then? Thank you, Irena",
       "Hi Jana, your job fits my schedule perfectly and I live just 2.5 km away. I have several years of experience with girls this age. I'd be happy to meet you and the girls before we start. Irena",
@@ -1184,6 +1194,7 @@ const JOBS = [
   { id:"pet", v:"pet", img:"assets/hero-pet-care.jpg", stripY:"35%", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Energetic Golden Retriever, weekday morning walks",
     desc:"Hi everyone, we need a reliable pet sitter to drop by our place every weekday morning around 8:00 AM to walk our friendly 3-year-old dog, Max. I would really like to find someone who can stay for a proper walk of about 45 minutes, top up his water and give him a quick brush afterwards. Max is well trained, loves other dogs and walks nicely on the lead.",
+    tags:["Weekday mornings", "45-min walks", "Well trained", "Friendly with dogs"],
     replies:[
       "Hello Jana, I'd be happy to walk Max every weekday morning at 8:00. I've looked after several large dogs, including a golden retriever, and I live just 2.5 km away. Could we meet so Max can get to know me first? Irena",
       "Hi Jana, morning walks with Max fit my schedule perfectly. I'm reliable, I love energetic dogs, and a quick brush and fresh water after the walk are no problem. When would suit you to talk? Irena",
@@ -1192,6 +1203,7 @@ const JOBS = [
   { id:"senior", v:"senior", img:"assets/hero-senior-care.jpg", stripY:"12%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Daily companionship and errands for my mother",
     desc:"Looking for a kind, patient person to assist my grandmother with afternoon walks, light grocery shopping, and pleasant conversation 3 times a week. She is cheerful and independent, but walking has become harder and she really enjoys having someone to talk to. Ideally Monday, Wednesday and Friday afternoons. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    tags:["3x a week", "Mon/Wed/Fri", "Afternoon walks", "Light shopping"],
     replies:[
       "Hello Jana, I'd love to keep your family member company. I have experience with seniors and enjoy walks, errands and a good conversation. Afternoons three times a week work well for me. Could we arrange a short call? Irena",
       "Hi Jana, I'm patient and calm, and I've helped older people with shopping and daily walks before. I live just 2.5 km away, so I can come reliably. I'd be happy to meet her first. Irena",
@@ -1200,6 +1212,7 @@ const JOBS = [
   { id:"clean", v:"clean", img:"assets/hero-household-cleaning.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Weekly deep clean for a 3-bedroom family house",
     desc:"Hello, we are searching for a thorough and trustworthy helper to manage regular cleaning, ironing, and tidying up our home every Thursday morning. The house has three bedrooms, two bathrooms and a small garden terrace. All cleaning products and equipment are provided, and we have a friendly cat.",
+    tags:["Thursday mornings", "3 bedrooms", "Supplies provided", "Pet-friendly home"],
     replies:[
       "Hello Jana, I'd be glad to take care of the weekly clean on Thursday mornings. I have several years of experience with family houses, including ironing, and I'm comfortable with cats. Could we have a quick call? Irena",
       "Hi Jana, Thursday mornings fit my schedule and I live just 2.5 km away. I work thoroughly and reliably, and I'm happy to agree on a checklist so everything is done the way you like it. Irena",
@@ -1208,6 +1221,7 @@ const JOBS = [
   { id:"tutor", v:"tutor", img:"assets/hero-tutoring.jpg", stripY:"20%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"High school math and physics support for 15-year-old",
     desc:"Seeking an experienced university student or tutor to help our son catch up with algebra and physics formulas twice a week before his final exams. Lessons can take place at our home in the afternoon or online, whichever suits you better. He is motivated, he just needs someone patient to explain things step by step.",
+    tags:["Algebra & physics", "Twice a week", "In-person or online", "Exam prep"],
     replies:[
       "Hello Jana, I'd be happy to help your son with algebra and physics before his exams. I study at university and have tutored high school students for two years. Twice a week works well for me. Irena",
       "Hi Jana, I enjoy explaining maths and physics step by step, and I can come to your home or teach online. Could we start with a first lesson to see what your son needs most? Irena",
@@ -1216,6 +1230,7 @@ const JOBS = [
   { id:"baby2", v:"baby", img:"assets/hero-babysitting-2.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Reliable nanny needed for sweet toddler",
     desc:"Looking for a kind and attentive babysitter for fun afternoon play, reading stories, and regular childcare. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Toddler", "Afternoon play", "Regular care", "Story time"],
     replies:[
       "Hello Jana, I'd love to be your toddler's babysitter. Afternoon play and story time are things I really enjoy, and I live just 2.5 km away. Could we arrange a time to meet? Irena",
       "Hi Jana, I have experience with toddlers and I'm happy to help with playtime, stories and regular childcare. When would suit you to talk about the details? Irena",
@@ -1224,6 +1239,7 @@ const JOBS = [
   { id:"baby3", v:"baby", img:"assets/hero-babysitting-3.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"2 boys, 6 and 4, every second Tuesday afternoon",
     desc:"Seeking an energetic and caring nanny for regular babysitting, creative playtime, and light supervision. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["2 boys", "Ages 4-6", "Every 2 weeks", "Creative play"],
     replies:[
       "Hello Jana, I'd be happy to look after your boys every second Tuesday afternoon. I enjoy energetic play and creative activities, and I live just 2.5 km away. Could we have a quick call? Irena",
       "Hi Jana, caring for two boys with creative playtime and light supervision sounds great. Every second Tuesday works well for me. When would suit you to meet them first? Irena",
@@ -1232,6 +1248,7 @@ const JOBS = [
   { id:"pet2", v:"pet", img:"assets/hero-pet-care-2.jpg", stripY:"35%", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Fluffy Persian Cat Needs Loving Daily Care & Attention",
     desc:"Looking for a gentle and reliable cat sitter to drop by, feed our sweet Persian cat, and keep her happy while we are away. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Persian cat", "Daily visits", "Feeding", "While we're away"],
     replies:[
       "Hello Jana, I'd love to take care of your Persian cat. I'm gentle and reliable, and I live just 2.5 km away so I can drop by easily. Could we arrange a time to meet her? Irena",
       "Hi Jana, feeding and keeping your cat company while you're away sounds lovely. I have experience with long-haired cats. When would suit you to talk? Irena",
@@ -1240,6 +1257,7 @@ const JOBS = [
   { id:"pet3", v:"pet", img:"assets/hero-pet-care-3.jpg", stripY:"35%", chips:["Yesterday","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Friendly Small Dog Needs Daily Walks & Playtime",
     desc:"Looking for a gentle and reliable dog lover to drop by, take our little dog on pleasant walks, and keep him company. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Small dog", "Daily walks", "Companionship"],
     replies:[
       "Hello Jana, I'd be happy to walk your dog daily and keep him company. I love small dogs and live just 2.5 km away. Could we meet so he can get to know me? Irena",
       "Hi Jana, daily walks and playtime with your dog sound great to me. I'm reliable and gentle with pets. When would suit you to talk about the schedule? Irena",
@@ -1248,6 +1266,7 @@ const JOBS = [
   { id:"senior2", v:"senior", img:"assets/hero-senior-care-2.jpg", stripY:"12%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Daily Companionship and Errands for My Father",
     desc:"Seeking a patient and warm caregiver to assist with afternoon walks, light shopping, and pleasant conversations. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Daily", "Afternoon walks", "Light shopping", "Companionship"],
     replies:[
       "Hello Jana, I'd love to keep your father company. Afternoon walks, light shopping and good conversation are things I enjoy, and I live just 2.5 km away. Could we arrange a call? Irena",
       "Hi Jana, I'm patient and warm, and I've helped seniors with errands and companionship before. When would suit you to talk about the details? Irena",
@@ -1256,6 +1275,7 @@ const JOBS = [
   { id:"senior3", v:"senior", img:"assets/hero-senior-care-3.jpg", stripY:"12%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Loving Senior Couple Needs Kind Afternoon Assistance",
     desc:"Looking for a caring assistant to support a lovely elderly couple with light daily tasks, companionship, and walks. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Elderly couple", "Daily tasks", "Companionship", "Walks"],
     replies:[
       "Hello Jana, I'd be glad to assist the couple with daily tasks, walks and companionship in the afternoons. I live just 2.5 km away. Could we arrange a meeting? Irena",
       "Hi Jana, supporting an elderly couple with light tasks and good company sounds lovely. I'm patient and reliable. When would suit you to talk? Irena",
@@ -1264,6 +1284,7 @@ const JOBS = [
   { id:"clean2", v:"clean", img:"assets/hero-household-cleaning-2.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Weekly Deep Clean for a 3-Bedroom Family House",
     desc:"Searching for a thorough and reliable house cleaner for regular bathroom sanitizing, dusting, and general maintenance. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Weekly", "Bathrooms", "Dusting", "General maintenance"],
     replies:[
       "Hello Jana, I'd be glad to take care of the weekly deep clean, including the bathrooms and dusting. I live just 2.5 km away. Could we have a quick call? Irena",
       "Hi Jana, thorough bathroom sanitizing and general maintenance are things I do carefully every week. When would suit you to agree on the details? Irena",
@@ -1272,6 +1293,7 @@ const JOBS = [
   { id:"clean3", v:"clean", img:"assets/hero-household-cleaning-3.jpg", stripY:"35%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"One-Time Deep Post-Painting Cleaning for Apartment",
     desc:"Seeking a meticulous cleaner to help us clean up after painting, including removing paint dust, washing floors, and wiping down surfaces. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["One-time job", "Paint dust", "Floors & surfaces"],
     replies:[
       "Hello Jana, I'd be happy to help with the post-painting clean-up, removing dust and washing all the floors and surfaces. I live just 2.5 km away. Could we arrange a time? Irena",
       "Hi Jana, cleaning up paint dust and wiping down surfaces is something I do carefully. When would suit you for the one-time visit? Irena",
@@ -1280,6 +1302,7 @@ const JOBS = [
   { id:"tutor2", v:"tutor", img:"assets/hero-tutoring-2.jpg", stripY:"20%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Piano Lessons our for 15-Year-Old daughter",
     desc:"Seeking an experienced tutor to help our daughter master high school STEM subjects and prepare for upcoming exams. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["High school", "Exam prep", "STEM subjects"],
     replies:[
       "Hello Jana, I'd love to help your daughter prepare for her exams. I have experience tutoring teenagers and live just 2.5 km away. Could we arrange a first lesson to see what she needs most? Irena",
       "Hi Jana, I enjoy working with motivated students and helping them build confidence before exams. When would suit you to start? Irena",
@@ -1288,6 +1311,7 @@ const JOBS = [
   { id:"tutor3", v:"tutor", img:"assets/hero-tutoring-3.jpg", stripY:"20%", chips:["2 hours ago","2.5 km away"], addr:"Jandáskova, Praha 2",
     title:"Patient Academic Tutor for High School Exam Prep",
     desc:"Looking for an engaging university student to explain challenging formulas and build confidence in math and physics. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    tags:["Math & physics", "University student", "Exam prep"],
     replies:[
       "Hello Jana, I'd be happy to help with math and physics formulas and exam prep. I'm a university student and live just 2.5 km away. Could we start with a trial lesson? Irena",
       "Hi Jana, building confidence in math and physics before exams is something I enjoy helping with. When would suit you to talk about a schedule? Irena",
@@ -1497,6 +1521,7 @@ function fillCard(j){
   addrEl.textContent = j.addr;
   descEl.textContent = j.desc;
   descEl.scrollTop = 0;
+  descTagsEl.innerHTML = j.tags.map(t => `<span class="desc-tag">${t}</span>`).join("");
   clearStamps();
   card.setAttribute("aria-label", "Job: " + j.title);
   descWrap.scrollTop = 0;
