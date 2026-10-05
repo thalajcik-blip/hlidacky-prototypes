@@ -14,6 +14,35 @@ Port 8080 is what `.claude/launch.json` expects — keep it. Absolute asset path
 (`/sitter-approval-workflow/assets/…`, `/notification-center/assets/…`) are shared
 between prototypes and only resolve when served from the repo root.
 
+## Never hotlink Hlídačky's CDN
+
+Assets on `hlidacky-312899.c.cdn77.org` have a Rails asset-pipeline digest in the
+filename. Hlídačky recompute it on every deploy and purge the old file, so any URL
+pinned here eventually returns a 404 HTML error page — with nothing changed on our
+side to explain it. In October 2026 this silently stripped every Font Awesome icon
+from four prototypes at once.
+
+Copy what you need into the repo instead:
+
+- **Font Awesome** is vendored at `/vendor/font-awesome/css/fa.css` — see
+  `vendor/font-awesome/README.md` before touching it. Load it with a `<link>`; do
+  not reintroduce the kit `<script>`.
+- **Everything else** goes in the prototype's own `assets/`, referenced relatively
+  from `application.css` or by `/<prototype>/assets/…` from the markup, and with
+  the digest dropped from the filename.
+
+`application.css` still carries ~29 dead `cdn77` references for components these
+prototypes never render. They cost nothing while unused, but if you make one
+render, vendor it in the same commit rather than letting it hotlink.
+
+After adding an asset, confirm it is a real file and not an error page — this is
+the exact failure mode above:
+
+```bash
+head -c 4 path/to/font.woff2   # want: wOF2
+python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" path/to/icon.svg
+```
+
 ## Verify before you commit
 
 Reading the diff is not verification. Open the page in a browser and exercise the
