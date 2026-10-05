@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Hlídačky.cz — Messages filtering</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="./assets/application.css">
+  <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
+  <link rel="stylesheet" href="./assets/base.css">
+  <style>
+    /* ============================================================
+       Messages filtering — everything new lives here.
+       The shared chrome (phone frame, header, nav, thread rows,
+       bubbles, bottom sheet) comes from assets/base.css.
+       ============================================================ */
+
+    /* In mobile-app-redesign-v2 a full-height .screen-scroll sits between the
+       header and the nav and pushes the bar to the bottom of the frame. This
+       prototype has no such filler -- the messages screen is absolutely
+       positioned over the gap -- so pin the nav down explicitly instead. */
+    .mobile-bottom-nav { margin-top: auto; }
+
+    /* The messages screen is the whole app here, not an overlay, so it is
+       always open and lays its filter bar out above a scrolling list. */
+    .messages-screen { display: flex; flex-direction: column; }
+    .messages-screen__content {
+      height: auto;
+      min-height: 0;
+      flex: 1 1 auto;
+      padding-top: 0;
+    }
+
+    /* ---------- filter bar ---------- */
+    .messages-filter-bar {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 12px 10px;
+      background: #fff;
+      /* The pills can outgrow 390px, so the strip scrolls sideways on its
+         own. overflow-x must be paired with a non-visible overflow-y or it
+         computes back to visible. */
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+    }
+
+    .messages-filter-bar::-webkit-scrollbar { display: none; }
+
+    .messages-filter-pill {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--gray-300, #e5e5ea);
+      border-radius: 999px;
+      background: #fff;
+      padding: 7px 12px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 450;
+      letter-spacing: -0.16px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .messages-filter-pill:disabled { cursor: default; opacity: 0.4; }
+
+    .messages-filter-pill--category,
+    .messages-filter-pill.is-active {
+      border-color: var(--pink, #f96073);
+      background: var(--pink, #f96073);
+      color: #fff;
+    }
+
+    .messages-filter-pill__chevron {
+      font-size: 11px;
+      transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .messages-filter-pill[aria-expanded="true"] .messages-filter-pill__chevron {
+      transform: rotate(180deg);
+    }
+
+    .messages-filter-pill__count {
+      display: inline-flex;
+      min-width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--pink, #f96073);
+      padding: 0 5px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 1;
+    }
+
+    .messages-filter-pill.is-active .messages-filter-pill__count {
+      background: #fff;
+      color: var(--pink, #f96073);
+    }
+
+    .messages-filter-pill__count[hidden] { display: none; }
+
+    /* ---------- back to active conversations ---------- */
+    .messages-back-link {
+      display: none;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      background: #fff;
+      padding: 2px 16px 12px;
+      color: var(--pink, #f96073);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 450;
+      letter-spacing: -0.16px;
+      cursor: pointer;
+    }
+
+    .messages-back-link span { text-decoration: underline; }
+    .messages-screen:not([data-category="active"]) .messages-back-link { display: flex; }
+
+    /* ---------- thread row additions ---------- */
+    /* The base row is a fixed 68px two-line grid. Delivery status adds a
+       third line, so let the row grow instead of clipping it.
+       flex: 0 0 auto matters: the list is a flex column, and without it a
+       full inbox shrinks every row below its content and slices the status
+       line in half. */
+    .message-thread {
+      min-height: 0;
+      flex: 0 0 auto;
+      align-items: start;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .message-thread__star,
+    .message-thread__avatar { align-self: center; }
+    .message-thread__badge { align-self: center; }
+
+    .message-thread__preview-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .message-thread__preview-row .message-thread__preview { flex: 1 1 auto; }
+
+    .message-thread__reply {
+      flex: 0 0 auto;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: var(--pink, #f96073);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 450;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .message-thread__draft { color: var(--pink, #f96073); font-weight: 450; }
+
+    .message-thread__status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding-top: 2px;
+      color: #8b91a3;
+      font-size: 12px;
+      font-weight: 350;
+      letter-spacing: -0.16px;
+      line-height: 1.4;
+    }
+
+    .message-thread__status i { font-size: 12px; }
+    .message-thread__status--seen { color: #22bf1e; }
+    .message-thread__status--failed { color: var(--pink, #f96073); }
+
+    /* ---------- empty states ---------- */
+    .messages-empty {
+      display: none;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 40px 72px;
+      text-align: center;
+    }
+
+    .messages-screen.is-empty .messages-empty { display: flex; }
+    .messages-screen.is-empty .messages-screen__content { display: none; }
+
+    .messages-empty__doodle { width: 88px; height: 88px; }
+    .messages-empty__doodle img { display: block; width: 100%; height: 100%; }
+
+    .messages-empty__title {
+      max-width: 15ch;
+      color: #2a3539;
+      font-size: 22px;
+      font-weight: 450;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+    }
+
+    .messages-empty__copy {
+      max-width: 26ch;
+      color: #6c757d;
+      font-size: 15px;
+      font-weight: 350;
+      letter-spacing: -0.16px;
+      line-height: 1.45;
+    }
+
+    .messages-empty__action {
+      margin-top: 6px;
+      border: 1px solid var(--gray-300, #e5e5ea);
+      border-radius: 8px;
+      background: #fff;
+      padding: 11px 20px;
+      color: #2a3539;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 450;
+      cursor: pointer;
+    }
+
+    .messages-empty__action:active { background: #f7f8fb; }
+    .messages-empty__copy[hidden],
+    .messages-empty__action[hidden] { display: none; }
+
+    /* ---------- conversation detail additions ---------- */
+    .message-detail-screen__book {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #0ba825;
+      border-radius: 8px;
+      background: #fff;
+      padding: 7px 12px;
+      color: #0ba825;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 450;
+      cursor: pointer;
+    }
+
+    .message-detail-screen__book[hidden] { display: none; }
+    .message-detail-screen__book:active { background: #f1fbf3; }
+
+    /* The inherited header is a three-column grid (back / contact / menu).
+       Book is a fourth child, which would otherwise wrap onto an implicit
+       second row and push the menu button above the name. */
+    .message-detail-screen__header.is-with-book {
+      grid-template-columns: 52px minmax(0, 1fr) auto 32px;
+      gap: 8px;
+    }
+
+    .message-detail-screen__header.is-with-book .message-detail-screen__menu { width: 32px; }
+
+    /* System notes sit on a hairline that runs to both edges, as in the
+       Figma: a centred caption interrupting a rule. */
+    .conversation-note {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #6c757d;
+      font-size: 13px;
+      font-weight: 350;
+      letter-spacing: -0.16px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .conversation-note::before,
+    .conversation-note::after {
+      flex: 1 1 auto;
+      border-top: 1px dashed #dfe3e8;
+      content: "";
+    }
+
+    .conversation-note__text { flex: 0 1 auto; max-width: 27ch; }
+
+    .conversation-note__link {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #6c757d;
+      font: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* ---------- job opening card ---------- */
+    .job-opening-card {
+      border-radius: 16px;
+      background: #e8f7ec;
+      padding: 12px;
+      color: #2a3539;
+    }
+
+    .job-opening-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      background: #0ba825;
+      padding: 4px 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 450;
+      line-height: 1.3;
+    }
+
+    .job-opening-card__address {
+      padding-top: 10px;
+      font-size: 16px;
+      font-weight: 450;
+      letter-spacing: -0.32px;
+      line-height: 1.4;
+    }
+
+    .job-opening-card__distance {
+      color: #6c757d;
+      font-size: 13px;
+      font-weight: 350;
+      line-height: 1.4;
+    }
+
+    .job-opening-card__divider {
+      margin: 10px 0;
+      border: 0;
+      border-top: 1px solid #c9e6d2;
+    }
+
+    .job-opening-card__text {
+      font-size: 16px;
+      font-weight: 350;
+      letter-spacing: -0.32px;
+      line-height: 1.45;
+    }
+
+    .job-opening-card__link {
+      display: inline-block;
+      padding-top: 8px;
+      color: var(--pink, #f96073);
+      font-size: 16px;
+      font-weight: 450;
+      text-decoration: underline;
+    }
+
+    .job-opening-card__posted {
+      padding: 0 8px;
+      color: #8b91a3;
+      font-size: 12px;
+      font-weight: 350;
+      line-height: 1.4;
+    }
+
+    /* The job card is wider than a chat bubble, so let its row use the
+       full column instead of the bubble stack's 264px cap. */
+    .conversation-bubble-row--job .conversation-bubble-row__stack {
+      max-width: calc(100% - 40px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone-frame">
+    <div class="status-bar">
+      <div class="notch-pill"></div>
+      <div class="status-time">9:41</div>
+      <div class="status-icons" aria-label="Phone status">
+        <img src="./assets/mobile-signal.svg" alt="" width="17" height="11">
+        <img src="./assets/wifi.svg" alt="" width="16" height="11">
+        <img src="./assets/battery.svg" alt="" width="25" height="12">
+      </div>
+    </div>
+
+    <header class="mobile-app-header">
+      <div class="mobile-app-header__placeholder" aria-hidden="true"></div>
+      <div class="mobile-app-header__heading">
+        <i class="fa-solid fa-message" aria-hidden="true"></i>
+        <span>Messages</span>
+      </div>
+      <button class="mobile-app-header__profile is-logged-in" type="button" aria-label="Your profile">
+        <img class="mobile-app-header__profile-avatar" src="./assets/mobile-app-header-avatar.png" alt="">
+      </button>
+    </header>
+
+    <!-- ============ MESSAGES ============ -->
+    <section class="messages-screen is-open" id="messagesScreen" data-category="active" aria-label="Messages">
+      <div class="messages-filter-bar" id="messagesFilterBar">
+        <button class="messages-filter-pill messages-filter-pill--category" id="categoryTrigger" type="button"
+                aria-haspopup="dialog" aria-controls="categorySheet" aria-expanded="false">
+          <span id="categoryLabel">Active chats</span>
+          <i class="messages-filter-pill__chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <button class="messages-filter-pill" type="button" data-filter="needsReply" aria-pressed="false">
+          <span>Needs reply</span>
+          <span class="messages-filter-pill__count" data-count="needsReply">4</span>
+        </button>
+        <button class="messages-filter-pill" type="button" data-filter="unread" aria-pressed="false">
+          <span>Unread</span>
+          <span class="messages-filter-pill__count" data-count="unread">5</span>
+        </button>
+      </div>
+
+      <button class="messages-back-link" id="backToActive" type="button">
+        <i class="fa-regular fa-arrow-left" aria-hidden="true"></i>
+        <span>back to Active conversations</span>
+      </button>
+
+      <div class="messages-screen__content" id="messagesContent"></div>
+
+      <section class="messages-empty" id="messagesEmpty" aria-live="polite">
+        <div class="messages-empty__doodle" aria-hidden="true"><img id="messagesEmptyDoodle" src="./assets/doodle-mailbox.svg" alt=""></div>
+        <p class="messages-empty__title" id="messagesEmptyTitle">You don’t have any active conversations.</p>
+        <p class="messages-empty__copy" id="messagesEmptyCopy" hidden></p>
+        <button class="messages-empty__action" id="messagesEmptyAction" type="button" hidden>View job openings</button>
+      </section>
+    </section>
+
+    <!-- ============ CONVERSATION DETAIL ============ -->
+    <section class="message-detail-screen" id="messageDetailScreen" aria-label="Conversation detail" aria-hidden="true">
+      <header class="message-detail-screen__header">
+        <button class="message-detail-screen__back" id="messageDetailBack" type="button" aria-label="Back to messages"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+        <div class="message-detail-screen__contact">
+          <p class="message-detail-screen__name" id="messageDetailName">Conversation</p>
+          <p class="message-detail-screen__booking">No booking yet</p>
+        </div>
+        <button class="message-detail-screen__book" id="messageDetailBook" type="button" hidden><i class="fa-light fa-calendar-plus" aria-hidden="true"></i><span>Book</span></button>
+        <button class="message-detail-screen__menu" id="messageDetailMenu" type="button" aria-label="Conversation options"><i class="fa-regular fa-ellipsis" aria-hidden="true"></i></button>
+      </header>
+      <div class="message-detail-screen__messages" id="messageDetailMessages"></div>
+      <form class="message-detail-screen__composer" id="messageDetailComposer">
+        <div class="message-detail-screen__input-wrap">
+          <textarea class="message-detail-screen__input" id="messageDetailInput" rows="1" placeholder="Your message..." aria-label="Your message"></textarea>
+          <button class="message-detail-screen__attachment" type="button" aria-label="Add attachment"><i class="fa-light fa-image" aria-hidden="true"></i></button>
+        </div>
+        <button class="message-detail-screen__send" type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+      </form>
+    </section>
+
+    <!-- ============ CATEGORY PICKER ============ -->
+    <section class="message-detail-menu" id="categorySheet" aria-hidden="true" inert>
+      <button class="message-detail-menu__backdrop" id="categoryBackdrop" type="button" aria-label="Close category picker"></button>
+      <section class="message-detail-menu__panel" id="categoryPanel" role="dialog" aria-modal="true" aria-label="Show conversations" tabindex="-1">
+        <div class="message-detail-menu__handle" aria-hidden="true"></div>
+        <button class="message-detail-menu__action" type="button" data-category="active"><i class="fa-light fa-comments" aria-hidden="true"></i><span>Show active chats</span></button>
+        <button class="message-detail-menu__action" type="button" data-category="job"><i class="fa-light fa-reply" aria-hidden="true"></i><span>Show job replies</span></button>
+        <button class="message-detail-menu__action" type="button" data-category="archived"><i class="fa-light fa-box-archive" aria-hidden="true"></i><span>Show archived conversations</span></button>
+      </section>
+    </section>
+
+    <nav class="mobile-bottom-nav" aria-label="Main navigation">
+      <div class="mobile-bottom-nav__items">
+        <button class="mobile-bottom-nav__item" type="button"><i class="mobile-bottom-nav__icon fa-light fa-grid-2" aria-hidden="true"></i><span>Dashboard</span></button>
+        <button class="mobile-bottom-nav__item" type="button"><i class="mobile-bottom-nav__icon fa-light fa-calendar-days" aria-hidden="true"></i><span>Availability</span></button>
+        <button class="mobile-bottom-nav__item mobile-bottom-nav__item--active" type="button" aria-current="page"><i class="mobile-bottom-nav__icon fa-solid fa-message" aria-hidden="true"></i><span>Messages</span></button>
+        <button class="mobile-bottom-nav__item" type="button"><i class="mobile-bottom-nav__icon fa-light fa-paper-plane" aria-hidden="true"></i><span>Jobs</span></button>
+        <button class="mobile-bottom-nav__item" type="button"><i class="mobile-bottom-nav__icon fa-light fa-calendar-clock" aria-hidden="true"></i><span>Bookings</span></button>
+      </div>
+      <div class="mobile-bottom-nav__indicator" aria-hidden="true"></div>
+    </nav>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var PREVIEW_INCOMING = 'Dobrý den, dnes jsme s dětmi byli na hřišti a užili si spoustu zábavy.';
+      var PREVIEW_OWN = 'Dobrý den, dnes jsme s dětmi byli na hřišti a užili si spoustu zábavy.';
+      var PREVIEW_JOB = 'Dobrý den, jsem Irena a mám zájem o vaši nabídku. Ráda bych se domluvila.';
+
+      /* One flat list. `cat` decides which category screen a thread belongs
+         to; the Needs reply / Unread pills then narrow whatever is showing.
+         Counts in the filter bar are derived from this, never hard-coded, so
+         the badges always agree with the rows underneath them. */
+      var THREADS = [
+        { id: 'a1', cat: 'active', name: 'Ivana Irglová', avatar: '01', time: '12:40', preview: PREVIEW_INCOMING, unread: 2, needsReply: true },
+        { id: 'a2', cat: 'active', name: 'Marie Macháčková', avatar: '02', time: '5 days ago', preview: PREVIEW_INCOMING, unread: 1, needsReply: true },
+        { id: 'a3', cat: 'active', name: 'Simona Skaláková', avatar: '06', time: '3 days ago', preview: PREVIEW_INCOMING, needsReply: true, replyHint: true },
+        { id: 'a4', cat: 'active', name: 'Gabriela Gáliková', avatar: '09', time: '5 days ago', preview: PREVIEW_INCOMING, needsReply: true },
+        { id: 'a5', cat: 'active', name: 'Olga Ostrčilová', avatar: '04', time: 'yesterday', preview: PREVIEW_OWN, own: true, status: 'delivered' },
+        { id: 'a6', cat: 'active', name: 'Eva Elsnerová', avatar: '05', time: '7:44', preview: PREVIEW_OWN, own: true, status: 'seen', starred: true },
+        { id: 'a7', cat: 'active', name: 'Hana Hasprová', avatar: '08', time: '5 days ago', preview: PREVIEW_OWN, own: true, status: 'failed' },
+        { id: 'a8', cat: 'active', name: 'Dana Demeterová', avatar: '07', time: '5 days ago', preview: PREVIEW_OWN, draft: true },
+        { id: 'a9', cat: 'active', name: 'Petra Pokorná', avatar: '03', time: '2 days ago', preview: PREVIEW_INCOMING, unread: 1 },
+        { id: 'a10', cat: 'active', name: 'Lenka Lacinová', avatar: '10', time: '4 days ago', preview: PREVIEW_INCOMING, unread: 1 },
+        { id: 'a11', cat: 'active', name: 'Kateřina Kolářová', avatar: '01', time: '6 days ago', preview: PREVIEW_INCOMING, unread: 3 },
+
+        { id: 'j1', cat: 'job', name: 'Simona Skaláková', avatar: '06', time: '3 days ago', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+        { id: 'j2', cat: 'job', name: 'Olga Ostrčilová', avatar: '04', time: 'yesterday', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+        { id: 'j3', cat: 'job', name: 'Irena Ivašková', avatar: '03', time: '5 days ago', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+        { id: 'j4', cat: 'job', name: 'Jana Jehnická', avatar: '09', time: '5 days ago', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+        { id: 'j5', cat: 'job', name: 'Lucie Lázničková', avatar: '10', time: '5 days ago', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+        { id: 'j6', cat: 'job', name: 'Františka Strakatá', avatar: '02', time: '5 days ago', preview: PREVIEW_JOB, own: true, status: 'delivered' },
+
+        { id: 'r1', cat: 'archived', name: 'Simona Skaláková', avatar: '06', time: '3 days ago', preview: PREVIEW_OWN, own: true },
+        { id: 'r2', cat: 'archived', name: 'Olga Ostrčilová', avatar: '04', time: 'yesterday', preview: PREVIEW_OWN, own: true, status: 'delivered' },
+        { id: 'r3', cat: 'archived', name: 'Irena Ivašková', avatar: '03', time: '5 days ago', preview: PREVIEW_OWN, own: true },
+        { id: 'r4', cat: 'archived', name: 'Jana Jehnická', avatar: '09', time: '5 days ago', preview: PREVIEW_OWN, own: true },
+        { id: 'r5', cat: 'archived', name: 'Lucie Lázničková', avatar: '10', time: '5 days ago', preview: PREVIEW_OWN, own: true },
+        { id: 'r6', cat: 'archived', name: 'Františka Strakatá', avatar: '02', time: '5 days ago', preview: PREVIEW_OWN, own: true }
+      ];
+
+      var CATEGORIES = {
+        active: {
+          label: 'Active chats',
+          doodle: './assets/doodle-mailbox.svg',
+          emptyTitle: 'You don’t have any active conversations.',
+          emptyAction: 'View job openings'
+        },
+        job: {
+          label: 'Job replies',
+          doodle: './assets/doodle-envelope.svg',
+          emptyTitle: 'You don’t have any job replies yet.',
+          emptyCopy: 'Keep your momentum going by applying to more jobs.',
+          emptyAction: 'View job openings'
+        },
+        archived: {
+          label: 'Archived',
+          doodle: './assets/doodle-archive.svg',
+          emptyTitle: 'You don’t have any archived conversations.'
+        }
+      };
+
+      var STATUS = {
+        delivered: { icon: 'fa-light fa-check', text: 'Delivered', mod: '' },
+        seen: { icon: 'fa-light fa-check-double', text: 'Seen', mod: ' message-thread__status--seen' },
+        failed: { icon: 'fa-light fa-triangle-exclamation', text: 'Failed to deliver', mod: ' message-thread__status--failed' }
+      };
+
+      var frame = document.querySelector('.phone-frame');
+      var screen = document.getElementById('messagesScreen');
+      var list = document.getElementById('messagesContent');
+      var empty = document.getElementById('messagesEmpty');
+      var emptyDoodle = document.getElementById('messagesEmptyDoodle');
+      var emptyTitle = document.getElementById('messagesEmptyTitle');
+      var emptyCopy = document.getElementById('messagesEmptyCopy');
+      var emptyAction = document.getElementById('messagesEmptyAction');
+      var categoryTrigger = document.getElementById('categoryTrigger');
+      var categoryLabel = document.getElementById('categoryLabel');
+      var categorySheet = document.getElementById('categorySheet');
+      var categoryPanel = document.getElementById('categoryPanel');
+      var categoryBackdrop = document.getElementById('categoryBackdrop');
+      var backToActive = document.getElementById('backToActive');
+      var filterPills = Array.prototype.slice.call(document.querySelectorAll('.messages-filter-pill[data-filter]'));
+      var detailScreen = document.getElementById('messageDetailScreen');
+      var detailHeader = detailScreen.querySelector('.message-detail-screen__header');
+      var detailName = document.getElementById('messageDetailName');
+      var detailBook = document.getElementById('messageDetailBook');
+      var detailMessages = document.getElementById('messageDetailMessages');
+      var detailBack = document.getElementById('messageDetailBack');
+      var detailComposer = document.getElementById('messageDetailComposer');
+      var detailInput = document.getElementById('messageDetailInput');
+
+      var state = { category: 'active', needsReply: false, unread: false };
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+      }
+
+      function inCategory(thread) { return thread.cat === state.category; }
+
+      function matchesFilters(thread) {
+        if (state.needsReply && !thread.needsReply) return false;
+        if (state.unread && !thread.unread) return false;
+        return true;
+      }
+
+      /* Counts describe the category you are looking at, not the whole
+         inbox. A badge that promised 5 unread while the Job replies list
+         had none would be worse than no badge at all. */
+      function countIn(key) {
+        return THREADS.filter(function (t) { return inCategory(t) && t[key]; }).length;
+      }
+
+      function renderRow(thread) {
+        var row = document.createElement('article');
+        row.className = 'message-thread' + (thread.unread ? ' is-unread' : '');
+        row.setAttribute('data-id', thread.id);
+        row.setAttribute('aria-label', 'Conversation with ' + thread.name);
+
+        var prefix = thread.draft
+          ? '<span class="message-thread__draft">KONCEPT:</span> '
+          : (thread.own ? 'YOU: ' : '');
+
+        var reply = thread.replyHint
+          ? '<button class="message-thread__reply" type="button">Reply?</button>'
+          : '';
+
+        var status = '';
+        if (thread.status && STATUS[thread.status]) {
+          var s = STATUS[thread.status];
+          status = '<span class="message-thread__status' + s.mod + '">'
+            + '<i class="' + s.icon + '" aria-hidden="true"></i><span>' + s.text + '</span></span>';
+        }
+
+        row.innerHTML =
+          '<button class="message-thread__star' + (thread.starred ? ' is-starred' : '') + '" type="button"'
+          + ' aria-label="' + (thread.starred ? 'Unstar' : 'Star') + ' conversation" aria-pressed="' + (thread.starred ? 'true' : 'false') + '">'
+          + '<i class="' + (thread.starred ? 'fa-solid' : 'fa-light') + ' fa-star" aria-hidden="true"></i></button>'
+          + '<img class="message-thread__avatar" src="./assets/messages-avatar-' + thread.avatar + '.png" alt="">'
+          + '<div class="message-thread__body">'
+          + '<div class="message-thread__meta">'
+          + '<span class="message-thread__name">' + escapeHtml(thread.name) + '</span>'
+          + '<time class="message-thread__time">' + escapeHtml(thread.time) + '</time>'
+          + '</div>'
+          + '<div class="message-thread__preview-row">'
+          + '<span class="message-thread__preview">' + prefix + escapeHtml(thread.preview) + '</span>'
+          + reply
+          + '</div>'
+          + status
+          + '</div>'
+          + (thread.unread ? '<span class="message-thread__badge">' + thread.unread + '</span>' : '');
+
+        return row;
+      }
+
+      function render() {
+        var shown = THREADS.filter(function (t) { return inCategory(t) && matchesFilters(t); });
+
+        list.innerHTML = '';
+        shown.forEach(function (t) { list.appendChild(renderRow(t)); });
+
+        var config = CATEGORIES[state.category];
+        categoryLabel.textContent = config.label;
+        screen.setAttribute('data-category', state.category);
+        screen.classList.toggle('is-empty', shown.length === 0);
+
+        emptyDoodle.src = config.doodle;
+        emptyTitle.textContent = config.emptyTitle;
+        emptyCopy.textContent = config.emptyCopy || '';
+        emptyCopy.hidden = !config.emptyCopy;
+        emptyAction.textContent = config.emptyAction || '';
+        emptyAction.hidden = !config.emptyAction;
+
+        filterPills.forEach(function (pill) {
+          var key = pill.getAttribute('data-filter');
+          var count = countIn(key);
+          var badge = pill.querySelector('.messages-filter-pill__count');
+          badge.textContent = count;
+          badge.hidden = count === 0;
+          pill.disabled = count === 0 && !state[key];
+          pill.classList.toggle('is-active', state[key]);
+          pill.setAttribute('aria-pressed', state[key] ? 'true' : 'false');
+        });
+      }
+
+      /* ---------- category sheet ---------- */
+      var sheetCloseTimer = null;
+
+      function openCategorySheet() {
+        window.clearTimeout(sheetCloseTimer);
+        categorySheet.classList.remove('is-closing');
+        categorySheet.classList.add('is-open');
+        categorySheet.removeAttribute('inert');
+        categorySheet.setAttribute('aria-hidden', 'false');
+        categoryTrigger.setAttribute('aria-expanded', 'true');
+        categoryPanel.focus({ preventScroll: true });
+      }
+
+      function closeCategorySheet() {
+        if (!categorySheet.classList.contains('is-open')) return;
+        categorySheet.classList.remove('is-open');
+        categorySheet.classList.add('is-closing');
+        categorySheet.setAttribute('aria-hidden', 'true');
+        categoryTrigger.setAttribute('aria-expanded', 'false');
+        /* Keep the panel painted until it has slid back down, then make it
+           inert again. Dropping inert first would yank focus mid-animation. */
+        sheetCloseTimer = window.setTimeout(function () {
+          categorySheet.classList.remove('is-closing');
+          categorySheet.setAttribute('inert', '');
+        }, 300);
+        categoryTrigger.focus({ preventScroll: true });
+      }
+
+      categoryTrigger.addEventListener('click', function () {
+        if (categorySheet.classList.contains('is-open')) closeCategorySheet();
+        else openCategorySheet();
+      });
+
+      categoryBackdrop.addEventListener('click', closeCategorySheet);
+
+      categoryPanel.addEventListener('click', function (event) {
+        var action = event.target.closest('[data-category]');
+        if (!action) return;
+        state.category = action.getAttribute('data-category');
+        /* Switching category drops the narrowing filters: their counts are
+           about to change, and keeping a stale toggle on would open the new
+           category straight into an empty list. */
+        state.needsReply = false;
+        state.unread = false;
+        render();
+        closeCategorySheet();
+      });
+
+      backToActive.addEventListener('click', function () {
+        state.category = 'active';
+        state.needsReply = false;
+        state.unread = false;
+        render();
+      });
+
+      filterPills.forEach(function (pill) {
+        pill.addEventListener('click', function () {
+          var key = pill.getAttribute('data-filter');
+          state[key] = !state[key];
+          render();
+        });
+      });
+
+      emptyAction.addEventListener('click', function () {
+        state.category = 'job';
+        state.needsReply = false;
+        state.unread = false;
+        render();
+      });
+
+      /* ---------- list interactions ---------- */
+      list.addEventListener('click', function (event) {
+        var star = event.target.closest('.message-thread__star');
+        var row = event.target.closest('.message-thread');
+        if (!row) return;
+        var thread = THREADS.filter(function (t) { return t.id === row.getAttribute('data-id'); })[0];
+        if (!thread) return;
+
+        if (star) {
+          thread.starred = !thread.starred;
+          star.classList.toggle('is-starred', thread.starred);
+          star.setAttribute('aria-pressed', thread.starred ? 'true' : 'false');
+          star.setAttribute('aria-label', (thread.starred ? 'Unstar' : 'Star') + ' conversation');
+          star.querySelector('i').className = (thread.starred ? 'fa-solid' : 'fa-light') + ' fa-star';
+          return;
+        }
+
+        openDetail(thread);
+      });
+
+      /* ---------- conversation detail ---------- */
+      function jobReplyBody(thread) {
+        var first = escapeHtml(thread.name.split(' ')[0]);
+        return '<p class="conversation-note"><span class="conversation-note__text">You replied to '
+          + first + '’s job post. When she responds, this chat will move to your active conversations.</span></p>'
+          + '<div class="conversation-bubble-row conversation-bubble-row--incoming conversation-bubble-row--job">'
+          + '<img class="conversation-bubble-row__avatar" src="./assets/messages-avatar-' + thread.avatar + '.png" alt="">'
+          + '<div class="conversation-bubble-row__stack">'
+          + '<div class="job-opening-card">'
+          + '<span class="job-opening-card__badge">' + first + '’s job opening 👶</span>'
+          + '<p class="job-opening-card__address">Potočná 44, Brno–Bystrc</p>'
+          + '<p class="job-opening-card__distance">3 km away from you</p>'
+          + '<hr class="job-opening-card__divider">'
+          + '<p class="job-opening-card__text">Hello sitters, I am looking for a nanny for regular babysitting from September for the next school year for two children, a son (4 years…</p>'
+          + '<a class="job-opening-card__link" href="#">View full job description</a>'
+          + '</div>'
+          + '<p class="job-opening-card__posted">posted yesterday</p>'
+          + '</div></div>'
+          + outgoingBubble('Hello, I’m Angela I’m available and can help with dietary requirements and planning fun activities. Would you like to talk?', 'Delivered', '19:06');
+      }
+
+      function archivedBody(thread) {
+        return '<p class="message-detail-screen__date">August 22, 2026</p>'
+          + outgoingBubble('Hello, I’m Angela I’m available and can help with dietary requirements and planning fun activities. Would you like to talk?', 'Delivered', '19:06')
+          + '<div class="conversation-bubble-row conversation-bubble-row--incoming">'
+          + '<img class="conversation-bubble-row__avatar" src="./assets/messages-avatar-' + thread.avatar + '.png" alt="">'
+          + '<div class="conversation-bubble-row__stack">'
+          + '<p class="conversation-bubble">Hi, I just wanted to thank you. Our son enjoyed time with you.</p>'
+          + '<div class="conversation-bubble-row__meta"><span>22:01</span></div>'
+          + '</div></div>'
+          + '<p class="conversation-note"><span class="conversation-note__text">You have moved this conversation to archived messages. You can always '
+          + '<button class="conversation-note__link" type="button" id="unarchiveAction">unarchive</button> it.</span></p>';
+      }
+
+      function activeBody(thread) {
+        return '<p class="message-detail-screen__date">November 20, 2025</p>'
+          + outgoingBubble('Mauris quis porttitor libero. Mauris tristique dolor eget libero dignissim semper. Pellentesque habitant morbi tristique senectus et netus.', 'Seen', '17:06')
+          + '<p class="message-detail-screen__date">November 21, 2025</p>'
+          + '<div class="conversation-bubble-row conversation-bubble-row--incoming">'
+          + '<img class="conversation-bubble-row__avatar" src="./assets/messages-avatar-' + thread.avatar + '.png" alt="">'
+          + '<div class="conversation-bubble-row__stack"><p class="conversation-bubble">Nullam vulputate et arcu.</p></div>'
+          + '</div>'
+          + '<div class="conversation-bubble-row conversation-bubble-row--incoming">'
+          + '<img class="conversation-bubble-row__avatar" src="./assets/messages-avatar-' + thread.avatar + '.png" alt="" aria-hidden="true">'
+          + '<div class="conversation-bubble-row__stack">'
+          + '<p class="conversation-bubble">Maecenas sit amet eros non ipsum lacinia vestibulum in quis neque. Sed scelerisque erat id suscipit rhoncus. Suspendisse blandit⭐️</p>'
+          + '<div class="conversation-bubble-row__meta"><span>12:40</span></div>'
+          + '</div></div>';
+      }
+
+      function outgoingBubble(text, status, time) {
+        return '<div class="conversation-bubble-row conversation-bubble-row--outgoing">'
+          + '<div class="conversation-bubble-row__stack">'
+          + '<p class="conversation-bubble conversation-bubble--outgoing">' + text + '</p>'
+          + '<div class="conversation-bubble-row__meta"><i class="fa-light fa-circle-check" aria-hidden="true"></i>'
+          + '<span>' + status + '</span><span>' + time + '</span></div>'
+          + '</div></div>';
+      }
+
+      function openDetail(thread) {
+        detailName.textContent = thread.name + (thread.cat === 'job' ? ' (family)' : '');
+        detailBook.hidden = thread.cat === 'active';
+        detailHeader.classList.toggle('is-with-book', !detailBook.hidden);
+
+        if (thread.cat === 'job') detailMessages.innerHTML = jobReplyBody(thread);
+        else if (thread.cat === 'archived') detailMessages.innerHTML = archivedBody(thread);
+        else detailMessages.innerHTML = activeBody(thread);
+
+        var unarchive = document.getElementById('unarchiveAction');
+        if (unarchive) {
+          unarchive.addEventListener('click', function () {
+            thread.cat = 'active';
+            closeDetail();
+            render();
+          });
+        }
+
+        /* Opening a conversation clears its unread marker, the same as the
+           real inbox would, so the Unread count stays truthful. */
+        if (thread.unread) {
+          thread.unread = 0;
+          render();
+        }
+
+        /* The flow class collapses the bottom nav to a home indicator and
+           drops the detail screen onto the freed space. Its 300ms transition
+           is what keeps the bar travelling with the sheet instead of
+           snapping back the instant the class comes off. */
+        frame.classList.add('is-message-detail-flow');
+        detailScreen.classList.add('is-open');
+        detailScreen.setAttribute('aria-hidden', 'false');
+        detailMessages.scrollTop = detailMessages.scrollHeight;
+      }
+
+      function closeDetail() {
+        frame.classList.remove('is-message-detail-flow');
+        detailScreen.classList.remove('is-open');
+        detailScreen.setAttribute('aria-hidden', 'true');
+      }
+
+      detailBack.addEventListener('click', closeDetail);
+
+      detailComposer.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var text = detailInput.value.trim();
+        if (!text) return;
+        detailMessages.insertAdjacentHTML('beforeend', outgoingBubble(escapeHtml(text), 'Delivered', '9:41'));
+        detailInput.value = '';
+        detailMessages.scrollTop = detailMessages.scrollHeight;
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (categorySheet.classList.contains('is-open')) closeCategorySheet();
+        else if (detailScreen.classList.contains('is-open')) closeDetail();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
