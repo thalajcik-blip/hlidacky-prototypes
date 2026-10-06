@@ -77,6 +77,15 @@
       color: #fff;
     }
 
+    /* While Needs reply or Unread is on, the category no longer decides what
+       is listed, so it drops back to the unselected pill. Two class names
+       beats the one above it, so this wins wherever it sits in the file. */
+    .messages-filter-pill--category.is-muted {
+      border-color: var(--gray-300, #e5e5ea);
+      background: #fff;
+      color: #2a3539;
+    }
+
     .messages-filter-pill__chevron {
       font-size: 11px;
       transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -700,6 +709,7 @@
 
         var config = CATEGORIES[state.category];
         categoryLabel.textContent = config.label;
+        categoryTrigger.classList.toggle('is-muted', filtering);
         screen.setAttribute('data-category', state.category);
         screen.classList.toggle('is-empty', shown.length === 0);
 
