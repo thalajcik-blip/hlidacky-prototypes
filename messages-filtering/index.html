@@ -639,6 +639,9 @@
 
       function inCategory(thread) { return thread.cat === state.category; }
 
+      /* Only one of the two can be on at a time, so in practice this tests a
+         single condition. It stays written as an intersection so that
+         allowing both again would need no change here. */
       function matchesFilters(thread) {
         if (state.needsReply && !thread.needsReply) return false;
         if (state.unread && !thread.unread) return false;
@@ -788,10 +791,17 @@
         render();
       });
 
+      /* Needs reply and Unread are mutually exclusive: turning one on turns
+         the other off, so the list always answers a single question. Each
+         still toggles off on a second tap, which is why these stay toggle
+         buttons rather than becoming a radio group. */
       filterPills.forEach(function (pill) {
         pill.addEventListener('click', function () {
           var key = pill.getAttribute('data-filter');
-          state[key] = !state[key];
+          var next = !state[key];
+          state.needsReply = false;
+          state.unread = false;
+          state[key] = next;
           render();
         });
       });
