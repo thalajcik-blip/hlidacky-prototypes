@@ -775,20 +775,26 @@
         } else if (event.key === 'Tab') closeCategorySheet();
       });
 
+      /* Picking a category clears both toggles. While one is on it, not the
+         category, decides the list, so without this the pick would appear to
+         do nothing -- same rows, only the label changed. Clearing hands the
+         list back to the category you just asked for. */
+      function selectCategory(category) {
+        state.category = category;
+        state.needsReply = false;
+        state.unread = false;
+        render();
+      }
+
       categoryPanel.addEventListener('click', function (event) {
         var action = event.target.closest('[data-category]');
         if (!action) return;
-        /* The toggles survive a category change on purpose -- they are not
-           scoped to the category, so clearing them here would make the
-           result depend on the pill they are meant to be independent of. */
-        state.category = action.getAttribute('data-category');
-        render();
+        selectCategory(action.getAttribute('data-category'));
         closeCategorySheet();
       });
 
       backToActive.addEventListener('click', function () {
-        state.category = 'active';
-        render();
+        selectCategory('active');
       });
 
       /* Needs reply and Unread are mutually exclusive: turning one on turns
@@ -807,12 +813,7 @@
       });
 
       emptyAction.addEventListener('click', function () {
-        /* Escape hatch out of an empty list, so it does clear the toggles --
-           otherwise it could land you on another empty one. */
-        state.category = 'job';
-        state.needsReply = false;
-        state.unread = false;
-        render();
+        selectCategory('job');
       });
 
       /* ---------- list interactions ---------- */
