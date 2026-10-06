@@ -239,6 +239,15 @@
     }
 
     .message-thread__status i { font-size: 12px; }
+
+    /* The drawn double strike is 16x12; hold it to the cap height of the
+       12px label so it reads as one line with the Font Awesome statuses. */
+    .message-thread__status-icon {
+      display: block;
+      width: 14px;
+      height: auto;
+      flex: 0 0 14px;
+    }
     .message-thread__status--seen { color: #22bf1e; }
     .message-thread__status--failed { color: var(--pink, #f96073); }
 
@@ -600,9 +609,13 @@
         }
       };
 
+      /* A status carries either a Font Awesome class or a supplied asset.
+         Seen uses the latter: its double strike is drawn, not a kit glyph.
+         The artwork is a fixed #22BF1E, the same green as the label beside
+         it, so recolour both together if that green ever moves. */
       var STATUS = {
         delivered: { icon: 'fa-light fa-check', text: 'Delivered', mod: '' },
-        seen: { icon: 'fa-light fa-check-double', text: 'Seen', mod: ' message-thread__status--seen' },
+        seen: { asset: './assets/icon-check-double.svg', text: 'Seen', mod: ' message-thread__status--seen' },
         failed: { icon: 'fa-light fa-triangle-exclamation', text: 'Failed to deliver', mod: ' message-thread__status--failed' }
       };
 
@@ -672,8 +685,11 @@
         var status = '';
         if (thread.status && STATUS[thread.status]) {
           var s = STATUS[thread.status];
+          var glyph = s.asset
+            ? '<img class="message-thread__status-icon" src="' + s.asset + '" alt="" aria-hidden="true">'
+            : '<i class="' + s.icon + '" aria-hidden="true"></i>';
           status = '<span class="message-thread__status' + s.mod + '">'
-            + '<i class="' + s.icon + '" aria-hidden="true"></i><span>' + s.text + '</span></span>';
+            + glyph + '<span>' + s.text + '</span></span>';
         }
 
         row.innerHTML =
