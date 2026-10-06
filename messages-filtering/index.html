@@ -321,6 +321,37 @@
       cursor: pointer;
     }
 
+    /* The composer grows a line at a time as the message wraps. Past 180px
+       it stops and scrolls inside itself, so a long draft can never push the
+       conversation off the screen. The inherited rule hides the overflow,
+       which would make anything beyond the cap unreachable. */
+    .message-detail-screen__input {
+      display: block;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    /* Inherited, the attachment button is centred on a field that never
+       changed height. Now that the field grows, centring parks it in the
+       middle of the message and over the text, so pin it to the last line
+       instead. The offset is measured from .message-detail-screen__input-wrap,
+       which is why the field above is display:block -- as an inline-block it
+       left descender space under itself and dragged the icon below the text. */
+    .message-detail-screen__attachment {
+      top: auto;
+      bottom: 15px;
+      transform: none;
+    }
+
+    /* Send sits 4px above where the inherited 14px offset puts it. The rule
+       being overridden is .message-detail-screen__composer .message-detail-
+       screen__send, so this has to carry the same two classes to outweigh
+       it -- a bare .message-detail-screen__send loses on specificity no
+       matter how late it comes. */
+    .message-detail-screen__composer .message-detail-screen__send {
+      margin-bottom: 18px;
+    }
+
     .message-detail-screen__book[hidden] { display: none; }
     .message-detail-screen__book:active { background: #f1fbf3; }
 
@@ -943,6 +974,9 @@
         frame.classList.add('is-message-detail-flow');
         detailScreen.classList.add('is-open');
         detailScreen.setAttribute('aria-hidden', 'false');
+        /* One composer serves every conversation, so re-measure it here --
+           otherwise a height grown in the last thread carries into the next. */
+        resizeComposer();
         detailMessages.scrollTop = detailMessages.scrollHeight;
       }
 
@@ -954,12 +988,30 @@
 
       detailBack.addEventListener('click', closeDetail);
 
+      /* Grow the composer to fit the message, up to COMPOSER_MAX_HEIGHT.
+         Collapsing to auto first is what lets it shrink again when text is
+         deleted -- measuring scrollHeight against the current height would
+         only ever report the taller of the two. scrollHeight excludes the
+         border on a border-box element, so add it back or the field ends up
+         2px short and scrolls a line early. */
+      var COMPOSER_MAX_HEIGHT = 180;
+
+      function resizeComposer() {
+        var style = window.getComputedStyle(detailInput);
+        var border = parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+        detailInput.style.height = 'auto';
+        detailInput.style.height = Math.min(detailInput.scrollHeight + border, COMPOSER_MAX_HEIGHT) + 'px';
+      }
+
+      detailInput.addEventListener('input', resizeComposer);
+
       detailComposer.addEventListener('submit', function (event) {
         event.preventDefault();
         var text = detailInput.value.trim();
         if (!text) return;
         detailMessages.insertAdjacentHTML('beforeend', outgoingBubble(escapeHtml(text), 'Delivered', '9:41'));
         detailInput.value = '';
+        resizeComposer();
         detailMessages.scrollTop = detailMessages.scrollHeight;
       });
 
