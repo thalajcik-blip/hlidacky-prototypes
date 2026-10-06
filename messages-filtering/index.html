@@ -636,11 +636,11 @@
         return true;
       }
 
-      /* Counts describe the category you are looking at, not the whole
-         inbox. A badge that promised 5 unread while the Job replies list
-         had none would be worse than no badge at all. */
+      /* Needs reply and Unread are inbox-wide, deliberately independent of
+         the category pill: the same toggle returns the same conversations
+         whichever category is selected, and the counts stay put with it. */
       function countIn(key) {
-        return THREADS.filter(function (t) { return inCategory(t) && t[key]; }).length;
+        return THREADS.filter(function (t) { return t[key]; }).length;
       }
 
       function renderRow(thread) {
@@ -686,7 +686,14 @@
       }
 
       function render() {
-        var shown = THREADS.filter(function (t) { return inCategory(t) && matchesFilters(t); });
+        /* With a toggle on, the category pill stops narrowing the list: the
+           toggles answer "what needs me, anywhere in the inbox", so they
+           reach across active chats, job replies and the archive alike.
+           With both off the list falls back to the selected category. */
+        var filtering = state.needsReply || state.unread;
+        var shown = THREADS.filter(function (t) {
+          return filtering ? matchesFilters(t) : inCategory(t);
+        });
 
         list.innerHTML = '';
         shown.forEach(function (t) { list.appendChild(renderRow(t)); });
@@ -758,20 +765,16 @@
       categoryPanel.addEventListener('click', function (event) {
         var action = event.target.closest('[data-category]');
         if (!action) return;
+        /* The toggles survive a category change on purpose -- they are not
+           scoped to the category, so clearing them here would make the
+           result depend on the pill they are meant to be independent of. */
         state.category = action.getAttribute('data-category');
-        /* Switching category drops the narrowing filters: their counts are
-           about to change, and keeping a stale toggle on would open the new
-           category straight into an empty list. */
-        state.needsReply = false;
-        state.unread = false;
         render();
         closeCategorySheet();
       });
 
       backToActive.addEventListener('click', function () {
         state.category = 'active';
-        state.needsReply = false;
-        state.unread = false;
         render();
       });
 
@@ -784,6 +787,8 @@
       });
 
       emptyAction.addEventListener('click', function () {
+        /* Escape hatch out of an empty list, so it does clear the toggles --
+           otherwise it could land you on another empty one. */
         state.category = 'job';
         state.needsReply = false;
         state.unread = false;
