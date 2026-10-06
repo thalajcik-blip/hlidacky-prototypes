@@ -490,7 +490,7 @@
       <div class="messages-screen__content" id="messagesContent"></div>
 
       <section class="messages-empty" id="messagesEmpty" aria-live="polite">
-        <div class="messages-empty__doodle" aria-hidden="true"><img id="messagesEmptyDoodle" src="./assets/doodle-mailbox.svg" alt=""></div>
+        <div class="messages-empty__doodle" aria-hidden="true"><img id="messagesEmptyDoodle" src="./assets/doodle-active-chats.svg" alt=""></div>
         <p class="messages-empty__title" id="messagesEmptyTitle">You don’t have any active conversations.</p>
         <p class="messages-empty__copy" id="messagesEmptyCopy" hidden></p>
         <button class="messages-empty__action" id="messagesEmptyAction" type="button" hidden>View job openings</button>
@@ -582,20 +582,20 @@
       var CATEGORIES = {
         active: {
           label: 'Active chats',
-          doodle: './assets/doodle-mailbox.svg',
+          doodle: './assets/doodle-active-chats.svg',
           emptyTitle: 'You don’t have any active conversations.',
           emptyAction: 'View job openings'
         },
         job: {
           label: 'Job replies',
-          doodle: './assets/doodle-envelope.svg',
+          doodle: './assets/doodle-job-replies.svg',
           emptyTitle: 'You don’t have any job replies yet.',
           emptyCopy: 'Keep your momentum going by applying to more jobs.',
           emptyAction: 'View job openings'
         },
         archived: {
           label: 'Archived',
-          doodle: './assets/doodle-archive.svg',
+          doodle: './assets/doodle-archived.svg',
           emptyTitle: 'You don’t have any archived conversations.'
         }
       };
