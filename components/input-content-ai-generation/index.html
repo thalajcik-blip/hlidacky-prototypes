@@ -13,7 +13,7 @@
   <main class="page">
     <header class="page__head">
       <h1>Input content AI generation</h1>
-      <p>A textarea that can draft its own content with AI. The text streams into the field the user will edit, and the field shows every state on the way: writing, taking longer, stuck, done and stopped. Taken from the About me step of the sitter profile wizard.</p>
+      <p>A textarea that can draft its own content with AI. The text streams into the field the user will edit, and the field shows every state on the way: writing, taking longer, stuck and done. Taken from the About me step of the sitter profile wizard, as designed in <a href="https://www.figma.com/design/bEVvmfroGmUYouyZSPfOpi/Sitters-Onboarding?node-id=3503-64589">Sitters Onboarding</a>.</p>
     </header>
 
     <div class="layout">
@@ -22,34 +22,37 @@
           <div class="setup">
             <header class="setup__header">
               <span aria-hidden="true"></span>
-              <div class="setup__title">Create a babysitting profile</div>
-              <button class="setup__header-button" type="button" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+              <div class="setup__title">
+                <i class="fa-solid fa-child-reaching" aria-hidden="true"></i>
+                <span>Your babysitting profile</span>
+                <span class="setup__title-progress">(86%)</span>
+              </div>
+              <button class="setup__header-button" type="button" aria-label="Close setup"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
             </header>
-            <div class="setup__progress" aria-label="Step 10 of 13"><span class="setup__progress-fill" style="--progress: 77%"></span></div>
-            <section class="setup__step" aria-label="About you" data-scroller>
+            <div class="setup__progress" role="progressbar" aria-label="Profile progress" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100"><span class="setup__progress-fill"></span></div>
+            <section class="setup__step" aria-label="About you">
               <div class="setup__hero">
                 <img class="setup__doodle" src="./assets/profile-about-you.svg" alt="">
-                <div>
+                <div class="setup__hero-copy">
                   <h2>About you</h2>
-                  <p>Tell families about yourself, your experience and your motivation to provide exceptional care.</p>
+                  <p>Tell the families about yourself, your experience and your motivation to provide exceptional care.</p>
                 </div>
+                <a class="setup__hero-link" href="#why-about-you"><i class="fa-regular fa-circle-info" aria-hidden="true"></i>Why is it important</a>
               </div>
               <div class="setup__content">
                 <div class="ai-input" data-ai-input data-state="idle">
-                  <label class="ai-input__label" for="aboutText">About me</label>
-                  <div class="ai-input__field">
-                    <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutHint aboutStatus"></textarea>
+                  <div class="ai-input__label-row">
+                    <label class="ai-input__label" for="aboutText"><img src="./assets/flag-en.svg" alt="" width="24" height="16">About me</label>
+                    <span class="ai-input__counter" id="aboutCounter" data-counter>0 of 150 characters</span>
                   </div>
-                  <p class="ai-input__hint" id="aboutHint">Minimum of 60 characters.</p>
-                  <p class="ai-input__status" id="aboutStatus" role="status" aria-live="polite"></p>
-                  <div class="ai-input__alert" role="alert" hidden></div>
+                  <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutCounter aboutStatus"></textarea>
                   <div class="ai-input__actions"></div>
+                  <p class="ai-input__status" id="aboutStatus" role="status" aria-live="polite"></p>
                 </div>
-                <button class="setup__link" type="button">+ Add translation</button>
               </div>
             </section>
             <footer class="setup__footer">
-              <button class="setup__back" type="button" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button>
+              <button class="setup__back" type="button" aria-label="Previous step"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
               <button class="setup__next" type="button">Next <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
             </footer>
           </div>
@@ -64,7 +67,7 @@
               <label class="pill"><input type="radio" name="scenario" value="works" checked><span>Writes the text</span></label>
               <label class="pill"><input type="radio" name="scenario" value="stuck"><span>Gets stuck</span></label>
             </div>
-            <p class="proto-controls__hint">Gets stuck stalls halfway and fails. The retry from the stuck state works.</p>
+            <p class="proto-controls__hint">Gets stuck never sends a word: it slows down, then fails. Try again works.</p>
           </div>
           <div class="proto-controls__group">
             <span class="proto-controls__label" id="previewLabel">Jump to a state</span>
@@ -74,7 +77,6 @@
               <button class="pill pill--button" type="button" data-preview="slow">Slow</button>
               <button class="pill pill--button" type="button" data-preview="stuck">Stuck</button>
               <button class="pill pill--button" type="button" data-preview="done">Done</button>
-              <button class="pill pill--button" type="button" data-preview="stopped">Stopped</button>
             </div>
             <p class="proto-controls__hint">Jumped-to states hold still for review. Press the button in the field to see it live.</p>
           </div>
@@ -85,27 +87,30 @@
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th scope="col">State</th><th scope="col">When</th><th scope="col">Field</th><th scope="col">Actions</th></tr>
+                <tr><th scope="col">State</th><th scope="col">When</th><th scope="col">Field</th><th scope="col">Button · message</th></tr>
               </thead>
               <tbody>
-                <tr><th scope="row">Idle</th><td>Default; after Undo or Write it myself</td><td>Editable</td><td>Write it with AI + caption about the source of the draft</td></tr>
-                <tr><th scope="row">Generating</th><td>Request sent; words streaming in</td><td>Read-only, animated ring, status “Writing your text…”</td><td>Stop</td></tr>
-                <tr><th scope="row">Slow</th><td>No new word for 3.5 s</td><td>Same, ring slows down, status “Still writing…”</td><td>Stop</td></tr>
-                <tr><th scope="row">Stuck</th><td>No new word for 8 s, or the request fails</td><td>Editable, keeps the partial text, warning alert</td><td>Try again · Write it myself</td></tr>
-                <tr><th scope="row">Done</th><td>Last word arrived</td><td>Editable, focused, status “Done. Read it through…”</td><td>Generate again · Undo</td></tr>
-                <tr><th scope="row">Stopped</th><td>User pressed Stop, or left the step mid-draft</td><td>Editable, keeps the partial text</td><td>Generate again · Undo</td></tr>
+                <tr><th scope="row">Idle</th><td>Default</td><td>Editable</td><td>Write it with AI · caption about where the draft comes from</td></tr>
+                <tr><th scope="row">Generating</th><td>Request sent; words streaming in</td><td>Read-only, indigo border and ring, moving tint</td><td>Stop writing · “Writing your text from your answers…”</td></tr>
+                <tr><th scope="row">Slow</th><td>No new word for 3.5 s</td><td>Same as generating</td><td>Stop writing · “Still writing. It takes longer than usual…”</td></tr>
+                <tr><th scope="row">Stuck</th><td>The request fails, or no word for 8 s</td><td>Back to what the user had before, focused</td><td>Try again · red “Writing got stuck. Sorry for the inconvenience.”</td></tr>
+                <tr><th scope="row">Done</th><td>Last word arrived</td><td>Editable, focused</td><td>Write again · Undo · green “Done. You can change anything you want.”</td></tr>
+                <tr><th scope="row">Stopped<sup>*</sup></th><td>User pressed Stop writing</td><td>Editable, focused, keeps what was written</td><td>Write again · Undo · no message</td></tr>
               </tbody>
             </table>
           </div>
+          <p class="notes__footnote"><sup>*</sup> Not in Figma yet. If Stop happens before the first word, the field goes back to Idle.</p>
 
           <h2>Behaviour</h2>
           <ul>
-            <li><strong>Draft in place.</strong> Words stream into the same textarea the user edits, not into a preview. The field grows with the text (116–480 px) and the step scrolls so the status and Stop stay above the footer.</li>
-            <li><strong>Nothing is lost.</strong> Undo restores what the user had written before the first draft; Try again and Generate again replace AI text only. A stuck draft keeps whatever arrived.</li>
-            <li><strong>Busy means busy.</strong> While writing, the field is read-only with <code>aria-busy="true"</code>, and Next and Back are disabled so the step cannot be left with a half-written text.</li>
-            <li><strong>Announcements.</strong> The status line is a polite live region; the stuck alert is <code>role="alert"</code>. Focus goes to Stop when writing starts, to Try again when it gets stuck and into the field when it is done.</li>
+            <li><strong>Draft in place.</strong> Words stream into the same textarea the user edits, not into a preview. The field keeps its 148 px height and scrolls to the newest line.</li>
+            <li><strong>No partial failures.</strong> The text either arrives or the request fails before the first word, so Stuck has nothing to keep: the field returns to what the user had written before pressing the button.</li>
+            <li><strong>Undo.</strong> After a finished or stopped draft, Undo puts back whatever was in the field when the button was pressed — the user’s own text or the previous draft — and returns to Idle.</li>
+            <li><strong>Busy field.</strong> While writing, the field is read-only with <code>aria-busy="true"</code>. Next and Back stay enabled, as in Figma; leaving the step stops the writing.</li>
+            <li><strong>Announcements.</strong> The message line is a polite live region. Focus goes to Stop writing when writing starts and into the field when it is done or stuck.</li>
+            <li><strong>Counter.</strong> 150 characters is the minimum. Below it the counter reads “N of 150 characters”; once it is met, just “N characters”. It counts live, including while the text streams in.</li>
             <li><strong>Timings.</strong> First word after ~0.7 s, then 30–80 ms per word. Slow after 3.5 s without a word, stuck after 8 s. Real values should come from the model’s latency.</li>
-            <li><strong>Reduced motion.</strong> The ring and the dots stand still; the text still streams.</li>
+            <li><strong>Reduced motion.</strong> The tint and the spinner stand still; the text still streams.</li>
           </ul>
           <p class="notes__source">Live in context: <a href="/mobile-app-redesign-v2/">Mobile app redesign v2</a> → Prototype settings: Sitter, Not registered → register → Set up the babysitting profile → About you.</p>
         </section>

@@ -1,23 +1,27 @@
-/* Component values match the About me step in mobile-app-redesign-v2;
-   the page around the phone is prototype-only. */
+/* Component values follow the Sitters Onboarding Figma file (About you
+   step, frames 3503:64589 … 3503:65718); the page around the phone is
+   prototype-only. */
 
 :root {
   --gray-100: #f5f5f7;
-  --gray-200: #eef0f3;
+  --gray-200: #f7f7f7;
   --gray-300: #e5e5ea;
+  --gray-400: #bec2ce;
   --gray-500: #8b91a3;
   --gray-600: #6c757d;
   --gray-800: #2a3539;
-  --gray-900: #20282b;
+  --gray-900: #212529;
   --pink-400: #f96073;
+  --green-400: #22bf1e;
   --green-500: #0ba825;
   --green-600: #07851c;
-  --ai: #7c5cff;
-  --ai-text: #5b3fd6;
-  --ai-tint: #f5f3ff;
-  --warn-bg: #fff7ed;
-  --warn-border: #fed7aa;
-  --warn-icon: #ea580c;
+  --red-400: #ea2323;
+  --blue-300: #6aafff;
+  --focus-ring: #cbdafc;
+  --indigo-100: #edebff;
+  --indigo-200: #cfc2ff;
+  --indigo-400: #7e5eff;
+  --indigo-500: #4c24ec;
   --page-bg: #eef0f4;
 }
 
@@ -39,6 +43,7 @@ body {
 .page__head { max-width: 720px; margin-bottom: 32px; }
 .page__head h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); font-weight: 600; line-height: 1.1; letter-spacing: -0.5px; }
 .page__head p { margin: 0; color: var(--gray-600); font-size: 16px; line-height: 1.55; }
+.page__head a { color: var(--pink-400); }
 
 .layout {
   display: grid;
@@ -59,12 +64,12 @@ body {
 }
 
 .phone__screen {
-  height: min(760px, calc(100vh - 72px));
-  min-height: 560px;
+  height: min(788px, calc(100vh - 48px));
+  min-height: 600px;
   overflow: hidden;
   border-radius: 36px;
   background: #fff;
-  padding-top: 28px;
+  padding-top: 44px;
 }
 
 /* ---------- wizard step around the field ---------- */
@@ -74,178 +79,176 @@ body {
 .setup__header {
   display: grid;
   flex: 0 0 48px;
-  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  grid-template-columns: 24px minmax(0, 1fr) 24px;
   align-items: center;
-  border-bottom: 1px solid var(--gray-300);
-  padding-left: 4px;
+  padding: 12px 16px;
 }
 
-.setup__title { text-align: center; font-size: 16px; font-weight: 700; line-height: 24px; }
+.setup__title { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: -0.05px; white-space: nowrap; }
+.setup__title i { color: var(--pink-400); font-size: 14px; }
+.setup__title-progress { color: var(--gray-500); font-weight: 350; }
 
 .setup__header-button {
   display: inline-flex;
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
   align-items: center;
   justify-content: center;
   border: 0;
   background: transparent;
-  color: var(--gray-600);
-  font-size: 22px;
+  padding: 0;
+  color: var(--gray-400);
+  font-size: 24px;
   cursor: pointer;
 }
 
-.setup__progress { height: 12px; overflow: hidden; background: #f7f8fa; }
-.setup__progress-fill { display: block; width: var(--progress); height: 100%; background: var(--pink-400); }
+.setup__progress { flex: 0 0 12px; border-block: 1px solid var(--gray-300); background: #fff; }
+.setup__progress-fill { display: block; width: 90%; height: calc(100% + 2px); margin-top: -1px; background: var(--pink-400); }
 
-.setup__step { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; }
+.setup__step { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; }
 
 .setup__hero {
-  display: grid;
-  min-height: 217px;
-  grid-template-rows: 72px auto;
-  align-content: center;
-  justify-items: center;
-  row-gap: 8px;
-  background: #f5f6f8;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--gray-200);
   padding: 20px;
   text-align: center;
 }
 
 .setup__doodle { width: 72px; height: 72px; }
-.setup__hero h2 { margin: 0 0 4px; color: var(--gray-900); font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; }
-.setup__hero p { max-width: 335px; margin: 0; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; }
+.setup__hero-copy { display: flex; min-height: 72px; flex-direction: column; justify-content: center; gap: 4px; }
+.setup__hero h2 { margin: 0; color: var(--gray-900); font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; }
+.setup__hero p { margin: 0; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; }
+.setup__hero-link { display: inline-flex; align-items: center; gap: 4px; color: var(--pink-400); font-size: 12px; line-height: 1.4; opacity: .8; text-underline-offset: 2px; }
+.setup__hero-link i { font-size: 12px; }
 
-.setup__content { display: flex; flex-direction: column; gap: 24px; padding: 24px 20px; }
-
-.setup__link {
-  display: block;
-  width: fit-content;
-  margin: -10px auto 0;
-  border: 0;
-  background: transparent;
-  color: var(--pink-400);
-  font: inherit;
-  font-size: 14px;
-  text-decoration: underline;
-  cursor: pointer;
-}
+.setup__content { padding: 16px 20px; }
 
 .setup__footer {
-  display: grid;
+  display: flex;
   flex: 0 0 auto;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: 12px;
-  border-top: 1px solid var(--gray-300);
-  padding: 12px 20px 20px;
+  gap: 20px;
+  padding: 16px 20px 20px;
 }
 
 .setup__back,
-.setup__next { min-height: 48px; border-radius: 4px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
-.setup__back { border: 1px solid var(--gray-300); background: #fff; box-shadow: inset 0 -3px 0 var(--gray-300); color: var(--gray-800); }
-.setup__next { border: 0; background: var(--green-500); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); color: #fff; }
+.setup__next { min-height: 52px; border-radius: 4px; font: inherit; font-size: 16px; font-weight: 450; cursor: pointer; }
+.setup__back { width: 64px; flex: 0 0 64px; border: 1px solid var(--gray-300); background: #fff; box-shadow: inset 0 -3px 0 var(--gray-300); color: var(--gray-800); font-size: 11px; }
+.setup__next { display: inline-flex; flex: 1 1 auto; align-items: center; justify-content: center; gap: 8px; border: 0; background: var(--green-500); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); color: #fff; }
+.setup__next i { font-size: 11px; }
 .setup__next:hover { background: var(--green-600); }
 .setup__next:active,
 .setup__back:active { box-shadow: none; transform: translateY(2px); }
-.setup__next:disabled,
-.setup__back:disabled { opacity: .45; box-shadow: none; transform: none; cursor: not-allowed; }
-.setup__next:disabled:hover { background: var(--green-500); }
 
 /* ---------- the component ---------- */
 
-/* The field itself carries the state: a moving ring while the text
-   streams in, so the user watches the draft appear where they will edit
-   it rather than behind a spinner. */
-@property --ai-input-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.ai-input { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
 
-.ai-input__label { display: block; margin: 0 0 10px; font-size: 16px; font-weight: 600; line-height: 1.4; }
-
-.ai-input__field { position: relative; }
+.ai-input__label-row { display: flex; align-items: center; gap: 4px; padding: 0 2px; }
+.ai-input__label { display: flex; flex: 1 1 auto; align-items: center; gap: 8px; font-size: 16px; font-weight: 450; line-height: 1.4; }
+.ai-input__label img { width: 24px; height: 16px; }
+.ai-input__counter { flex: 0 0 auto; color: var(--gray-500); font-size: 12px; line-height: 1.4; font-variant-numeric: lining-nums tabular-nums; }
 
 .ai-input__textarea {
   display: block;
   width: 100%;
-  min-height: 116px;
+  height: 148px;
+  min-height: 64px;
   resize: vertical;
   border: 1px solid var(--gray-300);
   border-radius: 4px;
   background: #fff;
-  padding: 12px 14px;
+  padding: 10px 16px;
   color: var(--gray-800);
   font: inherit;
   font-size: 16px;
-  line-height: 22px;
-  transition: border-color .2s ease;
+  line-height: 1.32;
+  letter-spacing: .2px;
+  font-variant-numeric: lining-nums tabular-nums;
+  transition: border-color .2s ease, box-shadow .2s ease;
 }
-.ai-input__textarea:focus { outline: 2px solid #0d6efd; outline-offset: 1px; }
+.ai-input__textarea::placeholder { color: var(--gray-500); }
+.ai-input__textarea:focus { border-color: var(--blue-300); outline: 0; box-shadow: 0 0 0 2px var(--focus-ring); }
 
-.ai-input.is-busy .ai-input__textarea { border-color: transparent; caret-color: transparent; cursor: progress; }
-.ai-input.is-busy .ai-input__field::before {
-  position: absolute;
-  inset: -1px;
-  border-radius: 5px;
-  padding: 2px;
-  background: conic-gradient(from var(--ai-input-angle), var(--ai), var(--pink-400), #35cfea, var(--ai));
-  content: '';
-  pointer-events: none;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: aiInputRing 2.4s linear infinite;
+/* Writing: an indigo field with a light band drifting across it, so the
+   field itself says it is busy rather than a spinner beside it. */
+.ai-input.is-busy .ai-input__textarea,
+.ai-input.is-busy .ai-input__textarea:focus {
+  border-color: var(--indigo-400);
+  background: linear-gradient(124deg, var(--indigo-100) 0%, var(--indigo-100) 40%, #fff 50%, var(--indigo-100) 60%, var(--indigo-100) 100%) 0 0 / 300% 300%;
+  box-shadow: 0 0 0 2px var(--indigo-200);
+  caret-color: transparent;
+  cursor: progress;
+  animation: aiInputTint 2.4s linear infinite;
 }
-/* Slow is still working, just not visibly progressing — the ring slows
+/* Slow is still working, just not visibly progressing — the band slows
    with it so it does not promise more than is happening. */
-.ai-input[data-state="slow"] .ai-input__field::before { animation-duration: 6s; }
-@keyframes aiInputRing { to { --ai-input-angle: 360deg; } }
-
-.ai-input__hint { margin: 8px 0 0; color: var(--gray-500); font-size: 13px; line-height: 1.45; }
-
-.ai-input__status { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0 0; color: var(--ai-text); font-size: 13px; line-height: 1.45; }
-.ai-input__status:empty { display: none; }
-.ai-input__status i { margin-top: 2px; }
-.ai-input__dots { display: inline-flex; flex: 0 0 auto; gap: 3px; margin-top: 7px; }
-.ai-input__dots span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: aiInputDots 1.2s ease-in-out infinite; }
-.ai-input__dots span:nth-child(2) { animation-delay: .16s; }
-.ai-input__dots span:nth-child(3) { animation-delay: .32s; }
-@keyframes aiInputDots {
-  0%, 80%, 100% { transform: scale(.7); opacity: .45; }
-  40% { transform: scale(1); opacity: 1; }
+.ai-input[data-state="slow"] .ai-input__textarea { animation-duration: 5s; }
+@keyframes aiInputTint {
+  from { background-position: 100% 100%; }
+  to { background-position: 0 0; }
 }
 
-.ai-input__alert { display: flex; gap: 10px; margin-top: 12px; border: 1px solid var(--warn-border); border-radius: 6px; background: var(--warn-bg); padding: 12px 14px; font-size: 14px; line-height: 1.45; }
-.ai-input__alert[hidden] { display: none; }
-.ai-input__alert i { margin-top: 3px; color: var(--warn-icon); }
-.ai-input__alert strong { display: block; margin-bottom: 2px; font-weight: 600; }
-.ai-input__alert p { margin: 0; }
-
-.ai-input__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 14px; }
+.ai-input__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 
 .ai-input__button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
-  border: 1px solid var(--ai);
+  border: 1px solid var(--gray-300);
   border-radius: 4px;
   background: #fff;
-  padding: 0 16px;
-  color: var(--ai-text);
+  box-shadow: inset 0 -3px 0 var(--gray-300);
+  padding: 8px 18px 10px 14px;
+  color: var(--gray-800);
   font: inherit;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 450;
+  line-height: 22px;
   cursor: pointer;
 }
-.ai-input__button:hover { background: var(--ai-tint); }
-.ai-input__button--stop { border-color: var(--gray-300); color: var(--gray-800); }
-.ai-input__button--stop:hover { background: var(--gray-100); }
+.ai-input__button:hover { background: var(--gray-100); }
+.ai-input__button:active { box-shadow: none; transform: translateY(2px); }
+.ai-input__button i { width: 16px; color: var(--indigo-400); font-size: 11px; text-align: center; }
+.ai-input__button--stop i { color: var(--gray-500); }
 
-.ai-input__text-button { border: 0; background: transparent; padding: 10px 0; color: var(--gray-800); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.ai-input__row { display: flex; align-items: center; align-self: stretch; justify-content: space-between; gap: 16px; padding-right: 4px; }
 
-.ai-input__caption { flex-basis: 100%; margin: 0; color: var(--gray-500); font-size: 13px; line-height: 1.45; }
+.ai-input__link {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  gap: 2px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--pink-400);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: .8;
+  cursor: pointer;
+}
+.ai-input__link i { width: 20px; font-size: 13px; text-align: center; }
+.ai-input__link span { text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+.ai-input__link:hover { opacity: 1; }
+
+.ai-input__caption { margin: 0; color: var(--gray-600); font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; }
+
+.ai-input__status { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 1.5; letter-spacing: -0.16px; }
+.ai-input__status:empty { display: none; }
+.ai-input__status i { width: 16px; flex: 0 0 16px; font-size: 16px; text-align: center; }
+.ai-input__status--busy { color: var(--indigo-500); }
+.ai-input__status--busy i { color: var(--indigo-400); }
+.ai-input__status--error { color: var(--red-400); }
+.ai-input__status--done { color: var(--green-400); }
 
 @media (prefers-reduced-motion: reduce) {
-  .ai-input.is-busy .ai-input__field::before { animation: none; }
-  .ai-input__dots span { animation: none; }
+  .ai-input.is-busy .ai-input__textarea { animation: none; background-position: 50% 50%; }
+  .ai-input__status .fa-spin { animation: none; }
 }
 
 /* ---------- prototype controls and notes (not product UI) ---------- */
@@ -292,6 +295,7 @@ body {
 .notes ul { margin: 0; padding-left: 18px; }
 .notes li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
 .notes code { border-radius: 4px; background: var(--gray-100); padding: 1px 5px; font-size: 13px; }
+.notes__footnote { margin: 10px 0 0; color: var(--gray-600); font-size: 13px; line-height: 1.45; }
 .notes__source { margin: 20px 0 0; color: var(--gray-600); font-size: 14px; line-height: 1.5; }
 .notes__source a { color: var(--pink-400); }
 
@@ -310,5 +314,5 @@ tbody th { font-weight: 600; white-space: nowrap; }
 @media (max-width: 440px) {
   /* On a phone the frame would be a phone inside a phone. */
   .phone { border-radius: 0; background: none; padding: 0; box-shadow: none; }
-  .phone__screen { height: 720px; border: 1px solid var(--gray-300); border-radius: 16px; padding-top: 0; }
+  .phone__screen { height: 740px; border: 1px solid var(--gray-300); border-radius: 16px; padding-top: 0; }
 }
