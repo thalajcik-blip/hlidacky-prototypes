@@ -310,8 +310,15 @@ tbody th { font-weight: 600; white-space: nowrap; }
   .phone { position: static; justify-self: center; width: 100%; max-width: 399px; }
 }
 
-@media (max-width: 440px) {
-  /* On a phone the frame would be a phone inside a phone. */
-  .phone { border-radius: 0; background: none; padding: 0; box-shadow: none; }
-  .phone__screen { height: 740px; border: 1px solid var(--gray-300); border-radius: 16px; padding-top: 0; }
+@media (max-width: 600px) {
+  /* On a phone the page is the screen: no frame, no notes, no controls —
+     just the step, filling the viewport like the app would. */
+  body { background: #fff; }
+  .page { max-width: none; padding: 0; }
+  .page__head,
+  .side { display: none; }
+  .layout { display: block; }
+  .phone { position: static; width: auto; max-width: none; border-radius: 0; background: none; padding: 0; box-shadow: none; }
+  .phone__screen { height: 100vh; height: 100dvh; min-height: 0; border-radius: 0; padding-top: env(safe-area-inset-top); }
+  .setup__footer { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
 }
