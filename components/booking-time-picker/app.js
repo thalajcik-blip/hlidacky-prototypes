@@ -13,6 +13,7 @@
   const HINTS = {
     grid: 'Both fields: an hour grid plus :00 / :15 / :30 / :45 chips. Hours between start and end are tinted in the end picker.',
     durations: 'Start: hour grid. End: pick how long (1–12 h) and see the end time on each button.',
+    split: 'The current list, split: scroll the 24 hours on the left, pick one of 4 minute slots on the right.',
     list: 'The current jQuery timepicker: one long list of every 15 minutes.',
   };
 

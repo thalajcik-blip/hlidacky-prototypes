@@ -9,6 +9,7 @@
  * Modes:
  *   grid      – hour grid + :00/:15/:30/:45 chips
  *   durations – end time picked as start + duration (end field only)
+ *   split     – scrolling hour column next to a 4-slot minute column
  *   list      – the current long list (for comparison)
  */
 (function () {
@@ -165,6 +166,7 @@
       this.lastCommitted = this.input.value;
       this.popover.hidden = false;
       this.input.setAttribute('aria-expanded', 'true');
+      this.popover.innerHTML = ''; // fresh scroll position on every open
       this.render();
       this.place();
     }
@@ -194,6 +196,7 @@
       const ctx = this.context();
       const value = this.value;
       if (this.mode === 'list') return this.renderList(ctx, value);
+      if (this.mode === 'split') return this.renderSplit(ctx, value);
       if (this.mode === 'durations' && this.role === 'end') return this.renderDurations(ctx, value);
       return this.renderGrid(ctx, value);
     }
@@ -296,6 +299,59 @@
       });
     }
 
+    // The current list's look, split into an hour column (24 rows, scrolls)
+    // and a minute column (4 rows), like Chrome's native time popup.
+    renderSplit(ctx, value) {
+      const hour = value == null ? null : Math.floor(value / 60);
+      const minute = value == null ? null : value % 60;
+      const prevHours = this.popover.querySelector('.tp-split__hours');
+      const keepScroll = prevHours ? prevHours.scrollTop : null;
+
+      const cell = (attr, v, label, selected, disabled) =>
+        `<li><button type="button" class="tp-split__item ${selected ? 'is-selected' : ''}" data-${attr}="${v}"
+          tabindex="${selected ? 0 : -1}" aria-pressed="${selected}" ${disabled ? 'disabled' : ''}>${label}</button></li>`;
+
+      const hours = [];
+      for (let h = 0; h < 24; h++) hours.push(cell('split-hour', h, pad(h), h === hour, this.isPast(ctx, h * 60 + 45)));
+      const minutes = MINUTES.map((m) =>
+        cell('split-minute', m, pad(m), m === minute, hour != null && this.isPast(ctx, hour * 60 + m))).join('');
+
+      this.popover.innerHTML = `<div class="tp-split">
+        <ul class="tp-split__col tp-split__hours" aria-label="Hour">${hours.join('')}</ul>
+        <ul class="tp-split__col tp-split__minutes" aria-label="Minutes">${minutes}</ul>
+      </div>`;
+
+      const hoursCol = this.popover.querySelector('.tp-split__hours');
+      if (!hoursCol.querySelector('[tabindex="0"]')) {
+        const first = hoursCol.querySelector('button:not(:disabled)');
+        if (first) first.tabIndex = 0;
+      }
+      const selected = hoursCol.querySelector('.is-selected');
+      if (keepScroll != null) hoursCol.scrollTop = keepScroll;
+      else if (selected) hoursCol.scrollTop = selected.offsetTop - (hoursCol.clientHeight - selected.offsetHeight) / 2;
+
+      this.popover.querySelectorAll('[data-split-hour]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const h = +btn.dataset.splitHour;
+          let m = this.value == null ? 0 : this.value % 60;
+          if (this.isPast(ctx, h * 60 + m)) m = MINUTES.find((x) => !this.isPast(ctx, h * 60 + x)) ?? 0;
+          this.setValue(h * 60 + m);
+          this.lastCommitted = this.input.value;
+          this.focusIn('.tp-split__minutes .is-selected, .tp-split__minutes button:not(:disabled)');
+        });
+      });
+      this.popover.querySelectorAll('[data-split-minute]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const h = this.value == null ? 18 : Math.floor(this.value / 60);
+          this.setValue(h * 60 + +btn.dataset.splitMinute);
+          this.lastCommitted = this.input.value;
+          this.hide();
+          this.input.focus();
+          this.advance();
+        });
+      });
+    }
+
     minuteChip(label, m, selected, disabled, kind) {
       return `<label class="filtering-pill-component tp-chip">
         <input type="radio" class="filtering-pill-component__checkbox" name="${this.id}-${kind}"
@@ -380,14 +436,15 @@
       if (next) next.focus();
     }
 
+    // Comma-separated selectors are tried in priority order, not DOM order.
     focusIn(selector) {
-      const el = this.popover.querySelector(selector);
+      const el = selector.split(',').map((s) => this.popover.querySelector(s.trim())).find(Boolean);
       if (el) el.focus();
     }
 
     // Selectors in priority order; a single comma list would match in DOM order.
     focusSelected() {
-      const el = ['.is-selected', '.tp-hour:not(:disabled)', '.tp-duration']
+      const el = ['.is-selected', '.tp-hour:not(:disabled)', '.tp-split__item:not(:disabled)', '.tp-duration']
         .map((s) => this.popover.querySelector(s))
         .find(Boolean);
       if (el) el.focus();
@@ -414,6 +471,26 @@
         e.preventDefault();
         this.hide();
         this.input.focus();
+        return;
+      }
+      const col = target.closest('.tp-split__col');
+      if (col && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        e.preventDefault();
+        let next;
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          const items = [...col.querySelectorAll('button:not(:disabled)')];
+          const i = items.indexOf(target) + (e.key === 'ArrowDown' ? 1 : -1);
+          next = items[Math.max(0, Math.min(items.length - 1, i))];
+        } else {
+          const other = e.key === 'ArrowRight' ? '.tp-split__minutes' : '.tp-split__hours';
+          next = this.popover.querySelector(`${other} .is-selected`) || this.popover.querySelector(`${other} button:not(:disabled)`);
+        }
+        if (next) {
+          col.querySelectorAll('button').forEach((b) => { b.tabIndex = -1; });
+          next.tabIndex = 0;
+          next.focus();
+          next.scrollIntoView({ block: 'nearest' });
+        }
         return;
       }
       const group = target.closest('.tp-grid, .tp-durations, .tp-minutes');
