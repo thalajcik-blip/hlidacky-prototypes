@@ -1,0 +1,224 @@
+/* Prototype-only layout. Component look comes from the LOLA stylesheet;
+   everything here uses LOLA tokens (--color-*, --space-*). */
+
+body {
+  background: var(--color-gray-200);
+  color: var(--color-gray-800);
+  font-family: "soleil", system-ui, sans-serif;
+}
+
+.page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---------- prototype controls (not part of the product UI) ---------- */
+
+.proto-controls {
+  border: 1px dashed var(--color-gray-400);
+  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.proto-controls__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.proto-controls__label { font-size: .75rem; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: .04em; color: var(--color-gray-500); }
+.proto-controls__pills { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.proto-controls__pills .filtering-pill-component__pill { background: var(--color-white); }
+.proto-controls__hint { margin: 0; font-size: .875rem; color: var(--color-gray-700); }
+.proto-controls__hint--touch { color: var(--color-pink-600); }
+
+/* ---------- booking form ---------- */
+
+/* bordered-card clips its content; the picker popover has to escape it. */
+.booking-card { overflow: visible; }
+.booking-card__body { display: flex; flex-direction: column; gap: var(--space-6); }
+.booking-card .heading__title { margin: 0; }
+.booking-card .form-check-block-group { margin: 0; }
+
+/* Labels sit above the fields; the three inputs read as one joined group. */
+.when-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  row-gap: var(--space-3);
+}
+.when-row__field { gap: var(--space-1_5); min-width: 0; }
+.when-row__control { position: relative; }
+.when-row__control .form-control {
+  height: 48px;
+  border-radius: 0;
+  font-variant-numeric: tabular-nums;
+}
+.when-row__control .form-control:focus { position: relative; z-index: 1; }
+.when-row__field + .when-row__field .form-control { margin-left: -1px; width: calc(100% + 1px); }
+.when-row__field:first-child .form-control { border-radius: 8px 0 0 8px; }
+.when-row__field:last-child .form-control { border-radius: 0 8px 8px 0; }
+
+.when-row__icon {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3_5);
+  z-index: 2;
+  transform: translateY(-50%);
+  color: var(--color-gray-500);
+  pointer-events: none;
+}
+.when-row__field--date .form-control { padding-left: 40px; }
+.when-row__field--date .form-control::-webkit-calendar-picker-indicator { display: none; }
+
+@media (max-width: 575px) {
+  .when-row { grid-template-columns: 1fr 1fr; }
+  .when-row__field--date { grid-column: 1 / -1; }
+  .when-row__field--date:first-child .form-control { border-radius: 8px; }
+  .when-row__field--date + .when-row__field .form-control { margin-left: 0; width: 100%; border-radius: 8px 0 0 8px; }
+}
+
+.time-input-component { font-variant-numeric: tabular-nums; }
+.time-input-component.is-invalid { animation: tp-shake .3s; }
+@keyframes tp-shake {
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.next-day-badge {
+  display: inline-block;
+  margin-left: var(--space-1);
+  padding: 0 var(--space-1_5);
+  border-radius: 64px;
+  background: var(--color-pink-100);
+  color: var(--color-pink-600);
+  font-size: .75rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+}
+.next-day-badge[hidden] { display: none; }
+
+.booking-summary {
+  margin: 0;
+  min-height: 1.4em;
+  padding-inline: var(--space-0_5);
+  font-size: .875rem;
+  color: var(--color-gray-700);
+}
+.booking-summary i { color: var(--color-pink-400); margin-right: var(--space-1); }
+
+/* ---------- picker popover ---------- */
+
+.tp-field { position: relative; }
+
+.tp-popover {
+  position: absolute;
+  top: calc(100% + var(--space-1_5));
+  left: 0;
+  z-index: 20;
+  width: min(352px, calc(100vw - 32px));
+  padding: var(--space-3);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-300);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(42 53 57 / 12%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.tp-popover[hidden] { display: none; }
+
+.tp-section-label {
+  font-size: .75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.tp-section-label:not(:first-child) { margin-top: var(--space-1); }
+
+.tp-grid { display: flex; flex-direction: column; gap: var(--space-1); }
+.tp-row { display: flex; align-items: center; gap: var(--space-2); }
+.tp-row__label { flex: 0 0 64px; font-size: .75rem; color: var(--color-gray-500); }
+.tp-row__cells { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-1); }
+
+.tp-hour,
+.tp-duration {
+  appearance: none;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-gray-800);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+.tp-hour { height: 36px; font-size: .9375rem; }
+.tp-hour:hover:not(:disabled),
+.tp-duration:hover { background: var(--color-gray-200); }
+.tp-hour:focus-visible,
+.tp-duration:focus-visible { outline: 2px solid var(--color-pink-300); outline-offset: 1px; }
+.tp-hour.is-night { color: var(--color-gray-500); }
+.tp-hour.is-in-range { background: var(--color-pink-100); color: var(--color-gray-800); }
+.tp-hour.is-range-start { box-shadow: inset 0 0 0 1.5px var(--color-pink-300); }
+.tp-hour.is-selected,
+.tp-duration.is-selected,
+.tp-hour.is-selected:hover,
+.tp-duration.is-selected:hover {
+  background: var(--color-pink-400);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+}
+.tp-hour:disabled { color: var(--color-gray-400); cursor: not-allowed; text-decoration: line-through; }
+
+.tp-durations { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-1); }
+.tp-duration { display: flex; flex-direction: column; align-items: center; padding: var(--space-1_5) 0; border: 1px solid var(--color-gray-300); }
+.tp-duration.is-selected { border-color: var(--color-pink-400); }
+.tp-duration__main { font-size: .9375rem; line-height: 1.2; }
+.tp-duration__sub { font-size: .75rem; color: var(--color-gray-500); }
+.tp-duration.is-selected .tp-duration__sub { color: var(--color-white); font-weight: var(--font-weight-regular); }
+
+.tp-minutes { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); }
+.tp-chip { --pill-color: var(--color-pink-400); --text-color: var(--color-white); }
+.tp-chip .filtering-pill-component__pill { width: 100%; font-variant-numeric: tabular-nums; }
+.tp-chip .filtering-pill-component__checkbox:disabled + .filtering-pill-component__pill { color: var(--color-gray-400); text-decoration: line-through; cursor: not-allowed; }
+.tp-chip .filtering-pill-component__checkbox:disabled { cursor: not-allowed; }
+
+.tp-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-gray-300);
+  font-size: .875rem;
+  color: var(--color-gray-700);
+}
+.tp-footer i { color: var(--color-pink-400); }
+.tp-footer__note { margin-left: auto; color: var(--color-gray-500); }
+
+/* The "current" variant reuses the production ui-timepicker look as-is. */
+.tp-popover:has(.tp-legacy) { padding: 0; border: 0; background: none; box-shadow: none; width: auto; }
+.tp-legacy { height: 200px; }
+
+/* ---------- notes + toast ---------- */
+
+.notes-list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: var(--space-2); font-size: .9375rem; line-height: 1.45; }
+.notes-list code { color: var(--color-pink-600); }
+.notes-list kbd { background: var(--color-gray-200); color: var(--color-gray-800); border: 1px solid var(--color-gray-300); font-size: .75rem; padding: 0 4px; }
+
+.toast-note {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  padding: var(--space-2_5) var(--space-4);
+  border-radius: 8px;
+  background: var(--color-gray-800);
+  color: var(--color-white);
+  font-size: .875rem;
+  z-index: 50;
+}
+.toast-note[hidden] { display: none; }

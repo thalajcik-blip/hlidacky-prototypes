@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking time picker</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="https://use.typekit.net/ciu2vdq.css">
+  <!-- LOLA: copy of production application.css (Hlídačky's CDN purges old digests, see AGENTS.md) -->
+  <link rel="stylesheet" href="./assets/application.css">
+  <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="proto-controls" aria-label="Prototype controls">
+      <div class="proto-controls__row">
+        <span class="proto-controls__label">Picker variant</span>
+        <div class="proto-controls__pills" role="radiogroup" aria-label="Picker variant">
+          <label class="filtering-pill-component" style="--pill-color: var(--color-gray-800); --text-color: var(--color-white);">
+            <input type="radio" name="variant" value="grid" class="filtering-pill-component__checkbox" checked>
+            <span class="filtering-pill-component__pill"><i class="fa-light fa-grid"></i><span>A · Hour grid</span></span>
+          </label>
+          <label class="filtering-pill-component" style="--pill-color: var(--color-gray-800); --text-color: var(--color-white);">
+            <input type="radio" name="variant" value="durations" class="filtering-pill-component__checkbox">
+            <span class="filtering-pill-component__pill"><i class="fa-light fa-hourglass-half"></i><span>B · End by duration</span></span>
+          </label>
+          <label class="filtering-pill-component" style="--pill-color: var(--color-gray-800); --text-color: var(--color-white);">
+            <input type="radio" name="variant" value="list" class="filtering-pill-component__checkbox">
+            <span class="filtering-pill-component__pill"><i class="fa-light fa-list"></i><span>Current list</span></span>
+          </label>
+        </div>
+      </div>
+      <p class="proto-controls__hint" data-variant-hint></p>
+      <p class="proto-controls__hint proto-controls__hint--touch" data-touch-hint hidden>
+        <i class="fa-light fa-mobile"></i>
+        On touch devices the booking form keeps the native time picker.
+        <a href="?picker=custom">Show the desktop picker anyway</a>
+      </p>
+    </section>
+
+    <form class="bordered-card-component booking-card" data-booking-form novalidate>
+      <div class="bordered-card-component__header">
+        <div class="bordered-card-component__title">Edit booking</div>
+      </div>
+      <div class="bordered-card-component__body booking-card__body">
+        <section class="form-field-component">
+          <div class="heading"><h4 class="heading__title heading-size-xs">Services</h4></div>
+          <div class="form-check-block-group">
+            <label class="form-check-block checkbox-block-component sitters">
+              <div class="icon-block"><input type="checkbox" name="services[]" value="sitters" class="form-check-input" checked><i class="fa-child fa-light"></i></div>
+              <div class="label-text overflow-hidden text-break">Babysitting</div>
+            </label>
+            <label class="form-check-block checkbox-block-component pet-care">
+              <div class="icon-block"><input type="checkbox" name="services[]" value="pet_care" class="form-check-input"><i class="fa-paw fa-light"></i></div>
+              <div class="label-text overflow-hidden text-break">Pet care</div>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-field-component">
+          <div class="heading"><h4 class="heading__title heading-size-xs">When</h4></div>
+          <div class="when-row">
+            <div class="form-field-component when-row__field when-row__field--date">
+              <label for="booking_date" class="form-label-component">Date</label>
+              <div class="form-field-component__control when-row__control">
+                <i class="fa-light fa-calendar when-row__icon" aria-hidden="true"></i>
+                <input type="date" name="booking[date]" id="booking_date" class="date-input-component form-control">
+              </div>
+            </div>
+            <div class="form-field-component when-row__field">
+              <label for="booking_start" class="form-label-component">From</label>
+              <div class="form-field-component__control when-row__control">
+                <input type="time" step="900" name="booking[start]" id="booking_start" value="18:00"
+                  class="time-input-component form-control time-input-component--icon-hidden"
+                  data-time-picker="start">
+              </div>
+            </div>
+            <div class="form-field-component when-row__field">
+              <label for="booking_end" class="form-label-component">To <span class="next-day-badge" data-next-day hidden>+1 day</span></label>
+              <div class="form-field-component__control when-row__control">
+                <input type="time" step="900" name="booking[end]" id="booking_end" value="22:00"
+                  class="time-input-component form-control time-input-component--icon-hidden"
+                  data-time-picker="end">
+              </div>
+            </div>
+          </div>
+          <p class="booking-summary" data-summary aria-live="polite"></p>
+        </section>
+
+        <button type="submit" class="btn button-component button-component--primary-variant button-component--pink-color button-component-size-lg button-component--full-width">
+          <span class="button-component__label">Save changes</span>
+        </button>
+      </div>
+    </form>
+
+    <div class="toast-note" data-toast role="status" hidden></div>
+
+    <section class="bordered-card-component notes-card">
+      <div class="bordered-card-component__header">
+        <div class="bordered-card-component__title">What to try</div>
+      </div>
+      <div class="bordered-card-component__body">
+        <ul class="notes-list">
+          <li><strong>Two clicks:</strong> an hour, then a minute. Clicking an hour already sets the time, so a full hour is a single click (close by clicking outside).</li>
+          <li><strong>Type freely:</strong> <code>1830</code>, <code>18</code>, <code>18.30</code>, <code>6:5</code> all work. Off-grid minutes like <code>18:05</code> are accepted.</li>
+          <li><strong>Duration is kept:</strong> change <em>From</em> and <em>To</em> moves with it.</li>
+          <li><strong>Overnight:</strong> pick an end before the start (e.g. 20:00 → 07:00) and it becomes the next day instead of an error.</li>
+          <li><strong>Today:</strong> set the date to today and past times are disabled.</li>
+          <li><strong>Keyboard:</strong> <kbd>↓</kbd> opens the picker, arrows move, <kbd>Enter</kbd> picks, <kbd>Esc</kbd> closes.</li>
+          <li><strong>Mobile:</strong> the same <code>&lt;input type="time" step="900"&gt;</code> stays native. The picker only enhances it on desktop and submits the same <code>HH:MM</code> value.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="./time-picker.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
