@@ -14464,10 +14464,16 @@
             : 'Nothing was written this time. Try again, or write the text yourself.') + '</p></div>'
           : '';
 
-        actions.innerHTML = busy ? aiButton('stop', 'fa-solid fa-stop', 'Stop', 'stop')
+        // Generating → slow keeps the same Stop button; rebuilding it would
+        // drop focus to the page.
+        var actionsMarkup = busy ? aiButton('stop', 'fa-solid fa-stop', 'Stop', 'stop')
           : (state === 'stuck' ? aiButton('generate', 'fa-regular fa-arrow-rotate-right', 'Try again') + textButton('manual', 'Write it myself')
             : ((state === 'done' || state === 'stopped') ? aiButton('generate', 'fa-regular fa-arrow-rotate-right', 'Generate again') + textButton('undo', 'Undo')
               : aiButton('generate', 'fa-regular fa-sparkles', 'Write it with AI') + '<p class="sitter-about__caption">We draft it from your answers in the previous steps. You can edit everything.</p>'));
+        if (actions.sitterAboutMarkup !== actionsMarkup) {
+          actions.innerHTML = actionsMarkup;
+          actions.sitterAboutMarkup = actionsMarkup;
+        }
       }
 
       function scheduleSitterAbout(callback, delay) {
