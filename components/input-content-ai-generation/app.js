@@ -13,9 +13,12 @@
   const FIRST_WORD_MS = 700;
   const SLOW_AFTER_MS = 3500;
   const STUCK_AFTER_MS = 8000;
+  // Lets the last words finish settling before the field hands over.
+  const SETTLE_MS = 420;
 
   const root = document.querySelector('[data-ai-input]');
   const textarea = root.querySelector('textarea');
+  const ink = root.querySelector('.ai-input__ink');
   const counter = root.querySelector('[data-counter]');
   const status = root.querySelector('.ai-input__status');
   const actions = root.querySelector('.ai-input__actions');
@@ -26,6 +29,15 @@
   let lastStalled = false;
   let timers = [];
   let renderedActions = '';
+  let renderedStatus = '';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function animate(element, keyframes, options) {
+    if (!element || reducedMotion.matches || !element.animate) return;
+    element.animate(keyframes, options);
+  }
+  const ENTER = [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }];
+  const EASE_OUT = 'cubic-bezier(.2, .8, .2, 1)';
 
   const isBusy = () => state === 'generating' || state === 'slow';
 
@@ -76,17 +88,48 @@
     textarea.setAttribute('aria-busy', String(busy));
 
     const message = STATUS[next];
-    status.className = 'ai-input__status' + (message ? ' ai-input__status--' + message[0] : '');
-    status.innerHTML = message ? message[1] + '<span>' + message[2] + '</span>' : '';
+    const statusMarkup = message ? message[1] + '<span>' + message[2] + '</span>' : '';
+    if (statusMarkup !== renderedStatus) {
+      const first = !renderedStatus && !renderedActions;
+      status.className = 'ai-input__status' + (message ? ' ai-input__status--' + message[0] : '');
+      status.innerHTML = statusMarkup;
+      renderedStatus = statusMarkup;
+      if (message && !first) {
+        animate(status, ENTER, { duration: 260, easing: EASE_OUT });
+        const icon = status.querySelector('i');
+        if (next === 'done') {
+          animate(icon, [{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1, offset: .6 }, { transform: 'scale(1)' }], { duration: 420, delay: 80, easing: EASE_OUT, fill: 'backwards' });
+        } else if (next === 'stuck') {
+          animate(icon, [{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(-2px)' }, { transform: 'translateX(1px)' }, { transform: 'translateX(0)' }], { duration: 420, delay: 120, easing: 'ease-in-out' });
+        }
+      }
+    }
 
     // Generating → slow keeps the same Stop button; rebuilding it would
     // drop focus to the page.
     const markup = actionsFor(next);
     if (markup !== renderedActions) {
+      const first = !renderedActions;
       actions.innerHTML = markup;
       renderedActions = markup;
+      if (!first) animate(actions, ENTER, { duration: 220, easing: EASE_OUT });
     }
     count();
+  }
+
+  // The ink layer draws the streamed words over the read-only field so
+  // each one can settle in; the textarea underneath keeps the real value.
+  function resetInk(text, still) {
+    ink.classList.toggle('is-still', Boolean(still));
+    ink.textContent = '';
+    if (text) addInk(text);
+  }
+
+  function addInk(word) {
+    const span = document.createElement('span');
+    span.textContent = word;
+    ink.appendChild(span);
+    ink.scrollTop = ink.scrollHeight;
   }
 
   function focusField() {
@@ -105,6 +148,7 @@
     let index = 0;
 
     textarea.value = '';
+    resetInk('');
     setState('generating');
     const stop = root.querySelector('[data-action="stop"]');
     if (stop) stop.focus({ preventScroll: true });
@@ -122,11 +166,14 @@
 
     function tick() {
       if (index >= WORDS.length) {
-        setState('done');
-        focusField();
+        schedule(() => {
+          setState('done');
+          focusField();
+        }, reducedMotion.matches ? 0 : SETTLE_MS);
         return;
       }
       textarea.value += WORDS[index];
+      addInk(WORDS[index]);
       index += 1;
       textarea.scrollTop = textarea.scrollHeight;
       count();
@@ -159,6 +206,7 @@
     lastStalled = false;
     before = '';
     textarea.value = next === 'done' ? SAMPLE : (next === 'generating' || next === 'slow' ? PREVIEW_PARTIAL : '');
+    resetInk(textarea.value, true);
     setState(next);
     textarea.scrollTop = 0;
     if (next === 'done' || next === 'stuck') focusField();

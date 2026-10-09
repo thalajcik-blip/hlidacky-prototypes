@@ -151,7 +151,27 @@ body {
 .ai-input__label img { width: 24px; height: 16px; }
 .ai-input__counter { flex: 0 0 auto; color: var(--gray-500); font-size: 12px; line-height: 1.4; font-variant-numeric: lining-nums tabular-nums; }
 
+/* The field stacks three layers: the white base and the busy tint
+   (::before), the real textarea on a transparent background, and the
+   "ink" layer that draws the words while they stream in. */
+.ai-input__field { position: relative; border-radius: 4px; background: #fff; }
+.ai-input__field::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 4px;
+  background: linear-gradient(124deg, var(--indigo-100) 0%, var(--indigo-100) 40%, #fff 50%, var(--indigo-100) 60%, var(--indigo-100) 100%) 0 0 / 300% 300%;
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s ease;
+  animation: aiInputTint 2.6s cubic-bezier(.45, 0, .55, 1) infinite;
+  animation-play-state: paused;
+}
+
 .ai-input__textarea {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 148px;
@@ -159,7 +179,7 @@ body {
   resize: vertical;
   border: 1px solid var(--gray-300);
   border-radius: 4px;
-  background: #fff;
+  background: transparent;
   padding: 10px 16px;
   color: var(--gray-800);
   font: inherit;
@@ -167,25 +187,55 @@ body {
   line-height: 1.32;
   letter-spacing: .2px;
   font-variant-numeric: lining-nums tabular-nums;
-  transition: border-color .2s ease, box-shadow .2s ease;
+  transition: border-color .35s ease, box-shadow .35s ease;
 }
 .ai-input__textarea::placeholder { color: var(--gray-500); }
 .ai-input__textarea:focus { border-color: var(--blue-300); outline: 0; box-shadow: 0 0 0 2px var(--focus-ring); }
 
+/* Mirrors the textarea's box and type exactly, so the words wrap in the
+   same places and the hand-over to the real text on Done is invisible. */
+.ai-input__ink {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border: 1px solid transparent;
+  padding: 10px 16px;
+  color: var(--gray-800);
+  font-size: 16px;
+  line-height: 1.32;
+  letter-spacing: .2px;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  pointer-events: none;
+  visibility: hidden;
+}
+.ai-input__ink span { animation: aiInputWord .5s cubic-bezier(.2, .8, .2, 1) both; }
+.ai-input__ink.is-still span { animation: none; }
+@keyframes aiInputWord {
+  from { color: var(--indigo-400); opacity: 0; filter: blur(4px); }
+  45% { opacity: 1; filter: blur(0); }
+  to { color: var(--gray-800); opacity: 1; filter: blur(0); }
+}
+
 /* Writing: an indigo field with a light band drifting across it, so the
    field itself says it is busy rather than a spinner beside it. */
+.ai-input.is-busy .ai-input__field::before { opacity: 1; animation-play-state: running; }
 .ai-input.is-busy .ai-input__textarea,
 .ai-input.is-busy .ai-input__textarea:focus {
+  overflow: hidden;
   border-color: var(--indigo-400);
-  background: linear-gradient(124deg, var(--indigo-100) 0%, var(--indigo-100) 40%, #fff 50%, var(--indigo-100) 60%, var(--indigo-100) 100%) 0 0 / 300% 300%;
   box-shadow: 0 0 0 2px var(--indigo-200);
+  color: transparent;
   caret-color: transparent;
   cursor: progress;
-  animation: aiInputTint 2.4s linear infinite;
 }
+.ai-input.is-busy .ai-input__textarea::placeholder { color: transparent; }
+.ai-input.is-busy .ai-input__ink { visibility: visible; }
 /* Slow is still working, just not visibly progressing — the band slows
    with it so it does not promise more than is happening. */
-.ai-input[data-state="slow"] .ai-input__textarea { animation-duration: 5s; }
+.ai-input[data-state="slow"] .ai-input__field::before { animation-duration: 5s; }
 @keyframes aiInputTint {
   from { background-position: 100% 100%; }
   to { background-position: 0 0; }
@@ -212,6 +262,9 @@ body {
 .ai-input__button:hover { background: var(--gray-100); }
 .ai-input__button:active { box-shadow: none; transform: translateY(2px); }
 .ai-input__button i { width: 16px; color: var(--indigo-400); font-size: 11px; text-align: center; }
+.ai-input__button .fa-sparkles { transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.ai-input__button:hover .fa-sparkles,
+.ai-input__button:focus-visible .fa-sparkles { transform: rotate(-14deg) scale(1.25); }
 .ai-input__button--stop i { color: var(--gray-500); }
 
 .ai-input__row { display: flex; align-items: center; align-self: stretch; justify-content: space-between; gap: 16px; padding-right: 4px; }
@@ -246,8 +299,10 @@ body {
 .ai-input__status--done { color: var(--gray-600); }
 
 @media (prefers-reduced-motion: reduce) {
-  .ai-input.is-busy .ai-input__textarea { animation: none; background-position: 50% 50%; }
+  .ai-input__field::before { animation: none; background-position: 50% 50%; }
+  .ai-input__ink span { animation: none; }
   .ai-input__status .fa-spin { animation: none; }
+  .ai-input__button .fa-sparkles { transition: none; }
 }
 
 /* ---------- prototype controls and notes (not product UI) ---------- */

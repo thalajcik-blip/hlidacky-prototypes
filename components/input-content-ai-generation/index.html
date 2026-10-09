@@ -45,7 +45,10 @@
                     <label class="ai-input__label" for="aboutText"><img src="./assets/flag-en.svg" alt="" width="24" height="16">About me</label>
                     <span class="ai-input__counter" id="aboutCounter" data-counter>0 of 150 characters</span>
                   </div>
-                  <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutCounter aboutStatus"></textarea>
+                  <div class="ai-input__field">
+                    <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutCounter aboutStatus"></textarea>
+                    <div class="ai-input__ink" aria-hidden="true"></div>
+                  </div>
                   <div class="ai-input__actions"></div>
                   <p class="ai-input__status" id="aboutStatus" role="status" aria-live="polite"></p>
                 </div>
@@ -110,7 +113,8 @@
             <li><strong>Announcements.</strong> The message line is a polite live region. Focus goes to Stop writing when writing starts and into the field when it is done or stuck.</li>
             <li><strong>Counter.</strong> 150 characters is the minimum. Below it the counter reads “N of 150 characters”; once it is met, just “N characters”. It counts live, including while the text streams in.</li>
             <li><strong>Timings.</strong> First word after ~0.7 s, then 30–80 ms per word. Slow after 3.5 s without a word, stuck after 8 s. Real values should come from the model’s latency.</li>
-            <li><strong>Reduced motion.</strong> The tint and the spinner stand still; the text still streams.</li>
+            <li><strong>Motion.</strong> While writing, each new word settles in from a soft blur and indigo into the text colour (an <code>aria-hidden</code> layer over the read-only field; the textarea keeps the real value). The tint fades in and out with the busy state, the message and buttons slide in on each change, the check pops on Done and the warning nudges on Stuck.</li>
+            <li><strong>Reduced motion.</strong> Words appear without the blur, the tint and spinner stand still, and the message and buttons change without sliding.</li>
           </ul>
           <p class="notes__source">Live in context: <a href="/mobile-app-redesign-v2/">Mobile app redesign v2</a> → Prototype settings: Sitter, Not registered → register → Set up the babysitting profile → About you.</p>
         </section>
