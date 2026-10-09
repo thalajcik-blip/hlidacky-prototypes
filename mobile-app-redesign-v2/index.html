@@ -3500,6 +3500,76 @@
 
     .sitter-profile-setup__hint { margin: 8px 0 0; color: var(--color-gray-500, #8b91a3); font-size: 13px; line-height: 1.45; }
 
+    /* About me with an AI draft. The field itself carries the state: a
+       moving ring while the text streams in, so the sitter watches the
+       draft appear where they will edit it rather than behind a spinner. */
+    @property --sitter-about-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+    .sitter-about__field { position: relative; }
+    .sitter-about__textarea { display: block; transition: border-color .2s ease; }
+    .sitter-about.is-busy .sitter-about__textarea { border-color: transparent; caret-color: transparent; cursor: progress; }
+    .sitter-about.is-busy .sitter-about__field::before {
+      position: absolute;
+      inset: -1px;
+      border-radius: 5px;
+      padding: 2px;
+      background: conic-gradient(from var(--sitter-about-angle), #7c5cff, #f96073, #35cfea, #7c5cff);
+      content: '';
+      pointer-events: none;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: sitterAboutRing 2.4s linear infinite;
+    }
+    /* Slow is still working, just not visibly progressing — the ring slows
+       with it so it does not promise more than is happening. */
+    .sitter-about[data-about-state="slow"] .sitter-about__field::before { animation-duration: 6s; }
+    @keyframes sitterAboutRing { to { --sitter-about-angle: 360deg; } }
+
+    .sitter-about__status { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0 0; color: #5b3fd6; font-size: 13px; line-height: 1.45; }
+    .sitter-about__status:empty { display: none; }
+    .sitter-about__status i { margin-top: 2px; }
+    .sitter-about__dots { display: inline-flex; flex: 0 0 auto; gap: 3px; margin-top: 7px; }
+    .sitter-about__dots span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: aiThinkingBounce 1.2s ease-in-out infinite; }
+    .sitter-about__dots span:nth-child(2) { animation-delay: .16s; }
+    .sitter-about__dots span:nth-child(3) { animation-delay: .32s; }
+
+    .sitter-about__alert { display: flex; gap: 10px; margin-top: 12px; border: 1px solid #fed7aa; border-radius: 6px; background: #fff7ed; padding: 12px 14px; color: var(--color-gray-800, #2a3539); font-size: 14px; line-height: 1.45; }
+    .sitter-about__alert[hidden] { display: none; }
+    .sitter-about__alert i { margin-top: 3px; color: #ea580c; }
+    .sitter-about__alert strong { display: block; margin-bottom: 2px; font-weight: 600; }
+    .sitter-about__alert p { margin: 0; }
+
+    .sitter-about__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 14px; }
+    .sitter-about__ai-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      border: 1px solid #7c5cff;
+      border-radius: 4px;
+      background: #fff;
+      padding: 0 16px;
+      color: #5b3fd6;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sitter-about__ai-button:hover { background: #f5f3ff; }
+    .sitter-about__ai-button--stop { border-color: var(--color-gray-300, #e5e5ea); color: var(--color-gray-800, #2a3539); }
+    .sitter-about__ai-button--stop:hover { background: var(--color-gray-100, #f5f5f7); }
+    .sitter-about__text-button { border: 0; background: transparent; padding: 10px 0; color: var(--color-gray-800, #2a3539); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+    .sitter-about__caption { flex-basis: 100%; margin: 0; color: var(--color-gray-500, #8b91a3); font-size: 13px; line-height: 1.45; }
+
+    .sitter-profile-setup__next:disabled,
+    .sitter-profile-setup__back:disabled { opacity: .45; box-shadow: none; transform: none; cursor: not-allowed; }
+    .sitter-profile-setup__next:disabled:hover { background: var(--color-green-500, #0ba825); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sitter-about.is-busy .sitter-about__field::before { animation: none; }
+      .sitter-about__dots span { animation: none; }
+    }
+
     .sitter-profile-setup__photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
     .sitter-profile-setup__photo { margin: 0; }
     .sitter-profile-setup__photo img { display: block; width: 100%; aspect-ratio: 1; border-radius: 4px; object-fit: cover; }
@@ -11955,6 +12025,19 @@
           </label>
         </div>
       </fieldset>
+      <fieldset class="prototype-settings-group">
+        <legend>AI About me text</legend>
+        <div class="prototype-settings-option-list">
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-ai-about" value="works" checked>
+            <span><strong>Writes the text</strong><small>The draft streams in and finishes.</small></span>
+          </label>
+          <label class="prototype-settings-option">
+            <input type="radio" name="prototype-ai-about" value="stuck">
+            <span><strong>Gets stuck</strong><small>Stalls halfway, then fails. The retry works.</small></span>
+          </label>
+        </div>
+      </fieldset>
     </form>
   </section>
 
@@ -14139,7 +14222,9 @@
             : (sitterProfileSetupMode === 'petCare' ? 'Tell pet owners about your pet-sitting experience and approach to care.'
               : (sitterProfileSetupMode === 'seniorCare' ? 'Describe your experience in taking care of the elderly.'
                 : (sitterProfileSetupMode === 'tutoring' ? 'Describe your tutoring experience, techniques and approaches to students.' : 'Tell families what you enjoy about babysitting and how you spend time with children.')));
-          content = '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">About me</span><textarea class="sitter-profile-setup__textarea" placeholder="' + aboutPlaceholder + '"></textarea><p class="sitter-profile-setup__hint">Minimum of 60 characters.</p></label><button class="sitter-profile-setup__skip" type="button">+ Add translation</button>';
+          content = sitterProfileSetupMode === 'babysitting'
+            ? '<div class="sitter-profile-setup__fieldset sitter-about" data-sitter-about><label class="sitter-profile-setup__label" for="sitterAboutText">About me</label><div class="sitter-about__field"><textarea class="sitter-profile-setup__textarea sitter-about__textarea" id="sitterAboutText" placeholder="' + aboutPlaceholder + '" aria-describedby="sitterAboutHint sitterAboutStatus"></textarea></div><p class="sitter-profile-setup__hint" id="sitterAboutHint">Minimum of 60 characters.</p><p class="sitter-about__status" id="sitterAboutStatus" role="status" aria-live="polite"></p><div class="sitter-about__alert" role="alert" hidden></div><div class="sitter-about__actions"></div></div><button class="sitter-profile-setup__skip" type="button">+ Add translation</button>'
+            : '<label class="sitter-profile-setup__fieldset"><span class="sitter-profile-setup__label">About me</span><textarea class="sitter-profile-setup__textarea" placeholder="' + aboutPlaceholder + '"></textarea><p class="sitter-profile-setup__hint">Minimum of 60 characters.</p></label><button class="sitter-profile-setup__skip" type="button">+ Add translation</button>';
         } else if (step.key === 'identity') {
           content = '<fieldset class="sitter-profile-setup__fieldset"><legend class="sitter-profile-setup__label">Photo of your ID or driving license</legend><button class="sitter-profile-setup__upload" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload front side</button><button class="sitter-profile-setup__upload" type="button"><i class="fa-light fa-arrow-up-from-bracket" aria-hidden="true"></i>Upload back side</button></fieldset><button class="sitter-profile-setup__skip" type="button" data-setup-action="next">I will do this later</button>';
         } else if (step.key === 'photo') {
@@ -14243,6 +14328,7 @@
       function renderSitterProfileSetup(direction) {
         var steps = currentProfileSetupSteps();
         var currentStep = steps[sitterProfileSetupStep];
+        haltSitterAboutGeneration();
         var isAgeGroupsStep = currentStep.key === 'ageGroups';
         var isVerifyEmailStep = currentStep.key === 'verifyEmail';
         // One rule for every profile: how far along you actually are. The
@@ -14271,6 +14357,197 @@
             : '<footer class="sitter-profile-setup__footer"><button class="sitter-profile-setup__back" type="button" data-setup-action="back" aria-label="Previous step"><i class="fa-regular fa-chevron-left" aria-hidden="true"></i></button><button class="sitter-profile-setup__next" type="button" data-setup-action="next">Next <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button></footer>');
         sitterProfileSetupContent.innerHTML = '<header class="sitter-profile-setup__header">' + headerBack + '<div class="sitter-profile-setup__title">' + title + '</div><button class="sitter-profile-setup__header-button" type="button" data-setup-action="close" aria-label="Close setup"><i class="fa-regular fa-xmark" aria-hidden="true"></i></button></header><div class="sitter-profile-setup__progress" aria-label="Step ' + (sitterProfileSetupStep + 1) + ' of ' + steps.length + '"><span class="sitter-profile-setup__progress-fill" style="--sitter-profile-setup-progress: ' + progress + '%"></span></div><div class="sitter-profile-setup__viewport"><div class="sitter-profile-setup__stage' + (direction === 'back' ? ' is-enter-back' : (direction === 'next' ? ' is-enter-forward' : '')) + '">' + sitterProfileSetupStepMarkup(currentStep, sitterProfileSetupStep) + '</div></div>' + footer;
         renderSitterProfileDoodle();
+        syncSitterAbout();
+      }
+
+      // --- About me: AI draft ---------------------------------------------
+      // States: idle → generating (→ slow) → done | stopped | stuck.
+      // The text streams into the field the sitter will edit, never into a
+      // separate preview, and nothing the sitter wrote is lost: Undo brings
+      // back what was there before the first draft, and a stuck draft keeps
+      // whatever made it through. "Gets stuck" in Prototype settings stalls
+      // every other attempt, so the retry in the stuck state succeeds.
+      var SITTER_ABOUT_SAMPLE = 'For three years I have led a scout troop, so ten kids in the woods do not faze me. I study education at Charles University and I grew up looking after my two younger brothers.\n\n'
+        + 'With little ones I like to be outside: playgrounds, short trips into nature and, when it rains, crafts or building with Lego. I make up bedtime stories and I am happy to help older kids with homework.\n\n'
+        + 'I have a first aid course and I am comfortable picking children up from school or kindergarten. I am looking for a family I can help for a long time.';
+      var SITTER_ABOUT_SLOW_AFTER_MS = 3500;
+      var SITTER_ABOUT_STUCK_AFTER_MS = 8000;
+      var sitterAbout = { draft: '', before: '', state: 'idle', lastStalled: false, timers: [] };
+
+      function resetSitterAbout() {
+        clearSitterAboutTimers();
+        sitterAbout = { draft: '', before: '', state: 'idle', lastStalled: false, timers: [] };
+      }
+
+      function clearSitterAboutTimers() {
+        sitterAbout.timers.forEach(window.clearTimeout);
+        sitterAbout.timers = [];
+      }
+
+      function isSitterAboutBusy() {
+        return sitterAbout.state === 'generating' || sitterAbout.state === 'slow';
+      }
+
+      // Leaving the step mid-draft stops it where it is; the sitter finds the
+      // partial text waiting when they come back.
+      function haltSitterAboutGeneration() {
+        if (!isSitterAboutBusy()) return;
+        clearSitterAboutTimers();
+        sitterAbout.state = sitterAbout.draft ? 'stopped' : 'idle';
+      }
+
+      function sitterAboutRoot() {
+        return sitterProfileSetupContent.querySelector('[data-sitter-about]');
+      }
+
+      function fitSitterAboutTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(Math.max(textarea.scrollHeight + 2, 116), 480) + 'px';
+      }
+
+      // As the draft grows it pushes the status and Stop below the footer.
+      // Follow the writing so both stay on screen.
+      function keepSitterAboutInView(root) {
+        var scroller = root.closest('.sitter-profile-setup__step');
+        var actions = root.querySelector('.sitter-about__actions');
+        if (!scroller || !actions) return;
+        var overflow = actions.getBoundingClientRect().bottom + 16 - scroller.getBoundingClientRect().bottom;
+        if (overflow > 0) scroller.scrollTop += overflow;
+      }
+
+      function syncSitterAbout() {
+        var root = sitterAboutRoot();
+        if (!root) return;
+        var textarea = root.querySelector('textarea');
+        textarea.value = sitterAbout.draft;
+        fitSitterAboutTextarea(textarea);
+        setSitterAboutState(sitterAbout.state);
+      }
+
+      function setSitterAboutState(state) {
+        sitterAbout.state = state;
+        var root = sitterAboutRoot();
+        if (!root) return;
+        var busy = isSitterAboutBusy();
+        var textarea = root.querySelector('textarea');
+        var status = root.querySelector('.sitter-about__status');
+        var alert = root.querySelector('.sitter-about__alert');
+        var actions = root.querySelector('.sitter-about__actions');
+        var dots = '<span class="sitter-about__dots" aria-hidden="true"><span></span><span></span><span></span></span>';
+        var aiButton = function (action, icon, label, modifier) {
+          return '<button class="sitter-about__ai-button' + (modifier ? ' sitter-about__ai-button--' + modifier : '') + '" type="button" data-about-action="' + action + '"><i class="' + icon + '" aria-hidden="true"></i>' + label + '</button>';
+        };
+        var textButton = function (action, label) {
+          return '<button class="sitter-about__text-button" type="button" data-about-action="' + action + '">' + label + '</button>';
+        };
+
+        root.setAttribute('data-about-state', state);
+        root.classList.toggle('is-busy', busy);
+        textarea.readOnly = busy;
+        textarea.setAttribute('aria-busy', busy ? 'true' : 'false');
+        // Re-measure on every state change too: a height taken while the page
+        // was still settling would otherwise stick until the next word.
+        fitSitterAboutTextarea(textarea);
+        sitterProfileSetupContent.querySelectorAll('.sitter-profile-setup__footer button').forEach(function (button) {
+          button.disabled = busy;
+        });
+
+        status.innerHTML = state === 'generating' ? dots + '<span>Writing your text from your answers…</span>'
+          : (state === 'slow' ? dots + '<span>Still writing. This is taking longer than usual.</span>'
+            : (state === 'done' ? '<i class="fa-regular fa-check" aria-hidden="true"></i><span>Done. Read it through and change anything that does not sound like you.</span>'
+              : (state === 'stopped' ? '<i class="fa-regular fa-circle-pause" aria-hidden="true"></i><span>Stopped. Edit the text, or generate it again.</span>' : '')));
+
+        alert.hidden = state !== 'stuck';
+        alert.innerHTML = state === 'stuck'
+          ? '<i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i><div><strong>Writing got stuck</strong><p>' + (sitterAbout.draft
+            ? 'We kept what was written so far. Try again, or finish the text yourself.'
+            : 'Nothing was written this time. Try again, or write the text yourself.') + '</p></div>'
+          : '';
+
+        actions.innerHTML = busy ? aiButton('stop', 'fa-solid fa-stop', 'Stop', 'stop')
+          : (state === 'stuck' ? aiButton('generate', 'fa-regular fa-arrow-rotate-right', 'Try again') + textButton('manual', 'Write it myself')
+            : ((state === 'done' || state === 'stopped') ? aiButton('generate', 'fa-regular fa-arrow-rotate-right', 'Generate again') + textButton('undo', 'Undo')
+              : aiButton('generate', 'fa-regular fa-sparkles', 'Write it with AI') + '<p class="sitter-about__caption">We draft it from your answers in the previous steps. You can edit everything.</p>'));
+      }
+
+      function scheduleSitterAbout(callback, delay) {
+        sitterAbout.timers.push(window.setTimeout(callback, delay));
+      }
+
+      function startSitterAboutGeneration() {
+        var root = sitterAboutRoot();
+        if (!root) return;
+        var textarea = root.querySelector('textarea');
+        clearSitterAboutTimers();
+        // A retry or a second draft replaces AI text; Undo should still lead
+        // back to what the sitter had written themselves.
+        if (sitterAbout.state === 'idle') sitterAbout.before = textarea.value;
+        var setting = document.querySelector('[name="prototype-ai-about"]:checked');
+        var willStall = Boolean(setting && setting.value === 'stuck') && !sitterAbout.lastStalled;
+        sitterAbout.lastStalled = willStall;
+        var words = SITTER_ABOUT_SAMPLE.match(/\S+\s*/g);
+        var stallAt = willStall ? Math.floor(words.length * 0.4) : -1;
+        var index = 0;
+
+        sitterAbout.draft = '';
+        textarea.value = '';
+        fitSitterAboutTextarea(textarea);
+        setSitterAboutState('generating');
+        var stopButton = root.querySelector('[data-about-action="stop"]');
+        if (stopButton) stopButton.focus({ preventScroll: true });
+
+        function tick() {
+          if (!textarea.isConnected) return;
+          if (index === stallAt) {
+            scheduleSitterAbout(function () { setSitterAboutState('slow'); }, SITTER_ABOUT_SLOW_AFTER_MS);
+            scheduleSitterAbout(function () {
+              clearSitterAboutTimers();
+              setSitterAboutState('stuck');
+              keepSitterAboutInView(root);
+              var retry = root.querySelector('[data-about-action="generate"]');
+              if (retry) retry.focus({ preventScroll: true });
+            }, SITTER_ABOUT_STUCK_AFTER_MS);
+            return;
+          }
+          if (index >= words.length) {
+            setSitterAboutState('done');
+            keepSitterAboutInView(root);
+            textarea.focus({ preventScroll: true });
+            return;
+          }
+          textarea.value += words[index];
+          index += 1;
+          sitterAbout.draft = textarea.value;
+          fitSitterAboutTextarea(textarea);
+          textarea.scrollTop = textarea.scrollHeight;
+          keepSitterAboutInView(root);
+          scheduleSitterAbout(tick, 28 + Math.random() * 55);
+        }
+        // The first words take a moment, as a real model's would.
+        scheduleSitterAbout(tick, 700);
+      }
+
+      function handleSitterAboutAction(action) {
+        var root = sitterAboutRoot();
+        if (!root) return;
+        var textarea = root.querySelector('textarea');
+        if (action === 'generate') {
+          startSitterAboutGeneration();
+        } else if (action === 'stop') {
+          clearSitterAboutTimers();
+          setSitterAboutState(sitterAbout.draft ? 'stopped' : 'idle');
+          textarea.focus({ preventScroll: true });
+        } else if (action === 'undo') {
+          sitterAbout.draft = sitterAbout.before;
+          textarea.value = sitterAbout.before;
+          fitSitterAboutTextarea(textarea);
+          setSitterAboutState('idle');
+          textarea.focus({ preventScroll: true });
+        } else if (action === 'manual') {
+          setSitterAboutState('idle');
+          textarea.focus({ preventScroll: true });
+          textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+        }
       }
 
       function openSitterProfileSetup(trigger, mode) {
@@ -14278,6 +14555,7 @@
         sitterProfileSetupMode = mode || 'babysitting';
         sitterProfileSetupTrigger = trigger || null;
         sitterProfileSetupStep = 0;
+        resetSitterAbout();
         renderSitterProfileSetup();
         sitterProfileSetupScreen.classList.add('is-open');
         sitterProfileSetupScreen.setAttribute('aria-hidden', 'false');
@@ -18045,11 +18323,21 @@
           toggle.classList.toggle('is-selected');
           return;
         }
+        var aboutAction = event.target.closest('[data-about-action]');
+        if (aboutAction) {
+          handleSitterAboutAction(aboutAction.getAttribute('data-about-action'));
+          return;
+        }
         var action = event.target.closest('[data-setup-action]');
         if (!action) return;
         if (action.getAttribute('data-setup-action') === 'next') advanceSitterProfileSetup();
         else if (action.getAttribute('data-setup-action') === 'back') retreatSitterProfileSetup();
         else if (action.getAttribute('data-setup-action') === 'close') openSitterProfileSetupExitSheet();
+      });
+      sitterProfileSetupContent.addEventListener('input', function (event) {
+        if (!event.target.matches('.sitter-about__textarea')) return;
+        sitterAbout.draft = event.target.value;
+        fitSitterAboutTextarea(event.target);
       });
       sitterProfileSetupPriceOptions.forEach(function (option) {
         option.addEventListener('click', function () {
