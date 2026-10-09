@@ -12,7 +12,6 @@
   --gray-800: #2a3539;
   --gray-900: #212529;
   --pink-400: #f96073;
-  --green-400: #22bf1e;
   --green-500: #0ba825;
   --green-600: #07851c;
   --red-400: #ea2323;
@@ -244,7 +243,7 @@ body {
 .ai-input__status--busy { color: var(--indigo-500); }
 .ai-input__status--busy i { color: var(--indigo-400); }
 .ai-input__status--error { color: var(--red-400); }
-.ai-input__status--done { color: var(--green-400); }
+.ai-input__status--done { color: var(--gray-600); }
 
 @media (prefers-reduced-motion: reduce) {
   .ai-input.is-busy .ai-input__textarea { animation: none; background-position: 50% 50%; }
