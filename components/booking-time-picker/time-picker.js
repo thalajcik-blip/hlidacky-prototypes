@@ -317,8 +317,14 @@
         cell('split-minute', m, pad(m), m === minute, hour != null && this.isPast(ctx, hour * 60 + m))).join('');
 
       this.popover.innerHTML = `<div class="tp-split">
-        <ul class="tp-split__col tp-split__hours" aria-label="Hour">${hours.join('')}</ul>
-        <ul class="tp-split__col tp-split__minutes" aria-label="Minutes">${minutes}</ul>
+        <div class="tp-split__group">
+          <div class="tp-split__label" id="${this.id}-split-hours">Hours</div>
+          <ul class="tp-split__col tp-split__hours" aria-labelledby="${this.id}-split-hours">${hours.join('')}</ul>
+        </div>
+        <div class="tp-split__group tp-split__group--minutes">
+          <div class="tp-split__label" id="${this.id}-split-minutes">Minutes</div>
+          <ul class="tp-split__col tp-split__minutes" aria-labelledby="${this.id}-split-minutes">${minutes}</ul>
+        </div>
       </div>`;
 
       const hoursCol = this.popover.querySelector('.tp-split__hours');

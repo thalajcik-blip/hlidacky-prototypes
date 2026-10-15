@@ -205,9 +205,20 @@ body {
 /* Split list: same plain look as the current list, hours and minutes apart. */
 .tp-popover:has(.tp-split) { width: auto; padding: 0; gap: 0; border-radius: 4px; }
 .tp-split { display: flex; }
-.tp-split__col { margin: 0; padding: var(--space-1) 0; list-style: none; }
-.tp-split__hours { width: 72px; max-height: 232px; overflow-y: auto; overscroll-behavior: contain; }
-.tp-split__minutes { width: 72px; border-left: 1px solid var(--color-gray-300); }
+.tp-split__group { display: flex; flex-direction: column; }
+.tp-split__group--minutes { border-left: 1px solid var(--color-gray-300); }
+.tp-split__label {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-gray-500);
+}
+.tp-split__col { margin: 0; padding: 0 0 var(--space-1); list-style: none; }
+/* Relative so offsetTop of an item is measured inside the scrolling column. */
+.tp-split__hours { position: relative; width: 84px; max-height: 232px; overflow-y: auto; overscroll-behavior: contain; }
+.tp-split__minutes { width: 84px; }
 .tp-split__item {
   display: block;
   width: 100%;
@@ -217,13 +228,14 @@ body {
   color: var(--color-gray-800);
   font: inherit;
   font-variant-numeric: tabular-nums;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
+  transition: background-color .12s ease;
 }
-.tp-split__item:hover:not(:disabled) { background: var(--color-gray-200); }
-.tp-split__item:focus-visible { outline: 2px solid #6aafff; outline-offset: -2px; }
+.tp-split__item:hover:not(:disabled) { background: var(--color-pink-100); }
+.tp-split__item:focus-visible { outline: 2px solid var(--color-pink-300); outline-offset: -2px; }
 .tp-split__item.is-selected,
-.tp-split__item.is-selected:hover { background: #1980ec; color: var(--color-white); }
+.tp-split__item.is-selected:hover { background: var(--color-pink-200); color: var(--color-gray-800); }
 .tp-split__item:disabled { color: var(--color-gray-400); cursor: not-allowed; }
 
 /* ---------- notes + toast ---------- */
