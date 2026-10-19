@@ -384,7 +384,9 @@ body[data-variant="1"] .when { grid-template-columns: 1.55fr 1fr 1fr; }
   left: 0;
   z-index: 11;
   display: flex;
-  max-height: calc(100% - 96px);
+  /* Grows up to just below the frame's status bar (44px); on phones,
+     where that bar is hidden, almost to the top. */
+  max-height: calc(100% - 52px);
   flex-direction: column;
   border-radius: 12px 12px 0 0;
   background: #fff;
@@ -610,6 +612,17 @@ body[data-variant="3"] .mday.is-today:not(.is-weekend):not(.is-selected) { backg
 }
 
 .cta--sheet { margin-top: 32px; }
+/* If the content still outgrows a short phone, the body scrolls under
+   the Use button rather than pushing it out of view. The white spread
+   shadow covers the body's bottom padding below it. */
+.cta--sheet {
+  position: sticky;
+  /* Sticky offsets count from inside the body's 28px bottom padding. */
+  bottom: 0;
+  z-index: 1;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18), 0 0 0 28px #fff;
+}
+.cta--sheet:active { box-shadow: 0 0 0 28px #fff; }
 
 /* ---------- variant pill + picker (prototype only, phones) ---------- */
 
@@ -687,6 +700,7 @@ body[data-variant="3"] .mday.is-today:not(.is-weekend):not(.is-selected) { backg
   .variant-switch { display: none; }
   .variant-pill { display: inline-flex; }
   .status-bar { display: none; }
+  .sheet { max-height: calc(100% - 16px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
