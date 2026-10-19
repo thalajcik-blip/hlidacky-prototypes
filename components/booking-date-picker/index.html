@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Booking date picker</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="https://use.typekit.net/ciu2vdq.css">
+  <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page__head">
+      <h1>Booking date picker</h1>
+      <p>Tapping the date in a new booking opens a bottom sheet. It leads with the days the parent usually books this sitter, then lets them pick any other day in a weekly strip or a full month. As designed in <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5117-9858">Bookings · Variant 2</a>.</p>
+    </header>
+
+    <div class="layout">
+      <div class="phone">
+        <div class="phone__screen" data-screen>
+          <div class="status-bar" aria-hidden="true">
+            <span>7:47</span>
+            <span class="status-bar__icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></span>
+          </div>
+
+          <header class="nav-bar">
+            <button class="nav-bar__back" type="button" aria-label="Back"><i class="fa-light fa-chevron-left" aria-hidden="true"></i></button>
+            <span class="nav-bar__title">New booking</span>
+            <span aria-hidden="true"></span>
+          </header>
+
+          <div class="booking" data-booking>
+            <section class="booking__hero">
+              <span class="avatar">
+                <img src="./assets/avatar-marie.jpg" alt="" width="40" height="40">
+                <img class="avatar__badge" src="./assets/verified-shield.svg" alt="" width="18" height="18">
+              </span>
+              <h2>Create a booking with<br>Marie Schneiderová</h2>
+              <p>unique insurance and secure payments</p>
+              <img class="booking__protect" src="./assets/protect-logo.svg" alt="Hlídačky Protect" width="127" height="32">
+            </section>
+
+            <section class="booking__section">
+              <div class="booking__heading">
+                <h3>Services</h3>
+                <button class="icon-button" type="button" aria-label="Add a service"><i class="fa-light fa-circle-plus" aria-hidden="true"></i></button>
+              </div>
+              <div class="services">
+                <label class="service">
+                  <input type="checkbox" checked>
+                  <span class="service__box"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                  <i class="service__icon fa-light fa-child-reaching" aria-hidden="true"></i>
+                  <span class="service__label">Babysitting</span>
+                </label>
+                <label class="service">
+                  <input type="checkbox">
+                  <span class="service__box"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                  <i class="service__icon fa-light fa-broom" aria-hidden="true"></i>
+                  <span class="service__label">Cleaning</span>
+                </label>
+                <label class="service">
+                  <input type="checkbox">
+                  <span class="service__box"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                  <i class="service__icon fa-light fa-paw" aria-hidden="true"></i>
+                  <span class="service__label">Pet care</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="booking__section">
+              <div class="booking__heading">
+                <h3>When</h3>
+                <button class="icon-button" type="button" aria-label="Overnight booking"><i class="fa-light fa-moon-stars" aria-hidden="true"></i></button>
+              </div>
+              <div class="when">
+                <button class="when__field when__field--date" type="button" data-open-picker aria-haspopup="dialog">
+                  <i class="fa-light fa-calendar" aria-hidden="true"></i>
+                  <span data-date-label></span>
+                </button>
+                <label class="when__field">
+                  <i class="fa-light fa-clock" aria-hidden="true"></i>
+                  <input type="time" step="900" value="16:00" data-start aria-label="From">
+                </label>
+                <label class="when__field">
+                  <i class="fa-light fa-clock" aria-hidden="true"></i>
+                  <input type="time" step="900" value="19:00" data-end aria-label="To">
+                </label>
+              </div>
+              <p class="hint" data-when-hint><i class="fa-light fa-clock-rotate-left" aria-hidden="true"></i>Suggested from your bookings with Marie</p>
+            </section>
+
+            <section class="booking__section">
+              <div class="booking__heading">
+                <h3>Price</h3>
+                <button class="icon-button" type="button" aria-label="Edit price"><i class="fa-light fa-pen-to-square" aria-hidden="true"></i></button>
+              </div>
+              <label class="price">
+                <select data-rate aria-label="Hourly rate">
+                  <option value="130">130 Kč/hour</option>
+                  <option value="150" selected>150 Kč/hour</option>
+                  <option value="170">170 Kč/hour</option>
+                  <option value="200">200 Kč/hour</option>
+                </select>
+                <i class="fa-light fa-up-down" aria-hidden="true"></i>
+              </label>
+              <div class="total">
+                <span data-total-label>total price for 3 hours</span>
+                <strong><span data-total>450</span> <small>Kč</small></strong>
+              </div>
+            </section>
+
+            <div class="booking__footer">
+              <button class="cta" type="button">
+                <span class="cta__main">Send booking request</span>
+                <span class="cta__sub">Change time or price anytime</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom sheet: the component -->
+          <div class="sheet-backdrop" data-backdrop hidden></div>
+          <section class="sheet" data-sheet role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+            <div class="sheet__grip" data-grip><span class="sheet__handle"></span></div>
+            <div class="sheet__body" data-sheet-body>
+              <h2 class="sheet__title" id="sheet-title">Pick a date</h2>
+
+              <p class="hint hint--lg"><i class="fa-light fa-clock-rotate-left" aria-hidden="true"></i>Based on your usual times with Marie</p>
+              <div class="suggestions" role="radiogroup" aria-label="Suggested dates" data-suggestions></div>
+
+              <div class="divider"><span>Or pick any other day</span></div>
+
+              <div class="cal-nav">
+                <button class="cal-nav__btn" type="button" data-prev aria-label="Previous"><i class="fa-regular fa-arrow-left" aria-hidden="true"></i></button>
+                <span class="cal-nav__label" data-period aria-live="polite"></span>
+                <button class="cal-nav__btn" type="button" data-next aria-label="Next"><i class="fa-regular fa-arrow-right" aria-hidden="true"></i></button>
+              </div>
+
+              <div class="week" data-week role="listbox" aria-label="Days of the week"></div>
+              <div class="month" data-month role="grid" aria-label="Days of the month" hidden></div>
+
+              <button class="view-toggle" type="button" data-toggle-view>Show monthly view</button>
+
+              <button class="cta cta--sheet" type="button" data-use>Use</button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <section class="notes__card">
+          <h2>Demo date</h2>
+          <p>Suggestions follow Marie's usual Wednesdays and Fridays, 16:00–19:00, counted from today.</p>
+          <div class="pills" role="radiogroup" aria-label="Demo date">
+            <label class="pill"><input type="radio" name="today" value="real" checked><span>Real today</span></label>
+            <label class="pill"><input type="radio" name="today" value="2027-09-08"><span>As in Figma · Wed 8.9.2027</span></label>
+          </div>
+        </section>
+
+        <section class="notes__card">
+          <h2>What to try</h2>
+          <ul>
+            <li><strong>Tap the date</strong> in <em>When</em>. The sheet opens in the weekly view on the week of the current date.</li>
+            <li><strong>Suggestions</strong> pick the day and Marie's usual 16:00–19:00, which <em>Use</em> writes into the form.</li>
+            <li><strong>Any other day</strong> keeps the times you already have. Picking a suggested day in the calendar checks its suggestion too.</li>
+            <li><strong>Arrows</strong> page by week or by month; <em>Show monthly view</em> switches between the two and keeps the selection.</li>
+            <li><strong>Past days</strong> can be picked too: a booking can be entered after it happened.</li>
+            <li><strong>Close</strong> by tapping the dimmed area, dragging the handle down, or <kbd>Esc</kbd>.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
