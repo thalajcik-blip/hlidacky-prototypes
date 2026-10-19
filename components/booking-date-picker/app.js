@@ -43,21 +43,24 @@
   const short = (d) => `${d.getDate()}.${d.getMonth() + 1}.`;
   const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
 
-  function parseToday(value) {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || '');
-    if (m) return day(+m[1], +m[2] - 1, +m[3]);
-    const now = new Date();
-    return day(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-
   // ---------- state ----------
 
-  const params = new URLSearchParams(location.search);
-  let today = parseToday(params.get('today'));
+  const now = new Date();
+  const today = day(now.getFullYear(), now.getMonth(), now.getDate());
   let suggestions = [];
   let selected = null; // the date in the form
   let draft = null; // the date picked inside the sheet
-  let view = 'week';
+  // The sheet reopens in whichever view the user last switched to; weekly
+  // until they first switch. Kept across reloads, per browser.
+  const VIEW_KEY = 'booking-date-picker:view';
+  const readView = () => {
+    try { return localStorage.getItem(VIEW_KEY) === 'month' ? 'month' : 'week'; } catch { return 'week'; }
+  };
+  const saveView = (value) => {
+    try { localStorage.setItem(VIEW_KEY, value); } catch { /* storage blocked: remember for this page only */ }
+  };
+  let lastView = readView();
+  let view = lastView;
   let anchor = null; // Monday of the shown week, or 1st of the shown month
 
   function computeSuggestions() {
@@ -99,8 +102,7 @@
     updateTotal();
   }
 
-  function resetForToday(value) {
-    today = parseToday(value);
+  function init() {
     suggestions = computeSuggestions();
     selected = suggestions[0];
     startInput.value = USUAL.start;
@@ -257,8 +259,8 @@
   function open() {
     clearTimeout(closeTimer);
     draft = selected;
-    view = 'week';
-    anchor = mondayOf(draft);
+    view = lastView;
+    anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     render();
     sheet.style.height = '';
     sheet.style.transform = '';
@@ -342,6 +344,8 @@
 
   toggleBtn.addEventListener('click', () => {
     view = view === 'week' ? 'month' : 'week';
+    lastView = view;
+    saveView(view);
     anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     withHeightTransition(render);
     centreWeekOn(draft, false);
@@ -353,16 +357,5 @@
   }));
   rateSelect.addEventListener('change', updateTotal);
 
-  document.querySelectorAll('input[name="today"]').forEach((input) => {
-    if (params.get('today') && input.value === params.get('today')) input.checked = true;
-    input.addEventListener('change', () => {
-      if (!sheet.hidden) close();
-      const url = new URL(location.href);
-      if (input.value === 'real') url.searchParams.delete('today'); else url.searchParams.set('today', input.value);
-      history.replaceState(null, '', url);
-      resetForToday(input.value === 'real' ? null : input.value);
-    });
-  });
-
-  resetForToday(params.get('today'));
+  init();
 })();
