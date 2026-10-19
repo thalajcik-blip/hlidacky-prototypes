@@ -149,6 +149,7 @@
   // variant 2 starts on the first suggestion.
   function init() {
     document.body.dataset.variant = String(variant);
+    syncVariantControls();
     suggestions = computeSuggestions();
     selected = variant === 1 ? today : suggestions[0];
     startInput.value = USUAL.start;
@@ -535,16 +536,36 @@
     renderForm();
   });
 
-  document.querySelectorAll('input[name="variant"]').forEach((input) => {
-    input.checked = Number(input.value) === variant;
-    input.addEventListener('change', () => {
-      variant = Number(input.value);
-      if (!sheet.hidden) close();
-      const url = new URL(location.href);
-      url.searchParams.set('variant', String(variant));
-      history.replaceState(null, '', url);
-      init();
-    });
+  // Prototype only: the page switch (desktop) and the pill + dialog
+  // (phones) both pick the variant and stay in sync.
+  const variantInputs = document.querySelectorAll('input[name="variant"], input[name="variant-m"]');
+  const variantPill = $('[data-variant-pill]');
+  const variantPillLabel = $('[data-variant-pill-label]');
+  const variantDialog = $('[data-variant-dialog]');
+
+  function syncVariantControls() {
+    variantInputs.forEach((input) => { input.checked = Number(input.value) === variant; });
+    variantPillLabel.textContent = `Variant ${variant}`;
+    variantPill.setAttribute('aria-label', `Prototype variant: ${variant}. Change`);
+  }
+
+  function setVariant(value) {
+    variant = value;
+    if (!sheet.hidden) close();
+    const url = new URL(location.href);
+    url.searchParams.set('variant', String(variant));
+    history.replaceState(null, '', url);
+    init();
+  }
+
+  variantInputs.forEach((input) => input.addEventListener('change', () => {
+    setVariant(Number(input.value));
+    if (variantDialog.open) variantDialog.close();
+  }));
+  variantPill.addEventListener('click', () => variantDialog.showModal());
+  // A click on the backdrop lands on the dialog element itself.
+  variantDialog.addEventListener('click', (e) => {
+    if (e.target === variantDialog) variantDialog.close();
   });
 
   init();
