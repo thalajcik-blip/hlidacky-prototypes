@@ -1,7 +1,8 @@
-// Booking date picker, two variants. Variant 1: suggested days as pills
+// Booking date picker, three variants. Variant 1: suggested days as pills
 // under a native date input. Variant 2: a bottom sheet with suggestions on
-// top and a weekly strip / monthly grid below. All dates are local
-// midnights.
+// top and a weekly strip / monthly grid below. Variant 3: the same sheet
+// with the suggestions as pills and reworked day states. All dates are
+// local midnights.
 
 (() => {
   const DOW_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -11,7 +12,7 @@
 
   // Marie's usual bookings: Wednesdays and Fridays, 16:00–19:00.
   const USUAL = { days: [3, 5], start: '16:00', end: '19:00' };
-  const SUGGESTION_COUNT = { 1: 3, 2: 2 };
+  const SUGGESTION_COUNT = { 1: 3, 2: 2, 3: 3 };
 
   const $ = (sel) => document.querySelector(sel);
   const screen = $('[data-screen]');
@@ -60,7 +61,7 @@
   const now = new Date();
   const today = day(now.getFullYear(), now.getMonth(), now.getDate());
   const params = new URLSearchParams(location.search);
-  let variant = params.get('variant') === '1' ? 1 : 2;
+  let variant = ['1', '2', '3'].includes(params.get('variant')) ? Number(params.get('variant')) : 2;
   let suggestions = [];
   let selected = null; // the date in the form
   let draft = null; // the date picked inside the sheet
@@ -161,7 +162,25 @@
     return `${DOW_LONG[d.getDay()]}, ${short(d)}${sameDay(d, today) ? ' (today)' : ''}`;
   }
 
+  // Variant 3 shows the suggestions as pills, without the times.
+  function renderSuggestionPills() {
+    suggestionsEl.setAttribute('role', 'group');
+    suggestionsEl.replaceChildren(...suggestions.map((d) => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'sheet-pill';
+      pill.textContent = `${DOW_SHORT[d.getDay()]} ${short(d)}${sameDay(d, today) ? ' (Today)' : ''}`;
+      pill.setAttribute('aria-label', `${dayName(d)}, ${USUAL.start}–${USUAL.end}`);
+      pill.setAttribute('aria-pressed', String(sameDay(d, draft)));
+      pill.dataset.time = String(d.getTime());
+      pill.addEventListener('click', () => pick(d, { fromSuggestion: true }));
+      return pill;
+    }));
+  }
+
   function renderSuggestions() {
+    if (variant === 3) { renderSuggestionPills(); return; }
+    suggestionsEl.setAttribute('role', 'radiogroup');
     suggestionsEl.replaceChildren(...suggestions.map((d, i) => {
       const label = document.createElement('label');
       label.className = 'suggestion';
@@ -325,7 +344,12 @@
     const last = addDays(mondayOf(lastOfMonth), 6);
     for (let d = first; d <= last; d = addDays(d, 1)) {
       const btn = dayButton(d, 'mday');
-      btn.textContent = d.getDate();
+      // Variant 3 tags today's cell; variant 2 only outlines it.
+      if (variant === 3 && sameDay(d, today)) {
+        btn.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
+      } else {
+        btn.textContent = d.getDate();
+      }
       btn.classList.toggle('is-weekend', isWeekend(d));
       btn.classList.toggle('is-outside', d.getMonth() !== anchor.getMonth());
       cells.push(btn);
@@ -348,7 +372,7 @@
   // Mark the picked day without rebuilding the strip, so its scroll
   // position survives.
   function updateSelection() {
-    document.querySelectorAll('.day[data-time], .mday[data-time]').forEach((btn) => {
+    document.querySelectorAll('.day[data-time], .mday[data-time], .sheet-pill[data-time]').forEach((btn) => {
       const on = btn.dataset.time === String(draft.getTime());
       btn.classList.toggle('is-selected', on);
       btn.setAttribute('aria-pressed', String(on));
@@ -370,7 +394,7 @@
     } else {
       updateSelection();
     }
-    if (fromSuggestion) suggestionsEl.querySelector('input:checked')?.focus();
+    if (fromSuggestion) suggestionsEl.querySelector('input:checked, [aria-pressed="true"]')?.focus();
   }
 
   // Animate the sheet between its weekly and monthly heights.
@@ -414,7 +438,7 @@
     sheet.getBoundingClientRect();
     backdrop.classList.add('is-open');
     sheet.classList.add('is-open');
-    (suggestionsEl.querySelector('input:checked') || weekEl.querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
+    (suggestionsEl.querySelector('input:checked, [aria-pressed="true"]') || weekEl.querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
   }
 
   function close({ apply = false } = {}) {

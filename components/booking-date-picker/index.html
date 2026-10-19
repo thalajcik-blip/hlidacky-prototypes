@@ -13,12 +13,13 @@
   <main class="page">
     <header class="page__head">
       <h1>Booking date picker</h1>
-      <p>Two ways to offer the days a parent usually books this sitter. <strong>Variant 1</strong> puts them as pills under the date and leaves the date itself to the browser's native picker (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5118-14904">Figma</a>). <strong>Variant 2</strong> opens a bottom sheet with the suggestions on top and any other day in a weekly strip or a full month (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5117-9858">Figma</a>).</p>
+      <p>Three ways to offer the days a parent usually books this sitter. <strong>Variant 1</strong> puts them as pills under the date and leaves the date itself to the browser's native picker (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5118-14904">Figma</a>). <strong>Variant 2</strong> opens a bottom sheet with the suggestions on top and any other day in a weekly strip or a full month (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5117-9858">Figma</a>). <strong>Variant 3</strong> is the same sheet with the suggestions as pills and reworked day states.</p>
     </header>
 
     <nav class="variant-switch" role="radiogroup" aria-label="Variant">
-      <label class="variant-switch__option"><input type="radio" name="variant" value="1"><span>Variant 1 · Pills</span></label>
-      <label class="variant-switch__option"><input type="radio" name="variant" value="2" checked><span>Variant 2 · Bottom sheet</span></label>
+      <label class="variant-switch__option"><input type="radio" name="variant" value="1"><span><span class="variant-switch__long">Variant </span>1 · Pills</span></label>
+      <label class="variant-switch__option"><input type="radio" name="variant" value="2" checked><span><span class="variant-switch__long">Variant </span>2 · Sheet</span></label>
+      <label class="variant-switch__option"><input type="radio" name="variant" value="3"><span><span class="variant-switch__long">Variant </span>3 · Sheet + pills</span></label>
     </nav>
 
     <div class="layout">
@@ -49,7 +50,7 @@
             <section class="booking__section">
               <div class="booking__heading">
                 <h3>Services</h3>
-                <button class="icon-button" type="button" aria-label="Add a service" data-only="2"><i class="fa-light fa-circle-plus" aria-hidden="true"></i></button>
+                <button class="icon-button" type="button" aria-label="Add a service" data-only="2 3"><i class="fa-light fa-circle-plus" aria-hidden="true"></i></button>
               </div>
               <div class="tiles" data-only="1">
                 <label class="tile" title="Babysitting"><input type="checkbox" checked aria-label="Babysitting"><i class="fa-light fa-child-reaching" aria-hidden="true"></i></label>
@@ -58,7 +59,7 @@
                 <label class="tile" title="Senior care"><input type="checkbox" aria-label="Senior care"><i class="fa-light fa-person-walking-with-cane" aria-hidden="true"></i></label>
                 <label class="tile" title="Tutoring"><input type="checkbox" aria-label="Tutoring"><i class="fa-light fa-user-graduate" aria-hidden="true"></i></label>
               </div>
-              <div class="services" data-only="2">
+              <div class="services" data-only="2 3">
                 <label class="service">
                   <input type="checkbox" checked>
                   <span class="service__box"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
@@ -91,7 +92,7 @@
                   <span data-native-label aria-hidden="true"></span>
                   <input type="date" data-native-date aria-label="Date">
                 </label>
-                <button class="when__field when__field--date" type="button" data-open-picker aria-haspopup="dialog" data-only="2">
+                <button class="when__field when__field--date" type="button" data-open-picker aria-haspopup="dialog" data-only="2 3">
                   <i class="fa-light fa-calendar" aria-hidden="true"></i>
                   <span data-date-label></span>
                 </button>
@@ -108,7 +109,7 @@
                 <p class="hint"><i class="fa-regular fa-clock-rotate-left" aria-hidden="true"></i>Suggested from your past bookings with Marie</p>
                 <div class="quick-dates__pills" role="group" aria-label="Suggested dates" data-quick-dates></div>
               </div>
-              <p class="hint" data-when-hint data-only="2"><i class="fa-light fa-clock-rotate-left" aria-hidden="true"></i>Suggested from your bookings with Marie</p>
+              <p class="hint" data-when-hint data-only="2 3"><i class="fa-light fa-clock-rotate-left" aria-hidden="true"></i>Suggested from your bookings with Marie</p>
             </section>
 
             <section class="booking__section">
@@ -169,6 +170,16 @@
       </div>
 
       <aside class="notes">
+        <section class="notes__card" data-only="3">
+          <h2>What to try</h2>
+          <ul>
+            <li><strong>Tap the date</strong> in <em>When</em> to open the sheet, as in Variant 2.</li>
+            <li><strong>Suggestion pills</strong> are Marie's next three usual days from today. The picked one fills pink; a tap also sets her usual 16:00–19:00 on <em>Use</em>.</li>
+            <li><strong>Today</strong> gets a pink <em>Today</em> band in the strip and a <em>Today</em> tag in the month, but only turns fully pink once picked.</li>
+            <li><strong>Everything else</strong> works like Variant 2: swipe the strip, page with the arrows, switch to the month.</li>
+          </ul>
+        </section>
+
         <section class="notes__card" data-only="1">
           <h2>What to try</h2>
           <ul>

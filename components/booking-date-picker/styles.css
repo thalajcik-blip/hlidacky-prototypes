@@ -45,9 +45,10 @@ button { font: inherit; color: inherit; }
 
 /* ---------- variant switch (prototype only) ---------- */
 
-/* Each variant hides the other's parts; the shared form stays. */
-body[data-variant="1"] [data-only="2"],
-body[data-variant="2"] [data-only="1"] { display: none !important; }
+/* data-only lists the variants a part belongs to; the shared form stays. */
+body[data-variant="1"] [data-only]:not([data-only~="1"]),
+body[data-variant="2"] [data-only]:not([data-only~="2"]),
+body[data-variant="3"] [data-only]:not([data-only~="3"]) { display: none !important; }
 
 .variant-switch {
   display: inline-flex;
@@ -59,7 +60,7 @@ body[data-variant="2"] [data-only="1"] { display: none !important; }
   box-shadow: 0 1px 2px rgba(42, 53, 57, .08);
 }
 .variant-switch__option input { position: absolute; opacity: 0; pointer-events: none; }
-.variant-switch__option span {
+.variant-switch__option > span {
   display: block;
   padding: 8px 16px;
   border-radius: 64px;
@@ -490,6 +491,58 @@ body[data-variant="2"] [data-only="1"] { display: none !important; }
 .mday:hover:not(.is-selected) { background: var(--gray-100); }
 .mday:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
 
+/* ---------- Variant 3: suggestion pills and reworked day states ---------- */
+
+body[data-variant="3"] .suggestions { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+.sheet-pill {
+  padding: 3px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 64px;
+  background: #fff;
+  color: var(--gray-800);
+  font-size: 15px;
+  line-height: 1.4;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.sheet-pill:hover { border-color: var(--gray-400); }
+.sheet-pill[aria-pressed="true"] { border-color: var(--pink-400); background: var(--pink-400); color: #fff; }
+.sheet-pill:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
+
+/* Week: today keeps a grey frame and a light pink band until it is
+   picked; picked, it gets the full pink frame and band as in Variant 2. */
+body[data-variant="3"] .day.is-today:not(.is-selected) { border-color: var(--gray-400); }
+body[data-variant="3"] .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
+
+/* Month: taller cells; today is a white, framed cell with a Today tag,
+   which turns into a darker badge on the edge once today is picked. */
+body[data-variant="3"] .month { row-gap: 8px; }
+body[data-variant="3"] .mday { position: relative; height: 44px; }
+body[data-variant="3"] .mday.is-today:not(.is-selected) {
+  padding-top: 10px;
+  box-shadow: inset 0 0 0 1px var(--gray-300), 0 4px 8px -4px rgba(42, 53, 57, .2);
+}
+body[data-variant="3"] .mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
+.mday__today {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gray-600);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1;
+}
+.mday.is-selected .mday__today {
+  top: -6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--pink-500);
+  color: #fff;
+}
+
 .view-toggle {
   display: block;
   margin: 18px auto 0;
@@ -526,7 +579,8 @@ body[data-variant="2"] [data-only="1"] { display: none !important; }
   .phone__screen { height: calc(100dvh - 48px); min-height: 0; border-radius: 0; }
   .variant-switch { display: flex; height: 48px; align-items: center; margin: 0; padding: 0 8px; border-radius: 0; box-shadow: inset 0 -1px 0 var(--gray-300); }
   .variant-switch__option { flex: 1 1 0; }
-  .variant-switch__option span { padding: 8px 6px; text-align: center; font-size: 13px; }
+  .variant-switch__option > span { padding: 8px 6px; text-align: center; font-size: 13px; }
+  .variant-switch__long { display: none; }
   .status-bar { display: none; }
 }
 
