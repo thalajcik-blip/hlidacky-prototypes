@@ -338,6 +338,9 @@ button { font: inherit; color: inherit; }
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
+  /* app.js keeps the position when it prepends days; Chrome's scroll
+     anchoring would shift it a second time. */
+  overflow-anchor: none;
 }
 .week::-webkit-scrollbar { display: none; }
 .week[hidden] { display: none; }

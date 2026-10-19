@@ -155,20 +155,117 @@
     return btn;
   }
 
-  function renderWeek() {
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const d = addDays(anchor, i);
-      const btn = dayButton(d, 'day');
-      btn.innerHTML = `
-        <span class="day__band">${sameDay(d, today) ? 'Today' : '–––'}</span>
-        <span class="day__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>
-        <span class="day__num">${d.getDate()}</span>
-        <span class="day__dow">${DOW_SHORT[d.getDay()]}</span>`;
-      days.push(btn);
-    }
-    weekEl.replaceChildren(...days);
+  // ---------- weekly strip ----------
+  // One continuous row of days that scrolls sideways without end: it is
+  // rendered STRIP_WEEKS either side of a week and grows by that much
+  // whenever the scroll gets within EDGE_WEEKS of either end. The label
+  // shows the week of the day under the strip's centre.
+
+  const STRIP_WEEKS = 8;
+  const EDGE_WEEKS = 2;
+  let stripStart = null; // Monday of the first rendered day
+  let stripEnd = null; // Sunday of the last rendered day
+  let navLock = null; // set while the strip scrolls to a week we chose
+
+  function dayCard(d) {
+    const btn = dayButton(d, 'day');
+    btn.innerHTML = `
+      <span class="day__band">${sameDay(d, today) ? 'Today' : '–––'}</span>
+      <span class="day__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>
+      <span class="day__num">${d.getDate()}</span>
+      <span class="day__dow">${DOW_SHORT[d.getDay()]}</span>`;
+    return btn;
   }
+
+  function dayCards(from, to) {
+    const cards = [];
+    for (let d = from; d <= to; d = addDays(d, 1)) cards.push(dayCard(d));
+    return cards;
+  }
+
+  function renderWeek() {
+    stripStart = addDays(anchor, -7 * STRIP_WEEKS);
+    stripEnd = addDays(anchor, 7 * STRIP_WEEKS + 6);
+    weekEl.replaceChildren(...dayCards(stripStart, stripEnd));
+  }
+
+  const inStrip = (d) => !!stripStart && d >= stripStart && d <= stripEnd;
+
+  function cardStep() {
+    const first = weekEl.firstElementChild;
+    return first ? first.offsetWidth + parseFloat(getComputedStyle(weekEl).columnGap || 0) : 64;
+  }
+
+  // Grow the strip before the scroll runs out. Prepending shifts every
+  // card right, so the scroll position is reset to keep the old first
+  // card where it was on screen. It is set absolutely, not by adding the
+  // new width: Chrome may already have moved it (scroll anchoring,
+  // re-snapping to the snapped card), and adding would double the shift.
+  function extendStrip() {
+    const edge = cardStep() * 7 * EDGE_WEEKS;
+    if (weekEl.scrollLeft < edge) {
+      const from = addDays(stripStart, -7 * STRIP_WEEKS);
+      const ref = weekEl.firstElementChild;
+      const onScreen = ref.offsetLeft - weekEl.scrollLeft;
+      weekEl.prepend(...dayCards(from, addDays(stripStart, -1)));
+      stripStart = from;
+      weekEl.scrollLeft = ref.offsetLeft - onScreen;
+    }
+    if (weekEl.scrollLeft + weekEl.clientWidth > weekEl.scrollWidth - edge) {
+      const to = addDays(stripEnd, 7 * STRIP_WEEKS);
+      weekEl.append(...dayCards(addDays(stripEnd, 1), to));
+      stripEnd = to;
+    }
+  }
+
+  function centreDay() {
+    const mid = weekEl.scrollLeft + weekEl.clientWidth / 2;
+    const step = cardStep();
+    const first = weekEl.firstElementChild;
+    if (!first) return anchor;
+    const firstLeft = first.offsetLeft - weekEl.offsetLeft;
+    const index = Math.max(0, Math.floor((mid - firstLeft + (step - first.offsetWidth) / 2) / step));
+    return addDays(stripStart, index);
+  }
+
+  function syncWeekLabel() {
+    const monday = mondayOf(centreDay());
+    if (sameDay(monday, anchor)) return;
+    anchor = monday;
+    periodEl.textContent = periodLabel();
+  }
+
+  // Scroll the strip to a week (centred on its Thursday) or a day. The
+  // label jumps to the target straight away and ignores the scroll until
+  // it settles, so quick repeated arrow taps count from the right week.
+  function scrollStripTo(d, { centreOn = d, smooth = true } = {}) {
+    if (!inStrip(addDays(d, -7 * EDGE_WEEKS)) || !inStrip(addDays(d, 7 * EDGE_WEEKS))) {
+      anchor = mondayOf(d);
+      renderWeek();
+      smooth = false;
+    }
+    anchor = mondayOf(d);
+    periodEl.textContent = periodLabel();
+    const target = weekEl.querySelector(`[data-time="${centreOn.getTime()}"]`);
+    if (!target) return;
+    const left = target.offsetLeft - weekEl.offsetLeft - (weekEl.clientWidth - target.offsetWidth) / 2;
+    if (Math.abs(weekEl.scrollLeft - left) < 1) return;
+    clearTimeout(navLock);
+    navLock = setTimeout(() => { navLock = null; }, 700);
+    weekEl.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
+  }
+
+  weekEl.addEventListener('scroll', () => {
+    if (view !== 'week' || weekEl.hidden) return;
+    extendStrip();
+    if (navLock) {
+      // Release the label once the programmatic scroll stops moving.
+      clearTimeout(navLock);
+      navLock = setTimeout(() => { navLock = null; syncWeekLabel(); }, 150);
+      return;
+    }
+    syncWeekLabel();
+  }, { passive: true });
 
   function renderMonth() {
     const cells = DOW_GRID.map((name) => {
@@ -203,29 +300,31 @@
     useBtn.textContent = `Use ${DOW_LONG[draft.getDay()]}, ${short(draft)}`;
   }
 
-  // Centre a day in the weekly strip, so the cut-off cards fall on the
-  // edges the way the design shows them.
-  function centreWeekOn(d, smooth) {
-    if (view !== 'week') return;
-    const target = weekEl.querySelector(`[data-time="${d.getTime()}"]`)
-      || weekEl.querySelector('.is-today')
-      || weekEl.lastElementChild;
-    if (!target) return;
-    // offsetLeft is measured from the sheet, so take the strip's own off.
-    const left = target.offsetLeft - weekEl.offsetLeft - (weekEl.clientWidth - target.offsetWidth) / 2;
-    weekEl.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
+  // Mark the picked day without rebuilding the strip, so its scroll
+  // position survives.
+  function updateSelection() {
+    document.querySelectorAll('.day[data-time], .mday[data-time]').forEach((btn) => {
+      const on = btn.dataset.time === String(draft.getTime());
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-pressed', String(on));
+    });
+    suggestionsEl.querySelectorAll('input').forEach((input, i) => {
+      input.checked = sameDay(suggestions[i], draft);
+    });
+    useBtn.textContent = `Use ${DOW_LONG[draft.getDay()]}, ${short(draft)}`;
   }
 
   function pick(d, { fromSuggestion = false } = {}) {
     draft = d;
-    const inPeriod = view === 'week'
-      ? sameDay(mondayOf(d), anchor)
-      : d.getMonth() === anchor.getMonth() && d.getFullYear() === anchor.getFullYear();
-    if (!inPeriod) anchor = view === 'week' ? mondayOf(d) : monthOf(d);
-    const scroll = weekEl.scrollLeft;
-    withHeightTransition(() => render());
-    weekEl.scrollLeft = scroll;
-    centreWeekOn(d, true);
+    if (view === 'week') {
+      updateSelection();
+      scrollStripTo(d);
+    } else if (d.getMonth() !== anchor.getMonth() || d.getFullYear() !== anchor.getFullYear()) {
+      anchor = monthOf(d);
+      withHeightTransition(render);
+    } else {
+      updateSelection();
+    }
     if (fromSuggestion) suggestionsEl.querySelector('input:checked')?.focus();
   }
 
@@ -266,7 +365,7 @@
     sheet.style.transform = '';
     backdrop.hidden = false;
     sheet.hidden = false;
-    centreWeekOn(draft, false);
+    if (view === 'week') scrollStripTo(draft, { smooth: false });
     sheet.getBoundingClientRect();
     backdrop.classList.add('is-open');
     sheet.classList.add('is-open');
@@ -331,16 +430,17 @@
     if (e.key === 'Escape' && !sheet.hidden) close();
   });
 
-  prevBtn.addEventListener('click', () => {
-    anchor = view === 'week' ? addDays(anchor, -7) : day(anchor.getFullYear(), anchor.getMonth() - 1, 1);
+  function step(dir) {
+    if (view === 'week') {
+      const monday = addDays(anchor, 7 * dir);
+      scrollStripTo(monday, { centreOn: addDays(monday, 3) });
+      return;
+    }
+    anchor = day(anchor.getFullYear(), anchor.getMonth() + dir, 1);
     withHeightTransition(render);
-    centreWeekOn(draft, false);
-  });
-  nextBtn.addEventListener('click', () => {
-    anchor = view === 'week' ? addDays(anchor, 7) : day(anchor.getFullYear(), anchor.getMonth() + 1, 1);
-    withHeightTransition(render);
-    weekEl.scrollLeft = 0;
-  });
+  }
+  prevBtn.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
 
   toggleBtn.addEventListener('click', () => {
     view = view === 'week' ? 'month' : 'week';
@@ -348,7 +448,7 @@
     saveView(view);
     anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     withHeightTransition(render);
-    centreWeekOn(draft, false);
+    if (view === 'week') scrollStripTo(draft, { smooth: false });
   });
 
   [startInput, endInput].forEach((input) => input.addEventListener('change', () => {
