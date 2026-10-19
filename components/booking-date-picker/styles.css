@@ -43,6 +43,35 @@ button { font: inherit; color: inherit; }
 .page__head p { margin: 0; color: var(--gray-600); font-size: 16px; line-height: 1.55; }
 .page__head a { color: var(--pink-400); }
 
+/* ---------- variant switch (prototype only) ---------- */
+
+/* Each variant hides the other's parts; the shared form stays. */
+body[data-variant="1"] [data-only="2"],
+body[data-variant="2"] [data-only="1"] { display: none !important; }
+
+.variant-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: 64px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(42, 53, 57, .08);
+}
+.variant-switch__option input { position: absolute; opacity: 0; pointer-events: none; }
+.variant-switch__option span {
+  display: block;
+  padding: 8px 16px;
+  border-radius: 64px;
+  color: var(--gray-600);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+.variant-switch__option input:checked + span { background: var(--gray-800); color: #fff; }
+.variant-switch__option input:focus-visible + span { outline: 2px solid var(--pink-400); outline-offset: 2px; }
+
 .layout {
   display: grid;
   grid-template-columns: 399px minmax(0, 1fr);
@@ -144,6 +173,25 @@ button { font: inherit; color: inherit; }
 .service:has(input:checked) .service__label { color: var(--green-500); }
 .service:has(input:focus-visible) { outline: 2px solid var(--pink-400); outline-offset: 2px; }
 
+/* Variant 1: icon-only service tiles */
+.tiles { display: flex; gap: 12px; }
+.tile {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  color: var(--gray-800);
+  font-size: 22px;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.tile input { position: absolute; opacity: 0; pointer-events: none; }
+.tile:has(input:checked) { border-color: var(--pink-400); color: var(--pink-400); }
+.tile:has(input:checked) i { --fa-style: 900; }
+.tile:has(input:focus-visible) { outline: 2px solid var(--pink-400); outline-offset: 2px; }
+
 .when {
   display: grid;
   grid-template-columns: 1.3fr 1fr 1fr;
@@ -164,7 +212,7 @@ button { font: inherit; color: inherit; }
   text-align: left;
   cursor: pointer;
 }
-.when__field + .when__field { border-left: 1px solid var(--gray-300); }
+.when__field:not(:last-child) { border-right: 1px solid var(--gray-300); }
 .when__field i { color: var(--gray-500); font-size: 16px; }
 .when__field input { width: 100%; min-width: 0; border: 0; padding: 0; background: none; color: inherit; font: inherit; font-variant-numeric: tabular-nums; }
 .when__field input:focus { outline: 0; }
@@ -172,6 +220,19 @@ button { font: inherit; color: inherit; }
 .when__field:focus-within,
 .when__field--date:focus-visible { outline: 2px solid #6aafff; outline-offset: -2px; border-radius: 4px; }
 .when__field--date.is-flash { animation: dateFlash .9s ease; }
+
+/* Variant 1: the browser's own date input, laid invisibly over the field
+   so a tap anywhere on it opens the native picker; the span shows the
+   short date the design uses. */
+.when__field--native { position: relative; }
+.when__field--native input[type="date"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
 @keyframes dateFlash { 0%, 40% { background: var(--pink-100); } 100% { background: transparent; } }
 
 .hint {
@@ -185,6 +246,26 @@ button { font: inherit; color: inherit; }
 .hint[hidden] { display: none; }
 .hint i { font-size: 12px; }
 .hint--lg { margin: 0 0 12px; font-size: 14px; }
+
+/* Variant 1: suggested dates as pills under the field */
+.quick-dates { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.quick-dates .hint { margin: 0; gap: 4px; }
+.quick-dates__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-date {
+  padding: 4px 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: 64px;
+  background: #fff;
+  color: #4a5a61;
+  font-size: 14px;
+  line-height: 1.4;
+  font-variant-numeric: lining-nums tabular-nums;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.quick-date:hover { border-color: var(--gray-400); }
+.quick-date[aria-pressed="true"] { border-color: var(--pink-100); background: var(--pink-100); color: var(--pink-500); }
+.quick-date:focus-visible { outline: 2px solid var(--pink-400); outline-offset: 2px; }
 .hint--lg i { font-size: 15px; }
 
 .price { position: relative; display: block; }
@@ -442,7 +523,10 @@ button { font: inherit; color: inherit; }
   .notes { display: none; }
   .layout { display: block; }
   .phone { position: static; padding: 0; border-radius: 0; background: none; box-shadow: none; }
-  .phone__screen { height: 100dvh; min-height: 0; border-radius: 0; }
+  .phone__screen { height: calc(100dvh - 48px); min-height: 0; border-radius: 0; }
+  .variant-switch { display: flex; height: 48px; align-items: center; margin: 0; padding: 0 8px; border-radius: 0; box-shadow: inset 0 -1px 0 var(--gray-300); }
+  .variant-switch__option { flex: 1 1 0; }
+  .variant-switch__option span { padding: 8px 6px; text-align: center; font-size: 13px; }
   .status-bar { display: none; }
 }
 

@@ -1,5 +1,7 @@
-// Booking date picker: a bottom sheet with usual-time suggestions on top
-// and a weekly strip / monthly grid below. All dates are local midnights.
+// Booking date picker, two variants. Variant 1: suggested days as pills
+// under a native date input. Variant 2: a bottom sheet with suggestions on
+// top and a weekly strip / monthly grid below. All dates are local
+// midnights.
 
 (() => {
   const DOW_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -9,7 +11,7 @@
 
   // Marie's usual bookings: Wednesdays and Fridays, 16:00–19:00.
   const USUAL = { days: [3, 5], start: '16:00', end: '19:00' };
-  const SUGGESTION_COUNT = 2;
+  const SUGGESTION_COUNT = { 1: 3, 2: 2 };
 
   const $ = (sel) => document.querySelector(sel);
   const screen = $('[data-screen]');
@@ -32,6 +34,10 @@
   const rateSelect = $('[data-rate]');
   const totalEl = $('[data-total]');
   const totalLabel = $('[data-total-label]');
+  const nativeDate = $('[data-native-date]');
+  const nativeLabel = $('[data-native-label]');
+  const nativeField = nativeDate.closest('.when__field');
+  const quickDatesEl = $('[data-quick-dates]');
 
   // ---------- date helpers ----------
 
@@ -42,11 +48,19 @@
   const monthOf = (d) => day(d.getFullYear(), d.getMonth(), 1);
   const short = (d) => `${d.getDate()}.${d.getMonth() + 1}.`;
   const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+  const pad = (n) => String(n).padStart(2, '0');
+  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const fromIso = (value) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    return m ? day(+m[1], +m[2] - 1, +m[3]) : null;
+  };
 
   // ---------- state ----------
 
   const now = new Date();
   const today = day(now.getFullYear(), now.getMonth(), now.getDate());
+  const params = new URLSearchParams(location.search);
+  let variant = params.get('variant') === '1' ? 1 : 2;
   let suggestions = [];
   let selected = null; // the date in the form
   let draft = null; // the date picked inside the sheet
@@ -65,7 +79,7 @@
 
   function computeSuggestions() {
     const out = [];
-    for (let d = today; out.length < SUGGESTION_COUNT; d = addDays(d, 1)) {
+    for (let d = today; out.length < SUGGESTION_COUNT[variant]; d = addDays(d, 1)) {
       if (USUAL.days.includes(d.getDay())) out.push(d);
     }
     return out;
@@ -95,16 +109,47 @@
       && startInput.value === USUAL.start && endInput.value === USUAL.end);
   }
 
+  function renderQuickDates() {
+    quickDatesEl.replaceChildren(...suggestions.map((d) => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'quick-date';
+      pill.textContent = `${DOW_SHORT[d.getDay()]} ${short(d)}`;
+      pill.setAttribute('aria-label', `${DOW_LONG[d.getDay()]}, ${short(d)}, ${USUAL.start}–${USUAL.end}`);
+      pill.setAttribute('aria-pressed', String(sameDay(d, selected)));
+      pill.addEventListener('click', () => {
+        selected = d;
+        startInput.value = USUAL.start;
+        endInput.value = USUAL.end;
+        renderForm();
+        flash(nativeField);
+      });
+      return pill;
+    }));
+  }
+
   function renderForm() {
     dateLabel.textContent = short(selected);
     dateBtn.setAttribute('aria-label', `Date: ${DOW_LONG[selected.getDay()]}, ${short(selected)} Change`);
+    nativeLabel.textContent = short(selected);
+    nativeDate.value = iso(selected);
+    if (variant === 1) renderQuickDates();
     updateWhenHint();
     updateTotal();
   }
 
+  function flash(el) {
+    el.classList.remove('is-flash');
+    void el.offsetWidth;
+    el.classList.add('is-flash');
+  }
+
+  // Variant 1 starts on today and offers the next usual days as pills;
+  // variant 2 starts on the first suggestion.
   function init() {
+    document.body.dataset.variant = String(variant);
     suggestions = computeSuggestions();
-    selected = suggestions[0];
+    selected = variant === 1 ? today : suggestions[0];
     startInput.value = USUAL.start;
     endInput.value = USUAL.end;
     renderForm();
@@ -382,9 +427,7 @@
         endInput.value = USUAL.end;
       }
       renderForm();
-      dateBtn.classList.remove('is-flash');
-      void dateBtn.offsetWidth;
-      dateBtn.classList.add('is-flash');
+      flash(dateBtn);
     }
     sheet.style.transform = '';
     sheet.classList.remove('is-open', 'is-dragging');
@@ -456,6 +499,29 @@
     updateTotal();
   }));
   rateSelect.addEventListener('change', updateTotal);
+
+  // Variant 1: the native input sits invisibly over the field. Some
+  // browsers only open the picker from its calendar icon, so ask for it.
+  nativeDate.addEventListener('click', () => {
+    try { nativeDate.showPicker(); } catch { /* the browser opens its own */ }
+  });
+  nativeDate.addEventListener('change', () => {
+    const d = fromIso(nativeDate.value);
+    if (d) selected = d; // cleared (iOS has a Clear button): keep the date
+    renderForm();
+  });
+
+  document.querySelectorAll('input[name="variant"]').forEach((input) => {
+    input.checked = Number(input.value) === variant;
+    input.addEventListener('change', () => {
+      variant = Number(input.value);
+      if (!sheet.hidden) close();
+      const url = new URL(location.href);
+      url.searchParams.set('variant', String(variant));
+      history.replaceState(null, '', url);
+      init();
+    });
+  });
 
   init();
 })();
