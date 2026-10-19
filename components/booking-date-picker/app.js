@@ -1,5 +1,5 @@
 // Booking date picker, three variants. Variant 1: suggested days as pills
-// under a native date input. Variant 2: a bottom sheet with suggestions on
+// under a custom select of days. Variant 2: a bottom sheet with suggestions on
 // top and a weekly strip / monthly grid below. Variant 3: the same sheet
 // with the suggestions as pills and reworked day states. All dates are
 // local midnights.
@@ -35,9 +35,10 @@
   const rateSelect = $('[data-rate]');
   const totalEl = $('[data-total]');
   const totalLabel = $('[data-total-label]');
-  const nativeDate = $('[data-native-date]');
-  const nativeLabel = $('[data-native-label]');
-  const nativeField = nativeDate.closest('.when__field');
+  const dateSelect = $('[data-date-select]');
+  const dateSelectLabel = $('[data-date-select-label]');
+  const dateSelectField = dateSelect.closest('.when__field');
+  const dateOptions = $('[data-date-options]');
   const quickDatesEl = $('[data-quick-dates]');
 
   // ---------- date helpers ----------
@@ -49,12 +50,6 @@
   const monthOf = (d) => day(d.getFullYear(), d.getMonth(), 1);
   const short = (d) => `${d.getDate()}.${d.getMonth() + 1}.`;
   const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
-  const pad = (n) => String(n).padStart(2, '0');
-  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-  const fromIso = (value) => {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-    return m ? day(+m[1], +m[2] - 1, +m[3]) : null;
-  };
 
   // ---------- state ----------
 
@@ -123,7 +118,7 @@
         startInput.value = USUAL.start;
         endInput.value = USUAL.end;
         renderForm();
-        flash(nativeField);
+        flash(dateSelectField);
       });
       return pill;
     }));
@@ -132,8 +127,8 @@
   function renderForm() {
     dateLabel.textContent = short(selected);
     dateBtn.setAttribute('aria-label', `Date: ${DOW_LONG[selected.getDay()]}, ${short(selected)} Change`);
-    nativeLabel.textContent = short(selected);
-    nativeDate.value = iso(selected);
+    dateSelectLabel.textContent = selectLabel(selected);
+    dateSelect.setAttribute('aria-label', `Date: ${dayName(selected)}. Change`);
     if (variant === 1) renderQuickDates();
     updateWhenHint();
     updateTotal();
@@ -150,6 +145,7 @@
   function init() {
     document.body.dataset.variant = String(variant);
     syncVariantControls();
+    closeSelect({ refocus: false });
     suggestions = computeSuggestions();
     selected = variant === 1 ? today : suggestions[0];
     startInput.value = USUAL.start;
@@ -525,15 +521,114 @@
   }));
   rateSelect.addEventListener('change', updateTotal);
 
-  // Variant 1: the native input sits invisibly over the field. Some
-  // browsers only open the picker from its calendar icon, so ask for it.
-  nativeDate.addEventListener('click', () => {
-    try { nativeDate.showPicker(); } catch { /* the browser opens its own */ }
-  });
-  nativeDate.addEventListener('change', () => {
-    const d = fromIso(nativeDate.value);
-    if (d) selected = d; // cleared (iOS has a Clear button): keep the date
+  // ---------- variant 1: custom date select ----------
+  // A listbox of days from a week back to three months ahead, like the
+  // product's select. It opens above the field when there is room in the
+  // scrolling form, otherwise below, and scrolls to the current day.
+
+  const SELECT_PAST_DAYS = 7;
+  const SELECT_FUTURE_DAYS = 90;
+  let selectDays = [];
+  let activeIndex = -1;
+
+  function selectLabel(d) {
+    if (sameDay(d, today)) return 'Today';
+    if (sameDay(d, addDays(today, 1))) return 'Tomorrow';
+    return `${DOW_SHORT[d.getDay()]} ${short(d)}`;
+  }
+
+  function renderOptions() {
+    let from = addDays(today, -SELECT_PAST_DAYS);
+    let to = addDays(today, SELECT_FUTURE_DAYS);
+    if (selected < from) from = selected;
+    if (selected > to) to = selected;
+    selectDays = [];
+    for (let d = from; d <= to; d = addDays(d, 1)) selectDays.push(d);
+    dateOptions.replaceChildren(...selectDays.map((d, i) => {
+      const li = document.createElement('li');
+      li.className = 'date-option';
+      li.id = `date-option-${i}`;
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(sameDay(d, selected)));
+      li.textContent = selectLabel(d);
+      if (d < today) {
+        const past = document.createElement('span');
+        past.className = 'date-option__past';
+        past.textContent = ' past';
+        li.append(past);
+      }
+      li.addEventListener('click', () => choose(d));
+      return li;
+    }));
+  }
+
+  function setActive(index, scroll = 'nearest') {
+    activeIndex = Math.max(0, Math.min(selectDays.length - 1, index));
+    dateOptions.querySelectorAll('.is-active').forEach((el) => el.classList.remove('is-active'));
+    const li = dateOptions.children[activeIndex];
+    li.classList.add('is-active');
+    dateOptions.setAttribute('aria-activedescendant', li.id);
+    if (scroll === 'centre') {
+      dateOptions.scrollTop = li.offsetTop - (dateOptions.clientHeight - li.offsetHeight) / 2;
+    } else {
+      li.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function openSelect() {
+    renderOptions();
+    dateOptions.hidden = false;
+    // Room above the field inside the scrolling form decides the side.
+    const form = dateSelectField.closest('[data-booking]').getBoundingClientRect();
+    const field = dateSelectField.getBoundingClientRect();
+    const up = field.top - form.top >= Math.min(272, dateOptions.scrollHeight) || field.top - form.top > form.bottom - field.bottom;
+    dateOptions.classList.toggle('is-up', up);
+    dateOptions.classList.toggle('is-down', !up);
+    dateOptions.style.maxHeight = `${Math.min(272, Math.max(120, up ? field.top - form.top - 8 : form.bottom - field.bottom - 8))}px`;
+    dateSelect.setAttribute('aria-expanded', 'true');
+    setActive(selectDays.findIndex((d) => sameDay(d, selected)), 'centre');
+    dateOptions.focus({ preventScroll: true });
+  }
+
+  function closeSelect({ refocus = true } = {}) {
+    if (dateOptions.hidden) return;
+    dateOptions.hidden = true;
+    dateSelect.setAttribute('aria-expanded', 'false');
+    if (refocus) dateSelect.focus({ preventScroll: true });
+  }
+
+  // Picking from the list keeps the times; only the pills set Marie's.
+  function choose(d) {
+    selected = d;
+    closeSelect();
     renderForm();
+    flash(dateSelectField);
+  }
+
+  dateSelect.addEventListener('click', () => {
+    if (dateOptions.hidden) openSelect(); else closeSelect();
+  });
+  dateSelect.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'ArrowUp'].includes(e.key) && dateOptions.hidden) {
+      e.preventDefault();
+      openSelect();
+    }
+  });
+  dateOptions.addEventListener('keydown', (e) => {
+    const page = 7;
+    const moves = { ArrowDown: 1, ArrowUp: -1, PageDown: page, PageUp: -page };
+    if (e.key in moves) setActive(activeIndex + moves[e.key]);
+    else if (e.key === 'Home') setActive(0);
+    else if (e.key === 'End') setActive(selectDays.length - 1);
+    else if (e.key === 'Enter' || e.key === ' ') choose(selectDays[activeIndex]);
+    else if (e.key === 'Escape') closeSelect();
+    else if (e.key === 'Tab') { closeSelect({ refocus: false }); return; }
+    else return;
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  document.addEventListener('pointerdown', (e) => {
+    if (!dateOptions.hidden && !dateSelectField.contains(e.target)) closeSelect({ refocus: false });
   });
 
   // Prototype only: the page switch (desktop) and the pill + dialog

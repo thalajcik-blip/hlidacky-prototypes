@@ -13,7 +13,7 @@
   <main class="page">
     <header class="page__head">
       <h1>Booking date picker</h1>
-      <p>Three ways to offer the days a parent usually books this sitter. <strong>Variant 1</strong> puts them as pills under the date and leaves the date itself to the browser's native picker (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5118-14904">Figma</a>). <strong>Variant 2</strong> opens a bottom sheet with the suggestions on top and any other day in a weekly strip or a full month (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5117-9858">Figma</a>). <strong>Variant 3</strong> is the same sheet with the suggestions as pills and reworked day states.</p>
+      <p>Three ways to offer the days a parent usually books this sitter. <strong>Variant 1</strong> puts them as pills under the date, with any other day in a plain dropdown list (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5118-14904">Figma</a>). <strong>Variant 2</strong> opens a bottom sheet with the suggestions on top and any other day in a weekly strip or a full month (<a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5117-9858">Figma</a>). <strong>Variant 3</strong> is the same sheet with the suggestions as pills and reworked day states.</p>
     </header>
 
     <nav class="variant-switch" role="radiogroup" aria-label="Variant">
@@ -92,11 +92,14 @@
                 <button class="icon-button" type="button" aria-label="Overnight booking"><i class="fa-light fa-moon-stars" aria-hidden="true"></i></button>
               </div>
               <div class="when">
-                <label class="when__field when__field--date when__field--native" data-only="1">
-                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                  <span data-native-label aria-hidden="true"></span>
-                  <input type="date" data-native-date aria-label="Date">
-                </label>
+                <div class="when__field when__field--select" data-only="1">
+                  <button class="date-select" type="button" data-date-select aria-haspopup="listbox" aria-expanded="false" aria-controls="date-options">
+                    <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+                    <span class="date-select__value" data-date-select-label></span>
+                    <i class="fa-solid fa-sort date-select__caret" aria-hidden="true"></i>
+                  </button>
+                  <ul class="date-options" id="date-options" role="listbox" aria-label="Date" tabindex="-1" data-date-options hidden></ul>
+                </div>
                 <button class="when__field when__field--date" type="button" data-open-picker aria-haspopup="dialog" data-only="2 3">
                   <i class="fa-light fa-calendar" aria-hidden="true"></i>
                   <span data-date-label></span>
@@ -189,8 +192,9 @@
           <h2>What to try</h2>
           <ul>
             <li><strong>Pills</strong> under the date are Marie's next three usual days (Wednesdays and Fridays) from today. A tap sets the date and her usual 16:00–19:00, and the pill turns pink.</li>
-            <li><strong>Tap the date</strong> for any other day. It opens the browser's own date picker, nothing custom; past days work too.</li>
-            <li><strong>Pick a suggested day natively</strong> and its pill lights up as well.</li>
+            <li><strong>Tap the date</strong> for any other day: a dropdown list of days, a week back to three months ahead, scrolled to the current one. Past days are marked <em>past</em>.</li>
+            <li><strong>Pick a suggested day from the list</strong> and its pill lights up as well.</li>
+            <li><strong>Keyboard:</strong> <kbd>↓</kbd> opens the list, arrows move, <kbd>Enter</kbd> picks, <kbd>Esc</kbd> closes.</li>
           </ul>
         </section>
 
@@ -221,7 +225,7 @@
         <label class="variant-option">
           <input type="radio" name="variant-m" value="1">
           <span class="variant-option__radio" aria-hidden="true"></span>
-          <span class="variant-option__text"><strong>Variant 1 · Pills</strong><small>Suggested days as pills under the browser's native date picker.</small></span>
+          <span class="variant-option__text"><strong>Variant 1 · Pills</strong><small>Suggested days as pills under a dropdown list of days.</small></span>
         </label>
         <label class="variant-option">
           <input type="radio" name="variant-m" value="2">

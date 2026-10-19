@@ -225,18 +225,67 @@ body[data-variant="3"] [data-only]:not([data-only~="3"]) { display: none !import
 .when__field--date:focus-visible { outline: 2px solid #6aafff; outline-offset: -2px; border-radius: 4px; }
 .when__field--date.is-flash { animation: dateFlash .9s ease; }
 
-/* Variant 1: the browser's own date input, laid invisibly over the field
-   so a tap anywhere on it opens the native picker; the span shows the
-   short date the design uses. */
-.when__field--native { position: relative; }
-.when__field--native input[type="date"] {
-  position: absolute;
-  inset: 0;
+/* Variant 1: a custom select. The button fills the field; the list pops
+   over the form above the field (or below, if there's no room) and
+   scrolls on its own. */
+body[data-variant="1"] .when { grid-template-columns: 1.55fr 1fr 1fr; }
+.when__field--select { position: relative; padding: 0; }
+.date-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   height: 100%;
-  opacity: 0;
+  padding: 0 10px 0 12px;
+  border: 0;
+  background: none;
+  color: var(--gray-800);
+  font-size: 15px;
+  text-align: left;
   cursor: pointer;
 }
+.date-select i { color: var(--gray-500); font-size: 16px; }
+.date-select__value { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.date-select .date-select__caret { font-size: 13px; }
+.date-select:focus-visible { outline: 2px solid #6aafff; outline-offset: -2px; border-radius: 4px; }
+.when__field--select.is-flash { animation: dateFlash .9s ease; }
+
+.date-options {
+  position: absolute;
+  left: -1px;
+  z-index: 6;
+  width: calc(100% + 1px);
+  max-height: 272px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(42, 53, 57, .16);
+}
+.date-options[hidden] { display: none; }
+.date-options.is-up { bottom: 100%; }
+.date-options.is-down { top: 100%; }
+.date-options:focus { outline: 0; }
+.date-option {
+  padding: 6px 12px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  color: var(--gray-800);
+  font-size: 16px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.date-option:hover { background: var(--gray-100); }
+.date-option[aria-selected="true"] { background: var(--pink-100); }
+/* Keyboard position: a blue ring, as in the product's select. */
+.date-option.is-active { border-color: #1a73e8; }
+.date-option__past { color: var(--gray-500); }
 @keyframes dateFlash { 0%, 40% { background: var(--pink-100); } 100% { background: transparent; } }
 
 .hint {
