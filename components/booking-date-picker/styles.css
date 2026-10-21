@@ -49,6 +49,7 @@ button { font: inherit; color: inherit; }
 body[data-variant="1"] [data-only]:not([data-only~="1"]),
 body[data-variant="2"] [data-only]:not([data-only~="2"]),
 body[data-variant="3"] [data-only]:not([data-only~="3"]) { display: none !important; }
+body[data-variant="4"] [data-only]:not([data-only~="4"]) { display: none !important; }
 
 .variant-switch {
   display: inline-flex;
@@ -567,18 +568,19 @@ body[data-variant="3"] .suggestions { flex-direction: row; flex-wrap: wrap; gap:
 
 /* Week: today keeps a grey frame and a light pink band until it is
    picked; picked, it gets the full pink frame and band as in Variant 2. */
-body[data-variant="3"] .day.is-today:not(.is-selected) { border-color: var(--gray-400); }
-body[data-variant="3"] .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
+/* Variant 4 reuses these day states. */
+:is(body[data-variant="3"], body[data-variant="4"]) .day.is-today:not(.is-selected) { border-color: var(--gray-400); }
+:is(body[data-variant="3"], body[data-variant="4"]) .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
 
 /* Month: taller cells; today is a white, framed cell with a Today tag,
    which turns into a darker badge on the edge once today is picked. */
-body[data-variant="3"] .month { row-gap: 8px; }
-body[data-variant="3"] .mday { position: relative; height: 44px; }
-body[data-variant="3"] .mday.is-today:not(.is-selected) {
+:is(body[data-variant="3"], body[data-variant="4"]) .month { row-gap: 8px; }
+:is(body[data-variant="3"], body[data-variant="4"]) .mday { position: relative; height: 44px; }
+:is(body[data-variant="3"], body[data-variant="4"]) .mday.is-today:not(.is-selected) {
   padding-top: 10px;
   box-shadow: inset 0 0 0 1px var(--gray-300), 0 4px 8px -4px rgba(42, 53, 57, .2);
 }
-body[data-variant="3"] .mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
+:is(body[data-variant="3"], body[data-variant="4"]) .mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
 .mday__today {
   position: absolute;
   top: 4px;

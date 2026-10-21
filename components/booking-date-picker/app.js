@@ -2,7 +2,8 @@
 // under a custom select of days. Variant 2: a bottom sheet with suggestions on
 // top and a weekly strip / monthly grid below. Variant 3: the same sheet
 // with the suggestions as pills and reworked day states. All dates are
-// local midnights.
+// local midnights. Variant 4: the pills of variant 1 on the form, and the
+// variant 3 sheet without its suggestions.
 
 (() => {
   const DOW_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -12,7 +13,8 @@
 
   // Marie's usual bookings: Wednesdays and Fridays, 16:00–19:00.
   const USUAL = { days: [3, 5], start: '16:00', end: '19:00' };
-  const SUGGESTION_COUNT = { 1: 3, 2: 2, 3: 3 };
+  // Variant 4 fills in the first and offers the next three as pills.
+  const SUGGESTION_COUNT = { 1: 3, 2: 2, 3: 3, 4: 4 };
 
   const $ = (sel) => document.querySelector(sel);
   const screen = $('[data-screen]');
@@ -56,7 +58,7 @@
   const now = new Date();
   const today = day(now.getFullYear(), now.getMonth(), now.getDate());
   const params = new URLSearchParams(location.search);
-  let variant = ['1', '2', '3'].includes(params.get('variant')) ? Number(params.get('variant')) : 2;
+  let variant = ['1', '2', '3', '4'].includes(params.get('variant')) ? Number(params.get('variant')) : 2;
   let suggestions = [];
   let selected = null; // the date in the form
   let draft = null; // the date picked inside the sheet
@@ -106,7 +108,8 @@
   }
 
   function renderQuickDates() {
-    quickDatesEl.replaceChildren(...suggestions.map((d) => {
+    const days = variant === 4 ? suggestions.slice(1) : suggestions;
+    quickDatesEl.replaceChildren(...days.map((d) => {
       const pill = document.createElement('button');
       pill.type = 'button';
       pill.className = 'quick-date';
@@ -118,7 +121,7 @@
         startInput.value = USUAL.start;
         endInput.value = USUAL.end;
         renderForm();
-        flash(dateSelectField);
+        flash(variant === 4 ? dateBtn : dateSelectField);
       });
       return pill;
     }));
@@ -129,7 +132,7 @@
     dateBtn.setAttribute('aria-label', `Date: ${DOW_LONG[selected.getDay()]}, ${short(selected)} Change`);
     dateSelectLabel.textContent = selectLabel(selected);
     dateSelect.setAttribute('aria-label', `Date: ${dayName(selected)}. Change`);
-    if (variant === 1) renderQuickDates();
+    if (variant === 1 || variant === 4) renderQuickDates();
     updateWhenHint();
     updateTotal();
   }
@@ -141,7 +144,7 @@
   }
 
   // Variant 1 starts on today and offers the next usual days as pills;
-  // variant 2 starts on the first suggestion.
+  // the others start on the first suggestion.
   function init() {
     document.body.dataset.variant = String(variant);
     syncVariantControls();
@@ -342,7 +345,7 @@
     for (let d = first; d <= last; d = addDays(d, 1)) {
       const btn = dayButton(d, 'mday');
       // Variant 3 tags today's cell; variant 2 only outlines it.
-      if (variant === 3 && sameDay(d, today)) {
+      if (variant >= 3 && sameDay(d, today)) {
         btn.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
       } else {
         btn.textContent = d.getDate();
@@ -435,7 +438,8 @@
     sheet.getBoundingClientRect();
     backdrop.classList.add('is-open');
     sheet.classList.add('is-open');
-    (suggestionsEl.querySelector('input:checked, [aria-pressed="true"]') || weekEl.querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
+    // Variant 4's sheet has no suggestions to focus.
+    ((variant !== 4 && suggestionsEl.querySelector('input:checked, [aria-pressed="true"]')) || weekEl.querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
   }
 
   function close({ apply = false } = {}) {
