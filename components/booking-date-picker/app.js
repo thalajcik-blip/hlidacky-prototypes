@@ -13,8 +13,9 @@
 
   // Marie's usual bookings: Wednesdays and Fridays, 16:00–19:00.
   const USUAL = { days: [3, 5], start: '16:00', end: '19:00' };
-  // Variant 4 fills in the first and offers the next three as pills.
-  const SUGGESTION_COUNT = { 1: 3, 2: 2, 3: 3, 4: 4 };
+  const SUGGESTION_COUNT = { 1: 3, 2: 2, 3: 3, 4: 3 };
+  // Every variant opens with the day after tomorrow filled in.
+  const DEFAULT_OFFSET_DAYS = 2;
 
   const $ = (sel) => document.querySelector(sel);
   const screen = $('[data-screen]');
@@ -108,8 +109,7 @@
   }
 
   function renderQuickDates() {
-    const days = variant === 4 ? suggestions.slice(1) : suggestions;
-    quickDatesEl.replaceChildren(...days.map((d) => {
+    quickDatesEl.replaceChildren(...suggestions.map((d) => {
       const pill = document.createElement('button');
       pill.type = 'button';
       pill.className = 'quick-date';
@@ -143,14 +143,12 @@
     el.classList.add('is-flash');
   }
 
-  // Variant 1 starts on today and offers the next usual days as pills;
-  // the others start on the first suggestion.
   function init() {
     document.body.dataset.variant = String(variant);
     syncVariantControls();
     closeSelect({ refocus: false });
     suggestions = computeSuggestions();
-    selected = variant === 1 ? today : suggestions[0];
+    selected = addDays(today, DEFAULT_OFFSET_DAYS);
     startInput.value = USUAL.start;
     endInput.value = USUAL.end;
     renderForm();
