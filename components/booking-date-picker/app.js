@@ -398,26 +398,39 @@
   }
 
   // Animate the sheet between its weekly and monthly heights.
+  let endResize = null; // cleanup of the resize in flight, if any
+
   function withHeightTransition(change) {
     if (!sheet.classList.contains('is-open')) { change(); return; }
     const from = sheet.getBoundingClientRect().height;
+    // A new switch mid-animation starts from where the sheet is now; the
+    // old cleanup must not unpin the height under the new animation.
+    endResize?.({ keepHeight: true });
     sheet.style.height = '';
     change();
     const to = sheet.getBoundingClientRect().height;
     if (Math.abs(to - from) < 1) return;
+    // While the sheet grows, its body is briefly shorter than the new
+    // content; without this it would flash a scrollbar and narrow the
+    // calendar where scrollbars take up space.
+    sheet.classList.add('is-resizing');
     sheet.style.height = `${from}px`;
     sheet.getBoundingClientRect(); // commit the start height
     sheet.style.height = `${to}px`;
     // Fall back to a timer: transitionend never fires if the transition
     // is interrupted, and a pinned height would break the next resize.
     const done = (e) => {
-      if (e && e.propertyName !== 'height') return;
+      if (e?.propertyName && e.propertyName !== 'height') return;
       clearTimeout(timer);
-      sheet.style.height = '';
       sheet.removeEventListener('transitionend', done);
+      endResize = null;
+      if (e?.keepHeight) return;
+      sheet.style.height = '';
+      sheet.classList.remove('is-resizing');
     };
     const timer = setTimeout(done, 400);
     sheet.addEventListener('transitionend', done);
+    endResize = done;
   }
 
   // ---------- open / close ----------

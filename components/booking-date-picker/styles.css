@@ -404,6 +404,7 @@ body[data-variant="1"] .when { grid-template-columns: 1.55fr 1fr 1fr; }
 .sheet__handle { display: block; width: 134px; height: 5px; margin: 0 auto; border-radius: 3px; background: var(--gray-800); }
 
 .sheet__body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 20px 28px; }
+.sheet.is-resizing .sheet__body { overflow-y: hidden; }
 .sheet__title { margin: 0 0 14px; font-size: 24px; font-weight: 450; letter-spacing: -0.4px; line-height: 1.2; }
 
 /* Suggested dates */
