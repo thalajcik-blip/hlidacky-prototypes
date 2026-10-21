@@ -1,7 +1,8 @@
 // Recurrent bookings: the new booking page with a bottom-sheet date picker
 // (weekly strip or month) and a custom time picker, in two modes. Single
 // mode is one day, or overnight when To is before From; multi mode has a
-// start and an end date. Only single mode offers "Repeat this booking".
+// start and an end date. Only single mode offers "Repeat this booking",
+// which opens its own sheet and leaves a summary card on the form.
 // All dates are local midnights; times are "HH:MM" strings.
 
 (() => {
@@ -123,6 +124,7 @@
     $$('[data-date-field="end"]').forEach((b) => b.setAttribute('aria-label', `End date: ${DOW_LONG[end.getDay()]}, ${short(end)}. Change`));
     $$('[data-time-field="start"]').forEach((b) => b.setAttribute('aria-label', `From ${state.startTime}. Change`));
     $$('[data-time-field="end"]').forEach((b) => b.setAttribute('aria-label', `To ${state.endTime}${!multi && isOvernight() ? ', next day' : ''}. Change`));
+    renderRepeatCard();
     updateTotal();
   }
 
@@ -160,6 +162,10 @@
     if (mode === 'multi') {
       // Keep the same span, now with its own end date.
       state.endDate = effectiveEndDate();
+      if (repeat) {
+        repeat = null;
+        toast('Several days can\'t be repeated, so the repeat was removed.');
+      }
     } else if (durationMinutes() > 1440 || durationMinutes() <= 0) {
       // Longer than a day can't be a single booking: keep the times and
       // let them fall on one day (or overnight).
@@ -173,7 +179,6 @@
 
   modeToggle.addEventListener('click', () => setMode(state.mode === 'single' ? 'multi' : 'single'));
   rateSelect.addEventListener('change', updateTotal);
-  $('[data-repeat]').addEventListener('click', () => toast('Repeating a booking comes in the next iteration.'));
   sendBtn.addEventListener('click', () => toast('Booking request sent (prototype).'));
 
   // ---------- time picker ----------
@@ -199,8 +204,11 @@
     const current = timeTarget === 'start' ? state.startTime : state.endTime;
     const [h, m] = current.split(':').map(Number);
     const hour = pendingHour ?? h;
+    // Minutes always show a selection: the current one, rounded down to
+    // the quarter hour, and it stays selected after a new hour is picked.
+    const minute = MINUTE_STEPS.filter((mm) => mm <= m).pop() ?? 0;
     hoursEl.replaceChildren(...Array.from({ length: 24 }, (_, i) => timeOption(pad(i), i, i === hour)));
-    minutesEl.replaceChildren(...MINUTE_STEPS.map((mm) => timeOption(pad(mm), mm, pendingHour === null && mm === m)));
+    minutesEl.replaceChildren(...MINUTE_STEPS.map((mm) => timeOption(pad(mm), mm, mm === minute)));
   }
 
   function placeTimePicker() {
@@ -260,7 +268,7 @@
     const scroll = hoursEl.scrollTop;
     renderTimePicker();
     hoursEl.scrollTop = scroll;
-    minutesEl.querySelector('.time-option').focus({ preventScroll: true });
+    minutesEl.querySelector('[aria-selected="true"]').focus({ preventScroll: true });
   });
   minutesEl.addEventListener('click', (e) => {
     const opt = e.target.closest('.time-option');
@@ -539,11 +547,10 @@
     render();
     sheet.style.height = '';
     sheet.style.transform = '';
-    backdrop.hidden = false;
+    showBackdrop();
     sheet.hidden = false;
     if (view === 'week') scrollStripTo(draft, { smooth: false });
     sheet.getBoundingClientRect();
-    backdrop.classList.add('is-open');
     sheet.classList.add('is-open');
     ((view === 'week' ? weekEl : monthEl).querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
   }
@@ -551,54 +558,26 @@
   function closeSheet({ apply = false } = {}) {
     if (sheet.hidden) return;
     if (apply) {
-      if (dateTarget === 'start') moveStart(draft, state.startTime);
-      else state.endDate = draft;
+      if (dateTarget === 'start') {
+        moveStart(draft, state.startTime);
+        if (repeat) reanchorRepeat(draft);
+      } else {
+        state.endDate = draft;
+      }
       renderForm();
       flash(dateField);
     }
     sheet.style.transform = '';
     sheet.classList.remove('is-open', 'is-dragging');
-    backdrop.classList.remove('is-open');
-    closeTimer = setTimeout(() => {
-      sheet.hidden = true;
-      backdrop.hidden = true;
-    }, 420);
+    hideBackdrop();
+    closeTimer = setTimeout(() => { sheet.hidden = true; }, 420);
     dateField?.focus({ preventScroll: true });
   }
-
-  // Drag the handle down to dismiss.
-  let drag = null;
-  grip.addEventListener('pointerdown', (e) => {
-    drag = { y: e.clientY, t: performance.now(), dy: 0 };
-    grip.setPointerCapture(e.pointerId);
-    sheet.classList.add('is-dragging');
-  });
-  grip.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    drag.dy = Math.max(0, e.clientY - drag.y);
-    sheet.style.transform = `translateY(${drag.dy}px)`;
-    backdrop.style.opacity = String(1 - Math.min(1, drag.dy / sheet.offsetHeight));
-  });
-  const endDrag = () => {
-    if (!drag) return;
-    const velocity = drag.dy / Math.max(1, performance.now() - drag.t);
-    const dismiss = drag.dy > sheet.offsetHeight * 0.3 || (drag.dy > 24 && velocity > 0.5);
-    drag = null;
-    sheet.classList.remove('is-dragging');
-    backdrop.style.opacity = '';
-    if (dismiss) closeSheet(); else sheet.style.transform = '';
-  };
-  grip.addEventListener('pointerup', endDrag);
-  grip.addEventListener('pointercancel', endDrag);
 
   $$('[data-date-field]').forEach((field) => {
     field.addEventListener('click', () => openSheet(field.dataset.dateField, field));
   });
-  backdrop.addEventListener('click', () => closeSheet());
   useBtn.addEventListener('click', () => closeSheet({ apply: true }));
-  screen.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !sheet.hidden) closeSheet();
-  });
 
   function step(dir) {
     if (view === 'week') {
@@ -619,6 +598,219 @@
     anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     withHeightTransition(render);
     if (view === 'week') scrollStripTo(draft, { smooth: false });
+  });
+
+  // ---------- shared sheet plumbing ----------
+  // Both sheets share the backdrop; it fades out on its own timer so that
+  // opening one sheet right after closing the other keeps it.
+
+  let backdropTimer = null;
+  function showBackdrop() {
+    clearTimeout(backdropTimer);
+    backdrop.hidden = false;
+    backdrop.getBoundingClientRect();
+    backdrop.classList.add('is-open');
+  }
+  function hideBackdrop() {
+    backdrop.classList.remove('is-open');
+    backdropTimer = setTimeout(() => { backdrop.hidden = true; }, 420);
+  }
+
+  // Drag a sheet's handle down to dismiss it.
+  function draggable(el, handle, dismiss) {
+    let drag = null;
+    handle.addEventListener('pointerdown', (e) => {
+      drag = { y: e.clientY, t: performance.now(), dy: 0 };
+      handle.setPointerCapture(e.pointerId);
+      el.classList.add('is-dragging');
+    });
+    handle.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      drag.dy = Math.max(0, e.clientY - drag.y);
+      el.style.transform = `translateY(${drag.dy}px)`;
+      backdrop.style.opacity = String(1 - Math.min(1, drag.dy / el.offsetHeight));
+    });
+    const end = () => {
+      if (!drag) return;
+      const velocity = drag.dy / Math.max(1, performance.now() - drag.t);
+      const close = drag.dy > el.offsetHeight * 0.3 || (drag.dy > 24 && velocity > 0.5);
+      drag = null;
+      el.classList.remove('is-dragging');
+      backdrop.style.opacity = '';
+      if (close) dismiss(); else el.style.transform = '';
+    };
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+  }
+
+  // ---------- repeat booking ----------
+  // A series of single-day bookings: the chosen weekdays within N weeks,
+  // counted from the anchor (the booking's date when the repeat was set
+  // up), minus the dates left out. The form's date becomes the first one.
+
+  const WEEKDAYS = [1, 2, 3, 4, 5, 6, 0]; // Monday first
+  const WEEKDAY_ABBR = { 0: 'Su', 1: 'Mo', 2: 'Tu', 3: 'We', 4: 'Th', 5: 'Fr', 6: 'Sa' };
+  const WEEK_OPTIONS = [1, 2, 3, 4];
+  const DEFAULT_WEEKS = 2;
+
+  const repeatSheet = $('[data-repeat-sheet]');
+  const repeatLink = $('[data-repeat]');
+  const repeatCard = $('[data-repeat-card]');
+  const weekdaysEl = $('[data-weekdays]');
+  const weeksEl = $('[data-weeks]');
+  const seriesEl = $('[data-series]');
+  const applyBtn = $('[data-repeat-apply]');
+
+  let repeat = null; // the applied series: { anchor, days, weeks, excluded }
+  let repeatDraft = null; // the one being edited in the sheet
+  let repeatCloseTimer = null;
+
+  const cloneRepeat = (r) => ({ anchor: r.anchor, days: new Set(r.days), weeks: r.weeks, excluded: new Set(r.excluded) });
+  const seriesLabel = (d) => `${DOW_SHORT[d.getDay()]} ${short(d)}${sameDay(d, today) ? ' (Today)' : ''}`;
+
+  function seriesDates(r) {
+    const out = [];
+    for (let i = 0; i < r.weeks * 7; i++) {
+      const d = addDays(r.anchor, i);
+      if (r.days.has(d.getDay())) out.push(d);
+    }
+    return out;
+  }
+  const bookedDates = (r) => seriesDates(r).filter((d) => !r.excluded.has(d.getTime()));
+
+  function daysPhrase(days) {
+    const names = WEEKDAYS.filter((d) => days.has(d)).map((d) => `${DOW_LONG[d]}s`);
+    return names.length > 1 ? `${names.slice(0, -1).join(', ')} & ${names.at(-1)}` : names[0];
+  }
+
+  function renderRepeatCard() {
+    const on = !!repeat;
+    repeatLink.hidden = on;
+    repeatCard.hidden = !on;
+    if (!on) return;
+    const dates = bookedDates(repeat);
+    $('[data-repeat-title]').textContent = `Repeats on ${daysPhrase(repeat.days)}`;
+    $('[data-repeat-sub]').textContent = dates.length === 1
+      ? `1 date, ${seriesLabel(dates[0])}`
+      : `${dates.length} dates, first ${seriesLabel(dates[0])}, last ${seriesLabel(dates.at(-1))}`;
+  }
+
+  // A new start date by hand starts the series from it, on its weekday too.
+  function reanchorRepeat(date) {
+    repeat.anchor = date;
+    repeat.days.add(date.getDay());
+    repeat.excluded.clear();
+  }
+
+  function choicePill(label, { checked, role = 'radio', excluded = false }) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'choice-pill';
+    btn.textContent = label;
+    btn.setAttribute('role', role);
+    btn.setAttribute(role === 'radio' ? 'aria-checked' : 'aria-pressed', String(checked));
+    btn.classList.toggle('is-excluded', excluded);
+    return btn;
+  }
+
+  function renderRepeatSheet() {
+    const r = repeatDraft;
+    weekdaysEl.replaceChildren(...WEEKDAYS.map((d) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'weekday';
+      btn.textContent = WEEKDAY_ABBR[d];
+      btn.setAttribute('aria-label', `${DOW_LONG[d]}s`);
+      btn.setAttribute('aria-pressed', String(r.days.has(d)));
+      btn.addEventListener('click', () => {
+        if (r.days.has(d)) r.days.delete(d); else r.days.add(d);
+        renderRepeatSheet();
+      });
+      return btn;
+    }));
+
+    weeksEl.replaceChildren(...WEEK_OPTIONS.map((w) => {
+      const btn = choicePill(`${w} ${w === 1 ? 'week' : 'weeks'}`, { checked: r.weeks === w });
+      btn.addEventListener('click', () => { r.weeks = w; renderRepeatSheet(); });
+      return btn;
+    }));
+
+    const all = seriesDates(r);
+    if (!all.length) {
+      const empty = document.createElement('p');
+      empty.className = 'series-empty';
+      empty.textContent = 'Pick at least one day above.';
+      seriesEl.replaceChildren(empty);
+    } else {
+      seriesEl.replaceChildren(...all.map((d) => {
+        const out = r.excluded.has(d.getTime());
+        const btn = choicePill(seriesLabel(d), { checked: !out, role: 'button', excluded: out });
+        btn.setAttribute('aria-label', `${dayName(d)}${out ? ', left out' : ''}`);
+        btn.addEventListener('click', () => {
+          if (out) r.excluded.delete(d.getTime()); else r.excluded.add(d.getTime());
+          renderRepeatSheet();
+          seriesEl.children[all.indexOf(d)]?.focus({ preventScroll: true });
+        });
+        return btn;
+      }));
+    }
+
+    const dates = bookedDates(r);
+    applyBtn.disabled = dates.length === 0;
+    $('[data-repeat-apply-main]').textContent = dates.length
+      ? `Set ${dates.length} ${dates.length === 1 ? 'booking' : 'bookings'}`
+      : 'No dates picked';
+    $('[data-repeat-apply-sub]').textContent = dates.length === 0
+      ? 'Pick a day and keep at least one date'
+      : dates.length === 1 ? `on ${seriesLabel(dates[0])}` : `from ${seriesLabel(dates[0])} to ${seriesLabel(dates.at(-1))}`;
+  }
+
+  function openRepeat() {
+    closeTimePicker({ refocus: false });
+    clearTimeout(repeatCloseTimer);
+    repeatDraft = repeat
+      ? cloneRepeat(repeat)
+      : { anchor: state.startDate, days: new Set([state.startDate.getDay()]), weeks: DEFAULT_WEEKS, excluded: new Set() };
+    renderRepeatSheet();
+    repeatSheet.style.transform = '';
+    showBackdrop();
+    repeatSheet.hidden = false;
+    repeatSheet.getBoundingClientRect();
+    repeatSheet.classList.add('is-open');
+    weekdaysEl.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
+  }
+
+  function closeRepeat({ apply = false } = {}) {
+    if (repeatSheet.hidden) return;
+    if (apply) {
+      repeat = repeatDraft;
+      state.startDate = bookedDates(repeat)[0];
+      renderForm();
+      flash($('.when'));
+    }
+    repeatSheet.style.transform = '';
+    repeatSheet.classList.remove('is-open', 'is-dragging');
+    hideBackdrop();
+    repeatCloseTimer = setTimeout(() => { repeatSheet.hidden = true; }, 420);
+    (repeat ? $('[data-repeat-edit]') : repeatLink).focus({ preventScroll: true });
+  }
+
+  repeatLink.addEventListener('click', openRepeat);
+  $('[data-repeat-edit]').addEventListener('click', openRepeat);
+  $('[data-repeat-remove]').addEventListener('click', () => {
+    repeat = null;
+    renderForm();
+    repeatLink.focus({ preventScroll: true });
+  });
+  applyBtn.addEventListener('click', () => closeRepeat({ apply: true }));
+
+  draggable(sheet, grip, () => closeSheet());
+  draggable(repeatSheet, $('[data-repeat-grip]'), () => closeRepeat());
+  backdrop.addEventListener('click', () => { closeSheet(); closeRepeat(); });
+  screen.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!sheet.hidden) closeSheet();
+    if (!repeatSheet.hidden) closeRepeat();
   });
 
   renderForm();

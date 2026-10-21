@@ -13,7 +13,7 @@
   <main class="page">
     <header class="page__head">
       <h1>Recurrent bookings</h1>
-      <p>The new booking page with a bottom-sheet date picker (weekly or monthly) and a custom time picker, for a single day (or overnight) and for several days in a row. Only single-day bookings will be repeatable; the repeat flow itself comes next. As designed in <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-157419">Bookings · Recurrent bookings</a>.</p>
+      <p>The new booking page with a bottom-sheet date picker (weekly or monthly) and a custom time picker, for a single day (or overnight) and for several days in a row. A single-day booking can also be repeated on chosen weekdays for up to four weeks. As designed in <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-157419">Bookings · Recurrent bookings</a> and <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-161350">Repeat booking</a>.</p>
     </header>
 
     <div class="layout">
@@ -109,6 +109,21 @@
                 <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
               </button>
 
+              <!-- Repeated state: replaces the link once a repeat is set -->
+              <div class="repeat-card" data-repeat-card data-only="single" hidden>
+                <i class="fa-regular fa-arrows-repeat repeat-card__icon" aria-hidden="true"></i>
+                <div class="repeat-card__text">
+                  <strong data-repeat-title></strong>
+                  <span data-repeat-sub></span>
+                  <button class="repeat-card__edit" type="button" data-repeat-edit>
+                    <i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span>
+                  </button>
+                </div>
+                <button class="repeat-card__remove" type="button" data-repeat-remove aria-label="Stop repeating">
+                  <i class="fa-light fa-xmark" aria-hidden="true"></i>
+                </button>
+              </div>
+
               <!-- Custom time picker: hours and quarter-hour minutes -->
               <div class="time-picker" data-time-picker role="dialog" aria-label="Pick a time" hidden>
                 <div class="time-picker__col time-picker__col--hours">
@@ -172,6 +187,35 @@
             </div>
           </section>
 
+          <!-- Bottom sheet: repeat booking -->
+          <section class="sheet" data-repeat-sheet role="dialog" aria-modal="true" aria-labelledby="repeat-title" hidden>
+            <div class="sheet__grip" data-repeat-grip><span class="sheet__handle"></span></div>
+            <div class="sheet__body">
+              <h2 class="sheet__title" id="repeat-title">Repeat booking</h2>
+
+              <div class="repeat-group">
+                <h3 class="repeat-group__label" id="repeat-days-label">On these days</h3>
+                <div class="weekdays" role="group" aria-labelledby="repeat-days-label" data-weekdays></div>
+              </div>
+
+              <div class="repeat-group">
+                <h3 class="repeat-group__label" id="repeat-weeks-label">How long</h3>
+                <div class="choice-pills" role="radiogroup" aria-labelledby="repeat-weeks-label" data-weeks></div>
+              </div>
+
+              <div class="repeat-group">
+                <h3 class="repeat-group__label" id="repeat-dates-label">Dates</h3>
+                <p class="repeat-group__hint">Tap a date to leave it out</p>
+                <div class="choice-pills" role="group" aria-labelledby="repeat-dates-label" data-series></div>
+              </div>
+
+              <button class="cta cta--sheet" type="button" data-repeat-apply>
+                <span class="cta__main" data-repeat-apply-main></span>
+                <span class="cta__sub" data-repeat-apply-sub></span>
+              </button>
+            </div>
+          </section>
+
           <div class="toast" data-toast role="status" hidden></div>
         </div>
       </div>
@@ -184,7 +228,8 @@
             <li><strong>Tap From or To</strong> for the time picker: pick the hour, then the minutes, which closes it. Changing <em>From</em> keeps the length of the booking.</li>
             <li><strong>Overnight:</strong> set <em>To</em> earlier than <em>From</em> (say 22:00 → 08:00) and it becomes the next day, marked <em>next day</em>.</li>
             <li><strong>Several days:</strong> the calendar icon next to <em>When</em> switches to a from/to booking with its own dates. The end date can't be before the start. Tap the icon again to go back to a single day.</li>
-            <li><strong>Repeat this booking</strong> only shows for a single day; it opens its own sheet in the next iteration.</li>
+            <li><strong>Repeat this booking</strong> opens its own sheet: pick the weekdays (the booking's own day comes ticked) and for how long. The dates it makes appear below; tap one to leave it out. <em>Set N bookings</em> turns the link into a summary with <em>Edit</em> and <em>×</em>.</li>
+            <li><strong>Only single days repeat:</strong> switching to several days drops the repeat, and the link isn't offered there.</li>
           </ul>
         </section>
       </aside>
