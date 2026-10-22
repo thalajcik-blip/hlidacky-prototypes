@@ -42,6 +42,8 @@
   const calMore = $('[data-cal-more]');
   const noteCap = $('[data-cal-note-cap]');
   const calCta = $('[data-cal-cta]');
+  const calCtaMain = $('[data-cal-cta-main]');
+  const calCtaSub = $('[data-cal-cta-sub]');
 
   const isMulti = () => state.mode === 'multi';
   const oneVisitPrice = () => (RB.durationMinutes() / 60) * Number(rateSelect.value);
@@ -203,9 +205,19 @@
     const dates = selectedDates();
     const n = dates.length;
     noteCap.hidden = n <= SOFT_CAP;
-    if (n >= 2) calCta.textContent = `Done · ${n} bookings · ${kc(n * oneVisitPrice())} Kč`;
-    else if (n === 1) calCta.textContent = `Use ${label(dates[0])}`;
-    else calCta.textContent = `Keep ${label(originalDate)}`;
+    // Worded like Variant 1's CTA; with nothing picked it still works
+    // (no disabled buttons) and keeps the original date.
+    const ctaDay = (d) => `${label(d)}${sameDay(d, RB.today) ? ' (Today)' : ''}`;
+    if (n >= 2) {
+      calCtaMain.textContent = `Set ${n} bookings`;
+      calCtaSub.textContent = `from ${ctaDay(dates[0])} to ${ctaDay(dates.at(-1))}`;
+    } else if (n === 1) {
+      calCtaMain.textContent = 'Set 1 booking';
+      calCtaSub.textContent = `on ${ctaDay(dates[0])}`;
+    } else {
+      calCtaMain.textContent = `Keep ${ctaDay(originalDate)}`;
+      calCtaSub.textContent = 'No dates picked';
+    }
   }
 
   function tapDay(d) {

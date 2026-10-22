@@ -459,7 +459,6 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .cal-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 4px; background: #fff7e6; color: #6b4e16; font-size: 13px; line-height: 1.4; }
 .cal-note[hidden] { display: none; }
 .cal-note + .cal-note { margin-top: 6px; }
-.cta--one-line { font-size: 17px; font-weight: 600; }
 
 /* ---------- time picker ---------- */
 
@@ -654,10 +653,11 @@ body[data-view="confirm"] .booking { display: none; }
 .cta:hover { background: var(--green-600); }
 .cta:active { box-shadow: none; transform: translateY(2px); }
 .cta__main { font-size: 18px; font-weight: 600; }
-/* Two-line buttons (Send booking request, Set N bookings): 4px more
-   below the text, clear of the shadow. */
+/* Two-line buttons (Send booking request, Set N bookings in both repeat
+   sheets): 4px more below the text, clear of the shadow. */
 .cta[data-send],
-.cta[data-repeat-apply] { min-height: 56px; padding-bottom: 5px; }
+.cta[data-repeat-apply],
+.cta[data-cal-cta] { min-height: 56px; padding-bottom: 5px; }
 .cta__sub { font-size: 13px; font-weight: 350; }
 
 /* ---------- the component: bottom sheet ---------- */
