@@ -534,8 +534,10 @@ body[data-view="confirm"] .booking { display: none; }
 .cta:hover { background: var(--green-600); }
 .cta:active { box-shadow: none; transform: translateY(2px); }
 .cta__main { font-size: 18px; font-weight: 600; }
-/* Send booking request: 4px more below the text, clear of the shadow. */
-.cta[data-send] { min-height: 56px; padding-bottom: 5px; }
+/* Two-line buttons (Send booking request, Set N bookings): 4px more
+   below the text, clear of the shadow. */
+.cta[data-send],
+.cta[data-repeat-apply] { min-height: 56px; padding-bottom: 5px; }
 .cta__sub { font-size: 13px; font-weight: 350; }
 
 /* ---------- the component: bottom sheet ---------- */
