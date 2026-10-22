@@ -179,7 +179,6 @@
 
   modeToggle.addEventListener('click', () => setMode(state.mode === 'single' ? 'multi' : 'single'));
   rateSelect.addEventListener('change', updateTotal);
-  sendBtn.addEventListener('click', () => toast('Booking request sent (prototype).'));
 
   // ---------- time picker ----------
   // Two columns: an hour, then quarter-hour minutes. Picking an hour keeps
@@ -803,6 +802,58 @@
     repeatLink.focus({ preventScroll: true });
   });
   applyBtn.addEventListener('click', () => closeRepeat({ apply: true }));
+
+  // ---------- request sent ----------
+  // More than one booking gets a confirmation screen that lists each
+  // request; a single one only gets a short note.
+
+  const confirmEl = $('[data-confirm]');
+  const confirmList = $('[data-confirm-list]');
+
+  const longDate = (d) => `${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`;
+  const timeRange = () => `${state.startTime}-${state.endTime}${isOvernight() ? ' (next day)' : ''}`;
+
+  function showConfirmation(dates) {
+    $('[data-confirm-title]').textContent = `${dates.length} booking requests sent to Marie`;
+    confirmList.replaceChildren(...dates.map((d) => {
+      const li = document.createElement('li');
+      li.className = 'confirm__item';
+      li.innerHTML = `
+        <span class="confirm__date"><strong></strong><span></span></span>
+        <button class="confirm__edit" type="button"><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button>`;
+      li.querySelector('strong').textContent = longDate(d);
+      li.querySelector('.confirm__date span').textContent = timeRange();
+      li.querySelector('.confirm__edit').setAttribute('aria-label', `Edit the booking on ${longDate(d)}`);
+      li.querySelector('.confirm__edit').addEventListener('click', () => toast('Editing a sent request isn\'t part of this prototype.'));
+      return li;
+    }));
+    document.body.dataset.view = 'confirm';
+    confirmEl.hidden = false;
+    confirmEl.querySelector('.confirm__scroll').scrollTop = 0;
+    $('[data-confirm-close]').focus({ preventScroll: true });
+  }
+
+  // Leaving the confirmation starts a fresh booking.
+  function backToForm() {
+    confirmEl.hidden = true;
+    delete document.body.dataset.view;
+    repeat = null;
+    state.mode = 'single';
+    state.startDate = addDays(today, DEFAULT_OFFSET_DAYS);
+    state.endDate = state.startDate;
+    state.startTime = DEFAULT_TIMES.start;
+    state.endTime = DEFAULT_TIMES.end;
+    renderForm();
+    $('[data-booking]').scrollTop = 0;
+  }
+
+  sendBtn.addEventListener('click', () => {
+    const dates = repeat ? bookedDates(repeat) : [state.startDate];
+    if (state.mode === 'single' && dates.length > 1) showConfirmation(dates);
+    else toast('Booking request sent (prototype).');
+  });
+  $('[data-confirm-close]').addEventListener('click', backToForm);
+  $('[data-confirm-back]').addEventListener('click', backToForm);
 
   draggable(sheet, grip, () => closeSheet());
   draggable(repeatSheet, $('[data-repeat-grip]'), () => closeRepeat());

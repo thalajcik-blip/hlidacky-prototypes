@@ -165,6 +165,27 @@
             </div>
           </div>
 
+          <!-- Request sent: shown instead of the form when more than one
+               booking was created -->
+          <section class="confirm" data-confirm aria-labelledby="confirm-title" hidden>
+            <header class="nav-bar">
+              <span aria-hidden="true"></span>
+              <span class="nav-bar__title">Booking requests</span>
+              <button class="nav-bar__close" type="button" data-confirm-close aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="confirm__scroll">
+              <div class="confirm__hero">
+                <img src="./assets/doodle-paperplane-checked.svg" alt="" width="72" height="72">
+                <h2 id="confirm-title" data-confirm-title></h2>
+                <p>Marie can confirm each date separately. We will let you know as soon as she replies</p>
+              </div>
+              <div class="confirm__content">
+                <ul class="confirm__list" data-confirm-list></ul>
+                <button class="btn-tertiary" type="button" data-confirm-back>Back to bookings</button>
+              </div>
+            </div>
+          </section>
+
           <!-- Bottom sheet: date picker -->
           <div class="sheet-backdrop" data-backdrop hidden></div>
           <section class="sheet" data-sheet role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
@@ -229,6 +250,7 @@
             <li><strong>Overnight:</strong> set <em>To</em> earlier than <em>From</em> (say 22:00 → 08:00) and it becomes the next day, marked <em>next day</em>.</li>
             <li><strong>Several days:</strong> the calendar icon next to <em>When</em> switches to a from/to booking with its own dates. The end date can't be before the start. Tap the icon again to go back to a single day.</li>
             <li><strong>Repeat this booking</strong> opens its own sheet: pick the weekdays (the booking's own day comes ticked) and for how long. The dates it makes appear below; tap one to leave it out. <em>Set N bookings</em> turns the link into a summary with <em>Edit</em> and <em>×</em>.</li>
+            <li><strong>Send a repeated booking</strong> with more than one date and a confirmation screen lists each request. A single booking just shows a short note.</li>
             <li><strong>Only single days repeat:</strong> switching to several days drops the repeat, and the link isn't offered there.</li>
           </ul>
         </section>

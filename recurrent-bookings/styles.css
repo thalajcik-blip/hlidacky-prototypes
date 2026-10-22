@@ -393,6 +393,82 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .time-option[aria-selected="true"] { background: var(--pink-100); font-weight: 600; }
 .time-option.is-active { box-shadow: inset 0 0 0 2px #1a73e8; }
 
+/* ---------- request sent confirmation ---------- */
+
+body[data-view="confirm"] .phone__screen > .nav-bar,
+body[data-view="confirm"] .booking { display: none; }
+
+.confirm { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.confirm[hidden] { display: none; }
+.nav-bar__close { justify-self: end; border: 0; background: none; padding: 4px; color: var(--gray-500); font-size: 22px; line-height: 1; cursor: pointer; }
+.nav-bar__close:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
+
+.confirm__scroll { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; }
+.confirm__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--gray-200);
+  text-align: center;
+}
+.confirm__hero img { width: 72px; height: 72px; }
+.confirm__hero h2 { margin: 0; color: var(--gray-900); font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; }
+.confirm__hero p { margin: 0; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; }
+
+.confirm__content { display: flex; flex: 1 1 auto; flex-direction: column; gap: 20px; padding: 16px 20px 24px; }
+.confirm__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  list-style: none;
+}
+.confirm__item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0 4px 2px; }
+.confirm__item + .confirm__item { margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--gray-300); }
+.confirm__date { display: flex; min-width: 0; flex-direction: column; }
+/* Book (450) isn't in the type kit and would render as 500. */
+.confirm__date strong { font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: -0.24px; }
+.confirm__date span { color: var(--gray-600); font-size: 12px; line-height: 1.5; letter-spacing: -0.16px; font-variant-numeric: tabular-nums; }
+.confirm__edit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pink-400);
+  font-size: 16px;
+  opacity: .8;
+  cursor: pointer;
+}
+.confirm__edit i { font-size: 13px; }
+.confirm__edit span { text-decoration: underline; text-decoration-color: #ff9ba7; text-underline-offset: 3px; }
+.confirm__edit:hover { opacity: 1; }
+.confirm__edit:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
+
+/* Sits at the bottom of the screen; scrolls with a long list. */
+.btn-tertiary {
+  width: 100%;
+  margin-top: auto;
+  padding: 14px 24px 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: inset 0 -3px 0 var(--gray-300);
+  color: var(--gray-800);
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
+}
+.btn-tertiary:hover { background: var(--gray-100); }
+.btn-tertiary:active { box-shadow: none; transform: translateY(2px); }
+.btn-tertiary:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
+
 /* ---------- toast (prototype only) ---------- */
 
 .toast {
