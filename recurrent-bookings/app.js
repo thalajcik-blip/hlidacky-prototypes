@@ -4,6 +4,10 @@
 // start and an end date. Only single mode offers "Repeat this booking",
 // which opens its own sheet and leaves a summary card on the form.
 // All dates are local midnights; times are "HH:MM" strings.
+//
+// Two variants: 1 is the weekday repeat above; 2 (v5) swaps the repeat
+// for a multi-select calendar and lives in v5.js, which plugs into this
+// file through window.RB (state, date sheet, time picker, hooks).
 
 (() => {
   const DOW_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -21,7 +25,7 @@
   const whenSection = $('[data-when]');
   const modeToggle = $('[data-mode-toggle]');
   const modeIcon = $('[data-mode-icon]');
-  const nextDayBadge = $('[data-next-day]');
+  const nextDayBadges = $$('[data-next-day]');
   const whenError = $('[data-when-error]');
   const rateSelect = $('[data-rate]');
   const totalEl = $('[data-total]');
@@ -64,7 +68,13 @@
   // ---------- state ----------
 
   const now = new Date();
-  const today = day(now.getFullYear(), now.getMonth(), now.getDate());
+  const realToday = day(now.getFullYear(), now.getMonth(), now.getDate());
+  // Variant 1 runs on the real date; v5 uses the spec's demo date (set
+  // from v5.js and its dev panel).
+  let today = realToday;
+  const params = new URLSearchParams(location.search);
+  let variant = params.get('variant') === '2' ? 2 : 1;
+  const hooks = {}; // filled in by v5.js
   const state = {
     mode: 'single',
     startDate: addDays(today, DEFAULT_OFFSET_DAYS),
@@ -109,7 +119,7 @@
     setText('[data-end-dow-short]', `(${DOW_SHORT[end.getDay()]})`);
     setText('[data-start-time]', state.startTime);
     setText('[data-end-time]', state.endTime);
-    nextDayBadge.hidden = !(state.mode === 'single' && isOvernight());
+    nextDayBadges.forEach((b) => { b.hidden = !(state.mode === 'single' && isOvernight()); });
 
     const invalid = state.mode === 'multi' && durationMinutes() <= 0;
     whenError.hidden = !invalid;
@@ -124,8 +134,12 @@
     $$('[data-date-field="end"]').forEach((b) => b.setAttribute('aria-label', `End date: ${DOW_LONG[end.getDay()]}, ${short(end)}. Change`));
     $$('[data-time-field="start"]').forEach((b) => b.setAttribute('aria-label', `From ${state.startTime}. Change`));
     $$('[data-time-field="end"]').forEach((b) => b.setAttribute('aria-label', `To ${state.endTime}${!multi && isOvernight() ? ', next day' : ''}. Change`));
-    renderRepeatCard();
-    updateTotal();
+    if (variant === 2) {
+      hooks.render?.();
+    } else {
+      renderRepeatCard();
+      updateTotal();
+    }
   }
 
   function flash(el) {
@@ -254,6 +268,7 @@
     } else {
       state.endTime = time;
     }
+    hooks.afterTime?.();
     const field = timeField;
     closeTimePicker();
     renderForm();
@@ -833,13 +848,14 @@
     $('[data-confirm-close]').focus({ preventScroll: true });
   }
 
-  // Leaving the confirmation starts a fresh booking.
-  function backToForm() {
-    confirmEl.hidden = true;
-    delete document.body.dataset.view;
+  // A fresh booking for the current variant: v1 on the day after
+  // tomorrow, v5 on tomorrow (v5.js sets its own today and options).
+  function resetForm() {
     repeat = null;
     state.mode = 'single';
-    state.startDate = addDays(today, DEFAULT_OFFSET_DAYS);
+    if (variant === 1) today = realToday;
+    hooks.reset?.();
+    state.startDate = addDays(today, variant === 2 ? 1 : DEFAULT_OFFSET_DAYS);
     state.endDate = state.startDate;
     state.startTime = DEFAULT_TIMES.start;
     state.endTime = DEFAULT_TIMES.end;
@@ -847,7 +863,15 @@
     $('[data-booking]').scrollTop = 0;
   }
 
+  // Leaving the confirmation starts a fresh booking.
+  function backToForm() {
+    confirmEl.hidden = true;
+    delete document.body.dataset.view;
+    resetForm();
+  }
+
   sendBtn.addEventListener('click', () => {
+    if (variant === 2) { hooks.send?.(); return; }
     const dates = repeat ? bookedDates(repeat) : [state.startDate];
     if (state.mode === 'single' && dates.length > 1) showConfirmation(dates);
     else toast('Booking request sent (prototype).');
@@ -864,5 +888,63 @@
     if (!repeatSheet.hidden) closeRepeat();
   });
 
+  // ---------- variants (prototype only) ----------
+  // The page switch (desktop) and the pill + dialog (phones) both pick the
+  // variant, stay in sync and keep it in the URL.
+
+  const variantInputs = $$('input[name="variant"], input[name="variant-m"]');
+  const variantPill = $('[data-variant-pill]');
+  const variantPillLabel = $('[data-variant-pill-label]');
+  const variantDialog = $('[data-variant-dialog]');
+
+  function applyVariant() {
+    document.body.dataset.variant = String(variant);
+    variantInputs.forEach((input) => { input.checked = Number(input.value) === variant; });
+    variantPillLabel.textContent = `Variant ${variant}`;
+    variantPill.setAttribute('aria-label', `Prototype variant: ${variant}. Change`);
+  }
+
+  function setVariant(value) {
+    if (value === variant) return;
+    variant = value;
+    closeSheet();
+    closeRepeat();
+    hooks.closeSheets?.();
+    closeTimePicker({ refocus: false });
+    if (!confirmEl.hidden) { confirmEl.hidden = true; delete document.body.dataset.view; }
+    const url = new URL(location.href);
+    url.searchParams.set('variant', String(variant));
+    history.replaceState(null, '', url);
+    applyVariant();
+    resetForm();
+  }
+
+  variantInputs.forEach((input) => input.addEventListener('change', () => {
+    setVariant(Number(input.value));
+    if (variantDialog.open && input.name === 'variant-m' && variant === 1) variantDialog.close();
+  }));
+  variantPill.addEventListener('click', () => variantDialog.showModal());
+  variantDialog.addEventListener('click', (e) => { if (e.target === variantDialog) variantDialog.close(); });
+
+  // ---------- shared API for v5.js ----------
+
+  window.RB = {
+    state,
+    hooks,
+    get variant() { return variant; },
+    get today() { return today; },
+    setToday(d) { today = d; },
+    DOW_LONG, DOW_SHORT, DOW_GRID, MONTHS,
+    day, addDays, sameDay, mondayOf, short, toMinutes, fromMinutes,
+    isOvernight, durationMinutes,
+    renderForm, resetForm, toast, flash,
+    showConfirmation,
+    openDateSheet: (field) => openSheet('start', field),
+    closeTimePicker,
+    draggable, showBackdrop, hideBackdrop,
+    rateSelect, totalEl, totalLabel, sendBtn,
+  };
+
+  applyVariant();
   renderForm();
 })();

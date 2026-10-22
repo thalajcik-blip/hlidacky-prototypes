@@ -9,12 +9,17 @@
   <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body data-mode="single">
+<body data-mode="single" data-variant="1">
   <main class="page">
     <header class="page__head">
       <h1>Recurrent bookings</h1>
-      <p>The new booking page with a bottom-sheet date picker (weekly or monthly) and a custom time picker, for a single day (or overnight) and for several days in a row. A single-day booking can also be repeated on chosen weekdays for up to four weeks. As designed in <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-157419">Bookings · Recurrent bookings</a> and <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-161350">Repeat booking</a>.</p>
+      <p>The new booking page with a bottom-sheet date picker and a custom time picker. <strong>Variant 1</strong> repeats a single-day booking on chosen weekdays for up to four weeks, as designed in <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-157419">Bookings · Recurrent bookings</a> and <a href="https://www.figma.com/design/raUmcbNHC2LHYY50eHOuy1/Bookings?node-id=5131-161350">Repeat booking</a>. <strong>Variant 2</strong> (v5) replaces that with one multi-select calendar: what you select is what gets sent.</p>
     </header>
+
+    <nav class="variant-switch" role="radiogroup" aria-label="Variant">
+      <label class="variant-switch__option"><input type="radio" name="variant" value="1" checked><span>Variant 1 · Weekday repeat</span></label>
+      <label class="variant-switch__option"><input type="radio" name="variant" value="2"><span>Variant 2 · v5 · Repeat booking (calendar)</span></label>
+    </nav>
 
     <div class="layout">
       <div class="phone">
@@ -27,7 +32,12 @@
           <header class="nav-bar">
             <button class="nav-bar__back" type="button" aria-label="Back"><i class="fa-light fa-chevron-left" aria-hidden="true"></i></button>
             <span class="nav-bar__title">New booking</span>
-            <span aria-hidden="true"></span>
+            <div class="nav-bar__end">
+              <!-- Prototype only: picks the variant on phones, where the page switch is hidden. -->
+              <button class="variant-pill" type="button" data-variant-pill aria-haspopup="dialog">
+                <i class="fa-regular fa-gear" aria-hidden="true"></i><span data-variant-pill-label>Variant 1</span>
+              </button>
+            </div>
           </header>
 
           <div class="booking" data-booking>
@@ -50,19 +60,24 @@
                 <label class="tile" title="Senior care"><input type="checkbox" aria-label="Senior care"><i class="fa-light fa-person-walking-with-cane" aria-hidden="true"></i></label>
                 <label class="tile" title="Tutoring"><input type="checkbox" aria-label="Tutoring"><i class="fa-light fa-user-graduate" aria-hidden="true"></i></label>
               </div>
+              <!-- v5, pet care only: visits or a stay -->
+              <div class="care-type" role="radiogroup" aria-label="Pet care" data-variant-only="2" data-care-type hidden>
+                <label class="care-type__option"><input type="radio" name="care-type" value="visits" checked><span>Sitter comes for visits</span></label>
+                <label class="care-type__option"><input type="radio" name="care-type" value="stay"><span>Sitter stays the whole time</span></label>
+              </div>
             </section>
 
             <section class="booking__section when-section" data-when>
               <div class="booking__heading">
                 <h3>When</h3>
                 <!-- Switches between a single day (or overnight) and several days. -->
-                <button class="icon-button" type="button" data-mode-toggle>
+                <button class="icon-button" type="button" data-mode-toggle data-variant-only="1">
                   <i class="fa-light" aria-hidden="true" data-mode-icon></i>
                 </button>
               </div>
 
               <!-- Single day / overnight: one row -->
-              <div class="when" data-only="single">
+              <div class="when" data-only="single" data-variant-only="1">
                 <button class="when__field" type="button" data-date-field="start">
                   <i class="fa-regular fa-calendar" aria-hidden="true"></i>
                   <span class="when__text"><small data-start-dow></small><span data-start-date></span></span>
@@ -79,7 +94,7 @@
               </div>
 
               <!-- Multiple days: a from row and a to row -->
-              <div class="span" data-only="multi">
+              <div class="span" data-only="multi" data-variant-only="1">
                 <div class="span__row">
                   <span class="span__label">from</span>
                   <button class="when__field span__date" type="button" data-date-field="start">
@@ -105,12 +120,12 @@
                 <p class="when-error" data-when-error role="alert" hidden>The end has to be after the start.</p>
               </div>
 
-              <button class="repeat-link" type="button" data-repeat data-only="single">
+              <button class="repeat-link" type="button" data-repeat data-only="single" data-variant-only="1">
                 <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
               </button>
 
               <!-- Repeated state: replaces the link once a repeat is set -->
-              <div class="repeat-card" data-repeat-card data-only="single" hidden>
+              <div class="repeat-card" data-repeat-card data-only="single" data-variant-only="1" hidden>
                 <i class="fa-regular fa-arrows-repeat repeat-card__icon" aria-hidden="true"></i>
                 <div class="repeat-card__text">
                   <strong data-repeat-title></strong>
@@ -122,6 +137,33 @@
                 <button class="repeat-card__remove" type="button" data-repeat-remove aria-label="Stop repeating">
                   <i class="fa-light fa-xmark" aria-hidden="true"></i>
                 </button>
+              </div>
+
+              <!-- v5: a date card (one date, a series or a stay) over the times -->
+              <div class="v5-when" data-variant-only="2">
+                <div class="date-card">
+                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  <span class="date-card__text">
+                    <strong data-v5-date-main></strong>
+                    <span data-v5-date-sub hidden></span>
+                  </span>
+                  <button class="date-card__action" type="button" data-v5-date-action></button>
+                </div>
+                <div class="when when--times" data-v5-times>
+                  <button class="when__field" type="button" data-time-field="start" aria-haspopup="listbox">
+                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                    <span class="when__text"><small>From</small><span data-start-time></span></span>
+                  </button>
+                  <button class="when__field" type="button" data-time-field="end" aria-haspopup="listbox">
+                    <i class="fa-regular fa-clock-nine" aria-hidden="true"></i>
+                    <span class="when__text"><small>To</small><span data-end-time></span></span>
+                    <span class="next-day" data-next-day hidden>next day</span>
+                  </button>
+                </div>
+                <button class="repeat-link" type="button" data-v5-repeat>
+                  <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
+                </button>
+                <button class="text-link" type="button" data-v5-remove hidden>Remove repeat</button>
               </div>
 
               <!-- Custom time picker: hours and quarter-hour minutes -->
@@ -237,12 +279,64 @@
             </div>
           </section>
 
+          <!-- v5 bottom sheet: multi-select calendar (repeat) or range (stay) -->
+          <section class="sheet" data-cal-sheet role="dialog" aria-modal="true" aria-labelledby="cal-title" hidden>
+            <div class="sheet__grip" data-cal-grip><span class="sheet__handle"></span></div>
+            <div class="sheet__body">
+              <div class="cal-head">
+                <h2 class="sheet__title" id="cal-title" data-cal-title>Repeat booking</h2>
+                <button class="cal-head__close" type="button" data-cal-close aria-label="Close without changes"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+              </div>
+              <p class="cal-timeline" data-cal-timeline></p>
+
+              <div class="mcal">
+                <div class="mcal__dows" data-cal-dows></div>
+                <div class="mcal__weeks" data-cal-weeks></div>
+              </div>
+              <button class="view-toggle" type="button" data-cal-more>Show more weeks</button>
+              <p class="mcal__legend" data-cal-legend hidden></p>
+
+              <p class="cal-note" data-cal-note-booked hidden></p>
+              <p class="cal-note" data-cal-note-cap hidden>That's a lot of requests — Marie confirms each one separately.</p>
+
+              <button class="cta cta--sheet cta--one-line" type="button" data-cal-cta></button>
+            </div>
+          </section>
+
           <div class="toast" data-toast role="status" hidden></div>
         </div>
       </div>
 
       <aside class="notes">
-        <section class="notes__card">
+        <section class="notes__card dev-panel" data-variant-only="2" aria-label="Dev panel">
+          <h2>Dev panel</h2>
+          <div class="dev-panel__fields">
+            <label class="dev-field"><span>Services</span>
+              <select data-dev-services>
+                <option value="babysitting">Babysitting</option>
+                <option value="pet">Pet care only</option>
+                <option value="mixed">Babysitting + pet care</option>
+              </select>
+            </label>
+            <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
+            <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
+            <button class="dev-reset" type="button" data-dev-reset>Reset</button>
+          </div>
+        </section>
+
+        <section class="notes__card" data-variant-only="2">
+          <h2>What to try</h2>
+          <ul>
+            <li><strong>+ Repeat this booking</strong> opens a calendar of rolling weeks. Tap days to toggle them; what's selected is what gets sent. <em>Show more weeks</em> adds four.</li>
+            <li><strong>Tap a column header</strong> (say <em>Th</em>) to select every Thursday from today on, again to clear them. Past days and days already booked are left out.</li>
+            <li><strong>The button says what happens:</strong> <em>Done · N bookings</em>, <em>Use</em> one date, or <em>Keep</em> the original when nothing is selected. Close or swipe down to discard.</li>
+            <li><strong>With a series</strong> the card reads <em>N dates</em> with <em>Edit</em>, the price shows <em>N × 450 Kč</em>, and <em>Remove repeat</em> keeps the earliest date.</li>
+            <li><strong>Pet care only</strong> adds visits or a stay. A stay picks a date range in the same calendar and can't repeat.</li>
+            <li><strong>Dev panel:</strong> change the services, today's date, or add Marie's existing booking on Thu 29.10.</li>
+          </ul>
+        </section>
+
+        <section class="notes__card" data-variant-only="1">
           <h2>What to try</h2>
           <ul>
             <li><strong>Tap the date</strong> to open the sheet: the weekly strip first (swipe it sideways), or the month via <em>Show monthly view</em>. The sheet remembers the view you used last.</li>
@@ -258,6 +352,44 @@
     </div>
   </main>
 
+  <!-- Prototype only: variant picker (and v5 dev panel) opened from the pill on phones. -->
+  <dialog class="variant-dialog" data-variant-dialog aria-labelledby="variant-dialog-title">
+    <form method="dialog" class="variant-dialog__card">
+      <div class="variant-dialog__head">
+        <h2 id="variant-dialog-title">Prototype variant</h2>
+        <button class="variant-dialog__close" value="cancel" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+      </div>
+      <div class="variant-dialog__options" role="radiogroup" aria-label="Variant">
+        <label class="variant-option">
+          <input type="radio" name="variant-m" value="1">
+          <span class="variant-option__radio" aria-hidden="true"></span>
+          <span class="variant-option__text"><strong>Variant 1 · Weekday repeat</strong><small>Repeat on chosen weekdays for 1–4 weeks, leaving dates out.</small></span>
+        </label>
+        <label class="variant-option">
+          <input type="radio" name="variant-m" value="2">
+          <span class="variant-option__radio" aria-hidden="true"></span>
+          <span class="variant-option__text"><strong>Variant 2 · v5 · Repeat booking (calendar)</strong><small>One multi-select calendar: what you select is what gets sent.</small></span>
+        </label>
+      </div>
+      <div class="dev-panel dev-panel--dialog" data-variant-only="2" aria-label="Dev panel">
+        <h3>Dev panel</h3>
+        <div class="dev-panel__fields">
+          <label class="dev-field"><span>Services</span>
+            <select data-dev-services>
+              <option value="babysitting">Babysitting</option>
+              <option value="pet">Pet care only</option>
+              <option value="mixed">Babysitting + pet care</option>
+            </select>
+          </label>
+          <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
+          <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
+          <button class="dev-reset" type="button" data-dev-reset>Reset</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
   <script src="./app.js"></script>
+  <script src="./v5.js"></script>
 </body>
 </html>
