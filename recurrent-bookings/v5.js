@@ -41,7 +41,6 @@
   const calWeeks = $('[data-cal-weeks]');
   const calMore = $('[data-cal-more]');
   const noteCap = $('[data-cal-note-cap]');
-  const calSelected = $('[data-cal-selected]');
   const calCta = $('[data-cal-cta]');
 
   const isMulti = () => state.mode === 'multi';
@@ -123,9 +122,6 @@
     return parts.join(', ');
   }
 
-  const MONTHS_SHORT = MONTHS.map((m) => m.slice(0, 3));
-  const longLabel = (d) => `${DOW_SHORT[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
-  const SELECTED_SHOWN = 4; // dates listed above the CTA before "+N"
 
   // Build the grid: column headers, then each month in turn. A month starts
   // with its heading and a row where its first shown day sits in its own
@@ -203,16 +199,9 @@
       btn.setAttribute('aria-pressed', String(on));
     });
 
-    // The selected dates, the notes and the CTA, which is always enabled
-    // and says what happens.
+    // The note and the CTA, which is always enabled and says what happens.
     const dates = selectedDates();
     const n = dates.length;
-    calSelected.classList.toggle('is-empty', n < 2);
-    calSelected.setAttribute('aria-hidden', String(n < 2));
-    if (n >= 2) {
-      const shown = dates.slice(0, SELECTED_SHOWN).map(longLabel).join(', ');
-      calSelected.textContent = n > SELECTED_SHOWN ? `${shown} +${n - SELECTED_SHOWN}` : shown;
-    }
     noteCap.hidden = n <= SOFT_CAP;
     if (n >= 2) calCta.textContent = `Done · ${n} bookings · ${kc(n * oneVisitPrice())} Kč`;
     else if (n === 1) calCta.textContent = `Use ${label(dates[0])}`;
