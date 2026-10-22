@@ -372,57 +372,8 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 
 /* ---------- v5: main screen ---------- */
 
-/* Pet care only: visits or a stay */
-.care-type { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.care-type[hidden] { display: none; }
-.care-type__option input { position: absolute; opacity: 0; pointer-events: none; }
-.care-type__option span {
-  display: block;
-  padding: 6px 12px;
-  border: 1px solid var(--gray-300);
-  border-radius: 64px;
-  color: #4a5a61;
-  font-size: 14px;
-  cursor: pointer;
-}
-.care-type__option input:checked + span { border-color: var(--pink-100); background: var(--pink-100); color: var(--pink-500); }
-.care-type__option input:focus-visible + span { outline: 2px solid #6aafff; outline-offset: 2px; }
-
-.v5-when { display: flex; flex-direction: column; }
-
-/* One date, a series ("4 dates") or a stay, with its action */
-.date-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 8px 12px;
-  border: 1px solid var(--gray-300);
-  border-radius: 4px;
-}
-.date-card > i { flex: 0 0 auto; color: var(--gray-500); font-size: 18px; }
-.date-card__text { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; }
-.date-card__text strong { font-size: 16px; font-weight: 400; line-height: 1.3; font-variant-numeric: lining-nums tabular-nums; }
-.date-card__text span { overflow: hidden; color: var(--gray-600); font-size: 12px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
-.date-card__text span[hidden] { display: none; }
-.date-card__action {
-  flex: 0 0 auto;
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--pink-400);
-  font-size: 16px;
-  text-decoration: underline;
-  text-decoration-color: #ff9ba7;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.date-card__action:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
-.date-card.is-flash { animation: fieldFlash .9s ease; }
-
-/* From / To under the date card */
-.when--times { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 8px; }
-.when--times[hidden] { display: none; }
+/* Repeat / Remove repeat under the date and time row */
+.v5-links { display: flex; flex-direction: column; align-items: flex-start; }
 
 .text-link {
   align-self: flex-start;

@@ -60,24 +60,19 @@
                 <label class="tile" title="Senior care"><input type="checkbox" aria-label="Senior care"><i class="fa-light fa-person-walking-with-cane" aria-hidden="true"></i></label>
                 <label class="tile" title="Tutoring"><input type="checkbox" aria-label="Tutoring"><i class="fa-light fa-user-graduate" aria-hidden="true"></i></label>
               </div>
-              <!-- v5, pet care only: visits or a stay -->
-              <div class="care-type" role="radiogroup" aria-label="Pet care" data-variant-only="2" data-care-type hidden>
-                <label class="care-type__option"><input type="radio" name="care-type" value="visits" checked><span>Sitter comes for visits</span></label>
-                <label class="care-type__option"><input type="radio" name="care-type" value="stay"><span>Sitter stays the whole time</span></label>
-              </div>
             </section>
 
             <section class="booking__section when-section" data-when>
               <div class="booking__heading">
                 <h3>When</h3>
                 <!-- Switches between a single day (or overnight) and several days. -->
-                <button class="icon-button" type="button" data-mode-toggle data-variant-only="1">
+                <button class="icon-button" type="button" data-mode-toggle>
                   <i class="fa-light" aria-hidden="true" data-mode-icon></i>
                 </button>
               </div>
 
               <!-- Single day / overnight: one row -->
-              <div class="when" data-only="single" data-variant-only="1">
+              <div class="when" data-only="single">
                 <button class="when__field" type="button" data-date-field="start">
                   <i class="fa-regular fa-calendar" aria-hidden="true"></i>
                   <span class="when__text"><small data-start-dow></small><span data-start-date></span></span>
@@ -94,7 +89,7 @@
               </div>
 
               <!-- Multiple days: a from row and a to row -->
-              <div class="span" data-only="multi" data-variant-only="1">
+              <div class="span" data-only="multi">
                 <div class="span__row">
                   <span class="span__label">from</span>
                   <button class="when__field span__date" type="button" data-date-field="start">
@@ -139,27 +134,8 @@
                 </button>
               </div>
 
-              <!-- v5: a date card (one date, a series or a stay) over the times -->
-              <div class="v5-when" data-variant-only="2">
-                <div class="date-card">
-                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                  <span class="date-card__text">
-                    <strong data-v5-date-main></strong>
-                    <span data-v5-date-sub hidden></span>
-                  </span>
-                  <button class="date-card__action" type="button" data-v5-date-action></button>
-                </div>
-                <div class="when when--times" data-v5-times>
-                  <button class="when__field" type="button" data-time-field="start" aria-haspopup="listbox">
-                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
-                    <span class="when__text"><small>From</small><span data-start-time></span></span>
-                  </button>
-                  <button class="when__field" type="button" data-time-field="end" aria-haspopup="listbox">
-                    <i class="fa-regular fa-clock-nine" aria-hidden="true"></i>
-                    <span class="when__text"><small>To</small><span data-end-time></span></span>
-                    <span class="next-day" data-next-day hidden>next day</span>
-                  </button>
-                </div>
+              <!-- v5: repeat or remove it; single day only (Several days can't repeat) -->
+              <div class="v5-links" data-variant-only="2" data-only="single">
                 <button class="repeat-link" type="button" data-v5-repeat>
                   <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
                 </button>
@@ -310,13 +286,6 @@
         <section class="notes__card dev-panel" data-variant-only="2" aria-label="Dev panel">
           <h2>Dev panel</h2>
           <div class="dev-panel__fields">
-            <label class="dev-field"><span>Services</span>
-              <select data-dev-services>
-                <option value="babysitting">Babysitting</option>
-                <option value="pet">Pet care only</option>
-                <option value="mixed">Babysitting + pet care</option>
-              </select>
-            </label>
             <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
             <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
             <button class="dev-reset" type="button" data-dev-reset>Reset</button>
@@ -329,9 +298,9 @@
             <li><strong>+ Repeat this booking</strong> opens a calendar of rolling weeks. Tap days to toggle them; what's selected is what gets sent. <em>Show more weeks</em> adds four.</li>
             <li><strong>Tap a column header</strong> (say <em>Th</em>) to select every Thursday from today on, again to clear them. Past days and days already booked are left out.</li>
             <li><strong>The button says what happens:</strong> <em>Done · N bookings</em>, <em>Use</em> one date, or <em>Keep</em> the original when nothing is selected. Close or swipe down to discard.</li>
-            <li><strong>With a series</strong> the card reads <em>N dates</em> with <em>Edit</em>, the price shows <em>N × 450 Kč</em>, and <em>Remove repeat</em> keeps the earliest date.</li>
-            <li><strong>Pet care only</strong> adds visits or a stay. A stay picks a date range in the same calendar and can't repeat.</li>
-            <li><strong>Dev panel:</strong> change the services, today's date, or add Marie's existing booking on Thu 29.10.</li>
+            <li><strong>With a series</strong> the date cell reads <em>N dates</em> and opens the calendar again, the price shows <em>N × 450 Kč</em>, and <em>Remove repeat</em> keeps the earliest date.</li>
+            <li><strong>Several days</strong> (the calendar icon next to <em>When</em>) can't repeat: the link goes, and an existing series is dropped.</li>
+            <li><strong>Dev panel:</strong> change today's date, or add Marie's existing booking on Thu 29.10.</li>
           </ul>
         </section>
 
@@ -373,13 +342,6 @@
       <div class="dev-panel dev-panel--dialog" data-variant-only="2" aria-label="Dev panel">
         <h3>Dev panel</h3>
         <div class="dev-panel__fields">
-          <label class="dev-field"><span>Services</span>
-            <select data-dev-services>
-              <option value="babysitting">Babysitting</option>
-              <option value="pet">Pet care only</option>
-              <option value="mixed">Babysitting + pet care</option>
-            </select>
-          </label>
           <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
           <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
           <button class="dev-reset" type="button" data-dev-reset>Reset</button>

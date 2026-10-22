@@ -173,6 +173,7 @@
 
   function setMode(mode) {
     if (mode === state.mode) return;
+    hooks.modeChange?.(mode);
     if (mode === 'multi') {
       // Keep the same span, now with its own end date.
       state.endDate = effectiveEndDate();
@@ -268,7 +269,6 @@
     } else {
       state.endTime = time;
     }
-    hooks.afterTime?.();
     const field = timeField;
     closeTimePicker();
     renderForm();
@@ -589,7 +589,11 @@
   }
 
   $$('[data-date-field]').forEach((field) => {
-    field.addEventListener('click', () => openSheet(field.dataset.dateField, field));
+    field.addEventListener('click', () => {
+      // v5: with a series, the date cell opens the repeat calendar instead.
+      if (hooks.dateField?.(field.dataset.dateField, field)) return;
+      openSheet(field.dataset.dateField, field);
+    });
   });
   useBtn.addEventListener('click', () => closeSheet({ apply: true }));
 
@@ -937,7 +941,7 @@
     DOW_LONG, DOW_SHORT, DOW_GRID, MONTHS,
     day, addDays, sameDay, mondayOf, short, toMinutes, fromMinutes,
     isOvernight, durationMinutes,
-    renderForm, resetForm, toast, flash,
+    renderForm, resetForm, toast, flash, setMode,
     showConfirmation,
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
