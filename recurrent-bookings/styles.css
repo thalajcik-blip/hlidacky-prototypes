@@ -204,14 +204,15 @@ button { font: inherit; color: inherit; }
 .span { display: flex; flex-direction: column; gap: 12px; }
 .span__row {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr) 108px;
+  /* Narrow label column: the date needs the room for its weekday. */
+  grid-template-columns: 56px minmax(0, 1fr) 108px;
   border: 1px solid var(--gray-300);
   border-radius: 4px;
 }
 .span__label {
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
   border-right: 1px solid var(--gray-300);
   border-radius: 4px 0 0 4px;
   background: var(--gray-200);
