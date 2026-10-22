@@ -271,7 +271,6 @@
               </div>
               <button class="view-toggle" type="button" data-cal-more>Show more weeks</button>
 
-              <p class="cal-note" data-cal-note-booked hidden></p>
               <p class="cal-note" data-cal-note-cap hidden>That's a lot of requests — Marie confirms each one separately.</p>
 
               <button class="cta cta--sheet cta--one-line" type="button" data-cal-cta></button>
@@ -283,24 +282,14 @@
       </div>
 
       <aside class="notes">
-        <section class="notes__card dev-panel" data-variant-only="2" aria-label="Dev panel">
-          <h2>Dev panel</h2>
-          <div class="dev-panel__fields">
-            <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
-            <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
-            <button class="dev-reset" type="button" data-dev-reset>Reset</button>
-          </div>
-        </section>
-
         <section class="notes__card" data-variant-only="2">
           <h2>What to try</h2>
           <ul>
             <li><strong>+ Repeat this booking</strong> opens a calendar of rolling weeks. Tap days to toggle them; what's selected is what gets sent. <em>Show more weeks</em> adds four.</li>
-            <li><strong>Tap a column header</strong> (say <em>Th</em>) to select every Thursday from today on, again to clear them. Past days and days already booked are left out.</li>
+            <li><strong>Tap a column header</strong> (say <em>Th</em>) to select every Thursday from today on, again to clear them. Past days are left out.</li>
             <li><strong>The button says what happens:</strong> <em>Done · N bookings</em>, <em>Use</em> one date, or <em>Keep</em> the original when nothing is selected. Close or swipe down to discard.</li>
             <li><strong>With a series</strong> the date cell reads <em>N dates</em> and opens the calendar again, the price shows <em>N × 450 Kč</em>, and <em>Remove repeat</em> keeps the earliest date.</li>
             <li><strong>Several days</strong> (the calendar icon next to <em>When</em>) can't repeat: the link goes, and an existing series is dropped.</li>
-            <li><strong>Dev panel:</strong> change today's date, or add Marie's existing booking on Thu 29.10.</li>
           </ul>
         </section>
 
@@ -320,7 +309,7 @@
     </div>
   </main>
 
-  <!-- Prototype only: variant picker (and v5 dev panel) opened from the pill on phones. -->
+  <!-- Prototype only: variant picker opened from the pill on phones. -->
   <dialog class="variant-dialog" data-variant-dialog aria-labelledby="variant-dialog-title">
     <form method="dialog" class="variant-dialog__card">
       <div class="variant-dialog__head">
@@ -338,14 +327,6 @@
           <span class="variant-option__radio" aria-hidden="true"></span>
           <span class="variant-option__text"><strong>Variant 2 · v5 · Repeat booking (calendar)</strong><small>One multi-select calendar: what you select is what gets sent.</small></span>
         </label>
-      </div>
-      <div class="dev-panel dev-panel--dialog" data-variant-only="2" aria-label="Dev panel">
-        <h3>Dev panel</h3>
-        <div class="dev-panel__fields">
-          <label class="dev-field"><span>Today</span><input type="date" data-dev-today></label>
-          <label class="dev-check"><input type="checkbox" data-dev-existing><span>Existing booking with Marie on Thu 29.10.</span></label>
-          <button class="dev-reset" type="button" data-dev-reset>Reset</button>
-        </div>
       </div>
     </form>
   </dialog>

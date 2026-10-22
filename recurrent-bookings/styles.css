@@ -460,19 +460,6 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .cal-note + .cal-note { margin-top: 6px; }
 .cta--one-line { font-size: 17px; font-weight: 600; }
 
-/* ---------- v5: dev panel (prototype only) ---------- */
-
-.dev-panel__fields { display: flex; flex-direction: column; gap: 10px; }
-.dev-field { display: grid; grid-template-columns: 80px minmax(0, 1fr); align-items: center; gap: 8px; font-size: 14px; }
-.dev-field span { color: var(--gray-600); }
-.dev-field select,
-.dev-field input { height: 36px; padding: 0 8px; border: 1px solid var(--gray-300); border-radius: 4px; background: #fff; color: var(--gray-800); font: inherit; font-size: 14px; }
-.dev-check { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
-.dev-reset { align-self: flex-start; padding: 6px 14px; border: 1px solid var(--gray-300); border-radius: 64px; background: #fff; font-size: 14px; cursor: pointer; }
-.dev-reset:hover { border-color: var(--gray-400); }
-.dev-panel--dialog { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--gray-300); }
-.dev-panel--dialog h3 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
-
 /* ---------- time picker ---------- */
 
 .time-picker {

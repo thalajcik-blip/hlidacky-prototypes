@@ -15,20 +15,16 @@
   // ---------- demo data (spec) ----------
 
   const DEMO_TODAY = day(2026, 9, 21); // Wed 21.10.2026
-  const EXISTING_BOOKING = day(2026, 9, 29); // Thu 29.10., 16:00–19:00
   const INITIAL_WEEKS = 5;
   const MORE_WEEKS = 4;
   const SOFT_CAP = 20;
 
   const v5 = {
     series: null, // sorted dates when 2 or more are booked, else null
-    existingOn: false, // dev panel: Marie's booking on Thu 29.10.
-    devToday: DEMO_TODAY,
   };
 
   const key = (d) => d.getTime();
   const label = (d) => `${DOW_SHORT[d.getDay()]} ${short(d)}`;
-  const isBooked = (d) => v5.existingOn && sameDay(d, EXISTING_BOOKING);
   const kc = (n) => Math.round(n).toLocaleString('cs-CZ');
 
   // ---------- elements ----------
@@ -44,7 +40,6 @@
   const calDows = $('[data-cal-dows]');
   const calWeeks = $('[data-cal-weeks]');
   const calMore = $('[data-cal-more]');
-  const noteBooked = $('[data-cal-note-booked]');
   const noteCap = $('[data-cal-note-cap]');
   const calCta = $('[data-cal-cta]');
 
@@ -113,7 +108,7 @@
     return out;
   };
   const selectedDates = () => [...selected].sort((a, b) => a - b).map((t) => new Date(t));
-  const eligibleInColumn = (col) => shownDays().filter((d) => (d.getDay() + 6) % 7 === col && d >= RB.today && !isBooked(d));
+  const eligibleInColumn = (col) => shownDays().filter((d) => (d.getDay() + 6) % 7 === col && d >= RB.today);
 
   function timelineText() {
     if (RB.isOvernight()) return `All dates ${state.startTime} → ${state.endTime} next day`;
@@ -123,7 +118,6 @@
   function cellLabel(d) {
     const parts = [`${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`];
     if (sameDay(d, RB.today)) parts.push('today');
-    if (isBooked(d)) parts.push('already booked with Marie');
     if (d < RB.today) parts.push('past');
     return parts.join(', ');
   }
@@ -184,9 +178,6 @@
     // Notes and the CTA, which is always enabled and says what happens.
     const dates = selectedDates();
     const n = dates.length;
-    const bookedPick = dates.find(isBooked);
-    noteBooked.hidden = !bookedPick;
-    if (bookedPick) noteBooked.textContent = `Marie already has a booking on ${label(bookedPick)}`;
     noteCap.hidden = n <= SOFT_CAP;
     if (n >= 2) calCta.textContent = `Done · ${n} bookings · ${kc(n * oneVisitPrice())} Kč`;
     else if (n === 1) calCta.textContent = `Use ${label(dates[0])}`;
@@ -294,43 +285,8 @@
   hooks.reset = () => {
     v5.series = null;
     tiles.forEach((t, i) => { t.checked = i === 0; }); // babysitting
-    if (RB.variant === 2) RB.setToday(v5.devToday);
+    if (RB.variant === 2) RB.setToday(DEMO_TODAY);
   };
 
-  // ---------- dev panel (prototype only) ----------
-  // Two copies (desktop aside, phone dialog), kept in sync.
-
-  const devTodayEls = $$('[data-dev-today]');
-  const devExistingEls = $$('[data-dev-existing]');
-  const isoDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-  function syncDev() {
-    devTodayEls.forEach((el) => { el.value = isoDate(v5.devToday); });
-    devExistingEls.forEach((el) => { el.checked = v5.existingOn; });
-  }
-
-  devTodayEls.forEach((el) => el.addEventListener('change', () => {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(el.value);
-    if (!m) { syncDev(); return; }
-    v5.devToday = day(+m[1], +m[2] - 1, +m[3]);
-    if (RB.variant === 2) RB.setToday(v5.devToday);
-    syncDev();
-    RB.renderForm();
-    if (!calSheet.hidden) renderCal();
-  }));
-  devExistingEls.forEach((el) => el.addEventListener('change', () => {
-    v5.existingOn = el.checked;
-    syncDev();
-    if (!calSheet.hidden) renderCal();
-  }));
-  $$('[data-dev-reset]').forEach((el) => el.addEventListener('click', () => {
-    v5.devToday = DEMO_TODAY;
-    v5.existingOn = false;
-    syncDev();
-    closeCal();
-    RB.resetForm();
-  }));
-
-  syncDev();
   if (RB.variant === 2) RB.resetForm();
 })();

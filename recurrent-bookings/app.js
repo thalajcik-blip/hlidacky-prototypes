@@ -925,7 +925,7 @@
 
   variantInputs.forEach((input) => input.addEventListener('change', () => {
     setVariant(Number(input.value));
-    if (variantDialog.open && input.name === 'variant-m' && variant === 1) variantDialog.close();
+    if (variantDialog.open && input.name === 'variant-m') variantDialog.close();
   }));
   variantPill.addEventListener('click', () => variantDialog.showModal());
   variantDialog.addEventListener('click', (e) => { if (e.target === variantDialog) variantDialog.close(); });
