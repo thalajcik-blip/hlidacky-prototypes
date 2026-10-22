@@ -444,8 +444,9 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
   transition: background-color .12s ease, color .12s ease;
 }
 .mcell:hover { background: var(--gray-100); }
-.mcell__month { font-size: 10px; line-height: 1; }
-.mcell.is-weekend { background: var(--pink-50); }
+/* Blank cells before a month's first day and after its last */
+.mcell--blank { cursor: default; }
+.mcell--blank:hover { background: transparent; }
 .mcell.is-past { color: var(--gray-400); }
 /* Selected: the only selected style in the sheet */
 .mcell.is-selected,
@@ -457,6 +458,21 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 
 .cal-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 4px; background: #fff7e6; color: #6b4e16; font-size: 13px; line-height: 1.4; }
 .cal-note[hidden] { display: none; }
+/* The picked dates, month as a word, right above the CTA. Its line is
+   always reserved (one line, never wrapping), so the grid doesn't jump
+   when the second date is picked. */
+.cal-selected {
+  min-height: 1.4em;
+  margin: 14px 0 0;
+  overflow: hidden;
+  color: var(--gray-800);
+  font-size: 14px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.cal-selected.is-empty { visibility: hidden; }
 .cal-note + .cal-note { margin-top: 6px; }
 .cta--one-line { font-size: 17px; font-weight: 600; }
 

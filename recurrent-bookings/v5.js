@@ -41,6 +41,7 @@
   const calWeeks = $('[data-cal-weeks]');
   const calMore = $('[data-cal-more]');
   const noteCap = $('[data-cal-note-cap]');
+  const calSelected = $('[data-cal-selected]');
   const calCta = $('[data-cal-cta]');
 
   const isMulti = () => state.mode === 'multi';
@@ -122,76 +123,105 @@
     return parts.join(', ');
   }
 
-  function renderCal() {
-    calTimeline.textContent = timelineText();
+  const MONTHS_SHORT = MONTHS.map((m) => m.slice(0, 3));
+  const longLabel = (d) => `${DOW_SHORT[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
+  const SELECTED_SHOWN = 4; // dates listed above the CTA before "+N"
 
-    // Column headers: tap to (de)select every eligible date in the column.
+  // Build the grid: column headers, then each month in turn. A month starts
+  // with its heading and a row where its first shown day sits in its own
+  // weekday column (blank cells before it), and ends on a partial row
+  // (blank cells after). So no row ever mixes two months, and the columns
+  // stay aligned for the header taps.
+  function buildCal() {
     calDows.replaceChildren(...DOW_GRID.map((name, col) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'mcal__dow';
       btn.textContent = name;
-      const eligible = eligibleInColumn(col);
-      const all = eligible.length > 0 && eligible.every((d) => selected.has(key(d)));
-      btn.setAttribute('aria-pressed', String(all));
-      btn.setAttribute('aria-label', `${all ? 'Clear' : 'Select'} every ${DOW_LONG[(col + 1) % 7]} from today`);
       btn.addEventListener('click', () => toggleColumn(col));
       return btn;
     }));
 
-    // Weeks, with a small month heading above the first week of each month.
-    // Weekends are tinted as in the date sheet's month view.
     const rows = [];
-    for (let w = 0; w < weekCount; w++) {
-      const monday = addDays(weeksStart, w * 7);
-      const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
-      const first = days.find((d) => d.getDate() === 1);
-      if (w === 0 || first) {
-        const m = first || monday;
+    let week = null;
+    const blank = () => {
+      const el = document.createElement('span');
+      el.className = 'mcell mcell--blank';
+      el.setAttribute('aria-hidden', 'true');
+      return el;
+    };
+    const closeWeek = () => {
+      if (!week) return;
+      while (week.children.length < 7) week.append(blank());
+      rows.push(week);
+      week = null;
+    };
+    shownDays().forEach((d, i) => {
+      const col = (d.getDay() + 6) % 7;
+      if (i === 0 || d.getDate() === 1) {
+        closeWeek();
         const h = document.createElement('div');
         h.className = 'mcal__month';
-        h.textContent = `${MONTHS[m.getMonth()]}${m.getFullYear() !== RB.today.getFullYear() ? ` ${m.getFullYear()}` : ''}`;
+        h.textContent = `${MONTHS[d.getMonth()]}${d.getFullYear() !== RB.today.getFullYear() ? ` ${d.getFullYear()}` : ''}`;
         rows.push(h);
       }
-      const week = document.createElement('div');
-      week.className = 'mcal__week';
-      days.forEach((d) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'mcell';
-        btn.dataset.key = String(key(d));
-        const isSel = selected.has(key(d));
-        btn.classList.toggle('is-selected', isSel);
-        btn.classList.toggle('is-today', sameDay(d, RB.today));
-        btn.classList.toggle('is-weekend', d.getDay() === 0 || d.getDay() === 6);
-        btn.classList.toggle('is-past', d < RB.today);
-        btn.setAttribute('aria-pressed', String(isSel));
-        btn.setAttribute('aria-label', cellLabel(d));
-        btn.innerHTML = `${sameDay(d, RB.today) ? '<span class="mday__today">Today</span>' : ''}<span class="mcell__num">${d.getDate()}</span>${d.getDate() === 1 ? `<span class="mcell__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>` : ''}`;
-        btn.addEventListener('click', () => tapDay(d));
-        week.append(btn);
-      });
-      rows.push(week);
-    }
+      if (!week) {
+        week = document.createElement('div');
+        week.className = 'mcal__week';
+        for (let c = 0; c < col; c++) week.append(blank());
+      }
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mcell';
+      btn.dataset.key = String(key(d));
+      btn.classList.toggle('is-today', sameDay(d, RB.today));
+      btn.classList.toggle('is-past', d < RB.today);
+      btn.setAttribute('aria-label', cellLabel(d));
+      btn.innerHTML = `${sameDay(d, RB.today) ? '<span class="mday__today">Today</span>' : ''}<span class="mcell__num">${d.getDate()}</span>`;
+      btn.addEventListener('click', () => tapDay(d));
+      week.append(btn);
+      if (col === 6) closeWeek();
+    });
+    closeWeek();
     calWeeks.replaceChildren(...rows);
+    updateCal();
+  }
 
-    // Notes and the CTA, which is always enabled and says what happens.
+  // Update states in place (no rebuild), so focus stays where it was and
+  // no programmatic focus ring appears on the tapped cell.
+  function updateCal() {
+    calTimeline.textContent = timelineText();
+    [...calDows.children].forEach((btn, col) => {
+      const eligible = eligibleInColumn(col);
+      const all = eligible.length > 0 && eligible.every((d) => selected.has(key(d)));
+      btn.setAttribute('aria-pressed', String(all));
+      btn.setAttribute('aria-label', `${all ? 'Clear' : 'Select'} every ${DOW_LONG[(col + 1) % 7]} from today`);
+    });
+    calWeeks.querySelectorAll('.mcell[data-key]').forEach((btn) => {
+      const on = selected.has(Number(btn.dataset.key));
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-pressed', String(on));
+    });
+
+    // The selected dates, the notes and the CTA, which is always enabled
+    // and says what happens.
     const dates = selectedDates();
     const n = dates.length;
+    calSelected.classList.toggle('is-empty', n < 2);
+    calSelected.setAttribute('aria-hidden', String(n < 2));
+    if (n >= 2) {
+      const shown = dates.slice(0, SELECTED_SHOWN).map(longLabel).join(', ');
+      calSelected.textContent = n > SELECTED_SHOWN ? `${shown} +${n - SELECTED_SHOWN}` : shown;
+    }
     noteCap.hidden = n <= SOFT_CAP;
     if (n >= 2) calCta.textContent = `Done · ${n} bookings · ${kc(n * oneVisitPrice())} Kč`;
     else if (n === 1) calCta.textContent = `Use ${label(dates[0])}`;
     else calCta.textContent = `Keep ${label(originalDate)}`;
   }
 
-  function refocus(k) {
-    calWeeks.querySelector(`[data-key="${k}"]`)?.focus({ preventScroll: true });
-  }
-
   function tapDay(d) {
     if (selected.has(key(d))) selected.delete(key(d)); else selected.add(key(d));
-    renderCal();
-    refocus(key(d));
+    updateCal();
   }
 
   function toggleColumn(col) {
@@ -199,13 +229,12 @@
     if (!eligible.length) return;
     const all = eligible.every((d) => selected.has(key(d)));
     eligible.forEach((d) => { if (all) selected.delete(key(d)); else selected.add(key(d)); });
-    renderCal();
-    calDows.children[col].focus({ preventScroll: true });
+    updateCal();
   }
 
   calMore.addEventListener('click', () => {
     weekCount += MORE_WEEKS;
-    renderCal();
+    buildCal();
   });
 
   function openCal() {
@@ -220,14 +249,15 @@
     // the selection reaches further.
     weeksStart = mondayOf(earliest < RB.today ? earliest : RB.today);
     weekCount = Math.max(INITIAL_WEEKS, Math.ceil((mondayOf(latest) - weeksStart) / (7 * 86400000)) + 1);
-    renderCal();
+    buildCal();
 
     calSheet.style.transform = '';
     RB.showBackdrop();
     calSheet.hidden = false;
     calSheet.getBoundingClientRect();
     calSheet.classList.add('is-open');
-    (calWeeks.querySelector('.is-selected') || $('[data-cal-close]')).focus({ preventScroll: true });
+    // Focus for keyboard users without drawing a ring after a tap.
+    (calWeeks.querySelector('.is-selected') || $('[data-cal-close]')).focus({ preventScroll: true, focusVisible: false });
   }
 
   // Close or swipe = discard; the CTA applies.
@@ -249,7 +279,7 @@
     calSheet.classList.remove('is-open', 'is-dragging');
     RB.hideBackdrop();
     calCloseTimer = setTimeout(() => { calSheet.hidden = true; }, 420);
-    (v5.series ? dateField : repeatLink).focus({ preventScroll: true });
+    (v5.series ? dateField : repeatLink).focus({ preventScroll: true, focusVisible: false });
   }
 
   calCta.addEventListener('click', () => closeCal({ apply: true }));
