@@ -15,7 +15,6 @@
 
   const DEMO_TODAY = day(2026, 9, 21); // Wed 21.10.2026
   const EXISTING_BOOKING = day(2026, 9, 29); // Thu 29.10., 16:00–19:00
-  const HOLIDAYS = [day(2026, 9, 28), day(2026, 10, 17), day(2026, 11, 24), day(2026, 11, 25), day(2026, 11, 26), day(2027, 0, 1)];
   const HOURLY_RATES = [130, 150, 170, 200];
   const DAILY_RATES = [500, 600, 700];
   const DEFAULT_HOURLY = 150;
@@ -34,7 +33,6 @@
 
   const key = (d) => d.getTime();
   const label = (d) => `${DOW_SHORT[d.getDay()]} ${short(d)}`;
-  const isHoliday = (d) => HOLIDAYS.some((h) => sameDay(h, d));
   const isBooked = (d) => v5.existingOn && sameDay(d, EXISTING_BOOKING);
   const kc = (n) => Math.round(n).toLocaleString('cs-CZ');
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
@@ -60,7 +58,6 @@
   const calDows = $('[data-cal-dows]');
   const calWeeks = $('[data-cal-weeks]');
   const calMore = $('[data-cal-more]');
-  const calLegend = $('[data-cal-legend]');
   const noteBooked = $('[data-cal-note-booked]');
   const noteCap = $('[data-cal-note-cap]');
   const calCta = $('[data-cal-cta]');
@@ -232,7 +229,6 @@
   function cellLabel(d) {
     const parts = [`${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`];
     if (sameDay(d, RB.today)) parts.push('today');
-    if (isHoliday(d)) parts.push('public holiday');
     if (isBooked(d)) parts.push('already booked with Marie');
     if (d < RB.today) parts.push('past');
     return parts.join(', ');
@@ -263,8 +259,8 @@
     }));
 
     // Weeks, with a small month heading above the first week of each month.
+    // Weekends are tinted as in the date sheet's month view.
     const rows = [];
-    let markers = { holiday: false, booked: false };
     for (let w = 0; w < weekCount; w++) {
       const monday = addDays(weeksStart, w * 7);
       const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
@@ -283,33 +279,23 @@
         btn.type = 'button';
         btn.className = 'mcell';
         btn.dataset.key = String(key(d));
-        const holiday = isHoliday(d);
-        const booked = isBooked(d);
-        markers.holiday ||= holiday;
-        markers.booked ||= booked;
         const isSel = repeatMode
           ? selected.has(key(d))
           : (sameDay(d, rangeStart) || sameDay(d, rangeEnd));
         btn.classList.toggle('is-selected', isSel);
         btn.classList.toggle('is-in-range', !repeatMode && !!rangeEnd && d > rangeStart && d < rangeEnd);
         btn.classList.toggle('is-today', sameDay(d, RB.today));
+        btn.classList.toggle('is-weekend', d.getDay() === 0 || d.getDay() === 6);
         btn.classList.toggle('is-past', d < RB.today);
         btn.setAttribute('aria-pressed', String(isSel));
         btn.setAttribute('aria-label', cellLabel(d));
-        btn.innerHTML = `<span class="mcell__num">${d.getDate()}</span>${d.getDate() === 1 ? `<span class="mcell__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>` : ''}<span class="mcell__marks">${holiday ? '<span class="mcell__dot"></span>' : ''}${booked ? '<i class="fa-solid fa-calendar-check mcell__booked" aria-hidden="true"></i>' : ''}</span>`;
+        btn.innerHTML = `${sameDay(d, RB.today) ? '<span class="mday__today">Today</span>' : ''}<span class="mcell__num">${d.getDate()}</span>${d.getDate() === 1 ? `<span class="mcell__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>` : ''}`;
         btn.addEventListener('click', () => tapDay(d));
         week.append(btn);
       });
       rows.push(week);
     }
     calWeeks.replaceChildren(...rows);
-
-    // Legend: only for markers in view.
-    const legend = [];
-    if (markers.holiday) legend.push('<span><span class="mcell__dot"></span>Public holiday</span>');
-    if (markers.booked) legend.push('<span><i class="fa-solid fa-calendar-check mcell__booked" aria-hidden="true"></i>Already booked with Marie</span>');
-    calLegend.innerHTML = legend.join('');
-    calLegend.hidden = legend.length === 0;
 
     // Notes and the CTA, which is always enabled and says what happens.
     if (repeatMode) {

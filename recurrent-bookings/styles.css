@@ -494,26 +494,15 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 }
 .mcell:hover { background: var(--gray-100); }
 .mcell__month { font-size: 10px; line-height: 1; }
-.mcell__marks { display: flex; height: 8px; align-items: center; gap: 3px; margin-top: 2px; }
-.mcell__marks:empty { display: none; }
-.mcell__dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink-400); }
-.mcell__booked { color: var(--gray-500); font-size: 8px; }
+.mcell.is-weekend { background: var(--pink-50); }
 .mcell.is-past { color: var(--gray-400); }
-.mcell.is-today { box-shadow: inset 0 0 0 1.5px var(--gray-800); }
 /* Selected: the only selected style in the sheet */
 .mcell.is-selected,
 .mcell.is-selected:hover { background: var(--pink-400); color: #fff; font-weight: 600; box-shadow: none; }
-.mcell.is-selected .mcell__dot { background: #fff; }
-.mcell.is-selected .mcell__booked { color: #fff; }
 /* Stay range: the days between the ends */
 .mcell.is-in-range { border-radius: 0; background: var(--pink-100); }
 .mcell:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
 
-.mcal__legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 12px 0 0; color: var(--gray-600); font-size: 12px; }
-.mcal__legend[hidden] { display: none; }
-.mcal__legend span { display: inline-flex; align-items: center; gap: 5px; }
-.mcal__legend .mcell__dot { display: inline-block; }
-.mcal__legend .mcell__booked { font-size: 10px; }
 
 .cal-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 4px; background: #fff7e6; color: #6b4e16; font-size: 13px; line-height: 1.4; }
 .cal-note[hidden] { display: none; }
@@ -879,14 +868,15 @@ body[data-view="confirm"] .booking { display: none; }
 .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
 
 /* Month: taller cells; today is a white, framed cell with a Today tag,
-   which turns into a darker badge on the edge once today is picked. */
+   which turns into a darker badge on the edge once today is picked.
+   The v5 repeat calendar (.mcell) shares these today states. */
 .month { row-gap: 8px; }
 .mday { position: relative; height: 44px; }
-.mday.is-today:not(.is-selected) {
+:is(.mday, .mcell).is-today:not(.is-selected) {
   padding-top: 10px;
   box-shadow: inset 0 0 0 1px var(--gray-300), 0 4px 8px -4px rgba(42, 53, 57, .2);
 }
-.mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
+:is(.mday, .mcell).is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
 .mday__today {
   position: absolute;
   top: 4px;
@@ -897,7 +887,7 @@ body[data-view="confirm"] .booking { display: none; }
   font-weight: 400;
   line-height: 1;
 }
-.mday.is-selected .mday__today {
+:is(.mday, .mcell).is-selected .mday__today {
   top: -6px;
   padding: 2px 4px;
   border-radius: 4px;
