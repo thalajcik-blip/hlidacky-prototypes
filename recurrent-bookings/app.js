@@ -370,6 +370,12 @@
   const dayName = (d) => `${DOW_LONG[d.getDay()]}, ${short(d)}${sameDay(d, today) ? ' (today)' : ''}`;
   // In multi mode the end can't be before the start.
   const isBlocked = (d) => dateTarget === 'end' && d < state.startDate;
+  // Days that already hold another booking (the review step's edit sheet
+  // passes them). One booking a day, so these can't be picked; tapping
+  // one says why.
+  let bookedDays = [];
+  const isBooked = (d) => bookedDays.some((b) => sameDay(b, d));
+  const bookedNote = $('[data-booked-note]');
 
   function periodLabel() {
     if (view === 'month') return `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`;
@@ -387,7 +393,10 @@
     btn.classList.toggle('is-today', sameDay(d, today));
     btn.classList.toggle('is-selected', sameDay(d, draft));
     btn.disabled = isBlocked(d);
-    btn.setAttribute('aria-label', `${dayName(d)}${btn.disabled ? ', before the start' : ''}`);
+    const booked = isBooked(d);
+    btn.classList.toggle('is-booked', booked);
+    if (booked) btn.setAttribute('aria-disabled', 'true');
+    btn.setAttribute('aria-label', `${dayName(d)}${btn.disabled ? ', before the start' : booked ? ', already booked' : ''}`);
     btn.setAttribute('aria-pressed', String(sameDay(d, draft)));
     btn.dataset.time = String(d.getTime());
     btn.addEventListener('click', () => pick(d));
@@ -406,7 +415,7 @@
   function dayCard(d) {
     const btn = dayButton(d, 'day');
     btn.innerHTML = `
-      <span class="day__band">${sameDay(d, today) ? 'Today' : '–––'}</span>
+      <span class="day__band">${sameDay(d, today) ? 'Today' : isBooked(d) ? 'Booked' : '–––'}</span>
       <span class="day__month">${MONTHS[d.getMonth()].slice(0, 3)}</span>
       <span class="day__num">${d.getDate()}</span>
       <span class="day__dow">${DOW_SHORT[d.getDay()]}</span>`;
@@ -528,6 +537,7 @@
     for (let d = first; d <= last; d = addDays(d, 1)) {
       const btn = dayButton(d, 'mday');
       if (sameDay(d, today)) btn.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
+      else if (isBooked(d)) btn.innerHTML = `<span class="mday__today mday__booked">Booked</span>${d.getDate()}`;
       else btn.textContent = d.getDate();
       btn.classList.toggle('is-weekend', isWeekend(d));
       btn.classList.toggle('is-outside', d.getMonth() !== anchor.getMonth());
@@ -560,6 +570,12 @@
 
   function pick(d) {
     if (isBlocked(d)) return;
+    if (isBooked(d)) {
+      bookedNote.textContent = `You already have a booking request on ${DOW_LONG[d.getDay()]} ${short(d)}`;
+      bookedNote.hidden = false;
+      return;
+    }
+    bookedNote.hidden = true;
     draft = d;
     if (view === 'week') {
       updateSelection();
@@ -613,6 +629,8 @@
     dateTarget = target;
     dateField = field;
     customApply = custom?.onApply ?? null;
+    bookedDays = custom?.booked ?? [];
+    bookedNote.hidden = true;
     draft = custom ? custom.date : target === 'end' ? effectiveEndDate() : state.startDate;
     sheetTitle.textContent = custom || state.mode === 'single' ? 'Pick a date' : target === 'end' ? 'Pick the end date' : 'Pick the start date';
     view = lastView;
@@ -1042,6 +1060,7 @@
 
   editDate.addEventListener('click', () => openSheet('custom', editDate, {
     date: editDraft.date,
+    booked: reviewItems.filter((_, i) => i !== editIndex).map((it) => it.date),
     onApply: (d) => { editDraft.date = d; renderEdit(); },
   }));
   $$('[data-edit-time]').forEach((field) => {

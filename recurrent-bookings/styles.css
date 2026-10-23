@@ -852,6 +852,29 @@ body[data-view="confirm"] .booking { display: none; }
 /* Month: room for the Today tag above the cells. */
 .month { row-gap: 8px; }
 
+/* Booked: another booking in the review already sits on this day. Muted,
+   with a Booked tag; tapping it shows .booked-note instead of picking. */
+.day.is-booked { background: var(--gray-100); color: var(--gray-500); cursor: default; }
+.day.is-booked:hover { background: var(--gray-100); }
+.day.is-booked:not(.is-today) .day__band { background: var(--gray-300); color: #4a5a61; }
+.mday.is-booked,
+.mday.is-booked.is-weekend { background: var(--gray-100); color: var(--gray-500); cursor: default; }
+.mday.is-booked:hover:not(.is-selected) { background: var(--gray-100); }
+.mday__booked { background: var(--gray-300) !important; color: #4a5a61 !important; }
+/* The sticky Use button's 28px white spread covers what's just above
+   it, so the note keeps the full 32px gap below. */
+.booked-note {
+  margin: 16px 0 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}
+.booked-note[hidden] { display: none; }
+
 .view-toggle {
   display: block;
   margin: 18px auto 0;
