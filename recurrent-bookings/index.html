@@ -207,6 +207,24 @@
             </div>
           </section>
 
+          <!-- Bookings (placeholder): where the flow ends after sending.
+               Lists the requests sent in this session. -->
+          <section class="bookings-page" data-bookings aria-labelledby="bookings-title" hidden>
+            <header class="nav-bar">
+              <span aria-hidden="true"></span>
+              <h1 class="nav-bar__title" id="bookings-title">Bookings</h1>
+              <span aria-hidden="true"></span>
+            </header>
+            <div class="bookings-page__scroll">
+              <h2 class="bookings-page__heading">Waiting for Marie</h2>
+              <ul class="confirm__list" data-bookings-list></ul>
+              <p class="bookings-page__note">Placeholder for the Bookings overview.</p>
+              <button class="btn-new-booking" type="button" data-bookings-new>
+                <i class="fa-regular fa-plus" aria-hidden="true"></i><span>New booking</span>
+              </button>
+            </div>
+          </section>
+
           <div class="sheet-backdrop" data-backdrop hidden></div>
 
           <!-- Bottom sheet: edit one booking from the review step. Comes

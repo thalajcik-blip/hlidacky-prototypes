@@ -532,8 +532,46 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 
 /* ---------- review before sending ---------- */
 
-body[data-view="confirm"] .phone__screen > .nav-bar,
-body[data-view="confirm"] .booking { display: none; }
+body[data-view] .phone__screen > .nav-bar,
+body[data-view] .booking { display: none; }
+
+/* ---------- bookings (placeholder) ---------- */
+
+.bookings-page { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.bookings-page[hidden] { display: none; }
+.bookings-page .nav-bar__title { margin: 0; font-weight: 400; }
+.bookings-page__scroll { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; gap: 12px; padding: 20px 20px 24px; overflow-y: auto; overscroll-behavior: contain; }
+.bookings-page__heading { margin: 0; color: var(--gray-900); font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
+.bookings-page__note { margin: 0; color: var(--gray-500); font-size: 12px; text-align: center; }
+.status-pill {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 64px;
+  background: #fff6e0;
+  color: #9a6700;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.btn-new-booking {
+  display: flex;
+  width: 100%;
+  margin-top: auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: inset 0 -3px 0 var(--gray-300);
+  color: var(--gray-800);
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
+}
+.btn-new-booking:hover { background: var(--gray-100); }
+.btn-new-booking:active { box-shadow: none; transform: translateY(2px); }
+.btn-new-booking:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
 
 .confirm { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
 .confirm[hidden] { display: none; }

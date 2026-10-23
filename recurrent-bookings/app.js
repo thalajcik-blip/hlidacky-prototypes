@@ -993,12 +993,66 @@
   }
 
   reviewSend.addEventListener('click', () => {
-    const n = reviewItems.length;
     closeEdit();
     confirmEl.hidden = true;
-    delete document.body.dataset.view;
-    resetForm();
+    showBookings(reviewItems.map((it) => ({ ...it })));
+  });
+
+  // ---------- bookings (placeholder) ----------
+  // Sending ends the flow here, on an overview of the requests sent in
+  // this session (newest dates sorted in). "New booking" starts over.
+
+  const bookingsEl = $('[data-bookings]');
+  const bookingsList = $('[data-bookings-list]');
+  let sentItems = []; // [{ date, endDate?, start, end }]
+
+  const spansDays = (it) => !!it.endDate && !sameDay(it.endDate, it.date);
+
+  function sentWhen(it) {
+    if (spansDays(it)) {
+      return `${DOW_SHORT[it.date.getDay()]} ${short(it.date)} ${it.start} – ${DOW_SHORT[it.endDate.getDay()]} ${short(it.endDate)} ${it.end}`;
+    }
+    return longDate(it.date);
+  }
+
+  function renderBookings() {
+    bookingsList.replaceChildren(...sentItems.map((it) => {
+      const li = document.createElement('li');
+      li.className = 'confirm__item';
+      li.innerHTML = `
+        <span class="confirm__date"><strong></strong><span class="confirm__meta"><span class="confirm__times"></span></span></span>
+        <span class="status-pill">Pending</span>`;
+      li.querySelector('strong').textContent = sentWhen(it);
+      li.querySelector('.confirm__times').textContent = spansDays(it) ? 'Marie Schneiderová' : `${itemTimes(it)} · Marie Schneiderová`;
+      return li;
+    }));
+  }
+
+  function showBookings(items) {
+    sentItems = [...sentItems, ...items].sort((a, b) => a.date - b.date || toMinutes(a.start) - toMinutes(b.start));
+    renderBookings();
+    document.body.dataset.view = 'bookings';
+    bookingsEl.hidden = false;
+    bookingsEl.querySelector('.bookings-page__scroll').scrollTop = 0;
+    const n = items.length;
     toast(`${plural(n, 'booking request', 'booking requests')} sent to Marie (prototype).`);
+  }
+
+  // A single booking, sent straight from the form.
+  function sendNow() {
+    const multi = state.mode === 'multi';
+    showBookings([{ date: state.startDate, endDate: multi ? effectiveEndDate() : null, start: state.startTime, end: state.endTime }]);
+  }
+
+  function hideBookings() {
+    bookingsEl.hidden = true;
+    delete document.body.dataset.view;
+  }
+
+  $('[data-bookings-new]').addEventListener('click', () => {
+    hideBookings();
+    resetForm();
+    sendBtn.focus({ preventScroll: true, focusVisible: false });
   });
 
   // ---------- edit one booking (review step) ----------
@@ -1095,7 +1149,7 @@
     if (variant === 2) { hooks.send?.(); return; }
     const dates = repeat ? bookedDates(repeat) : [state.startDate];
     if (state.mode === 'single' && dates.length > 1) showReview(dates);
-    else toast('Booking request sent (prototype).');
+    else sendNow();
   });
   $('[data-confirm-close]').addEventListener('click', leaveReview);
 
@@ -1139,6 +1193,7 @@
     hooks.closeSheets?.();
     closeTimePicker({ refocus: false });
     if (!confirmEl.hidden) { confirmEl.hidden = true; delete document.body.dataset.view; }
+    if (!bookingsEl.hidden) hideBookings();
     const url = new URL(location.href);
     url.searchParams.set('variant', String(variant));
     history.replaceState(null, '', url);
@@ -1165,7 +1220,7 @@
     day, addDays, sameDay, mondayOf, short, toMinutes, fromMinutes,
     isOvernight, durationMinutes,
     renderForm, resetForm, toast, flash, setMode,
-    showReview, setSendLabel,
+    showReview, setSendLabel, sendNow,
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
     draggable, showBackdrop, hideBackdrop,

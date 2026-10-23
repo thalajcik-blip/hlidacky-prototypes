@@ -300,7 +300,7 @@
   hooks.closeSheets = () => closeCal();
   hooks.send = () => {
     if (v5.series) RB.showReview(v5.series);
-    else RB.toast('Booking request sent (prototype).');
+    else RB.sendNow();
   };
   // Called by RB.resetForm before it sets the date and times.
   hooks.reset = () => {
