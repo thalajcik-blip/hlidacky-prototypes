@@ -923,8 +923,8 @@
       li.innerHTML = `
         <span class="confirm__date"><strong></strong><span class="confirm__meta"><span class="confirm__times"></span><span class="price-pill"></span></span></span>
         <span class="confirm__actions">
-          <button class="confirm__edit" type="button" data-edit><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button>
-          <button class="confirm__remove" type="button" data-remove><i class="fa-light fa-xmark" aria-hidden="true"></i><span>Remove</span></button>
+          <button class="icon-btn" type="button" data-edit><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i></button>
+          <button class="icon-btn icon-btn--remove" type="button" data-remove><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
         </span>`;
       li.querySelector('strong').textContent = longDate(it.date);
       li.querySelector('.confirm__times').textContent = itemTimes(it);
