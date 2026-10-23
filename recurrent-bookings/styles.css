@@ -530,7 +530,7 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .time-option[aria-selected="true"] { background: var(--pink-100); font-weight: 600; }
 .time-option.is-active { box-shadow: inset 0 0 0 2px #1a73e8; }
 
-/* ---------- request sent confirmation ---------- */
+/* ---------- review before sending ---------- */
 
 body[data-view="confirm"] .phone__screen > .nav-bar,
 body[data-view="confirm"] .booking { display: none; }
@@ -602,29 +602,11 @@ body[data-view="confirm"] .booking { display: none; }
 .confirm__edit:hover, .confirm__remove:hover { opacity: 1; }
 .confirm__edit:focus-visible, .confirm__remove:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
 
-/* Both sit at the bottom of the screen; they scroll with a long list. */
+/* Sits at the bottom of the screen; scrolls with a long list. */
 .cta[data-review-send] { margin-top: auto; min-height: 56px; padding-bottom: 5px; }
-.cta[data-review-send][hidden], .btn-tertiary[hidden] { display: none; }
 
 /* The edit sheet's time picker drops out of the sheet body. */
 .edit-sheet .sheet__body { position: relative; overflow: visible; }
-
-.btn-tertiary {
-  width: 100%;
-  margin-top: auto;
-  padding: 14px 24px 16px;
-  border: 1px solid var(--gray-300);
-  border-radius: 4px;
-  background: #fff;
-  box-shadow: inset 0 -3px 0 var(--gray-300);
-  color: var(--gray-800);
-  font-size: 16px;
-  line-height: 22px;
-  cursor: pointer;
-}
-.btn-tertiary:hover { background: var(--gray-100); }
-.btn-tertiary:active { box-shadow: none; transform: translateY(2px); }
-.btn-tertiary:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
 
 /* ---------- toast (prototype only) ---------- */
 

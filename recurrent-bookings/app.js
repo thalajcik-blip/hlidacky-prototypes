@@ -860,15 +860,13 @@
   // ---------- review and send ----------
   // Two or more bookings go through a review step first: each one with its
   // price, Edit (its own date and times) and Remove. Nothing is sent until
-  // "Send N booking requests"; then the same screen shows them as sent.
-  // A single booking is sent straight from the form.
+  // "Send N booking requests", which goes back to a fresh form with a
+  // short note. A single booking is sent straight from the form.
 
   const confirmEl = $('[data-confirm]');
   const confirmList = $('[data-confirm-list]');
   const reviewSend = $('[data-review-send]');
-  const confirmBack = $('[data-confirm-back]');
   let reviewItems = []; // [{ date, start, end }]
-  let reviewSent = false;
 
   const longDate = (d) => `${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`;
   const itemOvernight = (it) => toMinutes(it.end) <= toMinutes(it.start);
@@ -886,12 +884,7 @@
 
   function renderReview() {
     const n = reviewItems.length;
-    $('[data-confirm-title]').textContent = reviewSent
-      ? `${plural(n, 'booking request', 'booking requests')} sent to Marie`
-      : `Review your ${plural(n, 'booking request', 'booking requests')}`;
-    $('[data-confirm-sub]').textContent = reviewSent
-      ? 'Marie can confirm each date separately. We will let you know as soon as she replies'
-      : 'Marie can confirm each date separately.';
+    $('[data-confirm-title]').textContent = `Review your ${plural(n, 'booking request', 'booking requests')}`;
     confirmList.replaceChildren(...reviewItems.map((it, i) => {
       const li = document.createElement('li');
       li.className = 'confirm__item';
@@ -905,21 +898,17 @@
       li.querySelector('.confirm__times').textContent = itemTimes(it);
       li.querySelector('.price-pill').textContent = `${itemPrice(it).toLocaleString('cs-CZ')} Kč`;
       const actions = li.querySelector('.confirm__actions');
-      actions.hidden = reviewSent;
       actions.querySelector('[data-edit]').setAttribute('aria-label', `Edit the booking on ${longDate(it.date)}`);
       actions.querySelector('[data-remove]').setAttribute('aria-label', `Remove the booking on ${longDate(it.date)}`);
       actions.querySelector('[data-edit]').addEventListener('click', (e) => openEdit(i, e.currentTarget));
       actions.querySelector('[data-remove]').addEventListener('click', () => removeItem(i));
       return li;
     }));
-    reviewSend.hidden = reviewSent;
     reviewSend.querySelector('.cta__main').textContent = `Send ${plural(n, 'booking request', 'booking requests')}`;
-    confirmBack.hidden = !reviewSent;
   }
 
   function showReview(dates) {
     reviewItems = dates.map((d) => ({ date: d, start: state.startTime, end: state.endTime }));
-    reviewSent = false;
     renderReview();
     document.body.dataset.view = 'confirm';
     confirmEl.hidden = false;
@@ -946,9 +935,12 @@
   }
 
   reviewSend.addEventListener('click', () => {
-    reviewSent = true;
-    renderReview();
-    confirmEl.querySelector('.confirm__scroll').scrollTop = 0;
+    const n = reviewItems.length;
+    closeEdit();
+    confirmEl.hidden = true;
+    delete document.body.dataset.view;
+    resetForm();
+    toast(`${plural(n, 'booking request', 'booking requests')} sent to Marie (prototype).`);
   });
 
   // ---------- edit one booking (review step) ----------
@@ -1040,23 +1032,13 @@
     $('[data-booking]').scrollTop = 0;
   }
 
-  // After sending, leaving starts a fresh booking; before, it goes back
-  // to the form as it was.
-  function backToForm() {
-    if (!reviewSent) { leaveReview(); return; }
-    confirmEl.hidden = true;
-    delete document.body.dataset.view;
-    resetForm();
-  }
-
   sendBtn.addEventListener('click', () => {
     if (variant === 2) { hooks.send?.(); return; }
     const dates = repeat ? bookedDates(repeat) : [state.startDate];
     if (state.mode === 'single' && dates.length > 1) showReview(dates);
     else toast('Booking request sent (prototype).');
   });
-  $('[data-confirm-close]').addEventListener('click', backToForm);
-  confirmBack.addEventListener('click', backToForm);
+  $('[data-confirm-close]').addEventListener('click', leaveReview);
 
   // The backdrop and Esc close the topmost sheet only (the date sheet can
   // sit on the edit sheet).
