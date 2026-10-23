@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI About you · V1 bottom sheet</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="https://use.typekit.net/ciu2vdq.css">
+  <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-version="sheet">
+  <main class="page">
+    <header class="page__head">
+      <h1>AI About you · V1 bottom sheet</h1>
+      <p>Before the AI drafts the About me text, the sitter answers three quick questions in a bottom sheet. The picks shape the draft, which then streams into the field. Designed in <a href="https://www.figma.com/design/bEVvmfroGmUYouyZSPfOpi/Sitters-Onboarding?node-id=3547-64899">Sitters Onboarding</a> (Version 01).</p>
+    </header>
+
+    <div class="layout">
+      <div class="phone">
+        <div class="phone__screen">
+          <div class="setup">
+            <header class="setup__header">
+              <span aria-hidden="true"></span>
+              <div class="setup__title">
+                <i class="fa-solid fa-child-reaching" aria-hidden="true"></i>
+                <span>Your babysitting profile</span>
+                <span class="setup__title-progress">(86%)</span>
+              </div>
+              <button class="setup__header-button" type="button" aria-label="Close setup"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="setup__progress" role="progressbar" aria-label="Profile progress" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100"><span class="setup__progress-fill"></span></div>
+            <section class="setup__step" aria-label="About you">
+              <div class="setup__hero">
+                <div class="setup__fold setup__fold--top"><div><img class="setup__doodle" src="../assets/profile-about-you.svg" alt=""></div></div>
+                <h2>About you</h2>
+                <div class="setup__fold setup__fold--bottom"><div>
+                  <p>Tell the families about yourself, your experience and your motivation to provide exceptional care.</p>
+                  <a class="setup__hero-link" href="#why-about-you"><i class="fa-regular fa-circle-info" aria-hidden="true"></i>Why is it important</a>
+                </div></div>
+              </div>
+              <div class="setup__content">
+                <div class="ai-input" data-ai-input data-state="idle">
+                  <div class="ai-summary" aria-live="polite">
+                    <div class="ai-summary__copy">
+                      <span class="ai-summary__label">Based on your answers</span>
+                      <p class="ai-summary__text"></p>
+                    </div>
+                    <button class="ai-input__button" type="button" data-action="edit" aria-label="Edit your answers"><i class="fa-regular fa-pen" aria-hidden="true"></i>Edit</button>
+                  </div>
+                  <div class="ai-input__label-row">
+                    <label class="ai-input__label" for="aboutText"><img src="../assets/flag-en.svg" alt="" width="24" height="16">About me</label>
+                    <span class="ai-input__counter" id="aboutCounter" data-counter>0 of 150 characters</span>
+                  </div>
+                  <div class="ai-input__field">
+                    <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutCounter aboutStatus"></textarea>
+                    <div class="ai-input__ink" aria-hidden="true"></div>
+                  </div>
+                  <div class="ai-input__questions"></div>
+                  <div class="ai-input__actions"></div>
+                  <p class="ai-input__status" id="aboutStatus" role="status" aria-live="polite"></p>
+                </div>
+              </div>
+            </section>
+            <footer class="setup__footer">
+              <button class="setup__back" type="button" aria-label="Previous step"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+              <button class="setup__next" type="button">Next <i class="fa-regular fa-chevron-right" aria-hidden="true"></i></button>
+            </footer>
+          </div>
+
+          <div class="sheet-layer" aria-hidden="true">
+            <div class="sheet-layer__overlay"></div>
+            <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+              <div class="sheet__handle" aria-hidden="true"><span></span></div>
+              <div class="sheet__body">
+                <div class="sheet__header">
+                  <div class="doodle" aria-hidden="true">
+                    <img class="doodle__layer-2" src="../assets/help-write-doodle-layer-2.svg" alt="">
+                    <img class="doodle__layer-1" src="../assets/help-write-doodle-layer-1.svg" alt="">
+                  </div>
+                  <h3 id="sheetTitle">Help us write it</h3>
+                </div>
+                <p class="sheet__description">Tap what fits you – up to 2 per question.</p>
+                <div class="sheet__questions" data-questions></div>
+                <div class="sheet__footer">
+                  <button class="ai-input__button" type="button" data-action="write-answers"><i class="fa-regular fa-sparkles" aria-hidden="true"></i>Write my text</button>
+                  <button class="text-link" type="button" data-action="skip-all">Skip questions</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <section class="proto-controls" aria-label="Prototype controls">
+          <div class="proto-controls__group">
+            <span class="proto-controls__label">Version</span>
+            <div class="pills version-switch">
+              <a class="pill pill--button is-current" href="../bottom-sheet/" aria-current="page">V1 · Bottom sheet</a>
+              <a class="pill pill--button" href="../dynamic-section/">V2 · Dynamic section</a>
+            </div>
+          </div>
+          <div class="proto-controls__group">
+            <span class="proto-controls__label" id="scenarioLabel">When you press Write my text</span>
+            <div class="pills" role="radiogroup" aria-labelledby="scenarioLabel">
+              <label class="pill"><input type="radio" name="scenario" value="works" checked><span>Writes the text</span></label>
+              <label class="pill"><input type="radio" name="scenario" value="stuck"><span>Gets stuck</span></label>
+            </div>
+            <p class="proto-controls__hint">Gets stuck never sends a word: it slows down, then fails. Try again works.</p>
+          </div>
+          <div class="proto-controls__group">
+            <span class="proto-controls__label" id="previewLabel">Jump to a state</span>
+            <div class="pills" role="group" aria-labelledby="previewLabel">
+              <button class="pill pill--button" type="button" data-preview="idle">Idle</button>
+              <button class="pill pill--button" type="button" data-preview="questions">Extra questions</button>
+              <button class="pill pill--button" type="button" data-preview="generating">Generating</button>
+              <button class="pill pill--button" type="button" data-preview="slow">Slow</button>
+              <button class="pill pill--button" type="button" data-preview="stuck">Stuck</button>
+              <button class="pill pill--button" type="button" data-preview="done">Done</button>
+            </div>
+            <p class="proto-controls__hint">Jumped-to states hold still for review. Press Write it with AI in the phone to see it live.</p>
+          </div>
+        </section>
+
+        <section class="notes">
+          <h2>Flow</h2>
+          <ul>
+            <li><strong>Write it with AI</strong> opens the sheet instead of writing straight away. The step underneath stays as it was.</li>
+            <li><strong>Three questions, all on one sheet.</strong> Up to 2 picks each; once 2 are picked, the rest dim. The counter shows “N of 2”. <em>Something else</em> opens a short text field.</li>
+            <li><strong>Write my text</strong> closes the sheet and the draft streams into the field, written from the picks. <strong>Skip questions</strong> writes from the previous steps only.</li>
+            <li><strong>Closing without writing.</strong> Drag the handle down, tap the dimmed area or press Esc — nothing is written, picks are kept for next time.</li>
+            <li><strong>Based on your answers.</strong> After a draft, a summary of the picks sits above the field. Edit reopens the sheet with them selected (disabled while writing).</li>
+            <li><strong>Write again</strong> writes another wording from the same picks. <strong>Undo</strong> returns the field to what it held before.</li>
+          </ul>
+          <h2>States</h2>
+          <p class="notes__footnote">Idle, generating, slow, stuck and done work as in the <a href="/components/input-content-ai-generation/">Input content AI generation</a> component.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../app.js"></script>
+</body>
+</html>

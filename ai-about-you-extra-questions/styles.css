@@ -1,0 +1,602 @@
+/* Copied from /components/input-content-ai-generation/ and extended with
+   the extra questions of the Sitters Onboarding Figma file (section
+   "AI Generated About you with complementary questions", 3547:64899).
+   Version 01 asks them in a bottom sheet, version 02 in a card under the
+   field. The page around the phone is prototype-only. */
+
+:root {
+  --gray-100: #f5f5f7;
+  --gray-200: #f7f7f7;
+  --gray-300: #e5e5ea;
+  --gray-400: #bec2ce;
+  --gray-500: #8b91a3;
+  --gray-600: #6c757d;
+  --gray-800: #2a3539;
+  --gray-900: #212529;
+  --pink-400: #f96073;
+  --green-500: #0ba825;
+  --green-600: #07851c;
+  --red-400: #ea2323;
+  --blue-300: #6aafff;
+  --focus-ring: #cbdafc;
+  --indigo-100: #edebff;
+  --indigo-200: #cfc2ff;
+  --indigo-400: #7e5eff;
+  --indigo-500: #4c24ec;
+  --indigo-300: #b9a7ff;
+  --gray-700: #4a5a61;
+  --page-bg: #eef0f4;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--gray-800);
+  font-family: "soleil", system-ui, sans-serif;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.page__head { max-width: 720px; margin-bottom: 32px; }
+.page__head h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); font-weight: 600; line-height: 1.1; letter-spacing: -0.5px; }
+.page__head p { margin: 0; color: var(--gray-600); font-size: 16px; line-height: 1.55; }
+.page__head a { color: var(--pink-400); }
+
+.layout {
+  display: grid;
+  grid-template-columns: 399px minmax(0, 1fr);
+  align-items: start;
+  gap: 40px;
+}
+
+/* ---------- phone (prototype frame) ---------- */
+
+.phone {
+  position: sticky;
+  top: 24px;
+  border-radius: 48px;
+  background: #1d1f22;
+  padding: 12px;
+  box-shadow: 0 30px 60px rgba(32, 40, 43, .18);
+}
+
+.phone__screen {
+  height: min(788px, calc(100vh - 48px));
+  min-height: 600px;
+  overflow: hidden;
+  border-radius: 36px;
+  background: #fff;
+  padding-top: 44px;
+}
+
+/* ---------- wizard step around the field ---------- */
+
+.setup { display: flex; height: 100%; flex-direction: column; }
+
+.setup__header {
+  display: grid;
+  flex: 0 0 48px;
+  grid-template-columns: 24px minmax(0, 1fr) 24px;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.setup__title { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: -0.05px; white-space: nowrap; }
+.setup__title i { color: var(--pink-400); font-size: 14px; }
+.setup__title-progress { color: var(--gray-500); font-weight: 350; }
+
+.setup__header-button {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--gray-400);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.setup__progress { flex: 0 0 12px; border-block: 1px solid var(--gray-300); background: #fff; }
+.setup__progress-fill { display: block; width: 90%; height: calc(100% + 2px); margin-top: -1px; background: var(--pink-400); }
+
+.phone__screen { position: relative; }
+
+.setup__step { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; }
+
+.setup__hero {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  background: var(--gray-200);
+  padding: 20px;
+  text-align: center;
+  transition: padding .4s var(--ease-out);
+}
+
+/* The parts around the title fold away when the questions open in the
+   dynamic section, leaving a compact "About you" bar. */
+.setup__fold { display: grid; width: 100%; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .4s var(--ease-out), opacity .3s ease; }
+.setup__fold > div { display: flex; min-height: 0; flex-direction: column; align-items: center; gap: 8px; overflow: hidden; }
+.setup__fold--top > div { padding-bottom: 8px; }
+.setup__fold--bottom > div { padding-top: 4px; }
+.setup.is-compact .setup__hero { padding: 12px 20px; }
+.setup.is-compact .setup__fold { grid-template-rows: 0fr; opacity: 0; }
+
+.setup__doodle { width: 72px; height: 72px; flex: 0 0 auto; }
+.setup__hero h2 { margin: 0; color: var(--gray-900); font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; }
+.setup__hero p { margin: 0; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; }
+.setup__hero-link { display: inline-flex; align-items: center; gap: 4px; color: var(--pink-400); font-size: 12px; line-height: 1.4; opacity: .8; text-underline-offset: 2px; }
+.setup__hero-link i { font-size: 12px; }
+
+.setup__content { padding: 16px 20px; }
+
+.setup__footer {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 20px;
+  padding: 16px 20px 20px;
+}
+
+.setup__back,
+.setup__next { min-height: 52px; border-radius: 4px; font: inherit; font-size: 16px; font-weight: 450; cursor: pointer; }
+.setup__back { width: 64px; flex: 0 0 64px; border: 1px solid var(--gray-300); background: #fff; box-shadow: inset 0 -3px 0 var(--gray-300); color: var(--gray-800); font-size: 11px; }
+.setup__next { display: inline-flex; flex: 1 1 auto; align-items: center; justify-content: center; gap: 8px; border: 0; background: var(--green-500); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16); color: #fff; }
+.setup__next i { font-size: 11px; }
+.setup__next:hover { background: var(--green-600); }
+.setup__next:active,
+.setup__back:active { box-shadow: none; transform: translateY(2px); }
+
+/* ---------- the component ---------- */
+
+.ai-input { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+
+.ai-input__label-row { display: flex; align-items: center; gap: 4px; padding: 0 2px; }
+.ai-input__label { display: flex; flex: 1 1 auto; align-items: center; gap: 8px; font-size: 16px; font-weight: 450; line-height: 1.4; }
+.ai-input__label img { width: 24px; height: 16px; }
+.ai-input__counter { flex: 0 0 auto; color: var(--gray-500); font-size: 12px; line-height: 1.4; font-variant-numeric: lining-nums tabular-nums; }
+
+/* The field stacks three layers: the white base and the busy tint
+   (::before), the real textarea on a transparent background, and the
+   "ink" layer that draws the words while they stream in. */
+.ai-input__field { position: relative; border-radius: 4px; background: #fff; }
+.ai-input__field::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 4px;
+  background: linear-gradient(124deg, var(--indigo-100) 0%, var(--indigo-100) 40%, #fff 50%, var(--indigo-100) 60%, var(--indigo-100) 100%) 0 0 / 300% 300%;
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s ease;
+  animation: aiInputTint 2.6s cubic-bezier(.45, 0, .55, 1) infinite;
+  animation-play-state: paused;
+}
+
+.ai-input__textarea {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 148px;
+  min-height: 64px;
+  resize: vertical;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: transparent;
+  padding: 10px 16px;
+  color: var(--gray-800);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.32;
+  letter-spacing: .2px;
+  font-variant-numeric: lining-nums tabular-nums;
+  transition: border-color .35s ease, box-shadow .35s ease;
+}
+.ai-input__textarea::placeholder { color: var(--gray-500); }
+.ai-input__textarea:focus { border-color: var(--blue-300); outline: 0; box-shadow: 0 0 0 2px var(--focus-ring); }
+
+/* Mirrors the textarea's box and type exactly, so the words wrap in the
+   same places and the hand-over to the real text on Done is invisible. */
+.ai-input__ink {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border: 1px solid transparent;
+  padding: 10px 16px;
+  color: var(--gray-800);
+  font-size: 16px;
+  line-height: 1.32;
+  letter-spacing: .2px;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  pointer-events: none;
+  visibility: hidden;
+}
+.ai-input__ink span { animation: aiInputWord .5s cubic-bezier(.2, .8, .2, 1) both; }
+.ai-input__ink.is-still span { animation: none; }
+@keyframes aiInputWord {
+  from { color: var(--indigo-400); opacity: 0; filter: blur(4px); }
+  45% { opacity: 1; filter: blur(0); }
+  to { color: var(--gray-800); opacity: 1; filter: blur(0); }
+}
+
+/* Writing: an indigo field with a light band drifting across it, so the
+   field itself says it is busy rather than a spinner beside it. */
+.ai-input.is-busy .ai-input__field::before { opacity: 1; animation-play-state: running; }
+.ai-input.is-busy .ai-input__textarea,
+.ai-input.is-busy .ai-input__textarea:focus {
+  overflow: hidden;
+  border-color: var(--indigo-400);
+  box-shadow: 0 0 0 2px var(--indigo-200);
+  color: transparent;
+  caret-color: transparent;
+  cursor: progress;
+}
+.ai-input.is-busy .ai-input__textarea::placeholder { color: transparent; }
+.ai-input.is-busy .ai-input__ink { visibility: visible; }
+/* Slow is still working, just not visibly progressing — the band slows
+   with it so it does not promise more than is happening. */
+.ai-input[data-state="slow"] .ai-input__field::before { animation-duration: 5s; }
+@keyframes aiInputTint {
+  from { background-position: 100% 100%; }
+  to { background-position: 0 0; }
+}
+
+.ai-input__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+
+.ai-input__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: inset 0 -3px 0 var(--gray-300);
+  padding: 8px 18px 10px 14px;
+  color: var(--gray-800);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 450;
+  line-height: 22px;
+  cursor: pointer;
+}
+.ai-input__button:hover { background: var(--gray-100); }
+.ai-input__button:active { box-shadow: none; transform: translateY(2px); }
+.ai-input__button i { width: 16px; color: var(--indigo-400); font-size: 11px; text-align: center; }
+.ai-input__button .fa-sparkles { transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.ai-input__button:hover .fa-sparkles,
+.ai-input__button:focus-visible .fa-sparkles { transform: rotate(-14deg) scale(1.25); }
+.ai-input__button--stop i { color: var(--gray-500); }
+
+.ai-input__row { display: flex; align-items: center; align-self: stretch; justify-content: space-between; gap: 16px; padding-right: 4px; }
+
+.ai-input__link {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  gap: 2px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--pink-400);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: .8;
+  cursor: pointer;
+}
+.ai-input__link i { width: 20px; font-size: 13px; text-align: center; }
+.ai-input__link span { text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+.ai-input__link:hover { opacity: 1; }
+
+.ai-input__caption { margin: 0; color: var(--gray-600); font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; }
+
+.ai-input__status { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 1.5; letter-spacing: -0.16px; }
+.ai-input__status:empty { display: none; }
+.ai-input__status i { width: 16px; flex: 0 0 16px; font-size: 16px; text-align: center; }
+.ai-input__status--busy { color: var(--indigo-500); }
+.ai-input__status--busy i { color: var(--indigo-400); }
+.ai-input__status--error { color: var(--red-400); }
+.ai-input__status--done { color: var(--gray-600); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-input__field::before { animation: none; background-position: 50% 50%; }
+  .ai-input__ink span { animation: none; }
+  .ai-input__status .fa-spin { animation: none; }
+  .ai-input__button .fa-sparkles { transition: none; }
+}
+
+/* ---------- extra questions: shared pieces ---------- */
+
+/* Pill Badge from Figma: 14px label, 4 × 10 padding, fully round. */
+.chip {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--gray-300);
+  border-radius: 64px;
+  background: #fff;
+  padding: 3px 10px;
+  color: var(--gray-700);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, opacity .2s ease, transform .15s ease;
+}
+.chip:hover { border-color: var(--gray-400); }
+.chip:active { transform: scale(.96); }
+.chip:focus-visible { outline: 2px solid var(--indigo-400); outline-offset: 2px; }
+.chip[aria-pressed="true"] { border-color: var(--indigo-100); background: var(--indigo-100); color: var(--indigo-500); }
+/* Two picks per question: the rest dim but stay focusable, so a screen
+   reader still hears every option and why it does nothing. */
+.chip.is-blocked { opacity: .45; cursor: not-allowed; }
+.chip.is-blocked:hover { border-color: var(--gray-300); }
+.chip.is-blocked:active { transform: none; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.q-other {
+  display: none;
+  width: 100%;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  padding: 9px 14px;
+  color: var(--gray-800);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.32;
+}
+.q-other::placeholder { color: var(--gray-500); }
+.q-other:focus { border-color: var(--indigo-400); outline: 0; box-shadow: 0 0 0 2px var(--indigo-200); }
+.q-other.is-shown { display: block; animation: qOtherIn .25s var(--ease-out); }
+@keyframes qOtherIn { from { opacity: 0; transform: translateY(-4px); } }
+
+.text-link {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--gray-600);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: .8;
+  text-decoration: underline;
+  text-decoration-color: var(--gray-400);
+  text-decoration-thickness: 8%;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.text-link:hover { opacity: 1; }
+
+.ai-input__button--trail { padding: 8px 14px 10px 18px; }
+.ai-input__button--trail i { color: var(--gray-800); }
+.ai-input__button:disabled { opacity: .45; cursor: not-allowed; }
+.ai-input__button:disabled:active { transform: none; box-shadow: inset 0 -3px 0 var(--gray-300); }
+
+/* What the draft was written from, with a way back into the questions. */
+.ai-summary {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--indigo-100);
+  border-radius: 8px;
+  background: #f8f7ff;
+  padding: 12px 12px 12px 14px;
+}
+.ai-summary.is-shown { display: flex; animation: qOtherIn .3s var(--ease-out); }
+.ai-summary__copy { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 2px; }
+.ai-summary__label { color: var(--indigo-500); font-size: 12px; font-weight: 600; letter-spacing: .06em; line-height: 1.4; text-transform: uppercase; }
+.ai-summary__text { margin: 0; color: var(--gray-800); font-size: 14px; line-height: 1.5; letter-spacing: -0.16px; }
+.ai-summary .ai-input__button { flex: 0 0 auto; padding: 6px 14px 8px 12px; font-size: 14px; }
+.ai-summary .ai-input__button i { color: var(--gray-800); }
+
+/* ---------- version 01: bottom sheet ---------- */
+
+.sheet-layer { position: absolute; inset: 0; z-index: 20; visibility: hidden; overflow: hidden; border-radius: inherit; transition: visibility 0s linear .38s; }
+.sheet-layer.is-open { visibility: visible; transition: none; }
+.sheet-layer__overlay { position: absolute; inset: 0; background: rgba(33, 37, 41, .6); opacity: 0; transition: opacity .3s ease; }
+.sheet-layer.is-open .sheet-layer__overlay { opacity: 1; }
+
+.sheet {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  max-height: calc(100% - 52px);
+  flex-direction: column;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+  transform: translateY(100%);
+  transition: transform .38s cubic-bezier(.32, .72, 0, 1);
+}
+.sheet-layer.is-open .sheet { transform: translateY(0); }
+.sheet.is-dragging { transition: none; }
+
+.sheet__handle { display: flex; flex: 0 0 auto; justify-content: center; padding: 16px 0 12px; cursor: grab; touch-action: none; }
+.sheet__handle span { width: 135px; height: 5px; border-radius: 100px; background: var(--gray-800); }
+.sheet__body { display: flex; min-height: 0; flex-direction: column; gap: 16px; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px 24px; }
+.sheet__body:focus { outline: 0; }
+
+.sheet__header { display: flex; align-items: flex-start; gap: 8px; }
+.sheet__header h3 { margin: 0; padding-top: 4px; color: var(--gray-800); font-size: 24px; font-weight: 450; line-height: 1.32; letter-spacing: -0.2px; }
+.sheet__description { margin: 0; color: var(--gray-800); font-size: 16px; font-weight: 350; line-height: 1.5; letter-spacing: -0.24px; }
+
+/* The Doodle component: two layers placed as in Figma (3552:10812). */
+.doodle { position: relative; width: 42px; height: 42px; flex: 0 0 42px; overflow: hidden; }
+.doodle img { position: absolute; display: block; max-width: none; }
+.doodle__layer-2 { inset: 18.96% 10.7% 12.95% 12.92%; }
+.doodle__layer-1 { inset: 6.22% 11.36% 10.3% 6.69%; }
+
+.sheet__questions { display: flex; flex-direction: column; gap: 24px; padding-top: 12px; }
+.q { display: flex; flex-direction: column; gap: 10px; }
+.q__head { display: flex; align-items: center; gap: 8px; color: var(--gray-800); font-size: 14px; line-height: 1.4; font-variant-numeric: lining-nums tabular-nums; }
+.q__title { flex: 1 1 auto; margin: 0; font-size: 14px; font-weight: 700; }
+.q__count { flex: 0 0 auto; transition: color .2s ease; }
+.q__count.is-full { color: var(--indigo-500); }
+
+.sheet__footer { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 8px; }
+.sheet__footer .ai-input__button { width: 100%; justify-content: center; gap: 10px; padding: 14px 24px 16px 20px; }
+
+/* ---------- version 02: dynamic section ---------- */
+
+.qcard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  border: 1px solid var(--indigo-300);
+  border-radius: 4px;
+  background: var(--indigo-100);
+  padding: 12px 0;
+}
+.qcard__top { display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--indigo-400); font-size: 14px; line-height: 1.4; text-transform: uppercase; font-variant-numeric: lining-nums tabular-nums; }
+.qcard__top > i { width: 16px; font-size: 11px; text-align: center; }
+.qcard__step { flex: 1 1 auto; }
+.qcard__close { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: var(--indigo-400); font-size: 17px; cursor: pointer; }
+.qcard__close:focus-visible { outline: 2px solid var(--indigo-400); outline-offset: 2px; border-radius: 2px; }
+
+.qcard__body { display: flex; flex-direction: column; gap: 10px; padding: 0 12px; }
+.qcard__question { padding: 0 4px; }
+.qcard__title { margin: 0; color: var(--gray-800); font-size: 16px; font-weight: 700; line-height: 1.4; }
+.qcard__hint { margin: 0; color: var(--gray-600); font-size: 14px; line-height: 1.4; }
+.qcard .chips { gap: 4px; }
+.qcard .chip { border-color: #fff; }
+.qcard .chip:hover { border-color: var(--indigo-200); }
+.qcard .chip[aria-pressed="true"] { border-color: var(--indigo-400); background: var(--indigo-400); color: #fff; }
+.qcard .chip.is-blocked:hover { border-color: #fff; }
+
+.qcard__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 16px 0; }
+.qcard__foot .ai-input__button--primary { border-color: var(--indigo-500); background: var(--indigo-500); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .2); color: #fff; }
+.qcard__foot .ai-input__button--primary:hover { background: #3f1bd1; }
+.qcard__foot .ai-input__button--primary i { color: #fff; }
+
+/* Each question slides in from the side it comes from. */
+.qcard__body.is-entering { animation: qcardIn .32s var(--ease-out); }
+.qcard__body.is-entering-back { animation: qcardBack .32s var(--ease-out); }
+@keyframes qcardIn { from { opacity: 0; transform: translateX(24px); } }
+@keyframes qcardBack { from { opacity: 0; transform: translateX(-24px); } }
+
+.ai-input__questions:empty { display: none; }
+.ai-input__questions .qcard { animation: qOtherIn .32s var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .setup__hero,
+  .setup__fold,
+  .sheet,
+  .sheet-layer__overlay { transition: none; }
+  .qcard__body.is-entering,
+  .qcard__body.is-entering-back,
+  .ai-input__questions .qcard,
+  .q-other.is-shown,
+  .ai-summary.is-shown { animation: none; }
+}
+
+/* ---------- version chooser ---------- */
+
+.chooser { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.chooser__card { display: flex; flex-direction: column; gap: 10px; border-radius: 12px; background: #fff; padding: 24px; box-shadow: 0 1px 2px rgba(32, 40, 43, .06); color: inherit; text-decoration: none; transition: box-shadow .2s ease, transform .2s ease; }
+.chooser__card:hover { box-shadow: 0 12px 30px rgba(32, 40, 43, .12); transform: translateY(-2px); }
+.chooser__eyebrow { color: var(--indigo-500); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.chooser__card h2 { margin: 0; font-size: 22px; font-weight: 600; }
+.chooser__card p { margin: 0; color: var(--gray-600); font-size: 15px; line-height: 1.5; }
+.chooser__open { margin-top: 6px; color: var(--pink-400); font-weight: 600; }
+@media (max-width: 700px) { .chooser { grid-template-columns: minmax(0, 1fr); } }
+
+.version-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+.version-switch a { text-decoration: none; }
+
+/* ---------- prototype controls and notes (not product UI) ---------- */
+
+.side { display: flex; min-width: 0; flex-direction: column; gap: 24px; }
+
+.proto-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px dashed #c3c8d2;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.proto-controls__group { display: flex; flex-direction: column; gap: 10px; }
+.proto-controls__label { color: var(--gray-500); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.proto-controls__hint { margin: 0; color: var(--gray-600); font-size: 14px; line-height: 1.45; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { position: relative; display: inline-flex; }
+.pill input { position: absolute; opacity: 0; pointer-events: none; }
+.pill span,
+.pill--button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  border: 1px solid var(--gray-300);
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 14px;
+  color: var(--gray-800);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.pill input:checked + span,
+.pill--button.is-current { border-color: var(--gray-800); background: var(--gray-800); color: #fff; }
+.pill input:focus-visible + span,
+.pill--button:focus-visible { outline: 2px solid #0d6efd; outline-offset: 2px; }
+
+.notes { border-radius: 12px; background: #fff; padding: 24px; box-shadow: 0 1px 2px rgba(32, 40, 43, .06); }
+.notes h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+.notes h2:not(:first-child) { margin-top: 28px; }
+.notes ul { margin: 0; padding-left: 18px; }
+.notes li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
+.notes code { border-radius: 4px; background: var(--gray-100); padding: 1px 5px; font-size: 13px; }
+.notes__footnote { margin: 10px 0 0; color: var(--gray-600); font-size: 13px; line-height: 1.45; }
+.notes__source { margin: 20px 0 0; color: var(--gray-600); font-size: 14px; line-height: 1.5; }
+.notes__source a { color: var(--pink-400); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.45; }
+th, td { border-bottom: 1px solid var(--gray-300); padding: 10px 12px 10px 0; text-align: left; vertical-align: top; }
+thead th { color: var(--gray-500); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+tbody th { font-weight: 600; white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .page { padding: 24px 16px 48px; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .phone { position: static; justify-self: center; width: 100%; max-width: 399px; }
+}
+
+@media (max-width: 600px) {
+  /* On a phone the page is the screen: no frame, no notes, no controls —
+     just the step, filling the viewport like the app would. */
+  body { background: #fff; }
+  .page { max-width: none; padding: 0; }
+  .page__head,
+  .side { display: none; }
+  .layout { display: block; }
+  .phone { position: static; width: auto; max-width: none; border-radius: 0; background: none; padding: 0; box-shadow: none; }
+  .phone__screen { height: 100vh; height: 100dvh; min-height: 0; border-radius: 0; padding-top: env(safe-area-inset-top); }
+  .setup__footer { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+}
