@@ -801,23 +801,47 @@ body[data-view="confirm"] .booking { display: none; }
 .month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .month[hidden] { display: none; }
 .month__dow { padding: 2px 0 10px; color: var(--gray-600); font-size: 14px; text-align: center; }
+/* Month day cell, per the Figma "Monthdate Selector Item": white, pink
+   on weekends, a pink-200 frame and Today tag on today, solid pink when
+   picked; days of the next/previous month are light grey. */
 .mday {
-  height: 35px;
+  position: relative;
+  height: 40px;
+  padding: 0 0 3px;
   border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--gray-800);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray-900);
   font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background-color .15s ease, color .15s ease;
 }
-.mday.is-weekend { background: var(--pink-50); }
-.mday.is-outside { color: var(--gray-500); }
-.mday.is-today { box-shadow: inset 0 0 0 2px var(--pink-400); }
-.mday.is-selected { background: var(--pink-400); color: #fff; font-weight: 600; box-shadow: none; }
-.mday:hover:not(.is-selected) { background: var(--gray-100); }
+.mday.is-weekend { background: #feecee; }
+.mday.is-outside { color: var(--gray-600); font-weight: 300; }
+.mday.is-today { box-shadow: inset 0 0 0 1px #ffd5da; }
+.mday.is-today:not(.is-weekend):not(.is-outside) { font-weight: 700; }
+.mday.is-selected { background: var(--pink-400); color: #fff; font-weight: 700; box-shadow: none; }
+.mday:hover:not(.is-selected):not(:disabled) { background: var(--gray-100); }
+.mday.is-weekend:hover:not(.is-selected):not(:disabled) { background: #fde0e4; }
 .mday:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
+.mday__today {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  padding: 0 2px;
+  border-radius: 2px;
+  background: #fff;
+  color: var(--gray-600);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+  transform: translateX(-50%);
+}
+.mday.is-weekend .mday__today { background: #ffd5da; color: var(--pink-400); }
+.mday.is-selected .mday__today { top: -4px; background: #e6213a; color: #fff; }
 
 /* ---------- day states ---------- */
 
@@ -826,32 +850,8 @@ body[data-view="confirm"] .booking { display: none; }
 .day.is-today:not(.is-selected) { border-color: var(--gray-400); }
 .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
 
-/* Month: taller cells; today is a white, framed cell with a Today tag,
-   which turns into a darker badge on the edge once today is picked. */
+/* Month: room for the Today tag above the cells. */
 .month { row-gap: 8px; }
-.mday { position: relative; height: 44px; }
-.mday.is-today:not(.is-selected) {
-  padding-top: 10px;
-  box-shadow: inset 0 0 0 1px var(--gray-300), 0 4px 8px -4px rgba(42, 53, 57, .2);
-}
-.mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
-.mday__today {
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gray-600);
-  font-size: 9px;
-  font-weight: 400;
-  line-height: 1;
-}
-.mday.is-selected .mday__today {
-  top: -6px;
-  padding: 2px 4px;
-  border-radius: 4px;
-  background: var(--pink-500);
-  color: #fff;
-}
 
 .view-toggle {
   display: block;
