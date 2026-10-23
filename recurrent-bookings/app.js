@@ -472,6 +472,24 @@
     weekEl.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
   }
 
+  // Opening position: today is the first whole card, with a sliver of
+  // yesterday peeking in on the left. Falls back to centring the picked
+  // day when that would leave it off screen (in the past, or too far on).
+  const STRIP_PEEK = 30;
+
+  function openStripAtToday(d) {
+    scrollStripTo(d, { smooth: false });
+    const first = weekEl.querySelector(`[data-time="${today.getTime()}"]`);
+    const picked = weekEl.querySelector(`[data-time="${d.getTime()}"]`);
+    if (!first || !picked || d < today) return;
+    const left = first.offsetLeft - weekEl.offsetLeft - STRIP_PEEK;
+    const pickedRight = picked.offsetLeft - weekEl.offsetLeft + picked.offsetWidth - left;
+    if (pickedRight > weekEl.clientWidth) return;
+    weekEl.scrollLeft = left;
+    anchor = mondayOf(centreDay());
+    periodEl.textContent = periodLabel();
+  }
+
   weekEl.addEventListener('scroll', () => {
     if (view !== 'week' || weekEl.hidden) return;
     extendStrip();
@@ -590,7 +608,7 @@
     sheet.style.transform = '';
     showBackdrop();
     sheet.hidden = false;
-    if (view === 'week') scrollStripTo(draft, { smooth: false });
+    if (view === 'week') openStripAtToday(draft);
     sheet.getBoundingClientRect();
     sheet.classList.add('is-open');
     ((view === 'week' ? weekEl : monthEl).querySelector('.is-selected') || useBtn).focus({ preventScroll: true });
@@ -645,7 +663,7 @@
     saveView(view);
     anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     withHeightTransition(render);
-    if (view === 'week') scrollStripTo(draft, { smooth: false });
+    if (view === 'week') openStripAtToday(draft);
   });
 
   // ---------- shared sheet plumbing ----------
