@@ -199,6 +199,8 @@
   // ---------- time picker ----------
   // Two columns: an hour, then quarter-hour minutes. Picking an hour keeps
   // the picker open; picking the minutes sets the time and closes it.
+  // Closing it by clicking elsewhere keeps a newly picked hour with the
+  // selected minutes; Esc discards it.
 
   let timeTarget = null; // 'start' | 'end'
   let timeField = null; // the button it opened from
@@ -250,7 +252,10 @@
   }
 
   function openTimePicker(target, field, source = formTimes) {
-    if (timeTarget === target && timeField === field && !timePicker.hidden) { closeTimePicker(); return; }
+    if (timeTarget === target && timeField === field && !timePicker.hidden) {
+      if (!commitPendingHour()) closeTimePicker();
+      return;
+    }
     closeTimePicker({ refocus: false });
     timeSource = source;
     const host = field.closest('[data-time-host]');
@@ -279,11 +284,11 @@
     pendingHour = null;
   }
 
-  function applyTime(time) {
+  function applyTime(time, { refocus = true } = {}) {
     if (timeSource.set) {
       timeSource.set(timeTarget, time);
       const field = timeField;
-      closeTimePicker();
+      closeTimePicker({ refocus });
       flash(field);
       return;
     }
@@ -293,9 +298,18 @@
       state.endTime = time;
     }
     const field = timeField;
-    closeTimePicker();
+    closeTimePicker({ refocus });
     renderForm();
     flash(field);
+  }
+
+  // An hour picked without minutes: apply it with the minutes shown as
+  // selected. Returns whether there was one.
+  function commitPendingHour({ refocus = true } = {}) {
+    if (timePicker.hidden || pendingHour === null) return false;
+    const minute = Number(minutesEl.querySelector('[aria-selected="true"]')?.dataset.value ?? 0);
+    applyTime(`${pad(pendingHour)}:${pad(minute)}`, { refocus });
+    return true;
   }
 
   hoursEl.addEventListener('click', (e) => {
@@ -330,7 +344,7 @@
   document.addEventListener('pointerdown', (e) => {
     if (timePicker.hidden) return;
     if (timePicker.contains(e.target) || timeField.contains(e.target)) return;
-    closeTimePicker({ refocus: false });
+    if (!commitPendingHour({ refocus: false })) closeTimePicker({ refocus: false });
   });
   $('[data-booking]').addEventListener('scroll', () => { if (!timePicker.hidden) placeTimePicker(); }, { passive: true });
 
