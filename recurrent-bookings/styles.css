@@ -857,10 +857,18 @@ body[data-view="confirm"] .booking { display: none; }
 .day.is-booked { background: var(--gray-100); color: var(--gray-500); cursor: default; }
 .day.is-booked:hover { background: var(--gray-100); }
 .day.is-booked:not(.is-today) .day__band { background: var(--gray-300); color: #4a5a61; }
-.mday.is-booked,
-.mday.is-booked.is-weekend { background: var(--gray-100); color: var(--gray-500); cursor: default; }
-.mday.is-booked:hover:not(.is-selected) { background: var(--gray-100); }
-.mday__booked { background: var(--gray-300) !important; color: #4a5a61 !important; }
+/* Month, per the Figma "Monthdate Selector Item" isBlocked states: grey
+   (pink on weekends) with a grey frame (pink-200 on today), a Booked tag,
+   a struck-through number and a pink dot. */
+.mday.is-booked { background: #f7f7f7; color: var(--gray-500); box-shadow: inset 0 0 0 1px var(--gray-300); cursor: default; }
+.mday.is-booked.is-weekend { background: #feecee; }
+.mday.is-booked.is-today { box-shadow: inset 0 0 0 1px #ffd5da; }
+.mday.is-booked:hover:not(.is-selected) { background: #f7f7f7; }
+.mday.is-booked.is-weekend:hover:not(.is-selected) { background: #feecee; }
+.mday__num { text-decoration: line-through; }
+.mday__booked { background: var(--gray-300); color: var(--gray-600); }
+.mday.is-weekend .mday__booked { background: #ffd5da; color: var(--pink-400); }
+.mday__dot { position: absolute; top: 27px; left: 50%; transform: translateX(-50%); }
 /* The sticky Use button's 28px white spread covers what's just above
    it, so the note keeps the full 32px gap below. */
 .booked-note {

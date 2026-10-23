@@ -536,8 +536,12 @@
     const last = addDays(mondayOf(day(anchor.getFullYear(), anchor.getMonth() + 1, 0)), 6);
     for (let d = first; d <= last; d = addDays(d, 1)) {
       const btn = dayButton(d, 'mday');
-      if (sameDay(d, today)) btn.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
-      else if (isBooked(d)) btn.innerHTML = `<span class="mday__today mday__booked">Booked</span>${d.getDate()}`;
+      // Booked wins over Today: the tag says Booked, the number is struck
+      // through and a dot sits under it.
+      if (isBooked(d)) {
+        btn.innerHTML = `<span class="mday__today mday__booked">Booked</span><s class="mday__num">${d.getDate()}</s>`
+          + '<img class="mday__dot" src="/recurrent-bookings/assets/booked-dot.svg" alt="" width="8" height="8">';
+      } else if (sameDay(d, today)) btn.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
       else btn.textContent = d.getDate();
       btn.classList.toggle('is-weekend', isWeekend(d));
       btn.classList.toggle('is-outside', d.getMonth() !== anchor.getMonth());
