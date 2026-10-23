@@ -139,6 +139,7 @@
     } else {
       renderRepeatCard();
       updateTotal();
+      setSendLabel(state.mode === 'single' && repeat ? bookedDates(repeat).length : 1);
     }
   }
 
@@ -202,6 +203,12 @@
   let timeTarget = null; // 'start' | 'end'
   let timeField = null; // the button it opened from
   let pendingHour = null;
+  // Where the times come from and go to: the form by default, or one
+  // booking being edited in the review step (see openEdit).
+  const formTimes = {
+    get: (target) => (target === 'start' ? state.startTime : state.endTime),
+  };
+  let timeSource = formTimes;
 
   function timeOption(label, value, selectedNow) {
     const btn = document.createElement('button');
@@ -215,7 +222,7 @@
   }
 
   function renderTimePicker() {
-    const current = timeTarget === 'start' ? state.startTime : state.endTime;
+    const current = timeSource.get(timeTarget);
     const [h, m] = current.split(':').map(Number);
     const hour = pendingHour ?? h;
     // Minutes always show a selection: the current one, rounded down to
@@ -225,20 +232,29 @@
     minutesEl.replaceChildren(...MINUTE_STEPS.map((mm) => timeOption(pad(mm), mm, mm === minute)));
   }
 
+  // The picker sits in the field's host ([data-time-host]): below the
+  // field, or above it when the screen has no room below.
   function placeTimePicker() {
-    const box = whenSection.getBoundingClientRect();
+    const box = timePicker.parentElement.getBoundingClientRect();
     const field = timeField.getBoundingClientRect();
     const width = timePicker.offsetWidth;
+    const height = timePicker.offsetHeight;
     let left = field.left - box.left;
-    // Keep it inside the section: right-align with the field if needed.
+    // Keep it inside the host: right-align with the field if needed.
     if (left + width > box.width - 20) left = field.right - box.left - width;
     timePicker.style.left = `${Math.max(20, left)}px`;
-    timePicker.style.top = `${field.bottom - box.top}px`;
+    const below = screen.getBoundingClientRect().bottom - field.bottom;
+    timePicker.style.top = below >= height + 8
+      ? `${field.bottom - box.top}px`
+      : `${field.top - box.top - height}px`;
   }
 
-  function openTimePicker(target, field) {
+  function openTimePicker(target, field, source = formTimes) {
     if (timeTarget === target && timeField === field && !timePicker.hidden) { closeTimePicker(); return; }
     closeTimePicker({ refocus: false });
+    timeSource = source;
+    const host = field.closest('[data-time-host]');
+    if (host && timePicker.parentElement !== host) host.append(timePicker);
     timeTarget = target;
     timeField = field;
     pendingHour = null;
@@ -264,6 +280,13 @@
   }
 
   function applyTime(time) {
+    if (timeSource.set) {
+      timeSource.set(timeTarget, time);
+      const field = timeField;
+      closeTimePicker();
+      flash(field);
+      return;
+    }
     if (timeTarget === 'start') {
       moveStart(state.startDate, time);
     } else {
@@ -287,8 +310,7 @@
   minutesEl.addEventListener('click', (e) => {
     const opt = e.target.closest('.time-option');
     if (!opt) return;
-    const current = timeTarget === 'start' ? state.startTime : state.endTime;
-    const hour = pendingHour ?? Number(current.split(':')[0]);
+    const hour = pendingHour ?? Number(timeSource.get(timeTarget).split(':')[0]);
     applyTime(`${pad(hour)}:${pad(Number(opt.dataset.value))}`);
   });
   timePicker.addEventListener('keydown', (e) => {
@@ -549,13 +571,18 @@
 
   let closeTimer = null;
 
-  function openSheet(target, field) {
+  // target 'start' / 'end' edits the form; 'custom' picks a date for
+  // someone else (the review step's edit sheet) and hands it to onApply.
+  let customApply = null;
+
+  function openSheet(target, field, custom = null) {
     closeTimePicker({ refocus: false });
     clearTimeout(closeTimer);
     dateTarget = target;
     dateField = field;
-    draft = target === 'end' ? effectiveEndDate() : state.startDate;
-    sheetTitle.textContent = state.mode === 'single' ? 'Pick a date' : target === 'end' ? 'Pick the end date' : 'Pick the start date';
+    customApply = custom?.onApply ?? null;
+    draft = custom ? custom.date : target === 'end' ? effectiveEndDate() : state.startDate;
+    sheetTitle.textContent = custom || state.mode === 'single' ? 'Pick a date' : target === 'end' ? 'Pick the end date' : 'Pick the start date';
     view = lastView;
     anchor = view === 'week' ? mondayOf(draft) : monthOf(draft);
     render();
@@ -571,7 +598,10 @@
 
   function closeSheet({ apply = false } = {}) {
     if (sheet.hidden) return;
-    if (apply) {
+    if (apply && dateTarget === 'custom') {
+      customApply?.(draft);
+      flash(dateField);
+    } else if (apply) {
       if (dateTarget === 'start') {
         moveStart(draft, state.startTime);
         if (repeat) reanchorRepeat(draft);
@@ -619,17 +649,22 @@
   });
 
   // ---------- shared sheet plumbing ----------
-  // Both sheets share the backdrop; it fades out on its own timer so that
-  // opening one sheet right after closing the other keeps it.
+  // All sheets share the backdrop. It counts the open ones, so a sheet
+  // stacked on another (a date picked from the edit sheet) keeps it, and
+  // it fades out on its own timer.
 
   let backdropTimer = null;
+  let backdropCount = 0;
   function showBackdrop() {
+    backdropCount += 1;
     clearTimeout(backdropTimer);
     backdrop.hidden = false;
     backdrop.getBoundingClientRect();
     backdrop.classList.add('is-open');
   }
   function hideBackdrop() {
+    backdropCount = Math.max(0, backdropCount - 1);
+    if (backdropCount) return;
     backdrop.classList.remove('is-open');
     backdropTimer = setTimeout(() => { backdrop.hidden = true; }, 420);
   }
@@ -822,35 +857,173 @@
   });
   applyBtn.addEventListener('click', () => closeRepeat({ apply: true }));
 
-  // ---------- request sent ----------
-  // More than one booking gets a confirmation screen that lists each
-  // request; a single one only gets a short note.
+  // ---------- review and send ----------
+  // Two or more bookings go through a review step first: each one with its
+  // price, Edit (its own date and times) and Remove. Nothing is sent until
+  // "Send N booking requests"; then the same screen shows them as sent.
+  // A single booking is sent straight from the form.
 
   const confirmEl = $('[data-confirm]');
   const confirmList = $('[data-confirm-list]');
+  const reviewSend = $('[data-review-send]');
+  const confirmBack = $('[data-confirm-back]');
+  let reviewItems = []; // [{ date, start, end }]
+  let reviewSent = false;
 
   const longDate = (d) => `${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`;
-  const timeRange = () => `${state.startTime}-${state.endTime}${isOvernight() ? ' (next day)' : ''}`;
+  const itemOvernight = (it) => toMinutes(it.end) <= toMinutes(it.start);
+  const itemMinutes = (it) => (itemOvernight(it) ? 1440 : 0) + toMinutes(it.end) - toMinutes(it.start);
+  const itemPrice = (it) => Math.round((itemMinutes(it) / 60) * Number(rateSelect.value));
+  const itemTimes = (it) => `${it.start}-${it.end}${itemOvernight(it) ? ' (next day)' : ''}`;
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const sortItems = () => reviewItems.sort((a, b) => a.date - b.date || toMinutes(a.start) - toMinutes(b.start));
 
-  function showConfirmation(dates) {
-    $('[data-confirm-title]').textContent = `${dates.length} booking requests sent to Marie`;
-    confirmList.replaceChildren(...dates.map((d) => {
+  // The form's CTA: "Review N booking requests" once there's more than one.
+  function setSendLabel(n) {
+    sendBtn.querySelector('.cta__main').textContent = n > 1 ? `Review ${n} booking requests` : 'Send booking request';
+    sendBtn.querySelector('.cta__sub').textContent = n > 1 ? 'You can edit each booking in the next step' : 'Change time or price anytime';
+  }
+
+  function renderReview() {
+    const n = reviewItems.length;
+    $('[data-confirm-title]').textContent = reviewSent
+      ? `${plural(n, 'booking request', 'booking requests')} sent to Marie`
+      : `Review your ${plural(n, 'booking request', 'booking requests')}`;
+    $('[data-confirm-sub]').textContent = reviewSent
+      ? 'Marie can confirm each date separately. We will let you know as soon as she replies'
+      : 'Marie can confirm each date separately.';
+    confirmList.replaceChildren(...reviewItems.map((it, i) => {
       const li = document.createElement('li');
       li.className = 'confirm__item';
       li.innerHTML = `
-        <span class="confirm__date"><strong></strong><span></span></span>
-        <button class="confirm__edit" type="button"><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button>`;
-      li.querySelector('strong').textContent = longDate(d);
-      li.querySelector('.confirm__date span').textContent = timeRange();
-      li.querySelector('.confirm__edit').setAttribute('aria-label', `Edit the booking on ${longDate(d)}`);
-      li.querySelector('.confirm__edit').addEventListener('click', () => toast('Editing a sent request isn\'t part of this prototype.'));
+        <span class="confirm__date"><strong></strong><span class="confirm__meta"><span class="confirm__times"></span><span class="price-pill"></span></span></span>
+        <span class="confirm__actions">
+          <button class="confirm__edit" type="button" data-edit><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Edit</span></button>
+          <button class="confirm__remove" type="button" data-remove><i class="fa-light fa-xmark" aria-hidden="true"></i><span>Remove</span></button>
+        </span>`;
+      li.querySelector('strong').textContent = longDate(it.date);
+      li.querySelector('.confirm__times').textContent = itemTimes(it);
+      li.querySelector('.price-pill').textContent = `${itemPrice(it).toLocaleString('cs-CZ')} Kč`;
+      const actions = li.querySelector('.confirm__actions');
+      actions.hidden = reviewSent;
+      actions.querySelector('[data-edit]').setAttribute('aria-label', `Edit the booking on ${longDate(it.date)}`);
+      actions.querySelector('[data-remove]').setAttribute('aria-label', `Remove the booking on ${longDate(it.date)}`);
+      actions.querySelector('[data-edit]').addEventListener('click', (e) => openEdit(i, e.currentTarget));
+      actions.querySelector('[data-remove]').addEventListener('click', () => removeItem(i));
       return li;
     }));
+    reviewSend.hidden = reviewSent;
+    reviewSend.querySelector('.cta__main').textContent = `Send ${plural(n, 'booking request', 'booking requests')}`;
+    confirmBack.hidden = !reviewSent;
+  }
+
+  function showReview(dates) {
+    reviewItems = dates.map((d) => ({ date: d, start: state.startTime, end: state.endTime }));
+    reviewSent = false;
+    renderReview();
     document.body.dataset.view = 'confirm';
     confirmEl.hidden = false;
     confirmEl.querySelector('.confirm__scroll').scrollTop = 0;
-    $('[data-confirm-close]').focus({ preventScroll: true });
+    $('[data-confirm-close]').focus({ preventScroll: true, focusVisible: false });
   }
+
+  function removeItem(i) {
+    reviewItems.splice(i, 1);
+    if (!reviewItems.length) {
+      leaveReview();
+      toast('All bookings removed. Nothing was sent.');
+      return;
+    }
+    renderReview();
+  }
+
+  // Back to the form without sending: it keeps what was there.
+  function leaveReview() {
+    closeEdit();
+    confirmEl.hidden = true;
+    delete document.body.dataset.view;
+    sendBtn.focus({ preventScroll: true, focusVisible: false });
+  }
+
+  reviewSend.addEventListener('click', () => {
+    reviewSent = true;
+    renderReview();
+    confirmEl.querySelector('.confirm__scroll').scrollTop = 0;
+  });
+
+  // ---------- edit one booking (review step) ----------
+  // A small sheet with the form's date / From / To row for one booking.
+  // The date opens the Pick a date sheet on top; the times open the time
+  // picker. Save applies; a swipe, the backdrop or Esc discard.
+
+  const editSheet = $('[data-edit-sheet]');
+  const editDate = $('[data-edit-date]');
+  let editIndex = -1;
+  let editDraft = null;
+  let editOpener = null;
+  let editCloseTimer = null;
+
+  const editTimes = {
+    get: (target) => (target === 'start' ? editDraft.start : editDraft.end),
+    // Moving the start keeps the booking's length, as on the form.
+    set: (target, time) => {
+      if (target === 'start') {
+        const length = itemMinutes(editDraft) || 180;
+        editDraft.start = time;
+        editDraft.end = fromMinutes(toMinutes(time) + length);
+      } else {
+        editDraft.end = time;
+      }
+      renderEdit();
+    },
+  };
+
+  function renderEdit() {
+    $('[data-edit-dow]').textContent = DOW_LONG[editDraft.date.getDay()];
+    $('[data-edit-date-label]').textContent = short(editDraft.date);
+    $('[data-edit-start]').textContent = editDraft.start;
+    $('[data-edit-end]').textContent = editDraft.end;
+    $('[data-edit-next-day]').hidden = !itemOvernight(editDraft);
+    editDate.setAttribute('aria-label', `Date: ${DOW_LONG[editDraft.date.getDay()]}, ${short(editDraft.date)}. Change`);
+  }
+
+  function openEdit(i, opener) {
+    clearTimeout(editCloseTimer);
+    editIndex = i;
+    editOpener = opener;
+    editDraft = { ...reviewItems[i] };
+    renderEdit();
+    editSheet.style.transform = '';
+    showBackdrop();
+    editSheet.hidden = false;
+    editSheet.getBoundingClientRect();
+    editSheet.classList.add('is-open');
+    editDate.focus({ preventScroll: true, focusVisible: false });
+  }
+
+  function closeEdit({ apply = false } = {}) {
+    if (editSheet.hidden) return;
+    closeTimePicker({ refocus: false });
+    if (apply) {
+      reviewItems[editIndex] = editDraft;
+      sortItems();
+      renderReview();
+    }
+    editSheet.style.transform = '';
+    editSheet.classList.remove('is-open', 'is-dragging');
+    hideBackdrop();
+    editCloseTimer = setTimeout(() => { editSheet.hidden = true; }, 420);
+    if (!apply) editOpener?.focus({ preventScroll: true, focusVisible: false });
+  }
+
+  editDate.addEventListener('click', () => openSheet('custom', editDate, {
+    date: editDraft.date,
+    onApply: (d) => { editDraft.date = d; renderEdit(); },
+  }));
+  $$('[data-edit-time]').forEach((field) => {
+    field.addEventListener('click', () => openTimePicker(field.dataset.editTime, field, editTimes));
+  });
+  $('[data-edit-save]').addEventListener('click', () => closeEdit({ apply: true }));
 
   // A fresh booking for the current variant: v1 on the day after
   // tomorrow, v5 on tomorrow (v5.js sets its own today and options).
@@ -867,8 +1040,10 @@
     $('[data-booking]').scrollTop = 0;
   }
 
-  // Leaving the confirmation starts a fresh booking.
+  // After sending, leaving starts a fresh booking; before, it goes back
+  // to the form as it was.
   function backToForm() {
+    if (!reviewSent) { leaveReview(); return; }
     confirmEl.hidden = true;
     delete document.body.dataset.view;
     resetForm();
@@ -877,19 +1052,25 @@
   sendBtn.addEventListener('click', () => {
     if (variant === 2) { hooks.send?.(); return; }
     const dates = repeat ? bookedDates(repeat) : [state.startDate];
-    if (state.mode === 'single' && dates.length > 1) showConfirmation(dates);
+    if (state.mode === 'single' && dates.length > 1) showReview(dates);
     else toast('Booking request sent (prototype).');
   });
   $('[data-confirm-close]').addEventListener('click', backToForm);
-  $('[data-confirm-back]').addEventListener('click', backToForm);
+  confirmBack.addEventListener('click', backToForm);
 
+  // The backdrop and Esc close the topmost sheet only (the date sheet can
+  // sit on the edit sheet).
+  function closeTopSheet() {
+    if (!sheet.hidden && sheet.classList.contains('is-open')) { closeSheet(); return; }
+    closeRepeat();
+    closeEdit();
+  }
   draggable(sheet, grip, () => closeSheet());
   draggable(repeatSheet, $('[data-repeat-grip]'), () => closeRepeat());
-  backdrop.addEventListener('click', () => { closeSheet(); closeRepeat(); });
+  draggable(editSheet, $('[data-edit-grip]'), () => closeEdit());
+  backdrop.addEventListener('click', closeTopSheet);
   screen.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (!sheet.hidden) closeSheet();
-    if (!repeatSheet.hidden) closeRepeat();
+    if (e.key === 'Escape') closeTopSheet();
   });
 
   // ---------- variants (prototype only) ----------
@@ -913,6 +1094,7 @@
     variant = value;
     closeSheet();
     closeRepeat();
+    closeEdit();
     hooks.closeSheets?.();
     closeTimePicker({ refocus: false });
     if (!confirmEl.hidden) { confirmEl.hidden = true; delete document.body.dataset.view; }
@@ -942,7 +1124,7 @@
     day, addDays, sameDay, mondayOf, short, toMinutes, fromMinutes,
     isOvernight, durationMinutes,
     renderForm, resetForm, toast, flash, setMode,
-    showConfirmation,
+    showReview, setSendLabel,
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
     draggable, showBackdrop, hideBackdrop,

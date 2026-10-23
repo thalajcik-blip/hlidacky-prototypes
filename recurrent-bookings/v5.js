@@ -80,7 +80,7 @@
       totalEl.textContent = kc(oneVisitPrice());
     }
 
-    sendBtn.querySelector('.cta__main').textContent = series ? `Send ${series.length} booking requests` : 'Send booking request';
+    RB.setSendLabel(series ? series.length : 1);
   }
 
   repeatLink.addEventListener('click', () => openCal());
@@ -315,7 +315,7 @@
   };
   hooks.closeSheets = () => closeCal();
   hooks.send = () => {
-    if (v5.series) RB.showConfirmation(v5.series);
+    if (v5.series) RB.showReview(v5.series);
     else RB.toast('Booking request sent (prototype).');
   };
   // Called by RB.resetForm before it sets the date and times.

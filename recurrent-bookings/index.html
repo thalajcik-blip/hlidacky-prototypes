@@ -62,7 +62,7 @@
               </div>
             </section>
 
-            <section class="booking__section when-section" data-when>
+            <section class="booking__section when-section" data-when data-time-host>
               <div class="booking__heading">
                 <h3>When</h3>
                 <!-- Switches between a single day (or overnight) and several days. -->
@@ -183,8 +183,9 @@
             </div>
           </div>
 
-          <!-- Request sent: shown instead of the form when more than one
-               booking was created -->
+          <!-- Review, then request sent: shown instead of the form when more
+               than one booking was created. Nothing is sent until the green
+               button here. -->
           <section class="confirm" data-confirm aria-labelledby="confirm-title" hidden>
             <header class="nav-bar">
               <span aria-hidden="true"></span>
@@ -195,17 +196,47 @@
               <div class="confirm__hero">
                 <img src="./assets/doodle-paperplane-checked.svg" alt="" width="72" height="72">
                 <h2 id="confirm-title" data-confirm-title></h2>
-                <p>Marie can confirm each date separately. We will let you know as soon as she replies</p>
+                <p data-confirm-sub></p>
               </div>
               <div class="confirm__content">
                 <ul class="confirm__list" data-confirm-list></ul>
+                <button class="cta" type="button" data-review-send>
+                  <span class="cta__main"></span>
+                  <span class="cta__sub">Change time or price anytime</span>
+                </button>
                 <button class="btn-tertiary" type="button" data-confirm-back>Back to bookings</button>
               </div>
             </div>
           </section>
 
-          <!-- Bottom sheet: date picker -->
           <div class="sheet-backdrop" data-backdrop hidden></div>
+
+          <!-- Bottom sheet: edit one booking from the review step. Comes
+               before the date sheet, which opens on top of it. -->
+          <section class="sheet edit-sheet" data-edit-sheet role="dialog" aria-modal="true" aria-labelledby="edit-title" hidden>
+            <div class="sheet__grip" data-edit-grip><span class="sheet__handle"></span></div>
+            <div class="sheet__body" data-time-host>
+              <h2 class="sheet__title" id="edit-title">Edit booking</h2>
+              <div class="when">
+                <button class="when__field" type="button" data-edit-date>
+                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  <span class="when__text"><small data-edit-dow></small><span data-edit-date-label></span></span>
+                </button>
+                <button class="when__field" type="button" data-edit-time="start" aria-haspopup="listbox">
+                  <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                  <span class="when__text"><small>From</small><span data-edit-start></span></span>
+                </button>
+                <button class="when__field" type="button" data-edit-time="end" aria-haspopup="listbox">
+                  <i class="fa-regular fa-clock-nine" aria-hidden="true"></i>
+                  <span class="when__text"><small>To</small><span data-edit-end></span></span>
+                  <span class="next-day" data-edit-next-day hidden>next day</span>
+                </button>
+              </div>
+              <button class="cta cta--sheet" type="button" data-edit-save>Save changes</button>
+            </div>
+          </section>
+
+          <!-- Bottom sheet: date picker -->
           <section class="sheet" data-sheet role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
             <div class="sheet__grip" data-grip><span class="sheet__handle"></span></div>
             <div class="sheet__body" data-sheet-body>
