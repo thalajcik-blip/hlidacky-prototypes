@@ -96,7 +96,9 @@
 
   function setText(sel, text) { $$(sel).forEach((el) => { el.textContent = text; }); }
 
-  function updateTotal() {
+  // With several bookings it shows the first one's price only; each one
+  // is priced in the review step.
+  function updateTotal(count = 1) {
     const span = durationMinutes();
     if (span <= 0) {
       totalEl.textContent = '–';
@@ -106,7 +108,8 @@
     const hours = span / 60;
     totalEl.textContent = Math.round(hours * Number(rateSelect.value)).toLocaleString('cs-CZ');
     const label = Number.isInteger(hours) ? hours : hours.toFixed(2).replace(/0$/, '');
-    totalLabel.textContent = `total price for ${label} ${hours === 1 ? 'hour' : 'hours'}`;
+    const length = `${label} ${hours === 1 ? 'hour' : 'hours'}`;
+    totalLabel.textContent = count > 1 ? `total price for the first booking (${length})` : `total price for ${length}`;
   }
 
   function renderForm() {
@@ -138,8 +141,9 @@
       hooks.render?.();
     } else {
       renderRepeatCard();
-      updateTotal();
-      setSendLabel(state.mode === 'single' && repeat ? bookedDates(repeat).length : 1);
+      const count = state.mode === 'single' && repeat ? bookedDates(repeat).length : 1;
+      updateTotal(count);
+      setSendLabel(count);
     }
   }
 
@@ -1165,7 +1169,7 @@
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
     draggable, showBackdrop, hideBackdrop,
-    rateSelect, totalEl, totalLabel, sendBtn,
+    rateSelect, totalEl, totalLabel, sendBtn, updateTotal,
   };
 
   applyVariant();

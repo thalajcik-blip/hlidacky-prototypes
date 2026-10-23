@@ -25,7 +25,6 @@
 
   const key = (d) => d.getTime();
   const label = (d) => `${DOW_SHORT[d.getDay()]} ${short(d)}`;
-  const kc = (n) => Math.round(n).toLocaleString('cs-CZ');
 
   // ---------- elements ----------
 
@@ -33,7 +32,6 @@
   const dateField = $('.when [data-date-field="start"]'); // Variant 1's date cell
   const repeatLink = $('[data-v5-repeat]');
   const removeLink = $('[data-v5-remove]');
-  const { rateSelect, totalEl, totalLabel, sendBtn } = RB;
 
   const calSheet = $('[data-cal-sheet]');
   const calWeeks = $('[data-cal-weeks]');
@@ -44,7 +42,6 @@
   const calCtaSub = $('[data-cal-cta-sub]');
 
   const isMulti = () => state.mode === 'multi';
-  const oneVisitPrice = () => (RB.durationMinutes() / 60) * Number(rateSelect.value);
 
   // ---------- main screen ----------
   // Variant 1's row stays as it is; a series replaces the date cell's text
@@ -64,21 +61,8 @@
       dateField.setAttribute('aria-label', `${n} dates: ${series.map(label).join(', ')} Edit`);
     }
 
-    // Price: one booking (or several days) by the hour, or a series
-    // (N × one booking).
-    const span = RB.durationMinutes();
-    if (span <= 0) {
-      totalLabel.textContent = 'total price';
-      totalEl.textContent = '–';
-    } else if (series) {
-      totalLabel.textContent = `${series.length} × ${kc(oneVisitPrice())} Kč`;
-      totalEl.textContent = kc(series.length * oneVisitPrice());
-    } else {
-      const hours = span / 60;
-      const h = Number.isInteger(hours) ? hours : hours.toFixed(2).replace(/0$/, '');
-      totalLabel.textContent = `total price for ${h} ${hours === 1 ? 'hour' : 'hours'}`;
-      totalEl.textContent = kc(oneVisitPrice());
-    }
+    // Price: one booking, or with a series the first booking's only.
+    RB.updateTotal(series ? series.length : 1);
 
     RB.setSendLabel(series ? series.length : 1);
   }
