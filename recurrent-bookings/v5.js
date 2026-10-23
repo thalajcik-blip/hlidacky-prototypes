@@ -36,8 +36,6 @@
   const { rateSelect, totalEl, totalLabel, sendBtn } = RB;
 
   const calSheet = $('[data-cal-sheet]');
-  const calTimeline = $('[data-cal-timeline]');
-  const calDows = $('[data-cal-dows]');
   const calWeeks = $('[data-cal-weeks]');
   const calMore = $('[data-cal-more]');
   const noteCap = $('[data-cal-note-cap]');
@@ -95,8 +93,9 @@
   });
 
   // ---------- calendar sheet ----------
-  // Rolling weeks (not month pages), Monday first. Tap a day to toggle it,
-  // or a column header for every eligible day in that column.
+  // Month blocks, Monday first, starting with this week (rolling). Tap a
+  // day to toggle it, or a column header (in any month) for every eligible
+  // day in that column across all the shown weeks.
 
   let selected = new Set(); // keys of the selected dates
   let weeksStart = null; // Monday of the first shown week
@@ -104,18 +103,9 @@
   let originalDate = null; // the main-screen date when the sheet opened
   let calCloseTimer = null;
 
-  const shownDays = () => {
-    const out = [];
-    for (let i = 0; i < weekCount * 7; i++) out.push(addDays(weeksStart, i));
-    return out;
-  };
+  let shown = []; // the real (tappable) days in the grid, set by buildCal
   const selectedDates = () => [...selected].sort((a, b) => a - b).map((t) => new Date(t));
-  const eligibleInColumn = (col) => shownDays().filter((d) => (d.getDay() + 6) % 7 === col && d >= RB.today);
-
-  function timelineText() {
-    if (RB.isOvernight()) return `All dates ${state.startTime} → ${state.endTime} next day`;
-    return `All dates ${state.startTime}–${state.endTime}`;
-  }
+  const eligibleInColumn = (col) => shown.filter((d) => (d.getDay() + 6) % 7 === col && d >= RB.today);
 
   function cellLabel(d) {
     const parts = [`${DOW_LONG[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`];
@@ -125,71 +115,88 @@
   }
 
 
-  // Build the grid: column headers, then each month in turn. A month starts
-  // with its heading and a row where its first shown day sits in its own
-  // weekday column (blank cells before it), and ends on a partial row
-  // (blank cells after). So no row ever mixes two months, and the columns
-  // stay aligned for the header taps.
+  // Build the grid as month blocks: a heading with the year (and a line
+  // under it), the weekday row, then the month's weeks. The first block
+  // starts at the first shown week; the others at their 1st, with the
+  // previous month's days left blank. A block ends on its last day, the
+  // rest of that week blank, except the last block, which fills its last
+  // week with the next month's days greyed out (not tappable).
   function buildCal() {
-    calDows.replaceChildren(...DOW_GRID.map((name, col) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'mcal__dow';
-      btn.textContent = name;
-      btn.addEventListener('click', () => toggleColumn(col));
-      return btn;
-    }));
-
-    const rows = [];
-    let week = null;
-    const blank = () => {
+    const lastShown = addDays(weeksStart, weekCount * 7 - 1);
+    const end = day(lastShown.getFullYear(), lastShown.getMonth() + 1, 0);
+    shown = [];
+    const blocks = [];
+    const cell = (cls) => {
       const el = document.createElement('span');
-      el.className = 'mcell mcell--blank';
+      el.className = `mcell ${cls}`;
       el.setAttribute('aria-hidden', 'true');
       return el;
     };
-    const closeWeek = () => {
-      if (!week) return;
-      while (week.children.length < 7) week.append(blank());
-      rows.push(week);
-      week = null;
-    };
-    shownDays().forEach((d, i) => {
-      const col = (d.getDay() + 6) % 7;
-      if (i === 0 || d.getDate() === 1) {
-        closeWeek();
-        const h = document.createElement('div');
-        h.className = 'mcal__month';
-        h.textContent = `${MONTHS[d.getMonth()]}${d.getFullYear() !== RB.today.getFullYear() ? ` ${d.getFullYear()}` : ''}`;
-        rows.push(h);
-      }
-      if (!week) {
-        week = document.createElement('div');
+    for (let m = day(weeksStart.getFullYear(), weeksStart.getMonth(), 1); m <= end; m = day(m.getFullYear(), m.getMonth() + 1, 1)) {
+      const monthEnd = day(m.getFullYear(), m.getMonth() + 1, 0);
+      const lastBlock = sameDay(monthEnd, end);
+      const first = m < weeksStart ? weeksStart : m;
+      const block = document.createElement('section');
+      block.className = 'mcal__block';
+      block.setAttribute('aria-label', `${MONTHS[m.getMonth()]} ${m.getFullYear()}`);
+      const head = document.createElement('div');
+      head.className = 'mcal__mhead';
+      head.textContent = `${MONTHS[m.getMonth()]} ${m.getFullYear()}`;
+      const dows = document.createElement('div');
+      dows.className = 'mcal__dows';
+      DOW_GRID.forEach((name, col) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mcal__dow';
+        btn.dataset.col = String(col);
+        btn.textContent = name;
+        btn.addEventListener('click', () => toggleColumn(col));
+        dows.append(btn);
+      });
+      const days = document.createElement('div');
+      days.className = 'mcal__days';
+      for (let w = mondayOf(first); w <= monthEnd; w = addDays(w, 7)) {
+        const week = document.createElement('div');
         week.className = 'mcal__week';
-        for (let c = 0; c < col; c++) week.append(blank());
+        for (let i = 0; i < 7; i++) {
+          const d = addDays(w, i);
+          const weekend = i >= 5;
+          if (d < first) { week.append(cell('mcell--blank')); continue; }
+          if (d > monthEnd && !lastBlock) { week.append(cell('mcell--blank')); continue; }
+          if (d > monthEnd) {
+            const out = cell('mcell--outside');
+            out.classList.toggle('is-weekend', weekend);
+            out.textContent = d.getDate();
+            week.append(out);
+            continue;
+          }
+          shown.push(d);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'mcell';
+          btn.dataset.key = String(key(d));
+          btn.classList.toggle('is-today', sameDay(d, RB.today));
+          btn.classList.toggle('is-past', d < RB.today);
+          btn.classList.toggle('is-weekend', weekend);
+          btn.setAttribute('aria-label', cellLabel(d));
+          btn.innerHTML = `${sameDay(d, RB.today) ? '<span class="mcell__today">Today</span>' : ''}${d.getDate()}`;
+          btn.addEventListener('click', () => tapDay(d));
+          week.append(btn);
+        }
+        days.append(week);
       }
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'mcell';
-      btn.dataset.key = String(key(d));
-      btn.classList.toggle('is-today', sameDay(d, RB.today));
-      btn.classList.toggle('is-past', d < RB.today);
-      btn.setAttribute('aria-label', cellLabel(d));
-      btn.innerHTML = `${sameDay(d, RB.today) ? '<span class="mday__today">Today</span>' : ''}<span class="mcell__num">${d.getDate()}</span>`;
-      btn.addEventListener('click', () => tapDay(d));
-      week.append(btn);
-      if (col === 6) closeWeek();
-    });
-    closeWeek();
-    calWeeks.replaceChildren(...rows);
+      block.append(head, dows, days);
+      blocks.push(block);
+    }
+    calWeeks.replaceChildren(...blocks);
     updateCal();
   }
 
   // Update states in place (no rebuild), so focus stays where it was and
   // no programmatic focus ring appears on the tapped cell.
   function updateCal() {
-    calTimeline.textContent = timelineText();
-    [...calDows.children].forEach((btn, col) => {
+    calWeeks.querySelectorAll('.mcal__dow').forEach((btn) => {
+      const col = Number(btn.dataset.col);
       const eligible = eligibleInColumn(col);
       const all = eligible.length > 0 && eligible.every((d) => selected.has(key(d)));
       btn.setAttribute('aria-pressed', String(all));
@@ -258,7 +265,7 @@
     calSheet.getBoundingClientRect();
     calSheet.classList.add('is-open');
     // Focus for keyboard users without drawing a ring after a tap.
-    (calWeeks.querySelector('.is-selected') || $('[data-cal-close]')).focus({ preventScroll: true, focusVisible: false });
+    (calWeeks.querySelector('.mcell.is-selected') || calCta).focus({ preventScroll: true, focusVisible: false });
   }
 
   // Close or swipe = discard; the CTA applies.
@@ -284,7 +291,6 @@
   }
 
   calCta.addEventListener('click', () => closeCal({ apply: true }));
-  $('[data-cal-close]').addEventListener('click', () => closeCal());
   RB.draggable(calSheet, $('[data-cal-grip]'), () => closeCal());
   $('[data-backdrop]').addEventListener('click', () => closeCal());
   $('[data-screen]').addEventListener('keydown', (e) => {

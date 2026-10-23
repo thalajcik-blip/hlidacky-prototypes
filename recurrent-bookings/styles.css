@@ -395,66 +395,84 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 
 /* ---------- v5: calendar sheet ---------- */
 
-.cal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.cal-head .sheet__title { margin-bottom: 4px; }
-.cal-head__close { display: grid; flex: 0 0 auto; width: 32px; height: 32px; margin: -2px -6px 0 0; place-items: center; border: 0; background: none; color: var(--gray-500); font-size: 22px; cursor: pointer; }
-.cal-head__close:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
-.cal-timeline { margin: 0 0 16px; color: var(--gray-600); font-size: 14px; font-variant-numeric: tabular-nums; }
-.cal-timeline:empty { display: none; }
-
+/* Values from the Bookings Figma (5156:165745) */
+.cal-title { margin-bottom: 16px; }
+.mcal { display: flex; flex-direction: column; gap: 8px; }
+.mcal__block { padding-bottom: 12px; }
+.mcal__mhead {
+  padding: 4px 4px 5px;
+  border-bottom: 1px solid var(--gray-300);
+  color: var(--gray-900);
+  font-size: 12px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
 .mcal__dows, .mcal__week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-.mcal__dows { margin-bottom: 6px; }
+/* Column headers: tap for every eligible day in that column */
 .mcal__dow {
-  height: 30px;
+  height: 36px;
   padding: 0;
   border: 0;
   border-radius: 6px;
   background: none;
   color: var(--gray-600);
   font-size: 14px;
+  line-height: 1.4;
   cursor: pointer;
 }
-.mcal__dow:hover { background: var(--gray-100); }
-/* Every eligible date in the column is selected */
-.mcal__dow[aria-pressed="true"] { background: var(--pink-100); color: var(--pink-500); font-weight: 600; }
-.mcal__dow:disabled { cursor: default; }
-.mcal__dow:disabled:hover { background: none; }
-.mcal__dow:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
-
-.mcal__weeks { display: flex; flex-direction: column; gap: 4px; }
-.mcal__month { margin: 8px 0 2px; color: var(--gray-500); font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
-.mcal__month:first-child { margin-top: 0; }
+.mcal__dow:hover { color: var(--gray-900); }
+.mcal__dow[aria-pressed="true"] { color: var(--pink-500); font-weight: 700; }
+.mcal__dow:focus-visible { outline: 2px solid #6aafff; outline-offset: -2px; }
+.mcal__days { display: flex; flex-direction: column; gap: 4px; }
 
 .mcell {
   position: relative;
   display: flex;
-  height: 44px;
-  flex-direction: column;
+  height: 40px;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 3px;
   border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--gray-800);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray-900);
   font-size: 15px;
-  line-height: 1.1;
+  line-height: 1.4;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background-color .12s ease, color .12s ease;
 }
+.mcell.is-weekend { background: #feecee; }
 .mcell:hover { background: var(--gray-100); }
-/* Blank cells before a month's first day and after its last */
+.mcell.is-weekend:hover { background: #fde0e4; }
+/* Past days and the next month's days at the end of a block */
+.mcell.is-past,
+.mcell--outside { color: var(--gray-600); font-weight: 300; }
+.mcell--outside,
 .mcell--blank { cursor: default; }
+.mcell--outside:hover { background: #fff; }
+.mcell--outside.is-weekend:hover { background: #feecee; }
+.mcell--blank,
 .mcell--blank:hover { background: transparent; }
-.mcell.is-past { color: var(--gray-400); }
-/* Selected: the only selected style in the sheet */
+/* Today: white, a thin pink frame and a tag on the top edge */
+.mcell.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1px #ffd5da; background: #fff; font-weight: 700; }
+.mcell__today {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  padding: 0 2px;
+  border-radius: 2px;
+  background: #fff;
+  color: var(--gray-600);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+  transform: translateX(-50%);
+}
+/* Selected */
 .mcell.is-selected,
-.mcell.is-selected:hover { background: var(--pink-400); color: #fff; font-weight: 600; box-shadow: none; }
-/* Stay range: the days between the ends */
-.mcell.is-in-range { border-radius: 0; background: var(--pink-100); }
+.mcell.is-selected:hover { background: var(--pink-400); color: #fff; font-weight: 700; }
 .mcell:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
-
 
 .cal-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 4px; background: #fff7e6; color: #6b4e16; font-size: 13px; line-height: 1.4; }
 .cal-note[hidden] { display: none; }
@@ -807,15 +825,14 @@ body[data-view="confirm"] .booking { display: none; }
 .day.is-today:not(.is-selected) .day__band { background: var(--pink-100); color: var(--pink-500); }
 
 /* Month: taller cells; today is a white, framed cell with a Today tag,
-   which turns into a darker badge on the edge once today is picked.
-   The v5 repeat calendar (.mcell) shares these today states. */
+   which turns into a darker badge on the edge once today is picked. */
 .month { row-gap: 8px; }
 .mday { position: relative; height: 44px; }
-:is(.mday, .mcell).is-today:not(.is-selected) {
+.mday.is-today:not(.is-selected) {
   padding-top: 10px;
   box-shadow: inset 0 0 0 1px var(--gray-300), 0 4px 8px -4px rgba(42, 53, 57, .2);
 }
-:is(.mday, .mcell).is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
+.mday.is-today:not(.is-weekend):not(.is-selected) { background: #fff; }
 .mday__today {
   position: absolute;
   top: 4px;
@@ -826,7 +843,7 @@ body[data-view="confirm"] .booking { display: none; }
   font-weight: 400;
   line-height: 1;
 }
-:is(.mday, .mcell).is-selected .mday__today {
+.mday.is-selected .mday__today {
   top: -6px;
   padding: 2px 4px;
   border-radius: 4px;
