@@ -200,10 +200,10 @@
     // (no disabled buttons) and keeps the original date.
     const ctaDay = (d) => `${label(d)}${sameDay(d, RB.today) ? ' (Today)' : ''}`;
     if (n >= 2) {
-      calCtaMain.textContent = `Set ${n} bookings`;
+      calCtaMain.textContent = `Continue with ${n} dates`;
       calCtaSub.textContent = `from ${ctaDay(dates[0])} to ${ctaDay(dates.at(-1))}`;
     } else if (n === 1) {
-      calCtaMain.textContent = 'Set 1 booking';
+      calCtaMain.textContent = 'Continue with 1 date';
       calCtaSub.textContent = `on ${ctaDay(dates[0])}`;
     } else {
       calCtaMain.textContent = `Keep ${ctaDay(originalDate)}`;

@@ -869,7 +869,7 @@
     const dates = bookedDates(r);
     applyBtn.disabled = dates.length === 0;
     $('[data-repeat-apply-main]').textContent = dates.length
-      ? `Set ${dates.length} ${dates.length === 1 ? 'booking' : 'bookings'}`
+      ? `Continue with ${dates.length} ${dates.length === 1 ? 'date' : 'dates'}`
       : 'No dates picked';
     $('[data-repeat-apply-sub]').textContent = dates.length === 0
       ? 'Pick a day and keep at least one date'
