@@ -19,6 +19,7 @@
     <nav class="variant-switch" role="radiogroup" aria-label="Variant">
       <label class="variant-switch__option"><input type="radio" name="variant" value="1" checked><span>Variant 1 · Weekday repeat</span></label>
       <label class="variant-switch__option"><input type="radio" name="variant" value="2"><span>Variant 2 · v5 · Repeat booking (calendar)</span></label>
+      <label class="variant-switch__option"><input type="radio" name="variant" value="3"><span>Variant 3 · Bookings list in the form</span></label>
     </nav>
 
     <div class="layout">
@@ -136,11 +137,11 @@
 
               <!-- v5: repeat it, then the same card as Variant 1 to edit or
                    remove the dates; single day only (several days can't repeat) -->
-              <div class="v5-links" data-variant-only="2" data-only="single">
+              <div class="v5-links" data-variant-only="2 3" data-only="single">
                 <button class="repeat-link" type="button" data-v5-repeat>
                   <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
                 </button>
-                <div class="repeat-card" data-v5-card hidden>
+                <div class="repeat-card" data-v5-card data-variant-only="2" hidden>
                   <i class="fa-regular fa-arrows-repeat repeat-card__icon" aria-hidden="true"></i>
                   <div class="repeat-card__text">
                     <strong data-v5-title></strong>
@@ -151,6 +152,20 @@
                   </div>
                   <button class="repeat-card__remove" type="button" data-v5-remove aria-label="Stop repeating">
                     <i class="fa-light fa-xmark" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Variant 3: with two or more dates, the bookings are listed
+                   here in place of the date / time row -->
+              <div class="v3-list" data-v3-list data-variant-only="3" data-only="single" hidden>
+                <ul class="v3-list__items" data-v3-items></ul>
+                <div class="v3-list__footer">
+                  <button class="btn-small" type="button" data-v3-add>
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i><span>Add more</span>
+                  </button>
+                  <button class="v3-list__remove-all" type="button" data-v3-remove-all>
+                    <i class="fa-regular fa-xmark" aria-hidden="true"></i><span>Remove all</span>
                   </button>
                 </div>
               </div>
@@ -346,6 +361,16 @@
       </div>
 
       <aside class="notes">
+        <section class="notes__card" data-variant-only="3">
+          <h2>What to try</h2>
+          <ul>
+            <li><strong>+ Repeat this booking</strong> opens Variant 2's calendar. Pick two or more days and <em>Continue</em>.</li>
+            <li><strong>The bookings are listed in the form</strong> in place of the date and times, each with its price. <em>Edit time</em> changes one booking's From and To; <em>×</em> removes it.</li>
+            <li><strong>Add more</strong> reopens the calendar; <em>Remove all</em> keeps only the first date.</li>
+            <li><strong>No review step:</strong> <em>Send N booking requests</em> sends them straight away and opens Bookings.</li>
+          </ul>
+        </section>
+
         <section class="notes__card" data-variant-only="2">
           <h2>What to try</h2>
           <ul>
@@ -390,6 +415,11 @@
           <input type="radio" name="variant-m" value="2">
           <span class="variant-option__radio" aria-hidden="true"></span>
           <span class="variant-option__text"><strong>Variant 2 · v5 · Repeat booking (calendar)</strong><small>One multi-select calendar: what you select is what gets sent.</small></span>
+        </label>
+        <label class="variant-option">
+          <input type="radio" name="variant-m" value="3">
+          <span class="variant-option__radio" aria-hidden="true"></span>
+          <span class="variant-option__text"><strong>Variant 3 · Bookings list in the form</strong><small>Variant 2's calendar, but the bookings are managed in the form: no review step.</small></span>
         </label>
       </div>
     </form>

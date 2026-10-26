@@ -1,10 +1,13 @@
-// Variant 2 — "v5 · Repeat booking (calendar)". Replaces the weekday
+// Variants 2 and 3 — "v5 · Repeat booking (calendar)". Replaces the weekday
 // repeat with one multi-select calendar: what is selected is what gets
 // sent, each date as its own booking request. Plugs into app.js through
 // window.RB (shared state, date sheet, time picker, render/send hooks).
 // Follows repeat-booking-v5-calendar-spec.md, but on Variant 1's date and
 // time row: a series shows in its date cell, and "Several days" can't
 // repeat. Pet care is treated like every other service (no visits/stays).
+// Variant 2 sends a series through app.js's review step; Variant 3 lists
+// it in the form instead (each booking with its own times) and sends it
+// from there.
 
 (() => {
   const RB = window.RB;
@@ -21,7 +24,9 @@
 
   const v5 = {
     series: null, // sorted dates when 2 or more are booked, else null
+    items: [], // Variant 3: the series as { date, start, end }
   };
+  const isV3 = () => RB.variant === 3;
 
   const key = (d) => d.getTime();
   const label = (d) => `${DOW_SHORT[d.getDay()]} ${short(d)}`;
@@ -33,6 +38,9 @@
   const repeatLink = $('[data-v5-repeat]');
   const removeLink = $('[data-v5-remove]');
   const card = $('[data-v5-card]');
+  const v3List = $('[data-v3-list]');
+  const v3Items = $('[data-v3-items]');
+  const v3Add = $('[data-v3-add]');
   const totalBox = $('[data-total-box]');
 
   const calSheet = $('[data-cal-sheet]');
@@ -56,6 +64,12 @@
     repeatLink.hidden = !!series;
     card.hidden = !series;
     totalBox.hidden = !!series;
+    if (!series) v5.items = [];
+    // Variant 3: the list takes the date / time row's place.
+    const listed = isV3() && !!series;
+    v3List.hidden = !listed;
+    document.body.toggleAttribute('data-listed', listed);
+    if (listed) renderList();
 
     if (series) {
       const n = series.length;
@@ -65,8 +79,76 @@
     }
 
     RB.updateTotal(1);
-    RB.setSendLabel(series ? series.length : 1);
+    RB.setSendLabel(series ? series.length : 1, { review: !isV3() });
   }
+
+  // ---------- Variant 3: the bookings listed in the form ----------
+
+  // Keep each date's own times; a new date gets the form's times.
+  function syncItems() {
+    const old = v5.items;
+    v5.items = (v5.series || []).map((d) => old.find((it) => sameDay(it.date, d)) || { date: d, start: state.startTime, end: state.endTime });
+  }
+
+  function renderList() {
+    v3Items.replaceChildren(...v5.items.map((it, i) => {
+      const li = document.createElement('li');
+      li.className = 'confirm__item';
+      li.innerHTML = `
+        <span class="confirm__date"><strong></strong><span class="confirm__meta"><span class="confirm__times"></span><span class="price-pill"></span></span></span>
+        <span class="confirm__actions">
+          <button class="btn-small" type="button" data-v3-edit>Edit time</button>
+          <button class="icon-btn icon-btn--remove" type="button" data-v3-remove><i class="fa-regular fa-xmark" aria-hidden="true"></i></button>
+        </span>`;
+      li.querySelector('strong').textContent = RB.longDate(it.date);
+      li.querySelector('.confirm__times').textContent = RB.itemTimes(it);
+      li.querySelector('.price-pill').textContent = `${RB.itemPrice(it).toLocaleString('cs-CZ')} Kč`;
+      const edit = li.querySelector('[data-v3-edit]');
+      edit.setAttribute('aria-label', `Edit the time on ${RB.longDate(it.date)}`);
+      edit.addEventListener('click', () => RB.openEditItem(it, edit, (draft) => {
+        v5.items[i] = draft;
+        renderMain();
+      }));
+      const remove = li.querySelector('[data-v3-remove]');
+      remove.setAttribute('aria-label', `Remove the booking on ${RB.longDate(it.date)}`);
+      remove.addEventListener('click', () => removeItem(i));
+      return li;
+    }));
+  }
+
+  // Down to one booking, it goes back to the date / time row with its times.
+  function removeItem(i) {
+    v5.items.splice(i, 1);
+    v5.series = v5.items.map((it) => it.date);
+    if (v5.items.length === 1) {
+      const [last] = v5.items;
+      state.startDate = last.date;
+      state.startTime = last.start;
+      state.endTime = last.end;
+      v5.series = null;
+      RB.renderForm();
+      RB.flash(dateField);
+      dateField.focus({ preventScroll: true, focusVisible: false });
+      return;
+    }
+    state.startDate = v5.series[0];
+    RB.renderForm();
+    v3Add.focus({ preventScroll: true, focusVisible: false });
+  }
+
+  v3Add.addEventListener('click', () => openCal());
+  // Remove all keeps the first date, with its times.
+  $('[data-v3-remove-all]').addEventListener('click', () => {
+    const [first] = v5.items;
+    state.startDate = first.date;
+    state.startTime = first.start;
+    state.endTime = first.end;
+    v5.series = null;
+    RB.renderForm();
+    RB.flash(dateField);
+    repeatLink.focus({ preventScroll: true });
+  });
+  RB.rateSelect.addEventListener('change', () => { if (isV3() && v5.series) renderList(); });
 
   repeatLink.addEventListener('click', () => openCal());
   $('[data-v5-edit]').addEventListener('click', () => openCal());
@@ -262,6 +344,7 @@
       if (dates.length >= 2) {
         v5.series = dates;
         state.startDate = dates[0];
+        syncItems();
       } else {
         v5.series = null;
         state.startDate = dates.length === 1 ? dates[0] : originalDate;
@@ -273,7 +356,7 @@
     calSheet.classList.remove('is-open', 'is-dragging');
     RB.hideBackdrop();
     calCloseTimer = setTimeout(() => { calSheet.hidden = true; }, 420);
-    (v5.series ? dateField : repeatLink).focus({ preventScroll: true, focusVisible: false });
+    (v5.series ? (isV3() ? v3Add : dateField) : repeatLink).focus({ preventScroll: true, focusVisible: false });
   }
 
   calCta.addEventListener('click', () => closeCal({ apply: true }));
@@ -288,29 +371,33 @@
   hooks.render = renderMain;
   // With a series, the date cell edits the series instead of one date.
   hooks.dateField = (target) => {
-    if (RB.variant !== 2 || target !== 'start' || isMulti() || !v5.series) return false;
+    if (RB.variant < 2 || target !== 'start' || isMulti() || !v5.series) return false;
     openCal();
     return true;
   };
   // Several days can't repeat: drop the series, keep its start.
   hooks.modeChange = (mode) => {
-    if (RB.variant !== 2 || mode !== 'multi' || !v5.series) return;
+    if (RB.variant < 2 || mode !== 'multi' || !v5.series) return;
     state.startDate = v5.series[0];
     v5.series = null;
     RB.toast('Repeat removed — several days can\'t repeat.');
   };
   hooks.closeSheets = () => closeCal();
   hooks.send = () => {
-    if (v5.series) RB.showReview(v5.series);
-    else RB.sendNow();
+    if (!v5.series) RB.sendNow();
+    else if (isV3()) RB.showBookings(v5.items.map((it) => ({ ...it })));
+    else RB.showReview(v5.series);
   };
   // Called by RB.resetForm before it sets the date and times.
   hooks.reset = () => {
     v5.series = null;
+    v5.items = [];
     totalBox.hidden = false; // Variant 1 never hides it
+    v3List.hidden = true;
+    document.body.removeAttribute('data-listed');
     tiles.forEach((t, i) => { t.checked = i === 0; }); // babysitting
-    if (RB.variant === 2) RB.setToday(DEMO_TODAY);
+    if (RB.variant >= 2) RB.setToday(DEMO_TODAY);
   };
 
-  if (RB.variant === 2) RB.resetForm();
+  if (RB.variant >= 2) RB.resetForm();
 })();

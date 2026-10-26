@@ -48,7 +48,8 @@ button { font: inherit; color: inherit; }
 
 /* data-variant-only lists the variants a part belongs to. */
 body[data-variant="1"] [data-variant-only]:not([data-variant-only~="1"]),
-body[data-variant="2"] [data-variant-only]:not([data-variant-only~="2"]) { display: none !important; }
+body[data-variant="2"] [data-variant-only]:not([data-variant-only~="2"]),
+body[data-variant="3"] [data-variant-only]:not([data-variant-only~="3"]) { display: none !important; }
 
 .variant-switch {
   display: inline-flex;
@@ -630,6 +631,72 @@ body[data-view] .booking { display: none; }
 .mday--static.is-weekend:hover:not(.is-selected) { background: #feecee; }
 .review-toggle { margin: 0 auto; font-size: 16px; opacity: .8; }
 .review-toggle:hover { opacity: 1; }
+
+/* ---------- Variant 3: bookings listed in the form ---------- */
+
+/* The list replaces the date / time row. */
+body[data-listed] .when-section > .when { display: none; }
+.v3-list { display: flex; flex-direction: column; }
+.v3-list[hidden] { display: none; }
+.v3-list__items {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px 4px 0 0;
+  list-style: none;
+}
+.v3-list__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 8px;
+  border: 1px solid var(--gray-300);
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: #f1f5fb;
+}
+.v3-list__remove-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pink-400);
+  font-size: 14px;
+  opacity: .8;
+  cursor: pointer;
+}
+.v3-list__remove-all i { font-size: 12px; }
+.v3-list__remove-all span { text-decoration: underline; text-decoration-color: #ff9ba7; text-underline-offset: 3px; }
+.v3-list__remove-all:hover { opacity: 1; }
+.v3-list__remove-all:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; border-radius: 4px; }
+
+/* Small tertiary text button: Edit time, Add more */
+.btn-small {
+  display: inline-flex;
+  height: 32px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px 2px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: inset 0 -3px 0 var(--gray-300);
+  color: var(--gray-800);
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-small i { font-size: 11px; }
+.btn-small:hover { background: var(--gray-100); }
+.btn-small:active { box-shadow: none; transform: translateY(2px); }
+.btn-small:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
 
 /* Icon-only tertiary buttons: Edit and Remove */
 .confirm__actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }

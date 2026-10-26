@@ -73,7 +73,9 @@
   // from v5.js and its dev panel).
   let today = realToday;
   const params = new URLSearchParams(location.search);
-  let variant = params.get('variant') === '2' ? 2 : 1;
+  // 1: weekday repeat; 2 and 3: the v5 calendar (v5.js), with a review
+  // step (2) or the bookings listed in the form itself (3).
+  let variant = ['2', '3'].includes(params.get('variant')) ? Number(params.get('variant')) : 1;
   const hooks = {}; // filled in by v5.js
   const state = {
     mode: 'single',
@@ -137,7 +139,7 @@
     $$('[data-date-field="end"]').forEach((b) => b.setAttribute('aria-label', `End date: ${DOW_LONG[end.getDay()]}, ${short(end)}. Change`));
     $$('[data-time-field="start"]').forEach((b) => b.setAttribute('aria-label', `From ${state.startTime}. Change`));
     $$('[data-time-field="end"]').forEach((b) => b.setAttribute('aria-label', `To ${state.endTime}${!multi && isOvernight() ? ', next day' : ''}. Change`));
-    if (variant === 2) {
+    if (variant >= 2) {
       hooks.render?.();
     } else {
       renderRepeatCard();
@@ -934,10 +936,12 @@
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
   const sortItems = () => reviewItems.sort((a, b) => a.date - b.date || toMinutes(a.start) - toMinutes(b.start));
 
-  // The form's CTA: "Review N booking requests" once there's more than one.
-  function setSendLabel(n) {
-    sendBtn.querySelector('.cta__main').textContent = n > 1 ? `Review ${n} booking requests` : 'Send booking request';
-    sendBtn.querySelector('.cta__sub').textContent = n > 1 ? 'You can edit each booking in the next step' : 'Change time or price anytime';
+  // The form's CTA: "Review N booking requests" once there's more than one,
+  // or with no review step (Variant 3) "Send N booking requests".
+  function setSendLabel(n, { review = true } = {}) {
+    const main = n <= 1 ? 'Send booking request' : review ? `Review ${n} booking requests` : `Send ${n} booking requests`;
+    sendBtn.querySelector('.cta__main').textContent = main;
+    sendBtn.querySelector('.cta__sub').textContent = n > 1 && review ? 'You can edit each booking in the next step' : 'Change time or price anytime';
   }
 
   function renderReview() {
@@ -1125,7 +1129,7 @@
 
   const editSheet = $('[data-edit-sheet]');
   const editSave = $('[data-edit-save]');
-  let editIndex = -1;
+  let editApply = null; // what Use does with the edited times
   let editDraft = null;
   let editOpener = null;
   let editCloseTimer = null;
@@ -1152,11 +1156,21 @@
     editSave.textContent = `Use ${editDraft.start}–${editDraft.end}${itemOvernight(editDraft) ? ' (next day)' : ''}`;
   }
 
+  // One review booking.
   function openEdit(i, opener) {
+    openEditItem(reviewItems[i], opener, (draft) => {
+      reviewItems[i] = draft;
+      sortItems();
+      renderReview();
+    });
+  }
+
+  // Any booking ({ date, start, end }); onApply gets the edited copy.
+  function openEditItem(item, opener, onApply) {
     clearTimeout(editCloseTimer);
-    editIndex = i;
+    editApply = onApply;
     editOpener = opener;
-    editDraft = { ...reviewItems[i] };
+    editDraft = { ...item };
     renderEdit();
     editSheet.style.transform = '';
     showBackdrop();
@@ -1169,11 +1183,7 @@
   function closeEdit({ apply = false } = {}) {
     if (editSheet.hidden) return;
     closeTimePicker({ refocus: false });
-    if (apply) {
-      reviewItems[editIndex] = editDraft;
-      sortItems();
-      renderReview();
-    }
+    if (apply) editApply?.(editDraft);
     editSheet.style.transform = '';
     editSheet.classList.remove('is-open', 'is-dragging');
     hideBackdrop();
@@ -1193,7 +1203,7 @@
     state.mode = 'single';
     if (variant === 1) today = realToday;
     hooks.reset?.();
-    state.startDate = addDays(today, variant === 2 ? 1 : DEFAULT_OFFSET_DAYS);
+    state.startDate = addDays(today, variant >= 2 ? 1 : DEFAULT_OFFSET_DAYS);
     state.endDate = state.startDate;
     state.startTime = DEFAULT_TIMES.start;
     state.endTime = DEFAULT_TIMES.end;
@@ -1202,7 +1212,7 @@
   }
 
   sendBtn.addEventListener('click', () => {
-    if (variant === 2) { hooks.send?.(); return; }
+    if (variant >= 2) { hooks.send?.(); return; }
     const dates = repeat ? bookedDates(repeat) : [state.startDate];
     if (state.mode === 'single' && dates.length > 1) showReview(dates);
     else sendNow();
@@ -1277,6 +1287,7 @@
     isOvernight, durationMinutes,
     renderForm, resetForm, toast, flash, setMode,
     showReview, setSendLabel, sendNow, daysPhrase, seriesLabel,
+    showBookings, openEditItem, itemPrice, itemTimes, longDate,
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
     draggable, showBackdrop, hideBackdrop,
