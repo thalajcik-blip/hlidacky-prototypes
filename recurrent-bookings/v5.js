@@ -1,4 +1,4 @@
-// Variants 2 and 3 — "v5 · Repeat booking (calendar)". Replaces the weekday
+// Variants 2 and 3 — "Repeat booking (calendar)". Replaces the weekday
 // repeat with one multi-select calendar: what is selected is what gets
 // sent, each date as its own booking request. Plugs into app.js through
 // window.RB (shared state, date sheet, time picker, render/send hooks).
