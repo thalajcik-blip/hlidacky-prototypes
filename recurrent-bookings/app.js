@@ -1276,7 +1276,7 @@
     day, addDays, sameDay, mondayOf, short, toMinutes, fromMinutes,
     isOvernight, durationMinutes,
     renderForm, resetForm, toast, flash, setMode,
-    showReview, setSendLabel, sendNow,
+    showReview, setSendLabel, sendNow, daysPhrase, seriesLabel,
     openDateSheet: (field) => openSheet('start', field),
     closeTimePicker,
     draggable, showBackdrop, hideBackdrop,

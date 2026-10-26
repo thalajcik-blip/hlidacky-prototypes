@@ -375,6 +375,8 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 
 /* Repeat / Remove repeat under the date and time row */
 .v5-links { display: flex; flex-direction: column; align-items: flex-start; }
+.v5-links .repeat-card { align-self: stretch; }
+.total[hidden] { display: none; }
 
 .text-link {
   align-self: flex-start;

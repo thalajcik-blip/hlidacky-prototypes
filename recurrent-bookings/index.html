@@ -134,12 +134,25 @@
                 </button>
               </div>
 
-              <!-- v5: repeat or remove it; single day only (Several days can't repeat) -->
+              <!-- v5: repeat it, then the same card as Variant 1 to edit or
+                   remove the dates; single day only (several days can't repeat) -->
               <div class="v5-links" data-variant-only="2" data-only="single">
                 <button class="repeat-link" type="button" data-v5-repeat>
                   <i class="fa-regular fa-plus" aria-hidden="true"></i><span>Repeat this booking</span>
                 </button>
-                <button class="text-link" type="button" data-v5-remove hidden>Remove repeat</button>
+                <div class="repeat-card" data-v5-card hidden>
+                  <i class="fa-regular fa-arrows-repeat repeat-card__icon" aria-hidden="true"></i>
+                  <div class="repeat-card__text">
+                    <strong data-v5-title></strong>
+                    <span data-v5-sub></span>
+                    <button class="repeat-card__edit" type="button" data-v5-edit>
+                      <i class="fa-light fa-pen-to-square" aria-hidden="true"></i><span>Edit</span>
+                    </button>
+                  </div>
+                  <button class="repeat-card__remove" type="button" data-v5-remove aria-label="Stop repeating">
+                    <i class="fa-light fa-xmark" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
 
               <!-- Custom time picker: hours and quarter-hour minutes -->
@@ -169,7 +182,7 @@
                 </select>
                 <i class="fa-regular fa-chevron-down" aria-hidden="true"></i>
               </label>
-              <div class="total">
+              <div class="total" data-total-box>
                 <span data-total-label>total price for 3 hours</span>
                 <strong><span data-total>450</span> <small>Kč</small></strong>
               </div>

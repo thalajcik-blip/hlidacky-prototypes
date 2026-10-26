@@ -32,6 +32,8 @@
   const dateField = $('.when [data-date-field="start"]'); // Variant 1's date cell
   const repeatLink = $('[data-v5-repeat]');
   const removeLink = $('[data-v5-remove]');
+  const card = $('[data-v5-card]');
+  const totalBox = $('[data-total-box]');
 
   const calSheet = $('[data-cal-sheet]');
   const calWeeks = $('[data-cal-weeks]');
@@ -44,30 +46,30 @@
   const isMulti = () => state.mode === 'multi';
 
   // ---------- main screen ----------
-  // Variant 1's row stays as it is; a series replaces the date cell's text
-  // with "N dates" over the first date, and that cell then opens the
-  // calendar.
+  // Variant 1's row stays as it is, showing the first date; with a series
+  // the date cell opens the calendar, and Variant 1's repeat card replaces
+  // the link (Edit opens the calendar, X keeps the first date). Each
+  // booking is priced in the review, so the total is hidden.
 
   function renderMain() {
     const series = isMulti() ? null : v5.series;
     repeatLink.hidden = !!series;
-    removeLink.hidden = !series;
+    card.hidden = !series;
+    totalBox.hidden = !!series;
 
     if (series) {
       const n = series.length;
-      dateField.querySelector('[data-start-dow]').textContent = `${n} dates`;
-      // The cell is narrow: the count goes on top, the first date below.
-      dateField.querySelector('[data-start-date]').textContent = short(series[0]);
+      $('[data-v5-title]').textContent = `Repeats on ${RB.daysPhrase(new Set(series.map((d) => d.getDay())))}`;
+      $('[data-v5-sub]').textContent = `${n} dates, first ${RB.seriesLabel(series[0])}, last ${RB.seriesLabel(series.at(-1))}`;
       dateField.setAttribute('aria-label', `${n} dates: ${series.map(label).join(', ')} Edit`);
     }
 
-    // Price: one booking, or with a series the first booking's only.
-    RB.updateTotal(series ? series.length : 1);
-
+    RB.updateTotal(1);
     RB.setSendLabel(series ? series.length : 1);
   }
 
   repeatLink.addEventListener('click', () => openCal());
+  $('[data-v5-edit]').addEventListener('click', () => openCal());
   // Removing the repeat keeps the earliest date as a single booking.
   removeLink.addEventListener('click', () => {
     v5.series = null;
@@ -305,6 +307,7 @@
   // Called by RB.resetForm before it sets the date and times.
   hooks.reset = () => {
     v5.series = null;
+    totalBox.hidden = false; // Variant 1 never hides it
     tiles.forEach((t, i) => { t.checked = i === 0; }); // babysitting
     if (RB.variant === 2) RB.setToday(DEMO_TODAY);
   };
