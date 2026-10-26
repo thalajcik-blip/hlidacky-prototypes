@@ -64,7 +64,7 @@
     repeatLink.hidden = !!series;
     card.hidden = !series;
     totalBox.hidden = !!series;
-    if (!series) v5.items = [];
+    if (!v5.series) v5.items = [];
     // Variant 3: the list takes the date / time row's place.
     const listed = isV3() && !!series;
     v3List.hidden = !listed;
@@ -376,15 +376,23 @@
     return true;
   };
   // Several days can't repeat: drop the series, keep its start.
+  // Variant 3 keeps the series aside instead: it comes back, list and
+  // all, on switching back to a single day.
   hooks.modeChange = (mode) => {
+    if (isV3() && mode === 'single' && v5.series) return true;
     if (RB.variant < 2 || mode !== 'multi' || !v5.series) return;
     state.startDate = v5.series[0];
+    if (isV3()) {
+      state.startTime = v5.items[0].start;
+      state.endTime = v5.items[0].end;
+      return;
+    }
     v5.series = null;
     RB.toast('Repeat removed — several days can\'t repeat.');
   };
   hooks.closeSheets = () => closeCal();
   hooks.send = () => {
-    if (!v5.series) RB.sendNow();
+    if (isMulti() || !v5.series) RB.sendNow();
     else if (isV3()) RB.showBookings(v5.items.map((it) => ({ ...it })));
     else RB.showReview(v5.series);
   };

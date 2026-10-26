@@ -180,7 +180,8 @@
 
   function setMode(mode) {
     if (mode === state.mode) return;
-    hooks.modeChange?.(mode);
+    // true: v5 brings back a kept series, so the one-day note doesn't apply.
+    const restored = hooks.modeChange?.(mode) === true;
     if (mode === 'multi') {
       // Keep the same span, now with its own end date.
       state.endDate = effectiveEndDate();
@@ -188,7 +189,7 @@
         repeat = null;
         toast('Several days can\'t be repeated, so the repeat was removed.');
       }
-    } else if (durationMinutes() > 1440 || durationMinutes() <= 0) {
+    } else if (!restored && (durationMinutes() > 1440 || durationMinutes() <= 0)) {
       // Longer than a day can't be a single booking: keep the times and
       // let them fall on one day (or overnight).
       toast('Shortened to one day. Several days can\'t be repeated.');
