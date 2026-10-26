@@ -199,6 +199,16 @@
               </div>
               <div class="confirm__content">
                 <ul class="confirm__list" data-confirm-list></ul>
+                <!-- Variant 2: the same bookings on a month calendar -->
+                <div class="review-cal" data-review-cal hidden>
+                  <div class="cal-nav">
+                    <button class="cal-nav__btn" type="button" data-review-prev aria-label="Previous month"><i class="fa-regular fa-arrow-left" aria-hidden="true"></i></button>
+                    <span class="cal-nav__label" data-review-month aria-live="polite"></span>
+                    <button class="cal-nav__btn" type="button" data-review-next aria-label="Next month"><i class="fa-regular fa-arrow-right" aria-hidden="true"></i></button>
+                  </div>
+                  <div class="month" data-review-grid role="grid" aria-label="Your bookings this month"></div>
+                </div>
+                <button class="view-toggle review-toggle" type="button" data-review-view data-variant-only="2">Show calendar view</button>
                 <button class="cta" type="button" data-review-send>
                   <span class="cta__main"></span>
                   <span class="cta__sub">Change time or price anytime</span>

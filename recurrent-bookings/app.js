@@ -963,11 +963,74 @@
       return li;
     }));
     reviewSend.querySelector('.cta__main').textContent = `Send ${plural(n, 'booking request', 'booking requests')}`;
+    if (reviewView === 'cal') renderReviewCal();
   }
+
+  // ---------- review: calendar view (Variant 2) ----------
+  // The bookings as picked days on a month grid; tapping one edits its
+  // time, other days do nothing. The link under it switches views.
+
+  const reviewCal = $('[data-review-cal]');
+  const reviewGrid = $('[data-review-grid]');
+  const reviewToggle = $('[data-review-view]');
+  let reviewView = 'list';
+  let reviewMonth = null;
+
+  function renderReviewCal() {
+    $('[data-review-month]').textContent = `${MONTHS[reviewMonth.getMonth()]} ${reviewMonth.getFullYear()}`;
+    const cells = DOW_GRID.map((name) => {
+      const el = document.createElement('span');
+      el.className = 'month__dow';
+      el.textContent = name;
+      el.setAttribute('aria-hidden', 'true');
+      return el;
+    });
+    const first = mondayOf(reviewMonth);
+    const last = addDays(mondayOf(day(reviewMonth.getFullYear(), reviewMonth.getMonth() + 1, 0)), 6);
+    for (let d = first; d <= last; d = addDays(d, 1)) {
+      const i = reviewItems.findIndex((it) => sameDay(it.date, d));
+      const el = document.createElement(i >= 0 ? 'button' : 'span');
+      el.className = 'mday';
+      el.classList.toggle('mday--static', i < 0);
+      el.classList.toggle('is-selected', i >= 0);
+      el.classList.toggle('is-today', sameDay(d, today));
+      el.classList.toggle('is-weekend', isWeekend(d));
+      el.classList.toggle('is-outside', d.getMonth() !== reviewMonth.getMonth());
+      if (sameDay(d, today)) el.innerHTML = `<span class="mday__today">Today</span>${d.getDate()}`;
+      else el.textContent = d.getDate();
+      if (i >= 0) {
+        el.type = 'button';
+        el.setAttribute('aria-label', `${longDate(d)}, ${itemTimes(reviewItems[i])}. Edit time`);
+        el.addEventListener('click', () => openEdit(i, el));
+      }
+      cells.push(el);
+    }
+    reviewGrid.replaceChildren(...cells);
+  }
+
+  function setReviewView(v) {
+    reviewView = variant === 2 ? v : 'list';
+    confirmList.hidden = reviewView !== 'list';
+    reviewCal.hidden = reviewView !== 'cal';
+    reviewToggle.textContent = reviewView === 'list' ? 'Show calendar view' : 'Show list view';
+    if (reviewView === 'cal') renderReviewCal();
+  }
+
+  reviewToggle.addEventListener('click', () => setReviewView(reviewView === 'list' ? 'cal' : 'list'));
+  $('[data-review-prev]').addEventListener('click', () => {
+    reviewMonth = day(reviewMonth.getFullYear(), reviewMonth.getMonth() - 1, 1);
+    renderReviewCal();
+  });
+  $('[data-review-next]').addEventListener('click', () => {
+    reviewMonth = day(reviewMonth.getFullYear(), reviewMonth.getMonth() + 1, 1);
+    renderReviewCal();
+  });
 
   function showReview(dates) {
     reviewItems = dates.map((d) => ({ date: d, start: state.startTime, end: state.endTime }));
+    reviewMonth = monthOf(dates[0]);
     renderReview();
+    setReviewView(reviewView);
     document.body.dataset.view = 'confirm';
     confirmEl.hidden = false;
     confirmEl.querySelector('.confirm__scroll').scrollTop = 0;

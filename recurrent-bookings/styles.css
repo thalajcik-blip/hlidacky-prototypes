@@ -618,6 +618,17 @@ body[data-view] .booking { display: none; }
   color: #0ba825 !important;
   line-height: 1.4 !important;
 }
+/* Variant 2: the review's calendar view and the link that switches it */
+.confirm__list[hidden], .review-cal[hidden] { display: none; }
+.review-cal .cal-nav { margin-bottom: 4px; }
+.review-cal .cal-nav__btn[data-review-prev] { margin-left: -10px; }
+.review-cal .cal-nav__btn[data-review-next] { margin-right: -10px; }
+.mday--static { display: flex; align-items: center; justify-content: center; cursor: default; }
+.mday--static:hover:not(.is-selected) { background: #fff; }
+.mday--static.is-weekend:hover:not(.is-selected) { background: #feecee; }
+.review-toggle { margin: 0 auto; font-size: 16px; opacity: .8; }
+.review-toggle:hover { opacity: 1; }
+
 /* Icon-only tertiary buttons: Edit and Remove */
 .confirm__actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
 .icon-btn {
