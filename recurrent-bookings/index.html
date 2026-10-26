@@ -232,12 +232,8 @@
           <section class="sheet edit-sheet" data-edit-sheet role="dialog" aria-modal="true" aria-labelledby="edit-title" hidden>
             <div class="sheet__grip" data-edit-grip><span class="sheet__handle"></span></div>
             <div class="sheet__body" data-time-host>
-              <h2 class="sheet__title" id="edit-title">Edit booking</h2>
-              <div class="when">
-                <button class="when__field" type="button" data-edit-date>
-                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                  <span class="when__text"><small data-edit-dow></small><span data-edit-date-label></span></span>
-                </button>
+              <h2 class="sheet__title" id="edit-title">Edit booking time</h2>
+              <div class="when when--times">
                 <button class="when__field" type="button" data-edit-time="start" aria-haspopup="listbox">
                   <i class="fa-regular fa-clock" aria-hidden="true"></i>
                   <span class="when__text"><small>From</small><span data-edit-start></span></span>
@@ -248,7 +244,7 @@
                   <span class="next-day" data-edit-next-day hidden>next day</span>
                 </button>
               </div>
-              <button class="cta cta--sheet" type="button" data-edit-save>Save changes</button>
+              <button class="cta cta--sheet" type="button" data-edit-save>Use</button>
             </div>
           </section>
 

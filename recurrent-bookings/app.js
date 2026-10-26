@@ -1056,12 +1056,12 @@
   });
 
   // ---------- edit one booking (review step) ----------
-  // A small sheet with the form's date / From / To row for one booking.
-  // The date opens the Pick a date sheet on top; the times open the time
-  // picker. Save applies; a swipe, the backdrop or Esc discard.
+  // A small sheet with From / To for one booking; its date can't change
+  // here. The times open the time picker. "Use 16:00–19:00" applies; a
+  // swipe, the backdrop or Esc discard.
 
   const editSheet = $('[data-edit-sheet]');
-  const editDate = $('[data-edit-date]');
+  const editSave = $('[data-edit-save]');
   let editIndex = -1;
   let editDraft = null;
   let editOpener = null;
@@ -1083,12 +1083,10 @@
   };
 
   function renderEdit() {
-    $('[data-edit-dow]').textContent = DOW_LONG[editDraft.date.getDay()];
-    $('[data-edit-date-label]').textContent = short(editDraft.date);
     $('[data-edit-start]').textContent = editDraft.start;
     $('[data-edit-end]').textContent = editDraft.end;
     $('[data-edit-next-day]').hidden = !itemOvernight(editDraft);
-    editDate.setAttribute('aria-label', `Date: ${DOW_LONG[editDraft.date.getDay()]}, ${short(editDraft.date)}. Change`);
+    editSave.textContent = `Use ${editDraft.start}–${editDraft.end}${itemOvernight(editDraft) ? ' (next day)' : ''}`;
   }
 
   function openEdit(i, opener) {
@@ -1102,7 +1100,7 @@
     editSheet.hidden = false;
     editSheet.getBoundingClientRect();
     editSheet.classList.add('is-open');
-    editDate.focus({ preventScroll: true, focusVisible: false });
+    $('[data-edit-time="start"]').focus({ preventScroll: true, focusVisible: false });
   }
 
   function closeEdit({ apply = false } = {}) {
@@ -1120,15 +1118,10 @@
     if (!apply) editOpener?.focus({ preventScroll: true, focusVisible: false });
   }
 
-  editDate.addEventListener('click', () => openSheet('custom', editDate, {
-    date: editDraft.date,
-    booked: reviewItems.filter((_, i) => i !== editIndex).map((it) => it.date),
-    onApply: (d) => { editDraft.date = d; renderEdit(); },
-  }));
   $$('[data-edit-time]').forEach((field) => {
     field.addEventListener('click', () => openTimePicker(field.dataset.editTime, field, editTimes));
   });
-  $('[data-edit-save]').addEventListener('click', () => closeEdit({ apply: true }));
+  editSave.addEventListener('click', () => closeEdit({ apply: true }));
 
   // A fresh booking for the current variant: v1 on the day after
   // tomorrow, v5 on tomorrow (v5.js sets its own today and options).

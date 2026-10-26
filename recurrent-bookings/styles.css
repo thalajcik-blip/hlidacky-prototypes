@@ -207,6 +207,7 @@ body[data-variant="2"] [data-variant-only]:not([data-variant-only~="2"]) { displ
   border-radius: 4px;
 }
 .when > .when__field { position: relative; }
+.when--times { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .when > .when__field:first-child { border-radius: 4px 0 0 4px; }
 .when > .when__field:last-child { border-radius: 0 4px 4px 0; }
 .when > .when__field:not(:last-child) { border-right: 1px solid var(--gray-300); }
