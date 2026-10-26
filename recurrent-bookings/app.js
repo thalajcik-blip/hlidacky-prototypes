@@ -147,7 +147,19 @@
       updateTotal(count);
       setSendLabel(count);
     }
+    requestAnimationFrame(updateFooterEdge);
   }
+
+  // Variant 3 pins the CTA to the bottom of the screen (CSS sticky); while
+  // the form scrolls under it, it gets a top edge.
+  const bookingEl = $('[data-booking]');
+  const footerEl = $('.booking__footer');
+  function updateFooterEdge() {
+    const under = bookingEl.scrollHeight - bookingEl.scrollTop - bookingEl.clientHeight > 1;
+    footerEl.classList.toggle('is-stuck', variant === 3 && under);
+  }
+  bookingEl.addEventListener('scroll', updateFooterEdge, { passive: true });
+  window.addEventListener('resize', updateFooterEdge);
 
   function flash(el) {
     if (!el) return;
