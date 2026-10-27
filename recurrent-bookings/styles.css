@@ -133,34 +133,44 @@ body[data-variant="3"] [data-variant-only]:not([data-variant-only~="3"]) { displ
 .booking { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 
 .booking__hero {
+  --hero-ease: cubic-bezier(.2, .8, .2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   padding: 16px 20px 18px;
   background: var(--gray-200);
   text-align: center;
+  transition: padding-bottom .35s var(--hero-ease);
 }
-.booking__hero h2 { margin: 6px 0 2px; font-size: 20px; font-weight: 450; line-height: 1.3; letter-spacing: -0.3px; }
-.booking__hero p { margin: 0; color: var(--gray-600); font-size: 12px; font-weight: 350; }
-.booking__protect { margin-top: 4px; height: 24px; width: auto; }
+/* Spacing is margins rather than gap, so collapsed parts take no room. */
+.booking__hero h2 { margin: 10px 0 6px; font-size: 20px; font-weight: 450; line-height: 1.3; letter-spacing: -0.3px; transition: margin .35s var(--hero-ease); }
+.booking__hero p { max-height: 20px; margin: 0; overflow: hidden; color: var(--gray-600); font-size: 12px; font-weight: 350; transition: max-height .35s var(--hero-ease), opacity .2s ease; }
+.booking__protect { max-height: 24px; margin-top: 8px; height: 24px; width: auto; transition: max-height .35s var(--hero-ease), margin .35s var(--hero-ease), opacity .2s ease; }
 
-.avatar { position: relative; display: block; width: 40px; height: 40px; }
-.avatar > img:first-child { display: block; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(42, 53, 57, .15); }
-.avatar__badge { position: absolute; right: -6px; bottom: -2px; width: 18px; height: 18px; }
+.avatar { position: relative; display: block; width: 40px; height: 40px; transition: width .35s var(--hero-ease), height .35s var(--hero-ease); }
+.avatar > img:first-child { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(42, 53, 57, .15); }
+.avatar__badge { position: absolute; right: -6px; bottom: -2px; width: 18px; height: 18px; transition: width .35s var(--hero-ease), height .35s var(--hero-ease), right .35s var(--hero-ease); }
 
 /* Variant 3 with a bookings list: a one-line hero (smaller avatar, short
-   title, no tagline or logo) leaves room for the list. */
-.hero-short { display: none; }
-body[data-listed] .hero-full,
+   title, no tagline or logo) leaves room for the list. Both titles share
+   one grid cell and cross-fade while their heights ease, and the tagline
+   and logo fold away, so the hero shrinks and grows smoothly. */
+.booking__hero h2 { display: grid; }
+.hero-full,
+.hero-short { grid-area: 1 / 1; overflow: hidden; transition: max-height .35s var(--hero-ease), opacity .25s ease; }
+.hero-full { max-height: 52px; }
+.hero-short { max-height: 0; opacity: 0; }
+body[data-listed] .hero-full { max-height: 26px; opacity: 0; }
+body[data-listed] .hero-short { max-height: 26px; opacity: 1; transition-delay: 0s, .1s; }
+body[data-listed] .booking__hero { padding-bottom: 16px; }
+body[data-listed] .booking__hero h2 { margin: 2px 0 0; }
 body[data-listed] .booking__hero p,
-body[data-listed] .booking__protect { display: none; }
-body[data-listed] .hero-short { display: inline; }
-body[data-listed] .booking__hero { gap: 2px; padding: 16px 20px; }
-body[data-listed] .booking__hero h2 { margin: 0; line-height: 1.4; letter-spacing: -0.2px; }
-body[data-listed] .avatar,
-body[data-listed] .avatar > img:first-child { width: 32px; height: 32px; }
-body[data-listed] .avatar__badge { right: -4px; bottom: -1px; width: 16px; height: 16px; }
+body[data-listed] .booking__protect { max-height: 0; margin-top: 0; opacity: 0; }
+body[data-listed] .avatar { width: 32px; height: 32px; }
+body[data-listed] .avatar__badge { right: -4px; width: 16px; height: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .booking__hero, .booking__hero *, .avatar, .avatar__badge { transition: none !important; }
+}
 
 .booking__section { padding: 16px 20px 4px; }
 .booking__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
