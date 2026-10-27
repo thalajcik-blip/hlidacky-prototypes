@@ -149,6 +149,19 @@ body[data-variant="3"] [data-variant-only]:not([data-variant-only~="3"]) { displ
 .avatar > img:first-child { display: block; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(42, 53, 57, .15); }
 .avatar__badge { position: absolute; right: -6px; bottom: -2px; width: 18px; height: 18px; }
 
+/* Variant 3 with a bookings list: a one-line hero (smaller avatar, short
+   title, no tagline or logo) leaves room for the list. */
+.hero-short { display: none; }
+body[data-listed] .hero-full,
+body[data-listed] .booking__hero p,
+body[data-listed] .booking__protect { display: none; }
+body[data-listed] .hero-short { display: inline; }
+body[data-listed] .booking__hero { gap: 2px; padding: 16px 20px; }
+body[data-listed] .booking__hero h2 { margin: 0; line-height: 1.4; letter-spacing: -0.2px; }
+body[data-listed] .avatar,
+body[data-listed] .avatar > img:first-child { width: 32px; height: 32px; }
+body[data-listed] .avatar__badge { right: -4px; bottom: -1px; width: 16px; height: 16px; }
+
 .booking__section { padding: 16px 20px 4px; }
 .booking__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .booking__heading h3 { margin: 0; font-size: 18px; font-weight: 600; }
