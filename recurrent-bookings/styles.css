@@ -472,13 +472,9 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .mcell.is-weekend { background: #feecee; }
 .mcell:hover { background: var(--gray-100); }
 .mcell.is-weekend:hover { background: #fde0e4; }
-/* Past days and the next month's days at the end of a block */
-.mcell.is-past,
-.mcell--outside { color: var(--gray-600); font-weight: 300; }
-.mcell--outside,
+/* Past days */
+.mcell.is-past { color: var(--gray-600); font-weight: 300; }
 .mcell--blank { cursor: default; }
-.mcell--outside:hover { background: #fff; }
-.mcell--outside.is-weekend:hover { background: #feecee; }
 .mcell--blank,
 .mcell--blank:hover { background: transparent; }
 /* Today: a thin pink frame and a tag on the top edge, picked or not */

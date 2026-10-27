@@ -202,7 +202,6 @@
     };
     for (let m = day(weeksStart.getFullYear(), weeksStart.getMonth(), 1); m <= end; m = day(m.getFullYear(), m.getMonth() + 1, 1)) {
       const monthEnd = day(m.getFullYear(), m.getMonth() + 1, 0);
-      const lastBlock = sameDay(monthEnd, end);
       const first = m < weeksStart ? weeksStart : m;
       const block = document.createElement('section');
       block.className = 'mcal__block';
@@ -230,14 +229,8 @@
           const d = addDays(w, i);
           const weekend = i >= 5;
           if (d < first) { week.append(cell('mcell--blank')); continue; }
-          if (d > monthEnd && !lastBlock) { week.append(cell('mcell--blank')); continue; }
-          if (d > monthEnd) {
-            const out = cell('mcell--outside');
-            out.classList.toggle('is-weekend', weekend);
-            out.textContent = d.getDate();
-            week.append(out);
-            continue;
-          }
+          // Each month shows only its own days, the last one included.
+          if (d > monthEnd) { week.append(cell('mcell--blank')); continue; }
           shown.push(d);
           const btn = document.createElement('button');
           btn.type = 'button';
