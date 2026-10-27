@@ -939,6 +939,7 @@ body[data-variant="3"] .booking__footer.is-stuck { box-shadow: 0 -1px 0 var(--gr
   border-radius: 4px;
   background: #fff;
   color: var(--gray-800);
+  position: relative;
   cursor: pointer;
   scroll-snap-align: center;
   transition: background-color .15s ease, border-color .15s ease;
@@ -958,8 +959,25 @@ body[data-variant="3"] .booking__footer.is-stuck { box-shadow: 0 -1px 0 var(--gr
 .day__dow { font-size: 11px; line-height: 1.2; }
 .day.is-today .day__band { background: var(--pink-400); color: #fff; }
 .day.is-today { border-color: var(--pink-400); }
-.day.is-selected { border: 2px solid var(--pink-400); background: var(--pink-100); }
-.day.is-selected .day__band { background: var(--pink-100); color: transparent; }
+/* Selected, like the month cells: a light pink card and band with the
+   date and weekday in a hand-drawn pink circle (no heavy frame). */
+.day.is-selected { background: var(--pink-50); }
+.day.is-selected .day__band { background: #ffd5da; color: transparent; }
+.day::after {
+  content: "";
+  position: absolute;
+  top: 29px;
+  left: 50%;
+  width: 50px;
+  height: 46px;
+  background: url("assets/selected-circle-week.svg") center / 50px 46px no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) scale(.85);
+  transition: opacity .15s ease, transform .2s cubic-bezier(.2, .8, .2, 1);
+}
+.day.is-selected::after { opacity: 1; transform: translateX(-50%) scale(1); }
+@media (prefers-reduced-motion: reduce) { .day::after { transition: none; } }
 .day.is-selected.is-today .day__band { background: var(--pink-400); color: #fff; }
 .day:hover:not(.is-selected) { background: var(--gray-100); }
 .day:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
