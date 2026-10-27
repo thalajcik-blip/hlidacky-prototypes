@@ -481,8 +481,9 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
 .mcell--outside.is-weekend:hover { background: #feecee; }
 .mcell--blank,
 .mcell--blank:hover { background: transparent; }
-/* Today: white, a thin pink frame and a tag on the top edge */
-.mcell.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1px #ffd5da; background: #fff; font-weight: 700; }
+/* Today: a thin pink frame and a tag on the top edge, picked or not */
+.mcell.is-today { box-shadow: inset 0 0 0 1px #ffd5da; background: #fff; font-weight: 700; }
+.mcell.is-today.is-weekend { background: #feecee; }
 .mcell__today {
   position: absolute;
   top: -5px;
@@ -496,9 +497,24 @@ body[data-mode="multi"] [data-only="single"] { display: none !important; }
   line-height: 1.4;
   transform: translateX(-50%);
 }
-/* Selected */
-.mcell.is-selected,
-.mcell.is-selected:hover { background: var(--pink-400); color: #fff; font-weight: 700; }
+/* Selected, per the Figma "Monthdate Select Item": the day keeps its
+   background and gets a bold number in a hand-drawn pink circle. */
+.mcell::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  background: url("assets/selected-circle.svg") center / 34px 34px no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.85);
+  transition: opacity .15s ease, transform .2s cubic-bezier(.2, .8, .2, 1);
+}
+.mcell.is-selected { color: var(--gray-900); font-weight: 700; }
+.mcell.is-selected::after { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+@media (prefers-reduced-motion: reduce) { .mcell::after { transition: none; } }
 .mcell:focus-visible { outline: 2px solid #6aafff; outline-offset: 1px; }
 
 .cal-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 4px; background: #fff7e6; color: #6b4e16; font-size: 13px; line-height: 1.4; }
