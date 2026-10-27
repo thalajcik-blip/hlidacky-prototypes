@@ -131,8 +131,15 @@ body {
 .setup__fold > div { display: flex; min-height: 0; flex-direction: column; align-items: center; gap: 8px; overflow: hidden; }
 .setup__fold--top > div { padding-bottom: 8px; }
 .setup__fold--bottom > div { padding-top: 4px; }
-.setup.is-compact .setup__hero { padding: 12px 20px; }
+/* Compact bar: the title alone, centred in 72px as in Figma. */
+.setup.is-compact .setup__hero { padding: 23px 20px; }
 .setup.is-compact .setup__fold { grid-template-rows: 0fr; opacity: 0; }
+/* Padding inside a folded part would still take room, so it goes too. */
+.setup__fold > div { transition: padding .4s var(--ease-out); }
+.setup.is-compact .setup__fold > div { padding-block: 0; }
+/* V1 centres title and description in a 72px copy block, as in Figma. */
+[data-version="sheet"] .setup__fold--top > div { padding-bottom: 20px; }
+[data-version="sheet"] .setup__fold--bottom > div { padding-bottom: 12px; }
 
 .setup__doodle { width: 72px; height: 72px; flex: 0 0 auto; }
 .setup__hero h2 { margin: 0; color: var(--gray-900); font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; }
@@ -157,6 +164,15 @@ body {
 .setup__next:hover { background: var(--green-600); }
 .setup__next:active,
 .setup__back:active { box-shadow: none; transform: translateY(2px); }
+.setup__back:disabled,
+.setup__next:disabled { opacity: .5; cursor: not-allowed; }
+.setup__back:disabled { border-color: var(--gray-400); box-shadow: none; }
+.setup__next:disabled { box-shadow: none; }
+.setup__next:disabled:hover { background: var(--green-500); }
+.setup__back:disabled:active,
+.setup__next:disabled:active { transform: none; }
+.setup__back,
+.setup__next { transition: opacity .25s ease; }
 
 /* ---------- the component ---------- */
 
@@ -203,10 +219,14 @@ body {
   line-height: 1.32;
   letter-spacing: .2px;
   font-variant-numeric: lining-nums tabular-nums;
-  transition: border-color .35s ease, box-shadow .35s ease;
+  transition: border-color .35s ease, box-shadow .35s ease, height .4s var(--ease-out);
 }
 .ai-input__textarea::placeholder { color: var(--gray-500); }
 .ai-input__textarea:focus { border-color: var(--blue-300); outline: 0; box-shadow: 0 0 0 2px var(--focus-ring); }
+
+/* V1: once a draft is asked for, the field grows by half (148 → 222px)
+   so more of the draft is visible; it shrinks back on Undo. */
+[data-version="sheet"] .ai-input:not([data-state="idle"]) .ai-input__textarea { height: 222px; }
 
 /* Mirrors the textarea's box and type exactly, so the words wrap in the
    same places and the hand-over to the real text on Done is invisible. */
@@ -319,6 +339,7 @@ body {
   .ai-input__ink span { animation: none; }
   .ai-input__status .fa-spin { animation: none; }
   .ai-input__button .fa-sparkles { transition: none; }
+  .ai-input__textarea { transition: border-color .35s ease, box-shadow .35s ease; }
 }
 
 /* ---------- extra questions: shared pieces ---------- */

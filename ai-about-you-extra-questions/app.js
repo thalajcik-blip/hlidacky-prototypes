@@ -5,6 +5,8 @@
   //   sheet   – version 01: the questions open in a bottom sheet;
   //   section – version 02: they open one at a time in a card under the
   //             field, and the step header folds into a compact bar.
+  // V1 follows the newer Figma round (shorter copy, no free-text answer,
+  // no summary box, Back/Next locked while writing); V2 is kept as it was.
   const VERSION = document.body.dataset.version;
   const IS_SHEET = VERSION === 'sheet';
 
@@ -45,6 +47,13 @@
       ],
     },
   ];
+  if (IS_SHEET) {
+    // V1 drops the free-text "Something else" and rewords two answers.
+    QUESTIONS[0].options = QUESTIONS[0].options.filter((o) => o[0] !== 'other');
+    QUESTIONS[0].options.find((o) => o[0] === 'own')[1] = 'Own kids';
+    QUESTIONS[2].title = 'How do you spend an afternoon with kids?';
+    QUESTIONS[2].options.find((o) => o[0] === 'routine')[1] = 'Family’s routine';
+  }
   // Used by "Jump to a state", so every snapshot has answers behind it.
   const PRESET = { where: ['teaching', 'kindergarten'], help: ['baby', 'lastminute'], afternoon: ['homework', 'outdoors'] };
 
@@ -67,7 +76,8 @@
   const status = root.querySelector('.ai-input__status');
   const actions = root.querySelector('.ai-input__actions');
   const summary = root.querySelector('.ai-summary');
-  const summaryText = root.querySelector('.ai-summary__text');
+  const summaryText = summary && root.querySelector('.ai-summary__text');
+  const stepButtons = document.querySelectorAll('.setup__back, .setup__next');
   const questionSlot = root.querySelector('.ai-input__questions');
   const sheetLayer = document.querySelector('.sheet-layer');
   const previewButtons = document.querySelectorAll('[data-preview]');
@@ -174,29 +184,46 @@
 
   function count() {
     const length = textarea.value.length;
-    counter.textContent = length < MIN_CHARACTERS ? `${length} of ${MIN_CHARACTERS} characters` : `${length} characters`;
+    if (IS_SHEET) counter.textContent = length < MIN_CHARACTERS ? `${length}/${MIN_CHARACTERS}` : `${length} characters`;
+    else counter.textContent = length < MIN_CHARACTERS ? `${length} of ${MIN_CHARACTERS} characters` : `${length} characters`;
   }
 
   const button = (action, icon, label, modifier) =>
     `<button class="ai-input__button${modifier ? ' ai-input__button--' + modifier : ''}" type="button" data-action="${action}"><i class="${icon}" aria-hidden="true"></i>${label}</button>`;
 
   const SPINNER = '<i class="fa-regular fa-spinner fa-spin" aria-hidden="true"></i>';
-  const STATUS = {
+  const WARNING = '<i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i>';
+  const CHECK = '<i class="fa-regular fa-check" aria-hidden="true"></i>';
+  const STATUS = IS_SHEET ? {
+    generating: ['busy', SPINNER, 'Writing your draft…'],
+    slow: ['busy', SPINNER, 'Taking longer than usual…'],
+    stuck: ['error', WARNING, 'Draft failed. Try again or write your own.'],
+    done: ['done', CHECK, 'Done. Check it and change anything you want.'],
+  } : {
     generating: ['busy', SPINNER, 'Writing your text from your answers…'],
     slow: ['busy', SPINNER, 'Still writing. It takes longer than usual…'],
-    stuck: ['error', '<i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i>', 'Writing got stuck. Sorry for the inconvenience.'],
-    done: ['done', '<i class="fa-regular fa-check" aria-hidden="true"></i>', 'Done. It’s your text now – change anything you want.'],
+    stuck: ['error', WARNING, 'Writing got stuck. Sorry for the inconvenience.'],
+    done: ['done', CHECK, 'Done. It’s your text now – change anything you want.'],
   };
 
   function actionsFor(next) {
-    if (next === 'generating' || next === 'slow') return button('stop', 'fa-solid fa-stop', 'Stop writing', 'stop');
+    if (next === 'generating' || next === 'slow') return button('stop', 'fa-solid fa-stop', IS_SHEET ? 'Stop' : 'Stop writing', 'stop');
     if (next === 'stuck') return button('write', 'fa-regular fa-rotate-right', 'Try again');
     if (next === 'done' || next === 'stopped') {
-      return '<div class="ai-input__row">' + button('write', 'fa-regular fa-sparkles', 'Write again')
-        + '<button class="ai-input__link" type="button" data-action="undo"><i class="fa-regular fa-rotate-left" aria-hidden="true"></i><span>Undo</span></button></div>';
+      // V1 has no summary box: "Change answers" is the way back into the
+      // questions, and the draft is rewritten from whatever they pick.
+      const again = IS_SHEET
+        ? button('ask', 'fa-regular fa-sparkles', 'Change answers')
+        : button('write', 'fa-regular fa-sparkles', 'Write again');
+      const undoIcon = IS_SHEET ? 'fa-rotate-right' : 'fa-rotate-left';
+      return '<div class="ai-input__row">' + again
+        + `<button class="ai-input__link" type="button" data-action="undo"><i class="fa-regular ${undoIcon}" aria-hidden="true"></i><span>Undo</span></button></div>`;
     }
+    const caption = IS_SHEET
+      ? 'Answer 3 quick questions and get a draft you can edit.'
+      : 'Answer 3 quick questions and we’ll draft it. You can edit everything.';
     return button('ask', 'fa-regular fa-sparkles', 'Write it with AI')
-      + '<p class="ai-input__caption">Answer 3 quick questions and we’ll draft it. You can edit everything.</p>';
+      + `<p class="ai-input__caption">${caption}</p>`;
   }
 
   function setState(next) {
@@ -241,19 +268,27 @@
     const inline = !IS_SHEET && asking;
     actions.hidden = inline;
     status.hidden = inline;
-    textarea.placeholder = asking ? 'Your text will appear here.' : PLACEHOLDER;
+    textarea.placeholder = inline ? 'Your text will appear here.' : PLACEHOLDER;
 
-    // The summary shows once a draft has been asked for from real answers.
-    const labels = summaryLabels();
-    const showSummary = !asking && state !== 'idle' && labels.length > 0;
-    summaryText.textContent = labels.join(' · ');
-    summary.classList.toggle('is-shown', showSummary);
-    const edit = summary.querySelector('[data-action="edit"]');
-    if (edit) edit.disabled = isBusy();
+    // V2 only: the summary shows once a draft has been asked for from
+    // real answers.
+    if (summary) {
+      const labels = summaryLabels();
+      const showSummary = !asking && state !== 'idle' && labels.length > 0;
+      summaryText.textContent = labels.join(' · ');
+      summary.classList.toggle('is-shown', showSummary);
+      const edit = summary.querySelector('[data-action="edit"]');
+      if (edit) edit.disabled = isBusy();
+    }
 
-    // Version 02 folds the header while the questions are open and keeps
-    // it folded while there is a draft to look at.
-    if (!IS_SHEET) setup.classList.toggle('is-compact', asking || state !== 'idle');
+    // The header folds to a compact "About you" bar once there is a draft
+    // to look at. V2 also folds it while its questions are open; V1's
+    // sheet covers the step, so the header stays as it is behind it.
+    setup.classList.toggle('is-compact', inline || state !== 'idle');
+
+    // V1 locks Back and Next while the draft is being written, so the
+    // step cannot be left half-written.
+    if (IS_SHEET) stepButtons.forEach((item) => { item.disabled = isBusy(); });
   }
 
   function resetInk(text, still) {
@@ -544,6 +579,10 @@
     } else if (action === 'skip-all') {
       QUESTIONS.forEach((q) => { answers[q.id] = []; });
       startFromAnswers();
+    } else if (action === 'write-myself') {
+      // V1: no draft at all — the sheet closes and the sitter types.
+      closeSheet(false);
+      focusField();
     } else if (action === 'next-question') {
       advance();
     } else if (action === 'skip-question') {

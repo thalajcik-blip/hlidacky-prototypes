@@ -35,25 +35,17 @@
                 <div class="setup__fold setup__fold--top"><div><img class="setup__doodle" src="../assets/profile-about-you.svg" alt=""></div></div>
                 <h2>About you</h2>
                 <div class="setup__fold setup__fold--bottom"><div>
-                  <p>Tell the families about yourself, your experience and your motivation to provide exceptional care.</p>
-                  <a class="setup__hero-link" href="#why-about-you"><i class="fa-regular fa-circle-info" aria-hidden="true"></i>Why is it important</a>
+                  <p>Families read this before they contact you.</p>
                 </div></div>
               </div>
               <div class="setup__content">
                 <div class="ai-input" data-ai-input data-state="idle">
-                  <div class="ai-summary" aria-live="polite">
-                    <div class="ai-summary__copy">
-                      <span class="ai-summary__label">Based on your answers</span>
-                      <p class="ai-summary__text"></p>
-                    </div>
-                    <button class="ai-input__button" type="button" data-action="edit" aria-label="Edit your answers"><i class="fa-regular fa-pen" aria-hidden="true"></i>Edit</button>
-                  </div>
                   <div class="ai-input__label-row">
-                    <label class="ai-input__label" for="aboutText"><img src="../assets/flag-en.svg" alt="" width="24" height="16">About me</label>
-                    <span class="ai-input__counter" id="aboutCounter" data-counter>0 of 150 characters</span>
+                    <label class="ai-input__label" for="aboutText">About me</label>
+                    <span class="ai-input__counter" id="aboutCounter" data-counter>0/150</span>
                   </div>
                   <div class="ai-input__field">
-                    <textarea class="ai-input__textarea" id="aboutText" placeholder="Tell families what you enjoy about babysitting and how you spend time with children." aria-describedby="aboutCounter aboutStatus"></textarea>
+                    <textarea class="ai-input__textarea" id="aboutText" placeholder="Your experience with children and what you enjoy about babysitting." aria-describedby="aboutCounter aboutStatus"></textarea>
                     <div class="ai-input__ink" aria-hidden="true"></div>
                   </div>
                   <div class="ai-input__questions"></div>
@@ -78,13 +70,13 @@
                     <img class="doodle__layer-2" src="../assets/help-write-doodle-layer-2.svg" alt="">
                     <img class="doodle__layer-1" src="../assets/help-write-doodle-layer-1.svg" alt="">
                   </div>
-                  <h3 id="sheetTitle">Help us write it</h3>
+                  <h3 id="sheetTitle">3 quick questions</h3>
                 </div>
-                <p class="sheet__description">Tap what fits you – up to 2 per question.</p>
+                <p class="sheet__description">Pick up to 2 for each.</p>
                 <div class="sheet__questions" data-questions></div>
                 <div class="sheet__footer">
-                  <button class="ai-input__button" type="button" data-action="write-answers"><i class="fa-regular fa-sparkles" aria-hidden="true"></i>Write my text</button>
-                  <button class="text-link" type="button" data-action="skip-all">Skip questions</button>
+                  <button class="ai-input__button" type="button" data-action="write-answers"><i class="fa-regular fa-sparkles" aria-hidden="true"></i>Write my draft</button>
+                  <button class="text-link" type="button" data-action="write-myself">Write it myself</button>
                 </div>
               </div>
             </div>
@@ -102,7 +94,7 @@
             </div>
           </div>
           <div class="proto-controls__group">
-            <span class="proto-controls__label" id="scenarioLabel">When you press Write my text</span>
+            <span class="proto-controls__label" id="scenarioLabel">When you press Write my draft</span>
             <div class="pills" role="radiogroup" aria-labelledby="scenarioLabel">
               <label class="pill"><input type="radio" name="scenario" value="works" checked><span>Writes the text</span></label>
               <label class="pill"><input type="radio" name="scenario" value="stuck"><span>Gets stuck</span></label>
@@ -126,12 +118,13 @@
         <section class="notes">
           <h2>Flow</h2>
           <ul>
-            <li><strong>Write it with AI</strong> opens the sheet instead of writing straight away. The step underneath stays as it was.</li>
-            <li><strong>Three questions, all on one sheet.</strong> Up to 2 picks each; once 2 are picked, the rest dim. The counter shows “N of 2”. <em>Something else</em> opens a short text field.</li>
-            <li><strong>Write my text</strong> closes the sheet and the draft streams into the field, written from the picks. <strong>Skip questions</strong> writes from the previous steps only.</li>
+            <li><strong>Write it with AI</strong> opens the “3 quick questions” sheet. The step underneath stays as it was.</li>
+            <li><strong>Three questions, all on one sheet.</strong> Up to 2 picks each; once 2 are picked, the rest dim. The counter shows “N of 2”.</li>
+            <li><strong>Write my draft</strong> closes the sheet and the draft streams into the field, written from the picks (with no picks, from the previous steps). <strong>Write it myself</strong> closes the sheet and puts the cursor in the field.</li>
             <li><strong>Closing without writing.</strong> Drag the handle down, tap the dimmed area or press Esc — nothing is written, picks are kept for next time.</li>
-            <li><strong>Based on your answers.</strong> After a draft, a summary of the picks sits above the field. Edit reopens the sheet with them selected (disabled while writing).</li>
-            <li><strong>Write again</strong> writes another wording from the same picks. <strong>Undo</strong> returns the field to what it held before.</li>
+            <li><strong>Header.</strong> Once a draft is asked for, the hero folds into a slim “About you” bar so the field, its buttons and the message fit above Next. Undo unfolds it again.</li>
+            <li><strong>Back and Next are disabled while writing</strong> and come back on Stop, Done or a failed draft.</li>
+            <li><strong>Change answers</strong> reopens the sheet with the picks selected and writes a new draft. <strong>Undo</strong> returns the field to what it held before.</li>
           </ul>
           <h2>States</h2>
           <p class="notes__footnote">Idle, generating, slow, stuck and done work as in the <a href="/components/input-content-ai-generation/">Input content AI generation</a> component.</p>
