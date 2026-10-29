@@ -81,6 +81,14 @@
             </div>
           </div>
           <div class="proto-controls__group">
+            <span class="proto-controls__label" id="freeInputLabel">Free extra input</span>
+            <div class="pills" role="radiogroup" aria-labelledby="freeInputLabel">
+              <label class="pill"><input type="radio" name="freeInput" value="off" checked><span>Off</span></label>
+              <label class="pill"><input type="radio" name="freeInput" value="on"><span>On</span></label>
+            </div>
+            <p class="proto-controls__hint">On adds a “Something else” pill to every question. It opens a short text field for that question’s own answer, which goes into the draft. On a phone, add <code>?free=on</code> to the URL.</p>
+          </div>
+          <div class="proto-controls__group">
             <span class="proto-controls__label" id="scenarioLabel">When you press Write my text</span>
             <div class="pills" role="radiogroup" aria-labelledby="scenarioLabel">
               <label class="pill"><input type="radio" name="scenario" value="works" checked><span>Writes the text</span></label>
@@ -106,7 +114,7 @@
           <h2>Flow</h2>
           <ul>
             <li><strong>Write it with AI</strong> turns into a question card under the field. The header folds into a compact “About you” bar so the field and the card fit on one screen.</li>
-            <li><strong>One question at a time.</strong> “Question 1/3” with up to 2 picks; the rest dim once 2 are picked. <em>Something else</em> opens a short text field.</li>
+            <li><strong>One question at a time.</strong> “Question 1/3” with up to 2 picks; the rest dim once 2 are picked. With <em>Free extra input</em> on, a <em>Something else</em> pill opens a short text field for that question.</li>
             <li><strong>Next question</strong> moves on, <strong>Skip</strong> clears that question and moves on. On the last question the button becomes <strong>Write my text</strong> and the card gives way to the draft.</li>
             <li><strong>Closing the card</strong> (× or Esc) writes nothing and unfolds the header; picks are kept.</li>
             <li><strong>Based on your answers.</strong> After a draft, a summary of the picks sits above the field. Edit reopens the card at question 1 with the picks selected (disabled while writing).</li>

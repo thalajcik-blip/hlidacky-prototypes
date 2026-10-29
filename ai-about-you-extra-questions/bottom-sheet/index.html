@@ -94,6 +94,14 @@
             </div>
           </div>
           <div class="proto-controls__group">
+            <span class="proto-controls__label" id="freeInputLabel">Free extra input</span>
+            <div class="pills" role="radiogroup" aria-labelledby="freeInputLabel">
+              <label class="pill"><input type="radio" name="freeInput" value="off" checked><span>Off</span></label>
+              <label class="pill"><input type="radio" name="freeInput" value="on"><span>On</span></label>
+            </div>
+            <p class="proto-controls__hint">On adds a “Something else” pill to every question. It opens a short text field for that question’s own answer, which goes into the draft. On a phone, add <code>?free=on</code> to the URL.</p>
+          </div>
+          <div class="proto-controls__group">
             <span class="proto-controls__label" id="scenarioLabel">When you press Write my draft</span>
             <div class="pills" role="radiogroup" aria-labelledby="scenarioLabel">
               <label class="pill"><input type="radio" name="scenario" value="works" checked><span>Writes the text</span></label>
@@ -119,7 +127,7 @@
           <h2>Flow</h2>
           <ul>
             <li><strong>Write it with AI</strong> opens the “3 quick questions” sheet. The step underneath stays as it was.</li>
-            <li><strong>Three questions, all on one sheet.</strong> Up to 2 picks each; once 2 are picked, the rest dim. The counter shows “N of 2”.</li>
+            <li><strong>Three questions, all on one sheet.</strong> Up to 2 picks each; once 2 are picked, the rest dim. The counter shows “N of 2”. With <em>Free extra input</em> on, each question gets a <em>Something else</em> pill that opens a short text field.</li>
             <li><strong>Write my draft</strong> closes the sheet and the draft streams into the field, written from the picks (with no picks, from the previous steps). <strong>Write it myself</strong> closes the sheet and puts the cursor in the field.</li>
             <li><strong>Closing without writing.</strong> Drag the handle down, tap the dimmed area or press Esc — nothing is written, picks are kept for next time.</li>
             <li><strong>Header.</strong> Once a draft is asked for, the hero folds into a slim “About you” bar so the field, its buttons and the message fit above Next. Undo unfolds it again.</li>

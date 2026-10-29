@@ -564,6 +564,7 @@ body {
 .proto-controls__group { display: flex; flex-direction: column; gap: 10px; }
 .proto-controls__label { color: var(--gray-500); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .proto-controls__hint { margin: 0; color: var(--gray-600); font-size: 14px; line-height: 1.45; }
+.proto-controls__hint code { border-radius: 4px; background: var(--gray-100); padding: 1px 5px; font-size: 13px; }
 
 .pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill { position: relative; display: inline-flex; }

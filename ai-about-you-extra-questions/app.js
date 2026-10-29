@@ -21,8 +21,8 @@
         ['kindergarten', 'Kindergarten'],
         ['own', 'Own Kids'],
         ['camps', 'Camps, scouts'],
-        ['other', 'Something else'],
       ],
+      other: { label: 'Where else did you look after kids?' },
     },
     {
       id: 'help',
@@ -34,6 +34,7 @@
         ['special', 'Special needs'],
         ['lastminute', 'Last minute'],
       ],
+      other: { label: 'What else can you help families with?' },
     },
     {
       id: 'afternoon',
@@ -45,11 +46,11 @@
         ['games', 'Games'],
         ['outdoors', 'Outdoors'],
       ],
+      other: { label: 'What else do you do in an afternoon with kids?' },
     },
   ];
   if (IS_SHEET) {
-    // V1 drops the free-text "Something else" and rewords two answers.
-    QUESTIONS[0].options = QUESTIONS[0].options.filter((o) => o[0] !== 'other');
+    // V1 rewords two answers.
     QUESTIONS[0].options.find((o) => o[0] === 'own')[1] = 'Own kids';
     QUESTIONS[2].title = 'How do you spend an afternoon with kids?';
     QUESTIONS[2].options.find((o) => o[0] === 'routine')[1] = 'Family’s routine';
@@ -81,6 +82,7 @@
   const questionSlot = root.querySelector('.ai-input__questions');
   const sheetLayer = document.querySelector('.sheet-layer');
   const previewButtons = document.querySelectorAll('[data-preview]');
+  const freeInputRadios = document.querySelectorAll('[name="freeInput"]');
   const PLACEHOLDER = textarea.placeholder;
 
   let state = 'idle';
@@ -94,7 +96,21 @@
   let renderedStatus = '';
   let returnFocus = null;
   const answers = { where: [], help: [], afternoon: [] };
-  let otherText = '';
+  // "Free extra input" setting: when on, every question ends with a
+  // "Something else" pill that opens a text field for its own answer.
+  // Off by default; ?free=on in the URL turns it on (the controls are
+  // hidden on a phone).
+  let freeInput = readFreeInput();
+  const otherText = { where: '', help: '', afternoon: '' };
+  const OTHER = ['other', 'Something else'];
+  const optionsOf = (q) => (freeInput ? q.options.concat([OTHER]) : q.options);
+  const clearOther = () => Object.keys(otherText).forEach((key) => { otherText[key] = ''; });
+
+  function readFreeInput() {
+    const param = new URLSearchParams(window.location.search).get('free');
+    if (param) return param === 'on' || param === '1';
+    try { return window.localStorage.getItem('aiAboutYou.freeInput') === 'on'; } catch (error) { return false; }
+  }
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   function animate(element, keyframes, options) {
@@ -152,19 +168,24 @@
   function compose() {
     if (!hasAnswers()) return FALLBACK;
 
+    const free = (key) => lowerFirst(otherText[key].trim());
     const experience = answers.where.map((id) => (id === 'other'
-      ? (otherText.trim() ? 'I have experience with ' + lowerFirst(otherText.trim()) : '')
+      ? (free('where') ? 'I have experience with ' + free('where') : '')
       : WHERE[id])).filter(Boolean);
     let first = experience.length
       ? experience[0] + (experience[1] ? ' and ' + withAlso(experience[1]) : '')
       : 'I’ve been looking after children for several years';
     first += ', so I’m used to kids of different ages';
     first += answers.help.includes('baby') ? ' – babies and toddlers included.' : '.';
-    const help = answers.help.filter((id) => id !== 'baby').map((id) => HELP[id]);
+    const help = answers.help.filter((id) => id !== 'baby').map((id) => (id === 'other'
+      ? (free('help') ? 'I can also help with ' + free('help').replace(/\.$/, '') + '.' : '')
+      : HELP[id])).filter(Boolean);
 
     let afternoon;
-    if (answers.afternoon.length) {
-      const parts = answers.afternoon.map((id) => AFTERNOON[id]);
+    if (answers.afternoon.some((id) => id !== 'other' || free('afternoon'))) {
+      const parts = answers.afternoon.map((id) => (id === 'other'
+        ? (free('afternoon') ? 'we enjoy ' + free('afternoon').replace(/\.$/, '') : '')
+        : AFTERNOON[id])).filter(Boolean);
       const key = answers.afternoon.includes('outdoors') ? 'outdoors' : answers.afternoon.includes('games') ? 'games' : 'any';
       afternoon = 'On a usual afternoon ' + parts.join(' and then ') + '. ' + CLOSINGS[key][variant % 2];
     } else {
@@ -175,7 +196,7 @@
 
   function summaryLabels() {
     return QUESTIONS.flatMap((q) => answers[q.id].map((id) => {
-      if (id === 'other') return otherText.trim();
+      if (id === 'other') return otherText[q.id].trim();
       return q.options.find((o) => o[0] === id)[1];
     })).filter(Boolean);
   }
@@ -358,10 +379,10 @@
   // ---------- questions ----------
 
   function chipsMarkup(q) {
-    const chips = q.options.map(([id, label]) =>
+    const chips = optionsOf(q).map(([id, label]) =>
       `<button class="chip" type="button" data-q="${q.id}" data-o="${id}" aria-pressed="false">${label}</button>`).join('');
-    const other = q.options.some((o) => o[0] === 'other')
-      ? `<input class="q-other" type="text" data-other maxlength="60" placeholder="Where else? E.g. tutoring" aria-label="Where else did you look after kids?">`
+    const other = freeInput
+      ? `<input class="q-other" type="text" data-other="${q.id}" maxlength="60" placeholder="Write your answer…" aria-label="${escapeHtml(q.other.label)}">`
       : '';
     return `<div class="chips" role="group" aria-label="${escapeHtml(q.title)}">${chips}</div>${other}`;
   }
@@ -382,10 +403,11 @@
       item.classList.toggle('is-full', n >= MAX_PICKS);
     });
     scope.querySelectorAll('[data-other]').forEach((input) => {
-      const shown = answers.where.includes('other');
+      const key = input.dataset.other;
+      const shown = answers[key].includes('other');
       const wasShown = input.classList.contains('is-shown');
       input.classList.toggle('is-shown', shown);
-      if (document.activeElement !== input) input.value = otherText;
+      if (document.activeElement !== input) input.value = otherText[key];
       if (shown && !wasShown && input.dataset.focusNext) input.focus({ preventScroll: false });
       delete input.dataset.focusNext;
     });
@@ -405,7 +427,7 @@
       animate(chip, [{ transform: 'scale(.92)' }, { transform: 'scale(1.06)', offset: .6 }, { transform: 'scale(1)' }], { duration: 260, easing: EASE_OUT });
     }
     const scope = chip.closest('[data-questions]');
-    const other = scope.querySelector('[data-other]');
+    const other = scope.querySelector(`[data-other="${chip.dataset.q}"]`);
     if (id === 'other' && index < 0 && other) other.dataset.focusNext = '1';
     syncChips(scope);
   }
@@ -612,7 +634,7 @@
     if (IS_SHEET && asking) closeSheet(false);
     if (!IS_SHEET && asking) closeCard();
     QUESTIONS.forEach((q) => { answers[q.id] = next === 'idle' ? [] : PRESET[q.id].slice(); });
-    otherText = '';
+    clearOther();
     const full = compose();
     const partialWords = full.match(/\S+\s*/g);
     textarea.value = next === 'done' ? full
@@ -650,7 +672,7 @@
     if (target && !target.disabled) handle(target.dataset.action);
   });
   document.querySelector('.phone__screen').addEventListener('input', (event) => {
-    if (event.target.matches('[data-other]')) otherText = event.target.value;
+    if (event.target.matches('[data-other]')) otherText[event.target.dataset.other] = event.target.value;
   });
   textarea.addEventListener('input', count);
   document.addEventListener('keydown', (event) => {
@@ -658,6 +680,28 @@
   });
   previewButtons.forEach((item) => {
     item.addEventListener('click', () => preview(item.dataset.preview));
+  });
+
+  function setFreeInput(on) {
+    freeInput = on;
+    try { window.localStorage.setItem('aiAboutYou.freeInput', on ? 'on' : 'off'); } catch (error) { /* per-viewer only */ }
+    if (!on) {
+      QUESTIONS.forEach((q) => { answers[q.id] = answers[q.id].filter((id) => id !== 'other'); });
+      clearOther();
+    }
+    // Rebuild whatever shows the questions now, keeping the picks.
+    if (IS_SHEET) {
+      buildSheet();
+      syncChips(sheetLayer);
+    } else if (asking) {
+      renderCard(0);
+    }
+    renderLayout();
+  }
+
+  freeInputRadios.forEach((radio) => {
+    radio.checked = (radio.value === 'on') === freeInput;
+    radio.addEventListener('change', () => { if (radio.checked) setFreeInput(radio.value === 'on'); });
   });
 
   if (IS_SHEET) {
