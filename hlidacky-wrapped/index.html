@@ -741,6 +741,263 @@
       .doodle { width: 108px; height: 108px; }
       .share-button, .grow-button { width: 100%; }
     }
+
+    /* ---- Background music ---- */
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+    }
+
+    .eq span {
+      width: 3px;
+      height: 40%;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .music-toggle {
+      position: absolute;
+      top: 30px;
+      right: 16px;
+      z-index: 30;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      color: #ffffff;
+      background: rgba(255,255,255,.18);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 14px rgba(31,35,38,.18);
+      transition: background .2s ease, transform .15s ease;
+    }
+
+    .music-toggle:hover { background: rgba(255,255,255,.28); }
+    .music-toggle:active { transform: scale(.94); }
+    .music-toggle:not(.is-playing) .eq span { height: 34%; opacity: .85; }
+    .music-toggle.is-playing .eq span { animation: eq-bounce .9s ease-in-out infinite; }
+    .music-toggle.is-playing .eq span:nth-child(1) { animation-delay: -.2s; }
+    .music-toggle.is-playing .eq span:nth-child(2) { animation-delay: -.5s; }
+    .music-toggle.is-playing .eq span:nth-child(3) { animation-delay: -.35s; }
+
+    @keyframes eq-bounce {
+      0%, 100% { height: 22%; }
+      50% { height: 100%; }
+    }
+
+    .music-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 35;
+      background: rgba(20,16,40,.42);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .28s ease, visibility .28s ease;
+    }
+
+    .music-backdrop.is-open { opacity: 1; visibility: visible; }
+
+    .music-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      background: #ffffff;
+      color: #2b2f33;
+      border-radius: 20px 20px 0 0;
+      padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform .32s cubic-bezier(.22,.68,.28,1);
+      box-shadow: 0 -12px 40px rgba(20,16,40,.28);
+    }
+
+    .music-sheet.is-open { transform: translateY(0); }
+
+    .music-sheet__grip {
+      width: 40px;
+      height: 4px;
+      border-radius: 99px;
+      background: #e3e3ea;
+      margin: 2px auto 12px;
+    }
+
+    .music-sheet__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .music-sheet__title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .music-sheet__close {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      background: #f1f1f5;
+      color: #6b7076;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .music-sheet__close:hover { background: #e7e7ee; }
+
+    .music-now {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 2px 12px;
+    }
+
+    .music-playpause {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      background: var(--pink);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 16px rgba(249,96,115,.32);
+    }
+
+    .music-playpause:active { transform: scale(.95); }
+
+    .music-playpause .ico-play {
+      width: 0;
+      height: 0;
+      border-left: 13px solid currentColor;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      margin-left: 3px;
+    }
+
+    .music-playpause .ico-pause {
+      display: none;
+      gap: 4px;
+    }
+
+    .music-playpause .ico-pause span {
+      width: 4px;
+      height: 15px;
+      border-radius: 1px;
+      background: currentColor;
+    }
+
+    .music-playpause.is-playing .ico-play { display: none; }
+    .music-playpause.is-playing .ico-pause { display: flex; }
+
+    .music-now__text {
+      display: grid;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .music-now__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: #9a9fa6;
+    }
+
+    .music-now__name {
+      font-size: 15px;
+      font-weight: 750;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-list {
+      display: grid;
+      gap: 2px;
+      margin: 2px 0 8px;
+    }
+
+    .music-track {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: #2b2f33;
+    }
+
+    .music-track:hover { background: #f5f5f8; }
+    .music-track.is-active { background: #FFF1F3; }
+
+    .music-track__icon {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: #f0f0f4;
+      color: #a7acb3;
+    }
+
+    .music-track.is-active .music-track__icon {
+      background: var(--pink);
+      color: #ffffff;
+    }
+
+    .music-track__name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .music-track .eq span { height: 40%; }
+    .music-track.is-playing .eq span { animation: eq-bounce .9s ease-in-out infinite; }
+    .music-track.is-playing .eq span:nth-child(1) { animation-delay: -.2s; }
+    .music-track.is-playing .eq span:nth-child(2) { animation-delay: -.5s; }
+    .music-track.is-playing .eq span:nth-child(3) { animation-delay: -.35s; }
+
+    .music-volume {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 6px 2px;
+      color: #9a9fa6;
+      font-size: 15px;
+    }
+
+    .music-volume input[type="range"] {
+      flex: 1;
+      accent-color: var(--pink);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .music-toggle.is-playing .eq span,
+      .music-track.is-playing .eq span { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -758,6 +1015,9 @@
         <button class="progress-segment" type="button" aria-label="Go to slide 8"><span class="progress-bar"></span></button>
         <button class="progress-segment" type="button" aria-label="Go to slide 9"><span class="progress-bar"></span></button>
       </nav>
+      <button class="music-toggle" id="music-toggle" type="button" aria-label="Background music" aria-haspopup="dialog" aria-expanded="false">
+        <span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
       <div class="story-scroll" id="story-scroll">
         <article class="slide intro-slide" data-gradient="linear-gradient(160deg, #7257ff 0%, #c553df 48%, #f85d72 100%)" data-page="radial-gradient(circle at 18% 18%, rgba(255,255,255,.22), transparent 28%), linear-gradient(135deg, #31246f 0%, #6734b8 45%, #e55776 100%)">
           <div class="slide-logo">
@@ -890,6 +1150,29 @@
           <button class="share-button" type="button"><span class="share-icon">⌘</span> Share on socials</button>
         </article>
       </div>
+      <div class="music-backdrop" id="music-backdrop"></div>
+      <aside class="music-sheet" id="music-sheet" role="dialog" aria-modal="true" aria-label="Background music" aria-hidden="true">
+        <div class="music-sheet__grip" aria-hidden="true"></div>
+        <div class="music-sheet__head">
+          <h2 class="music-sheet__title">Background music</h2>
+          <button class="music-sheet__close" id="music-close" type="button" aria-label="Close">✕</button>
+        </div>
+        <div class="music-now">
+          <button class="music-playpause" id="music-playpause" type="button" aria-label="Play">
+            <span class="ico-play" aria-hidden="true"></span>
+            <span class="ico-pause" aria-hidden="true"><span></span><span></span></span>
+          </button>
+          <div class="music-now__text">
+            <span class="music-now__label">Now playing</span>
+            <span class="music-now__name" id="music-now-name">—</span>
+          </div>
+        </div>
+        <div class="music-list" id="music-list" role="list"></div>
+        <label class="music-volume">
+          <span aria-hidden="true">🔈</span>
+          <input type="range" id="music-volume" min="0" max="100" value="45" aria-label="Volume">
+        </label>
+      </aside>
     </section>
   </main>
 
@@ -1207,6 +1490,128 @@
           flashLabel(btn, 'Copy this page link');
         });
       });
+    })();
+  </script>
+
+  <script>
+    (function() {
+      var BASE = '/hlidacky-wrapped/music/';
+      var tracks = [
+        { name: 'Aprillic Afternoon', file: 'aprillic-afternoon.m4a' },
+        { name: 'Bright Horizons', file: 'bright-horizons.m4a' },
+        { name: 'Search Me', file: 'search-me.m4a' },
+        { name: 'Sunshine Logic', file: 'sunshine-logic.m4a' }
+      ];
+      var current = 0;
+
+      var audio = new Audio();
+      audio.loop = true;
+      audio.preload = 'auto';
+      audio.volume = 0.45;
+      audio.src = BASE + tracks[current].file;
+
+      var toggle = document.getElementById('music-toggle');
+      var backdrop = document.getElementById('music-backdrop');
+      var sheet = document.getElementById('music-sheet');
+      var closeBtn = document.getElementById('music-close');
+      var playBtn = document.getElementById('music-playpause');
+      var list = document.getElementById('music-list');
+      var nowName = document.getElementById('music-now-name');
+      var volume = document.getElementById('music-volume');
+      var scroller = document.getElementById('story-scroll');
+
+      var rows = tracks.map(function(t, i) {
+        var b = document.createElement('button');
+        b.className = 'music-track';
+        b.type = 'button';
+        b.setAttribute('role', 'listitem');
+        b.innerHTML =
+          '<span class="music-track__icon"><span class="eq"><span></span><span></span><span></span></span></span>' +
+          '<span class="music-track__name"></span>';
+        b.querySelector('.music-track__name').textContent = t.name;
+        b.addEventListener('click', function() { selectTrack(i, true); });
+        list.appendChild(b);
+        return b;
+      });
+
+      function syncUI() {
+        var playing = !audio.paused;
+        toggle.classList.toggle('is-playing', playing);
+        playBtn.classList.toggle('is-playing', playing);
+        playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+        nowName.textContent = tracks[current].name;
+        rows.forEach(function(r, i) {
+          var active = i === current;
+          r.classList.toggle('is-active', active);
+          r.classList.toggle('is-playing', active && playing);
+        });
+      }
+
+      function play() {
+        return audio.play().then(syncUI).catch(function() { syncUI(); });
+      }
+
+      function selectTrack(i, autoplay) {
+        if (i !== current) {
+          current = i;
+          audio.src = BASE + tracks[current].file;
+        }
+        if (autoplay) play(); else syncUI();
+      }
+
+      audio.addEventListener('play', syncUI);
+      audio.addEventListener('pause', syncUI);
+
+      playBtn.addEventListener('click', function() {
+        if (audio.paused) play(); else { audio.pause(); syncUI(); }
+      });
+
+      volume.addEventListener('input', function() {
+        audio.volume = volume.value / 100;
+      });
+
+      function openSheet() {
+        backdrop.classList.add('is-open');
+        sheet.classList.add('is-open');
+        sheet.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      function closeSheet() {
+        backdrop.classList.remove('is-open');
+        sheet.classList.remove('is-open');
+        sheet.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle.addEventListener('click', function() {
+        if (sheet.classList.contains('is-open')) closeSheet(); else openSheet();
+      });
+      closeBtn.addEventListener('click', closeSheet);
+      backdrop.addEventListener('click', closeSheet);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSheet();
+      });
+
+      // Autoplay where the browser allows it; otherwise start on the first user
+      // gesture (tap / key / swipe), since browsers block audible autoplay.
+      var unlocked = false;
+      var events = ['pointerdown', 'touchstart', 'keydown'];
+      function unlock() {
+        if (unlocked) return;
+        if (!audio.paused) { unlocked = true; teardown(); return; }
+        play().then(function() {
+          if (!audio.paused) { unlocked = true; teardown(); }
+        });
+      }
+      function teardown() {
+        events.forEach(function(ev) { window.removeEventListener(ev, unlock, true); });
+        if (scroller) scroller.removeEventListener('scroll', unlock, true);
+      }
+      events.forEach(function(ev) { window.addEventListener(ev, unlock, true); });
+      if (scroller) scroller.addEventListener('scroll', unlock, true);
+
+      play();     // attempt immediate autoplay (succeeds on desktop w/ prior interaction)
+      syncUI();
     })();
   </script>
 </body>
