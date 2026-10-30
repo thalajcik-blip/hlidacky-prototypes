@@ -1503,7 +1503,9 @@
         { name: 'Sunny Funk', file: 'sunny-funk.m4a' },
         { name: 'Groovy Hook', file: 'groovy-hook.m4a' }
       ];
-      var current = 0;
+      // List is shown alphabetically; the starting track is random on each open.
+      tracks.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      var current = Math.floor(Math.random() * tracks.length);
 
       var audio = new Audio();
       audio.loop = true;
@@ -1593,16 +1595,19 @@
         if (e.key === 'Escape') closeSheet();
       });
 
-      // Autoplay where the browser allows it; otherwise start on the first user
-      // gesture (tap / key / swipe), since browsers block audible autoplay.
+      // Autoplay on every platform: browsers block *audible* autoplay but allow
+      // *muted* autoplay, so if the audible attempt is refused we keep playing
+      // muted and unmute on the first user gesture (tap / key / swipe). On mobile
+      // that first gesture always comes (the user swipes through the story), so
+      // music is effectively playing from the start.
       var unlocked = false;
       var events = ['pointerdown', 'touchstart', 'keydown'];
       function unlock() {
         if (unlocked) return;
-        if (!audio.paused) { unlocked = true; teardown(); return; }
-        play().then(function() {
-          if (!audio.paused) { unlocked = true; teardown(); }
-        });
+        unlocked = true;
+        audio.muted = false;
+        if (audio.paused) play(); else syncUI();
+        teardown();
       }
       function teardown() {
         events.forEach(function(ev) { window.removeEventListener(ev, unlock, true); });
@@ -1611,7 +1616,13 @@
       events.forEach(function(ev) { window.addEventListener(ev, unlock, true); });
       if (scroller) scroller.addEventListener('scroll', unlock, true);
 
-      play();     // attempt immediate autoplay (succeeds on desktop w/ prior interaction)
+      // Try audible first (works on desktop with prior interaction); on refusal
+      // fall back to muted autoplay, which is allowed everywhere incl. mobile.
+      audio.muted = false;
+      audio.play().then(syncUI).catch(function() {
+        audio.muted = true;
+        audio.play().then(syncUI).catch(syncUI);
+      });
       syncUI();
     })();
   </script>
