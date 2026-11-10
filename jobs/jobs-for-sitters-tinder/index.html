@@ -1366,7 +1366,11 @@ function layout(){
     const vv = window.visualViewport;
     const h = vv ? vv.height : window.innerHeight;
     phone.style.setProperty("--vh", h + "px");
-    stage.style.transform = vv && vv.offsetTop ? `translateY(${vv.offsetTop}px)` : "";
+    // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
+    // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
+    // the sum of both, so either one is undone here.
+    const top = vv ? (vv.pageTop != null ? vv.pageTop : window.scrollY + vv.offsetTop) : window.scrollY;
+    stage.style.transform = top ? `translateY(${top}px)` : "";
     G.scale = 1;
     // keyboard is up: the visible area is well short of the tallest it has been at this width.
     // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
@@ -2224,8 +2228,31 @@ if (window.visualViewport){
 const FIXED_BOXES = [phone, card, bodyEl, composer, $(".c-box"), $(".c-ta")];
 function unscroll(el){ if (el.scrollTop || el.scrollLeft){ el.scrollTop = 0; el.scrollLeft = 0; } }
 FIXED_BOXES.forEach(el => el.addEventListener("scroll", () => unscroll(el), { passive:true }));
+window.addEventListener("scroll", fitViewport, { passive:true });
 ta.addEventListener("focus", fitViewport);
 ta.addEventListener("blur", () => setTimeout(fitViewport, 50));
+
+// ?debug=kb: a live readout of the numbers the keyboard layout works from, to check on a device
+if (new URLSearchParams(location.search).get("debug") === "kb"){
+  const out = document.createElement("pre");
+  out.style.cssText = "position:fixed;left:4px;bottom:4px;z-index:99999;margin:0;padding:6px 8px;border-radius:6px;" +
+    "background:rgba(0,0,0,.78);color:#7CFC9A;font:11px/1.35 ui-monospace,Menlo,monospace;pointer-events:none;white-space:pre";
+  document.body.appendChild(out);
+  const n = v => v == null ? "-" : Math.round(v);
+  const at = sel => { const el = $(sel); return el ? n(el.getBoundingClientRect().top) : "-"; };
+  const tick = () => {
+    const vv = window.visualViewport;
+    out.textContent =
+      `inner ${n(innerWidth)}x${n(innerHeight)}  fullH ${n(G.fullH)}\n` +
+      `vv h ${n(vv && vv.height)} offTop ${n(vv && vv.offsetTop)} pageTop ${n(vv && vv.pageTop)}\n` +
+      `scrollY ${n(scrollY)} doc.scrollTop ${n(document.scrollingElement.scrollTop)}\n` +
+      `phone.scroll ${n(phone.scrollTop)} card.scroll ${n(card.scrollTop)} body.scroll ${n(bodyEl.scrollTop)}\n` +
+      `mode ${mode} kb ${phone.classList.contains("kb-open")} busy ${busy} focus ${document.activeElement && document.activeElement.id}\n` +
+      `top: phone ${at("#phone")} card ${at("#card")} head ${at(".c-head")} ta ${at("#ta")} send ${at("#yes")}`;
+    requestAnimationFrame(tick);
+  };
+  tick();
+}
 const jobCountEl = document.getElementById("jobCount");
 if (jobCountEl) jobCountEl.textContent = JOBS.length;
 SETTINGS.forEach(st => applySetting(st, initialSetting(st)));
