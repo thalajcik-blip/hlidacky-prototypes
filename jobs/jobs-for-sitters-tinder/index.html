@@ -1368,9 +1368,15 @@ function layout(){
     phone.style.setProperty("--vh", h + "px");
     // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
     // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
-    // the sum of both, so either one is undone here.
+    // the sum of both, so either one is undone here. It goes on the phone's top: the stage's
+    // transform is forced to none on phones (see the max-width:500px rule), which silently
+    // swallowed this offset on an iPhone (scrollY 252, phone still 252px above the screen).
     const top = vv ? (vv.pageTop != null ? vv.pageTop : window.scrollY + vv.offsetTop) : window.scrollY;
-    stage.style.transform = top ? `translateY(${top}px)` : "";
+    stage.style.transform = "";
+    phone.style.top = top ? top + "px" : "";
+    // keep the page tall enough for the browser's scroll, or it would clamp it and the two
+    // would chase each other down a few pixels per round
+    document.body.style.minHeight = top ? (top + window.innerHeight) + "px" : "";
     G.scale = 1;
     // keyboard is up: the visible area is well short of the tallest it has been at this width.
     // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
@@ -1383,6 +1389,7 @@ function layout(){
   else {
     const s = Math.min(1, (window.innerHeight - 120) / 810);
     stage.style.transform = s < 1 ? `scale(${s})` : ""; G.scale = s < 1 ? s : 1;
+    phone.style.top = "";
   }
   const W = phone.clientWidth, H = phone.clientHeight;
   const top = G.statusH = document.querySelector(".statusbar").offsetHeight;
