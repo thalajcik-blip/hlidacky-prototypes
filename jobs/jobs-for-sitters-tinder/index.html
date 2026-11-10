@@ -1710,6 +1710,18 @@ async function streamReply(delay){
   ta.readOnly = false; sparkle.classList.remove("pulse");
   setSendEnabled(true); st.generated = true;
 }
+// A tap into the box while the reply is still being written finishes it at once. The box is
+// read-only until then, and iOS gives a read-only field focus without a keyboard and does not
+// bring one up when it turns editable later, so the tap seemed to do nothing.
+function finishGeneration(){
+  if (!ta.readOnly) return;
+  const st = cs();
+  genToken++; gen.classList.remove("on"); sparkle.classList.remove("pulse");
+  ta.value = st.text = job().replies[st.tpl];
+  ta.readOnly = false; st.generated = true; setSendEnabled(true);
+}
+ta.addEventListener("pointerdown", finishGeneration);
+ta.addEventListener("touchstart", finishGeneration, { passive:true });
 function startGeneration(){
   const st = cs();
   if (st.generated || st.text.trim()){ ta.value = st.text; setSendEnabled(!!st.text.trim()); return; }
@@ -2267,8 +2279,11 @@ window.addEventListener("scroll", fitViewport, { passive:true });
 // away instead of waiting for the keyboard: on Android the browser otherwise found the box under
 // the keyboard first and scrolled the whole page up to it (the header flashed out of view) before
 // the sheet got there. If no keyboard shows within a second (hardware keyboard), it goes back.
+// Not on iOS: it never had that flash, and moving the box in the middle of a tap is a risk there
+// (a newer iPhone sometimes showed no keyboard at all after this was added).
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 function expectKeyboard(){
-  if (mobile() && !ta.readOnly && !phone.classList.contains("kb-open")){
+  if (mobile() && !IOS && !ta.readOnly && !phone.classList.contains("kb-open")){
     G.expectKb = Date.now() + 1000;
     clearTimeout(expectKeyboard.t); expectKeyboard.t = setTimeout(fitViewport, 1050);
   }
@@ -2295,7 +2310,7 @@ if (new URLSearchParams(location.search).get("debug") === "kb"){
       `vv h ${n(vv && vv.height)} offTop ${n(vv && vv.offsetTop)} pageTop ${n(vv && vv.pageTop)}\n` +
       `scrollY ${n(scrollY)} doc.scrollTop ${n(document.scrollingElement.scrollTop)}\n` +
       `phone.scroll ${n(phone.scrollTop)} card.scroll ${n(card.scrollTop)} body.scroll ${n(bodyEl.scrollTop)}\n` +
-      `mode ${mode} kb ${phone.classList.contains("kb-open")} busy ${busy} focus ${document.activeElement && document.activeElement.id}\n` +
+      `mode ${mode} kb ${phone.classList.contains("kb-open")} busy ${busy} focus ${document.activeElement && document.activeElement.id} ro ${ta.readOnly} ios ${IOS}\n` +
       `top: phone ${at("#phone")} card ${at("#card")} head ${at(".c-head")} ta ${at("#ta")} send ${at("#yes")}`;
     requestAnimationFrame(tick);
   };
