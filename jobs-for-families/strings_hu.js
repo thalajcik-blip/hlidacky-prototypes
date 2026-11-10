@@ -588,6 +588,7 @@
       "anotherSitter": "Egy másik segítő",
       "other": "Egyéb"
     },
+    "otherPlaceholder": "Itt pontosíthatod a forrást.",
     "skipLink": "Majd később megadom"
   },
   "success": {

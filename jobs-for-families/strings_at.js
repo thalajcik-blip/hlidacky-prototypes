@@ -588,6 +588,7 @@
       "anotherSitter": "Eine andere Betreuungsperson",
       "other": "Sonstiges"
     },
+    "otherPlaceholder": "Hier können Sie die Quelle angeben.",
     "skipLink": "Später erledigen"
   },
   "success": {

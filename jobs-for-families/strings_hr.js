@@ -588,6 +588,7 @@
       "anotherSitter": "Druga siterica",
       "other": "Ostalo"
     },
+    "otherPlaceholder": "Ovdje možete navesti izvor.",
     "skipLink": "Učinit ću to kasnije"
   },
   "success": {

@@ -587,6 +587,7 @@ window.STRINGS = {
       "anotherSitter": "Jiná hlídačka",
       "other": "Jiné"
     },
+    "otherPlaceholder": "Zde můžete upřesnit zdroj.",
     "skipLink": "Udělám to později"
   },
   "success": {

@@ -588,6 +588,7 @@
       "anotherSitter": "Iná hlídačka",
       "other": "Iné"
     },
+    "otherPlaceholder": "Tu môžete upresniť zdroj.",
     "skipLink": "Urobím to neskôr"
   },
   "success": {

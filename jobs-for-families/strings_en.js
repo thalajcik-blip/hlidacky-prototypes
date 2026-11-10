@@ -588,6 +588,7 @@
       "anotherSitter": "Another sitter",
       "other": "Other"
     },
+    "otherPlaceholder": "You can specify the source here.",
     "skipLink": "I will do this later"
   },
   "success": {

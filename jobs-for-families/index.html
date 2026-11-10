@@ -412,6 +412,17 @@
     .check-opt--boxed .check-lbl { font-size: 16px; line-height: 1.5; letter-spacing: -0.16px; }
     .check-opt--boxed.checked { background: #EFF9EF; border-color: #22BF1E; }
     .check-opt--boxed.checked .check-box { background: #0BA825; border-color: #0BA825; }
+    .referral-other-wrap { padding-top: 8px; }
+    /* Once an option is picked, drop the doodle and tighten the hero to 88px
+       (19 + 50px copy + 19) so more of the list fits. */
+    #s-referral .hero { transition: padding 0.3s ease; }
+    #s-referral .referral-doodle { transition: height 0.3s ease, opacity 0.2s ease, margin-bottom 0.3s ease; }
+    #s-referral.referral-compact .hero { padding-top: 19px; padding-bottom: 19px; }
+    #s-referral.referral-compact .referral-doodle { height: 0; opacity: 0; margin-bottom: 0; }
+    .form-textarea.referral-other-text {
+      display: block; height: 64px; min-height: 48px; padding: 6px 16px 6px 20px;
+      font-size: 16px; line-height: 1.4; letter-spacing: 0.2px; resize: vertical;
+    }
 
     /* Textarea */
     .form-textarea {
@@ -2199,49 +2210,52 @@
     <div class="screen-body">
       <p class="sec-label" data-i18n="referral.sectionLabel"></p>
       <div class="referral-list">
-        <div class="check-opt check-opt--boxed" id="referral-socialAd" role="checkbox" onclick="toggleCheck('referral-socialAd')">
+        <div class="check-opt check-opt--boxed" id="referral-socialAd" role="checkbox" onclick="toggleReferralOption('referral-socialAd')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.socialAd"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-influencer" role="checkbox" onclick="toggleCheck('referral-influencer')">
+        <div class="check-opt check-opt--boxed" id="referral-influencer" role="checkbox" onclick="toggleReferralOption('referral-influencer')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.influencer"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-searchEngine" role="checkbox" onclick="toggleCheck('referral-searchEngine')">
+        <div class="check-opt check-opt--boxed" id="referral-searchEngine" role="checkbox" onclick="toggleReferralOption('referral-searchEngine')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.searchEngine"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-tvRadio" role="checkbox" onclick="toggleCheck('referral-tvRadio')">
+        <div class="check-opt check-opt--boxed" id="referral-tvRadio" role="checkbox" onclick="toggleReferralOption('referral-tvRadio')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.tvRadio"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-newsBlog" role="checkbox" onclick="toggleCheck('referral-newsBlog')">
+        <div class="check-opt check-opt--boxed" id="referral-newsBlog" role="checkbox" onclick="toggleReferralOption('referral-newsBlog')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.newsBlog"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-appStore" role="checkbox" onclick="toggleCheck('referral-appStore')">
+        <div class="check-opt check-opt--boxed" id="referral-appStore" role="checkbox" onclick="toggleReferralOption('referral-appStore')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.appStore"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-aiChatbot" role="checkbox" onclick="toggleCheck('referral-aiChatbot')">
+        <div class="check-opt check-opt--boxed" id="referral-aiChatbot" role="checkbox" onclick="toggleReferralOption('referral-aiChatbot')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.aiChatbot"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-university" role="checkbox" onclick="toggleCheck('referral-university')">
+        <div class="check-opt check-opt--boxed" id="referral-university" role="checkbox" onclick="toggleReferralOption('referral-university')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.university"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-jobBoard" role="checkbox" onclick="toggleCheck('referral-jobBoard')">
+        <div class="check-opt check-opt--boxed" id="referral-jobBoard" role="checkbox" onclick="toggleReferralOption('referral-jobBoard')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.jobBoard"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-anotherSitter" role="checkbox" onclick="toggleCheck('referral-anotherSitter')">
+        <div class="check-opt check-opt--boxed" id="referral-anotherSitter" role="checkbox" onclick="toggleReferralOption('referral-anotherSitter')">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.anotherSitter"></span>
         </div>
-        <div class="check-opt check-opt--boxed" id="referral-other" role="checkbox" onclick="toggleCheck('referral-other')">
+        <div class="check-opt check-opt--boxed" id="referral-other" role="checkbox" onclick="toggleReferralOther()">
           <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
           <span class="check-lbl" data-i18n="referral.options.other"></span>
+        </div>
+        <div class="referral-other-wrap" id="referral-other-wrap" hidden>
+          <textarea class="form-textarea referral-other-text" id="referral-other-text" data-i18n-placeholder="referral.otherPlaceholder"></textarea>
         </div>
       </div>
     </div>
@@ -2739,6 +2753,9 @@
     var priceInput = document.getElementById('price-input');
     if (priceInput) priceInput.value = '';
     document.querySelectorAll('#s-referral .check-opt').forEach(c => c.classList.remove('checked'));
+    document.getElementById('referral-other-text').value = '';
+    document.getElementById('referral-other-wrap').hidden = true;
+    updateReferralCompact();
     showScreen(getInitialFlowStep());
   }
 
@@ -2970,6 +2987,26 @@
 
   function toggleDay(btn) { btn.classList.toggle('selected'); }
   function toggleCheck(id) { document.getElementById(id).classList.toggle('checked'); }
+  function updateReferralCompact() {
+    const screen = document.getElementById('s-referral');
+    screen.classList.toggle('referral-compact', !!screen.querySelector('.check-opt.checked'));
+  }
+  function toggleReferralOption(id) {
+    toggleCheck(id);
+    updateReferralCompact();
+  }
+  function toggleReferralOther() {
+    toggleCheck('referral-other');
+    updateReferralCompact();
+    const on = document.getElementById('referral-other').classList.contains('checked');
+    document.getElementById('referral-other-wrap').hidden = !on;
+    // Other is the last option, so the field opens below the fold; bring it into view.
+    // Scroll the body directly: scrollIntoView would also shift the clipped screens wrapper sideways.
+    if (on) {
+      const body = document.querySelector('#s-referral .screen-body');
+      body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+    }
+  }
 
   // ============================================================
   // Dynamic text
