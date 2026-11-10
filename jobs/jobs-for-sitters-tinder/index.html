@@ -292,20 +292,13 @@ svg{display:block;flex:none}
 .v-simple:not(.v-inline) .c-head{margin-top:12px}
 
 /* ---------- keyboard up (real phone, see layout()) ---------- */
-/* The sheet ends at the keyboard, so the reply box needs every line it can get: the photo strip
-   and the author and address line go, the title keeps one line, the job description two (it still
-   scrolls), Send sits 12px above the keyboard and the reply box ends 14px above Send. All of it
-   comes back once the keyboard closes. The tab bar is behind the keyboard anyway. */
+/* The whole sheet scrolls up so Your reply sits at the top of the visible area (cardGeom()), and
+   the reply box takes everything from there down to Send, 12px above the keyboard. The photo, the
+   title and the job description stay laid out as before, only above the visible area, so closing
+   the sheet needs the keyboard closed first. The tab bar is behind the keyboard anyway. */
 .kb-open .tabbar{display:none}
-.kb-open.m-reply .hero{height:0!important;overflow:hidden}
-.kb-open.m-reply .badge,.kb-open.m-reply .hero-close{display:none}
-.kb-open.m-reply .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kb-open.m-reply .meta{display:none}
-.kb-open.v-inline.m-reply .desc{max-height:calc(2 * 21px)}
 .kb-open.m-reply .composer{padding-bottom:78px}
-.kb-open.m-reply .c-rule{margin-top:10px}
-.kb-open.m-reply .c-head{margin-top:10px}
-.kb-open.m-reply .c-box{margin-top:8px;min-height:72px}
+.kb-open.m-reply .c-box{max-height:none}
 .kb-open .show-desc{display:none}
 
 /* ---------- replied feed (Figma 3624:591971) ---------- */
@@ -1417,6 +1410,13 @@ function layout(){
 
 function cardGeom(m){
   if (m === "stack" || m === "gone") return { left:20, top:G.cardTop, width:G.W - 40, height:null, r:"12px" };
+  // keyboard up while replying: the sheet scrolls up until Your reply is 12px under the top of
+  // the visible area (the native top bar in the simplified version, the status bar otherwise)
+  if (m === "reply" && phone.classList.contains("kb-open")){
+    const head = bodyEl.offsetTop + composer.querySelector(".c-head").offsetTop;
+    const top = (simplified() ? G.webTop : G.statusH) + 12 - head;
+    return { left:0, top, width:G.W, height:G.B - top, r:"0px" };
+  }
   return { left:0, top:G.S, width:G.W, height:G.B - G.S, r:"20px 20px 0px 0px" };
 }
 function btnGeom(m){
@@ -2197,7 +2197,17 @@ card.addEventListener("pointercancel", cancelDrag);
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
 // iOS reports the keyboard only through the visual viewport (no window resize). A layout that
 // lands mid-transition waits for it to finish, otherwise the reply box would stay under the keyboard.
-function fitViewport(){ if (busy) { clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); } else placeStatic(); }
+function fitViewport(){
+  if (busy){ clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); return; }
+  const wasOpen = phone.classList.contains("kb-open");
+  const from = mode === "reply" ? { card:snap(card), yes:snap(btnYes) } : null;
+  placeStatic();
+  // the sheet glides up to the reply (and back down) instead of jumping
+  if (from && wasOpen !== phone.classList.contains("kb-open")){
+    card.animate(boxFrames(from.card, cardGeom(mode)), {duration:280, easing:EASE});
+    btnYes.animate(boxFrames(from.yes, btnGeom(mode).yes), {duration:280, easing:EASE});
+  }
+}
 if (window.visualViewport){
   visualViewport.addEventListener("resize", fitViewport);
   visualViewport.addEventListener("scroll", fitViewport);
