@@ -1370,15 +1370,21 @@ function pinViewport(){
   // iOS keeps reporting the old values (seen on an iPhone after Send: height 395 and offsetTop 252
   // with scrollY already back at 0), which left the phone 252px down with white above it. The
   // keyboard cannot be up without focus, so then the window's own height is used.
-  const vv = document.activeElement === ta ? window.visualViewport : null;
-  const h = vv ? vv.height : window.innerHeight;
-  phone.style.setProperty("--vh", h + "px");
+  const focused = document.activeElement === ta;
+  const vv = focused ? window.visualViewport : null;
+  let h = vv ? vv.height : window.innerHeight;
   // keyboard is up: the visible area is well short of the tallest it has been at this width.
   // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
   // here; a new width (rotation) starts the comparison over.
   if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; }
   G.fullH = Math.max(G.fullH, window.innerHeight, h);
-  const kb = G.fullH - h > 120;
+  let kb = G.fullH - h > 120;
+  // The keyboard is expected but not here yet (see expectKeyboard): lay out as if it were, with
+  // the height it had last time, or half the screen the first time (more than any keyboard, so
+  // the whole reply box is clear of it). The real height takes over as soon as it is reported.
+  if (kb){ G.kbH = G.fullH - h; G.expectKb = 0; }
+  else if (focused && G.expectKb > Date.now()){ h = G.fullH - (G.kbH || Math.round(G.fullH * .5)); kb = true; }
+  phone.style.setProperty("--vh", h + "px");
   // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
   // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
   // the sum of both, so either one is undone here. It goes on the phone's top: the stage's
@@ -2236,10 +2242,12 @@ function fitViewport(){
   FIXED_BOXES.forEach(unscroll);   // also here: a scroll event can arrive after the keyboard settles
   const from = mode === "reply" ? { card:snap(card), yes:snap(btnYes) } : null;
   placeStatic();
-  // the sheet glides up to the reply (and back down) instead of jumping
+  // the sheet glides up to the reply (and back down) instead of jumping; going up it is quick,
+  // to be in place before the keyboard is
   if (from && wasOpen !== phone.classList.contains("kb-open")){
-    card.animate(boxFrames(from.card, cardGeom(mode)), {duration:280, easing:EASE});
-    btnYes.animate(boxFrames(from.yes, btnGeom(mode).yes), {duration:280, easing:EASE});
+    const duration = wasOpen ? 280 : 180;
+    card.animate(boxFrames(from.card, cardGeom(mode)), {duration, easing:EASE});
+    btnYes.animate(boxFrames(from.yes, btnGeom(mode).yes), {duration, easing:EASE});
   }
 }
 if (window.visualViewport){
@@ -2255,7 +2263,19 @@ const FIXED_BOXES = [phone, card, bodyEl, composer, $(".c-box"), $(".c-ta")];
 function unscroll(el){ if (el.scrollTop || el.scrollLeft){ el.scrollTop = 0; el.scrollLeft = 0; } }
 FIXED_BOXES.forEach(el => el.addEventListener("scroll", () => unscroll(el), { passive:true }));
 window.addEventListener("scroll", fitViewport, { passive:true });
-ta.addEventListener("focus", fitViewport);
+// A tap into the reply box brings the keyboard up. The sheet moves to its keyboard layout right
+// away instead of waiting for the keyboard: on Android the browser otherwise found the box under
+// the keyboard first and scrolled the whole page up to it (the header flashed out of view) before
+// the sheet got there. If no keyboard shows within a second (hardware keyboard), it goes back.
+function expectKeyboard(){
+  if (mobile() && !ta.readOnly && !phone.classList.contains("kb-open")){
+    G.expectKb = Date.now() + 1000;
+    clearTimeout(expectKeyboard.t); expectKeyboard.t = setTimeout(fitViewport, 1050);
+  }
+  fitViewport();
+}
+ta.addEventListener("focus", expectKeyboard);
+ta.addEventListener("click", expectKeyboard);   // focus stays when Android's back button hides the keyboard
 // on blur at once (iOS fires no viewport event with fresh values then), and once more after the
 // keyboard has started to leave
 ta.addEventListener("blur", () => { fitViewport(); setTimeout(fitViewport, 50); });
