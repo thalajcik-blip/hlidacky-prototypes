@@ -434,6 +434,12 @@
     /* Sitter avatars */
     .sitter-avatars { display: flex; justify-content: center; margin-bottom: 2px; }
     .sitter-avatars img { height: 52px; width: auto; }
+    /* Review step: once the user edits the description, drop the avatars
+       so the textarea gets their height. */
+    #s-review .sitter-avatars { max-height: 54px; overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease, margin-bottom 0.3s ease; }
+    #s-review #review-hero-title { transition: margin-top 0.3s ease; }
+    #s-review.review-compact .sitter-avatars { max-height: 0; opacity: 0; margin-bottom: 0; }
+    #s-review.review-compact #review-hero-title { margin-top: 0; }
 
     /* Privacy note */
     .privacy-note {
@@ -2960,7 +2966,12 @@
     ta.style.order = '';
   }
 
+  function setReviewCompact(on) {
+    document.getElementById('s-review').classList.toggle('review-compact', on);
+  }
+
   function updateReviewText() {
+    setReviewCompact(false);
     updateReviewLayout();
     if (isMultiServiceFlow()) {
       if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
@@ -3884,6 +3895,7 @@
   }
 
   function onReviewTextInput() {
+    setReviewCompact(true);
     if (!isMultiServiceFlow() && !document.getElementById('review-text').value.trim()) {
       updateReviewPills();
     }
@@ -4017,6 +4029,7 @@
   }
 
   function typeAppend(ta, appendText) {
+    setReviewCompact(true);
     if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
     const base = ta.value.trimEnd();
     ta.value = base;
