@@ -1368,9 +1368,12 @@ function layout(){
     phone.style.setProperty("--vh", h + "px");
     stage.style.transform = vv && vv.offsetTop ? `translateY(${vv.offsetTop}px)` : "";
     G.scale = 1;
-    // keyboard is up: the visible area is well short of the full screen (iOS), or the textarea has
-    // focus and the window shrank (Android)
-    const kb = (vv && window.innerHeight - vv.height > 120) || (document.activeElement === ta && h < screen.height * .75);
+    // keyboard is up: the visible area is well short of the tallest it has been at this width.
+    // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
+    // here; a new width (rotation) starts the comparison over.
+    if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; }
+    G.fullH = Math.max(G.fullH, window.innerHeight, h);
+    const kb = G.fullH - h > 120;
     phone.classList.toggle("kb-open", !!kb);
   }
   else {
@@ -2194,12 +2197,13 @@ card.addEventListener("pointerup", endDrag);
 card.addEventListener("pointercancel", cancelDrag);
 
 /* ---------------- boot ---------------- */
-window.addEventListener("resize", () => { if (!busy) placeStatic(); });
+window.addEventListener("resize", () => fitViewport());
 // iOS reports the keyboard only through the visual viewport (no window resize). A layout that
 // lands mid-transition waits for it to finish, otherwise the reply box would stay under the keyboard.
 function fitViewport(){
   if (busy){ clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); return; }
   const wasOpen = phone.classList.contains("kb-open");
+  FIXED_BOXES.forEach(unscroll);   // also here: a scroll event can arrive after the keyboard settles
   const from = mode === "reply" ? { card:snap(card), yes:snap(btnYes) } : null;
   placeStatic();
   // the sheet glides up to the reply (and back down) instead of jumping
@@ -2212,6 +2216,14 @@ if (window.visualViewport){
   visualViewport.addEventListener("resize", fitViewport);
   visualViewport.addEventListener("scroll", fitViewport);
 }
+// Focusing the reply box makes the browser scroll its ancestors to bring it into view, and Chrome on
+// Android scrolls even overflow:hidden boxes (the phone, the sheet). That offset stacked on top of
+// the sheet's own scroll-up, so Your reply and the top of the box ended above the screen. None of
+// these boxes ever scrolls on purpose (the description and the feed have their own scrollers),
+// so any scroll on them is undone at once.
+const FIXED_BOXES = [phone, card, bodyEl, composer, $(".c-box"), $(".c-ta")];
+function unscroll(el){ if (el.scrollTop || el.scrollLeft){ el.scrollTop = 0; el.scrollLeft = 0; } }
+FIXED_BOXES.forEach(el => el.addEventListener("scroll", () => unscroll(el), { passive:true }));
 ta.addEventListener("focus", fitViewport);
 ta.addEventListener("blur", () => setTimeout(fitViewport, 50));
 const jobCountEl = document.getElementById("jobCount");
