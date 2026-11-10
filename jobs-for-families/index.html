@@ -400,6 +400,19 @@
     .check-opt.green.checked .check-box { background: var(--green); border-color: var(--green); }
     .check-lbl { font-size: 14px; color: var(--text); line-height: 1.4; }
 
+    /* "Where did you hear about us?" step */
+    .referral-doodle { position: relative; overflow: hidden; }
+    .referral-doodle img { position: absolute; display: block; max-width: none; }
+    .referral-list { display: flex; flex-direction: column; gap: 4px; }
+    .check-opt--boxed {
+      gap: 8px; padding: 7px 12px; border: 1px solid #E5E5EA; border-radius: 6px;
+      background: var(--white); transition: background 0.15s, border-color 0.15s;
+    }
+    .check-opt--boxed .check-box { margin-top: 2px; border: 1px solid #BEC2CE; background: var(--white); }
+    .check-opt--boxed .check-lbl { font-size: 16px; line-height: 1.5; letter-spacing: -0.16px; }
+    .check-opt--boxed.checked { background: #EFF9EF; border-color: #22BF1E; }
+    .check-opt--boxed.checked .check-box { background: #0BA825; border-color: #0BA825; }
+
     /* Textarea */
     .form-textarea {
       width: 100%; min-height: 120px; border: 1px solid #e5e5ea; border-radius: 4px;
@@ -2170,6 +2183,78 @@
     </div>
   </div>
 
+  <!-- ===== SCREEN: Where did you hear about us? ===== -->
+  <div class="screen" id="s-referral">
+
+    <div class="hero">
+      <div class="hero-illus referral-doodle" aria-hidden="true">
+        <img src="/jobs-for-families/assets/doodle-megaphone/layer-2.svg" alt="" style="inset:17.87% 9.74% 19.62% 13.27%">
+        <img src="/jobs-for-families/assets/doodle-megaphone/layer-3.svg" alt="" style="inset:21.57% 28.66% 16.46% 12.69%">
+        <img src="/jobs-for-families/assets/doodle-megaphone/layer-1.svg" alt="" style="inset:calc(7.86% - 0.7px) calc(7.93% - 0.7px) calc(8.97% - 0.7px) calc(12.31% - 0.7px)">
+      </div>
+      <h2 class="hero-title" data-i18n="referral.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="referral.heroSub"></p>
+    </div>
+
+    <div class="screen-body">
+      <p class="sec-label" data-i18n="referral.sectionLabel"></p>
+      <div class="referral-list">
+        <div class="check-opt check-opt--boxed" id="referral-socialAd" role="checkbox" onclick="toggleCheck('referral-socialAd')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.socialAd"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-influencer" role="checkbox" onclick="toggleCheck('referral-influencer')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.influencer"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-searchEngine" role="checkbox" onclick="toggleCheck('referral-searchEngine')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.searchEngine"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-tvRadio" role="checkbox" onclick="toggleCheck('referral-tvRadio')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.tvRadio"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-newsBlog" role="checkbox" onclick="toggleCheck('referral-newsBlog')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.newsBlog"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-appStore" role="checkbox" onclick="toggleCheck('referral-appStore')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.appStore"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-aiChatbot" role="checkbox" onclick="toggleCheck('referral-aiChatbot')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.aiChatbot"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-university" role="checkbox" onclick="toggleCheck('referral-university')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.university"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-jobBoard" role="checkbox" onclick="toggleCheck('referral-jobBoard')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.jobBoard"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-anotherSitter" role="checkbox" onclick="toggleCheck('referral-anotherSitter')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.anotherSitter"></span>
+        </div>
+        <div class="check-opt check-opt--boxed" id="referral-other" role="checkbox" onclick="toggleCheck('referral-other')">
+          <div class="check-box"><svg width="12" height="9" viewBox="0 0 12 9" fill="none" aria-hidden="true"><path d="M11.1401 0.247559C11.4702 0.552246 11.4702 1.08545 11.1401 1.39014L4.64014 7.89014C4.33545 8.22021 3.80225 8.22021 3.49756 7.89014L0.247559 4.64014C-0.0825195 4.33545 -0.0825195 3.80225 0.247559 3.49756C0.552246 3.16748 1.08545 3.16748 1.39014 3.49756L4.08154 6.16357L9.99756 0.247559C10.3022 -0.0825195 10.8354 -0.0825195 11.1401 0.247559Z" fill="white"/></svg></div>
+          <span class="check-lbl" data-i18n="referral.options.other"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goPrev()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="#2a3539" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="nav.btnPrev"></span></button>
+        <button class="btn-primary" onclick="goNext()"><span data-i18n="nav.btnNext"></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <a class="btn-link" onclick="goNext()" data-i18n="referral.skipLink"></a>
+    </div>
+  </div>
+
   <!-- ===== SCREEN 8: Success ===== -->
   <div class="screen" id="s-success">
 
@@ -2450,7 +2535,7 @@
   function buildFlow() {
     const openingSteps = window.IS_MOBILE_APP_EMBED ? [] : ['contact'];
     if (isMultiServiceFlow()) {
-      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'success', 'followup']);
+      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success', 'followup']);
     }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
@@ -2458,7 +2543,7 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'success', 'followup']);
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success', 'followup']);
     }
 
     const flow = openingSteps.concat(['service', 'location']);
@@ -2471,7 +2556,7 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'success', 'followup');
+    flow.push('review', 'phone', 'referral', 'success', 'followup');
     return flow;
   }
 
@@ -2554,8 +2639,8 @@
     }
 
     // Update shared progress bar
-    const phoneIdx = flow.indexOf('phone');
-    const progressTargetIdx = phoneIdx === -1 ? flow.length - 1 : phoneIdx;
+    const lastStepIdx = flow.indexOf('referral');
+    const progressTargetIdx = lastStepIdx === -1 ? flow.length - 1 : lastStepIdx;
     const pct = progressTargetIdx <= 0
       ? 100
       : Math.round(Math.min(100, 50 + (currentIdx / progressTargetIdx) * 50));
@@ -2653,6 +2738,7 @@
     if (reviewText) reviewText.value = '';
     var priceInput = document.getElementById('price-input');
     if (priceInput) priceInput.value = '';
+    document.querySelectorAll('#s-referral .check-opt').forEach(c => c.classList.remove('checked'));
     showScreen(getInitialFlowStep());
   }
 

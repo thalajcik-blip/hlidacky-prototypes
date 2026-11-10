@@ -571,6 +571,25 @@
     "inputPlaceholder": "0901 123 456",
     "skipLink": "Urobím to neskôr"
   },
+  "referral": {
+    "heroTitle": "Kde ste sa o nás dozvedeli?",
+    "heroSub": "Pomôžte nám zlepšiť spôsoby, ako nás ľudia objavujú.",
+    "sectionLabel": "Vyberte jednu alebo viac možností",
+    "options": {
+      "socialAd": "Reklama na sociálnych sieťach",
+      "influencer": "Influencer",
+      "searchEngine": "Vyhľadávač",
+      "tvRadio": "Televízia alebo rádio",
+      "newsBlog": "Správy alebo blog",
+      "appStore": "App Store alebo Google Play",
+      "aiChatbot": "AI chatbot",
+      "university": "Univerzita, vysoká škola alebo študentský spolok",
+      "jobBoard": "Pracovný portál alebo veľtrh práce",
+      "anotherSitter": "Iná hlídačka",
+      "other": "Iné"
+    },
+    "skipLink": "Urobím to neskôr"
+  },
   "success": {
     "heroTitle": "A je to hotové!",
     "heroSub": "Váš inzerát pre mesto {city} bol zverejnený.",

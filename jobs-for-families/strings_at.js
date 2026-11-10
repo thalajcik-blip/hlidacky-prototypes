@@ -571,6 +571,25 @@
     "inputPlaceholder": "+43 664 123 4567",
     "skipLink": "Später erledigen"
   },
+  "referral": {
+    "heroTitle": "Wie haben Sie von uns erfahren?",
+    "heroSub": "Helfen Sie uns zu verbessern, wie Menschen uns entdecken.",
+    "sectionLabel": "Wählen Sie eine oder mehrere Optionen",
+    "options": {
+      "socialAd": "Werbung in sozialen Medien",
+      "influencer": "Influencer",
+      "searchEngine": "Suchmaschine",
+      "tvRadio": "Fernsehen oder Radio",
+      "newsBlog": "Nachrichten oder Blog",
+      "appStore": "App Store oder Google Play",
+      "aiChatbot": "KI-Chatbot",
+      "university": "Universität, Hochschule oder Studentengruppe",
+      "jobBoard": "Jobbörse oder Karrieremesse",
+      "anotherSitter": "Eine andere Betreuungsperson",
+      "other": "Sonstiges"
+    },
+    "skipLink": "Später erledigen"
+  },
   "success": {
     "heroTitle": "Das war's!",
     "heroSub": "Ihre Jobanzeige für {city} wurde veröffentlicht.",

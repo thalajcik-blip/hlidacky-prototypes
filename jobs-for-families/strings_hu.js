@@ -571,6 +571,25 @@
     "inputPlaceholder": "+36 30 123 4567",
     "skipLink": "Majd később megadom"
   },
+  "referral": {
+    "heroTitle": "Honnan hallottál rólunk?",
+    "heroSub": "Segíts nekünk jobbá tenni, ahogyan az emberek ránk találnak.",
+    "sectionLabel": "Válassz egy vagy több lehetőséget",
+    "options": {
+      "socialAd": "Közösségi médiás hirdetés",
+      "influencer": "Influenszer",
+      "searchEngine": "Keresőmotor",
+      "tvRadio": "Tévé vagy rádió",
+      "newsBlog": "Hírek vagy blog",
+      "appStore": "App Store vagy Google Play",
+      "aiChatbot": "MI-chatbot",
+      "university": "Egyetem, főiskola vagy diákszervezet",
+      "jobBoard": "Állásportál vagy állásbörze",
+      "anotherSitter": "Egy másik segítő",
+      "other": "Egyéb"
+    },
+    "skipLink": "Majd később megadom"
+  },
   "success": {
     "heroTitle": "Ez az!",
     "heroSub": "A hirdetésedet közzétettük {city} területén.",

@@ -571,6 +571,25 @@
     "inputPlaceholder": "+385 91 123 4567",
     "skipLink": "Učinit ću to kasnije"
   },
+  "referral": {
+    "heroTitle": "Gdje ste čuli za nas?",
+    "heroSub": "Pomozite nam poboljšati načine na koje nas ljudi otkrivaju.",
+    "sectionLabel": "Odaberite jednu ili više opcija",
+    "options": {
+      "socialAd": "Oglas na društvenim mrežama",
+      "influencer": "Influencer",
+      "searchEngine": "Tražilica",
+      "tvRadio": "TV ili radio",
+      "newsBlog": "Vijesti ili blog",
+      "appStore": "App Store ili Google Play",
+      "aiChatbot": "AI chatbot",
+      "university": "Sveučilište, fakultet ili studentska udruga",
+      "jobBoard": "Portal za posao ili sajam karijera",
+      "anotherSitter": "Druga siterica",
+      "other": "Ostalo"
+    },
+    "skipLink": "Učinit ću to kasnije"
+  },
   "success": {
     "heroTitle": "To je to!",
     "heroSub": "Vaša ponuda za posao u mjestu {city} je objavljena.",

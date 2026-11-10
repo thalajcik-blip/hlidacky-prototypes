@@ -570,6 +570,25 @@ window.STRINGS = {
     "inputPlaceholder": "777 123 456",
     "skipLink": "Udělám to později"
   },
+  "referral": {
+    "heroTitle": "Kde jste se o nás dozvěděli?",
+    "heroSub": "Pomozte nám zlepšit způsoby, jak nás lidé objevují.",
+    "sectionLabel": "Vyberte jednu nebo více možností",
+    "options": {
+      "socialAd": "Reklama na sociálních sítích",
+      "influencer": "Influencer",
+      "searchEngine": "Vyhledávač",
+      "tvRadio": "Televize nebo rádio",
+      "newsBlog": "Zprávy nebo blog",
+      "appStore": "App Store nebo Google Play",
+      "aiChatbot": "AI chatbot",
+      "university": "Univerzita, vysoká škola nebo studentský spolek",
+      "jobBoard": "Pracovní portál nebo veletrh práce",
+      "anotherSitter": "Jiná hlídačka",
+      "other": "Jiné"
+    },
+    "skipLink": "Udělám to později"
+  },
   "success": {
     "heroTitle": "A je to!",
     "heroSub": "Váš inzerát pro město {city} byl zveřejněn.",

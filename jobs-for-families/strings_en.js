@@ -571,6 +571,25 @@
     "inputPlaceholder": "777 123 456",
     "skipLink": "I'll do this later"
   },
+  "referral": {
+    "heroTitle": "Where did you hear about us?",
+    "heroSub": "Help us improve the ways people discover us.",
+    "sectionLabel": "Select one or more options",
+    "options": {
+      "socialAd": "Social media ad",
+      "influencer": "Influencer",
+      "searchEngine": "Search engine",
+      "tvRadio": "TV or radio",
+      "newsBlog": "News or blog",
+      "appStore": "App Store or Google Play",
+      "aiChatbot": "AI chatbot",
+      "university": "University, college, or student group",
+      "jobBoard": "Job board or career fair",
+      "anotherSitter": "Another sitter",
+      "other": "Other"
+    },
+    "skipLink": "I will do this later"
+  },
   "success": {
     "heroTitle": "That's it!",
     "heroSub": "Your job in {city} was posted.",
