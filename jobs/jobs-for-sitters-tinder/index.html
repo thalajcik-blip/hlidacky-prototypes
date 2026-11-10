@@ -1345,6 +1345,7 @@ shuffleJobs();
 let idx = 0;              // job on top of the stack
 let mode = "stack";       // stack | detail | reply | gone
 let busy = false;
+let layoutWhileBusy = false;  // Send's Sending… / Sent pause: the viewport may relayout (fitViewport)
 let genToken = 0;
 let lastDeclined = null;  // index that Undo brings back
 let undoToDetail = false; // Undo returns that job into its detail (next job in detail)
@@ -1357,33 +1358,43 @@ const cs  = () => CS[job().id] || (CS[job().id] = { text:"", tpl:0, generated:fa
 /* ---------------- geometry ---------------- */
 const mobile = () => matchMedia("(max-width:500px)").matches;
 
+// Fits the phone frame to what is visible on a real phone. Cheap and safe mid-animation, so it
+// runs on every viewport change even while busy: when it waited for Send's animation, the keyboard
+// had already closed and the page scrolled back, and the phone hung ~250px down with white above it.
+function pinViewport(){
+  if (!mobile()) return null;
+  // iOS keeps the layout viewport (innerHeight) full height while the keyboard is up and only
+  // shrinks the visual viewport, so the reply box ended up under the keyboard. Android resizes
+  // innerHeight instead. Sizing the phone to the visual viewport covers both.
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  phone.style.setProperty("--vh", h + "px");
+  // keyboard is up: the visible area is well short of the tallest it has been at this width.
+  // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
+  // here; a new width (rotation) starts the comparison over.
+  if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; }
+  G.fullH = Math.max(G.fullH, window.innerHeight, h);
+  const kb = G.fullH - h > 120;
+  // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
+  // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
+  // the sum of both, so either one is undone here. It goes on the phone's top: the stage's
+  // transform is forced to none on phones (see the max-width:500px rule), which silently
+  // swallowed this offset on an iPhone (scrollY 252, phone still 252px above the screen).
+  // Once the keyboard is gone nothing needs revealing, so the page goes back to the top.
+  let top = vv ? (vv.pageTop != null ? vv.pageTop : window.scrollY + vv.offsetTop) : window.scrollY;
+  if (!kb && top){ window.scrollTo(0, 0); top = 0; }
+  stage.style.transform = "";
+  phone.style.top = top ? top + "px" : "";
+  // keep the page tall enough for the browser's scroll, or it would clamp it and the two
+  // would chase each other down a few pixels per round
+  document.body.style.minHeight = top ? (top + window.innerHeight) + "px" : "";
+  return kb;
+}
+
 function layout(){
   if (mobile()){
-    // iOS keeps the layout viewport (innerHeight) full height while the keyboard is up and only
-    // shrinks the visual viewport, so the reply box ended up under the keyboard. Android resizes
-    // innerHeight instead. Sizing the phone to the visual viewport covers both, and the offset
-    // follows iOS when it pans the page towards the focused textarea.
-    const vv = window.visualViewport;
-    const h = vv ? vv.height : window.innerHeight;
-    phone.style.setProperty("--vh", h + "px");
-    // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
-    // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
-    // the sum of both, so either one is undone here. It goes on the phone's top: the stage's
-    // transform is forced to none on phones (see the max-width:500px rule), which silently
-    // swallowed this offset on an iPhone (scrollY 252, phone still 252px above the screen).
-    const top = vv ? (vv.pageTop != null ? vv.pageTop : window.scrollY + vv.offsetTop) : window.scrollY;
-    stage.style.transform = "";
-    phone.style.top = top ? top + "px" : "";
-    // keep the page tall enough for the browser's scroll, or it would clamp it and the two
-    // would chase each other down a few pixels per round
-    document.body.style.minHeight = top ? (top + window.innerHeight) + "px" : "";
+    const kb = pinViewport();
     G.scale = 1;
-    // keyboard is up: the visible area is well short of the tallest it has been at this width.
-    // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
-    // here; a new width (rotation) starts the comparison over.
-    if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; }
-    G.fullH = Math.max(G.fullH, window.innerHeight, h);
-    const kb = G.fullH - h > 120;
     phone.classList.toggle("kb-open", !!kb);
   }
   else {
@@ -1812,11 +1823,12 @@ async function decline(){
 
 async function send(){
   if (busy || btnYes.getAttribute("aria-disabled") === "true") return;
-  busy = true; ta.blur(); hideToast();
+  busy = true; layoutWhileBusy = true; ta.blur(); hideToast();
   btnYes.classList.add("sending");
   await wait(750);
   btnYes.classList.remove("sending"); btnYes.classList.add("done");
   await wait(480);
+  layoutWhileBusy = false;
   const stay = nextInDetail();
   await flySheet(1, stay);
   lastDeclined = null;
@@ -2212,7 +2224,10 @@ window.addEventListener("resize", () => fitViewport());
 // iOS reports the keyboard only through the visual viewport (no window resize). A layout that
 // lands mid-transition waits for it to finish, otherwise the reply box would stay under the keyboard.
 function fitViewport(){
-  if (busy){ clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); return; }
+  pinViewport();   // right away, even mid-animation
+  // the rest waits for a transition to end, except while Send only shows Sending… and Sent:
+  // nothing moves then, so the sheet can settle as the keyboard closes
+  if (busy && !layoutWhileBusy){ clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); return; }
   const wasOpen = phone.classList.contains("kb-open");
   FIXED_BOXES.forEach(unscroll);   // also here: a scroll event can arrive after the keyboard settles
   const from = mode === "reply" ? { card:snap(card), yes:snap(btnYes) } : null;
