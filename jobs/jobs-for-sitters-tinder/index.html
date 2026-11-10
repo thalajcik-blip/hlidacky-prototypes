@@ -1366,7 +1366,11 @@ function pinViewport(){
   // iOS keeps the layout viewport (innerHeight) full height while the keyboard is up and only
   // shrinks the visual viewport, so the reply box ended up under the keyboard. Android resizes
   // innerHeight instead. Sizing the phone to the visual viewport covers both.
-  const vv = window.visualViewport;
+  // The visual viewport is only trusted while the reply box has focus. After the keyboard closes,
+  // iOS keeps reporting the old values (seen on an iPhone after Send: height 395 and offsetTop 252
+  // with scrollY already back at 0), which left the phone 252px down with white above it. The
+  // keyboard cannot be up without focus, so then the window's own height is used.
+  const vv = document.activeElement === ta ? window.visualViewport : null;
   const h = vv ? vv.height : window.innerHeight;
   phone.style.setProperty("--vh", h + "px");
   // keyboard is up: the visible area is well short of the tallest it has been at this width.
@@ -2252,7 +2256,9 @@ function unscroll(el){ if (el.scrollTop || el.scrollLeft){ el.scrollTop = 0; el.
 FIXED_BOXES.forEach(el => el.addEventListener("scroll", () => unscroll(el), { passive:true }));
 window.addEventListener("scroll", fitViewport, { passive:true });
 ta.addEventListener("focus", fitViewport);
-ta.addEventListener("blur", () => setTimeout(fitViewport, 50));
+// on blur at once (iOS fires no viewport event with fresh values then), and once more after the
+// keyboard has started to leave
+ta.addEventListener("blur", () => { fitViewport(); setTimeout(fitViewport, 50); });
 
 // ?debug=kb: a live readout of the numbers the keyboard layout works from, to check on a device
 if (new URLSearchParams(location.search).get("debug") === "kb"){
