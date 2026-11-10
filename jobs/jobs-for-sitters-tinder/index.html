@@ -291,6 +291,23 @@ svg{display:block;flex:none}
 .v-simple:not(.v-inline) .c-rule{margin-top:16px}
 .v-simple:not(.v-inline) .c-head{margin-top:12px}
 
+/* ---------- keyboard up (real phone, see layout()) ---------- */
+/* The sheet ends at the keyboard, so the reply box needs every line it can get: the photo strip
+   and the author and address line go, the title keeps one line, the job description two (it still
+   scrolls), Send sits 12px above the keyboard and the reply box ends 14px above Send. All of it
+   comes back once the keyboard closes. The tab bar is behind the keyboard anyway. */
+.kb-open .tabbar{display:none}
+.kb-open.m-reply .hero{height:0!important;overflow:hidden}
+.kb-open.m-reply .badge,.kb-open.m-reply .hero-close{display:none}
+.kb-open.m-reply .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kb-open.m-reply .meta{display:none}
+.kb-open.v-inline.m-reply .desc{max-height:calc(2 * 21px)}
+.kb-open.m-reply .composer{padding-bottom:78px}
+.kb-open.m-reply .c-rule{margin-top:10px}
+.kb-open.m-reply .c-head{margin-top:10px}
+.kb-open.m-reply .c-box{margin-top:8px;min-height:72px}
+.kb-open .show-desc{display:none}
+
 /* ---------- replied feed (Figma 3624:591971) ---------- */
 /* A scrolling list of answered jobs: the card keeps the stack card's head and body, adds the
    Replied flag, an ellipsis (context menu entry point) and a Show messages button. */
@@ -1348,7 +1365,21 @@ const cs  = () => CS[job().id] || (CS[job().id] = { text:"", tpl:0, generated:fa
 const mobile = () => matchMedia("(max-width:500px)").matches;
 
 function layout(){
-  if (mobile()) { phone.style.setProperty("--vh", window.innerHeight + "px"); stage.style.transform = ""; G.scale = 1; }
+  if (mobile()){
+    // iOS keeps the layout viewport (innerHeight) full height while the keyboard is up and only
+    // shrinks the visual viewport, so the reply box ended up under the keyboard. Android resizes
+    // innerHeight instead. Sizing the phone to the visual viewport covers both, and the offset
+    // follows iOS when it pans the page towards the focused textarea.
+    const vv = window.visualViewport;
+    const h = vv ? vv.height : window.innerHeight;
+    phone.style.setProperty("--vh", h + "px");
+    stage.style.transform = vv && vv.offsetTop ? `translateY(${vv.offsetTop}px)` : "";
+    G.scale = 1;
+    // keyboard is up: the visible area is well short of the full screen (iOS), or the textarea has
+    // focus and the window shrank (Android)
+    const kb = (vv && window.innerHeight - vv.height > 120) || (document.activeElement === ta && h < screen.height * .75);
+    phone.classList.toggle("kb-open", !!kb);
+  }
   else {
     const s = Math.min(1, (window.innerHeight - 120) / 810);
     stage.style.transform = s < 1 ? `scale(${s})` : ""; G.scale = s < 1 ? s : 1;
@@ -1375,8 +1406,12 @@ function layout(){
   const foot = simplified() ? G.B + 20 : H;
   G.detailBtnTop = foot - 92;
   // the reply variant has no Show job description link under Send; between the bars Send sits
-  // half as far above that link (11px instead of 23px) to give the reply box the room
-  G.sendTop = foot - (inline() ? 94 : simplified() ? 129 : 141);
+  // half as far above that link (11px instead of 23px) to give the reply box the room.
+  // With the keyboard up the sheet ends at the keyboard, which needs no home indicator room,
+  // so Send sits 12px above it.
+  const kbOpen = phone.classList.contains("kb-open");
+  if (kbOpen) G.B = H;
+  G.sendTop = kbOpen ? H - 64 : foot - (inline() ? 94 : simplified() ? 129 : 141);
   G.linkTop = foot - 66;
 }
 
@@ -2160,6 +2195,15 @@ card.addEventListener("pointercancel", cancelDrag);
 
 /* ---------------- boot ---------------- */
 window.addEventListener("resize", () => { if (!busy) placeStatic(); });
+// iOS reports the keyboard only through the visual viewport (no window resize). A layout that
+// lands mid-transition waits for it to finish, otherwise the reply box would stay under the keyboard.
+function fitViewport(){ if (busy) { clearTimeout(fitViewport.t); fitViewport.t = setTimeout(fitViewport, 120); } else placeStatic(); }
+if (window.visualViewport){
+  visualViewport.addEventListener("resize", fitViewport);
+  visualViewport.addEventListener("scroll", fitViewport);
+}
+ta.addEventListener("focus", fitViewport);
+ta.addEventListener("blur", () => setTimeout(fitViewport, 50));
 const jobCountEl = document.getElementById("jobCount");
 if (jobCountEl) jobCountEl.textContent = JOBS.length;
 SETTINGS.forEach(st => applySetting(st, initialSetting(st)));
