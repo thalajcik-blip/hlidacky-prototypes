@@ -522,12 +522,7 @@
 
     /* Pill hints */
     .pill-hint { display: flex; align-items: center; gap: 6px; margin: 12px 0 8px; font-size: 12px; color: #6C757D; font-family: 'soleil', sans-serif; }
-    .pill-row { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 12px; scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color 0.2s; }
-    .pill-row:hover { scrollbar-color: #CFC2FF transparent; }
-    .pill-row::-webkit-scrollbar { height: 3px; }
-    .pill-row::-webkit-scrollbar-track { background: transparent; }
-    .pill-row::-webkit-scrollbar-thumb { background: transparent; border-radius: 99px; transition: background 0.2s; }
-    .pill-row:hover::-webkit-scrollbar-thumb { background: #CFC2FF; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px 6px; margin-bottom: 12px; }
     .detail-pill {
       border: none; border-radius: 64px;
       padding: 4px 10px; font-size: 14px; color: #4C24EC;
@@ -4259,20 +4254,6 @@
     }
     closePillModal();
   }
-
-  // ============================================================
-  // Pill row — horizontal scroll on desktop
-  // ============================================================
-  (function() {
-    var row = document.querySelector('.pill-row');
-    if (!row) return;
-    row.addEventListener('wheel', function(e) {
-      if (row.scrollWidth <= row.clientWidth) return;
-      e.preventDefault();
-      e.stopPropagation();
-      row.scrollLeft += e.deltaX || e.deltaY;
-    }, { passive: false });
-  })();
 
   // ============================================================
   // Hero SVG animation: draw strokes → fade fills
