@@ -3242,7 +3242,10 @@
   // /components/input-content-ai-generation/. States: idle → generating
   // (→ slow) → done | stuck, plus stopped. A request either delivers its
   // text or fails before the first word, so stuck puts back what the field
-  // held before the button was pressed; Undo does the same after a draft.
+  // held before the button was pressed.
+  // Undo steps back one change at a time, not to before the draft: each AI
+  // draft, each tag added and each typing session (focus to blur) is one
+  // step. Undo stays offered while an AI draft is still among the steps.
   // ?ai=stuck makes the first attempt get stuck; Try again then works.
   const reviewAi = (function() {
     const FIRST_WORD_MS = 700;
@@ -3258,6 +3261,8 @@
     let root, textarea, ink, actions, status;
     let state = 'idle';
     let before = '';
+    let history = []; // [{ value, kind: 'ai' | 'tag' | 'typing' }], oldest first
+    let typing = false; // inside one typing session, already recorded
     let hasStalled = false;
     let timers = [];
     let renderedActions = '';
@@ -3274,6 +3279,30 @@
         const target = event.target.closest('[data-action]');
         if (target) handle(target.dataset.action);
       });
+      // beforeinput still sees the old value, so the first keystroke of a
+      // session records what the field held before the user started typing.
+      textarea.addEventListener('beforeinput', function() {
+        if (typing || textarea.readOnly) return;
+        history.push({ value: textarea.value, kind: 'typing' });
+        typing = true;
+      });
+      textarea.addEventListener('blur', function() { typing = false; });
+    }
+
+    function record(kind) {
+      history.push({ value: textarea.value, kind: kind });
+      typing = false;
+    }
+
+    function undo() {
+      if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+      const step = history.pop();
+      if (step) textarea.value = step.value;
+      typing = false;
+      // An earlier draft still in the field keeps Write again + Undo
+      // ("stopped" shows them without a status line); otherwise back to idle.
+      setState(history.some(function(s) { return s.kind === 'ai'; }) ? 'stopped' : 'idle');
+      focusField();
     }
 
     function animate(element, keyframes, options) {
@@ -3362,6 +3391,7 @@
       clearTimers();
       if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
       before = textarea.value;
+      record('ai');
       const willStall = stallFirst && !hasStalled;
       if (willStall) hasStalled = true;
       const service = [...selectedServices][0] || 'babysitting';
@@ -3380,6 +3410,7 @@
         schedule(function() {
           clearTimers();
           textarea.value = before;
+          history.pop(); // no draft arrived, so there is nothing to undo
           setState('stuck');
           focusField();
         }, STUCK_AFTER_MS);
@@ -3404,20 +3435,25 @@
     function stop() {
       clearTimers();
       if (!textarea.value) textarea.value = before;
-      setState(textarea.value && textarea.value !== before ? 'stopped' : 'idle');
+      const changed = textarea.value && textarea.value !== before;
+      if (!changed) history.pop(); // stopped before the first word
+      setState(changed ? 'stopped' : 'idle');
     }
 
     function handle(action) {
       if (action === 'generate') generate();
       else if (action === 'stop') { stop(); focusField(); }
-      else if (action === 'undo') { textarea.value = before; setState('idle'); focusField(); }
+      else if (action === 'undo') undo();
     }
 
     return {
       // Entering the step: idle, keeping whatever text is already there.
-      reset: function() { els(); clearTimers(); setState('idle', true); },
+      // Undo is not offered in idle, so its history starts over too.
+      reset: function() { els(); clearTimers(); history = []; typing = false; setState('idle', true); },
       // Leaving the step stops the writing and keeps what was written.
-      leave: function() { if (root && isBusy()) stop(); }
+      leave: function() { if (root && isBusy()) stop(); },
+      // A tag is about to append its text: one undo step.
+      recordTag: function() { if (root) record('tag'); }
     };
   })();
 
@@ -4490,6 +4526,7 @@
   function typeAppend(ta, appendText) {
     setReviewCompact(true);
     if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+    reviewAi.recordTag();
     const base = ta.value.trimEnd();
     ta.value = base;
     let i = 0;
