@@ -733,32 +733,50 @@
     }
     .exit-footer .btn-primary:hover { background: #e6213a; }
 
-    /* Pill modal */
+    /* Pill bottom sheet (Jobs Figma 3981:60967). The layer covers the
+       phone; the sheet slides up from its bottom edge and sizes to its
+       content, scrolling the body once it reaches the top. */
     #pill-modal {
-      position: absolute; inset: 0; z-index: 200;
-      background: #fff; display: none; flex-direction: column;
-      border-radius: 8px;
-      padding: 48px 20px 20px 20px;
+      position: absolute; inset: 0; z-index: 200; overflow: hidden;
+      visibility: hidden; transition: visibility 0s linear .38s;
     }
-    #pill-modal.open { display: flex; }
-    .pm-close {
-      position: absolute; top: 12px; right: 12px;
-      width: 32px; height: 32px; border: none; background: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; padding: 0;
-      opacity: 0.4; font-size: 22px; color: #2a3539; line-height: 1;
+    #pill-modal.open { visibility: visible; transition: none; }
+    .pm-overlay {
+      position: absolute; inset: 0; background: rgba(42, 53, 57, .8);
+      opacity: 0; transition: opacity .3s ease;
     }
+    #pill-modal.open .pm-overlay { opacity: 1; }
+    .pm-sheet {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      display: flex; flex-direction: column; gap: 16px;
+      max-height: calc(100% - 52px);
+      padding: 8px 20px 24px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+      background: #fff; border-radius: 8px 8px 0 0;
+      transform: translateY(100%);
+      transition: transform .38s cubic-bezier(.32, .72, 0, 1);
+    }
+    #pill-modal.open .pm-sheet { transform: translateY(0); }
+    .pm-sheet.is-dragging { transition: none; }
+    .pm-handle {
+      display: flex; flex-shrink: 0; justify-content: center; padding: 8px 0;
+      margin: -8px -20px 0; padding-top: 16px; /* bigger grab area, same look */
+      cursor: grab; touch-action: none;
+    }
+    .pm-handle span { width: 135px; height: 5px; border-radius: 100px; background: #2a3539; }
     .pm-header { display: flex; align-items: flex-start; gap: 8px; flex-shrink: 0; width: 100%; }
     .pm-icon-wrap { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .pm-icon-wrap img { width: 42px; height: 42px; display: block; }
     .pm-title { flex: 1; font-size: 20px; font-weight: 450; color: #2a3539; line-height: 1.4; letter-spacing: -0.2px; font-family: 'soleil', sans-serif; padding-top: 4px; min-width: 0; }
     .pm-body {
-      flex: 1;
-      overflow-y: auto;
-      scrollbar-gutter: stable;
-      padding-right: 6px;
-      padding-top: 12px;
+      flex: 1 1 auto; min-height: 0;
+      overflow-y: auto; overscroll-behavior: contain;
     }
-    .pm-sublabel { font-size: 16px; font-weight: 450; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
+    .pm-body > :first-child { margin-top: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      .pm-sheet, .pm-overlay { transition: none; }
+    }
+    .pm-sublabel { font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; margin-bottom: 12px; font-family: 'soleil', sans-serif; margin-top: 16px; }
     .pm-selector-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     /* Children modal */
     .ch-helper { font-size: 14px; color: #6b7176; line-height: 1.5; letter-spacing: -0.16px; font-family: 'soleil',sans-serif; margin-bottom: 16px; }
@@ -967,9 +985,16 @@
       font-family: 'soleil', sans-serif;
       text-decoration: underline; padding-bottom: 5px;
     }
-    .pm-footer { display: flex; gap: 16px; flex-shrink: 0; padding-top: 8px; }
-    .pm-footer .btn-secondary { flex: 0 0 auto; }
-    .pm-footer .btn-primary { padding-left: 24px; padding-right: 24px; }
+    .pm-footer { display: flex; flex-direction: column; align-items: center; gap: 12px; flex-shrink: 0; padding-top: 8px; }
+    .pm-footer .btn-primary { flex: none; width: 100%; gap: 10px; padding: 14px 24px 16px 20px; font-weight: 450; }
+    .pm-footer .btn-primary i { width: 16px; font-size: 16px; text-align: center; }
+    .pm-cancel {
+      height: 24px; border: 0; background: none; padding: 0; cursor: pointer; opacity: .8;
+      color: #6c757d; font-family: 'soleil', 'Inter', sans-serif; font-size: 16px; line-height: 1.4;
+      text-decoration: underline; text-decoration-color: #bec2ce;
+      text-decoration-thickness: 8%; text-underline-offset: 3px;
+    }
+    .pm-cancel:hover { opacity: 1; }
     .flag-icon { width: 29.57px; height: 20px; object-fit: cover; border-radius: 2px; display: block; }
     .pm-check-section { margin-top: 18px; }
     .pm-check-section:first-child { margin-top: 0; }
@@ -2569,17 +2594,20 @@
     </div>
   </div>
 
-  <!-- ===== PILL MODAL ===== -->
-  <div id="pill-modal">
-    <button class="pm-close" onclick="closePillModal()">&#x2715;</button>
-    <div class="pm-header">
-      <div class="pm-icon-wrap" id="pm-icon"></div>
-      <div class="pm-title" id="pm-title"></div>
-    </div>
-    <div class="pm-body" id="pm-body"></div>
-    <div class="pm-footer">
-      <button class="btn-secondary" onclick="closePillModal()" data-i18n="review.modalCancel"></button>
-      <button class="btn-primary" onclick="applyPill()" data-i18n="review.modalAdd"></button>
+  <!-- ===== PILL BOTTOM SHEET ===== -->
+  <div id="pill-modal" aria-hidden="true">
+    <div class="pm-overlay" onclick="closePillModal()"></div>
+    <div class="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header">
+        <div class="pm-icon-wrap" id="pm-icon"></div>
+        <div class="pm-title" id="pm-title"></div>
+      </div>
+      <div class="pm-body" id="pm-body"></div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" onclick="applyPill()"><i class="fa-solid fa-sparkles" aria-hidden="true"></i><span data-i18n="review.modalAdd"></span></button>
+        <button class="pm-cancel" type="button" onclick="closePillModal()" data-i18n="review.modalCancel"></button>
+      </div>
     </div>
   </div>
 
@@ -4276,13 +4304,54 @@
       }
     }
     applyStrings();
-    document.getElementById('pill-modal').classList.add('open');
+    const layer = document.getElementById('pill-modal');
+    layer.querySelector('.pm-sheet').style.transform = '';
+    body.scrollTop = 0;
+    layer.classList.add('open');
+    layer.setAttribute('aria-hidden', 'false');
   }
 
   function closePillModal() {
-    document.getElementById('pill-modal').classList.remove('open');
+    const layer = document.getElementById('pill-modal');
+    layer.classList.remove('open');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelector('.pm-sheet').style.transform = '';
     _currentPill = null;
   }
+
+  // Drag the handle down to dismiss: past 30% of the sheet's height, or a
+  // quick flick, closes it; anything less springs back.
+  (function setupPillSheetDrag() {
+    const sheet = document.querySelector('#pill-modal .pm-sheet');
+    const handle = sheet.querySelector('.pm-handle');
+    let startY = 0, startTime = 0, offset = 0, dragging = false;
+    handle.addEventListener('pointerdown', function(event) {
+      dragging = true;
+      startY = event.clientY;
+      startTime = performance.now();
+      offset = 0;
+      sheet.classList.add('is-dragging');
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener('pointermove', function(event) {
+      if (!dragging) return;
+      offset = Math.max(0, event.clientY - startY);
+      sheet.style.transform = 'translateY(' + offset + 'px)';
+    });
+    function end() {
+      if (!dragging) return;
+      dragging = false;
+      sheet.classList.remove('is-dragging');
+      const velocity = offset / Math.max(1, performance.now() - startTime);
+      if (offset > sheet.offsetHeight * 0.3 || (offset > 30 && velocity > 0.5)) closePillModal();
+      else sheet.style.transform = '';
+    }
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && document.getElementById('pill-modal').classList.contains('open')) closePillModal();
+    });
+  })();
 
   function onReviewTextInput() {
     setReviewCompact(true);
