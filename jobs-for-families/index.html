@@ -26,6 +26,8 @@
       s.parentNode.insertBefore(tk, s);
     })(document);
   </script>
+  <!-- Vendored Font Awesome, used by the review step's AI writing states -->
+  <link rel="stylesheet" href="/vendor/font-awesome/css/fa.css">
   <!-- Inline SVG icon helpers for local preview (currentColor = inherits from CSS) -->
   <style>
     .ico { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; }
@@ -462,6 +464,102 @@
     #s-review #review-hero-title { transition: margin-top 0.3s ease; }
     #s-review.review-compact .sitter-avatars { max-height: 0; opacity: 0; margin-bottom: 0; }
     #s-review.review-compact #review-hero-title { margin-top: 0; }
+
+    /* Review step: AI-written job description. States and motion follow
+       /components/input-content-ai-generation/; here the field fills the
+       free height of the step instead of a fixed 148px. */
+    .ai-input {
+      --ai-gray-100: #f5f5f7; --ai-gray-300: #e5e5ea; --ai-gray-500: #8b91a3; --ai-gray-600: #6c757d;
+      --ai-red-400: #ea2323; --ai-indigo-100: #edebff; --ai-indigo-200: #cfc2ff;
+      --ai-indigo-400: #7e5eff; --ai-indigo-500: #4c24ec;
+      display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; gap: 8px;
+      font-family: 'soleil', 'Inter', sans-serif;
+    }
+    .ai-input__field { position: relative; display: flex; flex: 1 1 auto; min-height: 112px; border-radius: 4px; background: #fff; }
+    .ai-input__field::before {
+      position: absolute; inset: 0; z-index: 0; border-radius: 4px; content: ''; opacity: 0; pointer-events: none;
+      background: linear-gradient(124deg, var(--ai-indigo-100) 0%, var(--ai-indigo-100) 40%, #fff 50%, var(--ai-indigo-100) 60%, var(--ai-indigo-100) 100%) 0 0 / 300% 300%;
+      transition: opacity .45s ease;
+      animation: aiInputTint 2.6s cubic-bezier(.45, 0, .55, 1) infinite; animation-play-state: paused;
+    }
+    .ai-input__textarea,
+    .ai-input__ink {
+      padding: 10px 16px; font-family: 'soleil', 'Inter', sans-serif; font-size: 16px; line-height: 1.32;
+      letter-spacing: .2px; font-variant-numeric: lining-nums tabular-nums; color: var(--text);
+    }
+    .ai-input__textarea {
+      position: relative; z-index: 1; display: block; flex: 1 1 auto; width: 100%; min-height: 0; resize: none;
+      border: 1px solid var(--ai-gray-300); border-radius: 4px; background: transparent; outline: none;
+      transition: border-color .35s ease, box-shadow .35s ease;
+    }
+    .ai-input__textarea::placeholder { color: var(--ai-gray-500); }
+    .ai-input__textarea:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    /* Mirrors the textarea so streamed words wrap in the same places and
+       the hand-over to the real text on Done is invisible. */
+    .ai-input__ink {
+      position: absolute; inset: 0; z-index: 2; overflow: hidden; border: 1px solid transparent;
+      white-space: pre-wrap; overflow-wrap: break-word; pointer-events: none; visibility: hidden;
+    }
+    .ai-input__ink span { animation: aiInputWord .5s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes aiInputWord {
+      from { color: var(--ai-indigo-400); opacity: 0; filter: blur(4px); }
+      45% { opacity: 1; filter: blur(0); }
+      to { color: var(--text); opacity: 1; filter: blur(0); }
+    }
+    .ai-input.is-busy .ai-input__field::before { opacity: 1; animation-play-state: running; }
+    .ai-input.is-busy .ai-input__textarea,
+    .ai-input.is-busy .ai-input__textarea:focus {
+      overflow: hidden; border-color: var(--ai-indigo-400); box-shadow: 0 0 0 2px var(--ai-indigo-200);
+      color: transparent; caret-color: transparent; cursor: progress;
+    }
+    .ai-input.is-busy .ai-input__textarea::placeholder { color: transparent; }
+    .ai-input.is-busy .ai-input__ink { visibility: visible; }
+    .ai-input[data-state="slow"] .ai-input__field::before { animation-duration: 5s; }
+    @keyframes aiInputTint { from { background-position: 100% 100%; } to { background-position: 0 0; } }
+
+    .ai-input__actions { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
+    .ai-input__button {
+      display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--ai-gray-300); border-radius: 4px;
+      background: #fff; box-shadow: inset 0 -3px 0 var(--ai-gray-300); padding: 8px 18px 10px 14px;
+      color: var(--text); font: inherit; font-size: 16px; font-weight: 450; line-height: 22px; cursor: pointer;
+    }
+    .ai-input__button:hover { background: var(--ai-gray-100); }
+    .ai-input__button:active { box-shadow: none; transform: translateY(2px); }
+    .ai-input__button i { width: 16px; color: var(--ai-indigo-400); font-size: 13px; text-align: center; }
+    .ai-input__button .fa-sparkles { transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+    .ai-input__button:hover .fa-sparkles,
+    .ai-input__button:focus-visible .fa-sparkles { transform: rotate(-14deg) scale(1.25); }
+    .ai-input__button--stop i { color: var(--ai-gray-500); }
+    .ai-input__row { display: flex; align-items: center; align-self: stretch; justify-content: space-between; gap: 16px; padding-right: 4px; }
+    .ai-input__link {
+      display: inline-flex; height: 24px; align-items: center; gap: 2px; border: 0; background: transparent; padding: 0;
+      color: var(--pink); font: inherit; font-size: 16px; line-height: 1.4; opacity: .8; cursor: pointer;
+    }
+    .ai-input__link i { width: 20px; font-size: 13px; text-align: center; }
+    .ai-input__link span { text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+    .ai-input__link:hover { opacity: 1; }
+    .ai-input__status { display: flex; flex-shrink: 0; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 1.5; letter-spacing: -0.16px; }
+    .ai-input__status:empty { display: none; }
+    .ai-input__status i { width: 16px; flex: 0 0 16px; font-size: 16px; text-align: center; }
+    .ai-input__status--busy { color: var(--ai-indigo-500); }
+    .ai-input__status--busy i { color: var(--ai-indigo-400); }
+    .ai-input__status--error { color: var(--ai-red-400); }
+    .ai-input__status--done { color: var(--ai-gray-600); }
+
+    .review-tags-hint { flex-shrink: 0; margin: 12px 0 0; color: var(--ai-gray-600, #6c757d); font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; font-family: 'soleil', 'Inter', sans-serif; }
+    /* Tags append to the text, so they wait while the AI is writing it. */
+    #s-review.review-ai-busy .detail-pill { opacity: .45; pointer-events: none; }
+    /* The multi-service step keeps its prefilled template: no AI there. */
+    #s-review.review-multi .ai-input__actions,
+    #s-review.review-multi .ai-input__status,
+    #s-review.review-multi .review-tags-hint { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ai-input__field::before { animation: none; background-position: 50% 50%; }
+      .ai-input__ink span { animation: none; }
+      .ai-input__status .fa-spin { animation: none; }
+      .ai-input__button .fa-sparkles { transition: none; }
+    }
 
     /* Privacy note */
     .privacy-note {
@@ -2043,15 +2141,23 @@
       <p class="hero-sub" id="review-hero-sub-secondary" style="display:none;"></p>
     </div>
 
-    <div class="screen-body" style="display:flex;flex-direction:column;overflow:hidden;padding-bottom:0">
+    <div class="screen-body" style="display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;padding-bottom:0">
       <div id="review-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
-        <p class="ai-lbl" id="review-ai-label" data-i18n="review.aiLabel" style="margin-bottom:0;"></p>
+        <label class="ai-lbl" id="review-ai-label" for="review-text" data-i18n="review.descLabel" style="margin-bottom:0;"></label>
         <div id="review-location-chip" style="display:none;align-items:center;gap:6px;color:#8B91A3;font-size:14px;font-family:'soleil','Inter',sans-serif;flex-shrink:0;">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.79 1.5 3 3.29 3 5.5c0 3.1 4 7 4 7s4-3.9 4-7c0-2.21-1.79-3.5-4-3.5zm0 5.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" stroke="#8B91A3" stroke-width="1.1" fill="none"/></svg>
           <span id="review-location-text"></span>
         </div>
       </div>
-      <textarea class="form-textarea" id="review-text" style="flex:1;min-height:0;resize:none" onfocus="setReviewCompact(true)" oninput="onReviewTextInput()"></textarea>
+      <div class="ai-input" id="review-ai" data-state="idle">
+        <div class="ai-input__field">
+          <textarea class="ai-input__textarea" id="review-text" aria-describedby="review-ai-status" onfocus="setReviewCompact(true)" oninput="onReviewTextInput()"></textarea>
+          <div class="ai-input__ink" aria-hidden="true"></div>
+        </div>
+        <div class="ai-input__actions"></div>
+        <p class="ai-input__status" id="review-ai-status" role="status" aria-live="polite"></p>
+      </div>
+      <p class="review-tags-hint" id="review-tags-hint" data-i18n="review.tagsHint"></p>
       <div class="pill-row" id="review-pill-row" style="padding:8px 0 0;margin-bottom:0;flex-shrink:0">
         <button class="detail-pill" id="pill-daysTimes" onclick="openPillModal('daysTimes')" data-i18n="review.daysTimes.pillLabel" style="display:none"></button>
         <button class="detail-pill" id="pill-cleaningSupplies" onclick="openPillModal('cleaningSupplies')" data-i18n="review.cleaningSupplies.pillLabel" style="display:none"></button>
@@ -2628,6 +2734,8 @@
     if (oldEl && oldEl.id === 's-location-tutoring' && id !== 'location-tutoring') hideTutoringLocAlert();
     // Reset pet validation when leaving pet screen
     if (oldEl && oldEl.id === 's-pet' && id !== 'pet') hidePetAlert();
+    // Stop AI writing when leaving the review screen
+    if (oldEl && oldEl.id === 's-review' && id !== 'review') reviewAi.leave();
     // Reset location validation when leaving location screen
     if (oldEl && oldEl.id === 's-location' && id !== 'location') {
       const a = document.getElementById('location-alert');
@@ -3047,6 +3155,7 @@
     var ta = document.getElementById('review-text');
     var city = (document.getElementById('location-input').value || 'Prague').trim();
     var price = (document.getElementById('price-input') && document.getElementById('price-input').value.trim()) || t('price.placeholderFallback');
+    document.getElementById('s-review').classList.toggle('review-multi', multi);
 
     if (multi) {
       title.textContent = t('review.multiHeroTitle');
@@ -3074,13 +3183,13 @@
     subPrimary.style.display = '';
     subPrimaryText.textContent = t('review.heroSub2');
     subSecondary.style.display = 'none';
-    aiLabel.textContent = t('review.aiLabel');
+    aiLabel.textContent = t('review.descLabel');
     locationChip.style.display = 'none';
     pillRow.style.display = '';
     pillSpacer.style.display = '';
     footerNote.style.display = '';
     nextLabel.textContent = t('review.btnPost');
-    ta.placeholder = '';
+    ta.placeholder = t('review.placeholder');
     document.getElementById('review-label-row').style.marginBottom = '12px';
     pillRow.style.marginBottom = '0';
     pillRow.style.order = '';
@@ -3091,38 +3200,198 @@
     document.getElementById('s-review').classList.toggle('review-compact', on);
   }
 
+  // The description is no longer written on arrival: the step opens empty
+  // (or with whatever the user left there) and only "Write it with AI"
+  // drafts it. Text the user already has survives going back and forth.
   function updateReviewText() {
     setReviewCompact(false);
     updateReviewLayout();
-    if (isMultiServiceFlow()) {
-      if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
-      return;
-    }
-    const firstService = [...selectedServices][0] || 'babysitting';
-    const fullText = t('review.generatedTexts.' + firstService);
-    const ta = document.getElementById('review-text');
-
-    // cancel any running typewriter
     if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+    reviewAi.reset();
+  }
 
-    ta.value = '';
-    ta.style.opacity = '1';
-    let i = 0;
-    const speed = 12; // ms per character
+  // AI writing for the review textarea, ported from
+  // /components/input-content-ai-generation/. States: idle → generating
+  // (→ slow) → done | stuck, plus stopped. A request either delivers its
+  // text or fails before the first word, so stuck puts back what the field
+  // held before the button was pressed; Undo does the same after a draft.
+  // ?ai=stuck makes the first attempt get stuck; Try again then works.
+  const reviewAi = (function() {
+    const FIRST_WORD_MS = 700;
+    const SLOW_AFTER_MS = 3500;
+    const STUCK_AFTER_MS = 8000;
+    const SETTLE_MS = 420; // lets the last words settle before hand-over
+    const EASE_OUT = 'cubic-bezier(.2, .8, .2, 1)';
+    const ENTER = [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }];
+    const SPINNER = '<i class="fa-regular fa-spinner fa-spin" aria-hidden="true"></i>';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const stallFirst = new URLSearchParams(location.search).get('ai') === 'stuck';
 
-    function type() {
-      if (i < fullText.length) {
-        ta.value += fullText[i++];
-        ta.scrollTop = ta.scrollHeight;
-        _typewriterTimer = setTimeout(type, speed);
-      } else {
-        _typewriterTimer = null;
+    let root, textarea, ink, actions, status;
+    let state = 'idle';
+    let before = '';
+    let hasStalled = false;
+    let timers = [];
+    let renderedActions = '';
+    let renderedStatus = '';
+
+    function els() {
+      if (root) return;
+      root = document.getElementById('review-ai');
+      textarea = document.getElementById('review-text');
+      ink = root.querySelector('.ai-input__ink');
+      actions = root.querySelector('.ai-input__actions');
+      status = root.querySelector('.ai-input__status');
+      root.addEventListener('click', function(event) {
+        const target = event.target.closest('[data-action]');
+        if (target) handle(target.dataset.action);
+      });
+    }
+
+    function animate(element, keyframes, options) {
+      if (!element || reducedMotion.matches || !element.animate) return;
+      element.animate(keyframes, options);
+    }
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+    }
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function schedule(fn, ms) { timers.push(setTimeout(fn, ms)); }
+    const isBusy = function() { return state === 'generating' || state === 'slow'; };
+
+    function button(action, icon, label, modifier) {
+      return '<button class="ai-input__button' + (modifier ? ' ai-input__button--' + modifier : '') + '" type="button" data-action="' + action + '">'
+        + '<i class="' + icon + '" aria-hidden="true"></i>' + escapeHtml(label) + '</button>';
+    }
+
+    function statusFor(next) {
+      if (next === 'generating') return ['busy', SPINNER, t('review.ai.generating')];
+      if (next === 'slow') return ['busy', SPINNER, t('review.ai.slow')];
+      if (next === 'stuck') return ['error', '<i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i>', t('review.ai.stuck')];
+      if (next === 'done') return ['done', '<i class="fa-regular fa-check" aria-hidden="true"></i>', t('review.ai.done')];
+      return null;
+    }
+
+    function actionsFor(next) {
+      if (next === 'generating' || next === 'slow') return button('stop', 'fa-solid fa-stop', t('review.ai.stop'), 'stop');
+      if (next === 'stuck') return button('generate', 'fa-regular fa-rotate-right', t('review.ai.tryAgain'));
+      if (next === 'done' || next === 'stopped') {
+        return '<div class="ai-input__row">' + button('generate', 'fa-regular fa-sparkles', t('review.ai.writeAgain'))
+          + '<button class="ai-input__link" type="button" data-action="undo"><i class="fa-regular fa-rotate-left" aria-hidden="true"></i><span>' + escapeHtml(t('review.ai.undo')) + '</span></button></div>';
+      }
+      return button('generate', 'fa-regular fa-sparkles', t('review.ai.write'));
+    }
+
+    function setState(next, quiet) {
+      state = next;
+      const busy = isBusy();
+      root.dataset.state = next;
+      root.classList.toggle('is-busy', busy);
+      document.getElementById('s-review').classList.toggle('review-ai-busy', busy);
+      textarea.readOnly = busy;
+      textarea.setAttribute('aria-busy', String(busy));
+
+      const message = statusFor(next);
+      const statusMarkup = message ? message[1] + '<span>' + escapeHtml(message[2]) + '</span>' : '';
+      if (statusMarkup !== renderedStatus) {
+        status.className = 'ai-input__status' + (message ? ' ai-input__status--' + message[0] : '');
+        status.innerHTML = statusMarkup;
+        renderedStatus = statusMarkup;
+        if (message && !quiet) {
+          animate(status, ENTER, { duration: 260, easing: EASE_OUT });
+          const icon = status.querySelector('i');
+          if (next === 'done') {
+            animate(icon, [{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1, offset: .6 }, { transform: 'scale(1)' }], { duration: 420, delay: 80, easing: EASE_OUT, fill: 'backwards' });
+          } else if (next === 'stuck') {
+            animate(icon, [{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(-2px)' }, { transform: 'translateX(1px)' }, { transform: 'translateX(0)' }], { duration: 420, delay: 120, easing: 'ease-in-out' });
+          }
+        }
+      }
+
+      // Generating → slow keeps the same Stop button; rebuilding it would
+      // drop focus to the page.
+      const markup = actionsFor(next);
+      if (markup !== renderedActions) {
+        actions.innerHTML = markup;
+        renderedActions = markup;
+        if (!quiet) animate(actions, ENTER, { duration: 220, easing: EASE_OUT });
       }
     }
 
-    // short delay before starting so the screen transition settles
-    _typewriterTimer = setTimeout(type, 300);
-  }
+    function addInk(word) {
+      const span = document.createElement('span');
+      span.textContent = word;
+      ink.appendChild(span);
+      ink.scrollTop = ink.scrollHeight;
+    }
+
+    function focusField() {
+      textarea.focus({ preventScroll: true });
+      textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    }
+
+    function generate() {
+      clearTimers();
+      if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
+      before = textarea.value;
+      const willStall = stallFirst && !hasStalled;
+      if (willStall) hasStalled = true;
+      const service = [...selectedServices][0] || 'babysitting';
+      const words = t('review.generatedTexts.' + service).match(/\S+\s*/g) || [];
+      let index = 0;
+
+      textarea.value = '';
+      ink.textContent = '';
+      setReviewCompact(true);
+      setState('generating');
+      const stop = root.querySelector('[data-action="stop"]');
+      if (stop) stop.focus({ preventScroll: true });
+
+      if (willStall) {
+        schedule(function() { setState('slow'); }, SLOW_AFTER_MS);
+        schedule(function() {
+          clearTimers();
+          textarea.value = before;
+          setState('stuck');
+          focusField();
+        }, STUCK_AFTER_MS);
+        return;
+      }
+
+      function tick() {
+        if (index >= words.length) {
+          schedule(function() { setState('done'); focusField(); }, reducedMotion.matches ? 0 : SETTLE_MS);
+          return;
+        }
+        textarea.value += words[index];
+        addInk(words[index]);
+        index += 1;
+        textarea.scrollTop = textarea.scrollHeight;
+        schedule(tick, 28 + Math.random() * 55);
+      }
+      // The first words take a moment, as a real model's would.
+      schedule(tick, FIRST_WORD_MS);
+    }
+
+    function stop() {
+      clearTimers();
+      if (!textarea.value) textarea.value = before;
+      setState(textarea.value && textarea.value !== before ? 'stopped' : 'idle');
+    }
+
+    function handle(action) {
+      if (action === 'generate') generate();
+      else if (action === 'stop') { stop(); focusField(); }
+      else if (action === 'undo') { textarea.value = before; setState('idle'); focusField(); }
+    }
+
+    return {
+      // Entering the step: idle, keeping whatever text is already there.
+      reset: function() { els(); clearTimers(); setState('idle', true); },
+      // Leaving the step stops the writing and keeps what was written.
+      leave: function() { if (root && isBusy()) stop(); }
+    };
+  })();
 
   function updateSuccessSub() {
     const city = document.getElementById('location-input').value || 'Prague';
