@@ -1361,6 +1361,7 @@ const mobile = () => matchMedia("(max-width:500px)").matches;
 // Fits the phone frame to what is visible on a real phone. Cheap and safe mid-animation, so it
 // runs on every viewport change even while busy: when it waited for Send's animation, the keyboard
 // had already closed and the page scrolled back, and the phone hung ~250px down with white above it.
+const KB = { on:false, leaving:false, real:false, min:Infinity, max:0, t:0, last:0 };   // see pinViewport
 function pinViewport(){
   if (!mobile()) return null;
   // iOS keeps the layout viewport (innerHeight) full height while the keyboard is up and only
@@ -1372,18 +1373,48 @@ function pinViewport(){
   // keyboard cannot be up without focus, so then the window's own height is used.
   const focused = document.activeElement === ta;
   const vv = focused ? window.visualViewport : null;
-  let h = vv ? vv.height : window.innerHeight;
-  // keyboard is up: the visible area is well short of the tallest it has been at this width.
-  // iOS only shrinks the visual viewport, Android may shrink the whole window, and both show up
-  // here; a new width (rotation) starts the comparison over.
-  if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; }
-  G.fullH = Math.max(G.fullH, window.innerHeight, h);
-  let kb = G.fullH - h > 120;
-  // The keyboard is expected but not here yet (see expectKeyboard): lay out as if it were, with
-  // the height it had last time, or half the screen the first time (more than any keyboard, so
-  // the whole reply box is clear of it). The real height takes over as soon as it is reported.
-  if (kb){ G.kbH = G.fullH - h; G.expectKb = 0; }
-  else if (focused && G.expectKb > Date.now()){ h = G.fullH - (G.kbH || Math.round(G.fullH * .5)); kb = true; }
+  const inner = window.innerHeight;
+  const vh = vv ? vv.height : inner;
+  // how much of the screen is hidden: the visible area against the tallest it has been at this
+  // width. iOS only shrinks the visual viewport, Android may shrink the whole window, and both
+  // show up here; a new width (rotation) starts the comparison over.
+  if (G.fullW !== window.innerWidth){ G.fullW = window.innerWidth; G.fullH = 0; KB.on = KB.leaving = false; }
+  G.fullH = Math.max(G.fullH, inner, vh);
+  const short = G.fullH - vh, now = Date.now();
+  // The keyboard layout is a state, switched once per keyboard trip, not a threshold on the height.
+  // The newest iOS reports the height all the way through the keyboard's animation: with a 120px
+  // threshold the normal layout was squeezed first (Send over the reply box), then flipped, and
+  // on the way down it flipped back and forth, each flip starting another glide.
+  //  on      from the keyboard's first 60px (or at once when it is expected, see expectKeyboard)
+  //          until focus is lost or the keyboard starts to leave; the height then just follows it
+  //  leaving the keyboard is going down with focus kept (iOS's hide key, Android's back button):
+  //          already the normal layout at full height, so nothing chases the keyboard down
+  const open = real => { KB.on = true; KB.leaving = false; KB.real = real; KB.min = real ? vh : Infinity; };
+  const recheck = () => { clearTimeout(pinViewport.t); pinViewport.t = setTimeout(fitViewport, 450); };   // once it has settled
+  if (!focused) KB.on = KB.leaving = false;
+  else if (KB.on){
+    if (short > 60){
+      KB.real = true; G.expectKb = 0; KB.min = Math.min(KB.min, vh);
+      // 100px: more than switching between the letter and emoji keyboards changes the height
+      if (vh > KB.min + 100){ KB.on = false; KB.leaving = true; KB.max = vh; KB.t = now; recheck(); }
+      else G.kbH = G.fullH - KB.min;
+    }
+    else if (KB.real || now > G.expectKb) KB.on = false;   // gone, or it never came
+  }
+  else if (KB.leaving){
+    if (vh !== KB.last){ KB.t = now; recheck(); }
+    KB.max = Math.max(KB.max, vh);
+    if (vh < KB.max - 30) open(true);                        // it is coming back up
+    else if (short < 60) KB.leaving = false;                 // fully gone
+    else if (now - KB.t > 400 && short > 120) open(true);    // it only changed height (emoji keyboard)
+  }
+  else if (short > 60) open(true);
+  else if (now < G.expectKb) open(false);
+  KB.last = vh;
+  const kb = KB.on;
+  // with the keyboard: the visible height, or while it is only expected, the height it left last
+  // time (half the screen the first time: more than any keyboard, so the whole box is clear of it)
+  const h = !kb ? inner : KB.real ? vh : G.fullH - (G.kbH || Math.round(G.fullH * .5));
   phone.style.setProperty("--vh", h + "px");
   // Pin the phone to the top of what is visible. To reveal the focused reply box the browser may
   // scroll the page itself (scrollY) or pan the visual viewport over it (offsetTop); pageTop is
@@ -2254,12 +2285,17 @@ function fitViewport(){
   FIXED_BOXES.forEach(unscroll);   // also here: a scroll event can arrive after the keyboard settles
   const from = mode === "reply" ? { card:snap(card), yes:snap(btnYes) } : null;
   placeStatic();
-  // the sheet glides up to the reply (and back down) instead of jumping; going up it is quick,
-  // to be in place before the keyboard is
+  // The sheet glides up to the reply (and back down) instead of jumping; going up it is quick,
+  // to be in place before the keyboard is. The glide is a transform on top of the final box, so
+  // the box itself stays free to follow the keyboard's height while the glide runs.
   if (from && wasOpen !== phone.classList.contains("kb-open")){
     const duration = wasOpen ? 280 : 180;
-    card.animate(boxFrames(from.card, cardGeom(mode)), {duration, easing:EASE});
-    btnYes.animate(boxFrames(from.yes, btnGeom(mode).yes), {duration, easing:EASE});
+    (fitViewport.glide || []).forEach(a => a.cancel());
+    const slide = (el, dy) => el.animate([{transform:`translateY(${dy}px)`},{transform:"none"}], {duration, easing:EASE});
+    fitViewport.glide = [
+      slide(card, from.card.top - cardGeom(mode).top),
+      slide(btnYes, from.yes.top - btnGeom(mode).yes.top)
+    ];
   }
 }
 if (window.visualViewport){
@@ -2281,7 +2317,7 @@ window.addEventListener("scroll", fitViewport, { passive:true });
 // the sheet got there. If no keyboard shows within a second (hardware keyboard), it goes back.
 // Not on iOS: it never had that flash, and moving the box in the middle of a tap is a risk there
 // (a newer iPhone sometimes showed no keyboard at all after this was added).
-const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 function expectKeyboard(){
   if (mobile() && !IOS && !ta.readOnly && !phone.classList.contains("kb-open")){
     G.expectKb = Date.now() + 1000;
@@ -2306,7 +2342,7 @@ if (new URLSearchParams(location.search).get("debug") === "kb"){
   const tick = () => {
     const vv = window.visualViewport;
     out.textContent =
-      `inner ${n(innerWidth)}x${n(innerHeight)}  fullH ${n(G.fullH)}\n` +
+      `inner ${n(innerWidth)}x${n(innerHeight)}  fullH ${n(G.fullH)}  KB ${KB.on ? (KB.real ? "on" : "expected") : KB.leaving ? "leaving" : "off"} kbH ${n(G.kbH)}\n` +
       `vv h ${n(vv && vv.height)} offTop ${n(vv && vv.offsetTop)} pageTop ${n(vv && vv.pageTop)}\n` +
       `scrollY ${n(scrollY)} doc.scrollTop ${n(document.scrollingElement.scrollTop)}\n` +
       `phone.scroll ${n(phone.scrollTop)} card.scroll ${n(card.scrollTop)} body.scroll ${n(bodyEl.scrollTop)}\n` +
