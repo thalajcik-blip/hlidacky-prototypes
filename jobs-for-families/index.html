@@ -501,6 +501,7 @@
       white-space: pre-wrap; overflow-wrap: break-word; pointer-events: none; visibility: hidden;
     }
     .ai-input__ink span { animation: aiInputWord .5s cubic-bezier(.2, .8, .2, 1) both; }
+    .ai-input__ink span.is-kept { animation: none; } /* text the user already had */
     @keyframes aiInputWord {
       from { color: var(--ai-indigo-400); opacity: 0; filter: blur(4px); }
       45% { opacity: 1; filter: blur(0); }
@@ -3243,6 +3244,10 @@
   // (→ slow) → done | stuck, plus stopped. A request either delivers its
   // text or fails before the first word, so stuck puts back what the field
   // held before the button was pressed.
+  // The draft never replaces what the user already has: it streams in at
+  // the start of the field and the existing text (tag phrases, own
+  // writing) stays after it. Write again swaps only the previous draft,
+  // as long as it is still unedited at the start of the field.
   // Undo steps back one change at a time, not to before the draft: each AI
   // draft, each tag added and each typing session (focus to blur) is one
   // step. Undo stays offered while an AI draft is still among the steps.
@@ -3261,7 +3266,9 @@
     let root, textarea, ink, actions, status;
     let state = 'idle';
     let before = '';
-    let history = []; // [{ value, kind: 'ai' | 'tag' | 'typing' }], oldest first
+    let draft = '';    // the AI text currently leading the field
+    let streamed = ''; // words of the draft being written right now
+    let history = []; // [{ value, draft, kind: 'ai' | 'tag' | 'typing' }], oldest first
     let typing = false; // inside one typing session, already recorded
     let hasStalled = false;
     let timers = [];
@@ -3283,21 +3290,21 @@
       // session records what the field held before the user started typing.
       textarea.addEventListener('beforeinput', function() {
         if (typing || textarea.readOnly) return;
-        history.push({ value: textarea.value, kind: 'typing' });
+        history.push({ value: textarea.value, draft: draft, kind: 'typing' });
         typing = true;
       });
       textarea.addEventListener('blur', function() { typing = false; });
     }
 
     function record(kind) {
-      history.push({ value: textarea.value, kind: kind });
+      history.push({ value: textarea.value, draft: draft, kind: kind });
       typing = false;
     }
 
     function undo() {
       if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
       const step = history.pop();
-      if (step) textarea.value = step.value;
+      if (step) { textarea.value = step.value; draft = step.draft; }
       typing = false;
       // An earlier draft still in the field keeps Write again + Undo
       // ("stopped" shows them without a status line); otherwise back to idle.
@@ -3375,11 +3382,12 @@
       }
     }
 
-    function addInk(word) {
+    // The ink holds the streamed words followed by one still span with the
+    // kept text, so it wraps exactly like the textarea's value.
+    function addInk(word, keptSpan) {
       const span = document.createElement('span');
       span.textContent = word;
-      ink.appendChild(span);
-      ink.scrollTop = ink.scrollHeight;
+      ink.insertBefore(span, keptSpan);
     }
 
     function focusField() {
@@ -3398,8 +3406,20 @@
       const words = t('review.generatedTexts.' + service).match(/\S+\s*/g) || [];
       let index = 0;
 
-      textarea.value = '';
+      // Everything but an unedited previous draft stays, after the new one.
+      const kept = (draft && before.startsWith(draft) ? before.slice(draft.length) : before).trim();
+      const keptSpan = document.createElement('span');
+      keptSpan.className = 'is-kept';
+      function render() {
+        const sep = kept && streamed && !/\s$/.test(streamed) ? ' ' : '';
+        keptSpan.textContent = sep + kept;
+        textarea.value = streamed + sep + kept;
+      }
+
+      streamed = '';
       ink.textContent = '';
+      ink.appendChild(keptSpan);
+      render();
       setReviewCompact(true);
       setState('generating');
       const stop = root.querySelector('[data-action="stop"]');
@@ -3410,6 +3430,7 @@
         schedule(function() {
           clearTimers();
           textarea.value = before;
+          streamed = '';
           history.pop(); // no draft arrived, so there is nothing to undo
           setState('stuck');
           focusField();
@@ -3419,13 +3440,19 @@
 
       function tick() {
         if (index >= words.length) {
+          draft = streamed.trimEnd();
+          streamed = '';
           schedule(function() { setState('done'); focusField(); }, reducedMotion.matches ? 0 : SETTLE_MS);
           return;
         }
-        textarea.value += words[index];
-        addInk(words[index]);
+        streamed += words[index];
+        addInk(words[index], keptSpan);
+        render();
         index += 1;
-        textarea.scrollTop = textarea.scrollHeight;
+        // Follow the newest word, not the end of the kept text below it.
+        const lineHeight = parseFloat(getComputedStyle(ink).lineHeight) || 21;
+        ink.scrollTop = Math.max(0, keptSpan.offsetTop - ink.clientHeight + lineHeight * 2);
+        textarea.scrollTop = ink.scrollTop;
         schedule(tick, 28 + Math.random() * 55);
       }
       // The first words take a moment, as a real model's would.
@@ -3434,9 +3461,10 @@
 
     function stop() {
       clearTimers();
-      if (!textarea.value) textarea.value = before;
-      const changed = textarea.value && textarea.value !== before;
-      if (!changed) history.pop(); // stopped before the first word
+      const changed = streamed.trim() !== '';
+      if (changed) draft = streamed.trimEnd();
+      else { textarea.value = before; history.pop(); } // stopped before the first word
+      streamed = '';
       setState(changed ? 'stopped' : 'idle');
     }
 
