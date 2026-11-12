@@ -378,6 +378,22 @@ svg{display:block;flex:none}
 .v-toast-top .toast{transform:translate(-50%,-16px)}
 .v-toast-top .toast.show{transform:translate(-50%,0)}
 .toast button{color:#f6a8ae;font-weight:600}
+.toast-doodle,.toast-close{display:none}
+/* Reply sent (Figma Alert 4042:35498): a green alert across the screen, 8px from its sides, with the
+   paper plane doodle and a close button. Its three layers sit where the 40px Doodle frame puts them. */
+.toast.success{left:8px;right:8px;transform:translateY(16px);gap:8px;white-space:normal;
+  padding:12px 12px 12px 8px;border:1px solid #7eea7c;border-radius:4px;background:#eff9ef;color:var(--ink);
+  font-size:16px;line-height:1.4;letter-spacing:-.2px;box-shadow:none;filter:drop-shadow(0 24px 20px rgba(42,53,57,.2))}
+.toast.success.show{transform:none}
+.v-toast-top .toast.success{transform:translateY(-16px)}
+.v-toast-top .toast.success.show{transform:none}
+.toast.success #toastText{flex:1;min-width:0}
+.toast.success .toast-doodle{display:block;position:relative;flex:none;width:40px;height:40px;overflow:hidden}
+.toast-doodle img{position:absolute;display:block;max-width:none}
+.toast-doodle .l2{left:5.31px;top:5.47px}
+.toast-doodle .l3{left:4.34px;top:7.39px}
+.toast-doodle .l1{left:2.28px;top:2.54px}
+.toast.success .toast-close{display:grid;place-items:center;flex:none;width:24px;height:24px;color:var(--icon)}
 
 /* ---------- filters modal, ported from jobs/jobs-for-sitters (icons come from its assets) ---------- */
 .filters-modal {
@@ -961,7 +977,11 @@ svg{display:block;flex:none}
   </button>
   <button class="show-desc" id="showDesc">Show job description</button>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAct" hidden>Undo</button></div>
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-doodle" aria-hidden="true"><img class="l2" src="assets/doodle-reply-sent-2.svg" alt=""><img class="l3" src="assets/doodle-reply-sent-3.svg" alt=""><img class="l1" src="assets/doodle-reply-sent-1.svg" alt=""></span>
+    <span id="toastText"></span><button id="toastAct" hidden>Undo</button>
+    <button class="toast-close" id="toastClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
 
   <div class="ver-modal" id="verModal" role="dialog" aria-modal="true" aria-labelledby="verTitle" aria-hidden="true">
     <div class="ver-scrim" id="verScrim"></div>
@@ -1564,8 +1584,7 @@ function placeStatic(){
   noteSheet.style.top = fModal.style.top = (simple ? G.webTop : G.statusH) + "px";
   noteSheet.style.bottom = fModal.style.bottom = scrim.style.bottom = simple ? G.nav + "px" : "";
   scrim.style.top = simple ? G.webTop + "px" : "";
-  // one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B)
-  $("#toast").style.top = (toastAtTop() ? G.toastTop : G.stackBtnTop - 56) + "px";
+  placeToast();
   syncMore();
 }
 // Up to 8 lines of description; fewer on a short screen, so the text never runs under the buttons.
@@ -1769,14 +1788,23 @@ $("#clear").onclick = () => {
 ta.addEventListener("input", () => { cs().text = ta.value; setSendEnabled(!!ta.value.trim()); });
 
 /* ---------------- toast ---------------- */
-function toast(text, action, fn){
+// one fixed place in every mode: under the filter controls (A), or floating above the action buttons (B).
+// The green reply-sent alert sits 17px under the top bar, over the controls, as in Figma (A only).
+function placeToast(){
+  const t = $("#toast"), ok = t.classList.contains("success");
+  t.style.top = (toastAtTop() ? (ok ? G.webTop + 17 : G.toastTop) : G.stackBtnTop - (ok ? 76 : 56)) + "px";
+}
+// kind "success" is the green alert with the doodle and a close button; the rest are the dark toast
+function toast(text, action, fn, kind){
   const t = $("#toast"), a = $("#toastAct");
   $("#toastText").textContent = text;
   a.hidden = !action; if (action){ a.textContent = action; a.onclick = () => { hideToast(); fn(); }; }
+  t.classList.toggle("success", kind === "success"); placeToast();
   t.classList.add("show");
   clearTimeout(toast.t); toast.t = setTimeout(hideToast, 4200);
 }
 function hideToast(){ $("#toast").classList.remove("show"); }
+$("#toastClose").onclick = hideToast;
 
 /* ---------------- leaving a card ---------------- */
 // Stack: a copy of the card flies off while the real card is refilled and comes forward from underneath.
@@ -1886,7 +1914,7 @@ async function send(){
   await flySheet(1, stay);
   lastDeclined = null;
   await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
-  toast("Reply sent to Jana P.");
+  toast("Your reply was sent.", null, null, "success");
   busy = false;
 }
 
