@@ -3250,7 +3250,8 @@
   // as long as it is still unedited at the start of the field.
   // Undo steps back one change at a time, not to before the draft: each AI
   // draft, each tag added and each typing session (focus to blur) is one
-  // step. Undo stays offered while an AI draft is still among the steps.
+  // step. Undo is offered while an AI draft or a tag is among the steps,
+  // so a tag can be undone even when the AI was never used.
   // ?ai=stuck makes the first attempt get stuck; Try again then works.
   const reviewAi = (function() {
     const FIRST_WORD_MS = 700;
@@ -3305,9 +3306,15 @@
       if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
       const step = history.pop();
       if (step) { textarea.value = step.value; draft = step.draft; }
+      // A used tag hides itself; undoing its text offers it again.
+      if (step && step.pill) {
+        const pill = document.getElementById('pill-' + step.pill);
+        if (pill) pill.style.display = '';
+      }
       typing = false;
-      // An earlier draft still in the field keeps Write again + Undo
-      // ("stopped" shows them without a status line); otherwise back to idle.
+      // An earlier draft still in the field keeps Write again ("stopped"
+      // shows it without a status line); otherwise back to idle. Either
+      // way Undo stays while there is a draft or a tag left to undo.
       setState(history.some(function(s) { return s.kind === 'ai'; }) ? 'stopped' : 'idle');
       focusField();
     }
@@ -3336,14 +3343,21 @@
       return null;
     }
 
+    // Typing alone does not bring up Undo (the keyboard has its own), but
+    // once it is shown it steps back through typing sessions too.
+    function canUndo() {
+      return history.some(function(s) { return s.kind === 'ai' || s.kind === 'tag'; });
+    }
+
     function actionsFor(next) {
       if (next === 'generating' || next === 'slow') return button('stop', 'fa-solid fa-stop', t('review.ai.stop'), 'stop');
       if (next === 'stuck') return button('generate', 'fa-regular fa-rotate-right', t('review.ai.tryAgain'));
-      if (next === 'done' || next === 'stopped') {
-        return '<div class="ai-input__row">' + button('generate', 'fa-regular fa-sparkles', t('review.ai.writeAgain'))
-          + '<button class="ai-input__link" type="button" data-action="undo"><i class="fa-regular fa-rotate-left" aria-hidden="true"></i><span>' + escapeHtml(t('review.ai.undo')) + '</span></button></div>';
-      }
-      return button('generate', 'fa-regular fa-sparkles', t('review.ai.write'));
+      const write = (next === 'done' || next === 'stopped')
+        ? button('generate', 'fa-regular fa-sparkles', t('review.ai.writeAgain'))
+        : button('generate', 'fa-regular fa-sparkles', t('review.ai.write'));
+      if (!canUndo()) return write;
+      return '<div class="ai-input__row">' + write
+        + '<button class="ai-input__link" type="button" data-action="undo"><i class="fa-regular fa-rotate-left" aria-hidden="true"></i><span>' + escapeHtml(t('review.ai.undo')) + '</span></button></div>';
     }
 
     function setState(next, quiet) {
@@ -3481,7 +3495,13 @@
       // Leaving the step stops the writing and keeps what was written.
       leave: function() { if (root && isBusy()) stop(); },
       // A tag is about to append its text: one undo step.
-      recordTag: function() { if (root) record('tag'); }
+      // Also refreshes the buttons, so Undo appears with the first tag.
+      recordTag: function(pill) {
+        if (!root || isBusy()) return;
+        record('tag');
+        history[history.length - 1].pill = pill;
+        setState(state);
+      }
     };
   })();
 
@@ -4554,7 +4574,7 @@
   function typeAppend(ta, appendText) {
     setReviewCompact(true);
     if (_typewriterTimer) { clearTimeout(_typewriterTimer); _typewriterTimer = null; }
-    reviewAi.recordTag();
+    reviewAi.recordTag(_currentPill);
     const base = ta.value.trimEnd();
     ta.value = base;
     let i = 0;
