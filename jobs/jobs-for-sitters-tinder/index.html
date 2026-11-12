@@ -1799,7 +1799,17 @@ function toast(text, action, fn, kind){
   const t = $("#toast"), a = $("#toastAct");
   $("#toastText").textContent = text;
   a.hidden = !action; if (action){ a.textContent = action; a.onclick = () => { hideToast(); fn(); }; }
-  t.classList.toggle("success", kind === "success"); placeToast();
+  // The two kinds differ in their resting transform (the dark one is centred with translate(-50%),
+  // the green one spans the screen), so a change of kind is applied with the transition off and
+  // only then shown. Otherwise the first green toast also slid in from the left.
+  if (t.classList.contains("success") !== (kind === "success")){
+    t.style.transition = "none";
+    t.classList.remove("show");
+    t.classList.toggle("success", kind === "success");
+    t.offsetWidth;                     // commit the hidden start position before animating
+    t.style.transition = "";
+  }
+  placeToast();
   t.classList.add("show");
   clearTimeout(toast.t); toast.t = setTimeout(hideToast, 4200);
 }
