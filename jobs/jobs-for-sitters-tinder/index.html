@@ -123,11 +123,17 @@ svg{display:block;flex:none}
 .badge{position:absolute;left:14px;bottom:-11px;z-index:2;height:21px;padding:0 8px 0 6px;border-radius:11px;
   background:var(--pink);color:#fff;font-size:12.5px;display:flex;align-items:center;gap:4px;
   box-shadow:0 0 0 2px #fff}
-/* swipe stamps: 128x48 rects inside a 136x56 box (4px sides, 8px below for the shadow) */
+/* swipe stamps (Figma 3624:594398/594412): a white 2px outline, at least 128x48, with a ringed icon
+   and an uppercase label. Built in HTML rather than the exported SVGs, whose outlined text could not
+   be translated; the label wraps onto a second line when it is long (NOT / INTERESTED). */
 /* centred rather than pinned to an edge: a stamp on the edge rides off screen with the
    card, and at the commit distance only a third of it was still on the phone */
-.stamp{position:absolute;bottom:19px;left:50%;transform:translateX(-50%);
-  z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear}
+.stamp{position:absolute;bottom:27px;left:50%;transform:translateX(-50%);
+  z-index:3;opacity:0;pointer-events:none;transition:opacity .12s linear;
+  display:flex;align-items:center;gap:6px;min-width:128px;height:48px;padding:0 12px 0 8px;
+  border:2px solid #fff;border-radius:4px;color:#fff;filter:drop-shadow(0 4px 4px rgba(42,53,57,.4))}
+.stamp svg{flex:none}
+.stamp b{max-width:120px;font-weight:600;font-size:13px;line-height:15px;letter-spacing:.3px;text-transform:uppercase;white-space:pre-line}
 .m-reply .stamp{display:none}
 /* entry point for the per-job actions (Figma 3622:591665): a 40px icon button centred on the picture's
    bottom edge, 15px from the sheet's right edge; only the open detail carries it */
@@ -832,6 +838,9 @@ svg{display:block;flex:none}
 .ver-row input:checked + .sw{background:var(--pink)}
 .ver-row input:checked + .sw::after{transform:translateX(20px)}
 .ver-row input:focus-visible + .sw{outline:2px solid var(--focus);outline-offset:2px}
+.ver-lang{align-items:center;cursor:default}
+.ver-lang select{flex:none;height:36px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:#fff;
+  font:inherit;font-size:15px;color:var(--ink)}
 .ver-done{margin-top:18px;width:100%;height:46px;border-radius:8px;background:var(--pink);color:#fff;font-size:16px}
 
 /* ---------- tab bar ---------- */
@@ -870,7 +879,7 @@ svg{display:block;flex:none}
 
   <header class="appbar">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg>
-    Jobs
+    <span data-i18n="app.title">Jobs</span>
     <button class="ver-btn" id="verBtn" aria-label="Prototype versions" aria-haspopup="dialog">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
       <i class="ver-dot"></i>
@@ -882,7 +891,7 @@ svg{display:block;flex:none}
       <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="ctrl-right">
-      <button class="icon-btn" id="bell" aria-label="Notification settings" aria-haspopup="dialog">
+      <button class="icon-btn" id="bell" aria-label="Notification settings" data-i18n-aria="aria.notif" aria-haspopup="dialog">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.6 1.8H4.4L6 16.5Z"/><path d="M10 20.8a2.2 2.2 0 0 0 4 0"/></svg>
       </button>
       <button class="icon-btn" id="filtersBtn" aria-label="Filters, 1 active" aria-haspopup="dialog">
@@ -893,10 +902,10 @@ svg{display:block;flex:none}
   </div>
 
   <div class="menu-scrim" id="menuScrim"></div>
-  <div class="cat-menu" id="catMenu" role="menu" aria-label="Job categories">
-    <button class="cat-item on" role="menuitemradio" aria-checked="true" data-cat="new"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.1992 0.421875C11.4453 0.585938 11.5547 0.886719 11.4727 1.1875L9.85938 6H13.168C13.6875 6 14.125 6.4375 14.125 6.95703C14.125 7.23047 14.0156 7.50391 13.7969 7.66797L5.59375 15.0234C5.375 15.2148 5.04688 15.2422 4.80078 15.0781C4.55469 14.9141 4.44531 14.6133 4.52734 14.3398L6.14062 9.5H2.83203C2.3125 9.5 1.875 9.0625 1.875 8.54297C1.875 8.26953 1.98438 8.02344 2.20312 7.83203L10.4062 0.476562C10.625 0.285156 10.9531 0.257812 11.1992 0.421875ZM3.76172 8.1875H7.04297C7.26172 8.1875 7.45312 8.29688 7.58984 8.46094C7.69922 8.625 7.75391 8.84375 7.67188 9.0625L6.55078 12.3984L12.2383 7.3125H8.95703C8.73828 7.3125 8.54688 7.20312 8.41016 7.03906C8.30078 6.875 8.27344 6.65625 8.32812 6.4375L9.44922 3.10156L3.76172 8.1875Z"/></svg>New</button>
-    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="replied"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.8125 4.25V3.12891L2.50391 6.4375L5.8125 9.74609V7.96875C5.8125 7.61328 6.11328 7.3125 6.46875 7.3125H9.75C11.5547 7.3125 13.0859 8.54297 13.5508 10.2109C13.6328 9.85547 13.6875 9.47266 13.6875 9.0625C13.6875 7.12109 12.1289 5.5625 10.1875 5.5625H6.46875C6.11328 5.5625 5.8125 5.26172 5.8125 4.90625V4.25ZM8 8.625H7.125V10.8125C7.125 11.168 6.90625 11.4688 6.57812 11.6055C6.25 11.7422 5.89453 11.6875 5.62109 11.4414L1.24609 7.06641C0.917969 6.71094 0.917969 6.16406 1.24609 5.80859L5.62109 1.43359C5.89453 1.1875 6.25 1.10547 6.57812 1.24219C6.90625 1.37891 7.125 1.70703 7.125 2.0625V4.25H10.1875C12.8398 4.25 15 6.41016 15 9.0625C15 11.1953 13.9609 12.5078 13.1133 13.2188C13.0039 13.3281 12.8945 13.4102 12.8125 13.4648C12.7031 13.5469 12.6211 13.6016 12.5664 13.6562C12.4297 13.7383 12.3477 13.793 12.2656 13.8203C12.1836 13.8477 12.1289 13.875 12.0469 13.875C11.7461 13.875 11.5 13.6289 11.5 13.3281C11.5 13.1367 11.6094 12.9727 11.7188 12.8359C11.7461 12.8359 11.7461 12.8086 11.7734 12.8086C11.8281 12.7539 11.9102 12.6719 11.9922 12.5625C12.0195 12.5078 12.0742 12.4258 12.1289 12.3438C12.2656 12.0977 12.375 11.7148 12.375 11.25C12.375 9.80078 11.1992 8.625 9.75 8.625H8Z"/></svg>Replied</button>
-    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="archived"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.8125 5.5625H3.1875V12.125C3.1875 12.3711 3.37891 12.5625 3.625 12.5625H12.375C12.6211 12.5625 12.8125 12.3711 12.8125 12.125V5.5625ZM12.5117 4.25L11.3906 2.69141C11.3086 2.58203 11.1719 2.5 11.0352 2.5H8.65625V4.25H12.5117ZM7.34375 4.25V2.5H4.96484C4.82812 2.5 4.69141 2.58203 4.60938 2.69141L3.48828 4.25H7.34375ZM2.20312 3.78516L3.54297 1.92578C3.87109 1.46094 4.39062 1.1875 4.96484 1.1875H11.0352C11.6094 1.1875 12.1289 1.46094 12.457 1.92578L13.7969 3.78516C14.0156 4.08594 14.125 4.44141 14.125 4.82422V12.125C14.125 13.082 13.332 13.875 12.375 13.875H3.625C2.66797 13.875 1.875 13.082 1.875 12.125V4.82422C1.875 4.44141 1.98438 4.08594 2.20312 3.78516Z"/></svg>Archived</button>
+  <div class="cat-menu" id="catMenu" role="menu" aria-label="Job categories" data-i18n-aria="aria.categories">
+    <button class="cat-item on" role="menuitemradio" aria-checked="true" data-cat="new"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.1992 0.421875C11.4453 0.585938 11.5547 0.886719 11.4727 1.1875L9.85938 6H13.168C13.6875 6 14.125 6.4375 14.125 6.95703C14.125 7.23047 14.0156 7.50391 13.7969 7.66797L5.59375 15.0234C5.375 15.2148 5.04688 15.2422 4.80078 15.0781C4.55469 14.9141 4.44531 14.6133 4.52734 14.3398L6.14062 9.5H2.83203C2.3125 9.5 1.875 9.0625 1.875 8.54297C1.875 8.26953 1.98438 8.02344 2.20312 7.83203L10.4062 0.476562C10.625 0.285156 10.9531 0.257812 11.1992 0.421875ZM3.76172 8.1875H7.04297C7.26172 8.1875 7.45312 8.29688 7.58984 8.46094C7.69922 8.625 7.75391 8.84375 7.67188 9.0625L6.55078 12.3984L12.2383 7.3125H8.95703C8.73828 7.3125 8.54688 7.20312 8.41016 7.03906C8.30078 6.875 8.27344 6.65625 8.32812 6.4375L9.44922 3.10156L3.76172 8.1875Z"/></svg><span data-i18n="cat.new">New</span></button>
+    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="replied"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.8125 4.25V3.12891L2.50391 6.4375L5.8125 9.74609V7.96875C5.8125 7.61328 6.11328 7.3125 6.46875 7.3125H9.75C11.5547 7.3125 13.0859 8.54297 13.5508 10.2109C13.6328 9.85547 13.6875 9.47266 13.6875 9.0625C13.6875 7.12109 12.1289 5.5625 10.1875 5.5625H6.46875C6.11328 5.5625 5.8125 5.26172 5.8125 4.90625V4.25ZM8 8.625H7.125V10.8125C7.125 11.168 6.90625 11.4688 6.57812 11.6055C6.25 11.7422 5.89453 11.6875 5.62109 11.4414L1.24609 7.06641C0.917969 6.71094 0.917969 6.16406 1.24609 5.80859L5.62109 1.43359C5.89453 1.1875 6.25 1.10547 6.57812 1.24219C6.90625 1.37891 7.125 1.70703 7.125 2.0625V4.25H10.1875C12.8398 4.25 15 6.41016 15 9.0625C15 11.1953 13.9609 12.5078 13.1133 13.2188C13.0039 13.3281 12.8945 13.4102 12.8125 13.4648C12.7031 13.5469 12.6211 13.6016 12.5664 13.6562C12.4297 13.7383 12.3477 13.793 12.2656 13.8203C12.1836 13.8477 12.1289 13.875 12.0469 13.875C11.7461 13.875 11.5 13.6289 11.5 13.3281C11.5 13.1367 11.6094 12.9727 11.7188 12.8359C11.7461 12.8359 11.7461 12.8086 11.7734 12.8086C11.8281 12.7539 11.9102 12.6719 11.9922 12.5625C12.0195 12.5078 12.0742 12.4258 12.1289 12.3438C12.2656 12.0977 12.375 11.7148 12.375 11.25C12.375 9.80078 11.1992 8.625 9.75 8.625H8Z"/></svg><span data-i18n="cat.replied">Replied</span></button>
+    <button class="cat-item" role="menuitemradio" aria-checked="false" data-cat="archived"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.8125 5.5625H3.1875V12.125C3.1875 12.3711 3.37891 12.5625 3.625 12.5625H12.375C12.6211 12.5625 12.8125 12.3711 12.8125 12.125V5.5625ZM12.5117 4.25L11.3906 2.69141C11.3086 2.58203 11.1719 2.5 11.0352 2.5H8.65625V4.25H12.5117ZM7.34375 4.25V2.5H4.96484C4.82812 2.5 4.69141 2.58203 4.60938 2.69141L3.48828 4.25H7.34375ZM2.20312 3.78516L3.54297 1.92578C3.87109 1.46094 4.39062 1.1875 4.96484 1.1875H11.0352C11.6094 1.1875 12.1289 1.46094 12.457 1.92578L13.7969 3.78516C14.0156 4.08594 14.125 4.44141 14.125 4.82422V12.125C14.125 13.082 13.332 13.875 12.375 13.875H3.625C2.66797 13.875 1.875 13.082 1.875 12.125V4.82422C1.875 4.44141 1.98438 4.08594 2.20312 3.78516Z"/></svg><span data-i18n="cat.archived">Archived</span></button>
   </div>
 
   <div class="peek" id="peek2"><i class="peek-hero"></i></div>
@@ -906,13 +915,13 @@ svg{display:block;flex:none}
     <div class="hero" id="hero">
       <div class="hero-img"><img id="heroImg" alt=""></div>
       <div class="chips" id="chips"></div>
-      <img class="stamp stamp-no" src="assets/stamp-not-interested.svg" alt="" aria-hidden="true">
-      <img class="stamp stamp-yes" src="assets/stamp-interested.svg" alt="" aria-hidden="true">
-      <button class="hero-close" id="heroClose" aria-label="Close">
+      <span class="stamp stamp-no" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="14" cy="14" r="12.5"/><path d="M9.5 9.5l9 9M18.5 9.5l-9 9"/></svg><b data-i18n="stamp.no">Not interested</b></span>
+      <span class="stamp stamp-yes" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="14" r="12.5"/><path d="m8.5 14.5 3.8 3.8 7.2-8.6"/></svg><b data-i18n="stamp.yes">Interested</b></span>
+      <button class="hero-close" id="heroClose" aria-label="Close" data-i18n-aria="aria.close">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
       </button>
       <span class="badge" id="badge"></span>
-      <button class="hero-more" id="heroMore" aria-label="More options" data-soon>
+      <button class="hero-more" id="heroMore" aria-label="More options" data-i18n-aria="aria.more" data-soon>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.04" cy="8" r="1.65"/><circle cx="8" cy="8" r="1.65"/><circle cx="12.96" cy="8" r="1.65"/></svg>
       </button>
     </div>
@@ -937,22 +946,22 @@ svg{display:block;flex:none}
         <div class="c-head">
           <div class="c-title">
             <svg id="sparkle" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M9.5 4 11 8.6l4.5 1.4L11 11.4 9.5 16 8 11.4 3.5 10 8 8.6 9.5 4Z"/><path d="M18 2.5v4M16 4.5h4M18 15.5v5M15.5 18h5"/></svg>
-            Your reply
+            <span data-i18n="reply.title">Your reply</span>
           </div>
           <button class="c-clear" id="clear">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M9 20.5h11.5"/><path d="M4.4 14.6 14 5a1.9 1.9 0 0 1 2.7 0l2.8 2.8a1.9 1.9 0 0 1 0 2.7l-9.3 9.4a1.9 1.9 0 0 1-1.4.6H7.3a1.9 1.9 0 0 1-1.3-.6l-1.6-1.6a1.9 1.9 0 0 1 0-2.7Z"/><path d="m9.3 9.8 5.4 5.4"/></svg>
-            Clear
+            <span data-i18n="reply.clear">Clear</span>
           </button>
         </div>
         <div class="c-box">
           <div class="c-ta">
-            <textarea id="ta" rows="6" aria-label="Your reply"></textarea>
+            <textarea id="ta" rows="6" aria-label="Your reply" data-i18n-aria="reply.title"></textarea>
             <div class="c-gen" id="gen" aria-hidden="true"><i style="width:94%"></i><i style="width:100%"></i><i style="width:88%"></i><i style="width:97%"></i><i style="width:62%"></i></div>
           </div>
           <div class="c-pager">
-            <button id="prev" aria-label="Previous template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button id="prev" aria-label="Previous template" data-i18n-aria="aria.prevTpl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
             <span id="pagerLabel">template 1 / 3</span>
-            <button id="next" aria-label="Next template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+            <button id="next" aria-label="Next template" data-i18n-aria="aria.nextTpl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
           </div>
         </div>
       </section>
@@ -961,28 +970,28 @@ svg{display:block;flex:none}
 
   <div class="empty" id="empty">
     <div class="e-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
-    <h3 id="emptyTitle">You're all caught up</h3>
-    <p id="emptyText">New jobs usually come in the morning.<br>We'll let you know.</p>
-    <button class="e-btn" id="replay">Replay demo</button>
+    <h3 id="emptyTitle" data-i18n="empty.title">You're all caught up</h3>
+    <p id="emptyText" data-i18n-html="empty.text">New jobs usually come in the morning.<br>We'll let you know.</p>
+    <button class="e-btn" id="replay" data-i18n="empty.replay">Replay demo</button>
   </div>
 
   <div class="feed" id="feed"></div>
 
   <div class="scrim" id="scrim"></div>
 
-  <button class="act act-no" id="no"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M8.8125 10.6016C8.42188 10.25 8.42188 9.625 8.8125 9.27344C9.16406 8.92188 9.75 8.92188 10.1016 9.27344L16 15.1719L21.8984 9.27344C22.2891 8.92188 22.875 8.92188 23.2266 9.27344C23.6172 9.66406 23.6172 10.25 23.2266 10.6016L17.3281 16.5L23.2266 22.3984C23.6172 22.75 23.6172 23.375 23.2266 23.7266C22.875 24.0781 22.2891 24.0781 21.8984 23.7266L16 17.8281L10.1016 23.7266C9.75 24.0781 9.16406 24.0781 8.8125 23.7266C8.42188 23.375 8.42188 22.75 8.8125 22.3984L14.7109 16.5L8.8125 10.6016Z"/></svg><span class="lbl">Skip</span></button>
+  <button class="act act-no" id="no"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M8.8125 10.6016C8.42188 10.25 8.42188 9.625 8.8125 9.27344C9.16406 8.92188 9.75 8.92188 10.1016 9.27344L16 15.1719L21.8984 9.27344C22.2891 8.92188 22.875 8.92188 23.2266 9.27344C23.6172 9.66406 23.6172 10.25 23.2266 10.6016L17.3281 16.5L23.2266 22.3984C23.6172 22.75 23.6172 23.375 23.2266 23.7266C22.875 24.0781 22.2891 24.0781 21.8984 23.7266L16 17.8281L10.1016 23.7266C9.75 24.0781 9.16406 24.0781 8.8125 23.7266C8.42188 23.375 8.42188 22.75 8.8125 22.3984L14.7109 16.5L8.8125 10.6016Z"/></svg><span class="lbl" data-i18n="act.skip">Skip</span></button>
   <button class="act act-yes" id="yes" aria-label="Reply">
-    <span class="face f-reply"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M13.9688 7.20314C14.4375 7.39845 14.75 7.8672 14.75 8.37501V11.5H19.125C22.9141 11.5 26 14.5859 26 18.375C26 22.7891 22.8359 24.7813 22.0938 25.1719C21.9766 25.25 21.8984 25.25 21.7812 25.25C21.3516 25.25 21 24.8984 21 24.4688C21 24.1953 21.1562 23.9219 21.3906 23.7266C21.7422 23.375 22.25 22.6719 22.25 21.5C22.25 19.4297 20.5703 17.75 18.5 17.75H14.75V20.875C14.75 21.3828 14.4375 21.8516 13.9688 22.0469C13.5 22.2422 12.9922 22.125 12.6016 21.7734L6.35156 15.5234C5.88281 15.0156 5.88281 14.2344 6.35156 13.7656L12.6016 7.51564C12.9922 7.12501 13.5 7.04689 13.9688 7.2422V7.20314Z"/></svg><span class="lbl">Reply</span></span>
-    <span class="face f-send"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg>Send reply</span>
-    <span class="face f-busy"><svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>Sending…</span>
-    <span class="face f-done"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Sent</span>
+    <span class="face f-reply"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M13.9688 7.20314C14.4375 7.39845 14.75 7.8672 14.75 8.37501V11.5H19.125C22.9141 11.5 26 14.5859 26 18.375C26 22.7891 22.8359 24.7813 22.0938 25.1719C21.9766 25.25 21.8984 25.25 21.7812 25.25C21.3516 25.25 21 24.8984 21 24.4688C21 24.1953 21.1562 23.9219 21.3906 23.7266C21.7422 23.375 22.25 22.6719 22.25 21.5C22.25 19.4297 20.5703 17.75 18.5 17.75H14.75V20.875C14.75 21.3828 14.4375 21.8516 13.9688 22.0469C13.5 22.2422 12.9922 22.125 12.6016 21.7734L6.35156 15.5234C5.88281 15.0156 5.88281 14.2344 6.35156 13.7656L12.6016 7.51564C12.9922 7.12501 13.5 7.04689 13.9688 7.2422V7.20314Z"/></svg><span class="lbl" data-i18n="act.reply">Reply</span></span>
+    <span class="face f-send"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 2.5 2.8 10.3c-.8.3-.8 1.4 0 1.7l6.4 2.6 2.6 6.4c.3.8 1.4.8 1.7 0L21.5 2.5Z"/><path d="m9.2 14.6 5.6-5.6"/></svg><span data-i18n="act.send">Send reply</span></span>
+    <span class="face f-busy"><svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg><span data-i18n="act.sending">Sending…</span></span>
+    <span class="face f-done"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="act.sent">Sent</span></span>
   </button>
-  <button class="show-desc" id="showDesc">Show job description</button>
+  <button class="show-desc" id="showDesc" data-i18n="act.showDesc">Show job description</button>
 
   <div class="toast" id="toast" role="status" aria-live="polite">
     <span class="toast-doodle" aria-hidden="true"><img class="l2" src="assets/doodle-reply-sent-2.svg" alt=""><img class="l3" src="assets/doodle-reply-sent-3.svg" alt=""><img class="l1" src="assets/doodle-reply-sent-1.svg" alt=""></span>
     <span id="toastText"></span><button id="toastAct" hidden>Undo</button>
-    <button class="toast-close" id="toastClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <button class="toast-close" id="toastClose" aria-label="Close" data-i18n-aria="aria.close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
 
   <div class="ver-modal" id="verModal" role="dialog" aria-modal="true" aria-labelledby="verTitle" aria-hidden="true">
@@ -990,6 +999,10 @@ svg{display:block;flex:none}
     <div class="ver-card">
       <h3 id="verTitle">Prototype versions</h3>
       <p>Try other ways of going through jobs. Your choices are remembered on this device.</p>
+      <label class="ver-row ver-lang">
+        <span><b>Language</b><small>The app, the jobs and the generated replies.</small></span>
+        <select id="langSelect" aria-label="Language"></select>
+      </label>
       <label class="ver-row">
         <span><b>Job description while replying</b><small>The photo shrinks and the job description stays above your reply, so you don't have to switch back to it.</small></span>
         <input type="checkbox" role="switch" id="verSwitch"><i class="sw" aria-hidden="true"></i>
@@ -1016,10 +1029,10 @@ svg{display:block;flex:none}
         <span class="filters-modal-title-icon" aria-hidden="true">
           <img src="/jobs/jobs-for-sitters/assets/icon-filters.svg" alt="">
         </span>
-        <div class="filters-modal-title" id="filtersTitle">Filters</div>
+        <div class="filters-modal-title" id="filtersTitle" data-i18n="filters.title">Filters</div>
         <span class="filters-modal-header-badge" id="filtersBadge">1</span>
       </div>
-      <button class="filters-modal-close" id="filtersClose" type="button" aria-label="Close filters">
+      <button class="filters-modal-close" id="filtersClose" type="button" aria-label="Close filters" data-i18n-aria="filters.close">
         <img src="/jobs/jobs-for-sitters/assets/icon-close-v2.svg" alt="">
       </button>
     </div>
@@ -1030,10 +1043,10 @@ svg{display:block;flex:none}
             <span class="filters-section-icon" aria-hidden="true">
               <img src="/jobs/jobs-for-sitters/assets/icon-info.svg" alt="">
             </span>
-            <div class="filters-section-title">Select services</div>
+            <div class="filters-section-title" data-i18n="filters.services">Select services</div>
           </div>
           <div class="filters-section-controls">
-            <button class="filters-section-clear" type="button">Clear</button>
+            <button class="filters-section-clear" type="button" data-i18n="filters.clear">Clear</button>
             <span class="filters-section-clear-dot" aria-hidden="true"></span>
             <span class="filters-section-chevron" aria-hidden="true">
               <svg viewBox="0 0 16 16" fill="none"><path d="m3.5 9.5 4.5-4 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1042,11 +1055,11 @@ svg{display:block;flex:none}
         </div>
         <div class="filters-section-content">
           <div class="filters-service-chips">
-            <button class="filters-service-chip is-active" type="button" aria-pressed="true" data-service="babysitting" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span>Babysitting</span></button>
-            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="cleaning" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span>Cleaning</span></button>
-            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="petCare" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span>Pet care</span></button>
-            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="seniorCare" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span>Senior care</span></button>
-            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="tutoring" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span>Tutoring</span></button>
+            <button class="filters-service-chip is-active" type="button" aria-pressed="true" data-service="babysitting" data-on="/jobs/jobs-for-sitters/assets/babysitting-on.svg" data-off="/jobs/jobs-for-sitters/assets/babysitting-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/babysitting-on.svg" alt=""></span><span data-i18n="filters.babysitting">Babysitting</span></button>
+            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="cleaning" data-on="/jobs/jobs-for-sitters/assets/cleaning-on.svg" data-off="/jobs/jobs-for-sitters/assets/cleaning-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/cleaning-off.svg" alt=""></span><span data-i18n="filters.cleaning">Cleaning</span></button>
+            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="petCare" data-on="/jobs/jobs-for-sitters/assets/pet-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/pet-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/pet-care-off.svg" alt=""></span><span data-i18n="filters.petCare">Pet care</span></button>
+            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="seniorCare" data-on="/jobs/jobs-for-sitters/assets/senior-care-on.svg" data-off="/jobs/jobs-for-sitters/assets/senior-care-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/senior-care-off.svg" alt=""></span><span data-i18n="filters.seniorCare">Senior care</span></button>
+            <button class="filters-service-chip" type="button" aria-pressed="false" data-service="tutoring" data-on="/jobs/jobs-for-sitters/assets/tutoring-on.svg" data-off="/jobs/jobs-for-sitters/assets/tutoring-off.svg"><span class="filters-service-chip-icon"><img src="/jobs/jobs-for-sitters/assets/tutoring-off.svg" alt=""></span><span data-i18n="filters.tutoring">Tutoring</span></button>
           </div>
         </div>
       </section>
@@ -1056,7 +1069,7 @@ svg{display:block;flex:none}
             <span class="filters-section-icon" aria-hidden="true">
               <img src="/jobs/jobs-for-sitters/assets/location-dot-icon.svg" alt="">
             </span>
-            <div class="filters-section-title">Location</div>
+            <div class="filters-section-title" data-i18n="filters.location">Location</div>
           </div>
           <div class="filters-section-controls">
             <span class="filters-section-chevron" aria-hidden="true">
@@ -1065,26 +1078,26 @@ svg{display:block;flex:none}
           </div>
         </div>
         <div class="filters-section-content">
-          <div class="filters-location-options" id="filtersLocation" role="radiogroup" aria-label="Location filter">
+          <div class="filters-location-options" id="filtersLocation" role="radiogroup" aria-label="Location filter" data-i18n-aria="filters.locationAria">
             <label class="filters-location-option">
               <input class="filters-location-radio" type="radio" name="filters-location" value="primary" checked>
               <span class="filters-location-option-control" aria-hidden="true"></span>
-              <span class="filters-location-option-label">Praha 2</span>
+              <span class="filters-location-option-label" data-i18n="filters.loc1">Praha 2</span>
             </label>
             <label class="filters-location-option">
               <input class="filters-location-radio" type="radio" name="filters-location" value="secondary">
               <span class="filters-location-option-control" aria-hidden="true"></span>
-              <span class="filters-location-option-label">Brandýs nad Labem</span>
+              <span class="filters-location-option-label" data-i18n="filters.loc2">Brandýs nad Labem</span>
             </label>
             <label class="filters-location-option">
               <input class="filters-location-radio" type="radio" name="filters-location" value="my-locations">
               <span class="filters-location-option-control" aria-hidden="true"></span>
-              <span class="filters-location-option-label">all my locations</span>
+              <span class="filters-location-option-label" data-i18n="filters.mine">all my locations</span>
             </label>
             <label class="filters-location-option">
               <input class="filters-location-radio" type="radio" name="filters-location" value="all-locations">
               <span class="filters-location-option-control" aria-hidden="true"></span>
-              <span class="filters-location-option-label">Anywhere</span>
+              <span class="filters-location-option-label" data-i18n="filters.anywhere">Anywhere</span>
             </label>
           </div>
         </div>
@@ -1095,7 +1108,7 @@ svg{display:block;flex:none}
             <span class="filters-section-icon" aria-hidden="true">
               <img src="/jobs/jobs-for-sitters/assets/radius-icon.svg" alt="">
             </span>
-            <div class="filters-section-title">Radius</div>
+            <div class="filters-section-title" data-i18n="filters.radius">Radius</div>
           </div>
           <div class="filters-section-controls">
             <span class="filters-section-chevron" aria-hidden="true">
@@ -1107,7 +1120,7 @@ svg{display:block;flex:none}
           <div class="filters-select-field">
             <div class="filters-select-field-value" id="filtersRadius">+20 km</div>
             <svg class="filters-select-field-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 6.5 4.5 4 4.5-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <select class="filters-select-field-select" id="filtersRadiusSelect" aria-label="Radius filter">
+            <select class="filters-select-field-select" id="filtersRadiusSelect" aria-label="Radius filter" data-i18n-aria="filters.radiusAria">
               <option>+5 km</option>
               <option>+10 km</option>
               <option>+15 km</option>
@@ -1125,14 +1138,14 @@ svg{display:block;flex:none}
   </div>
 
   <section class="note-sheet" id="noteSheet" role="dialog" aria-modal="true" aria-labelledby="noteTitle" aria-hidden="true">
-    <button class="note-close" id="noteClose" aria-label="Close">
+    <button class="note-close" id="noteClose" aria-label="Close" data-i18n-aria="aria.close">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
     </button>
-    <header class="note-head"><svg class="doodle" width="42" height="42" aria-hidden="true" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.1831 19.0167C33.5414 18.9 35.7581 18.2583 35.7581 18.2583L33.5997 17.85L35.4081 17.5583L37.1581 17.325L37.2747 16.975C35.6414 16.8 33.2497 16.5667 33.1914 16.5667C33.1331 16.5667 35.4664 16.1583 37.6247 15.8667V15.6333C38.3247 13.5917 37.0997 11.4333 35.0581 10.9667L13.5914 5.83333C11.6081 5.36666 9.56641 6.64999 9.15807 8.63333L8.04974 13.8833C9.91641 13.825 11.6664 14.4083 12.1331 14.4083C12.1331 14.4083 12.1914 14.4083 12.2497 14.4083C12.2497 14.4083 12.2497 14.4083 12.1331 14.4083C11.6081 14.4083 9.39141 14.8167 7.81641 15.05V15.4C8.51641 15.4 8.98307 15.5167 9.15807 15.5167C13.6497 15.4 8.22474 16.3917 7.46641 16.7417L5.71641 25.1417C5.24974 27.3 6.76641 29.3417 8.98307 29.575L29.6914 31.4417C31.3831 31.6167 33.0164 30.5667 33.5414 28.875L36.6331 19.1333C35.6997 19.1333 34.5914 19.0167 34.2414 18.9583L34.1831 19.0167Z" fill="#FFD5DA"/><path d="M31.3248 28.8167C33.1289 28.8167 34.5914 27.3541 34.5914 25.55C34.5914 23.7459 33.1289 22.2833 31.3248 22.2833C29.5206 22.2833 28.0581 23.7459 28.0581 25.55C28.0581 27.3541 29.5206 28.8167 31.3248 28.8167Z" fill="white"/><path d="M4.55054 24.5L30.5089 7.75833L30.0422 17.85C26.6005 18.2 23.9755 22.6333 25.3172 25.4917C26.6589 28.35 29.2255 29.3417 29.2255 29.3417L28.7005 34.3L20.8255 31.0917C20.8255 31.0917 16.6839 35.35 16.6839 35.0583C16.6839 34.7667 12.4255 27.7083 12.4255 27.7083L4.55054 24.4417V24.5Z" fill="white"/><path d="M6.29954 24.7333L30.3912 9.15833L29.8079 17.3833L29.1662 29.2833L28.6412 34.2417L20.7662 31.0333C20.7662 31.0333 16.5079 35.4083 16.6245 35C16.6829 34.65 12.3662 27.65 12.3662 27.65L6.24121 24.6167L6.29954 24.7333Z" fill="#FFF3CD"/><path d="M37.2755 24.0333L38.5588 23.3917L37.6255 21.1167L36.2255 21.5833C35.8755 21.0583 35.4088 20.5917 34.8838 20.2417L35.3505 18.8417L33.0755 17.9083L32.4338 19.1917C31.7921 19.075 31.1505 19.075 30.5088 19.1917L29.8671 17.9083L27.5921 18.8417L28.0588 20.2417C27.5338 20.5917 27.0671 21.0583 26.7171 21.5833L25.3171 21.1167L24.3838 23.3917L25.6671 24.0333C25.5505 24.675 25.5505 25.3167 25.6671 25.9583L24.3838 26.6L25.3171 28.875L26.7171 28.4083C27.0671 28.9333 27.5338 29.4 28.0588 29.75L27.5921 31.15L29.8671 32.0833L30.5088 30.8C31.1505 30.9167 31.7921 30.9167 32.4338 30.8L33.0755 32.0833L35.3505 31.15L34.8838 29.75C35.4088 29.4 35.8755 28.9333 36.2255 28.4083L37.6255 28.875L38.5588 26.6L37.2755 25.9583C37.3921 25.3167 37.3921 24.675 37.2755 24.0333ZM32.3755 27.125C31.1505 27.5917 29.8088 27.0667 29.2838 25.8417C28.8171 24.6167 29.3421 23.275 30.5671 22.75C31.7921 22.2833 33.1338 22.8083 33.6588 24.0333C34.1255 25.2583 33.6005 26.6 32.3755 27.125Z" fill="#FF9BA7"/><path d="M24.3838 23.3333L25.3171 21.0583L26.7171 21.525C27.1255 21 27.5921 20.5333 28.0588 20.1833L27.5921 18.7833L29.8671 17.85L30.5088 19.1333C31.1505 19.0167 31.7921 19.0167 32.4338 19.1333L33.0755 17.85L35.3505 18.7833L34.8838 20.1833C35.4088 20.5917 35.8755 21.0583 36.2255 21.525L37.6255 21.0583L38.5588 23.3333L37.2755 23.975C37.3921 24.6167 37.3921 25.2583 37.2755 25.9L38.5588 26.5417L37.6255 28.8167L36.2255 28.35C35.8171 28.875 35.4088 29.3417 34.8838 29.6917L35.3505 31.0917L33.0755 32.025L32.4338 30.7417C31.7921 30.8583 31.1505 30.8583 30.5088 30.7417L29.8671 32.025L27.5921 31.0917L28.0588 29.6917C27.5338 29.2833 27.0671 28.8167 26.7171 28.35L25.3171 28.8167L24.3838 26.5417L25.6671 25.9C25.5505 25.2583 25.5505 24.6167 25.6671 23.975L24.3838 23.3333Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.7589 33.3083V34.3C28.7005 34.3 16.9172 29.5167 16.9172 29.5167L26.0755 14.1167L12.4255 27.8833L4.55054 24.5L30.5089 7.75833L29.9255 16.5083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4255 27.8833L16.6839 35.0583L16.9755 29.5167" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.6831 35.0583L20.8248 31.15" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.78387 20.65L2.80054 21.875" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.7252 11.8417L6.94189 19.3083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.3423 25.8417C29.809 27.0667 31.209 27.5917 32.434 27.125C33.659 26.6 34.184 25.2583 33.7173 24.0333C33.2506 22.8083 31.8506 22.2833 30.6256 22.75C29.4006 23.2167 28.8756 24.6167 29.3423 25.8417Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.7163 3.09167L17.8496 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.7915 3.09167L19.6582 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.10007 32.9L7.2334 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.2334 32.9L9.10007 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M35.4077 33.3083V35.9917" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.0669 34.65H36.7502" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5917 7.99166C35.2334 7.99166 35.7001 7.46666 35.7001 6.88333C35.7001 6.29999 35.1751 5.77499 34.5917 5.77499C34.0084 5.77499 33.4834 6.29999 33.4834 6.88333C33.4834 7.46666 34.0084 7.99166 34.5917 7.99166Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.00848 11.6667C6.65015 11.6667 7.11681 11.1417 7.11681 10.5583C7.11681 9.975 6.59181 9.45 6.00848 9.45C5.42515 9.45 4.90015 9.975 4.90015 10.5583C4.90015 11.1417 5.42515 11.6667 6.00848 11.6667Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.2748 37.45C23.9165 37.45 24.3832 36.925 24.3832 36.3417C24.3832 35.7583 23.8582 35.2333 23.2748 35.2333C22.6915 35.2333 22.1665 35.7583 22.1665 36.3417C22.1665 36.925 22.6915 37.45 23.2748 37.45Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/></svg><h2 id="noteTitle">Notification settings</h2></header>
+    <header class="note-head"><svg class="doodle" width="42" height="42" aria-hidden="true" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.1831 19.0167C33.5414 18.9 35.7581 18.2583 35.7581 18.2583L33.5997 17.85L35.4081 17.5583L37.1581 17.325L37.2747 16.975C35.6414 16.8 33.2497 16.5667 33.1914 16.5667C33.1331 16.5667 35.4664 16.1583 37.6247 15.8667V15.6333C38.3247 13.5917 37.0997 11.4333 35.0581 10.9667L13.5914 5.83333C11.6081 5.36666 9.56641 6.64999 9.15807 8.63333L8.04974 13.8833C9.91641 13.825 11.6664 14.4083 12.1331 14.4083C12.1331 14.4083 12.1914 14.4083 12.2497 14.4083C12.2497 14.4083 12.2497 14.4083 12.1331 14.4083C11.6081 14.4083 9.39141 14.8167 7.81641 15.05V15.4C8.51641 15.4 8.98307 15.5167 9.15807 15.5167C13.6497 15.4 8.22474 16.3917 7.46641 16.7417L5.71641 25.1417C5.24974 27.3 6.76641 29.3417 8.98307 29.575L29.6914 31.4417C31.3831 31.6167 33.0164 30.5667 33.5414 28.875L36.6331 19.1333C35.6997 19.1333 34.5914 19.0167 34.2414 18.9583L34.1831 19.0167Z" fill="#FFD5DA"/><path d="M31.3248 28.8167C33.1289 28.8167 34.5914 27.3541 34.5914 25.55C34.5914 23.7459 33.1289 22.2833 31.3248 22.2833C29.5206 22.2833 28.0581 23.7459 28.0581 25.55C28.0581 27.3541 29.5206 28.8167 31.3248 28.8167Z" fill="white"/><path d="M4.55054 24.5L30.5089 7.75833L30.0422 17.85C26.6005 18.2 23.9755 22.6333 25.3172 25.4917C26.6589 28.35 29.2255 29.3417 29.2255 29.3417L28.7005 34.3L20.8255 31.0917C20.8255 31.0917 16.6839 35.35 16.6839 35.0583C16.6839 34.7667 12.4255 27.7083 12.4255 27.7083L4.55054 24.4417V24.5Z" fill="white"/><path d="M6.29954 24.7333L30.3912 9.15833L29.8079 17.3833L29.1662 29.2833L28.6412 34.2417L20.7662 31.0333C20.7662 31.0333 16.5079 35.4083 16.6245 35C16.6829 34.65 12.3662 27.65 12.3662 27.65L6.24121 24.6167L6.29954 24.7333Z" fill="#FFF3CD"/><path d="M37.2755 24.0333L38.5588 23.3917L37.6255 21.1167L36.2255 21.5833C35.8755 21.0583 35.4088 20.5917 34.8838 20.2417L35.3505 18.8417L33.0755 17.9083L32.4338 19.1917C31.7921 19.075 31.1505 19.075 30.5088 19.1917L29.8671 17.9083L27.5921 18.8417L28.0588 20.2417C27.5338 20.5917 27.0671 21.0583 26.7171 21.5833L25.3171 21.1167L24.3838 23.3917L25.6671 24.0333C25.5505 24.675 25.5505 25.3167 25.6671 25.9583L24.3838 26.6L25.3171 28.875L26.7171 28.4083C27.0671 28.9333 27.5338 29.4 28.0588 29.75L27.5921 31.15L29.8671 32.0833L30.5088 30.8C31.1505 30.9167 31.7921 30.9167 32.4338 30.8L33.0755 32.0833L35.3505 31.15L34.8838 29.75C35.4088 29.4 35.8755 28.9333 36.2255 28.4083L37.6255 28.875L38.5588 26.6L37.2755 25.9583C37.3921 25.3167 37.3921 24.675 37.2755 24.0333ZM32.3755 27.125C31.1505 27.5917 29.8088 27.0667 29.2838 25.8417C28.8171 24.6167 29.3421 23.275 30.5671 22.75C31.7921 22.2833 33.1338 22.8083 33.6588 24.0333C34.1255 25.2583 33.6005 26.6 32.3755 27.125Z" fill="#FF9BA7"/><path d="M24.3838 23.3333L25.3171 21.0583L26.7171 21.525C27.1255 21 27.5921 20.5333 28.0588 20.1833L27.5921 18.7833L29.8671 17.85L30.5088 19.1333C31.1505 19.0167 31.7921 19.0167 32.4338 19.1333L33.0755 17.85L35.3505 18.7833L34.8838 20.1833C35.4088 20.5917 35.8755 21.0583 36.2255 21.525L37.6255 21.0583L38.5588 23.3333L37.2755 23.975C37.3921 24.6167 37.3921 25.2583 37.2755 25.9L38.5588 26.5417L37.6255 28.8167L36.2255 28.35C35.8171 28.875 35.4088 29.3417 34.8838 29.6917L35.3505 31.0917L33.0755 32.025L32.4338 30.7417C31.7921 30.8583 31.1505 30.8583 30.5088 30.7417L29.8671 32.025L27.5921 31.0917L28.0588 29.6917C27.5338 29.2833 27.0671 28.8167 26.7171 28.35L25.3171 28.8167L24.3838 26.5417L25.6671 25.9C25.5505 25.2583 25.5505 24.6167 25.6671 23.975L24.3838 23.3333Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.7589 33.3083V34.3C28.7005 34.3 16.9172 29.5167 16.9172 29.5167L26.0755 14.1167L12.4255 27.8833L4.55054 24.5L30.5089 7.75833L29.9255 16.5083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4255 27.8833L16.6839 35.0583L16.9755 29.5167" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.6831 35.0583L20.8248 31.15" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.78387 20.65L2.80054 21.875" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.7252 11.8417L6.94189 19.3083" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.3423 25.8417C29.809 27.0667 31.209 27.5917 32.434 27.125C33.659 26.6 34.184 25.2583 33.7173 24.0333C33.2506 22.8083 31.8506 22.2833 30.6256 22.75C29.4006 23.2167 28.8756 24.6167 29.3423 25.8417Z" stroke="#2A3539" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.7163 3.09167L17.8496 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.7915 3.09167L19.6582 4.95833" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.10007 32.9L7.2334 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.2334 32.9L9.10007 34.7667" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M35.4077 33.3083V35.9917" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.0669 34.65H36.7502" stroke="#F96073" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.5917 7.99166C35.2334 7.99166 35.7001 7.46666 35.7001 6.88333C35.7001 6.29999 35.1751 5.77499 34.5917 5.77499C34.0084 5.77499 33.4834 6.29999 33.4834 6.88333C33.4834 7.46666 34.0084 7.99166 34.5917 7.99166Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.00848 11.6667C6.65015 11.6667 7.11681 11.1417 7.11681 10.5583C7.11681 9.975 6.59181 9.45 6.00848 9.45C5.42515 9.45 4.90015 9.975 4.90015 10.5583C4.90015 11.1417 5.42515 11.6667 6.00848 11.6667Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.2748 37.45C23.9165 37.45 24.3832 36.925 24.3832 36.3417C24.3832 35.7583 23.8582 35.2333 23.2748 35.2333C22.6915 35.2333 22.1665 35.7583 22.1665 36.3417C22.1665 36.925 22.6915 37.45 23.2748 37.45Z" stroke="#FFDA6A" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/></svg><h2 id="noteTitle" data-i18n="notif.title">Notification settings</h2></header>
 
     <div class="note-body">
       <div class="f-group" id="emailGroup">
-        <span class="f-label" id="emailLabel">Email notifications</span>
+        <span class="f-label" id="emailLabel" data-i18n="notif.email">Email notifications</span>
         <button class="field" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="emailLabel emailValue"><span class="f-val" id="emailValue">Immediately after publication</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="opt-menu" role="listbox" aria-labelledby="emailLabel">
           <button class="opt on" role="option" aria-selected="true">Immediately after publication</button>
@@ -1143,7 +1156,7 @@ svg{display:block;flex:none}
       </div>
 
       <div class="f-group" id="mobileGroup">
-        <span class="f-label" id="mobileLabel">Mobile notifications</span>
+        <span class="f-label" id="mobileLabel" data-i18n="notif.mobile">Mobile notifications</span>
         <button class="field" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="mobileLabel mobileValue"><span class="f-val" id="mobileValue">Immediately after publication</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="opt-menu" role="listbox" aria-labelledby="mobileLabel">
           <button class="opt on" role="option" aria-selected="true">Immediately after publication</button>
@@ -1156,24 +1169,24 @@ svg{display:block;flex:none}
       <div class="extra">
         <label class="check-row">
           <input type="checkbox" id="farJobs" checked><i class="box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></i>
-          <span>Notify me also about jobs further away</span>
+          <span data-i18n="notif.further">Notify me also about jobs further away</span>
         </label>
         <div class="note-rule"></div>
-        <p class="note-p">You will receive job offers matching all your saved <a href="#" data-soon>addresses</a> and <a href="#" data-soon>profiles</a>.</p>
+        <p class="note-p" data-i18n-html="notif.note">You will receive job offers matching all your saved <a href="#" data-soon>addresses</a> and <a href="#" data-soon>profiles</a>.</p>
       </div>
     </div>
 
     <footer class="note-foot">
-      <button class="note-save" id="noteSave"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Save changes</button>
+      <button class="note-save" id="noteSave"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="notif.save">Save changes</span></button>
     </footer>
   </section>
 
   <nav class="tabbar">
-    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M20 13.625C20 11.2031 18.6719 8.9375 16.5625 7.6875C14.4141 6.47656 11.7969 6.47656 9.6875 7.6875C7.53906 8.9375 6.25 11.2031 6.25 13.625C6.25 16.0859 7.53906 18.3516 9.6875 19.6016C11.7969 20.8125 14.4141 20.8125 16.5625 19.6016C18.6719 18.3516 20 16.0859 20 13.625ZM18.3984 19.7969C16.9922 21.0469 15.1172 21.75 13.125 21.75C8.63281 21.75 5 18.1172 5 13.625C5 9.17188 8.63281 5.5 13.125 5.5C17.5781 5.5 21.25 9.17188 21.25 13.625C21.25 15.6562 20.5078 17.4922 19.2969 18.9375L24.8047 24.4453C25.0391 24.6797 25.0391 25.1094 24.8047 25.3438C24.5703 25.5781 24.1406 25.5781 23.9062 25.3438L18.3984 19.7969Z"/></svg>Search</div>
-    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M14.0312 9.61719L13.5625 9.10938L13.3672 8.91406C12.3516 7.78125 10.8281 7.23438 9.34375 7.50781C7.23438 7.89844 5.75 9.69531 5.75 11.8047V11.9609C5.75 13.2109 6.25781 14.4219 7.19531 15.2813L14.3828 21.9609C14.3828 22 14.4219 22 14.5 22C14.5391 22 14.5781 22 14.6172 21.9609L21.8047 15.2813C22.7031 14.4219 23.25 13.2109 23.25 11.9609V11.8047C23.25 9.69531 21.7266 7.89844 19.6562 7.50781C18.1328 7.23438 16.6094 7.78125 15.5938 8.91406L15.4375 9.10938L14.9688 9.61719C14.8516 9.73438 14.6562 9.8125 14.5 9.8125C14.3047 9.8125 14.1484 9.73438 14.0312 9.61719ZM15.3594 7.39063C16.6484 6.41406 18.25 5.98438 19.8516 6.29688C22.5469 6.76563 24.5 9.10938 24.5 11.8047V11.9609C24.5 13.3672 23.9531 14.6953 23.0547 15.75C22.9375 15.9063 22.7812 16.0625 22.625 16.1797L15.4375 22.8984C15.3984 22.8984 15.3984 22.9375 15.3594 22.9766C15.0859 23.1719 14.8125 23.25 14.5 23.25C14.1094 23.25 13.7969 23.1328 13.5234 22.8984L6.33594 16.1797C6.17969 16.0625 6.02344 15.9063 5.90625 15.75C5.00781 14.6953 4.5 13.3672 4.5 11.9609V11.8047C4.5 9.10938 6.41406 6.76563 9.10938 6.29688C10.7109 5.98438 12.3125 6.41406 13.6016 7.39063C13.8359 7.58594 14.1094 7.82031 14.3047 8.09375L14.4609 8.25L14.6562 8.09375C14.8125 7.89844 14.9688 7.70313 15.1641 7.54688C15.2422 7.50781 15.3203 7.42969 15.3594 7.39063Z"/></svg>Favourites</div>
-    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M9.89062 15.75H15.75C16.4141 15.75 17 15.2031 17 14.5V7C17 6.33594 16.4141 5.75 15.75 5.75H4.5C3.79688 5.75 3.25 6.33594 3.25 7V14.5C3.25 15.2031 3.79688 15.75 4.5 15.75H5.75C6.41406 15.75 7 16.3359 7 17V17.625L9.14844 16.0234C9.38281 15.8672 9.61719 15.75 9.89062 15.75ZM15.75 17H9.89062L6.72656 19.3828C6.53125 19.5391 6.29688 19.5391 6.0625 19.4609C5.86719 19.3438 5.75 19.1484 5.75 18.875V18.25V17H4.5C3.09375 17 2 15.9062 2 14.5V7C2 5.63281 3.09375 4.5 4.5 4.5H15.75C17.1172 4.5 18.25 5.63281 18.25 7V14.5C18.25 15.9062 17.1172 17 15.75 17ZM14.5 22C13.0938 22 12 20.9062 12 19.5V18.25H13.25V19.5C13.25 20.2031 13.7969 20.75 14.5 20.75H19.0703C19.3438 20.75 19.6172 20.8672 19.8125 21.0234L22 22.625V22C22 21.3359 22.5469 20.75 23.25 20.75H24.5C25.1641 20.75 25.75 20.2031 25.75 19.5V12C25.75 11.3359 25.1641 10.75 24.5 10.75H19.5V9.5H24.5C25.8672 9.5 27 10.6328 27 12V19.5C27 20.9062 25.8672 22 24.5 22H23.25V23.25V23.875C23.25 24.1484 23.0938 24.3438 22.8984 24.4609C22.6641 24.5391 22.4297 24.5391 22.2344 24.3828L19.0703 22H14.5Z"/></svg>Messages</div>
-    <div class="tab on"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M24.9529 4.73435C25.3436 5.00779 25.5389 5.47654 25.4608 5.94529L22.9608 22.1953C22.9217 22.5859 22.6873 22.8984 22.3358 23.0937C22.0233 23.289 21.5936 23.3281 21.242 23.1719L16.5936 21.2187L13.8983 24.1094C13.5467 24.5 12.9998 24.6172 12.5311 24.4219C12.0623 24.2656 11.7498 23.7969 11.7498 23.25V20.0078C11.7498 19.8515 11.7889 19.6953 11.9061 19.5781L18.4295 12.4297C18.6639 12.1953 18.6639 11.8047 18.4295 11.5703C18.1951 11.3359 17.8045 11.3359 17.5701 11.5703L9.64044 18.6015L6.16388 16.8828C5.77326 16.6875 5.49982 16.2578 5.49982 15.789C5.46076 15.3594 5.69513 14.9297 6.12482 14.6953L23.6248 4.69529C24.0154 4.46091 24.5623 4.46091 24.9529 4.73435Z"/></svg>Jobs</div>
-    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M8.625 4.5C8.9375 4.5 9.25 4.8125 9.25 5.125V7H16.75V5.125C16.75 4.8125 17.0234 4.5 17.375 4.5C17.6875 4.5 18 4.8125 18 5.125V7H19.25C20.6172 7 21.75 8.13281 21.75 9.5V10.75V12V12.0391C21.5156 12.0391 21.3203 12 21.125 12C20.8906 12 20.6953 12.0391 20.5 12.0391V12H5.5V22C5.5 22.7031 6.04688 23.25 6.75 23.25H15.8125C16.2031 23.7578 16.6328 24.1484 17.1406 24.5H6.75C5.34375 24.5 4.25 23.4062 4.25 22V12V10.75V9.5C4.25 8.13281 5.34375 7 6.75 7H8V5.125C8 4.8125 8.27344 4.5 8.625 4.5ZM19.25 8.25H6.75C6.04688 8.25 5.5 8.83594 5.5 9.5V10.75H20.5V9.5C20.5 8.83594 19.9141 8.25 19.25 8.25ZM21.125 23.25C22.6875 23.25 24.0938 22.4297 24.875 21.0625C25.6953 19.7344 25.6953 18.0547 24.875 16.6875C24.0938 15.3594 22.6875 14.5 21.125 14.5C19.5234 14.5 18.1172 15.3594 17.3359 16.6875C16.5156 18.0547 16.5156 19.7344 17.3359 21.0625C18.1172 22.4297 19.5234 23.25 21.125 23.25ZM21.125 13.25C23.1172 13.25 24.9531 14.3438 25.9688 16.0625C26.9844 17.8203 26.9844 19.9688 25.9688 21.6875C24.9531 23.4453 23.1172 24.5 21.125 24.5C19.0938 24.5 17.2578 23.4453 16.2422 21.6875C15.2266 19.9688 15.2266 17.8203 16.2422 16.0625C17.2578 14.3438 19.0938 13.25 21.125 13.25ZM21.125 15.75C21.4375 15.75 21.75 16.0625 21.75 16.375V18.25H23C23.3125 18.25 23.625 18.5625 23.625 18.875C23.625 19.2266 23.3125 19.5 23 19.5H21.125C20.7734 19.5 20.5 19.2266 20.5 18.875V16.375C20.5 16.0625 20.7734 15.75 21.125 15.75Z"/></svg>Bookings</div>
+    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M20 13.625C20 11.2031 18.6719 8.9375 16.5625 7.6875C14.4141 6.47656 11.7969 6.47656 9.6875 7.6875C7.53906 8.9375 6.25 11.2031 6.25 13.625C6.25 16.0859 7.53906 18.3516 9.6875 19.6016C11.7969 20.8125 14.4141 20.8125 16.5625 19.6016C18.6719 18.3516 20 16.0859 20 13.625ZM18.3984 19.7969C16.9922 21.0469 15.1172 21.75 13.125 21.75C8.63281 21.75 5 18.1172 5 13.625C5 9.17188 8.63281 5.5 13.125 5.5C17.5781 5.5 21.25 9.17188 21.25 13.625C21.25 15.6562 20.5078 17.4922 19.2969 18.9375L24.8047 24.4453C25.0391 24.6797 25.0391 25.1094 24.8047 25.3438C24.5703 25.5781 24.1406 25.5781 23.9062 25.3438L18.3984 19.7969Z"/></svg><span data-i18n="tab.search">Search</span></div>
+    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M14.0312 9.61719L13.5625 9.10938L13.3672 8.91406C12.3516 7.78125 10.8281 7.23438 9.34375 7.50781C7.23438 7.89844 5.75 9.69531 5.75 11.8047V11.9609C5.75 13.2109 6.25781 14.4219 7.19531 15.2813L14.3828 21.9609C14.3828 22 14.4219 22 14.5 22C14.5391 22 14.5781 22 14.6172 21.9609L21.8047 15.2813C22.7031 14.4219 23.25 13.2109 23.25 11.9609V11.8047C23.25 9.69531 21.7266 7.89844 19.6562 7.50781C18.1328 7.23438 16.6094 7.78125 15.5938 8.91406L15.4375 9.10938L14.9688 9.61719C14.8516 9.73438 14.6562 9.8125 14.5 9.8125C14.3047 9.8125 14.1484 9.73438 14.0312 9.61719ZM15.3594 7.39063C16.6484 6.41406 18.25 5.98438 19.8516 6.29688C22.5469 6.76563 24.5 9.10938 24.5 11.8047V11.9609C24.5 13.3672 23.9531 14.6953 23.0547 15.75C22.9375 15.9063 22.7812 16.0625 22.625 16.1797L15.4375 22.8984C15.3984 22.8984 15.3984 22.9375 15.3594 22.9766C15.0859 23.1719 14.8125 23.25 14.5 23.25C14.1094 23.25 13.7969 23.1328 13.5234 22.8984L6.33594 16.1797C6.17969 16.0625 6.02344 15.9063 5.90625 15.75C5.00781 14.6953 4.5 13.3672 4.5 11.9609V11.8047C4.5 9.10938 6.41406 6.76563 9.10938 6.29688C10.7109 5.98438 12.3125 6.41406 13.6016 7.39063C13.8359 7.58594 14.1094 7.82031 14.3047 8.09375L14.4609 8.25L14.6562 8.09375C14.8125 7.89844 14.9688 7.70313 15.1641 7.54688C15.2422 7.50781 15.3203 7.42969 15.3594 7.39063Z"/></svg><span data-i18n="tab.favourites">Favourites</span></div>
+    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M9.89062 15.75H15.75C16.4141 15.75 17 15.2031 17 14.5V7C17 6.33594 16.4141 5.75 15.75 5.75H4.5C3.79688 5.75 3.25 6.33594 3.25 7V14.5C3.25 15.2031 3.79688 15.75 4.5 15.75H5.75C6.41406 15.75 7 16.3359 7 17V17.625L9.14844 16.0234C9.38281 15.8672 9.61719 15.75 9.89062 15.75ZM15.75 17H9.89062L6.72656 19.3828C6.53125 19.5391 6.29688 19.5391 6.0625 19.4609C5.86719 19.3438 5.75 19.1484 5.75 18.875V18.25V17H4.5C3.09375 17 2 15.9062 2 14.5V7C2 5.63281 3.09375 4.5 4.5 4.5H15.75C17.1172 4.5 18.25 5.63281 18.25 7V14.5C18.25 15.9062 17.1172 17 15.75 17ZM14.5 22C13.0938 22 12 20.9062 12 19.5V18.25H13.25V19.5C13.25 20.2031 13.7969 20.75 14.5 20.75H19.0703C19.3438 20.75 19.6172 20.8672 19.8125 21.0234L22 22.625V22C22 21.3359 22.5469 20.75 23.25 20.75H24.5C25.1641 20.75 25.75 20.2031 25.75 19.5V12C25.75 11.3359 25.1641 10.75 24.5 10.75H19.5V9.5H24.5C25.8672 9.5 27 10.6328 27 12V19.5C27 20.9062 25.8672 22 24.5 22H23.25V23.25V23.875C23.25 24.1484 23.0938 24.3438 22.8984 24.4609C22.6641 24.5391 22.4297 24.5391 22.2344 24.3828L19.0703 22H14.5Z"/></svg><span data-i18n="tab.messages">Messages</span></div>
+    <div class="tab on"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M24.9529 4.73435C25.3436 5.00779 25.5389 5.47654 25.4608 5.94529L22.9608 22.1953C22.9217 22.5859 22.6873 22.8984 22.3358 23.0937C22.0233 23.289 21.5936 23.3281 21.242 23.1719L16.5936 21.2187L13.8983 24.1094C13.5467 24.5 12.9998 24.6172 12.5311 24.4219C12.0623 24.2656 11.7498 23.7969 11.7498 23.25V20.0078C11.7498 19.8515 11.7889 19.6953 11.9061 19.5781L18.4295 12.4297C18.6639 12.1953 18.6639 11.8047 18.4295 11.5703C18.1951 11.3359 17.8045 11.3359 17.5701 11.5703L9.64044 18.6015L6.16388 16.8828C5.77326 16.6875 5.49982 16.2578 5.49982 15.789C5.46076 15.3594 5.69513 14.9297 6.12482 14.6953L23.6248 4.69529C24.0154 4.46091 24.5623 4.46091 24.9529 4.73435Z"/></svg><span data-i18n="tab.jobs">Jobs</span></div>
+    <div class="tab"><svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true"><path d="M8.625 4.5C8.9375 4.5 9.25 4.8125 9.25 5.125V7H16.75V5.125C16.75 4.8125 17.0234 4.5 17.375 4.5C17.6875 4.5 18 4.8125 18 5.125V7H19.25C20.6172 7 21.75 8.13281 21.75 9.5V10.75V12V12.0391C21.5156 12.0391 21.3203 12 21.125 12C20.8906 12 20.6953 12.0391 20.5 12.0391V12H5.5V22C5.5 22.7031 6.04688 23.25 6.75 23.25H15.8125C16.2031 23.7578 16.6328 24.1484 17.1406 24.5H6.75C5.34375 24.5 4.25 23.4062 4.25 22V12V10.75V9.5C4.25 8.13281 5.34375 7 6.75 7H8V5.125C8 4.8125 8.27344 4.5 8.625 4.5ZM19.25 8.25H6.75C6.04688 8.25 5.5 8.83594 5.5 9.5V10.75H20.5V9.5C20.5 8.83594 19.9141 8.25 19.25 8.25ZM21.125 23.25C22.6875 23.25 24.0938 22.4297 24.875 21.0625C25.6953 19.7344 25.6953 18.0547 24.875 16.6875C24.0938 15.3594 22.6875 14.5 21.125 14.5C19.5234 14.5 18.1172 15.3594 17.3359 16.6875C16.5156 18.0547 16.5156 19.7344 17.3359 21.0625C18.1172 22.4297 19.5234 23.25 21.125 23.25ZM21.125 13.25C23.1172 13.25 24.9531 14.3438 25.9688 16.0625C26.9844 17.8203 26.9844 19.9688 25.9688 21.6875C24.9531 23.4453 23.1172 24.5 21.125 24.5C19.0938 24.5 17.2578 23.4453 16.2422 21.6875C15.2266 19.9688 15.2266 17.8203 16.2422 16.0625C17.2578 14.3438 19.0938 13.25 21.125 13.25ZM21.125 15.75C21.4375 15.75 21.75 16.0625 21.75 16.375V18.25H23C23.3125 18.25 23.625 18.5625 23.625 18.875C23.625 19.2266 23.3125 19.5 23 19.5H21.125C20.7734 19.5 20.5 19.2266 20.5 18.875V16.375C20.5 16.0625 20.7734 15.75 21.125 15.75Z"/></svg><span data-i18n="tab.bookings">Bookings</span></div>
     <i class="home-ind"></i>
   </nav>
 </div>
@@ -1182,6 +1195,12 @@ svg{display:block;flex:none}
 <p class="caption"><b>Tap the card</b> for details · <b>Reply</b> or <b>Skip</b> · swipe works too<br>
 Drag the picture down to close · <span id="jobCount">5</span> jobs in the stack, shuffled on load · <button id="replay2">Reset</button></p>
 
+<script src="i18n/en.js"></script>
+<script src="i18n/cs.js"></script>
+<script src="i18n/sk.js"></script>
+<script src="i18n/hu.js"></script>
+<script src="i18n/hr.js"></script>
+<script src="i18n/de.js"></script>
 <script>
 (() => {
 "use strict";
@@ -1205,6 +1224,34 @@ const PEEK = 9;           // how far each card behind the top one shows above it
 const LINE = 21;          // description line height
 const CTRL_PAD = 12;      // .controls padding-bottom: the feed scrolls under it, the stack ignores it
 const SWIPE = 100;        // commit distance for skip / reply; the stamp is fully opaque there
+
+/* ---------------- language ---------------- */
+// Texts live in i18n/<code>.js (switched in the prototype versions modal). English is the source
+// and the fallback for any key or job a language does not have.
+const I18N = window.I18N;
+const LANGS = ["en", "cs", "sk", "hu", "hr", "de"].filter(l => I18N[l]);
+let lang = "en";
+const dig = (o, path) => path.split(".").reduce((v, k) => v == null ? v : v[k], o);
+// T("act.reply"), T("reply.template", {i:1, n:3}); a key holding plural forms picks one by vars.n
+function T(key, vars){
+  let s = dig(I18N[lang].ui, key);
+  if (s == null) s = dig(I18N.en.ui, key);
+  if (s == null) return key;
+  if (s && typeof s === "object" && !Array.isArray(s) && "other" in s)
+    s = s[new Intl.PluralRules(I18N[lang].locale).select(vars.n)] || s.other;
+  return typeof s === "string" && vars ? s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? vars[k] : m) : s;
+}
+// a job in the current language; the Latin filler that makes some descriptions long stays as it is
+const FILLER = "Lorem ipsum";
+function jt(j){
+  const L = lang !== "en" && I18N[lang].jobs && I18N[lang].jobs[j.id];
+  if (!L) return j;
+  const i = j.desc.indexOf(FILLER);
+  return { ...j, title:L.title, tags:L.tags, replies:L.replies,
+           desc: i > 0 && !L.desc.includes(FILLER) ? L.desc + " " + j.desc.slice(i) : L.desc };
+}
+const CHIP_KEY = { "2 hours ago":"chip.hoursAgo", "Yesterday":"chip.yesterday", "2.5 km away":"chip.away" };
+const chip = c => CHIP_KEY[c] ? T(CHIP_KEY[c]) : c;
 
 /* ---------------- content (Figma: Job Tinder Card, 5 verticals) ---------------- */
 const ICON = (inner) => `<svg width="11" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${inner}</svg>`;
@@ -1552,7 +1599,7 @@ function setModeClass(m){
   phone.classList.add("m-" + m);
   phone.classList.toggle("expanded", m === "detail" || m === "reply");
   phone.classList.toggle("send-face", m === "reply");
-  btnYes.setAttribute("aria-label", m === "reply" ? "Send reply" : "Reply");
+  btnYes.setAttribute("aria-label", T(m === "reply" ? "act.send" : "act.reply"));
   syncDesc();
 }
 // the reply variant is on (see the prototype versions modal)
@@ -1635,21 +1682,21 @@ function showPeeks(animate){
 }
 
 /* ---------------- card content ---------------- */
-function fillCard(j){
-  const v = VERT[j.v];
+function fillCard(src){
+  const v = VERT[src.v], j = jt(src);
   heroImg.src = j.img;
   heroImg.style.setProperty("--strip-y", j.stripY);
-  chipsEl.innerHTML = j.chips.map(c => `<span class="chip">${c}</span>`).join("");
+  chipsEl.innerHTML = j.chips.map(c => `<span class="chip">${chip(c)}</span>`).join("");
   badgeEl.style.backgroundColor = v.color;
-  badgeEl.innerHTML = v.icon + v.label;
+  badgeEl.innerHTML = v.icon + T("vert." + j.v);
   titleEl.textContent = j.title;
   dotEl.style.background = v.color;
-  addrEl.textContent = j.addr;
+  addrEl.textContent = T("addr");
   descEl.textContent = j.desc;
   descEl.scrollTop = 0;
   descTagsEl.innerHTML = j.tags.map(t => `<span class="desc-tag">${t}</span>`).join("");
   clearStamps();
-  card.setAttribute("aria-label", "Job: " + j.title);
+  card.setAttribute("aria-label", T("aria.job", { title:j.title }));
   descWrap.scrollTop = 0;
   // composer belongs to this job
   genToken++;
@@ -1743,7 +1790,7 @@ function go(target){
 /* ---------------- AI reply ---------------- */
 const wait = ms => new Promise(r => setTimeout(r, ms));
 function setSendEnabled(on){ btnYes.setAttribute("aria-disabled", on ? "false" : "true"); }
-function updatePager(){ $("#pagerLabel").textContent = `template ${cs().tpl + 1} / ${job().replies.length}`; }
+function updatePager(){ $("#pagerLabel").textContent = T("reply.template", { i:cs().tpl + 1, n:job().replies.length }); }
 
 async function streamReply(delay){
   const my = ++genToken, st = cs(), j = job();
@@ -1752,7 +1799,7 @@ async function streamReply(delay){
   await wait(delay);
   if (my !== genToken){ if (!st.generated) st.text = ""; return; }
   gen.classList.remove("on");
-  const words = j.replies[st.tpl].split(" ");
+  const words = jt(j).replies[st.tpl].split(" ");
   for (let i = 0; i < words.length; i++){
     if (my !== genToken){ if (!st.generated) st.text = ""; return; }
     ta.value += (i ? " " : "") + words[i];
@@ -1769,7 +1816,7 @@ function finishGeneration(){
   if (!ta.readOnly) return;
   const st = cs();
   genToken++; gen.classList.remove("on"); sparkle.classList.remove("pulse");
-  ta.value = st.text = job().replies[st.tpl];
+  ta.value = st.text = jt(job()).replies[st.tpl];
   ta.readOnly = false; st.generated = true; setSendEnabled(true);
 }
 ta.addEventListener("pointerdown", finishGeneration);
@@ -1910,7 +1957,7 @@ async function decline(){
     undoToDetail = stay;
   }
   lastDeclined = from;
-  toast("Moved to Archive", "Undo", undo);
+  toast(T("toast.archived"), T("toast.undo"), undo);
   busy = false;
 }
 
@@ -1926,7 +1973,7 @@ async function send(){
   await flySheet(1, stay);
   lastDeclined = null;
   await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
-  toast("Your reply was sent.", null, null, "success");
+  toast(T("toast.sent"), null, null, "success");
   busy = false;
 }
 
@@ -1971,7 +2018,11 @@ btnYes.onclick = () => {
 $("#heroClose").onclick = e => { e.stopPropagation(); go("stack"); };
 $("#scrim").onclick = () => go("stack");
 showDesc.onclick = () => go("detail");
-document.querySelectorAll("[data-soon]").forEach(b => b.onclick = () => toast("Not part of this prototype"));
+// delegated: the notification note is rewritten on a language change, and its links with it
+document.addEventListener("click", e => {
+  const soon = e.target.closest("[data-soon]");
+  if (soon){ e.preventDefault(); toast(T("toast.soon")); }
+});
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && phone.classList.contains("menu-open")) return openMenu(false);
   if (e.key === "Escape" && fModal.classList.contains("is-open")) return openFilters(false);
@@ -1988,7 +2039,7 @@ document.addEventListener("keydown", e => {
 // for a context menu that has no items, and Show messages does not lead anywhere either.
 const feedEl = $("#feed");
 const FEED_JOBS = ["baby", "pet", "senior"];
-const FEED_FLAG = { replied:"Replied", archived:"Declined" };
+const FEED_FLAG = { replied:"feed.replied", archived:"feed.declined" };
 const UNARCHIVE = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M9.34384 12.6758V12.6484C9.01572 13.0586 8.41416 13.1953 7.94931 12.9219L4.75009 11.0898V12.2109C4.75009 12.6211 4.96884 12.9766 5.32431 13.168L9.34384 15.4102V12.6758ZM9.15244 10.0234L4.25791 7.31641L3.43759 8.84766L8.38681 11.6641L9.15244 10.0234ZM5.24228 6.35938L10.0001 9.01172L14.7579 6.35938L10.5196 4.00781C10.1915 3.84375 9.80869 3.84375 9.48056 4.00781L5.24228 6.35938ZM16.5626 8.62891V12.2109C16.5626 13.0859 16.0977 13.9063 15.3321 14.3164L11.1759 16.6406C10.4376 17.0508 9.56259 17.0508 8.82431 16.6406L4.66806 14.3164C3.90244 13.9063 3.43759 13.0859 3.43759 12.2109V10.3516L2.61728 9.88672C2.09775 9.58594 1.90634 8.92969 2.17978 8.41016L3.32822 6.27734C3.51962 5.94922 3.79306 5.67578 4.12119 5.48438L8.82431 2.85938C9.56259 2.44922 10.4376 2.44922 11.1759 2.85938L15.9063 5.51172C16.2071 5.67578 16.4806 5.92188 16.6446 6.22266L17.7931 8.10938C17.9571 8.41016 17.8751 8.82031 17.547 9.01172C17.2462 9.17578 16.836 9.09375 16.6446 8.76563L16.5626 8.62891ZM10.6563 10.1328V15.4102L14.6759 13.168C15.0313 12.9766 15.2501 12.6211 15.2501 12.2109V7.58984L10.6563 10.1328Z" fill="#6C757D"/></svg>';
 const DOTS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
 // Jobs taken out of Archived with Unarchive. The feed is a sample list, so this only lasts until Replay.
@@ -1997,16 +2048,17 @@ const unarchived = new Set();
 function buildFeed(cat){
   const archived = cat === "archived";
   const ids = archived ? FEED_JOBS.filter(id => !unarchived.has(id)) : FEED_JOBS;
-  if (!ids.length){ feedEl.innerHTML = '<p class="f-empty">No archived jobs</p>'; return; }
+  if (!ids.length){ feedEl.innerHTML = `<p class="f-empty">${T("feed.none")}</p>`; return; }
+  const flag = T(FEED_FLAG[cat]);
   feedEl.innerHTML = ids.map(id => {
-    const j = JOBS.find(x => x.id === id), v = VERT[j.v];
-    return `<article class="f-card${archived ? " is-archived" : ""}" data-id="${id}" aria-label="${FEED_FLAG[cat]} job: ${j.title}">
+    const j = jt(JOBS.find(x => x.id === id)), v = VERT[j.v];
+    return `<article class="f-card${archived ? " is-archived" : ""}" data-id="${id}" aria-label="${T("feed.aria", { flag, title:j.title })}">
       <div class="f-hero">
         <img src="${j.img}" alt="">
-        <div class="chips">${j.chips.map(c => `<span class="chip">${c}</span>`).join("")}</div>
-        <button class="f-dots" aria-label="More options">${DOTS}</button>
-        <span class="badge" style="background:${v.color}">${v.icon}${v.label}</span>
-        <span class="f-flag">${FEED_FLAG[cat]}</span>
+        <div class="chips">${j.chips.map(c => `<span class="chip">${chip(c)}</span>`).join("")}</div>
+        <button class="f-dots" aria-label="${T("aria.more")}">${DOTS}</button>
+        <span class="badge" style="background:${v.color}">${v.icon}${T("vert." + j.v)}</span>
+        <span class="f-flag">${flag}</span>
       </div>
       <div class="f-body">
         <h2 class="f-title">${j.title}</h2>
@@ -2014,16 +2066,16 @@ function buildFeed(cat){
           <img class="avatar" alt="" src="assets/avatar-jana.jpg">
           <span class="author">Jana P.</span>
           <i class="dot" style="background:${v.color}"></i>
-          <span>${j.addr}</span>
+          <span>${T("addr")}</span>
         </div>
       </div>
       <div class="f-desc-wrap">
         <p class="f-desc">${j.desc}</p>
-        <button class="f-more">Read more</button>
+        <button class="f-more">${T("feed.readMore")}</button>
       </div>
       <div class="f-foot">${archived
-        ? `<button class="f-unarchive" aria-label="Unarchive job: ${j.title}">${UNARCHIVE}<span>Unarchive</span></button>`
-        : `<button class="f-msg">Show messages</button>`}</div>
+        ? `<button class="f-unarchive" aria-label="${T("feed.unarchiveAria", { title:j.title })}">${UNARCHIVE}<span>${T("feed.unarchive")}</span></button>`
+        : `<button class="f-msg">${T("feed.messages")}</button>`}</div>
     </article>`;
   }).join("");
 }
@@ -2033,27 +2085,27 @@ function unarchive(cardEl){
   if (cardEl.classList.contains("is-leaving")) return;
   cardEl.classList.add("is-leaving");
   unarchived.add(cardEl.dataset.id);
-  toast("Moved to New");
+  toast(T("toast.toNew"));
   const h = cardEl.offsetHeight;
   cardEl.animate([
     { height:h + "px", marginBottom:"0px", borderWidth:"1px", opacity:1 },
     { height:"0px", marginBottom:"-20px", borderWidth:"0px", opacity:0 }
   ], { duration:340, easing:EASE, fill:"forwards" }).finished.then(() => {
     cardEl.remove();
-    if (!feedEl.querySelector(".f-card")) feedEl.innerHTML = '<p class="f-empty">No archived jobs</p>';
+    if (!feedEl.querySelector(".f-card")) feedEl.innerHTML = `<p class="f-empty">${T("feed.none")}</p>`;
   });
 }
 feedEl.addEventListener("click", e => {
   if (e.target.closest(".f-more")) return e.target.closest(".f-card").classList.add("is-open");
   if (e.target.closest(".f-unarchive")) return unarchive(e.target.closest(".f-card"));
-  if (e.target.closest(".f-dots, .f-msg")) return toast("Not part of this prototype");
+  if (e.target.closest(".f-dots, .f-msg")) return toast(T("toast.soon"));
 });
 buildFeed("replied");
 
 /* ---------------- category dropdown ---------------- */
 // New shows the stack; Replied and Archived are placeholders until their mockups arrive.
 const catPill = $("#catPill"), catMenu = $("#catMenu"), catLabel = $("#catLabel");
-const CATS = { new:"New", replied:"Replied", archived:"Archived" };
+const CATS = ["new", "replied", "archived"];
 function openMenu(on){
   phone.classList.toggle("menu-open", on);
   catPill.setAttribute("aria-expanded", on ? "true" : "false");
@@ -2061,7 +2113,7 @@ function openMenu(on){
 function setCat(id){
   phone.classList.remove("c-new","c-replied","c-archived");
   phone.classList.add("c-" + id);
-  catLabel.textContent = CATS[id];
+  catLabel.textContent = T("cat." + id);
   catMenu.querySelectorAll(".cat-item").forEach(b => {
     const on = b.dataset.cat === id;
     b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false");
@@ -2087,8 +2139,8 @@ function filtersRefresh(){
   const jobs = on.reduce((n, c) => n + (JOBS_PER_SERVICE[c.dataset.service] || 0), 0);
   $("#filtersBadge").textContent = $("#filtersCount").textContent = on.length;
   $("#filtersBadge").style.display = $("#filtersCount").style.display = on.length ? "" : "none";
-  $("#filtersCta").textContent = `Show ${jobs} job${jobs === 1 ? "" : "s"}`;
-  $("#filtersBtn").setAttribute("aria-label", `Filters, ${on.length} active`);
+  $("#filtersCta").textContent = T("filters.show", { n:jobs });
+  $("#filtersBtn").setAttribute("aria-label", T("aria.filtersActive", { n:on.length }));
   const clear = fModal.querySelector(".filters-section-clear"), dot = fModal.querySelector(".filters-section-clear-dot");
   clear.style.display = dot.style.display = on.length ? "" : "none";
 }
@@ -2099,7 +2151,7 @@ function openFilters(on){
 }
 $("#filtersBtn").onclick = () => openFilters(true);
 $("#filtersClose").onclick = () => openFilters(false);
-$("#filtersCta").onclick = () => { openFilters(false); toast("Filtering is not part of this prototype"); };
+$("#filtersCta").onclick = () => { openFilters(false); toast(T("toast.noFilter")); };
 fModal.addEventListener("click", e => {
   const chip = e.target.closest(".filters-service-chip");
   if (chip){
@@ -2142,7 +2194,7 @@ function openNotes(on){
 }
 $("#bell").onclick = () => openNotes(true);
 $("#noteClose").onclick = () => openNotes(false);
-$("#noteSave").onclick = () => { openNotes(false); toast("Notification settings saved"); };
+$("#noteSave").onclick = () => { openNotes(false); toast(T("toast.notifSaved")); };
 noteSheet.addEventListener("click", e => {
   const field = e.target.closest(".field"), opt = e.target.closest(".opt");
   if (field){
@@ -2203,6 +2255,46 @@ SETTINGS.forEach(st => st.input.addEventListener("change", () => {
   if (!busy) placeStatic();
   try { localStorage.setItem(st.key, st.input.checked ? st.on : st.off); } catch(_){}
 }));
+
+/* ---------------- language (prototype versions modal) ---------------- */
+// Remembered per device like the switches; ?lang=sk (en, cs, sk, hu, hr, de) wins over both.
+const LANG_KEY = "jobs-tinder-lang";
+const langSelect = $("#langSelect");
+langSelect.innerHTML = LANGS.map(l => `<option value="${l}">${I18N[l].name}</option>`).join("");
+function initialLang(){
+  const q = new URLSearchParams(location.search).get("lang");
+  if (I18N[q]) return q;
+  try { const v = localStorage.getItem(LANG_KEY); if (I18N[v]) return v; } catch(_){}
+  return "en";
+}
+// every static text carries data-i18n (text), data-i18n-html or data-i18n-aria (aria-label)
+function applyLang(l){
+  lang = I18N[l] ? l : "en";
+  document.documentElement.lang = I18N[lang].locale;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = T(el.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", T(el.dataset.i18nAria)));
+  const opts = T("notif.opts");
+  noteSheet.querySelectorAll(".f-group").forEach(g => {
+    g.querySelectorAll(".opt").forEach((o, i) => { o.textContent = opts[i]; });
+    g.querySelector(".f-val").textContent = g.querySelector(".opt.on").textContent;
+  });
+  buildFeed(phone.classList.contains("c-archived") ? "archived" : "replied");   // built once on load, in English
+  langSelect.value = lang;
+}
+// Switching while the prototype runs: the open job, the feeds, the filters and the pill follow.
+// Replies already written belong to the old language, so they are written again.
+function setLang(l){
+  applyLang(l);
+  try { localStorage.setItem(LANG_KEY, lang); } catch(_){}
+  genToken++; Object.keys(CS).forEach(k => delete CS[k]);
+  filtersRefresh();
+  setCat(CATS.find(c => phone.classList.contains("c-" + c)) || "new");
+  if (mode !== "gone"){ fillCard(job()); if (mode === "reply") startGeneration(); }
+  btnYes.setAttribute("aria-label", T(mode === "reply" ? "act.send" : "act.reply"));
+  placeStatic();
+}
+langSelect.addEventListener("change", () => setLang(langSelect.value));
 
 /* ---------------- gestures ---------------- */
 // Stack: drag the card left / right, tap to open the detail.
@@ -2395,6 +2487,8 @@ if (new URLSearchParams(location.search).get("debug") === "kb"){
 const jobCountEl = document.getElementById("jobCount");
 if (jobCountEl) jobCountEl.textContent = JOBS.length;
 SETTINGS.forEach(st => applySetting(st, initialSetting(st)));
+applyLang(initialLang());
+filtersRefresh();
 setCat("new");
 setModeClass("stack");
 fillCard(job());
