@@ -88,8 +88,10 @@ svg{display:block;flex:none}
 
 /* the padding below is whitespace the feed scrolls under, see CTRL_PAD */
 .controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;padding-bottom:12px}
-.pill-new{height:27px;padding:0 10px 0 13px;border-radius:14px;background:var(--pink);color:#fff;
-  display:flex;align-items:center;gap:4px;font-size:15px;letter-spacing:-.1px}
+/* active category pill (Figma Pill Badge 3646:48377): light pink with dark pink text and chevron */
+.pill-new{height:27px;padding:4px 10px;border-radius:64px;background:#feecee;color:#e6213a;
+  display:flex;align-items:center;gap:2px;font-size:14px;line-height:1.4}
+.pill-new .chev{width:14px;height:14px;padding:1px}
 .ctrl-right{display:flex;gap:8px}
 .icon-btn{position:relative;width:40px;height:38px;border-radius:7px;background:#fff;
   border:1px solid var(--line);border-bottom-width:3px;display:grid;place-items:center;color:var(--ink)}
@@ -877,7 +879,7 @@ svg{display:block;flex:none}
 
   <div class="controls" id="controls">
     <button class="pill-new" id="catPill" aria-haspopup="menu" aria-expanded="false"><span id="catLabel">New</span>
-      <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="ctrl-right">
       <button class="icon-btn" id="bell" aria-label="Notification settings" aria-haspopup="dialog">
