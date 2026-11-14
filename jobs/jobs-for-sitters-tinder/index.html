@@ -316,6 +316,18 @@ svg{display:block;flex:none}
   padding:4px 20px 16px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
 .feed::-webkit-scrollbar{display:none}
 .c-replied .feed,.c-archived .feed{display:flex}
+/* simple feed for the new jobs (Figma 4123:126144, a prototype version): New becomes the same scrolling
+   list as Replied, with a Reply button on every card. The stack, its peeks and buttons give way; the card
+   is then only the detail and reply sheet, opened from the list and closed back into it. */
+.v-feed.c-new .feed{display:flex}
+.v-feed.c-new .peek,.v-feed.c-new .empty,.v-feed.c-new.m-stack .act,.v-feed.c-new.m-gone .act{display:none}
+.v-feed.c-new.m-stack:not(.collapsing) .card,.v-feed.c-new.m-gone .card{visibility:hidden}
+.f-card.is-new{cursor:pointer}
+.f-reply{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;height:52px;border-radius:4px;
+  background:var(--pink);color:#fff;font-size:18px;line-height:22px;box-shadow:inset 0 -3px 0 #e6213a}
+.f-done{padding:40px 8px;text-align:center}
+.f-done h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
+.f-done p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
 .f-card{flex:none;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;
   box-shadow:0 4px 8px -4px rgba(42,53,57,.2)}
 .f-hero{position:relative;height:140px;padding:16px 0 16px 16px;display:flex;align-items:flex-start;justify-content:space-between}
@@ -1019,6 +1031,10 @@ svg{display:block;flex:none}
         <span><b>Simplified version</b><small>What the current Hotwire Native app can build: the job detail, notification settings and filters open between the top bar and the tab bar, which both stay visible.</small></span>
         <input type="checkbox" role="switch" id="simpleSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
+      <label class="ver-row">
+        <span><b>Simple feed for the new jobs</b><small>New jobs as a scrolling list with a Reply button on every job, like Replied and Archived, instead of the card stack. Tap a job for its detail.</small></span>
+        <input type="checkbox" role="switch" id="feedSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
   </div>
@@ -1544,6 +1560,10 @@ function layout(){
 }
 
 function cardGeom(m){
+  if ((m === "stack" || m === "gone") && feedNew()){
+    const el = feedCardOf(job().id);
+    if (el){ const r = rectOf(el); return { left:r.left, top:r.top, width:r.width, height:r.height, r:"8px" }; }
+  }
   if (m === "stack" || m === "gone") return { left:20, top:G.cardTop, width:G.W - 40, height:null, r:"12px" };
   // keyboard up while replying: the sheet scrolls up until Your reply is 12px under the top of
   // the visible area (the native top bar in the simplified version, the status bar otherwise)
@@ -1558,7 +1578,7 @@ function btnGeom(m){
   const L2 = 20 + G.btnW + 21;
   const stack = m === "stack" || m === "gone";
   const t = stack ? G.stackBtnTop : G.detailBtnTop;
-  const hide = m === "gone";
+  const hide = m === "gone" || (stack && feedNew());   // the list has no Skip / Reply pair
   const no  = { left:20, top:t, width:G.btnW, height:50, o: (m === "reply" || hide) ? 0 : 1, r:"25px" };
   const yes = m === "reply"
     ? { left:20, top:G.sendTop, width:G.W - 40, height:52, o:1, r:"4px", bg:GREEN, sh:SH_GREEN }
@@ -1944,7 +1964,12 @@ async function decline(){
   if (busy || mode === "gone") return;
   busy = true; hideToast();
   const from = idx;
-  if (mode === "stack"){
+  if (feedNew()){
+    ta.blur();
+    await flySheet(-1, false);
+    backToFeed();
+    undoToDetail = false;
+  } else if (mode === "stack"){
     const ghost = flyGhost(-1);
     await bringNext(idx + 1);
     await ghost;
@@ -1969,16 +1994,28 @@ async function send(){
   btnYes.classList.remove("sending"); btnYes.classList.add("done");
   await wait(480);
   layoutWhileBusy = false;
-  const stay = nextInDetail();
-  await flySheet(1, stay);
   lastDeclined = null;
-  await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
+  if (feedNew()){
+    await flySheet(1, false);
+    backToFeed();
+  } else {
+    const stay = nextInDetail();
+    await flySheet(1, stay);
+    await (stay ? openNextDetail(idx + 1) : bringNext(idx + 1));
+  }
   toast(T("toast.sent"), null, null, "success");
   busy = false;
 }
 
 function undo(){
   if (busy || lastDeclined == null) return;
+  if (feedNew()){                       // the skipped job comes back into the list where it was
+    const id = JOBS[lastDeclined].id; lastDeclined = null;
+    handled.delete(id); buildFeed("new");
+    const el = feedCardOf(id);
+    if (el){ el.scrollIntoView({ block:"nearest" }); el.animate([{opacity:0, transform:"translateX(-40px)"},{opacity:1, transform:"none"}], {duration:380, easing:EASE}); }
+    return;
+  }
   busy = true;
   idx = lastDeclined; lastDeclined = null;
   [card, heroEl, btnNo, btnYes].forEach(el => el.getAnimations().forEach(a => a.cancel()));
@@ -1994,7 +2031,7 @@ function undo(){
 }
 
 function replay(){
-  hideToast(); busy = false; lastDeclined = null; unarchived.clear();
+  hideToast(); busy = false; lastDeclined = null; unarchived.clear(); handled.clear();
   Object.keys(CS).forEach(k => delete CS[k]);
   document.querySelectorAll(".phone > .card:not(#card)").forEach(n => n.remove());
   btnYes.classList.remove("sending","done");
@@ -2005,6 +2042,7 @@ function replay(){
   empty.classList.remove("show"); card.style.visibility = "";
   fillCard(job()); placeStatic(); showPeeks(false);
   card.animate([{opacity:0, transform:"translateY(24px) scale(.97)"},{opacity:1, transform:"none"}], {duration:380, easing:EASE});
+  if (feedNew()){ buildFeed("new"); feedEl.scrollTop = 0; placeStatic(); }
 }
 $("#replay").onclick = replay;
 $("#replay2").onclick = replay;
@@ -2044,8 +2082,79 @@ const UNARCHIVE = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" a
 const DOTS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
 // Jobs taken out of Archived with Unarchive. The feed is a sample list, so this only lasts until Replay.
 const unarchived = new Set();
+// Jobs replied to or skipped; the simple New feed leaves them out (until Undo or Replay).
+const handled = new Set();
+const newFeed = () => phone.classList.contains("v-feed");
+const feedNew = () => newFeed() && phone.classList.contains("c-new");
+const feedCardOf = id => feedEl.querySelector(`.f-card[data-id="${id}"]`);
+const REPLY_ICON = '<svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M13.9688 7.20314C14.4375 7.39845 14.75 7.8672 14.75 8.37501V11.5H19.125C22.9141 11.5 26 14.5859 26 18.375C26 22.7891 22.8359 24.7813 22.0938 25.1719C21.9766 25.25 21.8984 25.25 21.7812 25.25C21.3516 25.25 21 24.8984 21 24.4688C21 24.1953 21.1562 23.9219 21.3906 23.7266C21.7422 23.375 22.25 22.6719 22.25 21.5C22.25 19.4297 20.5703 17.75 18.5 17.75H14.75V20.875C14.75 21.3828 14.4375 21.8516 13.9688 22.0469C13.5 22.2422 12.9922 22.125 12.6016 21.7734L6.35156 15.5234C5.88281 15.0156 5.88281 14.2344 6.35156 13.7656L12.6016 7.51564C12.9922 7.12501 13.5 7.04689 13.9688 7.2422V7.20314Z"/></svg>';
+// The New list: the same card as Replied without the flag, and Reply opens the job's reply sheet.
+function buildNewFeed(){
+  const left = JOBS.filter(j => !handled.has(j.id));
+  if (!left.length){
+    feedEl.innerHTML = `<div class="f-done"><div class="e-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+      <h3>${T("empty.title")}</h3><p>${T("empty.text")}</p><button class="e-btn" data-replay>${T("empty.replay")}</button></div>`;
+    return;
+  }
+  feedEl.innerHTML = left.map(src => {
+    const j = jt(src), v = VERT[j.v];
+    return `<article class="f-card is-new" data-id="${j.id}" aria-label="${T("aria.job", { title:j.title })}">
+      <div class="f-hero">
+        <img src="${j.img}" alt="">
+        <div class="chips">${j.chips.map(c => `<span class="chip">${chip(c)}</span>`).join("")}</div>
+        <button class="f-dots" aria-label="${T("aria.more")}">${DOTS}</button>
+        <span class="badge" style="background:${v.color}">${v.icon}${T("vert." + j.v)}</span>
+      </div>
+      <div class="f-body">
+        <h2 class="f-title">${j.title}</h2>
+        <div class="meta">
+          <img class="avatar" alt="" src="assets/avatar-jana.jpg">
+          <span class="author">Jana P.</span>
+          <i class="dot" style="background:${v.color}"></i>
+          <span>${T("addr")}</span>
+        </div>
+      </div>
+      <div class="f-desc-wrap">
+        <p class="f-desc">${j.desc}</p>
+        <button class="f-more">${T("feed.readMore")}</button>
+      </div>
+      <div class="f-foot"><button class="f-reply">${REPLY_ICON}${T("act.reply")}</button></div>
+    </article>`;
+  }).join("");
+}
+// From the list into the sheet: the card takes the list card's place, then opens as usual
+function openFromFeed(id, target){
+  if (busy) return;
+  hideToast();
+  idx = JOBS.findIndex(j => j.id === id);
+  mode = "stack"; setModeClass("stack");
+  empty.classList.remove("show"); card.style.visibility = "";
+  fillCard(job()); placeStatic();
+  go(target);
+}
+// After Skip or Send in the sheet: the job leaves the list (Undo brings it back)
+function backToFeed(){
+  const id = job().id;
+  [card, heroEl, btnNo, btnYes].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  card.style.transform = ""; $("#scrim").style.opacity = ""; showDesc.style.opacity = "";
+  btnYes.classList.remove("sending","done");
+  mode = "stack"; setModeClass("stack");
+  handled.add(id);
+  const el = feedCardOf(id);
+  if (el) collapseCard(el, () => { if (!feedEl.querySelector(".f-card")) buildNewFeed(); });
+  placeStatic();
+}
+function collapseCard(cardEl, done){
+  cardEl.classList.add("is-leaving");
+  const h = cardEl.offsetHeight;
+  cardEl.animate([
+    { height:h + "px", marginBottom:"0px", borderWidth:"1px", opacity:1 },
+    { height:"0px", marginBottom:"-20px", borderWidth:"0px", opacity:0 }
+  ], { duration:340, easing:EASE, fill:"forwards" }).finished.then(() => { cardEl.remove(); done(); });
+}
 // cat is "replied" (answered, with a Show messages button) or "archived" (declined, greyed out)
 function buildFeed(cat){
+  if (cat === "new") return buildNewFeed();
   const archived = cat === "archived";
   const ids = archived ? FEED_JOBS.filter(id => !unarchived.has(id)) : FEED_JOBS;
   if (!ids.length){ feedEl.innerHTML = `<p class="f-empty">${T("feed.none")}</p>`; return; }
@@ -2086,16 +2195,17 @@ function unarchive(cardEl){
   cardEl.classList.add("is-leaving");
   unarchived.add(cardEl.dataset.id);
   toast(T("toast.toNew"));
-  const h = cardEl.offsetHeight;
-  cardEl.animate([
-    { height:h + "px", marginBottom:"0px", borderWidth:"1px", opacity:1 },
-    { height:"0px", marginBottom:"-20px", borderWidth:"0px", opacity:0 }
-  ], { duration:340, easing:EASE, fill:"forwards" }).finished.then(() => {
-    cardEl.remove();
+  collapseCard(cardEl, () => {
     if (!feedEl.querySelector(".f-card")) feedEl.innerHTML = `<p class="f-empty">${T("feed.none")}</p>`;
   });
 }
 feedEl.addEventListener("click", e => {
+  if (e.target.closest("[data-replay]")) return replay();
+  const newCard = e.target.closest(".f-card.is-new");
+  if (newCard){
+    if (e.target.closest(".f-dots")) return toast(T("toast.soon"));
+    return openFromFeed(newCard.dataset.id, e.target.closest(".f-reply") ? "reply" : "detail");
+  }
   if (e.target.closest(".f-more")) return e.target.closest(".f-card").classList.add("is-open");
   if (e.target.closest(".f-unarchive")) return unarchive(e.target.closest(".f-card"));
   if (e.target.closest(".f-dots, .f-msg")) return toast(T("toast.soon"));
@@ -2118,7 +2228,7 @@ function setCat(id){
     const on = b.dataset.cat === id;
     b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false");
   });
-  if (id !== "new"){ hideToast(); buildFeed(id); feedEl.scrollTop = 0; }
+  if (id !== "new" || newFeed()){ hideToast(); buildFeed(id); feedEl.scrollTop = 0; }
   placeStatic();
 }
 catPill.onclick = () => openMenu(!phone.classList.contains("menu-open"));
@@ -2225,7 +2335,8 @@ const SETTINGS = [
   { cls:"v-inline", key:"jobs-tinder-reply-variant", param:"variant", on:"ab",     off:"classic", def:true, input:$("#verSwitch") },
   { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") },
   { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") },
-  { cls:"v-simple", key:"jobs-tinder-simplified",    param:"simple",  on:"on",     off:"off",     def:false, input:$("#simpleSwitch") }
+  { cls:"v-simple", key:"jobs-tinder-simplified",    param:"simple",  on:"on",     off:"off",     def:false, input:$("#simpleSwitch") },
+  { cls:"v-feed",   key:"jobs-tinder-new-feed",      param:"feed",    on:"on",     off:"off",     def:false, input:$("#feedSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
@@ -2252,6 +2363,7 @@ $("#verDone").onclick = closeVersions;
 $("#verScrim").onclick = closeVersions;
 SETTINGS.forEach(st => st.input.addEventListener("change", () => {
   applySetting(st, st.input.checked);
+  if (st.cls === "v-feed") setCat(CATS.find(c => phone.classList.contains("c-" + c)) || "new");   // swaps stack and list
   if (!busy) placeStatic();
   try { localStorage.setItem(st.key, st.input.checked ? st.on : st.off); } catch(_){}
 }));
@@ -2279,7 +2391,8 @@ function applyLang(l){
     g.querySelectorAll(".opt").forEach((o, i) => { o.textContent = opts[i]; });
     g.querySelector(".f-val").textContent = g.querySelector(".opt.on").textContent;
   });
-  buildFeed(phone.classList.contains("c-archived") ? "archived" : "replied");   // built once on load, in English
+  buildFeed(phone.classList.contains("c-archived") ? "archived"            // built once on load, in English
+    : phone.classList.contains("c-replied") || !newFeed() ? "replied" : "new");
   langSelect.value = lang;
 }
 // Switching while the prototype runs: the open job, the feeds, the filters and the pill follow.
