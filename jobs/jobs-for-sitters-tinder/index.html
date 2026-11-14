@@ -323,11 +323,13 @@ svg{display:block;flex:none}
 .v-feed.c-new .peek,.v-feed.c-new .empty,.v-feed.c-new.m-stack .act,.v-feed.c-new.m-gone .act{display:none}
 .v-feed.c-new.m-stack:not(.collapsing) .card,.v-feed.c-new.m-gone .card{visibility:hidden}
 .f-card.is-new{cursor:pointer}
-.f-reply{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;height:52px;border-radius:4px;
+/* the Reply button of a New list card; not .f-reply, which is the Reply face of the stack button */
+.f-cta{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;height:52px;border-radius:4px;
   background:var(--pink);color:#fff;font-size:18px;line-height:22px;box-shadow:inset 0 -3px 0 #e6213a}
-.f-done{padding:40px 8px;text-align:center}
-.f-done h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
-.f-done p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
+/* the caught-up message of the New list; not .f-done, which is the Sent face of the send button */
+.f-caught{padding:40px 8px;text-align:center}
+.f-caught h3{margin:0 0 6px;font-weight:500;font-size:20px;letter-spacing:-.3px}
+.f-caught p{margin:0 0 20px;font-size:15px;line-height:21px;color:var(--muted)}
 .f-card{flex:none;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;
   box-shadow:0 4px 8px -4px rgba(42,53,57,.2)}
 .f-hero{position:relative;height:140px;padding:16px 0 16px 16px;display:flex;align-items:flex-start;justify-content:space-between}
@@ -2100,7 +2102,7 @@ const REPLY_ICON = '<svg width="22" height="22" viewBox="0 0 32 32" fill="curren
 function buildNewFeed(){
   const left = JOBS.filter(j => !handled.has(j.id));
   if (!left.length){
-    feedEl.innerHTML = `<div class="f-done"><div class="e-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+    feedEl.innerHTML = `<div class="f-caught"><div class="e-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
       <h3>${T("empty.title")}</h3><p>${T("empty.text")}</p><button class="e-btn" data-replay>${T("empty.replay")}</button></div>`;
     return;
   }
@@ -2126,7 +2128,7 @@ function buildNewFeed(){
         <p class="f-desc">${j.desc}</p>
         <button class="f-more">${T("feed.readMore")}</button>
       </div>
-      <div class="f-foot"><button class="f-reply">${REPLY_ICON}${T("act.reply")}</button></div>
+      <div class="f-foot"><button class="f-cta">${REPLY_ICON}${T("act.reply")}</button></div>
     </article>`;
   }).join("");
 }
@@ -2212,7 +2214,7 @@ feedEl.addEventListener("click", e => {
   const newCard = e.target.closest(".f-card.is-new");
   if (newCard){
     if (e.target.closest(".f-dots")) return toast(T("toast.soon"));
-    return openFromFeed(newCard.dataset.id, e.target.closest(".f-reply") ? "reply" : "detail");
+    return openFromFeed(newCard.dataset.id, e.target.closest(".f-cta") ? "reply" : "detail");
   }
   if (e.target.closest(".f-more")) return e.target.closest(".f-card").classList.add("is-open");
   if (e.target.closest(".f-unarchive")) return unarchive(e.target.closest(".f-card"));
