@@ -1766,8 +1766,16 @@ function go(target){
     const cg = cardGeom(target); setBox(card, cg);
     const b = btnGeom(target); setBox(btnNo, b.no); setBox(btnYes, b.yes);
     anims.push(card.animate(boxFrames(from.card, cg), {duration:DUR, easing:EASE}).finished);
-    anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
-    anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
+    if (feedNew()){
+      // The list has no Skip / Reply pair for them to grow out of (they are display:none there, so
+      // the morph started at the phone's corner and Send reply flew in from the side). They stay in
+      // their final place and fade in as the sheet settles.
+      [[btnNo, b.no], [btnYes, b.yes]].filter(([, g]) => g.o).forEach(([el]) => anims.push(
+        el.animate([{opacity:0},{opacity:1}], {duration:220, delay:DUR - 140, easing:"ease-out", fill:"backwards"}).finished));
+    } else {
+      anims.push(btnNo.animate(boxFrames(from.no, b.no), {duration:DUR, easing:EASE}).finished);
+      anims.push(btnYes.animate(boxFrames(from.yes, b.yes), {duration:DUR, easing:EASE}).finished, paint(btnYes, from.yes, b.yes));
+    }
     animateHero(heroH0, DUR);
     if (target === "reply"){
       composer.animate([{opacity:0, transform:"translateY(18px)"},{opacity:1, transform:"none"}], {duration:360, delay:140, easing:EASE, fill:"backwards"});
