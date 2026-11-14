@@ -2436,17 +2436,39 @@ langSelect.addEventListener("change", () => setLang(langSelect.value));
 /* ---------------- tap rings (Show taps) ---------------- */
 // Captured on the way down, so it shows even where a handler stops the event or takes the pointer.
 // The phone may be scaled down on a desktop screen (G.scale), so the point is mapped back into it.
-document.addEventListener("pointerdown", e => {
-  if (!phone.classList.contains("v-taps") || !e.isPrimary) return;
+// A mouse click shows at once. A finger shows only once it lifts having stayed put (10px at most):
+// at the touch it is not yet known whether this is a tap or the start of a scroll or a swipe, and
+// scrolling the list or the description drew a ring at every touch.
+const TAP_SLOP = 10;
+let tapStart = null;
+function phonePoint(e){
   const r = phone.getBoundingClientRect(), s = G.scale || 1;
   const x = (e.clientX - r.left) / s, y = (e.clientY - r.top) / s;
-  if (x < 0 || y < 0 || x > phone.offsetWidth || y > phone.offsetHeight) return;   // outside the phone
+  return x < 0 || y < 0 || x > phone.offsetWidth || y > phone.offsetHeight ? null : { x, y };   // null: outside the phone
+}
+function tapRing(pt){
   const ring = document.createElement("i");
   ring.className = "tap-ring";
-  ring.style.left = x + "px"; ring.style.top = y + "px";
+  ring.style.left = pt.x + "px"; ring.style.top = pt.y + "px";
   phone.appendChild(ring);
   ring.addEventListener("animationend", () => ring.remove());
+}
+document.addEventListener("pointerdown", e => {
+  tapStart = null;
+  if (!phone.classList.contains("v-taps") || !e.isPrimary) return;
+  const pt = phonePoint(e);
+  if (!pt) return;
+  if (e.pointerType === "mouse") return tapRing(pt);
+  tapStart = { id:e.pointerId, x:e.clientX, y:e.clientY, pt };
 }, true);
+document.addEventListener("pointermove", e => {
+  if (tapStart && e.pointerId === tapStart.id && Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) > TAP_SLOP) tapStart = null;
+}, true);
+document.addEventListener("pointerup", e => {
+  if (tapStart && e.pointerId === tapStart.id) tapRing(tapStart.pt);
+  tapStart = null;
+}, true);
+document.addEventListener("pointercancel", () => { tapStart = null; }, true);   // the browser took it over: a scroll
 
 /* ---------------- gestures ---------------- */
 // Stack: drag the card left / right, tap to open the detail.
