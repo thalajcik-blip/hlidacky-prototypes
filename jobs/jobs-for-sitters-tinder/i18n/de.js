@@ -1,7 +1,4 @@
-// Deutsch (Österreich). Strings from the localisation sheet are used verbatim (Jobs, Neu, Vor 2 Stunden,
-// 2,5 km entfernt, Babysitting, the 2 Buben job, Überspringen, Antworten, tab bar); service names follow
-// jobs/strings_at.js. Formal (Sie), gender-neutral wording where it reads naturally, Austrian terms
-// (Buben, Ausmalen, Oberstufe).
+// Reviewed card copy: grammar, natural phrasing and consistency across titles, descriptions, tags and replies.
 (window.I18N = window.I18N || {}).de = {
   name: "Deutsch (AT)", locale: "de-AT",
   ui: {
@@ -44,8 +41,8 @@
   },
   jobs: {
     baby: {
-      title: "2 Mädchen, 6 und 4 Jahre, jeden zweiten Dienstag Nachmittag",
-      desc: "Hallo, ich suche ab Dezember für das nächste Schuljahr eine Betreuungsperson für regelmäßiges Babysitting für zwei Kinder, Matilda (wird im November 6) und Anna (4 Jahre). Erster Termin am Dienstag um 14:00. Nach Absprache ist Babysitting alle 2 Wochen möglich. Die Betreuung kann auch zu einem gemeinsamen Urlaub mitkommen, aber alles nach gegenseitiger Absprache.",
+      title: "2 Mädchen, 6 und 4 Jahre, jeden zweiten Dienstagnachmittag",
+      desc: "Hallo, ich suche ab Dezember eine Betreuungsperson für regelmäßiges Babysitting für zwei Kinder, Matilda (wird im November 6) und Anna (4 Jahre). Erster Termin am Dienstag um 14:00. Nach Absprache ist Babysitting alle 2 Wochen möglich. Die Betreuung kann auch zu einem gemeinsamen Urlaub mitkommen, aber alles nach gegenseitiger Absprache.",
       tags: ["2 Kinder", "4–6 Jahre", "Ab Dezember", "Alle 2 Wochen"],
       replies: [
         "Hallo Jana, ich würde sehr gerne auf Matilda und Anna aufpassen. Jeder zweite Dienstagnachmittag passt mir gut, und zum ersten Termin am Dienstag um 14:00 kann ich kommen. Könnten wir vorher kurz telefonieren? Danke, Irena",
@@ -64,33 +61,33 @@
       ]
     },
     senior: {
-      title: "Tägliche Gesellschaft und Besorgungen für meine Mutter",
-      desc: "Ich suche eine freundliche, geduldige Person, die meine Großmutter dreimal pro Woche bei Nachmittagsspaziergängen, kleinen Einkäufen und netten Gesprächen begleitet. Sie ist fröhlich und selbstständig, aber das Gehen fällt ihr schwerer, und sie freut sich sehr über jemanden zum Reden. Am liebsten Montag, Mittwoch und Freitag am Nachmittag.",
+      title: "Gesellschaft und Einkaufshilfe für meine Mutter, dreimal pro Woche",
+      desc: "Ich suche eine freundliche, geduldige Person, die meine Mutter dreimal pro Woche bei Nachmittagsspaziergängen, kleinen Einkäufen und netten Gesprächen begleitet. Sie ist fröhlich und selbstständig, aber das Gehen fällt ihr schwerer, und sie freut sich sehr über jemanden zum Reden. Am liebsten Montag, Mittwoch und Freitag am Nachmittag.",
       tags: ["3× pro Woche", "Mo/Mi/Fr", "Nachmittagsspaziergänge", "Kleine Einkäufe"],
       replies: [
-        "Hallo Jana, ich leiste Ihrer Angehörigen sehr gerne Gesellschaft. Ich habe Erfahrung mit älteren Menschen und mag Spaziergänge, Besorgungen und ein gutes Gespräch. Dreimal pro Woche am Nachmittag passt mir gut. Könnten wir kurz telefonieren? Irena",
+        "Hallo Jana, ich leiste Ihrer Mutter sehr gerne Gesellschaft. Ich habe Erfahrung mit älteren Menschen und mag Spaziergänge, Besorgungen und ein gutes Gespräch. Dreimal pro Woche am Nachmittag passt mir gut. Könnten wir kurz telefonieren? Irena",
         "Hallo Jana, ich bin geduldig und ruhig und habe älteren Menschen schon beim Einkaufen und bei täglichen Spaziergängen geholfen. Ich wohne nur 2,5 km entfernt und kann daher verlässlich kommen. Gerne lerne ich sie zuerst kennen. Irena",
         "Hallo, ich interessiere mich für diesen Job. Nachmittagsspaziergänge, kleine Einkäufe und Gespräche liegen mir, und ich kann nächste Woche anfangen. Wann passt es Ihnen, die Details zu besprechen? Irena"
       ]
     },
     clean: {
-      title: "Wöchentliche Grundreinigung für ein Familienhaus mit 3 Schlafzimmern",
+      title: "Wöchentliche Grundreinigung für ein Einfamilienhaus mit 3 Schlafzimmern",
       desc: "Hallo, wir suchen eine gründliche und vertrauenswürdige Hilfe für regelmäßiges Putzen, Bügeln und Aufräumen, jeden Donnerstagvormittag. Das Haus hat drei Schlafzimmer, zwei Badezimmer und eine kleine Gartenterrasse. Alle Reinigungsmittel und Geräte werden gestellt, und wir haben eine freundliche Katze.",
       tags: ["Donnerstagvormittag", "3 Schlafzimmer", "Putzmittel vorhanden", "Haushalt mit Katze"],
       replies: [
-        "Hallo Jana, ich übernehme gerne die wöchentliche Reinigung am Donnerstagvormittag. Ich habe mehrere Jahre Erfahrung mit Familienhäusern, auch mit Bügeln, und komme gut mit Katzen zurecht. Könnten wir kurz telefonieren? Irena",
+        "Hallo Jana, ich übernehme gerne die wöchentliche Reinigung am Donnerstagvormittag. Ich habe mehrjährige Erfahrung in der Reinigung von Einfamilienhäusern und beim Bügeln und komme gut mit Katzen zurecht. Könnten wir kurz telefonieren? Irena",
         "Hallo Jana, Donnerstagvormittag passt mir gut, und ich wohne nur 2,5 km entfernt. Ich arbeite gründlich und zuverlässig und stimme gerne eine Checkliste mit Ihnen ab, damit alles so erledigt wird, wie Sie es möchten. Irena",
-        "Hallo, ich interessiere mich für die regelmäßige Reinigung Ihres Familienhauses. Ich kann schon diesen Donnerstag anfangen und komme gerne zuerst vorbei, damit wir die Details besprechen. Wann passt es Ihnen? Irena"
+        "Hallo, ich interessiere mich für die regelmäßige Reinigung Ihres Einfamilienhauses. Ich kann schon diesen Donnerstag anfangen und komme gerne zuerst vorbei, damit wir die Details besprechen. Wann passt es Ihnen? Irena"
       ]
     },
     tutor: {
       title: "Nachhilfe in Mathematik und Physik für einen 15-Jährigen",
-      desc: "Wir suchen eine erfahrene studierende Person oder Nachhilfelehrkraft, die unserem Sohn zweimal pro Woche hilft, vor den Abschlussprüfungen Algebra und Physikformeln aufzuholen. Die Stunden können nachmittags bei uns zu Hause oder online stattfinden, wie es Ihnen lieber ist. Er ist motiviert, braucht aber jemanden, der ihm alles geduldig Schritt für Schritt erklärt.",
+      desc: "Wir suchen eine erfahrene studierende Person oder Nachhilfelehrkraft, die unserem Sohn zweimal pro Woche hilft, vor den Abschlussprüfungen Wissenslücken in Algebra und Physik zu schließen. Die Stunden können nachmittags bei uns zu Hause oder online stattfinden, wie es Ihnen lieber ist. Er ist motiviert, braucht aber jemanden, der ihm alles geduldig Schritt für Schritt erklärt.",
       tags: ["Algebra & Physik", "2× pro Woche", "Vor Ort oder online", "Prüfungsvorbereitung"],
       replies: [
         "Hallo Jana, ich helfe Ihrem Sohn gerne vor den Prüfungen mit Algebra und Physik. Ich studiere und gebe seit zwei Jahren Nachhilfe für die Oberstufe. Zweimal pro Woche passt mir gut. Irena",
         "Hallo Jana, ich erkläre Mathe und Physik gerne Schritt für Schritt und kann zu Ihnen nach Hause kommen oder online unterrichten. Könnten wir mit einer ersten Stunde beginnen, damit ich sehe, was Ihr Sohn am meisten braucht? Irena",
-        "Hallo, ich interessiere mich für die Nachhilfe für Ihren Sohn. Ich helfe ihm, die Formeln aufzuholen, und übe zweimal pro Woche Prüfungsaufgaben mit ihm. Wann passt es Ihnen für ein Gespräch? Irena"
+        "Hallo, ich interessiere mich für die Nachhilfe für Ihren Sohn. Ich helfe ihm, die Formeln zu verstehen und anzuwenden, und übe zweimal pro Woche Prüfungsaufgaben mit ihm. Wann passt es Ihnen für ein Gespräch? Irena"
       ]
     },
     baby2: {
@@ -100,16 +97,16 @@
       replies: [
         "Hallo Jana, ich würde sehr gerne auf Ihr Kleinkind aufpassen. Spielen am Nachmittag und Vorlesen mache ich besonders gern, und ich wohne nur 2,5 km entfernt. Könnten wir ein Kennenlernen vereinbaren? Irena",
         "Hallo Jana, ich habe Erfahrung mit Kleinkindern und helfe gerne beim Spielen, Vorlesen und bei der regelmäßigen Betreuung. Wann passt es Ihnen, die Details zu besprechen? Irena",
-        "Hallo, ich interessiere mich für die Betreuung Ihres Kleinkinds. Ich bin geduldig und zuverlässig und spiele und lese gerne kreativ mit Kindern. Könnten wir diese Woche kurz telefonieren? Irena"
+        "Hallo, ich interessiere mich für die Betreuung Ihres Kleinkinds. Ich bin geduldig und zuverlässig und spiele gerne kreativ mit Kindern und lese ihnen vor. Könnten wir diese Woche kurz telefonieren? Irena"
       ]
     },
     baby3: {
-      title: "2 Buben, 6 und 4 Jahre, jeden zweiten Dienstag Nachmittag",
-      desc: "Wir suchen eine energiegeladene und fürsorgliche Betreuungsperson für regelmäßiges Babysitting, kreatives Spielen und leichte Beaufsichtigung.",
+      title: "2 Buben, 6 und 4 Jahre, jeden zweiten Dienstagnachmittag",
+      desc: "Wir suchen eine energiegeladene und fürsorgliche Betreuungsperson für regelmäßiges Babysitting und kreatives Spielen.",
       tags: ["2 Buben", "4–6 Jahre", "Alle 2 Wochen", "Kreatives Spielen"],
       replies: [
         "Hallo Jana, ich passe gerne jeden zweiten Dienstagnachmittag auf Ihre Buben auf. Ich mag lebhaftes Spielen und kreative Aktivitäten und wohne nur 2,5 km entfernt. Könnten wir kurz telefonieren? Irena",
-        "Hallo Jana, zwei Buben mit kreativem Spielen und leichter Beaufsichtigung zu betreuen, klingt großartig. Jeder zweite Dienstag passt mir gut. Wann wäre es Ihnen recht, dass ich sie zuerst kennenlerne? Irena",
+        "Hallo Jana, zwei Buben zu betreuen und mit ihnen kreativ zu spielen, klingt großartig. Jeder zweite Dienstag passt mir gut. Wann wäre es Ihnen recht, dass ich sie zuerst kennenlerne? Irena",
         "Hallo, ich interessiere mich für das Babysitting Ihrer Söhne an jedem zweiten Dienstagnachmittag. Für aktives Spielen habe ich jede Menge Energie. Könnten wir ein erstes Treffen vereinbaren? Irena"
       ]
     },
@@ -118,7 +115,7 @@
       desc: "Wir suchen eine sanfte und verlässliche Katzenbetreuung, die vorbeikommt, unsere süße Perserkatze füttert und dafür sorgt, dass es ihr gut geht, solange wir weg sind.",
       tags: ["Perserkatze", "Tägliche Besuche", "Füttern", "Während wir weg sind"],
       replies: [
-        "Hallo Jana, ich kümmere mich gerne um Ihre Perserkatze. Ich bin sanft und zuverlässig und wohne nur 2,5 km entfernt, sodass ich leicht vorbeikommen kann. Könnten wir einen Termin zum Kennenlernen vereinbaren? Irena",
+        "Hallo Jana, ich kümmere mich gerne um Ihre Perserkatze. Ich gehe einfühlsam mit Tieren um und bin zuverlässig. Da ich nur 2,5 km entfernt wohne, kann ich leicht vorbeikommen. Könnten wir einen Termin zum Kennenlernen vereinbaren? Irena",
         "Hallo Jana, Ihre Katze zu füttern und ihr Gesellschaft zu leisten, solange Sie weg sind, klingt wunderbar. Ich habe Erfahrung mit Langhaarkatzen. Wann passt es Ihnen für ein Gespräch? Irena",
         "Hallo, ich interessiere mich für die Betreuung Ihrer Perserkatze. Ich komme gerne täglich zum Füttern und kümmere mich um sie. Könnten wir zuerst ein Kennenlernen vereinbaren? Irena"
       ]
@@ -140,21 +137,21 @@
       replies: [
         "Hallo Jana, ich leiste Ihrem Vater sehr gerne Gesellschaft. Nachmittagsspaziergänge, kleine Einkäufe und ein gutes Gespräch mag ich sehr, und ich wohne nur 2,5 km entfernt. Könnten wir telefonieren? Irena",
         "Hallo Jana, ich bin geduldig und herzlich und habe älteren Menschen schon bei Besorgungen geholfen und ihnen Gesellschaft geleistet. Wann passt es Ihnen, die Details zu besprechen? Irena",
-        "Hallo, ich interessiere mich für diesen Job. Ich helfe gerne bei Spaziergängen, Einkäufen und Gesprächen und lerne Ihren Vater gerne zuerst kennen. Könnten wir einen kurzen Besuch vereinbaren? Irena"
+        "Hallo, ich interessiere mich für diesen Job. Ich begleite Ihren Vater gerne bei Spaziergängen, helfe bei Einkäufen und nehme mir Zeit für Gespräche. Gerne lerne ich ihn zuerst kennen. Könnten wir einen kurzen Besuch vereinbaren? Irena"
       ]
     },
     senior3: {
       title: "Liebenswertes Seniorenpaar sucht nette Unterstützung am Nachmittag",
-      desc: "Wir suchen eine fürsorgliche Unterstützung für ein liebenswertes älteres Paar bei leichten Alltagsaufgaben, als Gesellschaft und bei Spaziergängen.",
+      desc: "Wir suchen eine fürsorgliche Person, die ein liebenswertes älteres Paar bei leichten Alltagsaufgaben und Spaziergängen unterstützt und ihm Gesellschaft leistet.",
       tags: ["Älteres Paar", "Alltagsaufgaben", "Gesellschaft", "Spaziergänge"],
       replies: [
-        "Hallo Jana, ich unterstütze das Paar am Nachmittag gerne bei Alltagsaufgaben und Spaziergängen und leiste ihnen Gesellschaft. Ich wohne nur 2,5 km entfernt. Könnten wir ein Treffen vereinbaren? Irena",
+        "Hallo Jana, ich unterstütze das Paar am Nachmittag gerne bei Alltagsaufgaben und Spaziergängen und leiste ihm Gesellschaft. Ich wohne nur 2,5 km entfernt. Könnten wir ein Treffen vereinbaren? Irena",
         "Hallo Jana, ein älteres Paar bei leichten Aufgaben zu unterstützen und ihm Gesellschaft zu leisten, klingt wunderbar. Ich bin geduldig und zuverlässig. Wann passt es Ihnen für ein Gespräch? Irena",
         "Hallo, ich interessiere mich für die Unterstützung am Nachmittag. Ich leiste gerne Gesellschaft und helfe bei leichten Alltagsaufgaben. Könnten wir einen ersten Besuch vereinbaren? Irena"
       ]
     },
     clean2: {
-      title: "Wöchentliche Grundreinigung für ein Familienhaus mit 3 Schlafzimmern",
+      title: "Wöchentliche Grundreinigung für ein Einfamilienhaus mit 3 Schlafzimmern",
       desc: "Wir suchen eine gründliche und verlässliche Reinigungskraft für regelmäßige Baddesinfektion, Staubwischen und die allgemeine Pflege des Hauses.",
       tags: ["Wöchentlich", "Badezimmer", "Staubwischen", "Allgemeine Pflege"],
       replies: [
@@ -165,27 +162,27 @@
     },
     clean3: {
       title: "Einmalige Grundreinigung einer Wohnung nach dem Ausmalen",
-      desc: "Wir suchen eine sorgfältige Reinigungskraft, die uns nach dem Ausmalen beim Saubermachen hilft: Farbstaub entfernen, Böden wischen und Oberflächen abwischen.",
-      tags: ["Einmaliger Job", "Farbstaub", "Böden & Oberflächen"],
+      desc: "Wir suchen eine sorgfältige Reinigungskraft, die uns nach dem Ausmalen beim Saubermachen hilft: Staub und Farbreste entfernen, Böden wischen und Oberflächen abwischen.",
+      tags: ["Einmaliger Job", "Staub und Farbreste", "Böden & Oberflächen"],
       replies: [
         "Hallo Jana, ich helfe gerne bei der Reinigung nach dem Ausmalen, entferne den Staub und wische alle Böden und Oberflächen. Ich wohne nur 2,5 km entfernt. Könnten wir einen Termin vereinbaren? Irena",
-        "Hallo Jana, Farbstaub entfernen und Oberflächen abwischen erledige ich sorgfältig. Wann passt Ihnen der einmalige Termin? Irena",
+        "Hallo Jana, ich entferne Staub und Farbreste und wische alle Oberflächen sorgfältig ab. Wann passt Ihnen der einmalige Termin? Irena",
         "Hallo, ich interessiere mich für die Reinigung nach dem Ausmalen. Ich arbeite sorgfältig und kann meine eigene Ausrüstung mitbringen. Könnten wir diese Woche einen Termin vereinbaren? Irena"
       ]
     },
     tutor2: {
       title: "Klavierunterricht für unsere 15-jährige Tochter",
-      desc: "Wir suchen eine erfahrene Nachhilfelehrkraft, die unserer Tochter hilft, die MINT-Fächer der Oberstufe zu meistern und sich auf die anstehenden Prüfungen vorzubereiten.",
-      tags: ["Oberstufe", "Prüfungsvorbereitung", "MINT-Fächer"],
+      desc: "Wir suchen eine erfahrene Klavierlehrkraft für unsere 15-jährige Tochter. Wir wünschen uns eine geduldige Person, die ihr hilft, ihre Spieltechnik zu verbessern und neue Stücke sicher zu spielen.",
+      tags: ["Klavier", "15 Jahre", "Spieltechnik"],
       replies: [
-        "Hallo Jana, ich helfe Ihrer Tochter gerne bei der Prüfungsvorbereitung. Ich habe Erfahrung mit Nachhilfe für Jugendliche und wohne nur 2,5 km entfernt. Könnten wir mit einer ersten Stunde beginnen, damit ich sehe, was sie am meisten braucht? Irena",
-        "Hallo Jana, ich arbeite gerne mit motivierten Schülerinnen und Schülern und helfe ihnen, vor Prüfungen Selbstvertrauen zu gewinnen. Wann möchten Sie starten? Irena",
-        "Hallo, ich interessiere mich für die Nachhilfe für Ihre Tochter. Bei Tagen und Uhrzeiten bin ich flexibel. Könnten wir kurz telefonieren und die Details besprechen? Irena"
+        "Hallo Jana, ich unterrichte Ihre Tochter gerne am Klavier. Ich habe Erfahrung im Unterricht mit Jugendlichen und wohne nur 2,5 km entfernt. Könnten wir mit einer ersten Stunde beginnen, damit ich sehe, was sie am meisten braucht? Irena",
+        "Hallo Jana, ich helfe jungen Klavierspielerinnen und Klavierspielern gerne dabei, ihre Technik zu verbessern und sicherer zu spielen. Wann möchten Sie starten? Irena",
+        "Hallo, ich interessiere mich für den Klavierunterricht für Ihre Tochter. Bei Tagen und Uhrzeiten bin ich flexibel. Könnten wir kurz telefonieren und die Details besprechen? Irena"
       ]
     },
     tutor3: {
       title: "Geduldige Nachhilfe zur Prüfungsvorbereitung in der Oberstufe",
-      desc: "Wir suchen eine engagierte studierende Person, die schwierige Formeln verständlich erklärt und hilft, in Mathe und Physik sicherer zu werden.",
+      desc: "Wir suchen eine engagierte studierende Person, die unserer Tochter schwierige Formeln verständlich erklärt und ihr hilft, in Mathe und Physik sicherer zu werden.",
       tags: ["Mathe & Physik", "Studierende", "Prüfungsvorbereitung"],
       replies: [
         "Hallo Jana, ich helfe gerne bei Mathe- und Physikformeln und bei der Prüfungsvorbereitung. Ich studiere und wohne nur 2,5 km entfernt. Könnten wir mit einer Probestunde starten? Irena",

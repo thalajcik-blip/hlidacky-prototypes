@@ -1,6 +1,4 @@
-// Hrvatski. Strings from the localisation sheet are used verbatim (Poslovi, Novo, Prije 2 sata,
-// Udaljeno 2,5 km, Čuvanje djece, the 2 boys job, Preskoči, Odgovori, tab bar); service names follow
-// jobs/strings_hr.js. Formal (vi); the sitter writes in the feminine (Irena).
+// Reviewed card copy: grammar, natural phrasing and consistency across titles, descriptions, tags and replies.
 (window.I18N = window.I18N || {}).hr = {
   name: "Hrvatski", locale: "hr",
   ui: {
@@ -43,9 +41,9 @@
   },
   jobs: {
     baby: {
-      title: "2 djevojčice, 6 i 4 godine, svaki drugi utorak poslijepodne",
-      desc: "Dobar dan, tražim osobu za redovito čuvanje djece od prosinca za cijelu sljedeću školsku godinu za dvoje djece, Matildu (u studenom puni 6 godina) i Annu (4 godine). Prvo čuvanje je u utorak u 14:00. Nakon dogovora moguće je čuvanje svaka 2 tjedna. Osobu za čuvanje djece možemo povesti i na zajednički odmor, ali sve uz međusobni dogovor.",
-      tags: ["2 djece", "4–6 godina", "Od prosinca", "Svaka 2 tjedna"],
+      title: "2 djevojčice u dobi od 6 i 4 godine, svaki drugi utorak poslijepodne",
+      desc: "Dobar dan, tražim osobu za redovito čuvanje djece od prosinca za dvoje djece, Matildu (u studenom puni 6 godina) i Annu (4 godine). Prvo čuvanje je u utorak u 14:00. Nakon dogovora moguće je čuvanje svaka 2 tjedna. Osobu za čuvanje djece možemo povesti i na zajednički odmor, ali sve uz međusobni dogovor.",
+      tags: ["Dvoje djece", "4–6 godina", "Od prosinca", "Svaka 2 tjedna"],
       replies: [
         "Dobar dan, Jana, rado ću čuvati Matildu i Annu. Svaki drugi utorak poslijepodne mi odgovara i mogu doći na prvo čuvanje u utorak u 14:00. Možemo li se prije toga kratko čuti telefonom? Hvala, Irena",
         "Dobar dan, Jana, vaš oglas savršeno odgovara mom rasporedu, a živim samo 2,5 km od vas. Imam višegodišnje iskustvo s djevojčicama te dobi. Rado bih upoznala vas i djevojčice prije početka. Irena",
@@ -54,7 +52,7 @@
     },
     pet: {
       title: "Energični zlatni retriver, jutarnje šetnje radnim danima",
-      desc: "Pozdrav svima, trebamo pouzdanu osobu za čuvanje ljubimaca koja bi svakog radnog dana oko 8:00 došla prošetati našeg prijateljskog trogodišnjeg psa Maxa. Voljeli bismo nekoga tko može ostati na pravoj šetnji od oko 45 minuta, napuniti mu vodu i kratko ga počešljati. Max je dobro dresiran, voli druge pse i lijepo hoda na povodcu.",
+      desc: "Pozdrav svima, trebamo pouzdanu osobu za čuvanje ljubimaca koja bi svakog radnog dana oko 8:00 došla prošetati našeg druželjubivog trogodišnjeg psa Maxa. Voljeli bismo nekoga tko ga može odvesti u šetnju od oko 45 minuta, napuniti mu zdjelicu svježom vodom i kratko ga počešljati. Max je dobro dresiran, voli druge pse i lijepo hoda na povodcu.",
       tags: ["Radnim danima ujutro", "Šetnje od 45 min", "Dobro dresiran", "Prijateljski prema psima"],
       replies: [
         "Dobar dan, Jana, rado ću šetati Maxa svakog radnog dana u 8:00. Čuvala sam već nekoliko velikih pasa, uključujući zlatnog retrivera, a živim samo 2,5 km od vas. Možemo li se naći da me Max prvo upozna? Irena",
@@ -63,33 +61,33 @@
       ]
     },
     senior: {
-      title: "Svakodnevno društvo i obavljanje poslova za moju mamu",
-      desc: "Tražim ljubaznu i strpljivu osobu koja bi tri puta tjedno pomagala mojoj baki s poslijepodnevnim šetnjama, manjom kupnjom i ugodnim razgovorom. Vesela je i samostalna, ali hodanje joj je postalo teže i jako voli imati nekoga za razgovor. Najbolje ponedjeljkom, srijedom i petkom poslijepodne.",
+      title: "Društvo i pomoć pri kupnji za moju mamu triput tjedno",
+      desc: "Tražim ljubaznu i strpljivu osobu koja bi tri puta tjedno pomagala mojoj mami s poslijepodnevnim šetnjama, manjom kupnjom i ugodnim razgovorom. Vesela je i samostalna, ali hodanje joj je postalo teže i jako voli imati nekoga za razgovor. Najbolje ponedjeljkom, srijedom i petkom poslijepodne.",
       tags: ["3× tjedno", "Pon/Sri/Pet", "Poslijepodnevne šetnje", "Manja kupnja"],
       replies: [
-        "Dobar dan, Jana, rado ću praviti društvo vašoj dragoj osobi. Imam iskustva sa starijim osobama i uživam u šetnjama, obavljanju poslova i dobrom razgovoru. Poslijepodneva tri puta tjedno mi odgovaraju. Možemo li se kratko čuti? Irena",
+        "Dobar dan, Jana, rado ću praviti društvo vašoj mami. Imam iskustva sa starijim osobama i uživam u šetnjama, obavljanju poslova i dobrom razgovoru. Poslijepodneva tri puta tjedno mi odgovaraju. Možemo li se kratko čuti? Irena",
         "Dobar dan, Jana, strpljiva sam i smirena, a starijim osobama već sam pomagala s kupnjom i svakodnevnim šetnjama. Živim samo 2,5 km od vas pa mogu pouzdano dolaziti. Rado bih je prvo upoznala. Irena",
         "Dobar dan, zainteresirana sam za ovaj posao. Poslijepodnevne šetnje, manja kupnja i razgovor mi odgovaraju, a mogu početi sljedeći tjedan. Kada bi vam odgovaralo da razgovaramo o detaljima? Irena"
       ]
     },
     clean: {
-      title: "Tjedno temeljito čišćenje obiteljske kuće s 3 spavaće sobe",
-      desc: "Dobar dan, tražimo temeljitu i pouzdanu osobu za redovito čišćenje, glačanje i pospremanje doma svakog četvrtka ujutro. Kuća ima tri spavaće sobe, dvije kupaonice i malu vrtnu terasu. Sva sredstva za čišćenje i oprema su osigurani, a imamo i prijateljsku mačku.",
+      title: "Tjedno temeljito čišćenje obiteljske kuće s trima spavaćim sobama",
+      desc: "Dobar dan, tražimo temeljitu i pouzdanu osobu za redovito čišćenje, glačanje i pospremanje doma svakog četvrtka ujutro. Kuća ima tri spavaće sobe, dvije kupaonice i malu vrtnu terasu. Osiguravamo sva sredstva za čišćenje i svu opremu, a imamo i druželjubivu mačku.",
       tags: ["Četvrtkom ujutro", "3 spavaće sobe", "Sredstva osigurana", "Dom s mačkom"],
       replies: [
-        "Dobar dan, Jana, rado ću preuzeti tjedno čišćenje četvrtkom ujutro. Imam višegodišnje iskustvo s obiteljskim kućama, uključujući glačanje, a mačke mi ne smetaju. Možemo li se kratko čuti? Irena",
-        "Dobar dan, Jana, četvrtkom ujutro mi odgovara, a živim samo 2,5 km od vas. Radim temeljito i pouzdano i rado ću s vama dogovoriti popis zadataka da sve bude po vašoj želji. Irena",
+        "Dobar dan, Jana, rado ću preuzeti tjedno čišćenje četvrtkom ujutro. Imam višegodišnje iskustvo u čišćenju obiteljskih kuća i glačanju, a mačke mi ne smetaju. Možemo li se kratko čuti? Irena",
+        "Dobar dan, Jana, termin četvrtkom ujutro mi odgovara, a živim samo 2,5 km od vas. Radim temeljito i pouzdano i rado ću s vama dogovoriti popis zadataka da sve bude po vašoj želji. Irena",
         "Dobar dan, zainteresirana sam za redovito čišćenje vaše obiteljske kuće. Mogu početi već ovaj četvrtak, a rado bih prvo došla na upoznavanje da dogovorimo detalje. Kada bi vam odgovaralo? Irena"
       ]
     },
     tutor: {
       title: "Pomoć iz srednjoškolske matematike i fizike za 15-godišnjaka",
-      desc: "Tražimo iskusnog studenta ili instruktora koji bi našem sinu dva puta tjedno pomogao nadoknaditi gradivo iz algebre i fizikalnih formula prije završnih ispita. Satovi mogu biti kod nas doma poslijepodne ili online, kako vam više odgovara. Motiviran je, samo mu treba netko strpljiv tko će mu stvari objasniti korak po korak.",
+      desc: "Tražimo iskusnog studenta ili instruktora koji bi našem sinu dva puta tjedno pomogao nadoknaditi gradivo iz algebre i fizike prije završnih ispita. Satovi mogu biti kod nas doma poslijepodne ili online, kako vam više odgovara. Motiviran je, samo mu treba netko strpljiv tko će mu stvari objasniti korak po korak.",
       tags: ["Algebra i fizika", "2× tjedno", "Uživo ili online", "Priprema za ispite"],
       replies: [
         "Dobar dan, Jana, rado ću pomoći vašem sinu s algebrom i fizikom prije ispita. Studentica sam i već dvije godine dajem instrukcije srednjoškolcima. Dva puta tjedno mi odgovara. Irena",
         "Dobar dan, Jana, volim objašnjavati matematiku i fiziku korak po korak, a mogu dolaziti k vama ili raditi online. Možemo li početi prvim satom da vidim što vašem sinu najviše treba? Irena",
-        "Dobar dan, zainteresirana sam za instrukcije vašem sinu. Pomoći ću mu nadoknaditi formule i dva puta tjedno vježbati ispitne zadatke. Kada bi vam odgovaralo da se čujemo? Irena"
+        "Dobar dan, zainteresirana sam za instrukcije vašem sinu. Pomoći ću mu razumjeti i primjenjivati formule i dva puta tjedno vježbati ispitne zadatke. Kada bi vam odgovaralo da se čujemo? Irena"
       ]
     },
     baby2: {
@@ -103,12 +101,12 @@
       ]
     },
     baby3: {
-      title: "2 dječaka, 6 i 4 godine, svaki drugi utorak poslijepodne",
-      desc: "Tražimo energičnu i brižnu osobu za redovito čuvanje djece, kreativnu igru i lagani nadzor.",
+      title: "2 dječaka u dobi od 6 i 4 godine, svaki drugi utorak poslijepodne",
+      desc: "Tražimo energičnu i brižnu osobu za redovito čuvanje djece i kreativnu igru.",
       tags: ["2 dječaka", "4–6 godina", "Svaka 2 tjedna", "Kreativna igra"],
       replies: [
         "Dobar dan, Jana, rado ću čuvati vaše dečke svaki drugi utorak poslijepodne. Uživam u energičnoj igri i kreativnim aktivnostima, a živim samo 2,5 km od vas. Možemo li se kratko čuti? Irena",
-        "Dobar dan, Jana, čuvanje dvojice dječaka uz kreativnu igru i lagani nadzor zvuči odlično. Svaki drugi utorak mi odgovara. Kada bi vam odgovaralo da ih prvo upoznam? Irena",
+        "Dobar dan, Jana, čuvanje dvojice dječaka uz kreativnu igru zvuči odlično. Svaki drugi utorak mi odgovara. Kada bi vam odgovaralo da ih prvo upoznam? Irena",
         "Dobar dan, zainteresirana sam za čuvanje vaših sinova svaki drugi utorak poslijepodne. Imam puno energije za aktivnu igru. Možemo li dogovoriti prvi susret? Irena"
       ]
     },
@@ -118,12 +116,12 @@
       tags: ["Perzijska mačka", "Svakodnevni posjeti", "Hranjenje", "Dok smo odsutni"],
       replies: [
         "Dobar dan, Jana, rado ću se brinuti o vašoj perzijskoj mački. Nježna sam i pouzdana, a živim samo 2,5 km od vas pa lako mogu svratiti. Možemo li dogovoriti kada da je upoznam? Irena",
-        "Dobar dan, Jana, hranjenje i društvo vašoj mački dok ste odsutni zvuči divno. Imam iskustva s dugodlakim mačkama. Kada bi vam odgovaralo da se čujemo? Irena",
+        "Dobar dan, Jana, rado ću hraniti vašu mačku i praviti joj društvo dok ste odsutni. Imam iskustva s dugodlakim mačkama. Kada bi vam odgovaralo da se čujemo? Irena",
         "Dobar dan, zainteresirana sam za brigu o vašoj perzijskoj mački. Rado ću dolaziti svaki dan da je nahranim i posvetim joj pažnju. Možemo li prvo dogovoriti upoznavanje? Irena"
       ]
     },
     pet3: {
-      title: "Prijateljski mali pas treba svakodnevne šetnje i igru",
+      title: "Druželjubiv mali pas treba svakodnevne šetnje i igru",
       desc: "Tražimo nježnu i pouzdanu osobu koja voli pse, koja bi svratila, odvela našeg malog psa u ugodnu šetnju i pravila mu društvo.",
       tags: ["Mali pas", "Svakodnevne šetnje", "Društvo"],
       replies: [
@@ -138,53 +136,53 @@
       tags: ["Svaki dan", "Poslijepodnevne šetnje", "Manja kupnja", "Društvo"],
       replies: [
         "Dobar dan, Jana, rado ću praviti društvo vašem ocu. Uživam u poslijepodnevnim šetnjama, manjoj kupnji i dobrom razgovoru, a živim samo 2,5 km od vas. Možemo li se čuti? Irena",
-        "Dobar dan, Jana, strpljiva sam i topla, a starijim osobama već sam pomagala s obavljanjem poslova i kao društvo. Kada bi vam odgovaralo da razgovaramo o detaljima? Irena",
-        "Dobar dan, zainteresirana sam za ovaj posao. Mogu pomoći sa šetnjama, kupnjom i razgovorom, a rado bih prvo upoznala vašeg oca. Možemo li dogovoriti kratak posjet? Irena"
+        "Dobar dan, Jana, strpljiva sam i topla, a starijim osobama već sam pomagala u obavljanju svakodnevnih poslova i pravila im društvo. Kada bi vam odgovaralo da razgovaramo o detaljima? Irena",
+        "Dobar dan, zainteresirana sam za ovaj posao. Mogu mu se pridružiti u šetnjama, pomoći pri kupnji i praviti mu društvo, a rado bih prvo upoznala vašeg oca. Možemo li dogovoriti kratak posjet? Irena"
       ]
     },
     senior3: {
       title: "Dragi stariji par treba ljubaznu pomoć poslijepodne",
-      desc: "Tražimo brižnu osobu koja bi dragom starijem paru pomagala s lakšim svakodnevnim zadacima, društvom i šetnjama.",
+      desc: "Tražimo brižnu osobu koja bi dragom starijem paru pomagala s lakšim svakodnevnim zadacima i šetnjama te mu pravila društvo.",
       tags: ["Stariji par", "Svakodnevni zadaci", "Društvo", "Šetnje"],
       replies: [
-        "Dobar dan, Jana, rado ću poslijepodne pomagati paru sa svakodnevnim zadacima i šetnjama te im praviti društvo. Živim samo 2,5 km od vas. Možemo li dogovoriti susret? Irena",
+        "Dobar dan, Jana, rado ću poslijepodne pomagati paru sa svakodnevnim zadacima i šetnjama te mu praviti društvo. Živim samo 2,5 km od vas. Možemo li dogovoriti susret? Irena",
         "Dobar dan, Jana, pomoć starijem paru s lakšim zadacima i ugodno društvo zvuče divno. Strpljiva sam i pouzdana. Kada bi vam odgovaralo da se čujemo? Irena",
         "Dobar dan, zainteresirana sam za poslijepodnevnu pomoć paru. Volim praviti društvo i pomagati s lakšim svakodnevnim zadacima. Možemo li dogovoriti prvi posjet? Irena"
       ]
     },
     clean2: {
-      title: "Tjedno temeljito čišćenje obiteljske kuće s 3 spavaće sobe",
+      title: "Tjedno temeljito čišćenje obiteljske kuće s trima spavaćim sobama",
       desc: "Tražimo temeljitu i pouzdanu osobu za redovitu dezinfekciju kupaonica, brisanje prašine i opće održavanje kuće.",
       tags: ["Tjedno", "Kupaonice", "Brisanje prašine", "Opće održavanje"],
       replies: [
         "Dobar dan, Jana, rado ću preuzeti tjedno temeljito čišćenje, uključujući kupaonice i brisanje prašine. Živim samo 2,5 km od vas. Možemo li se kratko čuti? Irena",
         "Dobar dan, Jana, temeljitu dezinfekciju kupaonica i opće održavanje obavljam pažljivo svaki tjedan. Kada bi vam odgovaralo da dogovorimo detalje? Irena",
-        "Dobar dan, zainteresirana sam za tjedno čišćenje vaše kuće s 3 spavaće sobe. Rado bih prvo došla da vidim što je potrebno. Možemo li dogovoriti termin? Irena"
+        "Dobar dan, zainteresirana sam za tjedno čišćenje vaše kuće s trima spavaćim sobama. Rado bih prvo došla da vidim što je potrebno. Možemo li dogovoriti termin? Irena"
       ]
     },
     clean3: {
       title: "Jednokratno temeljito čišćenje stana nakon bojanja",
-      desc: "Tražimo pedantnu osobu koja bi nam pomogla počistiti nakon bojanja, uključujući uklanjanje prašine od boje, pranje podova i brisanje površina.",
-      tags: ["Jednokratni posao", "Prašina od boje", "Podovi i površine"],
+      desc: "Tražimo pedantnu osobu koja bi nam pomogla počistiti nakon bojanja, uključujući uklanjanje prašine i ostataka boje, pranje podova i brisanje površina.",
+      tags: ["Jednokratni posao", "Prašina i ostaci boje", "Podovi i površine"],
       replies: [
         "Dobar dan, Jana, rado ću pomoći s čišćenjem nakon bojanja, ukloniti prašinu i oprati sve podove i površine. Živim samo 2,5 km od vas. Možemo li dogovoriti termin? Irena",
-        "Dobar dan, Jana, čišćenje prašine od boje i brisanje površina obavljam pažljivo. Kada bi vam odgovarao jednokratni dolazak? Irena",
+        "Dobar dan, Jana, pažljivo uklanjam prašinu i ostatke boje te brišem površine. Kada bi vam odgovarao jednokratni dolazak? Irena",
         "Dobar dan, zainteresirana sam za čišćenje nakon bojanja. Pedantna sam i mogu donijeti vlastitu opremu. Možemo li dogovoriti termin ovaj tjedan? Irena"
       ]
     },
     tutor2: {
       title: "Satovi klavira za našu 15-godišnju kćer",
-      desc: "Tražimo iskusnog instruktora koji bi našoj kćeri pomogao savladati srednjoškolske prirodoslovne i tehničke predmete te se pripremiti za nadolazeće ispite.",
-      tags: ["Srednja škola", "Priprema za ispite", "STEM predmeti"],
+      desc: "Tražimo iskusnu osobu koja bi našu 15-godišnju kćer podučavala sviranju klavira. Željeli bismo pronaći nekoga strpljivog tko će joj pomoći razviti tehniku sviranja i sigurnije svirati nove skladbe.",
+      tags: ["Klavir", "15 godina", "Tehnika sviranja"],
       replies: [
-        "Dobar dan, Jana, rado ću pomoći vašoj kćeri s pripremom za ispite. Imam iskustva s instrukcijama za tinejdžere, a živim samo 2,5 km od vas. Možemo li početi prvim satom da vidim što joj najviše treba? Irena",
-        "Dobar dan, Jana, volim raditi s motiviranim učenicima i pomagati im da steknu samopouzdanje prije ispita. Kada bi vam odgovaralo da počnemo? Irena",
-        "Dobar dan, zainteresirana sam za instrukcije vašoj kćeri. Fleksibilna sam oko dana i termina. Možemo li se kratko čuti i dogovoriti detalje? Irena"
+        "Dobar dan, Jana, rado ću vašu kćer podučavati klaviru. Imam iskustva u radu s tinejdžerima, a živim samo 2,5 km od vas. Možemo li početi uvodnim satom da vidim što joj najviše treba? Irena",
+        "Dobar dan, Jana, volim pomagati mladim pijanistima da razviju tehniku i steknu sigurnost pri sviranju. Kada bi vam odgovaralo da počnemo? Irena",
+        "Dobar dan, zainteresirana sam za podučavanje vaše kćeri klaviru. Fleksibilna sam oko dana i termina. Možemo li se kratko čuti i dogovoriti detalje? Irena"
       ]
     },
     tutor3: {
       title: "Strpljive instrukcije za pripremu srednjoškolskih ispita",
-      desc: "Tražimo zanimljivog studenta ili studenticu koji će objasniti zahtjevne formule i pomoći steći samopouzdanje u matematici i fizici.",
+      desc: "Tražimo osobu koja studira i koja će našoj kćeri jasno objasniti zahtjevne formule te joj pomoći da stekne sigurnost u matematici i fizici.",
       tags: ["Matematika i fizika", "Student/ica", "Priprema za ispite"],
       replies: [
         "Dobar dan, Jana, rado ću pomoći s formulama iz matematike i fizike te s pripremom za ispite. Studentica sam, a živim samo 2,5 km od vas. Možemo li početi probnim satom? Irena",
