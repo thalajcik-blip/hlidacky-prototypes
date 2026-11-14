@@ -85,6 +85,9 @@ svg{display:block;flex:none}
 .ver-dot{position:absolute;top:8px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 2px #fff;
   opacity:0;transform:scale(.5);transition:opacity .2s,transform .25s var(--ease)}
 .v-custom .ver-dot{opacity:1;transform:none}   /* a switch differs from its default */
+/* Settings button off (for screen recordings; the real app has no gear): the gear and its dot are not
+   drawn, but the button stays where it is, so its empty spot still opens the prototype versions */
+.phone:not(.v-gear) .ver-btn{opacity:0}
 
 /* the padding below is whitespace the feed scrolls under, see CTRL_PAD */
 .controls{display:flex;align-items:center;justify-content:space-between;margin:13px 20px 0;padding-bottom:12px}
@@ -1049,6 +1052,10 @@ svg{display:block;flex:none}
       <label class="ver-row">
         <span><b>Show taps</b><small>A purple ring wherever the phone is tapped, for screen recordings.</small></span>
         <input type="checkbox" role="switch" id="tapsSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
+      <label class="ver-row">
+        <span><b>Settings button</b><small>The gear in the top bar. Off, it is not drawn (the app has none, so it stays out of screen recordings), but its spot on the right of the top bar still opens these settings.</small></span>
+        <input type="checkbox" role="switch" id="gearSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
@@ -2360,7 +2367,8 @@ const SETTINGS = [
   { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") },
   { cls:"v-simple", key:"jobs-tinder-simplified",    param:"simple",  on:"on",     off:"off",     def:false, input:$("#simpleSwitch") },
   { cls:"v-feed",   key:"jobs-tinder-new-feed",      param:"feed",    on:"on",     off:"off",     def:false, input:$("#feedSwitch") },
-  { cls:"v-taps",   key:"jobs-tinder-taps",          param:"taps",    on:"on",     off:"off",     def:false, input:$("#tapsSwitch") }
+  { cls:"v-taps",   key:"jobs-tinder-taps",          param:"taps",    on:"on",     off:"off",     def:false, input:$("#tapsSwitch") },
+  { cls:"v-gear",   key:"jobs-tinder-gear",          param:"gear",    on:"on",     off:"off",     def:true,  input:$("#gearSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
