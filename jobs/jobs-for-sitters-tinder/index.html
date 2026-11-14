@@ -853,6 +853,15 @@ svg{display:block;flex:none}
 .ver-row input:checked + .sw::after{transform:translateX(20px)}
 .ver-row input:focus-visible + .sw{outline:2px solid var(--focus);outline-offset:2px}
 .ver-lang{align-items:center;cursor:default}
+
+/* ---------- tap rings (a prototype version, for screen recordings) ---------- */
+/* Every press on the phone shows a purple ring that grows and fades where the finger landed. It lives
+   inside the phone, above everything, and never takes a click itself. */
+.tap-ring{position:absolute;z-index:999;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;pointer-events:none;
+  background:rgba(126,94,255,.28);border:2px solid rgba(126,94,255,.85);
+  animation:tapRing .6s ease-out forwards}
+/* the ring stays strong while it grows and fades only in the last part, so a 30fps recording catches it */
+@keyframes tapRing{0%{transform:scale(.35);opacity:1}45%{opacity:.9}100%{transform:scale(1.6);opacity:0}}
 .ver-lang select{flex:none;height:36px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:#fff;
   font:inherit;font-size:15px;color:var(--ink)}
 .ver-done{margin-top:18px;width:100%;height:46px;border-radius:8px;background:var(--pink);color:#fff;font-size:16px}
@@ -1036,6 +1045,10 @@ svg{display:block;flex:none}
       <label class="ver-row">
         <span><b>Simple feed for the new jobs</b><small>New jobs as a scrolling list with a Reply button on every job, like Replied and Archived, instead of the card stack. Tap a job for its detail.</small></span>
         <input type="checkbox" role="switch" id="feedSwitch"><i class="sw" aria-hidden="true"></i>
+      </label>
+      <label class="ver-row">
+        <span><b>Show taps</b><small>A purple ring wherever the phone is tapped, for screen recordings.</small></span>
+        <input type="checkbox" role="switch" id="tapsSwitch"><i class="sw" aria-hidden="true"></i>
       </label>
       <button class="ver-done" id="verDone">Done</button>
     </div>
@@ -2346,7 +2359,8 @@ const SETTINGS = [
   { cls:"v-next",   key:"jobs-tinder-next-detail",   param:"next",    on:"detail", off:"stack",   def:true, input:$("#nextSwitch") },
   { cls:"v-toast-top", key:"jobs-tinder-toast-top",  param:"toast",   on:"top",    off:"bottom",  def:true, input:$("#toastSwitch") },
   { cls:"v-simple", key:"jobs-tinder-simplified",    param:"simple",  on:"on",     off:"off",     def:false, input:$("#simpleSwitch") },
-  { cls:"v-feed",   key:"jobs-tinder-new-feed",      param:"feed",    on:"on",     off:"off",     def:false, input:$("#feedSwitch") }
+  { cls:"v-feed",   key:"jobs-tinder-new-feed",      param:"feed",    on:"on",     off:"off",     def:false, input:$("#feedSwitch") },
+  { cls:"v-taps",   key:"jobs-tinder-taps",          param:"taps",    on:"on",     off:"off",     def:false, input:$("#tapsSwitch") }
 ];
 const verModal = $("#verModal"), verBtn = $("#verBtn");
 function initialSetting(st){
@@ -2418,6 +2432,21 @@ function setLang(l){
   placeStatic();
 }
 langSelect.addEventListener("change", () => setLang(langSelect.value));
+
+/* ---------------- tap rings (Show taps) ---------------- */
+// Captured on the way down, so it shows even where a handler stops the event or takes the pointer.
+// The phone may be scaled down on a desktop screen (G.scale), so the point is mapped back into it.
+document.addEventListener("pointerdown", e => {
+  if (!phone.classList.contains("v-taps") || !e.isPrimary) return;
+  const r = phone.getBoundingClientRect(), s = G.scale || 1;
+  const x = (e.clientX - r.left) / s, y = (e.clientY - r.top) / s;
+  if (x < 0 || y < 0 || x > phone.offsetWidth || y > phone.offsetHeight) return;   // outside the phone
+  const ring = document.createElement("i");
+  ring.className = "tap-ring";
+  ring.style.left = x + "px"; ring.style.top = y + "px";
+  phone.appendChild(ring);
+  ring.addEventListener("animationend", () => ring.remove());
+}, true);
 
 /* ---------------- gestures ---------------- */
 // Stack: drag the card left / right, tap to open the detail.
