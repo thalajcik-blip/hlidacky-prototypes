@@ -42,7 +42,7 @@
   jobs: {
     baby: {
       title: "2 holky ve věku 6 a 4 let, každé druhé úterý odpoledne",
-      desc: "Dobrý den, hledám hlídačku na pravidelné hlídání od prosince pro dvě děti, Matyldu (v listopadu jí bude 6) a Annu (4 roky). První hlídání v úterý ve 14:00. Po domluvě je možné hlídání každé 2 týdny. Hlídačku můžeme vzít i na společnou dovolenou, ale vše po vzájemné dohodě.",
+      desc: "Dobrý den, hledám hlídačku na pravidelné hlídání od prosince pro dvě děti, Matyldu (v listopadu jí bude 6) a Annu (4 roky). První hlídání v úterý ve 14:00. Po domluvě je možné hlídání každé 2 týdny. Hlídačku můžeme vzít i na společnou dovolenou, ale vše po vzájemné dohodě. Holky rády kreslí, stavějí ze stavebnice a chodí na blízké hřiště. Při prvním setkání vám ukážeme jejich běžný odpolední režim. Před prvním hlídáním bychom se rádi sešli, aby vás děti mohly v klidu poznat.",
       tags: ["2 děti", "4–6 let", "Od prosince", "Každé 2 týdny"],
       replies: [
         "Dobrý den, Jano, ráda pohlídám Matyldu a Annu. Každé druhé úterý odpoledne mi vyhovuje a na první hlídání v úterý ve 14:00 můžu přijít. Mohly bychom si předtím krátce zavolat? Děkuji, Irena",
@@ -62,7 +62,7 @@
     },
     senior: {
       title: "Společnost a pomoc s nákupy pro maminku 3× týdně",
-      desc: "Hledám laskavého a trpělivého člověka, který by mé mamince třikrát týdně dělal společnost na odpoledních procházkách, pomohl s menším nákupem a rád si s ní popovídal. Je veselá a samostatná, jen chůze jí už dělá potíže a moc ráda si s někým popovídá. Ideálně v pondělí, ve středu a v pátek odpoledne.",
+      desc: "Hledám laskavého a trpělivého člověka, který by mé mamince třikrát týdně dělal společnost na odpoledních procházkách, pomohl s menším nákupem a rád si s ní popovídal. Je veselá a samostatná, jen chůze jí už dělá potíže a moc ráda si s někým popovídá. Ideálně v pondělí, ve středu a v pátek odpoledne. Podle počasí a toho, jak se maminka bude cítit, může návštěva zahrnovat krátkou procházku po okolí nebo čaj doma. Nákupní seznam domluvíme předem. Před začátkem bych vás ráda představila a dohodla se na příjemném tempu návštěv.",
       tags: ["3× týdně", "Po/St/Pá", "Odpolední procházky", "Menší nákupy"],
       replies: [
         "Dobrý den, Jano, ráda budu vaší mamince dělat společnost. Se seniory mám zkušenosti a procházky, pochůzky i dobrý rozhovor mě baví. Odpolední návštěvy třikrát týdně mi vyhovují. Mohly bychom si krátce zavolat? Irena",
@@ -92,7 +92,7 @@
     },
     baby2: {
       title: "Hledáme spolehlivou hlídačku pro milé batole",
-      desc: "Hledáme laskavou a pozornou hlídačku na zábavné odpolední hraní, čtení pohádek a pravidelné hlídání.",
+      desc: "Hledáme laskavou a pozornou hlídačku na zábavné odpolední hraní, čtení pohádek a pravidelné hlídání. Naše dítě má rádo obrázkové knížky a stavebnice. Rádi bychom se domluvili na pravidelných odpoledních návštěvách a před prvním hlídáním se společně seznámili.",
       tags: ["Batole", "Odpolední hraní", "Pravidelné hlídání", "Čtení pohádek"],
       replies: [
         "Dobrý den, Jano, ráda budu hlídat vaše batole. Odpolední hraní a čtení pohádek mě moc baví a bydlím jen 2,5 km od vás. Mohly bychom se domluvit na seznámení? Irena",
@@ -102,7 +102,7 @@
     },
     baby3: {
       title: "2 kluci ve věku 6 a 4 let, každé druhé úterý odpoledne",
-      desc: "Hledáme energickou a pečlivou pomoc na pravidelné hlídání dětí, kreativní hry a dohled nad dětmi.",
+      desc: "Hledáme energickou a pečlivou pomoc na pravidelné hlídání dětí, kreativní hry a dohled nad dětmi. Kluci rádi stavějí, kreslí a hrají si venku. Při prvním setkání se domluvíme na odpoledním režimu a ukážeme vám jejich oblíbené hry.",
       tags: ["2 kluci", "4–6 let", "Každé 2 týdny", "Kreativní hry"],
       replies: [
         "Dobrý den, Jano, ráda pohlídám vaše kluky každé druhé úterý odpoledne. Baví mě akční hry a tvoření a bydlím jen 2,5 km od vás. Mohly bychom si krátce zavolat? Irena",
@@ -112,7 +112,7 @@
     },
     pet2: {
       title: "Načechraná perská kočka potřebuje každodenní péči a pozornost",
-      desc: "Hledáme jemnou a spolehlivou hlídačku, která by k nám zašla, nakrmila naši milou perskou kočku a dohlédla, aby byla spokojená, zatímco budeme pryč.",
+      desc: "Hledáme jemnou a spolehlivou hlídačku, která by k nám zašla, nakrmila naši milou perskou kočku a dohlédla, aby byla spokojená, zatímco budeme pryč. Při každé návštěvě prosíme o čerstvou vodu, vyčištění kočičí toalety a chvíli hraní. Před odjezdem vám ukážeme, kde vše najdete, a vysvětlíme režim krmení.",
       tags: ["Perská kočka", "Denní návštěvy", "Krmení", "Během naší nepřítomnosti"],
       replies: [
         "Dobrý den, Jano, ráda se postarám o vaši perskou kočku. Ke zvířatům přistupuji citlivě a jsem spolehlivá. Bydlím jen 2,5 km od vás, takže můžu snadno zajít. Mohly bychom se domluvit, kdy se s ní seznámím? Irena",
@@ -122,7 +122,7 @@
     },
     pet3: {
       title: "Přátelský malý pejsek potřebuje denní procházky a hraní",
-      desc: "Hledáme někoho jemného a spolehlivého, kdo má rád psy, zašel by k nám, vzal našeho pejska na příjemnou procházku a dělal mu společnost.",
+      desc: "Hledáme někoho jemného a spolehlivého, kdo má rád psy, zašel by k nám, vzal našeho pejska na příjemnou procházku a dělal mu společnost. Rádi bychom se domluvili na pravidelném čase venčení a nejdřív vyrazili na společnou zkušební procházku. Po každé návštěvě oceníme krátkou zprávu, jak se pejskovi daří.",
       tags: ["Malý pejsek", "Denní procházky", "Společnost"],
       replies: [
         "Dobrý den, Jano, ráda budu vašeho pejska denně venčit a dělat mu společnost. Malé psy miluju a bydlím jen 2,5 km od vás. Mohly bychom se potkat, aby mě poznal? Irena",
@@ -132,7 +132,7 @@
     },
     senior2: {
       title: "Každodenní společnost a pochůzky pro mého tatínka",
-      desc: "Hledáme trpělivou a vlídnou pomoc s odpoledními procházkami, menšími nákupy a příjemným povídáním.",
+      desc: "Hledáme trpělivou a vlídnou pomoc s odpoledními procházkami, menšími nákupy a příjemným povídáním. Tatínek má rád procházky po okolí a povídání u čaje. Délku návštěv i případné nákupy domluvíme předem, aby režim vyhovoval všem.",
       tags: ["Denně", "Odpolední procházky", "Menší nákupy", "Společnost"],
       replies: [
         "Dobrý den, Jano, ráda budu vašemu tatínkovi dělat společnost. Odpolední procházky, menší nákupy i dobrý rozhovor mě baví a bydlím jen 2,5 km od vás. Mohly bychom si zavolat? Irena",
@@ -142,7 +142,7 @@
     },
     senior3: {
       title: "Milý starší pár potřebuje laskavou pomoc odpoledne",
-      desc: "Hledáme pečlivou pomoc pro milý starší pár s drobnými každodenními úkoly, společností a procházkami.",
+      desc: "Hledáme pečlivou pomoc pro milý starší pár s drobnými každodenními úkoly, společností a procházkami. Manželé by ocenili pomoc s přípravou malé svačiny a udržováním pořádku v běžných věcech. Společně probereme, co zvládají sami a s čím by se jim hodila pomoc.",
       tags: ["Starší pár", "Každodenní úkoly", "Společnost", "Procházky"],
       replies: [
         "Dobrý den, Jano, ráda budu manželům odpoledne pomáhat s každodenními úkoly a procházkami a dělat jim společnost. Bydlím jen 2,5 km od vás. Mohly bychom se domluvit na setkání? Irena",
@@ -152,7 +152,7 @@
     },
     clean2: {
       title: "Týdenní důkladný úklid rodinného domu se 3 ložnicemi",
-      desc: "Hledáme důkladnou a spolehlivou pomoc na pravidelnou dezinfekci koupelen, utírání prachu a běžnou údržbu domácnosti.",
+      desc: "Hledáme důkladnou a spolehlivou pomoc na pravidelnou dezinfekci koupelen, utírání prachu a běžnou údržbu domácnosti. Úklid zahrnuje vysávání a vytírání podlah, úklid kuchyně a otření dostupných povrchů. Na prioritách a délce každé návštěvy se domluvíme předem.",
       tags: ["Každý týden", "Koupelny", "Utírání prachu", "Běžná údržba"],
       replies: [
         "Dobrý den, Jano, ráda se postarám o týdenní důkladný úklid včetně koupelen a utírání prachu. Bydlím jen 2,5 km od vás. Mohly bychom si krátce zavolat? Irena",
@@ -162,7 +162,7 @@
     },
     clean3: {
       title: "Jednorázový důkladný úklid bytu po malování",
-      desc: "Hledáme pečlivou pomoc s úklidem po malování, včetně odstranění prachu a zbytků barvy, vytření podlah a otření povrchů.",
+      desc: "Hledáme pečlivou pomoc s úklidem po malování, včetně odstranění prachu a zbytků barvy, vytření podlah a otření povrchů. Byt bude po malování bez nábytku. Prosíme také o otření parapetů a dveří; rozsah úklidu a potřebné vybavení domluvíme před návštěvou.",
       tags: ["Jednorázově", "Prach a zbytky barvy", "Podlahy a povrchy"],
       replies: [
         "Dobrý den, Jano, ráda pomůžu s úklidem po malování, odstraním prach a vytřu podlahy a otřu všechny povrchy. Bydlím jen 2,5 km od vás. Mohly bychom se domluvit na termínu? Irena",
@@ -172,7 +172,7 @@
     },
     tutor2: {
       title: "Hodiny klavíru pro naši 15letou dceru",
-      desc: "Hledáme zkušeného lektora klavíru pro naši 15letou dceru. Rádi bychom našli někoho trpělivého, kdo jí pomůže rozvíjet techniku hry a s jistotou hrát nové skladby.",
+      desc: "Hledáme zkušeného lektora klavíru pro naši 15letou dceru. Rádi bychom našli někoho trpělivého, kdo jí pomůže rozvíjet techniku hry a s jistotou hrát nové skladby. Doma máme klavír a nejraději bychom hodiny u nás odpoledne. Na první hodině bychom rádi probrali dceřinu současnou úroveň a vybrali skladby, které ji budou bavit cvičit.",
       tags: ["Klavír", "15 let", "Technika hry"],
       replies: [
         "Dobrý den, Jano, ráda pomůžu vaší dceři s hrou na klavír. S výukou dospívajících mám zkušenosti a bydlím jen 2,5 km od vás. Mohly bychom začít úvodní hodinou, abych zjistila, co potřebuje nejvíc? Irena",
@@ -182,7 +182,7 @@
     },
     tutor3: {
       title: "Trpělivé doučování k přípravě na středoškolské zkoušky",
-      desc: "Hledáme někoho z řad vysokoškolských studentů, kdo naší dceři poutavě vysvětlí náročné vzorce a pomůže jí získat jistotu v matematice a fyzice.",
+      desc: "Hledáme někoho z řad vysokoškolských studentů, kdo naší dceři poutavě vysvětlí náročné vzorce a pomůže jí získat jistotu v matematice a fyzice. Rádi bychom procházeli školní příklady a procvičovali témata, která ještě nejsou jasná. Aktuální materiály můžeme poslat před první hodinou, abyste si mohli připravit plán výuky.",
       tags: ["Matematika a fyzika", "Student VŠ", "Příprava na zkoušky"],
       replies: [
         "Dobrý den, Jano, ráda pomůžu se vzorci z matematiky a fyziky i s přípravou na zkoušky. Studuji vysokou školu a bydlím jen 2,5 km od vás. Mohly bychom začít zkušební hodinou? Irena",

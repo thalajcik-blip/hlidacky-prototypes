@@ -42,7 +42,7 @@
   jobs: {
     baby: {
       title: "2 lány, 6 és 4 éves, minden második kedd délután",
-      desc: "Szia! Rendszeres gyermekfelügyeletre keresek segítséget decembertől két gyermekhez, Matildához (novemberben lesz 6 éves) és Annához (4 éves). Az első alkalom kedden 14:00-kor lenne. Megbeszélés szerint kéthetente lehetne felügyelet. Közös nyaraláson is igénybe vehetnénk a segítséget, de mindent közös megegyezéssel.",
+      desc: "Szia! Rendszeres gyermekfelügyeletre keresek segítséget decembertől két gyermekhez, Matildához (novemberben lesz 6 éves) és Annához (4 éves). Az első alkalom kedden 14:00-kor lenne. Megbeszélés szerint kéthetente lehetne felügyelet. Közös nyaraláson is igénybe vehetnénk a segítséget, de mindent közös megegyezéssel. A lányok szeretnek rajzolni, építőkockázni és a közeli játszótérre járni. Az első találkozón megmutatjuk a megszokott délutáni napirendjüket. Az első alkalom előtt szeretnénk személyesen találkozni, hogy a gyerekek nyugodt körülmények között ismerhessenek meg.",
       tags: ["2 gyermek", "4–6 évesek", "Decembertől", "Kéthetente"],
       replies: [
         "Kedves Jana! Szívesen vigyáznék Matildára és Annára. Minden második kedd délután jól illik a beosztásomba, és az első alkalomra kedden 14:00-ra is el tudok jönni. Beszélhetnénk előtte röviden telefonon? Köszönöm, Irena",
@@ -62,7 +62,7 @@
     },
     senior: {
       title: "Társaság és segítség a bevásárlásban édesanyámnak, heti háromszor",
-      desc: "Kedves, türelmes segítőt keresek, aki hetente háromszor elkísérné az édesanyámat délutáni sétákra, segítene kisebb bevásárlásban, és szívesen elbeszélgetne vele. Vidám és önálló, de a járás már nehezebben megy neki, és nagyon szeret beszélgetni. Ideális esetben hétfőn, szerdán és pénteken délután.",
+      desc: "Kedves, türelmes segítőt keresek, aki hetente háromszor elkísérné az édesanyámat délutáni sétákra, segítene kisebb bevásárlásban, és szívesen elbeszélgetne vele. Vidám és önálló, de a járás már nehezebben megy neki, és nagyon szeret beszélgetni. Ideális esetben hétfőn, szerdán és pénteken délután. Az időjárástól és édesanyám közérzetétől függően egy rövid környékbeli séta vagy egy otthoni teázás is része lehet a látogatásnak. A bevásárlólistát előre egyeztetjük. A kezdés előtt szeretnélek bemutatni neki, és megbeszélni, milyen tempó lenne számára kényelmes.",
       tags: ["Heti 3×", "H/Sze/P", "Délutáni séták", "Kisebb bevásárlás"],
       replies: [
         "Kedves Jana! Szívesen nyújtanék társaságot az édesanyádnak. Van tapasztalatom idősekkel, és szeretem a sétákat, az ügyintézést és egy jó beszélgetést. A heti három délutáni alkalom jól illik a beosztásomba. Beszélhetnénk röviden telefonon? Irena",
@@ -92,7 +92,7 @@
     },
     baby2: {
       title: "Megbízható bébiszittert keresünk egy édes kisgyerek mellé",
-      desc: "Kedves, figyelmes segítőt keresünk vidám délutáni játékhoz, meseolvasáshoz és rendszeres gyermekfelügyelethez.",
+      desc: "Kedves, figyelmes segítőt keresünk vidám délutáni játékhoz, meseolvasáshoz és rendszeres gyermekfelügyelethez. A kicsi szereti a képeskönyveket és az építőkockákat. Rendszeres délutáni alkalmakban szeretnénk megállapodni, és az első felügyelet előtt közösen megismerkedni veled.",
       tags: ["Kisgyerek", "Délutáni játék", "Rendszeres felügyelet", "Meseolvasás"],
       replies: [
         "Kedves Jana! Nagyon szívesen vigyáznék a kicsire. Imádom a délutáni játékot és a meseolvasást, és csak 2,5 km-re lakom tőletek. Megbeszélhetnénk egy találkozót? Irena",
@@ -102,7 +102,7 @@
     },
     baby3: {
       title: "2 fiú, 6 és 4 éves, minden második kedd délután",
-      desc: "Energikus és gondoskodó segítséget keresünk rendszeres gyermekfelügyelethez, kreatív játékhoz és a gyerekekre való odafigyeléshez.",
+      desc: "Energikus és gondoskodó segítséget keresünk rendszeres gyermekfelügyelethez, kreatív játékhoz és a gyerekekre való odafigyeléshez. A fiúk szeretnek építeni, rajzolni és a szabadban játszani. Az első találkozón megbeszéljük a délutáni napirendet, és megmutatjuk a kedvenc játékaikat.",
       tags: ["2 fiú", "4–6 évesek", "Kéthetente", "Kreatív játék"],
       replies: [
         "Kedves Jana! Szívesen vigyáznék a fiaidra minden második kedd délután. Szeretem a mozgalmas játékokat és a kreatív programokat, és csak 2,5 km-re lakom tőletek. Beszélhetnénk röviden telefonon? Irena",
@@ -112,7 +112,7 @@
     },
     pet2: {
       title: "Bolyhos perzsa cica szerető napi gondoskodást és figyelmet keres",
-      desc: "Gyengéd és megbízható cicavigyázót keresünk, aki átjönne, megetetné édes perzsa cicánkat, és gondoskodna róla, hogy jól érezze magát, amíg távol vagyunk.",
+      desc: "Gyengéd és megbízható cicavigyázót keresünk, aki átjönne, megetetné édes perzsa cicánkat, és gondoskodna róla, hogy jól érezze magát, amíg távol vagyunk. Minden látogatáskor friss vizet, az alomtálca kitisztítását és egy kis játékot kérünk. Indulás előtt megmutatjuk, hol találsz mindent, és megbeszéljük az etetési rendet.",
       tags: ["Perzsa cica", "Napi látogatás", "Etetés", "Amíg távol vagyunk"],
       replies: [
         "Kedves Jana! Szívesen gondoskodnék a perzsa cicádról. Gyengéd és megbízható vagyok, és csak 2,5 km-re lakom, így könnyen át tudok jönni. Megbeszélhetnénk, mikor ismerkedhetnék meg vele? Irena",
@@ -122,7 +122,7 @@
     },
     pet3: {
       title: "Barátságos kiskutya napi sétákra és játékra vár",
-      desc: "Gyengéd és megbízható kutyabarátot keresünk, aki átjönne, kellemes sétára vinné a kiskutyánkat, és társaságot nyújtana neki.",
+      desc: "Gyengéd és megbízható kutyabarátot keresünk, aki átjönne, kellemes sétára vinné a kiskutyánkat, és társaságot nyújtana neki. Szeretnénk állandó időpontot egyeztetni a sétákra, és először együtt elmenni egy próbasétára. Minden látogatás után örülnénk egy rövid üzenetnek arról, hogy van a kutyus.",
       tags: ["Kiskutya", "Napi séták", "Társaság"],
       replies: [
         "Kedves Jana! Szívesen sétáltatnám naponta a kutyádat, és társaságot is nyújtanék neki. Imádom a kiskutyákat, és csak 2,5 km-re lakom tőletek. Találkozhatnánk, hogy megismerjen? Irena",
@@ -132,7 +132,7 @@
     },
     senior2: {
       title: "Mindennapi társaság és ügyintézés édesapámnak",
-      desc: "Türelmes és melegszívű segítőt keresünk délutáni sétákhoz, kisebb bevásárlásokhoz és kellemes beszélgetésekhez.",
+      desc: "Türelmes és melegszívű segítőt keresünk délutáni sétákhoz, kisebb bevásárlásokhoz és kellemes beszélgetésekhez. Édesapám szeret a környéken sétálni és tea mellett beszélgetni. A látogatások hosszát és az esetleges bevásárlást előre egyeztetjük, hogy a napirend mindenkinek megfeleljen.",
       tags: ["Naponta", "Délutáni séták", "Kisebb bevásárlás", "Társaság"],
       replies: [
         "Kedves Jana! Szívesen nyújtanék társaságot az édesapádnak. Szeretem a délutáni sétákat, a kisebb bevásárlásokat és egy jó beszélgetést, és csak 2,5 km-re lakom tőletek. Beszélhetnénk telefonon? Irena",
@@ -142,7 +142,7 @@
     },
     senior3: {
       title: "Kedves idős házaspár keres segítséget délutánonként",
-      desc: "Gondoskodó segítőt keresünk egy kedves idős házaspár mellé könnyű napi teendőkhöz, társasághoz és sétákhoz.",
+      desc: "Gondoskodó segítőt keresünk egy kedves idős házaspár mellé könnyű napi teendőkhöz, társasághoz és sétákhoz. A házaspár örülne a segítségnek egy kis uzsonna elkészítésében és a mindennapi rendrakásban. Közösen megbeszéljük, mit tudnak önállóan elvégezni, és miben jönne jól egy kis támogatás.",
       tags: ["Idős házaspár", "Napi teendők", "Társaság", "Séták"],
       replies: [
         "Kedves Jana! Szívesen segítenék a házaspárnak délutánonként a napi teendőkben és a sétákban, és társaságot is nyújtanék. Csak 2,5 km-re lakom tőletek. Megbeszélhetnénk egy találkozót? Irena",
@@ -152,7 +152,7 @@
     },
     clean2: {
       title: "Heti nagytakarítás egy 3 hálószobás családi házban",
-      desc: "Alapos és megbízható takarítót keresünk a fürdőszobák rendszeres fertőtlenítésére, porolásra és általános rendben tartásra.",
+      desc: "Alapos és megbízható takarítót keresünk a fürdőszobák rendszeres fertőtlenítésére, porolásra és általános rendben tartásra. A takarításhoz hozzátartozik a porszívózás, a felmosás, a konyha takarítása és a hozzáférhető felületek letörlése. A legfontosabb feladatokat és az alkalmak hosszát előre egyeztetjük.",
       tags: ["Hetente", "Fürdőszobák", "Porolás", "Általános rendben tartás"],
       replies: [
         "Kedves Jana! Szívesen vállalnám a heti nagytakarítást, a fürdőszobákkal és a porolással együtt. Csak 2,5 km-re lakom tőletek. Beszélhetnénk röviden telefonon? Irena",
@@ -162,7 +162,7 @@
     },
     clean3: {
       title: "Egyszeri alapos takarítás festés után egy lakásban",
-      desc: "Precíz takarítót keresünk, aki segítene rendet rakni festés után: por és festékmaradványok eltávolítása, padlómosás és a felületek letörlése.",
+      desc: "Precíz takarítót keresünk, aki segítene rendet rakni festés után: por és festékmaradványok eltávolítása, padlómosás és a felületek letörlése. A lakásban festés után nem lesz bútor. Az ablakpárkányok és az ajtók letörlését is kérjük; a feladatokat és a szükséges eszközöket a látogatás előtt egyeztetjük.",
       tags: ["Egyszeri munka", "Por és festékmaradványok", "Padló és felületek"],
       replies: [
         "Kedves Jana! Szívesen segítenék a festés utáni takarításban: eltávolítom a port, felmosom a padlót, és letörlöm az összes felületet. Csak 2,5 km-re lakom tőletek. Megbeszélhetnénk egy időpontot? Irena",
@@ -172,7 +172,7 @@
     },
     tutor2: {
       title: "Zongoraórák 15 éves lányunknak",
-      desc: "Tapasztalt zongoratanárt keresünk 15 éves lányunknak. Olyan türelmes tanárt szeretnénk találni, aki segít neki fejleszteni a játéktechnikáját és magabiztosan megtanulni új darabokat.",
+      desc: "Tapasztalt zongoratanárt keresünk 15 éves lányunknak. Olyan türelmes tanárt szeretnénk találni, aki segít neki fejleszteni a játéktechnikáját és magabiztosan megtanulni új darabokat. Otthon van zongoránk, és leginkább nálunk, délután szeretnénk az órákat. Az első órán megbeszélnénk a lányunk jelenlegi tudásszintjét, és olyan darabokat választanánk, amelyeket szívesen gyakorol.",
       tags: ["Zongora", "15 éves", "Játéktechnika"],
       replies: [
         "Kedves Jana! Szívesen tanítanám zongorázni a lányodat. Van tapasztalatom tinédzserek tanításában, és csak 2,5 km-re lakom tőletek. Kezdhetnénk egy bemutatkozó órával, hogy lássam, mire van a legnagyobb szüksége? Irena",
@@ -182,7 +182,7 @@
     },
     tutor3: {
       title: "Türelmes korrepetálás középiskolai vizsgafelkészítéshez",
-      desc: "Lelkes egyetemistát keresünk, aki elmagyarázza a lányunknak a nehéz képleteket, és segít neki magabiztosabbá válni matekból és fizikából.",
+      desc: "Lelkes egyetemistát keresünk, aki elmagyarázza a lányunknak a nehéz képleteket, és segít neki magabiztosabbá válni matekból és fizikából. Szeretnénk átnézni az iskolai feladatokat, és gyakorolni a még nem világos témákat. Az aktuális tananyagokat elküldhetjük az első óra előtt, hogy meg tudd tervezni, mivel kezdjetek.",
       tags: ["Matek és fizika", "Egyetemista", "Vizsgafelkészítés"],
       replies: [
         "Kedves Jana! Szívesen segítenék a matematikai és fizikai képletek megértésében és a vizsgafelkészülésben. Egyetemista vagyok, és csak 2,5 km-re lakom tőletek. Kezdhetnénk egy próbaórával? Irena",
