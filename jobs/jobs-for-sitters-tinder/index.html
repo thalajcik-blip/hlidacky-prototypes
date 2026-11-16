@@ -53,7 +53,8 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overscroll-behavior:none}
 body{
-  font-family:var(--font);color:var(--ink);background:#dadada;
+  /* desktop backdrop: a pink-400 to orange-400 gradient (Figma tokens); phones get plain white below */
+  font-family:var(--font);color:var(--ink);background:#f96073 linear-gradient(135deg,#f96073,#fd8b25) fixed;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   min-height:100%;-webkit-font-smoothing:antialiased;overflow:hidden;
 }
@@ -68,9 +69,10 @@ svg{display:block;flex:none}
   box-shadow:0 0 0 11px #16191c,0 0 0 12px #3a3f44,0 40px 90px rgba(0,0,0,.28);
   user-select:none;-webkit-user-select:none;
 }
-.caption{margin-top:34px;font:500 13px/1.6 var(--font);color:#5d646a;text-align:center}
-.caption b{color:#272e32;font-weight:600}
-.caption button{color:var(--pink);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+/* white on the gradient (the grey text and the pink Reset link disappeared on it) */
+.caption{margin-top:34px;font:500 13px/1.6 var(--font);color:rgba(255,255,255,.88);text-align:center}
+.caption b{color:#fff;font-weight:600}
+.caption button{color:#fff;text-decoration:underline;text-underline-offset:3px;font-weight:600}
 
 /* ---------- status + app bar ---------- */
 .statusbar{height:47px;display:flex;align-items:center;justify-content:space-between;padding:6px 22px 0 30px}
