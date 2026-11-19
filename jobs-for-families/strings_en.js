@@ -733,6 +733,13 @@
     "note": "Your membership starts the moment you pay.",
     "later": "Not that urgent? Pick sitters at your own pace"
   },
+  "fallback": {
+    "title": "{n} sitters match your job",
+    "sub": "You need help soon, so don’t wait for replies — message them yourself and ask who can come tomorrow.",
+    "matchTitle": "They match your job",
+    "near": "Near {city}",
+    "more": "more"
+  },
   "shortlist": {
     "navTitle": "Your matches",
     "title": "Pick up to 5 sitters you like",

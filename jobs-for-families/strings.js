@@ -732,6 +732,13 @@ window.STRINGS = {
     "note": "Členství začíná ve chvíli, kdy zaplatíte.",
     "later": "Nespěcháte? Vyberte si hlídačky ve svém tempu"
   },
+  "fallback": {
+    "title": "Vašemu inzerátu odpovídá {n} hlídaček",
+    "sub": "Pomoc potřebujete brzy, tak nečekejte na odpovědi — napište jim sami a zeptejte se, která může přijít zítra.",
+    "matchTitle": "Odpovídají vašemu inzerátu",
+    "near": "V okolí {city}",
+    "more": "další"
+  },
   "shortlist": {
     "navTitle": "Vaše shody",
     "title": "Vyberte si až 5 hlídaček, které se vám líbí",
