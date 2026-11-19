@@ -1378,6 +1378,37 @@
     .nomatches-spacer { flex: 1; min-height: 12px; }
     .nomatches-app { margin-top: 0; }
 
+    /* Urgent: X sitters are free tomorrow (Jobs Figma 4254:133834). */
+    #s-urgent .urgent-body { display: flex; flex-direction: column; padding: 0; }
+    .urgent-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 40px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
+    .urgent-hero__live, .urgent-hero__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .urgent-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .urgent-hero__sub { max-width: 260px; }
+    .urgent-list { display: flex; flex-direction: column; gap: 10px; padding: 20px 20px 8px; font-family: 'soleil', sans-serif; }
+    .urgent-extra { display: flex; flex-direction: column; gap: 10px; }
+    .urgent-extra[hidden] { display: none; }
+    .urgent-card { position: relative; display: flex; gap: 8px; padding: 12px; background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; }
+    .urgent-card__photo { position: relative; display: flex; justify-content: center; padding: 0 4px 8px; flex: none; }
+    .urgent-card__photo img { width: 48px; height: 48px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; }
+    .urgent-card__rating { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 4px 2px; background: #fff; border: 1px solid #e5e5ea; border-radius: 64px; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
+    .urgent-card__rating i { width: 12px; font-size: 10px; color: #fecb54; text-align: center; }
+    .urgent-card__info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+    .urgent-card__name { padding: 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: -0.32px; color: #2a3539; }
+    .urgent-card__distance { padding: 0 4px; font-size: 14px; line-height: 1.2; letter-spacing: -0.242px; color: #8b91a3; }
+    .urgent-card__tags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
+    .urgent-card__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
+    .urgent-card__free { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 64px; background: #eff9ef; font-size: 12px; line-height: 1.4; color: #0ba825; white-space: nowrap; }
+    .urgent-card__free i { width: 12px; font-size: 12px; color: #22bf1e; text-align: center; }
+    .urgent-more { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
+    .urgent-more[hidden] { display: none; }
+    .urgent-more::before, .urgent-more::after { content: ''; flex: 1; height: 1px; background: #e5e5ea; }
+    .urgent-more a, .urgent-footer__later { color: #6c757d; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+    .urgent-more a:hover, .urgent-footer__later:hover { opacity: 1; }
+    .urgent-footer { display: flex; flex-direction: column; align-items: center; padding-top: 16px; filter: drop-shadow(0 10px 16px rgba(42, 53, 57, .2)); font-family: 'soleil', sans-serif; }
+    .urgent-footer .btn-row { width: 100%; }
+    .urgent-footer__note { margin-top: 8px; font-size: 12px; line-height: 1.4; color: #4a5a61; text-align: center; }
+    .urgent-footer__later { margin-top: 12px; padding-bottom: 12px; }
+
     @keyframes shortlistPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .shortlist-progress__avatars img { animation: none; } }
 
@@ -2871,6 +2902,31 @@
     </div>
   </div>
 
+  <!-- ===== SCREEN: Urgent — X sitters are free tomorrow (Jobs Figma 4254:133834) =====
+       Stands in for "Your job is live" in the urgent sequence. -->
+  <div class="screen" id="s-urgent">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="nav.title"></span>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="closeFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="screen-body urgent-body">
+      <div class="urgent-hero">
+        <p class="urgent-hero__live" data-i18n="urgent.live"></p>
+        <h2 class="urgent-hero__title" id="urgent-title"></h2>
+        <p class="urgent-hero__sub" id="urgent-sub"></p>
+      </div>
+      <div class="urgent-list" id="urgent-list"></div>
+    </div>
+    <div class="screen-footer urgent-footer">
+      <div class="btn-row">
+        <button class="btn-primary shortlist-cta" type="button" onclick="urgentMessageNow()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="urgent.cta"></span></button>
+      </div>
+      <p class="urgent-footer__note" data-i18n="urgent.note"></p>
+      <a class="urgent-footer__later" onclick="urgentAtOwnPace()" data-i18n="urgent.later"></a>
+    </div>
+  </div>
+
   <!-- ===== SCREEN: Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460) ===== -->
   <div class="screen" id="s-shortlist">
     <div class="followup-nav">
@@ -2960,7 +3016,7 @@
       <div class="pricing-hero">
         <div class="pricing-avatars" id="pricing-avatars"></div>
         <h2 class="pricing-title" id="pricing-title"></h2>
-        <p class="pricing-sub" data-i18n="pricing.sub"></p>
+        <p class="pricing-sub" id="pricing-sub" data-i18n="pricing.sub"></p>
       </div>
 
       <div class="pricing-content">
@@ -3101,7 +3157,7 @@
   function buildFlow() {
     const openingSteps = window.IS_MOBILE_APP_EMBED ? [] : ['contact'];
     if (isMultiServiceFlow()) {
-      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success'].concat(afterJobSteps()));
+      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', ].concat(jobCreatedSteps()));
     }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
@@ -3109,7 +3165,7 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success'].concat(afterJobSteps()));
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', ].concat(jobCreatedSteps()));
     }
 
     const flow = openingSteps.concat(['service', 'location']);
@@ -3122,8 +3178,8 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'referral', 'success');
-    flow.push.apply(flow, afterJobSteps());
+    flow.push('review', 'phone', 'referral');
+    flow.push.apply(flow, jobCreatedSteps());
     return flow;
   }
 
@@ -3196,7 +3252,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'urgent' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3223,6 +3279,7 @@
       if (!isMultiServiceFlow()) updateReviewPills();
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
+    if (id === 'urgent') renderUrgent();
     if (id === 'shortlist') renderShortlist();
     if (id === 'nomatches') renderNoMatches();
     if (id === 'pricing') renderPricing();
@@ -3287,11 +3344,11 @@
   function skipToJobCreated() {
     if (document.getElementById('pill-modal').classList.contains('open')) closePillModal();
     const flow = buildFlow();
-    const idx = flow.indexOf('success');
+    const idx = flow.indexOf(jobCreatedStep());
     if (idx === -1) return;
     currentIdx = idx;
     navDirection = 'forward';
-    showScreen('success');
+    showScreen(flow[idx]);
   }
   // Prototype settings: which sequence of screens follows "Your job is live".
   // The pick is kept per browser and can be preset with ?after=<key> so a
@@ -3304,7 +3361,7 @@
       { key: 'few', name: 'Fewer than 5 matches', steps: ['shortlist', 'pricing'] },
       { key: 'none', name: 'No matches', steps: ['nomatches'] }
     ] },
-    { key: 'd', name: 'Sequence D', note: 'Not built yet.', steps: [] }
+    { key: 'urgent', name: 'Urgent: X sitters are free tomorrow', note: 'Sitters free tomorrow instead of “Your job is live”, then instant membership.', steps: ['urgent', 'pricing'], replacesJobCreated: true }
   ];
   // A sequence may come in variants (states of the same idea); the variant
   // is picked under it in the modal and preset with ?state=<key>.
@@ -3319,6 +3376,7 @@
     try { stored = localStorage.getItem(storageKey); } catch (e) {}
     return ok(stored) ? stored : fallback;
   }
+  let urgentAtOwnPaceChosen = false;
   let afterJobSequence = readPick('after', AFTER_JOB_STORAGE_KEY, function(key) { return isBuilt(findSequence(key)); }, 'matches');
   let afterJobVariant = readPick('state', AFTER_JOB_VARIANT_KEY, function(key) {
     return AFTER_JOB_SEQUENCES.some(function(q) { return (q.variants || []).some(function(v) { return v.key === key; }); });
@@ -3332,8 +3390,19 @@
   function afterJobSteps() {
     const seq = findSequence(afterJobSequence);
     const variant = currentVariant(seq);
-    return (variant ? variant.steps : (seq ? seq.steps : [])).slice();
+    const steps = (variant ? variant.steps : (seq ? seq.steps : [])).slice();
+    // Urgent: "Not that urgent?" detours through the shortlist first.
+    if (seq && seq.key === 'urgent' && urgentAtOwnPaceChosen) steps.splice(1, 0, 'shortlist');
+    return steps;
   }
+
+  // The steps from "job created" on. Most sequences follow "Your job is
+  // live"; the urgent one opens with its own screen in its place.
+  function jobCreatedSteps() {
+    const seq = findSequence(afterJobSequence);
+    return seq && seq.replacesJobCreated ? afterJobSteps() : ['success'].concat(afterJobSteps());
+  }
+  function jobCreatedStep() { return jobCreatedSteps()[0]; }
 
   function rerouteAfterJob(change) {
     const onAfterStep = afterJobSteps().indexOf(buildFlow()[currentIdx]) !== -1;
@@ -3399,7 +3468,7 @@
   }
   function closeFlow() {
     const flow = buildFlow();
-    if (flow[currentIdx] === 'success') { restartFlow(); return; }
+    if (flow[currentIdx] === jobCreatedStep()) { restartFlow(); return; }
     openExitModal();
   }
   function openExitModal() {
@@ -4178,9 +4247,74 @@
     showScreen(flow[idx]);
   }
 
+  // Urgent (sequence "Urgent: X sitters are free tomorrow"): eight sitters
+  // free tomorrow, three shown and five behind "+ 5 more". Message them now
+  // goes to Pricing for all of them; "Not that urgent?" detours through the
+  // shortlist so the family picks at its own pace.
+  const URGENT_SITTERS = [
+    { name: 'Alice M.', photo: '/jobs-for-families/assets/urgent/sitter-1.jpg', km: '1.2', rating: '4.2', free: '12–19', tag: 'experience' },
+    { name: 'Lucie U.', photo: '/jobs-for-families/assets/urgent/sitter-2.jpg', km: '0.8', rating: '4.8', free: null, tag: 'lastMinute' },
+    { name: 'Simona S.', photo: '/jobs-for-families/assets/urgent/sitter-3.jpg', km: '1.2', rating: '5.0', free: '13–18', tag: 'experience' },
+    { name: 'Barbora B.', photo: '/jobs-for-families/assets/shortlist/sitter-2.jpg', km: '8', rating: '4.8', free: '9–15', tag: 'lastMinute' },
+    { name: 'Cecílie C.', photo: '/jobs-for-families/assets/shortlist/sitter-3.jpg', km: '1.2', rating: '4.6', free: null, tag: 'experience' },
+    { name: 'Diana D.', photo: '/jobs-for-families/assets/shortlist/sitter-4.jpg', km: '1.2', rating: '4.6', free: '14–20', tag: 'experience' },
+    { name: 'Eliška E.', photo: '/jobs-for-families/assets/shortlist/sitter-5.jpg', km: '2.4', rating: '4.9', free: '12–18', tag: 'lastMinute' },
+    { name: 'Klára K.', photo: '/jobs-for-families/assets/shortlist/sitter-1.jpg', km: '3.1', rating: '4.7', free: null, tag: 'experience' }
+  ];
+  const URGENT_SHOWN = 3;
+
+  function renderUrgent() {
+    // Back on this screen: the detour is undone until it is chosen again.
+    urgentAtOwnPaceChosen = false;
+    const service = [...selectedServices][0] || 'babysitting';
+    const city = (document.getElementById('location-input').value || 'Prague').trim();
+    // The day the sitters are free: tomorrow, named in the page language.
+    const lang = (document.documentElement.lang || 'en').slice(0, 2);
+    const tomorrow = new Date(Date.now() + 864e5);
+    let day;
+    try { day = tomorrow.toLocaleDateString(lang === 'cz' ? 'cs' : lang, { weekday: 'long' }); } catch (e) { day = ''; }
+    document.getElementById('urgent-title').textContent = t('urgent.title').replace('{n}', URGENT_SITTERS.length);
+    document.getElementById('urgent-sub').textContent = t('urgent.sub').replace('{day}', day).replace('{city}', city);
+    const card = function(sitter) {
+      const free = sitter.free ? t('urgent.free').replace('{hours}', sitter.free) : t('urgent.freeAllDay');
+      const tag = sitter.tag === 'experience'
+        ? t('urgent.tags.experience').replace('{service}', t('service.' + service)) : t('urgent.tags.lastMinute');
+      return '<div class="urgent-card">'
+        + '<span class="urgent-card__photo"><img src="' + resolveEmbedAssetPath(sitter.photo) + '" alt="">'
+        +   '<span class="urgent-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i>' + sitter.rating + '</span></span>'
+        + '<span class="urgent-card__info"><span class="urgent-card__name">' + sitter.name + '</span>'
+        +   '<span class="urgent-card__distance">' + t('shortlist.distance').replace('{km}', sitter.km) + '</span>'
+        +   '<span class="urgent-card__tags"><span>' + tag + '</span></span></span>'
+        + '<span class="urgent-card__free"><i class="fa-regular fa-check" aria-hidden="true"></i>' + free + '</span>'
+        + '</div>';
+    };
+    const more = URGENT_SITTERS.length - URGENT_SHOWN;
+    document.getElementById('urgent-list').innerHTML = URGENT_SITTERS.slice(0, URGENT_SHOWN).map(card).join('')
+      + '<p class="urgent-more"><a onclick="showMoreUrgent()">' + t('urgent.more').replace('{n}', more) + '</a></p>'
+      + '<div class="urgent-extra" id="urgent-extra" hidden>' + URGENT_SITTERS.slice(URGENT_SHOWN).map(card).join('') + '</div>';
+  }
+
+  function showMoreUrgent() {
+    document.getElementById('urgent-extra').hidden = false;
+    document.querySelector('#urgent-list .urgent-more').hidden = true;
+  }
+
+  function urgentMessageNow() {
+    urgentAtOwnPaceChosen = false;
+    goNext();
+  }
+
+  function urgentAtOwnPace() {
+    urgentAtOwnPaceChosen = true;
+    goNext();
+  }
+
   // Who Pricing greets: the shortlist picks in that sequence (or its first
   // three when nobody was picked), otherwise the first three matches.
   function pricingSitters() {
+    if (afterJobSequence === 'urgent' && !urgentAtOwnPaceChosen) {
+      return URGENT_SITTERS.map(function(s) { return { name: s.name.split(/\s+/)[0], photo: resolveEmbedAssetPath(s.photo) }; });
+    }
     if (afterJobSteps().indexOf('shortlist') !== -1) {
       const picks = shortlistPicked.length ? shortlistPicked : [0, 1, 2];
       return picks.map(function(i) { return { name: SHORTLIST_SITTERS[i].name.split(/\s+/)[0], photo: shortlistPhoto(i) }; });
@@ -4206,19 +4340,25 @@
 
   function renderPricing() {
     const sitters = pricingSitters();
+    // Urgent: "Get help in place for tomorrow" over five of the free sitters.
+    const urgent = afterJobSequence === 'urgent' && !urgentAtOwnPaceChosen;
+    const avatarCount = urgent ? 5 : 3;
     const avatars = document.getElementById('pricing-avatars');
     avatars.innerHTML = '';
-    sitters.slice(0, 3).forEach(function(sitter, i) {
+    sitters.slice(0, avatarCount).forEach(function(sitter, i) {
       const img = document.createElement('img');
       img.src = sitter.photo;
       img.alt = '';
-      img.style.zIndex = String(3 - i);
+      img.style.zIndex = String(avatarCount - i);
       avatars.appendChild(img);
     });
+    document.getElementById('pricing-sub').textContent = urgent
+      ? t('pricing.urgentSub').replace('{n}', URGENT_SITTERS.length) : t('pricing.sub');
     // Up to three names; beyond that "Alice, Barbora, Cecílie and 2 more".
     const names = sitters.map(function(s) { return s.name; });
     const shown = names.length > 3 ? names.slice(0, 3).concat(t('pricing.andMore').replace('{n}', names.length - 3)) : names;
-    document.getElementById('pricing-title').textContent = t('pricing.title').replace('{names}', joinLocalizedList(shown, t('pricing.and')));
+    document.getElementById('pricing-title').textContent = urgent
+      ? t('pricing.urgentTitle') : t('pricing.title').replace('{names}', joinLocalizedList(shown, t('pricing.and')));
 
     const plans = document.getElementById('pricing-plans');
     plans.innerHTML = PRICING_PLANS.map(function(plan) {

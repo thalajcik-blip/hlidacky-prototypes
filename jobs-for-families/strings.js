@@ -717,6 +717,21 @@ window.STRINGS = {
       }
     }
   },
+  "urgent": {
+    "live": "🎉Váš inzerát je zveřejněný",
+    "title": "Zítra má volno {n} hlídaček",
+    "sub": "V {day} mají volno 13:00–18:00 a hodí se k vašemu inzerátu v okolí {city}.",
+    "free": "Volno {hours}",
+    "freeAllDay": "Volno celý den",
+    "tags": {
+      "experience": "Praxe: {service}",
+      "lastMinute": "Pomoc na poslední chvíli"
+    },
+    "more": "+ {n} dalších má zítra volno",
+    "cta": "Napište jim hned",
+    "note": "Členství začíná ve chvíli, kdy zaplatíte.",
+    "later": "Nespěcháte? Vyberte si hlídačky ve svém tempu"
+  },
   "shortlist": {
     "navTitle": "Vaše shody",
     "title": "Vyberte si až 5 hlídaček, které se vám líbí",
@@ -756,6 +771,8 @@ window.STRINGS = {
     "title": "Napište {names}",
     "and": "a",
     "andMore": "{n} dalším",
+    "urgentTitle": "Zajistěte si pomoc na zítřek",
+    "urgentSub": "Zaplaťte jednou a hned pište {n} hlídačkám, které mají volno.",
     "sub": "Staňte se členem, pozdravte, zeptejte se na vše potřebné a domluvte si první návštěvu.",
     "membership": "Členství",
     "perMonth": "měsíčně",

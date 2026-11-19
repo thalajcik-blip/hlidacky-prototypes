@@ -718,6 +718,21 @@
       }
     }
   },
+  "urgent": {
+    "live": "🎉Your job is live",
+    "title": "{n} sitters are free tomorrow",
+    "sub": "They have {day} 13:00–18:00 open and match your job near {city}.",
+    "free": "Free {hours}",
+    "freeAllDay": "Free all day",
+    "tags": {
+      "experience": "{service} experience",
+      "lastMinute": "Last-minute help"
+    },
+    "more": "+ {n} more free tomorrow",
+    "cta": "Message them now",
+    "note": "Your membership starts the moment you pay.",
+    "later": "Not that urgent? Pick sitters at your own pace"
+  },
   "shortlist": {
     "navTitle": "Your matches",
     "title": "Pick up to 5 sitters you like",
@@ -757,6 +772,8 @@
     "title": "Message {names}",
     "and": "and",
     "andMore": "{n} more",
+    "urgentTitle": "Get help in place for tomorrow",
+    "urgentSub": "Pay once and start messaging the {n} sitters who are free right away.",
     "sub": "Become a member to say hello, ask your questions and agree on a first visit.",
     "membership": "Membership",
     "perMonth": "per month",
