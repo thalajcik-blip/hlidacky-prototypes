@@ -738,7 +738,7 @@
     "benefitInsurance": "Bookings with <b>insurance</b>",
     "benefitLastMinute": "Last-minute search",
     "pay": "Pay {total} Kč",
-    "payBack": "You get back <b>{credit} Kč credits</b> to spend on bookings",
+    "payBack": "You get back <b>{credit} Kč credits</b>",
     "renews": {
       "one": "Renews every month.",
       "three": "Renews every 3 months.",

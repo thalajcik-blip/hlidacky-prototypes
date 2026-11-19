@@ -737,7 +737,7 @@ window.STRINGS = {
     "benefitInsurance": "Rezervace s <b>pojištěním</b>",
     "benefitLastMinute": "Hledání na poslední chvíli",
     "pay": "Zaplatit {total} Kč",
-    "payBack": "Získáte zpět <b>{credit} Kč kreditů</b> na rezervace",
+    "payBack": "Získáte zpět <b>{credit} Kč kreditů</b>",
     "renews": {
       "one": "Obnovuje se každý měsíc.",
       "three": "Obnovuje se každé 3 měsíce.",
