@@ -740,6 +740,14 @@
     "near": "Near {city}",
     "more": "more"
   },
+  "skipSheet": {
+    "title": "Pick your sitters later?",
+    "body": "Your job stays live and sitters can still reply. We’ll keep your matches here, so you can come back to them any time.",
+    "whereTitle": "Where to find them",
+    "path": "Your account → My jobs → {job}",
+    "keep": "Keep picking",
+    "later": "Pick later"
+  },
   "shortlist": {
     "navTitle": "Your matches",
     "title": "Pick up to 5 sitters you like",

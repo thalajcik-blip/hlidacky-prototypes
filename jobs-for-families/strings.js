@@ -739,6 +739,14 @@ window.STRINGS = {
     "near": "V okolí {city}",
     "more": "další"
   },
+  "skipSheet": {
+    "title": "Vybrat hlídačky později?",
+    "body": "Váš inzerát zůstává zveřejněný a hlídačky vám stále mohou odpovědět. Vaše shody si tu necháme, takže se k nim můžete kdykoli vrátit.",
+    "whereTitle": "Kde je najdete",
+    "path": "Váš účet → Moje inzeráty → {job}",
+    "keep": "Pokračovat ve výběru",
+    "later": "Vybrat později"
+  },
   "shortlist": {
     "navTitle": "Vaše shody",
     "title": "Vyberte si až 5 hlídaček, které se vám líbí",

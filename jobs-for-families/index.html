@@ -897,16 +897,16 @@
     /* Pill bottom sheet (Jobs Figma 3981:60967). The layer covers the
        phone; the sheet slides up from its bottom edge and sizes to its
        content, scrolling the body once it reaches the top. */
-    #pill-modal {
+    #pill-modal, #skip-sheet {
       position: absolute; inset: 0; z-index: 200; overflow: hidden;
       visibility: hidden; transition: visibility 0s linear .38s;
     }
-    #pill-modal.open { visibility: visible; transition: none; }
+    #pill-modal.open, #skip-sheet.open { visibility: visible; transition: none; }
     .pm-overlay {
       position: absolute; inset: 0; background: rgba(42, 53, 57, .8);
       opacity: 0; transition: opacity .3s ease;
     }
-    #pill-modal.open .pm-overlay { opacity: 1; }
+    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay { opacity: 1; }
     .pm-sheet {
       position: absolute; left: 0; right: 0; bottom: 0;
       display: flex; flex-direction: column; gap: 16px;
@@ -917,7 +917,7 @@
       transform: translateY(100%);
       transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     }
-    #pill-modal.open .pm-sheet { transform: translateY(0); }
+    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet { transform: translateY(0); }
     .pm-sheet.is-dragging { transition: none; }
     .pm-handle {
       display: flex; flex-shrink: 0; justify-content: center; padding: 8px 0;
@@ -1421,6 +1421,21 @@
     .fallback-match__title { font-size: 14px; font-weight: 450; line-height: 20px; color: #2a3539; }
     .fallback-match__tags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
     .fallback-match__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
+
+    /* Skipping without picking sheet (Jobs Figma 4253:132721). */
+    .skip-sheet { gap: 12px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+    .skip-sheet__header { align-items: center; }
+    .skip-sheet__doodle { position: relative; width: 42px; height: 42px; flex: none; overflow: hidden; }
+    .skip-sheet__doodle img { position: absolute; display: block; max-width: none; }
+    .skip-sheet__l2 { inset: 16.26% 9.75% 21.26% 13.27%; width: 76.98%; height: 62.48%; }
+    .skip-sheet__l3 { inset: 19.74% 13.88% 10.37% 12.09%; width: 74.03%; height: 69.89%; }
+    .skip-sheet__l1 { position: absolute; inset: 7.84% 11.39% 10.37% 11.69%; }
+    .skip-sheet__l1 img { inset: -1.19% -1.26%; width: 102.52%; height: 102.38%; }
+    .skip-sheet__body { display: flex; flex-direction: column; gap: 12px; font-family: 'soleil', sans-serif; }
+    .skip-sheet__text { font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .skip-sheet__where { display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; border-radius: 4px; background: #f1f5fb; }
+    .skip-sheet__where-title { font-size: 14px; font-weight: 450; line-height: 20px; color: #2a3539; }
+    .skip-sheet__path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: #6c757d; }
 
     @keyframes shortlistPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .shortlist-progress__avatars img { animation: none; } }
@@ -2921,7 +2936,7 @@
     <div class="followup-nav">
       <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
       <span class="followup-nav-title" data-i18n="nav.title"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="closeFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="screen-body urgent-body">
       <div class="urgent-hero">
@@ -2936,7 +2951,7 @@
         <button class="btn-primary shortlist-cta" type="button" onclick="urgentMessageNow()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="urgent.cta"></span></button>
       </div>
       <p class="urgent-footer__note" data-i18n="urgent.note"></p>
-      <a class="urgent-footer__later" onclick="urgentAtOwnPace()" data-i18n="urgent.later"></a>
+      <a class="urgent-footer__later" onclick="openSkipSheet('own-pace')" data-i18n="urgent.later"></a>
     </div>
   </div>
 
@@ -2946,7 +2961,7 @@
     <div class="followup-nav">
       <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
       <span class="followup-nav-title" data-i18n="nav.title"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="closeFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="screen-body urgent-body">
       <div class="urgent-hero">
@@ -2965,7 +2980,7 @@
         <button class="btn-primary shortlist-cta" type="button" onclick="urgentMessageNow()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="urgent.cta"></span></button>
       </div>
       <p class="urgent-footer__note" data-i18n="urgent.note"></p>
-      <a class="urgent-footer__later" onclick="urgentAtOwnPace()" data-i18n="urgent.later"></a>
+      <a class="urgent-footer__later" onclick="openSkipSheet('own-pace')" data-i18n="urgent.later"></a>
     </div>
   </div>
 
@@ -2974,7 +2989,7 @@
     <div class="followup-nav">
       <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
       <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="shortlist-head">
       <h2 class="shortlist-title" id="shortlist-title"></h2>
@@ -2993,7 +3008,7 @@
       <div class="btn-row">
         <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span id="shortlist-cta-label"></span></button>
       </div>
-      <a class="btn-link success-edit shortlist-later" id="shortlist-later" onclick="goPrev()"></a>
+      <a class="btn-link success-edit shortlist-later" id="shortlist-later" onclick="openSkipSheet()"></a>
     </div>
   </div>
 
@@ -3093,6 +3108,34 @@
       <div class="exit-footer">
         <button class="btn-secondary" onclick="exitFlow()" data-i18n="exitModal.leave"></button>
         <button class="btn-primary" onclick="closeExitModal()" data-i18n="exitModal.stay"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SKIPPING WITHOUT PICKING (Jobs Figma 4253:132721) =====
+       Leaving a sitter screen after the job is created. -->
+  <div id="skip-sheet" aria-hidden="true">
+    <div class="pm-overlay" onclick="closeSkipSheet()"></div>
+    <div class="pm-sheet skip-sheet" role="dialog" aria-modal="true" aria-labelledby="skip-sheet-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header skip-sheet__header">
+        <div class="skip-sheet__doodle" aria-hidden="true">
+          <img class="skip-sheet__l2" src="/jobs-for-families/assets/doodle-later/layer-2.svg" alt="">
+          <img class="skip-sheet__l3" src="/jobs-for-families/assets/doodle-later/layer-3.svg" alt="">
+          <span class="skip-sheet__l1"><img src="/jobs-for-families/assets/doodle-later/layer-1.svg" alt=""></span>
+        </div>
+        <h2 class="pm-title" id="skip-sheet-title" data-i18n="skipSheet.title"></h2>
+      </div>
+      <div class="skip-sheet__body">
+        <p class="skip-sheet__text" data-i18n="skipSheet.body"></p>
+        <div class="skip-sheet__where">
+          <p class="skip-sheet__where-title" data-i18n="skipSheet.whereTitle"></p>
+          <p class="skip-sheet__path" id="skip-sheet-path"></p>
+        </div>
+      </div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" onclick="skipSheetKeepPicking()"><span data-i18n="skipSheet.keep"></span></button>
+        <button class="pm-cancel" type="button" onclick="skipSheetPickLater()" data-i18n="skipSheet.later"></button>
       </div>
     </div>
   </div>
@@ -5408,8 +5451,8 @@
 
   // Drag the handle down to dismiss: past 30% of the sheet's height, or a
   // quick flick, closes it; anything less springs back.
-  (function setupPillSheetDrag() {
-    const sheet = document.querySelector('#pill-modal .pm-sheet');
+  function setupSheetDrag(layerId, close) {
+    const sheet = document.querySelector('#' + layerId + ' .pm-sheet');
     const handle = sheet.querySelector('.pm-handle');
     let startY = 0, startTime = 0, offset = 0, dragging = false;
     handle.addEventListener('pointerdown', function(event) {
@@ -5430,15 +5473,47 @@
       dragging = false;
       sheet.classList.remove('is-dragging');
       const velocity = offset / Math.max(1, performance.now() - startTime);
-      if (offset > sheet.offsetHeight * 0.3 || (offset > 30 && velocity > 0.5)) closePillModal();
+      if (offset > sheet.offsetHeight * 0.3 || (offset > 30 && velocity > 0.5)) close();
       else sheet.style.transform = '';
     }
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
     document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' && document.getElementById('pill-modal').classList.contains('open')) closePillModal();
+      if (event.key === 'Escape' && document.getElementById(layerId).classList.contains('open')) close();
     });
-  })();
+  }
+  setupSheetDrag('pill-modal', closePillModal);
+  setupSheetDrag('skip-sheet', closeSkipSheet);
+
+  // Skipping without picking: leaving a sitter screen once the job exists
+  // (close, "I'll decide later", "Not that urgent?") asks first. Keep picking
+  // stays — or, from "Not that urgent?", goes on to the shortlist as before;
+  // Pick later ends the flow, as the app would return to the account.
+  let skipSheetContext = null;
+  function openSkipSheet(context) {
+    skipSheetContext = context || null;
+    const service = [...selectedServices][0] || 'babysitting';
+    document.getElementById('skip-sheet-path').textContent = t('skipSheet.path').replace('{job}', t('success.cardTitles.' + service));
+    const layer = document.getElementById('skip-sheet');
+    layer.querySelector('.pm-sheet').style.transform = '';
+    layer.classList.add('open');
+    layer.setAttribute('aria-hidden', 'false');
+  }
+  function closeSkipSheet() {
+    const layer = document.getElementById('skip-sheet');
+    layer.classList.remove('open');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelector('.pm-sheet').style.transform = '';
+  }
+  function skipSheetKeepPicking() {
+    const context = skipSheetContext;
+    closeSkipSheet();
+    if (context === 'own-pace') urgentAtOwnPace();
+  }
+  function skipSheetPickLater() {
+    closeSkipSheet();
+    restartFlow();
+  }
 
   function onReviewTextInput() {
     setReviewCompact(true);
