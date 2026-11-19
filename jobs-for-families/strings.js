@@ -748,7 +748,7 @@ window.STRINGS = {
       "sub": "Označte ty, které se vám líbí. Níže je pár dalších, které splňují většinu toho, co potřebujete.",
       "close": "Nejlepší shoda",
       "alsoWorth": "Také stojí za pohled",
-      "ctaNames": "Staňte se členem a napište: {names}",
+      "cta": "Staňte se členem a napište hlídačkám",
       "later": "Udělám to později"
     },
     "cta": "Staňte se členem a napište jim",

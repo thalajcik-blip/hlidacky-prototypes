@@ -4215,15 +4215,12 @@
     document.getElementById('shortlist-picked-avatars').innerHTML = shortlistPicked.map(function(i, n) {
       return '<img src="' + shortlistPhoto(i) + '" alt="" style="z-index:' + (SHORTLIST_MAX - n) + '">';
     }).join('');
-    // Few-matches footer: the count sits by the button, which names up to
-    // two picked sitters ("message Bára", "message Bára and Alice").
+    // Few-matches footer: the count sits by the button. The button keeps one
+    // short label; picked names did not fit a phone-width button.
     const few = shortlistMode() === 'few';
-    const firstNames = shortlistPicked.map(function(i) { return SHORTLIST_SITTERS[i].name.split(/\s+/)[0]; });
     document.getElementById('shortlist-footer-count').textContent = few
       ? t('shortlist.picked').replace('{n}', shortlistPicked.length).replace('{max}', SHORTLIST_MAX) : '';
-    document.getElementById('shortlist-cta-label').textContent = few && firstNames.length && firstNames.length <= 2
-      ? t('shortlist.few.ctaNames').replace('{names}', joinLocalizedList(firstNames, t('pricing.and')))
-      : t('shortlist.cta');
+    document.getElementById('shortlist-cta-label').textContent = t(few ? 'shortlist.few.cta' : 'shortlist.cta');
   }
 
   // No matches (Shortlist states): the suggestions take the family back to

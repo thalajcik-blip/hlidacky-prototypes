@@ -749,7 +749,7 @@
       "sub": "Heart the ones you like. Below are a few more who fit most of what you need.",
       "close": "Close match",
       "alsoWorth": "Also worth a look",
-      "ctaNames": "Become a member to message {names}",
+      "cta": "Become a member to message Sitters",
       "later": "I’ll do it later"
     },
     "cta": "Become a member to message them",
