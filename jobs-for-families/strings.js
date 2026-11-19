@@ -717,6 +717,35 @@ window.STRINGS = {
       }
     }
   },
+  "pricing": {
+    "navTitle": "Členství",
+    "title": "Napište {names}",
+    "and": "a",
+    "sub": "Staňte se členem, pozdravte, zeptejte se na vše potřebné a domluvte si první návštěvu.",
+    "membership": "Členství",
+    "perMonth": "měsíčně",
+    "includes": "obsahuje",
+    "credit": "{amount} Kč kredit na vaše rezervace",
+    "months": {
+      "one": "1 měsíc",
+      "three": "3 měsíce",
+      "twelve": "12 měsíců"
+    },
+    "badgeRegular": "Pravidelné hlídání",
+    "badgeFamily": "Pro všechny potřeby rodiny",
+    "benefitContact": "Kontaktujte <b>neomezeně</b> hlídaček",
+    "benefitInsurance": "Rezervace s <b>pojištěním</b>",
+    "benefitLastMinute": "Hledání na poslední chvíli",
+    "pay": "Zaplatit {total} Kč",
+    "payBack": "Získáte zpět <b>{credit} Kč kreditů</b> na rezervace",
+    "renews": {
+      "one": "Obnovuje se každý měsíc.",
+      "three": "Obnovuje se každé 3 měsíce.",
+      "twelve": "Obnovuje se každých 12 měsíců."
+    },
+    "cancel": "Zrušit můžete kdykoli.",
+    "bankTransfer": "Zaplatit bankovním převodem."
+  },
   "onboarding": {
     "navTitle": "Úvodní nastavení",
     "title": "Hlídačky odpovídající vašim preferencím",

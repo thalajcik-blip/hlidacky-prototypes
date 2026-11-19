@@ -718,6 +718,35 @@
       }
     }
   },
+  "pricing": {
+    "navTitle": "Membership",
+    "title": "Message {names}",
+    "and": "and",
+    "sub": "Become a member to say hello, ask your questions and agree on a first visit.",
+    "membership": "Membership",
+    "perMonth": "per month",
+    "includes": "includes",
+    "credit": "{amount} Kč credit for your bookings",
+    "months": {
+      "one": "1 month",
+      "three": "3 months",
+      "twelve": "12 months"
+    },
+    "badgeRegular": "Regular care",
+    "badgeFamily": "For every family need",
+    "benefitContact": "Contact <b>unlimited</b> sitters",
+    "benefitInsurance": "Bookings with <b>insurance</b>",
+    "benefitLastMinute": "Last-minute search",
+    "pay": "Pay {total} Kč",
+    "payBack": "You get back <b>{credit} Kč credits</b> to spend on bookings",
+    "renews": {
+      "one": "Renews every month.",
+      "three": "Renews every 3 months.",
+      "twelve": "Renews every 12 months."
+    },
+    "cancel": "Cancel anytime.",
+    "bankTransfer": "Pay by bank transfer."
+  },
   "onboarding": {
     "navTitle": "Onboarding",
     "title": "Sitters matching your preferences",

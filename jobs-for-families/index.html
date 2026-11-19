@@ -1202,6 +1202,60 @@
     .followup-cta-text { font-size: 14px; color: var(--text); margin-bottom: 10px; line-height: 1.5; margin-top: 16px; text-align: center; }
     .followup-cta-btn { background: #0ba825; border: none; border-radius: 4px; padding: 14px 20px 16px; font-family: 'soleil','Inter',sans-serif; font-size: 16px; font-weight: 400; color: #fff; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: inset 0px -3px 0px 0px rgba(0,0,0,0.16); line-height: 22px; }
 
+    /* Pricing — become a member to message them (Jobs Figma 4251:129553) */
+    #s-pricing .pricing-body { padding: 0; }
+    .pricing-close { width: 40px; height: 40px; display: flex; align-items: center; justify-content: flex-end; border: 0; background: none; padding: 0; cursor: pointer; color: #bec2ce; font-size: 24px; }
+    .pricing-hero { display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; }
+    .pricing-avatars { display: flex; justify-content: center; padding-bottom: 10px; isolation: isolate; }
+    .pricing-avatars img { width: 48px; height: 48px; margin-right: -16px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); }
+    .pricing-avatars img:last-child { margin-right: 0; }
+    .pricing-title { max-width: 280px; font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .pricing-sub { max-width: 240px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .pricing-content { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 20px; font-family: 'soleil', sans-serif; }
+    .pricing-plans { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 335px; padding-bottom: 8px; }
+    .pricing-plan {
+      position: relative; display: flex; flex-direction: column; width: 100%; padding: 0; text-align: left;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; cursor: pointer; font: inherit; color: inherit;
+      filter: drop-shadow(0 8px 12px rgba(42, 53, 57, .2)); transition: border-color .15s, box-shadow .15s;
+    }
+    /* Selected: 2px pink without shifting the layout — the outer pixel is a ring. */
+    .pricing-plan.is-selected { border-color: #f96073; box-shadow: 0 0 0 1px #f96073; }
+    .pricing-plan:focus-visible { outline: 2px solid #6aafff; outline-offset: 3px; }
+    .pricing-plan__badge { position: absolute; right: 16px; top: -8px; z-index: 1; padding: 2px 8px; border-radius: 64px; background: #fd8b25; color: #fff; font-size: 12px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+    .pricing-plan__main { display: flex; align-items: center; gap: 4px; padding: 12px 16px 8px; }
+    .pricing-plan__name { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
+    .pricing-plan__radio { width: 20px; height: 20px; flex: none; display: block; }
+    .pricing-plan__label { display: flex; flex-direction: column; padding: 0 4px; white-space: nowrap; }
+    .pricing-plan__months { font-size: 18px; font-weight: 700; line-height: 1.5; letter-spacing: -0.24px; color: #2a3539; }
+    .pricing-plan__kind { font-size: 12px; font-weight: 350; line-height: 1.2; letter-spacing: .5px; text-transform: uppercase; color: #6c757d; }
+    .pricing-plan__price { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-height: 56px; }
+    .pricing-plan__amount { display: flex; align-items: flex-end; gap: 2px; color: #2a3539; white-space: nowrap; }
+    .pricing-plan__amount b { font-size: 32px; font-weight: 700; line-height: 32px; letter-spacing: -0.4px; }
+    .pricing-plan__amount span { font-size: 14px; font-weight: 450; line-height: 20px; }
+    .pricing-plan__per { font-size: 14px; font-weight: 350; line-height: 1.2; color: #4a5a61; white-space: nowrap; }
+    .pricing-plan__credit { padding: 8px 16px; border-top: 1px solid #e3e9f0; border-radius: 0 0 7px 7px; background: #f1f5fb; text-align: center; font-size: 14px; font-weight: 350; line-height: 1.2; color: #4a5a61; }
+    .pricing-plan__credit b { font-weight: 450; color: #212529; }
+    .pricing-plan.is-selected .pricing-plan__credit { background: #fff1e5; border-top-color: #fee7d1; }
+    .pricing-checkout { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 335px; padding-top: 12px; }
+    .pricing-benefits { display: flex; flex-direction: column; gap: 4px; padding: 16px 0; list-style: none; }
+    .pricing-benefits li { display: flex; align-items: flex-start; gap: 4px; font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #4a5a61; white-space: nowrap; }
+    .pricing-benefits li b { font-weight: 700; }
+    .pricing-benefits i { width: 20px; height: 21px; display: flex; align-items: center; justify-content: center; flex: none; color: #0ba825; font-size: 12.5px; }
+    .pricing-pay {
+      display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 24px 12px 20px;
+      border: 0; border-radius: 4px; background: #0ba825; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16);
+      color: #fff; font-family: inherit; cursor: pointer;
+    }
+    .pricing-pay:hover { background: #0a8c20; }
+    .pricing-pay__main { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; line-height: 22px; }
+    .pricing-pay__main i { width: 16px; font-size: 16px; text-align: center; }
+    .pricing-pay__sub { font-size: 12px; font-weight: 400; line-height: 20px; }
+    .pricing-pay__sub b { font-weight: 700; }
+    .pricing-disclaimer { display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 12px; text-align: center; font-size: 12px; line-height: 1.5; letter-spacing: -0.16px; }
+    .pricing-disclaimer p { font-weight: 350; color: #4a5a61; }
+    .pricing-disclaimer b { font-weight: 450; color: #212529; }
+    .pricing-bank { color: #6c757d; opacity: .8; font-size: 12px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+
   </style>
 </head>
 <body>
@@ -2682,12 +2736,44 @@
       </div>
 
       <p class="followup-cta-text" data-i18n="onboarding.ctaText"></p>
-      <button class="followup-cta-btn"><img src="/doodles/icon-star-membership.svg" width="16" height="16" alt=""> <span data-i18n="onboarding.ctaBtn"></span> <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 6.5L1 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="followup-cta-btn" onclick="goNext()"><img src="/doodles/icon-star-membership.svg" width="16" height="16" alt=""> <span data-i18n="onboarding.ctaBtn"></span> <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 6.5L1 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
 
     <div class="screen-footer">
       <div class="btn-row">
         <button onclick="restartFlow()" style="background:none;border:none;cursor:pointer;font-size:13px;color:#8B91A3;text-decoration:underline;text-underline-offset:3px;padding:4px 8px;display:block;margin:0 auto;" data-i18n="onboarding.restart"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Pricing — become a member to message them (Jobs Figma 4251:129553) ===== -->
+  <div class="screen" id="s-pricing">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="pricing.navTitle"></span>
+      <button class="pricing-close" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="screen-body pricing-body">
+      <div class="pricing-hero">
+        <div class="pricing-avatars" id="pricing-avatars"></div>
+        <h2 class="pricing-title" id="pricing-title"></h2>
+        <p class="pricing-sub" data-i18n="pricing.sub"></p>
+      </div>
+
+      <div class="pricing-content">
+        <div class="pricing-plans" id="pricing-plans" role="radiogroup" aria-labelledby="pricing-title"></div>
+
+        <div class="pricing-checkout">
+          <ul class="pricing-benefits" id="pricing-benefits"></ul>
+          <button class="pricing-pay" type="button">
+            <span class="pricing-pay__main"><i class="fa-light fa-credit-card" aria-hidden="true"></i><span id="pricing-pay-label"></span></span>
+            <span class="pricing-pay__sub" id="pricing-pay-sub"></span>
+          </button>
+          <div class="pricing-disclaimer">
+            <p><span id="pricing-renews"></span> <b data-i18n="pricing.cancel"></b></p>
+            <a class="pricing-bank" data-i18n="pricing.bankTransfer"></a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2797,7 +2883,7 @@
   function buildFlow() {
     const openingSteps = window.IS_MOBILE_APP_EMBED ? [] : ['contact'];
     if (isMultiServiceFlow()) {
-      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success', 'followup']);
+      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success', 'followup', 'pricing']);
     }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
@@ -2805,7 +2891,7 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success', 'followup']);
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success', 'followup', 'pricing']);
     }
 
     const flow = openingSteps.concat(['service', 'location']);
@@ -2818,7 +2904,7 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'referral', 'success', 'followup');
+    flow.push('review', 'phone', 'referral', 'success', 'followup', 'pricing');
     return flow;
   }
 
@@ -2891,7 +2977,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = id === 'followup' ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -2918,6 +3004,7 @@
       if (!isMultiServiceFlow()) updateReviewPills();
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
+    if (id === 'pricing') renderPricing();
 
     if (!oldEl || oldEl === newEl) {
       prepareHeroSVG(newEl);
@@ -3645,6 +3732,72 @@
     const parts = (full || '').trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return 'Jana P.';
     return parts.length === 1 ? parts[0] : parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
+  }
+
+  // Pricing: three membership plans; picking one updates the pay button,
+  // its credit line and the renewal note. Totals are what the button
+  // charges (the 3-month total follows the Figma frame). The header
+  // greets the first three sitters from the matches list before it.
+  const PRICING_PLANS = [
+    { key: 'one', perMonth: 477, total: 477, credit: 200 },
+    { key: 'three', perMonth: 199, total: 997, credit: 400, badge: 'badgeRegular' },
+    { key: 'twelve', perMonth: 119, total: 1428, credit: 1500, badge: 'badgeFamily' }
+  ];
+  let pricingPlan = 'three';
+
+  // 1500 → "1 500", with a no-break space as Czech prices are written.
+  function formatKc(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  function renderPricing() {
+    const sitters = [...document.querySelectorAll('#s-followup .sitter-card')].slice(0, 3).map(function(card) {
+      return { name: card.querySelector('.sitter-name').textContent.trim().split(/\s+/)[0], photo: card.querySelector('.sitter-avatar').getAttribute('src') };
+    });
+    const avatars = document.getElementById('pricing-avatars');
+    avatars.innerHTML = '';
+    sitters.forEach(function(sitter, i) {
+      const img = document.createElement('img');
+      img.src = sitter.photo;
+      img.alt = '';
+      img.style.zIndex = String(sitters.length - i);
+      avatars.appendChild(img);
+    });
+    const names = sitters.map(function(s) { return s.name; });
+    document.getElementById('pricing-title').textContent = t('pricing.title').replace('{names}', joinLocalizedList(names, t('pricing.and')));
+
+    const plans = document.getElementById('pricing-plans');
+    plans.innerHTML = PRICING_PLANS.map(function(plan) {
+      return '<button type="button" class="pricing-plan" role="radio" data-plan="' + plan.key + '" onclick="selectPricingPlan(\'' + plan.key + '\')">'
+        + (plan.badge ? '<span class="pricing-plan__badge">' + t('pricing.' + plan.badge) + '</span>' : '')
+        + '<span class="pricing-plan__main">'
+        +   '<span class="pricing-plan__name"><img class="pricing-plan__radio" alt="">'
+        +     '<span class="pricing-plan__label"><span class="pricing-plan__months">' + t('pricing.months.' + plan.key) + '</span>'
+        +     '<span class="pricing-plan__kind">' + t('pricing.membership') + '</span></span></span>'
+        +   '<span class="pricing-plan__price"><span class="pricing-plan__amount"><b>' + formatKc(plan.perMonth) + '</b><span>Kč</span></span>'
+        +     '<span class="pricing-plan__per">' + t('pricing.perMonth') + '</span></span>'
+        + '</span>'
+        + '<span class="pricing-plan__credit">' + t('pricing.includes') + ' <b>' + t('pricing.credit').replace('{amount}', formatKc(plan.credit)) + '</b></span>'
+        + '</button>';
+    }).join('');
+
+    document.getElementById('pricing-benefits').innerHTML = ['benefitContact', 'benefitInsurance', 'benefitLastMinute'].map(function(key) {
+      return '<li><i class="fa-regular fa-check" aria-hidden="true"></i><span>' + t('pricing.' + key) + '</span></li>';
+    }).join('');
+
+    selectPricingPlan(pricingPlan);
+  }
+
+  function selectPricingPlan(key) {
+    pricingPlan = key;
+    const plan = PRICING_PLANS.find(function(p) { return p.key === key; });
+    document.querySelectorAll('#pricing-plans .pricing-plan').forEach(function(el) {
+      const on = el.dataset.plan === key;
+      el.classList.toggle('is-selected', on);
+      el.setAttribute('aria-checked', String(on));
+      el.querySelector('.pricing-plan__radio').src = resolveEmbedAssetPath('/jobs-for-families/assets/pricing/radio-' + (on ? 'on' : 'off') + '.svg');
+    });
+    document.getElementById('pricing-pay-label').textContent = t('pricing.pay').replace('{total}', formatKc(plan.total));
+    document.getElementById('pricing-pay-sub').innerHTML = t('pricing.payBack').replace('{credit}', formatKc(plan.credit));
+    document.getElementById('pricing-renews').textContent = t('pricing.renews.' + key);
   }
 
   // Restart the intro sequence (see .is-intro in the styles).
