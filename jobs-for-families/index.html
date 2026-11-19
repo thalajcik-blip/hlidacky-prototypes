@@ -307,6 +307,59 @@
       text-decoration: underline; text-decoration-color: #bec2ce; text-underline-offset: 3px;
     }
 
+    /* Success intro: the heading and the job card carry the moment; the app
+       box and the buttons follow quietly. Starts as the screen finishes
+       sliding in (~360ms) and settles by ~1.9s. .is-intro is re-added on
+       every visit, so the sequence replays. */
+    .success-title__emoji { display: inline-block; transform-origin: 50% 80%; }
+    .job-preview { position: relative; }
+    .job-preview::after {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+      transform: translateX(-120%); opacity: 0;
+    }
+    #s-success.is-intro .success-title { animation: successRise .5s cubic-bezier(.2, .8, .2, 1) .12s both; }
+    #s-success.is-intro .success-title__emoji { animation: successEmoji .8s cubic-bezier(.3, 1.4, .5, 1) .3s both; }
+    #s-success.is-intro .success-sub { animation: successRise .45s cubic-bezier(.2, .8, .2, 1) .26s both; }
+    #s-success.is-intro .job-preview { animation: successCard .8s cubic-bezier(.22, 1, .36, 1) .42s both; }
+    #s-success.is-intro .job-preview__img img { animation: successPhoto 1.5s cubic-bezier(.2, .8, .2, 1) .42s both; }
+    #s-success.is-intro .job-preview__badge { animation: successPop .5s cubic-bezier(.3, 1.5, .5, 1) .9s both; }
+    #s-success.is-intro .job-preview__title { animation: successRise .45s cubic-bezier(.2, .8, .2, 1) .78s both; }
+    #s-success.is-intro .job-preview__meta { animation: successRise .45s cubic-bezier(.2, .8, .2, 1) .86s both; }
+    #s-success.is-intro .job-preview::after { animation: successShine .9s ease-in-out 1.2s both; }
+    #s-success.is-intro .success-app { animation: successFade .5s ease-out 1.15s both; }
+    #s-success.is-intro .screen-footer { animation: successFade .5s ease-out 1.25s both; }
+    @keyframes successRise {
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes successEmoji {
+      0% { opacity: 0; transform: scale(.2) rotate(-30deg); }
+      55% { opacity: 1; transform: scale(1.35) rotate(14deg); }
+      75% { transform: scale(.94) rotate(-8deg); }
+      90% { transform: scale(1.03) rotate(3deg); }
+      100% { opacity: 1; transform: none; }
+    }
+    @keyframes successCard {
+      0% { opacity: 0; transform: translateY(64px) rotate(-4deg) scale(.92); box-shadow: 0 4px 8px -4px rgba(42, 53, 57, 0); }
+      55% { opacity: 1; transform: translateY(-6px) rotate(.8deg) scale(1.01); box-shadow: 0 18px 32px -12px rgba(42, 53, 57, .3); }
+      100% { opacity: 1; transform: none; box-shadow: 0 4px 8px -4px rgba(42, 53, 57, .2); }
+    }
+    @keyframes successPhoto { from { transform: scale(1.15); } to { transform: none; } }
+    @keyframes successPop {
+      0% { opacity: 0; transform: scale(.4); }
+      70% { opacity: 1; transform: scale(1.12); }
+      100% { opacity: 1; transform: none; }
+    }
+    @keyframes successShine {
+      0% { opacity: 1; transform: translateX(-120%); }
+      100% { opacity: 1; transform: translateX(120%); }
+    }
+    @keyframes successFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      #s-success.is-intro *, #s-success.is-intro .job-preview::after { animation: none !important; }
+    }
+
     /* Labels, inputs */
     .sec-label {
       flex: 1 0 0;
@@ -2864,7 +2917,7 @@
       updateReviewText();
       if (!isMultiServiceFlow()) updateReviewPills();
     }
-    if (id === 'success') updateSuccessSub();
+    if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
 
     if (!oldEl || oldEl === newEl) {
       prepareHeroSVG(newEl);
@@ -3594,9 +3647,30 @@
     return parts.length === 1 ? parts[0] : parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
   }
 
+  // Restart the intro sequence (see .is-intro in the styles).
+  function playSuccessIntro() {
+    const screen = document.getElementById('s-success');
+    screen.classList.remove('is-intro');
+    void screen.offsetWidth;
+    screen.classList.add('is-intro');
+  }
+
   function updateSuccessSub() {
     const city = (document.getElementById('location-input').value || 'Prague').trim();
     document.getElementById('success-sub').textContent = t('success.heroSub').replace('{city}', city);
+
+    // A leading emoji gets its own span so the intro can pop it.
+    const titleEl = document.querySelector('#s-success .success-title');
+    const title = t('success.heroTitle');
+    const lead = title.match(/^\p{Extended_Pictographic}️?/u);
+    titleEl.textContent = '';
+    if (lead) {
+      const emoji = document.createElement('span');
+      emoji.className = 'success-title__emoji';
+      emoji.textContent = lead[0];
+      titleEl.appendChild(emoji);
+    }
+    titleEl.appendChild(document.createTextNode(lead ? title.slice(lead[0].length) : title));
 
     const service = [...selectedServices][0] || 'babysitting';
     const card = SUCCESS_CARD[service] || SUCCESS_CARD.babysitting;
