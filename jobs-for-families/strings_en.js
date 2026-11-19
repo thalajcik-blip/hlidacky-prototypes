@@ -729,8 +729,28 @@
       "budget": "Within your budget",
       "housework": "Light housework"
     },
+    "few": {
+      "title": "{n} sitters match your job",
+      "sub": "Heart the ones you like. Below are a few more who fit most of what you need.",
+      "close": "Close match",
+      "alsoWorth": "Also worth a look",
+      "ctaNames": "Become a member to message {names}",
+      "later": "I’ll do it later"
+    },
     "cta": "Become a member to message them",
     "later": "I’ll decide later"
+  },
+  "nomatches": {
+    "title": "No close matches yet",
+    "sub": "Your job is live, so new sitters can still find it and reply. A small change can bring more of them your way.",
+    "widenTitle": "Widen the area",
+    "widenSub": "56 more sitters within 10 km of {city}",
+    "hoursTitle": "Adjust the hours",
+    "hoursSub": "24 more sitters are free after 4 pm",
+    "budgetTitle": "Review your budget",
+    "budgetSub": "Sitters for {service} here usually ask 220 Kč/h",
+    "editJob": "Edit job",
+    "keep": "Keep it as it is"
   },
   "pricing": {
     "navTitle": "Membership",

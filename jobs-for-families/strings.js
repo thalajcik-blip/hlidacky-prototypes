@@ -728,8 +728,28 @@ window.STRINGS = {
       "budget": "V rámci vašeho rozpočtu",
       "housework": "Lehké domácí práce"
     },
+    "few": {
+      "title": "{n} hlídačky odpovídají vašemu inzerátu",
+      "sub": "Označte ty, které se vám líbí. Níže je pár dalších, které splňují většinu toho, co potřebujete.",
+      "close": "Nejlepší shoda",
+      "alsoWorth": "Také stojí za pohled",
+      "ctaNames": "Staňte se členem a napište: {names}",
+      "later": "Udělám to později"
+    },
     "cta": "Staňte se členem a napište jim",
     "later": "Rozhodnu se později"
+  },
+  "nomatches": {
+    "title": "Zatím žádné blízké shody",
+    "sub": "Váš inzerát je zveřejněný, takže ho nové hlídačky stále mohou najít a odpovědět. Malá změna vám jich může přivést víc.",
+    "widenTitle": "Rozšířit oblast",
+    "widenSub": "O 56 hlídaček víc do 10 km od {city}",
+    "hoursTitle": "Upravit hodiny",
+    "hoursSub": "24 dalších hlídaček má čas po 16:00",
+    "budgetTitle": "Zkontrolovat rozpočet",
+    "budgetSub": "Hlídačky pro {service} tu obvykle chtějí 220 Kč/h",
+    "editJob": "Upravit inzerát",
+    "keep": "Nechat, jak je"
   },
   "pricing": {
     "navTitle": "Členství",

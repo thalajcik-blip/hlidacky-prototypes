@@ -202,6 +202,9 @@
     .prototype-settings-option strong, .prototype-settings-option small { display: block; }
     .prototype-settings-option strong { color: #2a3539; font-size: 15px; font-weight: 600; line-height: 1.4; }
     .prototype-settings-option small { margin-top: 2px; color: #6b7176; font-size: 14px; line-height: 1.45; }
+    .prototype-settings-variants { display: grid; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e5e5ea; }
+    .prototype-settings-variants label { display: flex; align-items: center; gap: 8px; color: #2a3539; font-size: 14px; line-height: 1.4; cursor: pointer; }
+    .prototype-settings-variants input { margin: 0; accent-color: #6c4ef8; }
     @media (max-width: 600px) {
       .prototype-settings { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); border-radius: 12px; }
       .prototype-settings__header { padding: 18px 16px 16px; }
@@ -1335,6 +1338,46 @@
     .shortlist-cta { gap: 8px; }
     .shortlist-cta i { width: 16px; font-size: 16px; color: #ffda6a; text-align: center; }
     .shortlist-later { margin-top: 16px; }
+    /* Shortlist states, "Fewer than 5 matches" (Jobs Figma 4251:131493): no
+       progress bar on top; sections split close matches from the rest, and
+       the count sits above the button in a raised footer. */
+    #s-shortlist.is-few .shortlist-progress { display: none; }
+    #s-shortlist.is-few .shortlist-head { padding-bottom: 16px; }
+    #s-shortlist.is-few .shortlist-sub { max-width: 290px; }
+    .shortlist-section { display: flex; align-items: center; gap: 10px; flex-shrink: 0; font-family: 'soleil', sans-serif; font-size: 12px; font-weight: 450; line-height: 15.4px; color: #6c757d; text-transform: uppercase; white-space: nowrap; }
+    .shortlist-section::before, .shortlist-section::after { content: ''; flex: 1; height: 1px; background: #e5e5ea; }
+    .shortlist-section + .shortlist-card { margin-top: 0; }
+    .shortlist-card + .shortlist-section { padding-top: 4px; }
+    .shortlist-footer__count { display: none; margin-bottom: 8px; text-align: center; font-family: 'soleil', sans-serif; font-size: 12px; line-height: 1.4; color: #4a5a61; }
+    #s-shortlist.is-few .shortlist-footer__count { display: block; }
+    #s-shortlist.is-few .shortlist-footer { padding-top: 16px; filter: drop-shadow(0 10px 16px rgba(42, 53, 57, .2)); }
+
+    /* Shortlist states, "No matches" (Jobs Figma 4251:130559). */
+    #s-nomatches .nomatches-body { display: flex; flex-direction: column; padding: 0; }
+    .nomatches-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 184px; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
+    .nomatches-doodle { position: relative; width: 72px; height: 72px; flex: none; overflow: hidden; }
+    .nomatches-doodle img { position: absolute; display: block; max-width: none; }
+    .nomatches-doodle__l2 { inset: 15.57% 7.46% 19.33% 12.36%; width: 80.18%; height: 65.1%; }
+    .nomatches-doodle__l3 { inset: 17.9% 11.01% 16.8% 21.99%; width: 67%; height: 65.3%; }
+    .nomatches-doodle__l1 { position: absolute; inset: 7.73% 11.01% 11.49% 10.13%; }
+    .nomatches-doodle__l1 img { inset: -1.21% -1.24%; width: 102.48%; height: 102.42%; }
+    .nomatches-copy { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .nomatches-title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .nomatches-sub { max-width: 300px; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; color: #2a3539; }
+    .nomatches-content { display: flex; flex: 1; flex-direction: column; gap: 8px; padding: 28px 20px 8px; font-family: 'soleil', sans-serif; }
+    .nomatches-option {
+      display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 24px 12px 20px; text-align: left; cursor: pointer;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 4px; box-shadow: inset 0 -3px 0 #e5e5ea; font: inherit; color: inherit;
+    }
+    .nomatches-option:hover { background: #f7f7f7; }
+    .nomatches-option:active { box-shadow: none; transform: translateY(2px); }
+    .nomatches-option span { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+    .nomatches-option b { font-size: 14px; font-weight: 450; line-height: 18px; color: #2a3539; }
+    .nomatches-option small { font-size: 12px; font-weight: 350; line-height: 16px; color: #6c757d; }
+    .nomatches-option i { width: 16px; font-size: 16px; color: #f96073; text-align: center; }
+    .nomatches-spacer { flex: 1; min-height: 12px; }
+    .nomatches-app { margin-top: 0; }
+
     @keyframes shortlistPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .shortlist-progress__avatars img { animation: none; } }
 
@@ -2836,7 +2879,7 @@
       <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="shortlist-head">
-      <h2 class="shortlist-title" data-i18n="shortlist.title"></h2>
+      <h2 class="shortlist-title" id="shortlist-title"></h2>
       <p class="shortlist-sub" id="shortlist-sub"></p>
       <div class="shortlist-progress">
         <div class="shortlist-progress__row">
@@ -2847,11 +2890,62 @@
       </div>
     </div>
     <div class="screen-body shortlist-list" id="shortlist-list"></div>
+    <div class="screen-footer shortlist-footer">
+      <p class="shortlist-footer__count" id="shortlist-footer-count"></p>
+      <div class="btn-row">
+        <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span id="shortlist-cta-label"></span></button>
+      </div>
+      <a class="btn-link success-edit shortlist-later" id="shortlist-later" onclick="goPrev()"></a>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: No matches (Jobs Figma 4251:130559, "Shortlist states") ===== -->
+  <div class="screen" id="s-nomatches">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="screen-body nomatches-body">
+      <div class="nomatches-hero">
+        <div class="nomatches-doodle" aria-hidden="true">
+          <img class="nomatches-doodle__l2" src="/jobs-for-families/assets/doodle-search/layer-2.svg" alt="">
+          <img class="nomatches-doodle__l3" src="/jobs-for-families/assets/doodle-search/layer-3.svg" alt="">
+          <span class="nomatches-doodle__l1"><img src="/jobs-for-families/assets/doodle-search/layer-1.svg" alt=""></span>
+        </div>
+        <div class="nomatches-copy">
+          <h2 class="nomatches-title" data-i18n="nomatches.title"></h2>
+          <p class="nomatches-sub" data-i18n="nomatches.sub"></p>
+        </div>
+      </div>
+      <div class="nomatches-content">
+        <button class="nomatches-option" type="button" onclick="goToWizardStep('location')"><span><b data-i18n="nomatches.widenTitle"></b><small id="nomatches-widen"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="nomatches-option" type="button" onclick="goToWizardStep('frequency')"><span><b data-i18n="nomatches.hoursTitle"></b><small data-i18n="nomatches.hoursSub"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+        <button class="nomatches-option" type="button" onclick="goToWizardStep('price')"><span><b data-i18n="nomatches.budgetTitle"></b><small id="nomatches-budget"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+        <div class="nomatches-spacer"></div>
+        <!-- Web only, same box as on "Your job is live" -->
+        <div class="success-app nomatches-app">
+          <div class="success-app__doodle" aria-hidden="true">
+            <img class="success-app__l2" src="/jobs-for-families/assets/doodle-bell/layer-2.svg" alt="">
+            <img class="success-app__l3" src="/jobs-for-families/assets/doodle-bell/layer-3.svg" alt="">
+            <span class="success-app__l1"><img src="/jobs-for-families/assets/doodle-bell/layer-1.svg" alt=""></span>
+          </div>
+          <div class="success-app__copy">
+            <p class="success-app__title" data-i18n="success.appTitle"></p>
+            <p class="success-app__text" data-i18n="success.appBody"></p>
+            <div class="success-app__stores">
+              <span><img src="/footer-for-logged-in-users/assets/account-app-store.png" width="120" height="40" alt="Download on the App Store"></span>
+              <span><img src="/footer-for-logged-in-users/assets/account-google-play.png" width="120" height="40" alt="Get it on Google Play"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="screen-footer">
       <div class="btn-row">
-        <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="shortlist.cta"></span></button>
+        <button class="btn-primary" type="button" onclick="goToWizardStep('review')"><span data-i18n="nomatches.editJob"></span></button>
       </div>
-      <a class="btn-link success-edit shortlist-later" onclick="goPrev()" data-i18n="shortlist.later"></a>
+      <a class="btn-link success-edit" onclick="goPrev()" data-i18n="nomatches.keep"></a>
     </div>
   </div>
 
@@ -3102,7 +3196,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'shortlist' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3130,6 +3224,7 @@
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
     if (id === 'shortlist') renderShortlist();
+    if (id === 'nomatches') renderNoMatches();
     if (id === 'pricing') renderPricing();
 
     if (!oldEl || oldEl === newEl) {
@@ -3205,41 +3300,80 @@
   const AFTER_JOB_SEQUENCES = [
     { key: 'matches', name: 'Matches, then membership', note: 'Matched sitters, then the membership plans.', steps: ['followup', 'pricing'] },
     { key: 'shortlist', name: 'Slow-burn job → shortlist → membership', note: 'Pick up to 5 matched sitters, then the membership plans.', steps: ['shortlist', 'pricing'] },
-    { key: 'c', name: 'Sequence C', note: 'Not built yet.', steps: [] },
+    { key: 'states', name: 'Shortlist states', note: 'When the shortlist comes up short.', variants: [
+      { key: 'few', name: 'Fewer than 5 matches', steps: ['shortlist', 'pricing'] },
+      { key: 'none', name: 'No matches', steps: ['nomatches'] }
+    ] },
     { key: 'd', name: 'Sequence D', note: 'Not built yet.', steps: [] }
   ];
+  // A sequence may come in variants (states of the same idea); the variant
+  // is picked under it in the modal and preset with ?state=<key>.
   const AFTER_JOB_STORAGE_KEY = 'jobs-for-families:after-job-sequence';
-  let afterJobSequence = (function() {
-    const usable = function(key) { return AFTER_JOB_SEQUENCES.some(function(q) { return q.key === key && q.steps.length; }); };
-    const fromUrl = new URLSearchParams(location.search).get('after');
-    if (usable(fromUrl)) return fromUrl;
+  const AFTER_JOB_VARIANT_KEY = 'jobs-for-families:after-job-variant';
+  function findSequence(key) { return AFTER_JOB_SEQUENCES.find(function(q) { return q.key === key; }); }
+  function isBuilt(seq) { return !!seq && !!((seq.steps && seq.steps.length) || (seq.variants && seq.variants.length)); }
+  function readPick(param, storageKey, ok, fallback) {
+    const fromUrl = new URLSearchParams(location.search).get(param);
+    if (ok(fromUrl)) return fromUrl;
     let stored = null;
-    try { stored = localStorage.getItem(AFTER_JOB_STORAGE_KEY); } catch (e) {}
-    return usable(stored) ? stored : 'matches';
-  })();
+    try { stored = localStorage.getItem(storageKey); } catch (e) {}
+    return ok(stored) ? stored : fallback;
+  }
+  let afterJobSequence = readPick('after', AFTER_JOB_STORAGE_KEY, function(key) { return isBuilt(findSequence(key)); }, 'matches');
+  let afterJobVariant = readPick('state', AFTER_JOB_VARIANT_KEY, function(key) {
+    return AFTER_JOB_SEQUENCES.some(function(q) { return (q.variants || []).some(function(v) { return v.key === key; }); });
+  }, null);
 
-  function afterJobSteps() {
-    const seq = AFTER_JOB_SEQUENCES.find(function(q) { return q.key === afterJobSequence; });
-    return seq ? seq.steps.slice() : [];
+  function currentVariant(seq) {
+    if (!seq || !seq.variants) return null;
+    return seq.variants.find(function(v) { return v.key === afterJobVariant; }) || seq.variants[0];
   }
 
-  function setAfterJobSequence(key) {
+  function afterJobSteps() {
+    const seq = findSequence(afterJobSequence);
+    const variant = currentVariant(seq);
+    return (variant ? variant.steps : (seq ? seq.steps : [])).slice();
+  }
+
+  function rerouteAfterJob(change) {
     const onAfterStep = afterJobSteps().indexOf(buildFlow()[currentIdx]) !== -1;
-    afterJobSequence = key;
-    try { localStorage.setItem(AFTER_JOB_STORAGE_KEY, key); } catch (e) {}
+    change();
     // Standing on a step of the old sequence: go back to "Your job is live"
     // so the next step comes from the new one.
     if (onAfterStep) skipToJobCreated();
   }
 
+  function setAfterJobSequence(key) {
+    rerouteAfterJob(function() {
+      afterJobSequence = key;
+      try { localStorage.setItem(AFTER_JOB_STORAGE_KEY, key); } catch (e) {}
+    });
+    renderPrototypeSettings();
+  }
+
+  function setAfterJobVariant(key) {
+    rerouteAfterJob(function() {
+      afterJobVariant = key;
+      try { localStorage.setItem(AFTER_JOB_VARIANT_KEY, key); } catch (e) {}
+    });
+  }
+
   function renderPrototypeSettings() {
     document.getElementById('prototype-settings-sequences').innerHTML = AFTER_JOB_SEQUENCES.map(function(seq) {
-      const disabled = !seq.steps.length;
+      const disabled = !isBuilt(seq);
+      const selected = seq.key === afterJobSequence;
+      const variant = currentVariant(seq);
+      const variants = seq.variants && selected
+        ? '<span class="prototype-settings-variants">' + seq.variants.map(function(v) {
+            return '<label><input type="radio" name="after-job-variant" value="' + v.key + '"'
+              + (variant && v.key === variant.key ? ' checked' : '') + ' onchange="setAfterJobVariant(this.value)">' + v.name + '</label>';
+          }).join('') + '</span>'
+        : '';
       return '<label class="prototype-settings-option">'
         + '<input type="radio" name="after-job-sequence" value="' + seq.key + '"'
-        + (seq.key === afterJobSequence ? ' checked' : '') + (disabled ? ' disabled' : '')
+        + (selected ? ' checked' : '') + (disabled ? ' disabled' : '')
         + ' onchange="setAfterJobSequence(this.value)">'
-        + '<span><strong>' + seq.name + '</strong><small>' + seq.note + '</small></span></label>';
+        + '<span><strong>' + seq.name + '</strong><small>' + seq.note + '</small>' + variants + '</span></label>';
     }).join('');
   }
 
@@ -3952,14 +4086,32 @@
     return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/sitter-' + SHORTLIST_SITTERS[i].photo + '.jpg');
   }
 
+  // "few" is the Shortlist states variant: only two sitters are close
+  // matches; the rest are listed as also worth a look, the pick count moves
+  // next to the button and the button names who will be messaged.
+  const SHORTLIST_CLOSE_IN_FEW = 2;
+  function shortlistMode() {
+    return afterJobSequence === 'states' ? 'few' : 'full';
+  }
+
   function renderShortlist() {
+    const few = shortlistMode() === 'few';
     const service = [...selectedServices][0] || 'babysitting';
     const city = (document.getElementById('location-input').value || 'Prague').trim();
-    document.getElementById('shortlist-sub').textContent = t('shortlist.sub')
+    const screen = document.getElementById('s-shortlist');
+    screen.classList.toggle('is-few', few);
+    document.getElementById('shortlist-title').textContent = few
+      ? t('shortlist.few.title').replace('{n}', SHORTLIST_CLOSE_IN_FEW) : t('shortlist.title');
+    document.getElementById('shortlist-sub').textContent = few ? t('shortlist.few.sub') : t('shortlist.sub')
       .replace('{service}', t('location.serviceNames.' + service)).replace('{city}', city);
+    document.getElementById('shortlist-later').textContent = t(few ? 'shortlist.few.later' : 'shortlist.later');
     const asset = function(name) { return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/' + name); };
+    const heading = function(key) {
+      return '<p class="shortlist-section"><span>' + t('shortlist.few.' + key) + '</span></p>';
+    };
     document.getElementById('shortlist-list').innerHTML = SHORTLIST_SITTERS.map(function(sitter, i) {
-      return '<button type="button" class="shortlist-card" data-index="' + i + '" aria-pressed="false" onclick="toggleShortlist(' + i + ')">'
+      return (few && i === 0 ? heading('close') : '') + (few && i === SHORTLIST_CLOSE_IN_FEW ? heading('alsoWorth') : '')
+        + '<button type="button" class="shortlist-card" data-index="' + i + '" aria-pressed="false" onclick="toggleShortlist(' + i + ')">'
         + '<span class="shortlist-card__photo"><img src="' + shortlistPhoto(i) + '" alt="">'
         +   '<span class="shortlist-card__verified"><img src="' + asset('verify-shield.svg') + '" alt=""></span></span>'
         + '<span class="shortlist-card__info">'
@@ -3994,6 +4146,36 @@
     document.getElementById('shortlist-picked-avatars').innerHTML = shortlistPicked.map(function(i, n) {
       return '<img src="' + shortlistPhoto(i) + '" alt="" style="z-index:' + (SHORTLIST_MAX - n) + '">';
     }).join('');
+    // Few-matches footer: the count sits by the button, which names up to
+    // two picked sitters ("message Bára", "message Bára and Alice").
+    const few = shortlistMode() === 'few';
+    const firstNames = shortlistPicked.map(function(i) { return SHORTLIST_SITTERS[i].name.split(/\s+/)[0]; });
+    document.getElementById('shortlist-footer-count').textContent = few
+      ? t('shortlist.picked').replace('{n}', shortlistPicked.length).replace('{max}', SHORTLIST_MAX) : '';
+    document.getElementById('shortlist-cta-label').textContent = few && firstNames.length && firstNames.length <= 2
+      ? t('shortlist.few.ctaNames').replace('{names}', joinLocalizedList(firstNames, t('pricing.and')))
+      : t('shortlist.cta');
+  }
+
+  // No matches (Shortlist states): the suggestions take the family back to
+  // the wizard step that changes that part of the job.
+  function renderNoMatches() {
+    const service = [...selectedServices][0] || 'babysitting';
+    const city = (document.getElementById('location-input').value || 'Prague').trim();
+    document.getElementById('nomatches-widen').textContent = t('nomatches.widenSub').replace('{city}', city);
+    document.getElementById('nomatches-budget').textContent = t('nomatches.budgetSub').replace('{service}', t('location.serviceNames.' + service));
+  }
+
+  // Jump back into the wizard at a step; falls back to the description
+  // step when that step is not part of this job's flow.
+  function goToWizardStep(id) {
+    const flow = buildFlow();
+    let idx = flow.indexOf(id);
+    if (idx === -1 && id === 'location') idx = flow.indexOf('location-tutoring');
+    if (idx === -1) idx = flow.indexOf('review');
+    currentIdx = idx;
+    navDirection = 'backward';
+    showScreen(flow[idx]);
   }
 
   // Who Pricing greets: the shortlist picks in that sequence (or its first
