@@ -717,10 +717,25 @@ window.STRINGS = {
       }
     }
   },
+  "shortlist": {
+    "navTitle": "Vaše shody",
+    "title": "Vyberte si až 5 hlídaček, které se vám líbí",
+    "sub": "Vybrané pro váš inzerát: {service}, v okolí {city}.",
+    "picked": "Vybráno {n} z {max}",
+    "distance": "{km} km od vás",
+    "tags": {
+      "afternoons": "Volná odpoledne ve všední dny",
+      "budget": "V rámci vašeho rozpočtu",
+      "housework": "Lehké domácí práce"
+    },
+    "cta": "Staňte se členem a napište jim",
+    "later": "Rozhodnu se později"
+  },
   "pricing": {
     "navTitle": "Členství",
     "title": "Napište {names}",
     "and": "a",
+    "andMore": "{n} dalším",
     "sub": "Staňte se členem, pozdravte, zeptejte se na vše potřebné a domluvte si první návštěvu.",
     "membership": "Členství",
     "perMonth": "měsíčně",

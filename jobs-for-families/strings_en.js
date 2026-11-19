@@ -718,10 +718,25 @@
       }
     }
   },
+  "shortlist": {
+    "navTitle": "Your matches",
+    "title": "Pick up to 5 sitters you like",
+    "sub": "Matched to your job: {service}, near {city}.",
+    "picked": "{n} of {max} picked",
+    "distance": "{km} km away",
+    "tags": {
+      "afternoons": "Free weekday afternoons",
+      "budget": "Within your budget",
+      "housework": "Light housework"
+    },
+    "cta": "Become a member to message them",
+    "later": "I’ll decide later"
+  },
   "pricing": {
     "navTitle": "Membership",
     "title": "Message {names}",
     "and": "and",
+    "andMore": "{n} more",
     "sub": "Become a member to say hello, ask your questions and agree on a first visit.",
     "membership": "Membership",
     "perMonth": "per month",

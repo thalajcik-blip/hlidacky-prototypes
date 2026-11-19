@@ -164,12 +164,50 @@
       line-height: 24px;
       letter-spacing: -0.051px;
     }
-    .btn-close {
-      width: 32px; height: 32px; background: none; border: none; cursor: pointer;
+    /* Header actions (Jobs Figma 4295:162702): skip-to-end, prototype
+       settings and close/menu, 24px light icons 10px apart. The box keeps
+       the width of the logo opposite, so the title stays centred and the
+       icons run out to its left. */
+    .nav-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 32px; flex-shrink: 0; }
+    .followup-nav .nav-actions { width: 40px; }
+    .nav-icon-btn {
+      width: 24px; height: 24px; flex: none; padding: 0; border: 0; background: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      color: var(--muted); border-radius: 6px; transition: background 0.15s;
+      color: #bec2ce; font-size: 24px; line-height: 1; transition: color 0.15s;
     }
-    .btn-close:hover { background: var(--bg); }
+    .nav-icon-btn:hover { color: #8b91a3; }
+    /* The mobile app prototype has its own settings, so the tools stay out of it. */
+    .mobile-app-embed .nav-tool { display: none; }
+
+    /* Prototype settings modal — same look as /mobile-app-redesign/. */
+    .prototype-settings-backdrop { position: fixed; inset: 0; z-index: 260; background: rgba(42, 53, 57, .42); backdrop-filter: blur(4px); }
+    .prototype-settings {
+      position: fixed; top: 50%; left: 50%; z-index: 270; display: grid; grid-template-rows: auto minmax(0, 1fr);
+      width: min(520px, calc(100vw - 32px)); max-height: min(80vh, 680px); overflow: hidden;
+      transform: translate(-50%, -50%); border: 1px solid #e5e5ea; border-radius: 16px;
+      background: #fff; box-shadow: 0 24px 60px rgba(42, 53, 57, .24); font-family: 'soleil', 'Inter', sans-serif;
+    }
+    .prototype-settings[hidden], .prototype-settings-backdrop[hidden] { display: none; }
+    .prototype-settings__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid #e5e5ea; }
+    .prototype-settings__header h2 { margin: 0; color: #2a3539; font-size: 24px; font-weight: 450; letter-spacing: -0.3px; line-height: 1.2; }
+    .prototype-settings__close { display: inline-flex; width: 40px; height: 40px; flex: 0 0 40px; align-items: center; justify-content: center; border: 0; border-radius: 50%; padding: 0; background: transparent; cursor: pointer; color: #2a3539; font-size: 20px; }
+    .prototype-settings__close:hover, .prototype-settings__close:focus-visible { outline: none; background: #f2f3f5; }
+    .prototype-settings__body { padding: 20px 24px 24px; overflow-y: auto; }
+    .prototype-settings-group { display: grid; gap: 12px; margin: 0; border: 0; padding: 0; }
+    .prototype-settings-group legend { margin-bottom: 12px; color: #2a3539; font-size: 16px; font-weight: 700; letter-spacing: -0.2px; line-height: 1.4; }
+    .prototype-settings-option-list { display: grid; gap: 10px; }
+    .prototype-settings-option { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 12px; border: 1px solid #e5e5ea; border-radius: 12px; padding: 14px 16px; background: #f7f7f8; cursor: pointer; }
+    .prototype-settings-option:has(input:disabled) { cursor: not-allowed; opacity: .62; }
+    .prototype-settings-option input { margin: 4px 0 0; accent-color: #6c4ef8; }
+    .prototype-settings-option strong, .prototype-settings-option small { display: block; }
+    .prototype-settings-option strong { color: #2a3539; font-size: 15px; font-weight: 600; line-height: 1.4; }
+    .prototype-settings-option small { margin-top: 2px; color: #6b7176; font-size: 14px; line-height: 1.45; }
+    @media (max-width: 600px) {
+      .prototype-settings { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); border-radius: 12px; }
+      .prototype-settings__header { padding: 18px 16px 16px; }
+      .prototype-settings__header h2 { font-size: 20px; }
+      .prototype-settings__body { padding: 16px; }
+    }
 
     /* Progress */
     .progress-track { height: 12px; background: #fff; border-top: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; flex-shrink: 0; }
@@ -1206,7 +1244,6 @@
 
     /* Pricing — become a member to message them (Jobs Figma 4251:129553) */
     #s-pricing .pricing-body { padding: 0; }
-    .pricing-close { width: 40px; height: 40px; display: flex; align-items: center; justify-content: flex-end; border: 0; background: none; padding: 0; cursor: pointer; color: #bec2ce; font-size: 24px; }
     .pricing-hero { display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; }
     .pricing-avatars { display: flex; justify-content: center; padding-bottom: 10px; isolation: isolate; }
     .pricing-avatars img { width: 48px; height: 48px; margin-right: -16px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); }
@@ -1258,6 +1295,49 @@
     .pricing-disclaimer b { font-weight: 450; color: #212529; }
     .pricing-bank { color: #6c757d; opacity: .8; font-size: 12px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 2px; }
 
+    /* Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460). The copy and
+       the pick counter stay put; only the list scrolls. */
+    .shortlist-head { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 20px 12px; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
+    .shortlist-title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .shortlist-sub { max-width: 300px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .shortlist-progress { display: flex; flex-direction: column; gap: 4px; width: 100%; padding-top: 4px; }
+    .shortlist-progress__row { display: flex; align-items: flex-end; gap: 4px; min-height: 28px; padding-bottom: 4px; }
+    .shortlist-progress__count { flex: 1; text-align: left; font-size: 12px; font-weight: 700; line-height: 1.4; color: #2a3539; }
+    .shortlist-progress__avatars { display: flex; isolation: isolate; }
+    .shortlist-progress__avatars img { width: 24px; height: 24px; margin-left: -8px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); animation: shortlistPop .3s cubic-bezier(.3, 1.5, .5, 1) both; }
+    .shortlist-progress__avatars img:first-child { margin-left: 0; }
+    .shortlist-progress__bar { display: flex; gap: 4px; height: 6px; }
+    .shortlist-progress__bar i { flex: 1; border-radius: 4px; background: #ccd5e2; transition: background .25s ease; }
+    .shortlist-progress__bar i.is-on { background: #f96073; }
+    #s-shortlist .shortlist-list { display: flex; flex-direction: column; gap: 10px; padding: 0 20px 8px; }
+    .shortlist-card {
+      display: flex; gap: 8px; width: 100%; flex-shrink: 0; padding: 12px; text-align: left; cursor: pointer;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; font-family: 'soleil', sans-serif; color: inherit;
+      transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    /* Picked: 2px green without shifting the layout — the inner pixel is a ring. */
+    .shortlist-card.is-picked { background: #eff9ef; border-color: #22bf1e; box-shadow: inset 0 0 0 1px #22bf1e; }
+    .shortlist-card.is-full { opacity: .55; cursor: not-allowed; }
+    .shortlist-card:focus-visible { outline: 2px solid #6aafff; outline-offset: 2px; }
+    .shortlist-card__photo { position: relative; width: 72px; height: 64px; flex: none; }
+    .shortlist-card__photo > img { position: absolute; left: 4px; top: 0; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 60px; object-fit: cover; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); }
+    .shortlist-card__verified { position: absolute; left: 44px; top: 36px; width: 28px; height: 28px; border-radius: 31px; background: #fff; filter: drop-shadow(0 4.667px 6.222px rgba(139, 145, 163, .24)); }
+    .shortlist-card__verified img { position: absolute; left: 6px; top: 6px; width: 16px; height: auto; }
+    .shortlist-card__info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+    .shortlist-card__name { padding: 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: -0.32px; color: #2a3539; }
+    .shortlist-card__details { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; padding: 0 4px; font-size: 14px; line-height: 1.2; letter-spacing: -0.242px; color: #8b91a3; white-space: nowrap; }
+    .shortlist-card__dot { width: 4px; height: 4px; }
+    .shortlist-card__rating { display: inline-flex; align-items: center; gap: 4px; padding: 2px 0 4px; letter-spacing: 0; }
+    .shortlist-card__rating img { width: 16px; height: 16px; }
+    .shortlist-card__rating small { font-size: 14px; font-weight: 350; }
+    .shortlist-card__tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .shortlist-card__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
+    .shortlist-cta { gap: 8px; }
+    .shortlist-cta i { width: 16px; font-size: 16px; color: #ffda6a; text-align: center; }
+    .shortlist-later { margin-top: 16px; }
+    @keyframes shortlistPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .shortlist-progress__avatars img { animation: none; } }
+
   </style>
 </head>
 <body>
@@ -1270,7 +1350,7 @@
     <div class="nav-header">
       <img class="nav-brand-mark" src="/hlidacky-logo_small.svg" width="32" height="32" alt="Hlídačky.cz">
       <span class="nav-title" data-i18n="nav.title"></span>
-      <button class="btn-close" onclick="closeFlow()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="#6b7176" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn btn-close" type="button" onclick="closeFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="progress-track"><div class="progress-fill" id="shared-progress-fill"></div></div>
   </div>
@@ -2634,7 +2714,7 @@
     <div class="followup-nav">
       <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
       <span class="followup-nav-title" data-i18n="onboarding.navTitle"></span>
-      <img src="/doodles/icon-hamburger.svg" width="24" height="24" alt="">
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><img src="/doodles/icon-hamburger.svg" width="24" height="24" alt=""></div>
     </div>
     <div class="screen-body">
       <p class="followup-title" data-i18n="onboarding.title"></p>
@@ -2748,12 +2828,39 @@
     </div>
   </div>
 
+  <!-- ===== SCREEN: Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460) ===== -->
+  <div class="screen" id="s-shortlist">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="shortlist-head">
+      <h2 class="shortlist-title" data-i18n="shortlist.title"></h2>
+      <p class="shortlist-sub" id="shortlist-sub"></p>
+      <div class="shortlist-progress">
+        <div class="shortlist-progress__row">
+          <span class="shortlist-progress__count" id="shortlist-count" aria-live="polite"></span>
+          <span class="shortlist-progress__avatars" id="shortlist-picked-avatars"></span>
+        </div>
+        <div class="shortlist-progress__bar" id="shortlist-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+    <div class="screen-body shortlist-list" id="shortlist-list"></div>
+    <div class="screen-footer">
+      <div class="btn-row">
+        <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="shortlist.cta"></span></button>
+      </div>
+      <a class="btn-link success-edit shortlist-later" onclick="goPrev()" data-i18n="shortlist.later"></a>
+    </div>
+  </div>
+
   <!-- ===== SCREEN: Pricing — become a member to message them (Jobs Figma 4251:129553) ===== -->
   <div class="screen" id="s-pricing">
     <div class="followup-nav">
       <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
       <span class="followup-nav-title" data-i18n="pricing.navTitle"></span>
-      <button class="pricing-close" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="goPrev()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
     <div class="screen-body pricing-body">
       <div class="pricing-hero">
@@ -2816,6 +2923,21 @@
   </div>
 
 </div><!-- /phone-frame -->
+
+<!-- Prototype settings (not product UI), same look as /mobile-app-redesign/ -->
+<div class="prototype-settings-backdrop" id="prototype-settings-backdrop" onclick="closePrototypeSettings()" hidden></div>
+<section class="prototype-settings" id="prototype-settings" role="dialog" aria-modal="true" aria-labelledby="prototype-settings-title" hidden>
+  <header class="prototype-settings__header">
+    <h2 id="prototype-settings-title">Prototype settings</h2>
+    <button class="prototype-settings__close" id="prototype-settings-close" type="button" onclick="closePrototypeSettings()" aria-label="Close prototype settings"><i class="fa-light fa-xmark" aria-hidden="true"></i></button>
+  </header>
+  <form class="prototype-settings__body" onsubmit="return false">
+    <fieldset class="prototype-settings-group">
+      <legend>After the job is created</legend>
+      <div class="prototype-settings-option-list" id="prototype-settings-sequences"></div>
+    </fieldset>
+  </form>
+</section>
 
 <!-- Location dropdown: direct child of body, before script so getElementById finds it -->
 <ul class="location-suggestions" id="location-suggestions"></ul>
@@ -2885,7 +3007,7 @@
   function buildFlow() {
     const openingSteps = window.IS_MOBILE_APP_EMBED ? [] : ['contact'];
     if (isMultiServiceFlow()) {
-      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success', 'followup', 'pricing']);
+      return openingSteps.concat(['service', 'location', 'price', 'review', 'phone', 'referral', 'success'].concat(afterJobSteps()));
     }
     const tutoringOnly = selectedServices.has('tutoring') && selectedServices.size === 1;
     const petOnly = selectedServices.has('pet') && selectedServices.size === 1;
@@ -2893,7 +3015,7 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success', 'followup', 'pricing']);
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', 'success'].concat(afterJobSteps()));
     }
 
     const flow = openingSteps.concat(['service', 'location']);
@@ -2906,7 +3028,8 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'referral', 'success', 'followup', 'pricing');
+    flow.push('review', 'phone', 'referral', 'success');
+    flow.push.apply(flow, afterJobSteps());
     return flow;
   }
 
@@ -2979,7 +3102,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'shortlist' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3006,6 +3129,7 @@
       if (!isMultiServiceFlow()) updateReviewPills();
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
+    if (id === 'shortlist') renderShortlist();
     if (id === 'pricing') renderPricing();
 
     if (!oldEl || oldEl === newEl) {
@@ -3056,10 +3180,85 @@
       window.parent.postMessage({ type: 'mobile-app-job-wizard-complete' }, '*');
       return;
     }
+    // The step after "Your job is live" depends on the sequence picked in
+    // Prototype settings.
     const flow = buildFlow();
-    const idx = flow.indexOf('followup');
-    if (idx !== -1) { currentIdx = idx; navDirection = 'forward'; showScreen('followup'); }
+    const idx = flow.indexOf('success') + 1;
+    if (idx > 0 && idx < flow.length) { currentIdx = idx; navDirection = 'forward'; showScreen(flow[idx]); }
   }
+  // Prototype tool: jump straight to "Your job is live", skipping the job
+  // wizard. Whatever was filled in so far is kept; the job card falls back
+  // to babysitting, Prague and "Jana P." for anything left empty.
+  function skipToJobCreated() {
+    if (document.getElementById('pill-modal').classList.contains('open')) closePillModal();
+    const flow = buildFlow();
+    const idx = flow.indexOf('success');
+    if (idx === -1) return;
+    currentIdx = idx;
+    navDirection = 'forward';
+    showScreen('success');
+  }
+  // Prototype settings: which sequence of screens follows "Your job is live".
+  // The pick is kept per browser and can be preset with ?after=<key> so a
+  // link or QR code opens a given variant. Sequences without steps are not
+  // built yet and stay disabled in the modal.
+  const AFTER_JOB_SEQUENCES = [
+    { key: 'matches', name: 'Matches, then membership', note: 'Matched sitters, then the membership plans.', steps: ['followup', 'pricing'] },
+    { key: 'shortlist', name: 'Slow-burn job → shortlist → membership', note: 'Pick up to 5 matched sitters, then the membership plans.', steps: ['shortlist', 'pricing'] },
+    { key: 'c', name: 'Sequence C', note: 'Not built yet.', steps: [] },
+    { key: 'd', name: 'Sequence D', note: 'Not built yet.', steps: [] }
+  ];
+  const AFTER_JOB_STORAGE_KEY = 'jobs-for-families:after-job-sequence';
+  let afterJobSequence = (function() {
+    const usable = function(key) { return AFTER_JOB_SEQUENCES.some(function(q) { return q.key === key && q.steps.length; }); };
+    const fromUrl = new URLSearchParams(location.search).get('after');
+    if (usable(fromUrl)) return fromUrl;
+    let stored = null;
+    try { stored = localStorage.getItem(AFTER_JOB_STORAGE_KEY); } catch (e) {}
+    return usable(stored) ? stored : 'matches';
+  })();
+
+  function afterJobSteps() {
+    const seq = AFTER_JOB_SEQUENCES.find(function(q) { return q.key === afterJobSequence; });
+    return seq ? seq.steps.slice() : [];
+  }
+
+  function setAfterJobSequence(key) {
+    const onAfterStep = afterJobSteps().indexOf(buildFlow()[currentIdx]) !== -1;
+    afterJobSequence = key;
+    try { localStorage.setItem(AFTER_JOB_STORAGE_KEY, key); } catch (e) {}
+    // Standing on a step of the old sequence: go back to "Your job is live"
+    // so the next step comes from the new one.
+    if (onAfterStep) skipToJobCreated();
+  }
+
+  function renderPrototypeSettings() {
+    document.getElementById('prototype-settings-sequences').innerHTML = AFTER_JOB_SEQUENCES.map(function(seq) {
+      const disabled = !seq.steps.length;
+      return '<label class="prototype-settings-option">'
+        + '<input type="radio" name="after-job-sequence" value="' + seq.key + '"'
+        + (seq.key === afterJobSequence ? ' checked' : '') + (disabled ? ' disabled' : '')
+        + ' onchange="setAfterJobSequence(this.value)">'
+        + '<span><strong>' + seq.name + '</strong><small>' + seq.note + '</small></span></label>';
+    }).join('');
+  }
+
+  function openPrototypeSettings() {
+    renderPrototypeSettings();
+    document.getElementById('prototype-settings-backdrop').hidden = false;
+    const modal = document.getElementById('prototype-settings');
+    modal.hidden = false;
+    document.getElementById('prototype-settings-close').focus({ preventScroll: true });
+  }
+
+  function closePrototypeSettings() {
+    document.getElementById('prototype-settings-backdrop').hidden = true;
+    document.getElementById('prototype-settings').hidden = true;
+  }
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && !document.getElementById('prototype-settings').hidden) closePrototypeSettings();
+  });
   function goPrev() {
     const flow = buildFlow();
     if (currentIdx > 0) { currentIdx--; navDirection = 'backward'; showScreen(flow[currentIdx]); }
@@ -3736,6 +3935,79 @@
     return parts.length === 1 ? parts[0] : parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
   }
 
+  // Shortlist (sequence "Slow-burn job → shortlist → membership"): the
+  // family taps up to five matched sitters; the picks carry on to Pricing,
+  // which greets them by name. Sitters and photos follow the Figma frame.
+  const SHORTLIST_MAX = 5;
+  const SHORTLIST_SITTERS = [
+    { name: 'Alice M.', photo: 1, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
+    { name: 'Barbora B.', photo: 2, km: '8', rating: '4.8', reviews: 12, tags: ['housework', 'budget'] },
+    { name: 'Cecílie C.', photo: 3, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
+    { name: 'Diana D.', photo: 4, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
+    { name: 'Eliška E.', photo: 5, km: '2.4', rating: '4.9', reviews: 5, tags: ['afternoons', 'budget'] }
+  ];
+  let shortlistPicked = [];
+
+  function shortlistPhoto(i) {
+    return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/sitter-' + SHORTLIST_SITTERS[i].photo + '.jpg');
+  }
+
+  function renderShortlist() {
+    const service = [...selectedServices][0] || 'babysitting';
+    const city = (document.getElementById('location-input').value || 'Prague').trim();
+    document.getElementById('shortlist-sub').textContent = t('shortlist.sub')
+      .replace('{service}', t('location.serviceNames.' + service)).replace('{city}', city);
+    const asset = function(name) { return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/' + name); };
+    document.getElementById('shortlist-list').innerHTML = SHORTLIST_SITTERS.map(function(sitter, i) {
+      return '<button type="button" class="shortlist-card" data-index="' + i + '" aria-pressed="false" onclick="toggleShortlist(' + i + ')">'
+        + '<span class="shortlist-card__photo"><img src="' + shortlistPhoto(i) + '" alt="">'
+        +   '<span class="shortlist-card__verified"><img src="' + asset('verify-shield.svg') + '" alt=""></span></span>'
+        + '<span class="shortlist-card__info">'
+        +   '<span class="shortlist-card__name">' + sitter.name + '</span>'
+        +   '<span class="shortlist-card__details"><span>' + t('shortlist.distance').replace('{km}', sitter.km) + '</span>'
+        +     '<img class="shortlist-card__dot" src="' + asset('dot.svg') + '" alt="">'
+        +     '<span class="shortlist-card__rating"><img src="' + asset('star.svg') + '" alt="">' + sitter.rating + ' <small>(' + sitter.reviews + ')</small></span></span>'
+        +   '<span class="shortlist-card__tags">' + sitter.tags.map(function(tag) { return '<span>' + t('shortlist.tags.' + tag) + '</span>'; }).join('') + '</span>'
+        + '</span></button>';
+    }).join('');
+    updateShortlist();
+  }
+
+  function toggleShortlist(i) {
+    const at = shortlistPicked.indexOf(i);
+    if (at !== -1) shortlistPicked.splice(at, 1);
+    else if (shortlistPicked.length < SHORTLIST_MAX) shortlistPicked.push(i);
+    updateShortlist();
+  }
+
+  function updateShortlist() {
+    document.querySelectorAll('#shortlist-list .shortlist-card').forEach(function(card) {
+      const on = shortlistPicked.indexOf(Number(card.dataset.index)) !== -1;
+      card.classList.toggle('is-picked', on);
+      card.setAttribute('aria-pressed', String(on));
+      // Once five are picked, the rest wait until one is unpicked.
+      card.classList.toggle('is-full', !on && shortlistPicked.length >= SHORTLIST_MAX);
+    });
+    document.getElementById('shortlist-count').textContent = t('shortlist.picked')
+      .replace('{n}', shortlistPicked.length).replace('{max}', SHORTLIST_MAX);
+    document.querySelectorAll('#shortlist-bar i').forEach(function(seg, i) { seg.classList.toggle('is-on', i < shortlistPicked.length); });
+    document.getElementById('shortlist-picked-avatars').innerHTML = shortlistPicked.map(function(i, n) {
+      return '<img src="' + shortlistPhoto(i) + '" alt="" style="z-index:' + (SHORTLIST_MAX - n) + '">';
+    }).join('');
+  }
+
+  // Who Pricing greets: the shortlist picks in that sequence (or its first
+  // three when nobody was picked), otherwise the first three matches.
+  function pricingSitters() {
+    if (afterJobSteps().indexOf('shortlist') !== -1) {
+      const picks = shortlistPicked.length ? shortlistPicked : [0, 1, 2];
+      return picks.map(function(i) { return { name: SHORTLIST_SITTERS[i].name.split(/\s+/)[0], photo: shortlistPhoto(i) }; });
+    }
+    return [...document.querySelectorAll('#s-followup .sitter-card')].slice(0, 3).map(function(card) {
+      return { name: card.querySelector('.sitter-name').textContent.trim().split(/\s+/)[0], photo: card.querySelector('.sitter-avatar').getAttribute('src') };
+    });
+  }
+
   // Pricing: three membership plans; picking one updates the pay button,
   // its credit line and the renewal note. Totals are what the button
   // charges (the 3-month total follows the Figma frame). The header
@@ -3751,20 +4023,20 @@
   function formatKc(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
   function renderPricing() {
-    const sitters = [...document.querySelectorAll('#s-followup .sitter-card')].slice(0, 3).map(function(card) {
-      return { name: card.querySelector('.sitter-name').textContent.trim().split(/\s+/)[0], photo: card.querySelector('.sitter-avatar').getAttribute('src') };
-    });
+    const sitters = pricingSitters();
     const avatars = document.getElementById('pricing-avatars');
     avatars.innerHTML = '';
-    sitters.forEach(function(sitter, i) {
+    sitters.slice(0, 3).forEach(function(sitter, i) {
       const img = document.createElement('img');
       img.src = sitter.photo;
       img.alt = '';
-      img.style.zIndex = String(sitters.length - i);
+      img.style.zIndex = String(3 - i);
       avatars.appendChild(img);
     });
+    // Up to three names; beyond that "Alice, Barbora, Cecílie and 2 more".
     const names = sitters.map(function(s) { return s.name; });
-    document.getElementById('pricing-title').textContent = t('pricing.title').replace('{names}', joinLocalizedList(names, t('pricing.and')));
+    const shown = names.length > 3 ? names.slice(0, 3).concat(t('pricing.andMore').replace('{n}', names.length - 3)) : names;
+    document.getElementById('pricing-title').textContent = t('pricing.title').replace('{names}', joinLocalizedList(shown, t('pricing.and')));
 
     const plans = document.getElementById('pricing-plans');
     plans.innerHTML = PRICING_PLANS.map(function(plan) {
