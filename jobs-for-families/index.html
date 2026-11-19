@@ -148,7 +148,9 @@
 
     /* Nav */
     #shared-header { flex-shrink: 0; z-index: 10; }
-    #screens-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+    /* clip, not hidden: off-stage screens make it 750px wide, and a hidden
+       box still scrolls sideways when a focused card asks to be revealed. */
+    #screens-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; overflow: clip; }
     .nav-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 16px; background: var(--white); flex-shrink: 0; height: 52px;
