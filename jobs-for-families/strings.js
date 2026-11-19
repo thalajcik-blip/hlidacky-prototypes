@@ -605,11 +605,20 @@ window.STRINGS = {
     "skipLink": "Udělám to později"
   },
   "success": {
-    "heroTitle": "A je to!",
-    "heroSub": "Váš inzerát pro město {city} byl zveřejněn.",
+    "heroTitle": "🎉Váš inzerát je zveřejněný",
+    "heroSub": "Hlídačky v okolí {city} ho už vidí. Jejich odpovědi najdete ve zprávách.",
     "body": "Váš inzerát rozešleme hlídačkám ve vašem okolí. Jejich odpovědi se vám zobrazí ve zprávách a o každé nové reakci vás budeme informovat.",
-    "btnContinue": "Pokračovat",
-    "editLink": "Upravit inzerát"
+    "btnContinue": "Vyberte si hlídačky",
+    "editLink": "Upravit inzerát",
+    "appTitle": "Nepropásněte první odpověď",
+    "appBody": "Stáhněte si aplikaci a dáme vám vědět hned, jak hlídačka odpoví — nemusíte kontrolovat e-mail.",
+    "cardTitles": {
+      "babysitting": "Pečující rodina hledá spolehlivou hlídačku",
+      "cleaning": "Rušná domácnost hledá pravidelnou pomoc s úklidem",
+      "pet": "Přátelští pejskaři hledají spolehlivé hlídání",
+      "senior": "Milý seniorský pár hledá laskavou odpolední pomoc",
+      "tutoring": "Zvídavý student hledá trpělivého doučovatele"
+    }
   },
   "children": {
     "modalTitle": "Informace o dětech",

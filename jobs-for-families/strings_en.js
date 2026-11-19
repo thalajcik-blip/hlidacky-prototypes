@@ -606,11 +606,20 @@
     "skipLink": "I will do this later"
   },
   "success": {
-    "heroTitle": "That's it!",
-    "heroSub": "Your job in {city} was posted.",
+    "heroTitle": "🎉Your job is live",
+    "heroSub": "Sitters near {city} can see it now. Their replies will land in your messages.",
     "body": "We’ll share your job with sitters in your area. Their responses will appear in your messages, with notifications for each new reply.",
-    "btnContinue": "Continue",
-    "editLink": "Edit job post"
+    "btnContinue": "Pick your sitters",
+    "editLink": "Edit job",
+    "appTitle": "Don’t miss the first reply",
+    "appBody": "Get the app and we’ll let you know the moment a sitter replies — no need to check your email.",
+    "cardTitles": {
+      "babysitting": "Caring family looking for a reliable babysitter",
+      "cleaning": "Busy household needs regular cleaning help",
+      "pet": "Friendly dog owners need a trusted pet sitter",
+      "senior": "Loving senior couple needs kind afternoon assistance",
+      "tutoring": "Curious student needs a patient tutor"
+    }
   },
   "children": {
     "modalTitle": "Information about children",
