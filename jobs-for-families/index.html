@@ -43,7 +43,10 @@
       var base = first && langs.indexOf(first) === -1 ? '/' + first : '';
       var lang = langs.indexOf(first) !== -1 ? first : (langs.indexOf(second) !== -1 ? second : '');
       window.PROTOTYPE_BASE = base;
-      var assetBase = window.IS_MOBILE_APP_EMBED ? '..' : (base || '');
+      // The strings sit next to this page. Embedded in the mobile app the
+      // paths stay relative, so '.' and not '..': '../strings.js' is the
+      // repo root's older copy, which lacks the newer keys.
+      var assetBase = window.IS_MOBILE_APP_EMBED ? '.' : (base || '');
       document.write('<scr' + 'ipt src="' + assetBase + '/strings.js"><\/scr' + 'ipt>');
       if (lang !== 'cz') {
         document.write('<scr' + 'ipt src="' + assetBase + '/strings_' + (lang || 'en') + '.js"><\/scr' + 'ipt>');
