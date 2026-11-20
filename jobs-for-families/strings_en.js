@@ -748,6 +748,34 @@
     "keep": "Keep picking",
     "later": "Pick later"
   },
+  "picks": {
+    "title": "🎉Your job is live",
+    "sub": "Sitters near {city} can see it now.",
+    "subPick": "<b>Select up to 5</b> sitters to message.",
+    "matched": "Matched to your job:",
+    "schedule": "Weekday afternoons",
+    "showMore": "Show more sitters",
+    "readMore": "read more",
+    "bios": [
+      "I have been looking after children for over five years and love outdoor play, crafts and reading bedtime stories together.",
+      "Trained nurse with a calm, patient approach. I am used to helping older people with daily routines and keeping them company.",
+      "Student of pedagogy who enjoys homework help, board games and trips to the playground. Reliable and always on time.",
+      "Mother of two grown-up kids, happy to cook, tidy up and help around the house while looking after your little ones.",
+      "Experienced with toddlers and school-age children, first-aid certified and comfortable with pets at home.",
+      "I speak English and German and like to turn everyday moments into small learning games for the children I look after.",
+      "Calm and organised, I have cared for seniors with limited mobility and know how to keep a gentle daily structure.",
+      "Former kindergarten teacher who loves music, singing and creative play. Flexible on afternoons and weekends.",
+      "Sporty and energetic, I take kids to their activities, help with homework and make sure they get enough time outside.",
+      "Friendly and dependable, I have references from three families and am happy to start with a short trial visit."
+    ]
+  },
+  "getapp": {
+    "navTitle": "Get the app",
+    "title": "Not ready to decide yet?",
+    "sub": "Get the app and we’ll let you know the moment a sitter replies to your job — no need to keep checking your email.",
+    "live": "Your job stays live while you decide",
+    "saved": "Your selected sitters are saved for when you’re ready"
+  },
   "shortlist": {
     "navTitle": "Your matches",
     "title": "Pick up to 5 sitters you like",

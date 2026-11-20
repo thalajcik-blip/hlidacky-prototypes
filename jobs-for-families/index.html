@@ -1437,6 +1437,59 @@
     .skip-sheet__where-title { font-size: 14px; font-weight: 450; line-height: 20px; color: #2a3539; }
     .skip-sheet__path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: #6c757d; }
 
+    /* Picks — slow-burn sequence (Jobs Figma 4304:2222). The hero stays put,
+       the cards scroll, the footer slides in on scroll or a pick. */
+    #s-picks .picks-body { display: flex; flex-direction: column; gap: 8px; padding: 0 0 8px; }
+    .picks-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
+    .picks-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .picks-hero__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .picks-hero__sub b { font-weight: 700; }
+    .picks-matched { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 20px 4px; font-family: 'soleil', sans-serif; }
+    .picks-matched__label { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .picks-matched__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+    .picks-matched__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
+    .picks-list { display: flex; flex-direction: column; gap: 10px; padding: 0 20px; }
+    .picks-card {
+      position: relative; display: flex; flex-direction: column; padding: 16px 0; cursor: pointer;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; font-family: 'soleil', sans-serif;
+      transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    .picks-card.is-picked { background: #eff9ef; border-color: #22bf1e; box-shadow: inset 0 0 0 1px #22bf1e; }
+    .picks-card.is-full { opacity: .55; cursor: not-allowed; }
+    .picks-card__header { display: flex; gap: 12px; padding: 0 16px 4px; }
+    .picks-card__info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+    .picks-card__name { padding-right: 32px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; font-weight: 700; line-height: 1.4; letter-spacing: -0.32px; color: #2a3539; }
+    .picks-card__details { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; padding: 0 2px; font-size: 14px; line-height: 1.2; letter-spacing: -0.242px; color: #8b91a3; white-space: nowrap; }
+    .picks-card__details i, .picks-card__phone i { width: 14px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; color: #8b91a3; }
+    .picks-card__details small { font-size: 14px; font-weight: 350; }
+    .picks-card__star { width: 16px; height: 16px; }
+    .picks-card__phone { display: flex; align-items: center; gap: 6px; padding: 0 0 2px 2px; font-size: 14px; line-height: 1.4; }
+    /* The number is shown faded out — members see it in full. */
+    .picks-card__phone span { opacity: .8; color: transparent; background: linear-gradient(90deg, #8b91a3 20%, rgba(139, 145, 163, 0) 70%); -webkit-background-clip: text; background-clip: text; border-bottom: 1px dashed #bec2ce; white-space: nowrap; }
+    .picks-card__rule { height: 20px; background: linear-gradient(#e5e5ea, #e5e5ea) center / calc(100% - 32px) 1px no-repeat; }
+    .picks-card__about { padding: 0 16px; font-size: 14px; font-weight: 350; line-height: 1.4; letter-spacing: -0.242px; color: #2a3539; }
+    .picks-card__more { color: #f96073; font-weight: 400; text-decoration: underline; cursor: pointer; }
+    .picks-card__check { position: absolute; right: 11px; top: 11px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid #bec2ce; border-radius: 4px; background: #fff; color: transparent; font-size: 14px; cursor: pointer; transition: background .15s, border-color .15s; }
+    .picks-card.is-picked .picks-card__check { background: #22bf1e; border-color: #22bf1e; color: #fff; }
+    .picks-more { align-self: center; margin: 4px 0 8px; padding: 8px 16px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; font-family: 'soleil', sans-serif; font-size: 14px; font-weight: 450; color: #2a3539; cursor: pointer; }
+    .picks-more[hidden] { display: none; }
+    .picks-footer { padding-top: 16px; padding-bottom: 16px; filter: drop-shadow(0 -12px 16px rgba(42, 53, 57, .12)); transition: transform .3s cubic-bezier(.22, 1, .36, 1), opacity .2s ease; }
+    #s-picks:not(.has-footer) .picks-footer { position: absolute; left: 0; right: 0; bottom: 0; transform: translateY(100%); opacity: 0; pointer-events: none; }
+    .picks-footer__progress { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+    .picks-footer__progress[hidden] { display: none; }
+    .picks-footer .shortlist-later { margin-top: 16px; padding-bottom: 12px; }
+
+    /* Not ready yet · Get the app (Jobs Figma 4305:8339). */
+    #s-getapp .getapp-body { display: flex; flex-direction: column; padding: 0; }
+    .getapp-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 40px 20px 0; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
+    .getapp-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .getapp-hero__sub { max-width: 300px; font-size: 14px; font-weight: 350; line-height: 1.32; letter-spacing: -0.16px; color: #4a5a61; }
+    .getapp-hero__img { display: block; width: 280px; height: 338px; margin-top: 4px; }
+    .getapp-benefits { align-self: center; max-width: 280px; padding: 20px 0; }
+    .getapp-benefits li { white-space: normal; }
+    .getapp-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; }
+    .getapp-footer img { display: block; width: 141px; height: 47px; }
+
     @keyframes shortlistPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) { .shortlist-progress__avatars img { animation: none; } }
 
@@ -2984,6 +3037,67 @@
     </div>
   </div>
 
+  <!-- ===== SCREEN: Picks — your job is live, select up to 5 sitters (Jobs Figma 4304:2222) =====
+       Slow-burn sequence: stands in for "Your job is live". Full search
+       cards, five per page; picking marks who gets the family's message. -->
+  <div class="screen" id="s-picks">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="picks-hero">
+      <h2 class="picks-hero__title" data-i18n="picks.title"></h2>
+      <p class="picks-hero__sub" id="picks-sub"></p>
+    </div>
+    <div class="screen-body picks-body" id="picks-body">
+      <div class="picks-matched">
+        <p class="picks-matched__label" data-i18n="picks.matched"></p>
+        <div class="picks-matched__tags" id="picks-tags"></div>
+      </div>
+      <div class="picks-list" id="picks-list"></div>
+      <button class="picks-more" id="picks-more" type="button" onclick="showMorePicks()" data-i18n="picks.showMore"></button>
+    </div>
+    <div class="screen-footer picks-footer" id="picks-footer">
+      <div class="picks-footer__progress" id="picks-progress">
+        <div class="shortlist-progress__row">
+          <span class="shortlist-progress__count" id="picks-count" aria-live="polite"></span>
+          <span class="shortlist-progress__avatars" id="picks-avatars"></span>
+        </div>
+        <div class="shortlist-progress__bar" id="picks-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="shortlist.cta"></span></button>
+      </div>
+      <a class="btn-link success-edit shortlist-later" onclick="goToStepInFlow('getapp')" data-i18n="shortlist.later"></a>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Not ready yet · Get the app (Jobs Figma 4305:8339) =====
+       End of the slow-burn sequence, for families who are not ready to pay. -->
+  <div class="screen" id="s-getapp">
+    <div class="followup-nav">
+      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
+      <span class="followup-nav-title" data-i18n="getapp.navTitle"></span>
+      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="restartFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="screen-body getapp-body">
+      <div class="getapp-hero">
+        <h2 class="getapp-hero__title" data-i18n="getapp.title"></h2>
+        <p class="getapp-hero__sub" data-i18n="getapp.sub"></p>
+        <img class="getapp-hero__img" src="/jobs-for-families/assets/getapp/phone-illustration.png" width="280" height="338" alt="">
+      </div>
+      <ul class="pricing-benefits getapp-benefits">
+        <li><i class="fa-regular fa-check" aria-hidden="true"></i><span data-i18n="getapp.live"></span></li>
+        <li><i class="fa-regular fa-check" aria-hidden="true"></i><span data-i18n="getapp.saved"></span></li>
+      </ul>
+    </div>
+    <div class="screen-footer getapp-footer">
+      <span><img src="/footer-for-logged-in-users/assets/account-app-store.png" width="141" height="47" alt="Download on the App Store"></span>
+      <span><img src="/footer-for-logged-in-users/assets/account-google-play.png" width="141" height="47" alt="Get it on Google Play"></span>
+    </div>
+  </div>
+
   <!-- ===== SCREEN: Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460) ===== -->
   <div class="screen" id="s-shortlist">
     <div class="followup-nav">
@@ -3337,7 +3451,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'urgent' || id === 'fallback' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'urgent' || id === 'fallback' || id === 'picks' || id === 'getapp' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3365,6 +3479,7 @@
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
     if (id === 'urgent') renderUrgent();
+    if (id === 'picks') renderPicks();
     if (id === 'fallback') renderFallback();
     if (id === 'shortlist') renderShortlist();
     if (id === 'nomatches') renderNoMatches();
@@ -3442,7 +3557,7 @@
   // built yet and stay disabled in the modal.
   const AFTER_JOB_SEQUENCES = [
     { key: 'matches', name: 'Matches, then membership', note: 'Matched sitters, then the membership plans.', steps: ['followup', 'pricing'] },
-    { key: 'shortlist', name: 'Slow-burn job → shortlist → membership', note: 'Pick up to 5 matched sitters, then the membership plans.', steps: ['shortlist', 'pricing'] },
+    { key: 'shortlist', name: 'Slow-burn job → shortlist → membership', note: 'Straight to the matches (no “job was posted” screen): pick up to 5, then membership; “decide later” ends on Get the app.', steps: ['picks', 'pricing', 'getapp'], replacesJobCreated: true },
     { key: 'states', name: 'Shortlist states', note: 'When the shortlist comes up short.', variants: [
       { key: 'few', name: 'Fewer than 5 matches', steps: ['shortlist', 'pricing'] },
       { key: 'none', name: 'No matches', steps: ['nomatches'] }
@@ -3575,6 +3690,7 @@
   }
   function restartFlow() {
     selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
+    picksSelected = []; picksShown = PICKS_PAGE;
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
     var reviewText = document.getElementById('review-text');
     if (reviewText) reviewText.value = '';
@@ -4430,9 +4546,141 @@
     goNext();
   }
 
+  // Picks (sequence "Slow-burn job → shortlist → membership"): the family
+  // lands straight on its matches after posting. Full search cards, five per
+  // page; ticking a card selects who gets the message (max 5). The footer
+  // slides in once the list is scrolled or someone is picked.
+  const PICKS_MAX = 5;
+  const PICKS_PAGE = 5;
+  const PICKS_SITTERS = [
+    { name: 'Alice A.', photo: '/jobs-for-families/assets/picks/sitter-1.jpg', km: '1.2', rating: '4.6', reviews: 8 },
+    { name: 'Bernadetta B.', photo: '/jobs-for-families/assets/picks/sitter-2.jpg', km: '1.2', rating: '4.6', reviews: 8 },
+    { name: 'Cecílie C.', photo: '/jobs-for-families/assets/picks/sitter-3.jpg', km: '1.2', rating: '4.6', reviews: 8 },
+    { name: 'Diana D.', photo: '/jobs-for-families/assets/shortlist/sitter-4.jpg', km: '1.5', rating: '4.8', reviews: 12 },
+    { name: 'Eliška E.', photo: '/jobs-for-families/assets/shortlist/sitter-5.jpg', km: '2.4', rating: '4.9', reviews: 5 },
+    { name: 'Františka F.', photo: '/jobs-for-families/assets/shortlist/sitter-1.jpg', km: '2.8', rating: '4.7', reviews: 9 },
+    { name: 'Gabriela G.', photo: '/jobs-for-families/assets/shortlist/sitter-2.jpg', km: '3.1', rating: '4.5', reviews: 6 },
+    { name: 'Helena H.', photo: '/jobs-for-families/assets/urgent/sitter-3.jpg', km: '3.4', rating: '5.0', reviews: 14 },
+    { name: 'Ivana I.', photo: '/jobs-for-families/assets/fallback/sitter-2.jpg', km: '4.0', rating: '4.6', reviews: 7 },
+    { name: 'Jana J.', photo: '/jobs-for-families/assets/fallback/sitter-1.jpg', km: '4.6', rating: '4.4', reviews: 3 }
+  ];
+  let picksSelected = [];
+  let picksShown = PICKS_PAGE;
+  let picksScrollBound = false;
+
+  function renderPicks() {
+    const service = [...selectedServices][0] || 'babysitting';
+    const city = (document.getElementById('location-input').value || 'Prague').trim();
+    document.getElementById('picks-sub').innerHTML = escapePicks(t('picks.sub').replace('{city}', city)) + '<br>' + t('picks.subPick');
+    document.getElementById('picks-tags').innerHTML = [t('service.' + service), t('picks.schedule')]
+      .map(function(tag) { return '<span>' + escapePicks(tag) + '</span>'; }).join('');
+    renderPicksList();
+    const body = document.getElementById('picks-body');
+    if (!picksScrollBound) {
+      body.addEventListener('scroll', updatePicksFooter, { passive: true });
+      picksScrollBound = true;
+    }
+    body.scrollTop = 0;
+    updatePicks();
+  }
+
+  function escapePicks(text) {
+    return String(text).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+
+  function renderPicksList() {
+    const shield = resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/verify-shield.svg');
+    const star = resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/star.svg');
+    const dot = resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/dot.svg');
+    const bios = (window.STRINGS && STRINGS.picks && STRINGS.picks.bios) || [];
+    document.getElementById('picks-list').innerHTML = PICKS_SITTERS.slice(0, picksShown).map(function(sitter, i) {
+      const bio = bios[i % (bios.length || 1)] || '';
+      const short = bio.length > 90 ? bio.slice(0, 88).replace(/\s+\S*$/, '').replace(/[.,;:!?]+$/, '') + '… ' : bio + ' ';
+      return '<article class="picks-card" data-index="' + i + '" onclick="togglePick(' + i + ', event)">'
+        + '<div class="picks-card__header">'
+        +   '<span class="shortlist-card__photo"><img src="' + resolveEmbedAssetPath(sitter.photo) + '" alt="">'
+        +     '<span class="shortlist-card__verified"><img src="' + shield + '" alt=""></span></span>'
+        +   '<div class="picks-card__info">'
+        +     '<p class="picks-card__name">' + escapePicks(sitter.name) + '</p>'
+        +     '<p class="picks-card__details"><i class="fa-light fa-location-dot" aria-hidden="true"></i>'
+        +       t('shortlist.distance').replace('{km}', sitter.km)
+        +       '<img class="shortlist-card__dot" src="' + dot + '" alt="">'
+        +       '<img class="picks-card__star" src="' + star + '" alt="">' + sitter.rating + ' <small>(' + sitter.reviews + ')</small></p>'
+        +     '<p class="picks-card__phone"><i class="fa-light fa-phone" aria-hidden="true"></i><span>+ 420 720 123 456</span></p>'
+        +   '</div>'
+        + '</div>'
+        + '<div class="picks-card__rule"></div>'
+        + '<p class="picks-card__about"><span class="picks-card__bio" data-full="' + escapePicks(bio) + '">' + escapePicks(short) + '</span>'
+        +   (bio.length > 90 ? '<a class="picks-card__more" onclick="expandPickBio(event, this)">' + t('picks.readMore') + '</a>' : '') + '</p>'
+        + '<button class="picks-card__check" type="button" role="checkbox" aria-checked="false" aria-label="' + escapePicks(sitter.name) + '"><i class="fa-solid fa-check" aria-hidden="true"></i></button>'
+        + '</article>';
+    }).join('');
+    document.getElementById('picks-more').hidden = picksShown >= PICKS_SITTERS.length;
+  }
+
+  function showMorePicks() {
+    picksShown = Math.min(PICKS_SITTERS.length, picksShown + PICKS_PAGE);
+    renderPicksList();
+    updatePicks();
+  }
+
+  function expandPickBio(event, link) {
+    event.stopPropagation();
+    const bio = link.parentNode.querySelector('.picks-card__bio');
+    bio.textContent = bio.dataset.full;
+    link.remove();
+  }
+
+  function togglePick(i, event) {
+    if (event && event.target.closest('.picks-card__more')) return;
+    const at = picksSelected.indexOf(i);
+    if (at !== -1) picksSelected.splice(at, 1);
+    else if (picksSelected.length < PICKS_MAX) picksSelected.push(i);
+    updatePicks();
+  }
+
+  function updatePicks() {
+    document.querySelectorAll('#picks-list .picks-card').forEach(function(card) {
+      const on = picksSelected.indexOf(Number(card.dataset.index)) !== -1;
+      card.classList.toggle('is-picked', on);
+      card.classList.toggle('is-full', !on && picksSelected.length >= PICKS_MAX);
+      card.querySelector('.picks-card__check').setAttribute('aria-checked', String(on));
+    });
+    document.getElementById('picks-count').textContent = t('shortlist.picked').replace('{n}', picksSelected.length).replace('{max}', PICKS_MAX);
+    document.querySelectorAll('#picks-bar i').forEach(function(seg, i) { seg.classList.toggle('is-on', i < picksSelected.length); });
+    document.getElementById('picks-avatars').innerHTML = picksSelected.map(function(i, n) {
+      return '<img src="' + resolveEmbedAssetPath(PICKS_SITTERS[i].photo) + '" alt="" style="z-index:' + (PICKS_MAX - n) + '">';
+    }).join('');
+    document.getElementById('picks-progress').hidden = !picksSelected.length;
+    updatePicksFooter();
+  }
+
+  // Figma: no footer at the top of the list; it appears once the list is
+  // scrolled or a sitter is picked, and stays from then on.
+  function updatePicksFooter() {
+    const body = document.getElementById('picks-body');
+    const show = picksSelected.length > 0 || body.scrollTop > 24;
+    document.getElementById('s-picks').classList.toggle('has-footer', show);
+  }
+
+  // Jump to a step of the current flow (Get the app at the end of the
+  // slow-burn sequence).
+  function goToStepInFlow(id) {
+    const flow = buildFlow();
+    const idx = flow.indexOf(id);
+    if (idx === -1) return;
+    currentIdx = idx;
+    navDirection = 'forward';
+    showScreen(id);
+  }
+
   // Who Pricing greets: the shortlist picks in that sequence (or its first
   // three when nobody was picked), otherwise the first three matches.
   function pricingSitters() {
+    if (afterJobSteps().indexOf('picks') !== -1) {
+      const picks = picksSelected.length ? picksSelected : [0, 1, 2];
+      return picks.map(function(i) { return { name: PICKS_SITTERS[i].name.split(/\s+/)[0], photo: resolveEmbedAssetPath(PICKS_SITTERS[i].photo) }; });
+    }
     if (isUrgentSequence(afterJobSequence) && !urgentAtOwnPaceChosen) {
       return urgentSequenceSitters().map(function(s) { return { name: s.name.split(/\s+/)[0], photo: resolveEmbedAssetPath(s.photo) }; });
     }
@@ -5512,7 +5760,8 @@
   }
   function skipSheetPickLater() {
     closeSkipSheet();
-    restartFlow();
+    if (buildFlow().indexOf('getapp') !== -1) goToStepInFlow('getapp');
+    else restartFlow();
   }
 
   function onReviewTextInput() {

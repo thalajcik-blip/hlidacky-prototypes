@@ -747,6 +747,34 @@ window.STRINGS = {
     "keep": "Pokračovat ve výběru",
     "later": "Vybrat později"
   },
+  "picks": {
+    "title": "🎉Váš inzerát je zveřejněný",
+    "sub": "Hlídačky v okolí {city} ho už vidí.",
+    "subPick": "<b>Vyberte až 5</b> hlídaček, kterým napíšete.",
+    "matched": "Odpovídají vašemu inzerátu:",
+    "schedule": "Odpoledne ve všední dny",
+    "showMore": "Zobrazit další hlídačky",
+    "readMore": "číst dál",
+    "bios": [
+      "Děti hlídám přes pět let a ráda s nimi trávím čas venku, tvořím a čtu pohádky před spaním.",
+      "Vystudovaná zdravotní sestra s klidným a trpělivým přístupem. Jsem zvyklá pomáhat starším lidem s denní rutinou.",
+      "Studentka pedagogiky, ráda pomáhám s úkoly, hraji deskové hry a chodím na hřiště. Spolehlivá a vždy včas.",
+      "Máma dvou dospělých dětí, ráda uvařím, uklidím a pomůžu s domácností, zatímco hlídám vaše nejmenší.",
+      "Zkušenosti s batolaty i školáky, kurz první pomoci a doma nemám problém se zvířaty.",
+      "Mluvím anglicky a německy a z běžných chvil ráda dělám malé hry, při kterých se děti něco naučí.",
+      "Klidná a pečlivá, starala jsem se o seniory se sníženou pohyblivostí a umím udržet laskavý denní režim.",
+      "Bývalá učitelka ve školce, miluji hudbu, zpěv a tvořivé hry. Flexibilní odpoledne i o víkendech.",
+      "Sportovně založená, vozím děti na kroužky, pomáhám s úkoly a dbám, aby byly dost venku.",
+      "Přátelská a spolehlivá, mám reference od tří rodin a ráda začnu krátkou zkušební návštěvou."
+    ]
+  },
+  "getapp": {
+    "navTitle": "Stáhněte si aplikaci",
+    "title": "Ještě se nechcete rozhodnout?",
+    "sub": "Stáhněte si aplikaci a dáme vám vědět hned, jak vám hlídačka odpoví — nemusíte neustále kontrolovat e-mail.",
+    "live": "Váš inzerát zůstává zveřejněný, než se rozhodnete",
+    "saved": "Vybrané hlídačky vám uložíme, až budete připraveni"
+  },
   "shortlist": {
     "navTitle": "Vaše shody",
     "title": "Vyberte si až 5 hlídaček, které se vám líbí",
