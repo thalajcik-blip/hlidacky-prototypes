@@ -1465,10 +1465,12 @@
     .picks-card__star { width: 16px; height: 16px; }
     .picks-card__phone { display: flex; align-items: center; gap: 6px; padding: 0 0 2px 2px; font-size: 14px; line-height: 1.4; }
     /* The number is shown faded out — members see it in full. */
-    .picks-card__phone span { opacity: .8; color: transparent; background: linear-gradient(90deg, #8b91a3 20%, rgba(139, 145, 163, 0) 70%); -webkit-background-clip: text; background-clip: text; border-bottom: 1px dashed #bec2ce; white-space: nowrap; }
+    /* One mask fades the number and its dashed underline together, so the
+       tail of the number stays hidden from non-members. */
+    .picks-card__phone span { opacity: .8; color: #8b91a3; border-bottom: 1px dashed #bec2ce; white-space: nowrap; -webkit-mask-image: linear-gradient(90deg, #000 20%, transparent 70%); mask-image: linear-gradient(90deg, #000 20%, transparent 70%); }
     .picks-card__rule { height: 20px; background: linear-gradient(#e5e5ea, #e5e5ea) center / calc(100% - 32px) 1px no-repeat; }
     .picks-card__about { padding: 0 16px; font-size: 14px; font-weight: 350; line-height: 1.4; letter-spacing: -0.242px; color: #2a3539; }
-    .picks-card__more { color: #f96073; font-weight: 400; text-decoration: underline; cursor: pointer; }
+    .picks-card__more { color: #f96073; font-weight: 400; text-decoration: underline; cursor: pointer; white-space: nowrap; }
     .picks-card__check { position: absolute; right: 11px; top: 11px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid #bec2ce; border-radius: 4px; background: #fff; color: transparent; font-size: 14px; cursor: pointer; transition: background .15s, border-color .15s; }
     .picks-card.is-picked .picks-card__check { background: #22bf1e; border-color: #22bf1e; color: #fff; }
     .picks-more { align-self: center; margin: 4px 0 8px; padding: 8px 16px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; box-shadow: inset 0 -3px 0 #e5e5ea; font-family: 'soleil', sans-serif; font-size: 14px; font-weight: 450; color: #2a3539; cursor: pointer; }
@@ -4595,7 +4597,6 @@
     const bios = (window.STRINGS && STRINGS.picks && STRINGS.picks.bios) || [];
     document.getElementById('picks-list').innerHTML = PICKS_SITTERS.slice(0, picksShown).map(function(sitter, i) {
       const bio = bios[i % (bios.length || 1)] || '';
-      const short = bio.length > 90 ? bio.slice(0, 88).replace(/\s+\S*$/, '').replace(/[.,;:!?]+$/, '') + '… ' : bio + ' ';
       return '<article class="picks-card" data-index="' + i + '" onclick="togglePick(' + i + ', event)">'
         + '<div class="picks-card__header">'
         +   '<span class="shortlist-card__photo"><img src="' + resolveEmbedAssetPath(sitter.photo) + '" alt="">'
@@ -4610,13 +4611,40 @@
         +   '</div>'
         + '</div>'
         + '<div class="picks-card__rule"></div>'
-        + '<p class="picks-card__about"><span class="picks-card__bio" data-full="' + escapePicks(bio) + '">' + escapePicks(short) + '</span>'
-        +   (bio.length > 90 ? '<a class="picks-card__more" onclick="expandPickBio(event, this)">' + t('picks.readMore') + '</a>' : '') + '</p>'
+        + '<p class="picks-card__about"><span class="picks-card__bio" data-full="' + escapePicks(bio) + '">' + escapePicks(bio) + '</span>'
+        +   '<a class="picks-card__more" onclick="expandPickBio(event, this)">' + t('picks.readMore') + '</a></p>'
         + '<button class="picks-card__check" type="button" role="checkbox" aria-checked="false" aria-label="' + escapePicks(sitter.name) + '"><i class="fa-solid fa-check" aria-hidden="true"></i></button>'
         + '</article>';
     }).join('');
     document.getElementById('picks-more').hidden = picksShown >= PICKS_SITTERS.length;
+    fitPickBios();
   }
+
+  // Every bio shows exactly two lines, "read more" closing the second one:
+  // the longest run of whole words that still fits with "… read more" is
+  // kept. Measured, not counted, so it holds for any width or language.
+  function fitPickBios() {
+    document.querySelectorAll('#picks-list .picks-card__about').forEach(function(about) {
+      const bio = about.querySelector('.picks-card__bio');
+      const more = about.querySelector('.picks-card__more');
+      if (!more) return; // expanded
+      const full = bio.dataset.full;
+      const twoLines = parseFloat(getComputedStyle(about).lineHeight) * 2 + 1;
+      const fits = function(text) { bio.textContent = text; return about.offsetHeight <= twoLines; };
+      if (fits(full + ' ')) return;
+      const words = full.split(/\s+/);
+      let lo = 1, hi = words.length - 1, best = 1;
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1;
+        if (fits(words.slice(0, mid).join(' ').replace(/[.,;:!?]+$/, '') + '… ')) { best = mid; lo = mid + 1; }
+        else hi = mid - 1;
+      }
+      bio.textContent = words.slice(0, best).join(' ').replace(/[.,;:!?]+$/, '') + '… ';
+    });
+  }
+  // Re-fit once the web font is in and whenever the width changes.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function() { if (document.getElementById('picks-list').children.length) fitPickBios(); });
+  window.addEventListener('resize', function() { if (document.getElementById('picks-list').children.length) fitPickBios(); });
 
   function showMorePicks() {
     picksShown = Math.min(PICKS_SITTERS.length, picksShown + PICKS_PAGE);
