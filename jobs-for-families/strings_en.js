@@ -753,6 +753,8 @@
     "sub": "Sitters near {city} can see it now.",
     "subPick": "<b>Select up to 5</b> sitters to message.",
     "matched": "Matched to your job:",
+    "fewMatched": "{n} sitters match your job closely",
+    "alsoWorth": "Also worth a look",
     "schedule": "Weekday afternoons",
     "showMore": "Show more sitters",
     "readMore": "read more",
@@ -786,14 +788,6 @@
       "afternoons": "Free weekday afternoons",
       "budget": "Within your budget",
       "housework": "Light housework"
-    },
-    "few": {
-      "title": "{n} sitters match your job",
-      "sub": "Heart the ones you like. Below are a few more who fit most of what you need.",
-      "close": "Close match",
-      "alsoWorth": "Also worth a look",
-      "cta": "Become a member to message Sitters",
-      "later": "I’ll do it later"
     },
     "cta": "Become a member to message them",
     "later": "I’ll decide later"

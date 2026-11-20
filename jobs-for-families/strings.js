@@ -752,6 +752,8 @@ window.STRINGS = {
     "sub": "Hlídačky v okolí {city} ho už vidí.",
     "subPick": "<b>Vyberte až 5</b> hlídaček, kterým napíšete.",
     "matched": "Odpovídají vašemu inzerátu:",
+    "fewMatched": "{n} hlídačky přesně odpovídají vašemu inzerátu",
+    "alsoWorth": "Také stojí za pohled",
     "schedule": "Odpoledne ve všední dny",
     "showMore": "Zobrazit další hlídačky",
     "readMore": "číst dál",
@@ -785,14 +787,6 @@ window.STRINGS = {
       "afternoons": "Volná odpoledne ve všední dny",
       "budget": "V rámci vašeho rozpočtu",
       "housework": "Lehké domácí práce"
-    },
-    "few": {
-      "title": "{n} hlídačky odpovídají vašemu inzerátu",
-      "sub": "Označte ty, které se vám líbí. Níže je pár dalších, které splňují většinu toho, co potřebujete.",
-      "close": "Nejlepší shoda",
-      "alsoWorth": "Také stojí za pohled",
-      "cta": "Staňte se členem a napište hlídačkám",
-      "later": "Udělám to později"
     },
     "cta": "Staňte se členem a napište jim",
     "later": "Rozhodnu se později"
