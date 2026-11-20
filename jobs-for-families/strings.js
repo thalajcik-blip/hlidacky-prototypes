@@ -717,28 +717,6 @@ window.STRINGS = {
       }
     }
   },
-  "urgent": {
-    "live": "🎉Váš inzerát je zveřejněný",
-    "title": "Zítra má volno {n} hlídaček",
-    "sub": "V {day} mají volno 13:00–18:00 a hodí se k vašemu inzerátu v okolí {city}.",
-    "free": "Volno {hours}",
-    "freeAllDay": "Volno celý den",
-    "tags": {
-      "experience": "Praxe: {service}",
-      "lastMinute": "Pomoc na poslední chvíli"
-    },
-    "more": "+ {n} dalších má zítra volno",
-    "cta": "Napište jim hned",
-    "note": "Členství začíná ve chvíli, kdy zaplatíte.",
-    "later": "Nespěcháte? Vyberte si hlídačky ve svém tempu"
-  },
-  "fallback": {
-    "title": "Vašemu inzerátu odpovídá {n} hlídaček",
-    "sub": "Pomoc potřebujete brzy, tak nečekejte na odpovědi — napište jim sami a zeptejte se, která může přijít zítra.",
-    "matchTitle": "Odpovídají vašemu inzerátu",
-    "near": "V okolí {city}",
-    "more": "další"
-  },
   "skipSheet": {
     "title": "Vybrat hlídačky později?",
     "body": "Váš inzerát zůstává zveřejněný a hlídačky vám stále mohou odpovědět. Vaše shody si tu necháme, takže se k nim můžete kdykoli vrátit.",
@@ -757,6 +735,15 @@ window.STRINGS = {
     "schedule": "Odpoledne ve všední dny",
     "showMore": "Zobrazit další hlídačky",
     "readMore": "číst dál",
+    "callNote": "Uvidíte i jejich telefonní čísla, takže jim můžete hned zavolat.",
+    "urgent": {
+      "title": "Zítra odpoledne má volno {n} hlídaček",
+      "sub": "Vybrali jsme 3, které mají nejvíc volného času.<br>Klidně to změňte — napíšeme všem najednou."
+    },
+    "fallback": {
+      "title": "Vašemu inzerátu odpovídá {n} hlídaček",
+      "sub": "Pomoc potřebujete brzy, tak nečekejte na odpovědi.<br>Vyberte až 5 a zeptejte se všech, kdo může přijít zítra."
+    },
     "bios": [
       "Děti hlídám přes pět let a ráda s nimi trávím čas venku, tvořím a čtu pohádky před spaním.",
       "Vystudovaná zdravotní sestra s klidným a trpělivým přístupem. Jsem zvyklá pomáhat starším lidem s denní rutinou.",

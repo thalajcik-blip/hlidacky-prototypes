@@ -718,28 +718,6 @@
       }
     }
   },
-  "urgent": {
-    "live": "🎉Your job is live",
-    "title": "{n} sitters are free tomorrow",
-    "sub": "They have {day} 13:00–18:00 open and match your job near {city}.",
-    "free": "Free {hours}",
-    "freeAllDay": "Free all day",
-    "tags": {
-      "experience": "{service} experience",
-      "lastMinute": "Last-minute help"
-    },
-    "more": "+ {n} more free tomorrow",
-    "cta": "Message them now",
-    "note": "Your membership starts the moment you pay.",
-    "later": "Not that urgent? Pick sitters at your own pace"
-  },
-  "fallback": {
-    "title": "{n} sitters match your job",
-    "sub": "You need help soon, so don’t wait for replies — message them yourself and ask who can come tomorrow.",
-    "matchTitle": "They match your job",
-    "near": "Near {city}",
-    "more": "more"
-  },
   "skipSheet": {
     "title": "Pick your sitters later?",
     "body": "Your job stays live and sitters can still reply. We’ll keep your matches here, so you can come back to them any time.",
@@ -758,6 +736,15 @@
     "schedule": "Weekday afternoons",
     "showMore": "Show more sitters",
     "readMore": "read more",
+    "callNote": "You’ll also see their numbers to call right away.",
+    "urgent": {
+      "title": "{n} sitters are free tomorrow afternoon",
+      "sub": "We’ve selected the 3 with the most time free.<br>Change it if you like — we’ll message all of them at once."
+    },
+    "fallback": {
+      "title": "{n} sitters match your job",
+      "sub": "You need help soon, so don’t wait for replies.<br>Select up to 5 and ask them all who can come tomorrow."
+    },
     "bios": [
       "I have been looking after children for over five years and love outdoor play, crafts and reading bedtime stories together.",
       "Trained nurse with a calm, patient approach. I am used to helping older people with daily routines and keeping them company.",

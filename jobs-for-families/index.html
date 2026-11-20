@@ -1251,6 +1251,7 @@
     .pricing-avatars { display: flex; justify-content: center; padding-bottom: 10px; isolation: isolate; }
     .pricing-avatars img { width: 48px; height: 48px; margin-right: -16px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; box-shadow: 0 4px 8px rgba(42, 53, 57, .2); }
     .pricing-avatars img:last-child { margin-right: 0; }
+    .pricing-avatars__more { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex: none; z-index: 1; border: 1px solid #ff9ba7; border-radius: 42px; background: #feecee; font-family: 'soleil', sans-serif; font-size: 20px; color: #f96073; }
     .pricing-title { max-width: 280px; font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
     .pricing-sub { max-width: 240px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
     .pricing-content { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 20px; font-family: 'soleil', sans-serif; }
@@ -1314,7 +1315,6 @@
     .shortlist-progress__bar { display: flex; gap: 4px; height: 6px; }
     .shortlist-progress__bar i { flex: 1; border-radius: 4px; background: #ccd5e2; transition: background .25s ease; }
     .shortlist-progress__bar i.is-on { background: #f96073; }
-    #s-shortlist .shortlist-list { display: flex; flex-direction: column; gap: 10px; padding: 0 20px 8px; }
     .shortlist-card {
       display: flex; gap: 8px; width: 100%; flex-shrink: 0; padding: 12px; text-align: left; cursor: pointer;
       background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; font-family: 'soleil', sans-serif; color: inherit;
@@ -1344,7 +1344,12 @@
        a divider splits the close matches from the rest. */
     .picks-section { display: flex; align-items: center; gap: 10px; padding-top: 4px; font-family: 'soleil', sans-serif; font-size: 12px; font-weight: 450; line-height: 15.4px; color: #6c757d; text-transform: uppercase; white-space: nowrap; }
     .picks-section::before, .picks-section::after { content: ''; flex: 1; height: 1px; background: #e5e5ea; }
-    #s-picks.is-few .picks-matched__label { font-size: 14px; font-weight: 700; line-height: 1.4; color: #2a3539; }
+    #s-picks.is-counted .picks-matched__label { font-size: 14px; font-weight: 700; line-height: 1.4; color: #2a3539; }
+    /* Urgent sequences (Jobs Figma 4308:12395): a two-line note under the
+       count instead of the tags, and a call note under the button. */
+    .picks-matched__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; text-align: center; }
+    .picks-matched__sub[hidden], .picks-footer__note[hidden], .picks-matched__tags[hidden] { display: none; }
+    .picks-footer__note { margin-top: 4px; font-family: 'soleil', sans-serif; font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; text-align: center; }
 
     /* Shortlist states, "No matches" (Jobs Figma 4251:130559). */
     #s-nomatches .nomatches-body { display: flex; flex-direction: column; padding: 0; }
@@ -1369,50 +1374,6 @@
     .nomatches-option b { font-size: 14px; font-weight: 450; line-height: 18px; color: #2a3539; }
     .nomatches-option small { font-size: 12px; font-weight: 350; line-height: 16px; color: #6c757d; }
     .nomatches-option i { width: 16px; font-size: 16px; color: #f96073; text-align: center; }
-
-    /* Urgent: X sitters are free tomorrow (Jobs Figma 4254:133834). */
-    .urgent-body { display: flex; flex-direction: column; padding: 0; }
-    .urgent-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 40px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
-    .urgent-hero__live, .urgent-hero__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
-    .urgent-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
-    .urgent-hero__sub { max-width: 260px; }
-    .urgent-list { display: flex; flex-direction: column; gap: 10px; padding: 20px 20px 8px; font-family: 'soleil', sans-serif; }
-    .urgent-extra { display: flex; flex-direction: column; gap: 10px; }
-    .urgent-extra[hidden] { display: none; }
-    .urgent-card { position: relative; display: flex; gap: 8px; padding: 12px; background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; }
-    .urgent-card__photo { position: relative; display: flex; justify-content: center; padding: 0 4px 8px; flex: none; }
-    .urgent-card__photo img { width: 48px; height: 48px; border: 1px solid #fff; border-radius: 42px; object-fit: cover; }
-    .urgent-card__rating { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 4px 2px; background: #fff; border: 1px solid #e5e5ea; border-radius: 64px; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
-    .urgent-card__rating i { width: 12px; font-size: 10px; color: #fecb54; text-align: center; }
-    .urgent-card__info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
-    .urgent-card__name { padding: 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: -0.32px; color: #2a3539; }
-    .urgent-card__distance { padding: 0 4px; font-size: 14px; line-height: 1.2; letter-spacing: -0.242px; color: #8b91a3; }
-    .urgent-card__tags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
-    .urgent-card__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
-    .urgent-card__free { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 64px; background: #eff9ef; font-size: 12px; line-height: 1.4; color: #0ba825; white-space: nowrap; }
-    .urgent-card__free i { width: 12px; font-size: 12px; color: #22bf1e; text-align: center; }
-    .urgent-more { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
-    .urgent-more[hidden] { display: none; }
-    .urgent-more::before, .urgent-more::after { content: ''; flex: 1; height: 1px; background: #e5e5ea; }
-    .urgent-more a, .urgent-footer__later { color: #6c757d; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 3px; }
-    .urgent-more a:hover, .urgent-footer__later:hover { opacity: 1; }
-    .urgent-footer { display: flex; flex-direction: column; align-items: center; padding-top: 16px; filter: drop-shadow(0 10px 16px rgba(42, 53, 57, .2)); font-family: 'soleil', sans-serif; }
-    .urgent-footer .btn-row { width: 100%; }
-    .urgent-footer__note { margin-top: 8px; font-size: 12px; line-height: 1.4; color: #4a5a61; text-align: center; }
-    .urgent-footer__later { margin-top: 12px; padding-bottom: 12px; }
-
-    /* Urgent fallback: X sitters match (Jobs Figma 4295:163180). */
-    /* Wider copy than the urgent hero: the Figma sub runs two full lines. */
-    #s-fallback .urgent-hero { padding: 20px; }
-    .fallback-sub { max-width: 335px; }
-    .fallback-sitters { display: flex; justify-content: center; padding: 20px 0 0; font-family: 'soleil', sans-serif; }
-    .fallback-sitter { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 88px; padding: 8px 0 12px; }
-    .fallback-sitter__name { padding-top: 2px; font-size: 12px; font-weight: 450; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; white-space: nowrap; }
-    .fallback-sitter__more { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border: 2px solid #e5e5ea; border-radius: 42px; background: #fff; font-size: 24px; color: #8b91a3; }
-    .fallback-match { display: flex; flex-direction: column; gap: 4px; margin: 8px 20px 20px; padding: 8px 12px 12px; background: #f7f7f7; border: 1px solid #e5e5ea; border-radius: 8px; font-family: 'soleil', sans-serif; }
-    .fallback-match__title { font-size: 14px; font-weight: 450; line-height: 20px; color: #2a3539; }
-    .fallback-match__tags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
-    .fallback-match__tags span { padding: 2px 8px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font-size: 12px; line-height: 1.4; color: #4a5a61; white-space: nowrap; }
 
     /* Skipping without picking sheet (Jobs Figma 4253:132721). */
     .skip-sheet { gap: 12px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
@@ -2979,60 +2940,6 @@
     </div>
   </div>
 
-  <!-- ===== SCREEN: Urgent — X sitters are free tomorrow (Jobs Figma 4254:133834) =====
-       Stands in for "Your job is live" in the urgent sequence. -->
-  <div class="screen" id="s-urgent">
-    <div class="followup-nav">
-      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
-      <span class="followup-nav-title" data-i18n="nav.title"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
-    </div>
-    <div class="screen-body urgent-body">
-      <div class="urgent-hero">
-        <p class="urgent-hero__live" data-i18n="urgent.live"></p>
-        <h2 class="urgent-hero__title" id="urgent-title"></h2>
-        <p class="urgent-hero__sub" id="urgent-sub"></p>
-      </div>
-      <div class="urgent-list" id="urgent-list"></div>
-    </div>
-    <div class="screen-footer urgent-footer">
-      <div class="btn-row">
-        <button class="btn-primary shortlist-cta" type="button" onclick="urgentMessageNow()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="urgent.cta"></span></button>
-      </div>
-      <p class="urgent-footer__note" data-i18n="urgent.note"></p>
-      <a class="urgent-footer__later" onclick="openSkipSheet('own-pace')" data-i18n="urgent.later"></a>
-    </div>
-  </div>
-
-  <!-- ===== SCREEN: Urgent fallback — X sitters match (Jobs Figma 4295:163180) =====
-       Stands in for "Your job is live" when nobody is free tomorrow. -->
-  <div class="screen" id="s-fallback">
-    <div class="followup-nav">
-      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
-      <span class="followup-nav-title" data-i18n="nav.title"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
-    </div>
-    <div class="screen-body urgent-body">
-      <div class="urgent-hero">
-        <p class="urgent-hero__live" data-i18n="urgent.live"></p>
-        <h2 class="urgent-hero__title" id="fallback-title"></h2>
-        <p class="urgent-hero__sub fallback-sub" data-i18n="fallback.sub"></p>
-      </div>
-      <div class="fallback-sitters" id="fallback-sitters"></div>
-      <div class="fallback-match">
-        <p class="fallback-match__title" data-i18n="fallback.matchTitle"></p>
-        <div class="fallback-match__tags" id="fallback-tags"></div>
-      </div>
-    </div>
-    <div class="screen-footer urgent-footer">
-      <div class="btn-row">
-        <button class="btn-primary shortlist-cta" type="button" onclick="urgentMessageNow()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="urgent.cta"></span></button>
-      </div>
-      <p class="urgent-footer__note" data-i18n="urgent.note"></p>
-      <a class="urgent-footer__later" onclick="openSkipSheet('own-pace')" data-i18n="urgent.later"></a>
-    </div>
-  </div>
-
   <!-- ===== SCREEN: Picks — your job is live, select up to 5 sitters (Jobs Figma 4304:2222) =====
        Slow-burn sequence: stands in for "Your job is live". Full search
        cards, five per page; picking marks who gets the family's message. -->
@@ -3049,6 +2956,7 @@
       </div>
       <div class="picks-matched">
         <p class="picks-matched__label" id="picks-matched-label"></p>
+        <p class="picks-matched__sub" id="picks-matched-sub" hidden></p>
         <div class="picks-matched__tags" id="picks-tags"></div>
       </div>
       <div class="picks-list" id="picks-list"></div>
@@ -3065,7 +2973,8 @@
       <div class="btn-row">
         <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="shortlist.cta"></span></button>
       </div>
-      <a class="btn-link success-edit shortlist-later" onclick="goToStepInFlow('getapp')" data-i18n="shortlist.later"></a>
+      <p class="picks-footer__note" id="picks-note" data-i18n="picks.callNote" hidden></p>
+      <a class="btn-link success-edit shortlist-later" onclick="picksLater()" data-i18n="shortlist.later"></a>
     </div>
   </div>
 
@@ -3091,33 +3000,6 @@
     <div class="screen-footer getapp-footer">
       <span><img src="/footer-for-logged-in-users/assets/account-app-store.png" width="141" height="47" alt="Download on the App Store"></span>
       <span><img src="/footer-for-logged-in-users/assets/account-google-play.png" width="141" height="47" alt="Get it on Google Play"></span>
-    </div>
-  </div>
-
-  <!-- ===== SCREEN: Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460) ===== -->
-  <div class="screen" id="s-shortlist">
-    <div class="followup-nav">
-      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
-      <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
-    </div>
-    <div class="shortlist-head">
-      <h2 class="shortlist-title" id="shortlist-title"></h2>
-      <p class="shortlist-sub" id="shortlist-sub"></p>
-      <div class="shortlist-progress">
-        <div class="shortlist-progress__row">
-          <span class="shortlist-progress__count" id="shortlist-count" aria-live="polite"></span>
-          <span class="shortlist-progress__avatars" id="shortlist-picked-avatars"></span>
-        </div>
-        <div class="shortlist-progress__bar" id="shortlist-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-      </div>
-    </div>
-    <div class="screen-body shortlist-list" id="shortlist-list"></div>
-    <div class="screen-footer shortlist-footer">
-      <div class="btn-row">
-        <button class="btn-primary shortlist-cta" type="button" onclick="goNext()"><i class="fa-solid fa-star" aria-hidden="true"></i><span id="shortlist-cta-label"></span></button>
-      </div>
-      <a class="btn-link success-edit shortlist-later" id="shortlist-later" onclick="openSkipSheet()"></a>
     </div>
   </div>
 
@@ -3430,7 +3312,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'urgent' || id === 'fallback' || id === 'picks' || id === 'getapp' || id === 'shortlist' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'picks' || id === 'getapp' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3457,10 +3339,7 @@
       if (!isMultiServiceFlow()) updateReviewPills();
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
-    if (id === 'urgent') renderUrgent();
     if (id === 'picks') renderPicks();
-    if (id === 'fallback') renderFallback();
-    if (id === 'shortlist') renderShortlist();
     if (id === 'nomatches') renderNoMatches();
     if (id === 'pricing') renderPricing();
 
@@ -3541,8 +3420,8 @@
       { key: 'few', name: 'Fewer than 5 matches', steps: ['picks', 'pricing', 'getapp'] },
       { key: 'none', name: 'No matches', steps: ['nomatches'] }
     ] },
-    { key: 'urgent', name: 'Urgent: X sitters are free tomorrow', note: 'Sitters free tomorrow instead of “Your job is live”, then instant membership.', steps: ['urgent', 'pricing'], replacesJobCreated: true },
-    { key: 'fallback', name: 'Urgent fallback: X sitters match', note: 'Nobody confirmed free tomorrow: message the matches yourself, then instant membership.', steps: ['fallback', 'pricing'], replacesJobCreated: true }
+    { key: 'urgent', name: 'Urgent: X sitters are free tomorrow', note: 'Sitters free tomorrow, the three most free already picked, then instant membership.', steps: ['picks', 'pricing'], replacesJobCreated: true },
+    { key: 'fallback', name: 'Urgent fallback: X sitters match', note: 'Nobody confirmed free tomorrow: pick up to 5 matches to ask, then membership.', steps: ['picks', 'pricing'], replacesJobCreated: true }
   ];
   // A sequence may come in variants (states of the same idea); the variant
   // is picked under it in the modal and preset with ?state=<key>.
@@ -3557,7 +3436,6 @@
     try { stored = localStorage.getItem(storageKey); } catch (e) {}
     return ok(stored) ? stored : fallback;
   }
-  let urgentAtOwnPaceChosen = false;
   let afterJobSequence = readPick('after', AFTER_JOB_STORAGE_KEY, function(key) { return isBuilt(findSequence(key)); }, 'matches');
   let afterJobVariant = readPick('state', AFTER_JOB_VARIANT_KEY, function(key) {
     return AFTER_JOB_SEQUENCES.some(function(q) { return (q.variants || []).some(function(v) { return v.key === key; }); });
@@ -3572,8 +3450,6 @@
     const seq = findSequence(afterJobSequence);
     const variant = currentVariant(seq);
     const steps = (variant ? variant.steps : (seq ? seq.steps : [])).slice();
-    // Urgent: "Not that urgent?" detours through the shortlist first.
-    if (seq && isUrgentSequence(seq.key) && urgentAtOwnPaceChosen) steps.splice(1, 0, 'shortlist');
     return steps;
   }
 
@@ -3669,7 +3545,7 @@
   }
   function restartFlow() {
     selectedServices.clear(); selectedPets.clear(); currentIdx = 0;
-    picksSelected = []; picksShown = PICKS_PAGE;
+    picksSelected = []; picksShown = PICKS_PAGE; picksFor = null;
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
     var reviewText = document.getElementById('review-text');
     if (reviewText) reviewText.value = '';
@@ -4320,70 +4196,6 @@
     return parts.length === 1 ? parts[0] : parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
   }
 
-  // Shortlist (sequence "Slow-burn job → shortlist → membership"): the
-  // family taps up to five matched sitters; the picks carry on to Pricing,
-  // which greets them by name. Sitters and photos follow the Figma frame.
-  const SHORTLIST_MAX = 5;
-  const SHORTLIST_SITTERS = [
-    { name: 'Alice M.', photo: 1, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
-    { name: 'Barbora B.', photo: 2, km: '8', rating: '4.8', reviews: 12, tags: ['housework', 'budget'] },
-    { name: 'Cecílie C.', photo: 3, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
-    { name: 'Diana D.', photo: 4, km: '1.2', rating: '4.6', reviews: 8, tags: ['afternoons', 'budget'] },
-    { name: 'Eliška E.', photo: 5, km: '2.4', rating: '4.9', reviews: 5, tags: ['afternoons', 'budget'] }
-  ];
-  let shortlistPicked = [];
-
-  function shortlistPhoto(i) {
-    return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/sitter-' + SHORTLIST_SITTERS[i].photo + '.jpg');
-  }
-
-  function renderShortlist() {
-    const service = [...selectedServices][0] || 'babysitting';
-    const city = (document.getElementById('location-input').value || 'Prague').trim();
-    document.getElementById('shortlist-title').textContent = t('shortlist.title');
-    document.getElementById('shortlist-sub').textContent = t('shortlist.sub')
-      .replace('{service}', t('location.serviceNames.' + service)).replace('{city}', city);
-    document.getElementById('shortlist-later').textContent = t('shortlist.later');
-    const asset = function(name) { return resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/' + name); };
-    document.getElementById('shortlist-list').innerHTML = SHORTLIST_SITTERS.map(function(sitter, i) {
-      return '<button type="button" class="shortlist-card" data-index="' + i + '" aria-pressed="false" onclick="toggleShortlist(' + i + ')">'
-        + '<span class="shortlist-card__photo"><img src="' + shortlistPhoto(i) + '" alt="">'
-        +   '<span class="shortlist-card__verified"><img src="' + asset('verify-shield.svg') + '" alt=""></span></span>'
-        + '<span class="shortlist-card__info">'
-        +   '<span class="shortlist-card__name">' + sitter.name + '</span>'
-        +   '<span class="shortlist-card__details"><span>' + t('shortlist.distance').replace('{km}', sitter.km) + '</span>'
-        +     '<img class="shortlist-card__dot" src="' + asset('dot.svg') + '" alt="">'
-        +     '<span class="shortlist-card__rating"><img src="' + asset('star.svg') + '" alt="">' + sitter.rating + ' <small>(' + sitter.reviews + ')</small></span></span>'
-        +   '<span class="shortlist-card__tags">' + sitter.tags.map(function(tag) { return '<span>' + t('shortlist.tags.' + tag) + '</span>'; }).join('') + '</span>'
-        + '</span></button>';
-    }).join('');
-    updateShortlist();
-  }
-
-  function toggleShortlist(i) {
-    const at = shortlistPicked.indexOf(i);
-    if (at !== -1) shortlistPicked.splice(at, 1);
-    else if (shortlistPicked.length < SHORTLIST_MAX) shortlistPicked.push(i);
-    updateShortlist();
-  }
-
-  function updateShortlist() {
-    document.querySelectorAll('#shortlist-list .shortlist-card').forEach(function(card) {
-      const on = shortlistPicked.indexOf(Number(card.dataset.index)) !== -1;
-      card.classList.toggle('is-picked', on);
-      card.setAttribute('aria-pressed', String(on));
-      // Once five are picked, the rest wait until one is unpicked.
-      card.classList.toggle('is-full', !on && shortlistPicked.length >= SHORTLIST_MAX);
-    });
-    document.getElementById('shortlist-count').textContent = t('shortlist.picked')
-      .replace('{n}', shortlistPicked.length).replace('{max}', SHORTLIST_MAX);
-    document.querySelectorAll('#shortlist-bar i').forEach(function(seg, i) { seg.classList.toggle('is-on', i < shortlistPicked.length); });
-    document.getElementById('shortlist-picked-avatars').innerHTML = shortlistPicked.map(function(i, n) {
-      return '<img src="' + shortlistPhoto(i) + '" alt="" style="z-index:' + (SHORTLIST_MAX - n) + '">';
-    }).join('');
-    document.getElementById('shortlist-cta-label').textContent = t('shortlist.cta');
-  }
-
   // No matches (Shortlist states): the suggestions take the family back to
   // the wizard step that changes that part of the job.
   function renderNoMatches() {
@@ -4403,105 +4215,6 @@
     currentIdx = idx;
     navDirection = 'backward';
     showScreen(flow[idx]);
-  }
-
-  // Urgent (sequence "Urgent: X sitters are free tomorrow"): eight sitters
-  // free tomorrow, three shown and five behind "+ 5 more". Message them now
-  // goes to Pricing for all of them; "Not that urgent?" detours through the
-  // shortlist so the family picks at its own pace.
-  const URGENT_SITTERS = [
-    { name: 'Alice M.', photo: '/jobs-for-families/assets/urgent/sitter-1.jpg', km: '1.2', rating: '4.2', free: '12–19', tag: 'experience' },
-    { name: 'Lucie U.', photo: '/jobs-for-families/assets/urgent/sitter-2.jpg', km: '0.8', rating: '4.8', free: null, tag: 'lastMinute' },
-    { name: 'Simona S.', photo: '/jobs-for-families/assets/urgent/sitter-3.jpg', km: '1.2', rating: '5.0', free: '13–18', tag: 'experience' },
-    { name: 'Barbora B.', photo: '/jobs-for-families/assets/shortlist/sitter-2.jpg', km: '8', rating: '4.8', free: '9–15', tag: 'lastMinute' },
-    { name: 'Cecílie C.', photo: '/jobs-for-families/assets/shortlist/sitter-3.jpg', km: '1.2', rating: '4.6', free: null, tag: 'experience' },
-    { name: 'Diana D.', photo: '/jobs-for-families/assets/shortlist/sitter-4.jpg', km: '1.2', rating: '4.6', free: '14–20', tag: 'experience' },
-    { name: 'Eliška E.', photo: '/jobs-for-families/assets/shortlist/sitter-5.jpg', km: '2.4', rating: '4.9', free: '12–18', tag: 'lastMinute' },
-    { name: 'Klára K.', photo: '/jobs-for-families/assets/shortlist/sitter-1.jpg', km: '3.1', rating: '4.7', free: null, tag: 'experience' }
-  ];
-  const URGENT_SHOWN = 3;
-
-  function renderUrgent() {
-    // Back on this screen: the detour is undone until it is chosen again.
-    urgentAtOwnPaceChosen = false;
-    const service = [...selectedServices][0] || 'babysitting';
-    const city = (document.getElementById('location-input').value || 'Prague').trim();
-    // The day the sitters are free: tomorrow, named in the page language.
-    const lang = (document.documentElement.lang || 'en').slice(0, 2);
-    const tomorrow = new Date(Date.now() + 864e5);
-    let day;
-    try { day = tomorrow.toLocaleDateString(lang === 'cz' ? 'cs' : lang, { weekday: 'long' }); } catch (e) { day = ''; }
-    document.getElementById('urgent-title').textContent = t('urgent.title').replace('{n}', URGENT_SITTERS.length);
-    document.getElementById('urgent-sub').textContent = t('urgent.sub').replace('{day}', day).replace('{city}', city);
-    const card = function(sitter) {
-      const free = sitter.free ? t('urgent.free').replace('{hours}', sitter.free) : t('urgent.freeAllDay');
-      const tag = sitter.tag === 'experience'
-        ? t('urgent.tags.experience').replace('{service}', t('service.' + service)) : t('urgent.tags.lastMinute');
-      return '<div class="urgent-card">'
-        + '<span class="urgent-card__photo"><img src="' + resolveEmbedAssetPath(sitter.photo) + '" alt="">'
-        +   '<span class="urgent-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i>' + sitter.rating + '</span></span>'
-        + '<span class="urgent-card__info"><span class="urgent-card__name">' + sitter.name + '</span>'
-        +   '<span class="urgent-card__distance">' + t('shortlist.distance').replace('{km}', sitter.km) + '</span>'
-        +   '<span class="urgent-card__tags"><span>' + tag + '</span></span></span>'
-        + '<span class="urgent-card__free"><i class="fa-regular fa-check" aria-hidden="true"></i>' + free + '</span>'
-        + '</div>';
-    };
-    const more = URGENT_SITTERS.length - URGENT_SHOWN;
-    document.getElementById('urgent-list').innerHTML = URGENT_SITTERS.slice(0, URGENT_SHOWN).map(card).join('')
-      + '<p class="urgent-more"><a onclick="showMoreUrgent()">' + t('urgent.more').replace('{n}', more) + '</a></p>'
-      + '<div class="urgent-extra" id="urgent-extra" hidden>' + URGENT_SITTERS.slice(URGENT_SHOWN).map(card).join('') + '</div>';
-  }
-
-  function showMoreUrgent() {
-    document.getElementById('urgent-extra').hidden = false;
-    document.querySelector('#urgent-list .urgent-more').hidden = true;
-  }
-
-  // Urgent fallback (sequence "Urgent fallback: X sitters match"): nobody
-  // has confirmed tomorrow, so the family is nudged to message the nine
-  // matches itself. Same footer and Pricing as the urgent sequence.
-  const FALLBACK_SITTERS = [
-    { name: 'Suzanne', photo: '/jobs-for-families/assets/fallback/sitter-1.jpg' },
-    { name: 'Anastázie', photo: '/jobs-for-families/assets/fallback/sitter-2.jpg' },
-    { name: 'Markéta', photo: '/jobs-for-families/assets/fallback/sitter-3.jpg' },
-    { name: 'Alice', photo: '/jobs-for-families/assets/shortlist/sitter-1.jpg' },
-    { name: 'Barbora', photo: '/jobs-for-families/assets/shortlist/sitter-2.jpg' },
-    { name: 'Cecílie', photo: '/jobs-for-families/assets/shortlist/sitter-3.jpg' },
-    { name: 'Diana', photo: '/jobs-for-families/assets/shortlist/sitter-4.jpg' },
-    { name: 'Eliška', photo: '/jobs-for-families/assets/shortlist/sitter-5.jpg' },
-    { name: 'Lucie', photo: '/jobs-for-families/assets/urgent/sitter-2.jpg' }
-  ];
-  const FALLBACK_SHOWN = 3;
-
-  function isUrgentSequence(key) { return key === 'urgent' || key === 'fallback'; }
-  function urgentSequenceSitters() { return afterJobSequence === 'fallback' ? FALLBACK_SITTERS : URGENT_SITTERS; }
-
-  function renderFallback() {
-    urgentAtOwnPaceChosen = false;
-    const service = [...selectedServices][0] || 'babysitting';
-    const city = (document.getElementById('location-input').value || 'Prague').trim();
-    document.getElementById('fallback-title').textContent = t('fallback.title').replace('{n}', FALLBACK_SITTERS.length);
-    const shield = resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/verify-shield.svg');
-    document.getElementById('fallback-sitters').innerHTML = FALLBACK_SITTERS.slice(0, FALLBACK_SHOWN).map(function(sitter) {
-      return '<div class="fallback-sitter"><span class="shortlist-card__photo"><img src="' + resolveEmbedAssetPath(sitter.photo) + '" alt="">'
-        + '<span class="shortlist-card__verified"><img src="' + shield + '" alt=""></span></span>'
-        + '<span class="fallback-sitter__name">' + sitter.name + '</span></div>';
-    }).join('')
-      + '<div class="fallback-sitter"><span class="fallback-sitter__more">+' + (FALLBACK_SITTERS.length - FALLBACK_SHOWN) + '</span>'
-      + '<span class="fallback-sitter__name">' + t('fallback.more') + '</span></div>';
-    document.getElementById('fallback-tags').innerHTML = [
-      t('service.' + service), t('fallback.near').replace('{city}', city), t('shortlist.tags.budget'), t('shortlist.tags.afternoons')
-    ].map(function(tag) { return '<span>' + tag + '</span>'; }).join('');
-  }
-
-  function urgentMessageNow() {
-    urgentAtOwnPaceChosen = false;
-    goNext();
-  }
-
-  function urgentAtOwnPace() {
-    urgentAtOwnPaceChosen = true;
-    goNext();
   }
 
   // Picks (sequence "Slow-burn job → shortlist → membership"): the family
@@ -4526,20 +4239,50 @@
   let picksShown = PICKS_PAGE;
   let picksScrollBound = false;
 
-  // Shortlist states, "Fewer than 5 matches": only two sitters match
-  // closely; a few more follow under "Also worth a look", with no paging.
+  // The picks screen serves four sequences:
+  // - shortlist (slow burn): all ten matches, five per page;
+  // - states / few: two close matches, three more under "Also worth a
+  //   look", no paging;
+  // - urgent: eight sitters free tomorrow, the three most free picked up
+  //   front, plus a note that their numbers come with membership;
+  // - fallback: ten matches, three picked up front, same note.
   const PICKS_CLOSE_IN_FEW = 2;
-  const PICKS_IN_FEW = 5;
-  function picksFew() { return afterJobSequence === 'states'; }
+  function picksMode() {
+    if (afterJobSequence === 'states') return 'few';
+    if (afterJobSequence === 'urgent' || afterJobSequence === 'fallback') return afterJobSequence;
+    return 'full';
+  }
+  function picksFew() { return picksMode() === 'few'; }
+  function picksCount(mode) { return { few: 5, urgent: 8 }[mode] || PICKS_SITTERS.length; }
+  // Which sequence the current picks belong to; switching sequences starts
+  // over, and the urgent ones start with three picked.
+  let picksFor = null;
+
+  function picksLater() {
+    if (buildFlow().indexOf('getapp') !== -1) goToStepInFlow('getapp');
+    else openSkipSheet();
+  }
 
   function renderPicks() {
     const service = [...selectedServices][0] || 'babysitting';
     const city = (document.getElementById('location-input').value || 'Prague').trim();
-    const few = picksFew();
-    document.getElementById('s-picks').classList.toggle('is-few', few);
-    document.getElementById('picks-sub').innerHTML = escapePicks(t('picks.sub').replace('{city}', city)) + (few ? '' : '<br>' + t('picks.subPick'));
-    document.getElementById('picks-matched-label').textContent = few
-      ? t('picks.fewMatched').replace('{n}', PICKS_CLOSE_IN_FEW) : t('picks.matched');
+    const mode = picksMode();
+    const urgent = mode === 'urgent' || mode === 'fallback';
+    if (picksFor !== afterJobSequence) {
+      picksFor = afterJobSequence;
+      picksSelected = urgent ? [0, 1, 2] : [];
+      picksShown = PICKS_PAGE;
+    }
+    document.getElementById('s-picks').classList.toggle('is-counted', mode !== 'full');
+    document.getElementById('picks-sub').innerHTML = escapePicks(t('picks.sub').replace('{city}', city)) + (mode === 'full' ? '<br>' + t('picks.subPick') : '');
+    document.getElementById('picks-matched-label').textContent = mode === 'few'
+      ? t('picks.fewMatched').replace('{n}', PICKS_CLOSE_IN_FEW)
+      : urgent ? t('picks.' + mode + '.title').replace('{n}', picksCount(mode)) : t('picks.matched');
+    const matchedSub = document.getElementById('picks-matched-sub');
+    matchedSub.hidden = !urgent;
+    matchedSub.innerHTML = urgent ? t('picks.' + mode + '.sub') : '';
+    document.getElementById('picks-tags').hidden = urgent;
+    document.getElementById('picks-note').hidden = !urgent;
     document.getElementById('picks-tags').innerHTML = [t('service.' + service), t('picks.schedule')]
       .map(function(tag) { return '<span>' + escapePicks(tag) + '</span>'; }).join('');
     renderPicksList();
@@ -4562,7 +4305,8 @@
     const dot = resolveEmbedAssetPath('/jobs-for-families/assets/shortlist/dot.svg');
     const bios = (window.STRINGS && STRINGS.picks && STRINGS.picks.bios) || [];
     const few = picksFew();
-    document.getElementById('picks-list').innerHTML = PICKS_SITTERS.slice(0, few ? PICKS_IN_FEW : picksShown).map(function(sitter, i) {
+    const total = picksCount(picksMode());
+    document.getElementById('picks-list').innerHTML = PICKS_SITTERS.slice(0, few ? total : Math.min(picksShown, total)).map(function(sitter, i) {
       const bio = bios[i % (bios.length || 1)] || '';
       return (few && i === PICKS_CLOSE_IN_FEW ? '<p class="picks-section">' + t('picks.alsoWorth') + '</p>' : '')
         + '<article class="picks-card" data-index="' + i + '" onclick="togglePick(' + i + ', event)">'
@@ -4584,7 +4328,7 @@
         + '<button class="picks-card__check" type="button" role="checkbox" aria-checked="false" aria-label="' + escapePicks(sitter.name) + '"><i class="fa-solid fa-check" aria-hidden="true"></i></button>'
         + '</article>';
     }).join('');
-    document.getElementById('picks-more').hidden = few || picksShown >= PICKS_SITTERS.length;
+    document.getElementById('picks-more').hidden = few || picksShown >= total;
     fitPickBios();
   }
 
@@ -4670,19 +4414,12 @@
     showScreen(id);
   }
 
-  // Who Pricing greets: the shortlist picks in that sequence (or its first
-  // three when nobody was picked), otherwise the first three matches.
+  // Who Pricing greets: the picks (or the first three when nobody was
+  // picked), otherwise the first three matches.
   function pricingSitters() {
     if (afterJobSteps().indexOf('picks') !== -1) {
       const picks = picksSelected.length ? picksSelected : [0, 1, 2];
       return picks.map(function(i) { return { name: PICKS_SITTERS[i].name.split(/\s+/)[0], photo: resolveEmbedAssetPath(PICKS_SITTERS[i].photo) }; });
-    }
-    if (isUrgentSequence(afterJobSequence) && !urgentAtOwnPaceChosen) {
-      return urgentSequenceSitters().map(function(s) { return { name: s.name.split(/\s+/)[0], photo: resolveEmbedAssetPath(s.photo) }; });
-    }
-    if (afterJobSteps().indexOf('shortlist') !== -1) {
-      const picks = shortlistPicked.length ? shortlistPicked : [0, 1, 2];
-      return picks.map(function(i) { return { name: SHORTLIST_SITTERS[i].name.split(/\s+/)[0], photo: shortlistPhoto(i) }; });
     }
     return [...document.querySelectorAll('#s-followup .sitter-card')].slice(0, 3).map(function(card) {
       return { name: card.querySelector('.sitter-name').textContent.trim().split(/\s+/)[0], photo: card.querySelector('.sitter-avatar').getAttribute('src') };
@@ -4704,21 +4441,31 @@
   function formatKc(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
   function renderPricing() {
-    const sitters = pricingSitters();
-    // Urgent: "Get help in place for tomorrow" over five of the free sitters.
-    const urgent = isUrgentSequence(afterJobSequence) && !urgentAtOwnPaceChosen;
-    const avatarCount = urgent ? 5 : 3;
+    // Urgent (Jobs Figma 4308:12613): "Get help in place for tomorrow" over
+    // all the free sitters, four faces and a "+4" for the rest.
+    const urgent = afterJobSequence === 'urgent';
+    const free = urgent ? PICKS_SITTERS.slice(0, picksCount('urgent')).map(function(s) {
+      return { name: s.name.split(/\s+/)[0], photo: resolveEmbedAssetPath(s.photo) };
+    }) : null;
+    const sitters = urgent ? free : pricingSitters();
+    const avatarCount = urgent ? 4 : 3;
     const avatars = document.getElementById('pricing-avatars');
     avatars.innerHTML = '';
     sitters.slice(0, avatarCount).forEach(function(sitter, i) {
       const img = document.createElement('img');
       img.src = sitter.photo;
       img.alt = '';
-      img.style.zIndex = String(avatarCount - i);
+      img.style.zIndex = String(avatarCount + 1 - i);
       avatars.appendChild(img);
     });
+    if (urgent && sitters.length > avatarCount) {
+      const more = document.createElement('span');
+      more.className = 'pricing-avatars__more';
+      more.textContent = '+' + (sitters.length - avatarCount);
+      avatars.appendChild(more);
+    }
     document.getElementById('pricing-sub').textContent = urgent
-      ? t('pricing.urgentSub').replace('{n}', urgentSequenceSitters().length) : t('pricing.sub');
+      ? t('pricing.urgentSub').replace('{n}', sitters.length) : t('pricing.sub');
     // One or two picks are named; three or more become "Message 3 sitters"
     // so the heading stays on one phone-width line.
     const names = sitters.map(function(s) { return s.name; });
@@ -5732,11 +5479,9 @@
 
   // Skipping without picking: leaving a sitter screen once the job exists
   // (close, "I'll decide later", "Not that urgent?") asks first. Keep picking
-  // stays — or, from "Not that urgent?", goes on to the shortlist as before;
+  // stays;
   // Pick later ends the flow, as the app would return to the account.
-  let skipSheetContext = null;
-  function openSkipSheet(context) {
-    skipSheetContext = context || null;
+  function openSkipSheet() {
     const service = [...selectedServices][0] || 'babysitting';
     document.getElementById('skip-sheet-path').textContent = t('skipSheet.path').replace('{job}', t('success.cardTitles.' + service));
     const layer = document.getElementById('skip-sheet');
@@ -5751,9 +5496,7 @@
     layer.querySelector('.pm-sheet').style.transform = '';
   }
   function skipSheetKeepPicking() {
-    const context = skipSheetContext;
     closeSkipSheet();
-    if (context === 'own-pace') urgentAtOwnPace();
   }
   function skipSheetPickLater() {
     closeSkipSheet();
