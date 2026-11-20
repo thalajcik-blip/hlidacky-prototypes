@@ -1432,6 +1432,8 @@
     /* Picks — slow-burn sequence (Jobs Figma 4304:2222). The hero stays put,
        the cards scroll, the footer slides in on scroll or a pick. */
     #s-picks .picks-body { display: flex; flex-direction: column; gap: 8px; padding: 0 0 8px; }
+    /* The hero scrolls with the list; cancel the list gap below it. */
+    #s-picks .picks-hero { margin-bottom: -8px; }
     .picks-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
     .picks-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
     .picks-hero__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
@@ -3040,11 +3042,11 @@
       <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
       <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="openSkipSheet()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
     </div>
-    <div class="picks-hero">
-      <h2 class="picks-hero__title" data-i18n="picks.title"></h2>
-      <p class="picks-hero__sub" id="picks-sub"></p>
-    </div>
     <div class="screen-body picks-body" id="picks-body">
+      <div class="picks-hero">
+        <h2 class="picks-hero__title" data-i18n="picks.title"></h2>
+        <p class="picks-hero__sub" id="picks-sub"></p>
+      </div>
       <div class="picks-matched">
         <p class="picks-matched__label" id="picks-matched-label"></p>
         <div class="picks-matched__tags" id="picks-tags"></div>
