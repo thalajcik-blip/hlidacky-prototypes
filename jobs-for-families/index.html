@@ -1254,7 +1254,7 @@
     .pricing-title { max-width: 280px; font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
     .pricing-sub { max-width: 240px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
     .pricing-content { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 20px; font-family: 'soleil', sans-serif; }
-    .pricing-plans { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 335px; padding-bottom: 8px; }
+    .pricing-plans { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 335px; }
     .pricing-plan {
       position: relative; display: flex; flex-direction: column; width: 100%; padding: 0; text-align: left;
       background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; cursor: pointer; font: inherit; color: inherit;
@@ -1278,7 +1278,9 @@
     .pricing-plan__credit { padding: 8px 16px; border-top: 1px solid #e3e9f0; border-radius: 0 0 7px 7px; background: #f1f5fb; text-align: center; font-size: 14px; font-weight: 350; line-height: 1.2; color: #4a5a61; }
     .pricing-plan__credit b { font-weight: 450; color: #212529; }
     .pricing-plan.is-selected .pricing-plan__credit { background: #fff1e5; border-top-color: #fee7d1; }
-    .pricing-checkout { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 335px; padding-top: 12px; }
+    .pricing-checkout { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 335px; padding-top: 0; }
+    /* Half the original 36px between the last plan and the benefits. */
+    .pricing-checkout .pricing-benefits { padding-top: 18px; }
     .pricing-benefits { display: flex; flex-direction: column; gap: 4px; padding: 16px 0; list-style: none; }
     .pricing-benefits li { display: flex; align-items: flex-start; gap: 4px; font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #4a5a61; white-space: nowrap; }
     .pricing-benefits li b { font-weight: 700; }
