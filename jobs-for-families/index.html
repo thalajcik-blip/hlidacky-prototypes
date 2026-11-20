@@ -4751,11 +4751,12 @@
     });
     document.getElementById('pricing-sub').textContent = urgent
       ? t('pricing.urgentSub').replace('{n}', urgentSequenceSitters().length) : t('pricing.sub');
-    // Up to three names; beyond that "Alice, Barbora, Cecílie and 2 more".
+    // One or two picks are named; three or more become "Message 3 sitters"
+    // so the heading stays on one phone-width line.
     const names = sitters.map(function(s) { return s.name; });
-    const shown = names.length > 3 ? names.slice(0, 3).concat(t('pricing.andMore').replace('{n}', names.length - 3)) : names;
-    document.getElementById('pricing-title').textContent = urgent
-      ? t('pricing.urgentTitle') : t('pricing.title').replace('{names}', joinLocalizedList(shown, t('pricing.and')));
+    document.getElementById('pricing-title').textContent = urgent ? t('pricing.urgentTitle')
+      : names.length >= 3 ? t('pricing.titleCount').replace('{n}', names.length)
+      : t('pricing.title').replace('{names}', joinLocalizedList(names, t('pricing.and')));
 
     const plans = document.getElementById('pricing-plans');
     plans.innerHTML = PRICING_PLANS.map(function(plan) {

@@ -813,7 +813,7 @@ window.STRINGS = {
     "navTitle": "Členství",
     "title": "Napište {names}",
     "and": "a",
-    "andMore": "{n} dalším",
+    "titleCount": "Napište {n} hlídačkám",
     "urgentTitle": "Zajistěte si pomoc na zítřek",
     "urgentSub": "Zaplaťte jednou a hned pište {n} hlídačkám, které mají volno.",
     "sub": "Staňte se členem, pozdravte, zeptejte se na vše potřebné a domluvte si první návštěvu.",

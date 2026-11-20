@@ -814,7 +814,7 @@
     "navTitle": "Membership",
     "title": "Message {names}",
     "and": "and",
-    "andMore": "{n} more",
+    "titleCount": "Message {n} sitters",
     "urgentTitle": "Get help in place for tomorrow",
     "urgentSub": "Pay once and start messaging the {n} sitters who are free right away.",
     "sub": "Become a member to say hello, ask your questions and agree on a first visit.",
