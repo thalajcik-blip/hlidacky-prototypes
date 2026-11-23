@@ -333,6 +333,10 @@
     }
     /* The app itself never shows its own download banner. */
     .mobile-app-embed .success-app { display: none; }
+    /* No matches (Jobs Figma 4315:55465): only the posted job and a way on
+       to membership, no app box. */
+    #s-success.is-no-matches .success-app { display: none; }
+    .success-btn-chevron { width: 16px; font-size: 16px; text-align: center; }
     .success-app__doodle { position: relative; width: 40px; height: 40px; flex: none; overflow: hidden; }
     .success-app__doodle img { position: absolute; display: block; max-width: none; }
     .success-app__l2 { inset: 18.76% 10.29% 18.73% 12.71%; width: 77%; height: 62.51%; }
@@ -1253,6 +1257,7 @@
     .pricing-avatars img:last-child { margin-right: 0; }
     .pricing-avatars__more { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex: none; z-index: 1; border: 1px solid #ff9ba7; border-radius: 42px; background: #feecee; font-family: 'soleil', sans-serif; font-size: 20px; color: #f96073; }
     .pricing-title { max-width: 280px; font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
+    .pricing-title.is-wide { max-width: 335px; }
     .pricing-sub { max-width: 240px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
     .pricing-content { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 20px; font-family: 'soleil', sans-serif; }
     .pricing-plans { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 335px; }
@@ -1300,6 +1305,10 @@
     .pricing-disclaimer p { font-weight: 350; color: #4a5a61; }
     .pricing-disclaimer b { font-weight: 450; color: #212529; }
     .pricing-bank { color: #6c757d; opacity: .8; font-size: 12px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 2px; }
+    /* "I'll skip it for now" under a divider (Jobs Figma 4315:54982). */
+    .pricing-skip { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 12px; }
+    .pricing-skip::before { content: ''; align-self: stretch; height: 1px; margin: 11px 0 23px; background: #e5e5ea; }
+    .pricing-skip a { color: #6c757d; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 2px; }
 
     /* Shortlist — pick up to 5 sitters (Jobs Figma 4249:127460). The copy and
        the pick counter stay put; only the list scrolls. */
@@ -1352,28 +1361,6 @@
     .picks-footer__note { margin-top: 4px; font-family: 'soleil', sans-serif; font-size: 14px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; text-align: center; }
 
     /* Shortlist states, "No matches" (Jobs Figma 4251:130559). */
-    #s-nomatches .nomatches-body { display: flex; flex-direction: column; padding: 0; }
-    .nomatches-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 184px; padding: 20px; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
-    .nomatches-doodle { position: relative; width: 72px; height: 72px; flex: none; overflow: hidden; }
-    .nomatches-doodle img { position: absolute; display: block; max-width: none; }
-    .nomatches-doodle__l2 { inset: 15.57% 7.46% 19.33% 12.36%; width: 80.18%; height: 65.1%; }
-    .nomatches-doodle__l3 { inset: 17.9% 11.01% 16.8% 21.99%; width: 67%; height: 65.3%; }
-    .nomatches-doodle__l1 { position: absolute; inset: 7.73% 11.01% 11.49% 10.13%; }
-    .nomatches-doodle__l1 img { inset: -1.21% -1.24%; width: 102.48%; height: 102.42%; }
-    .nomatches-copy { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .nomatches-title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
-    .nomatches-sub { max-width: 300px; font-size: 12px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; color: #2a3539; }
-    .nomatches-content { display: flex; flex: 1; flex-direction: column; gap: 8px; padding: 20px 20px 8px; font-family: 'soleil', sans-serif; }
-    .nomatches-option {
-      display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 24px 12px 20px; text-align: left; cursor: pointer;
-      background: #fff; border: 1px solid #e5e5ea; border-radius: 4px; box-shadow: inset 0 -3px 0 #e5e5ea; font: inherit; color: inherit;
-    }
-    .nomatches-option:hover { background: #f7f7f7; }
-    .nomatches-option:active { box-shadow: none; transform: translateY(2px); }
-    .nomatches-option span { display: flex; flex: 1; flex-direction: column; min-width: 0; }
-    .nomatches-option b { font-size: 14px; font-weight: 450; line-height: 18px; color: #2a3539; }
-    .nomatches-option small { font-size: 12px; font-weight: 350; line-height: 16px; color: #6c757d; }
-    .nomatches-option i { width: 16px; font-size: 16px; color: #f96073; text-align: center; }
 
     /* Skipping without picking sheet (Jobs Figma 4253:132721). */
     .skip-sheet { gap: 12px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
@@ -1439,9 +1426,9 @@
     /* Not ready yet · Get the app (Jobs Figma 4305:8339). */
     #s-getapp .getapp-body { display: flex; flex-direction: column; padding: 0; }
     .getapp-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 40px 20px 0; background: #f7f7f7; text-align: center; font-family: 'soleil', sans-serif; flex-shrink: 0; }
-    .getapp-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #212529; }
-    .getapp-hero__sub { max-width: 300px; font-size: 14px; font-weight: 350; line-height: 1.32; letter-spacing: -0.16px; color: #4a5a61; }
-    .getapp-hero__img { display: block; width: 280px; height: 338px; margin-top: 4px; }
+    .getapp-hero__title { font-size: 20px; font-weight: 450; line-height: 1.32; letter-spacing: -0.5px; color: #182132; }
+    .getapp-hero__sub { max-width: 255px; font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #43516a; }
+    .getapp-hero__img { display: block; width: 280px; height: 300px; }
     .getapp-benefits { align-self: center; max-width: 280px; padding: 20px 0; }
     .getapp-benefits li { white-space: normal; }
     .getapp-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; }
@@ -2815,7 +2802,7 @@
 
     <div class="screen-footer">
       <div class="btn-row">
-        <button class="btn-primary" onclick="goToFollowup()"><span data-i18n="success.btnContinue"></span></button>
+        <button class="btn-primary" onclick="goToFollowup()"><span id="success-btn-label" data-i18n="success.btnContinue"></span><i class="fa-regular fa-chevron-right success-btn-chevron" id="success-btn-chevron" aria-hidden="true" hidden></i></button>
       </div>
       <a class="btn-link success-edit" data-i18n="success.editLink"></a>
     </div>
@@ -2990,7 +2977,7 @@
       <div class="getapp-hero">
         <h2 class="getapp-hero__title" data-i18n="getapp.title"></h2>
         <p class="getapp-hero__sub" data-i18n="getapp.sub"></p>
-        <img class="getapp-hero__img" src="/jobs-for-families/assets/getapp/phone-illustration.png" width="280" height="338" alt="">
+        <img class="getapp-hero__img" src="/jobs-for-families/assets/getapp/messages-illustration.png" width="280" height="300" alt="">
       </div>
       <ul class="pricing-benefits getapp-benefits">
         <li><i class="fa-regular fa-check" aria-hidden="true"></i><span data-i18n="getapp.live"></span></li>
@@ -3000,40 +2987,6 @@
     <div class="screen-footer getapp-footer">
       <span><img src="/footer-for-logged-in-users/assets/account-app-store.png" width="141" height="47" alt="Download on the App Store"></span>
       <span><img src="/footer-for-logged-in-users/assets/account-google-play.png" width="141" height="47" alt="Get it on Google Play"></span>
-    </div>
-  </div>
-
-  <!-- ===== SCREEN: No matches (Jobs Figma 4305:8961, "Shortlist states") =====
-       Stands in for "Your job is live"; closing or keeping the job ends the flow. -->
-  <div class="screen" id="s-nomatches">
-    <div class="followup-nav">
-      <img src="/hlidacky-logo_small.svg" width="40" height="40" alt="Hlídačky.cz">
-      <span class="followup-nav-title" data-i18n="shortlist.navTitle"></span>
-      <div class="nav-actions"><button class="nav-icon-btn nav-tool" type="button" onclick="skipToJobCreated()" aria-label="Skip to job created" title="Skip to job created"><i class="fa-light fa-forward-fast" aria-hidden="true"></i></button><button class="nav-icon-btn nav-tool" type="button" onclick="openPrototypeSettings()" aria-label="Prototype settings" title="Prototype settings"><i class="fa-light fa-gear" aria-hidden="true"></i></button><button class="nav-icon-btn" type="button" onclick="restartFlow()" aria-label="Close"><i class="fa-light fa-xmark" aria-hidden="true"></i></button></div>
-    </div>
-    <div class="screen-body nomatches-body">
-      <div class="nomatches-hero">
-        <div class="nomatches-doodle" aria-hidden="true">
-          <img class="nomatches-doodle__l2" src="/jobs-for-families/assets/doodle-search/layer-2.svg" alt="">
-          <img class="nomatches-doodle__l3" src="/jobs-for-families/assets/doodle-search/layer-3.svg" alt="">
-          <span class="nomatches-doodle__l1"><img src="/jobs-for-families/assets/doodle-search/layer-1.svg" alt=""></span>
-        </div>
-        <div class="nomatches-copy">
-          <h2 class="nomatches-title" data-i18n="nomatches.title"></h2>
-          <p class="nomatches-sub" data-i18n="nomatches.sub"></p>
-        </div>
-      </div>
-      <div class="nomatches-content">
-        <button class="nomatches-option" type="button" onclick="goToWizardStep('location')"><span><b data-i18n="nomatches.widenTitle"></b><small id="nomatches-widen"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="nomatches-option" type="button" onclick="goToWizardStep('frequency')"><span><b data-i18n="nomatches.hoursTitle"></b><small data-i18n="nomatches.hoursSub"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-        <button class="nomatches-option" type="button" onclick="goToWizardStep('price')"><span><b data-i18n="nomatches.budgetTitle"></b><small id="nomatches-budget"></small></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-      </div>
-    </div>
-    <div class="screen-footer">
-      <div class="btn-row">
-        <button class="btn-primary" type="button" onclick="goToWizardStep('review')"><span data-i18n="nomatches.editJob"></span></button>
-      </div>
-      <a class="btn-link success-edit" onclick="restartFlow()" data-i18n="nomatches.keep"></a>
     </div>
   </div>
 
@@ -3064,6 +3017,7 @@
             <p><span id="pricing-renews"></span> <b data-i18n="pricing.cancel"></b></p>
             <a class="pricing-bank" data-i18n="pricing.bankTransfer"></a>
           </div>
+          <div class="pricing-skip"><a role="button" tabindex="0" onclick="pricingSkip()" data-i18n="pricing.skip"></a></div>
         </div>
       </div>
     </div>
@@ -3312,7 +3266,7 @@
     }
 
     // Hide shared header on followup screen (it has its own nav)
-    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'picks' || id === 'getapp' || id === 'nomatches' || id === 'pricing') ? 'none' : '';
+    document.getElementById('shared-header').style.display = (id === 'followup' || id === 'picks' || id === 'getapp' || id === 'pricing') ? 'none' : '';
 
     // Animate sitter cards on followup screen
     if (id === 'followup') {
@@ -3340,7 +3294,6 @@
     }
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
     if (id === 'picks') renderPicks();
-    if (id === 'nomatches') renderNoMatches();
     if (id === 'pricing') renderPricing();
 
     if (!oldEl || oldEl === newEl) {
@@ -3416,9 +3369,9 @@
   const AFTER_JOB_SEQUENCES = [
     { key: 'matches', name: 'Matches, then membership', note: 'Matched sitters, then the membership plans.', steps: ['followup', 'pricing'] },
     { key: 'shortlist', name: 'Slow-burn job → shortlist → membership', note: 'Straight to the matches (no “job was posted” screen): pick up to 5, then membership; “decide later” ends on Get the app.', steps: ['picks', 'pricing', 'getapp'], replacesJobCreated: true },
-    { key: 'states', name: 'Shortlist states', note: 'When the shortlist comes up short (no “job was posted” screen).', replacesJobCreated: true, variants: [
+    { key: 'states', name: 'Shortlist states', note: 'When the shortlist comes up short: fewer than 5 go straight to the matches; none gets a plain “job was posted”, then membership.', replacesJobCreated: true, variants: [
       { key: 'few', name: 'Fewer than 5 matches', steps: ['picks', 'pricing', 'getapp'] },
-      { key: 'none', name: 'No matches', steps: ['nomatches'] }
+      { key: 'none', name: 'No matches', steps: ['success', 'pricing'] }
     ] },
     { key: 'urgent', name: 'Urgent: X sitters are free tomorrow', note: 'Sitters free tomorrow, the three most free already picked, then instant membership.', steps: ['picks', 'pricing'], replacesJobCreated: true },
     { key: 'fallback', name: 'Urgent fallback: X sitters match', note: 'Nobody confirmed free tomorrow: pick up to 5 matches to ask, then membership.', steps: ['picks', 'pricing'], replacesJobCreated: true }
@@ -4196,27 +4149,6 @@
     return parts.length === 1 ? parts[0] : parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
   }
 
-  // No matches (Shortlist states): the suggestions take the family back to
-  // the wizard step that changes that part of the job.
-  function renderNoMatches() {
-    const service = [...selectedServices][0] || 'babysitting';
-    const city = (document.getElementById('location-input').value || 'Prague').trim();
-    document.getElementById('nomatches-widen').textContent = t('nomatches.widenSub').replace('{city}', city);
-    document.getElementById('nomatches-budget').textContent = t('nomatches.budgetSub').replace('{service}', t('location.serviceNames.' + service));
-  }
-
-  // Jump back into the wizard at a step; falls back to the description
-  // step when that step is not part of this job's flow.
-  function goToWizardStep(id) {
-    const flow = buildFlow();
-    let idx = flow.indexOf(id);
-    if (idx === -1 && id === 'location') idx = flow.indexOf('location-tutoring');
-    if (idx === -1) idx = flow.indexOf('review');
-    currentIdx = idx;
-    navDirection = 'backward';
-    showScreen(flow[idx]);
-  }
-
   // Picks (sequence "Slow-burn job → shortlist → membership"): the family
   // lands straight on its matches after posting. Full search cards, five per
   // page; ticking a card selects who gets the message (max 5). The footer
@@ -4415,6 +4347,14 @@
     showScreen(id);
   }
 
+  // "I'll skip it for now" ends every sequence on Get the app, whether or
+  // not the sequence lists it as a step.
+  function pricingSkip() {
+    if (buildFlow().indexOf('getapp') !== -1) { goToStepInFlow('getapp'); return; }
+    navDirection = 'forward';
+    showScreen('getapp');
+  }
+
   // Who Pricing greets: the picks (or the first three when nobody was
   // picked), otherwise the first three matches.
   function pricingSitters() {
@@ -4441,6 +4381,7 @@
   // 1500 → "1 500", with a no-break space as Czech prices are written.
   function formatKc(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
+  const PRICING_REGION_SITTERS = 48;
   function renderPricing() {
     // Urgent (Jobs Figma 4308:12613): "Get help in place for tomorrow" over
     // all the free sitters, four faces and a "+4" for the rest.
@@ -4470,7 +4411,11 @@
     // One or two picks are named; three or more become "Message 3 sitters"
     // so the heading stays on one phone-width line.
     const names = sitters.map(function(s) { return s.name; });
+    // No matches (Jobs Figma 4315:54682): nobody picked, so the heading
+    // sells the whole region instead.
+    document.getElementById('pricing-title').classList.toggle('is-wide', !urgent && isNoMatches());
     document.getElementById('pricing-title').textContent = urgent ? t('pricing.urgentTitle')
+      : isNoMatches() ? t('pricing.regionTitle').replace('{n}', PRICING_REGION_SITTERS)
       : names.length >= 3 ? t('pricing.titleCount').replace('{n}', names.length)
       : t('pricing.title').replace('{names}', joinLocalizedList(names, t('pricing.and')));
 
@@ -4518,13 +4463,28 @@
     screen.classList.add('is-intro');
   }
 
+  // Shortlist states → No matches: nobody to show, so "Your job is live"
+  // becomes a plain "job was posted" that leads straight to membership.
+  function isNoMatches() {
+    const seq = findSequence(afterJobSequence);
+    const variant = currentVariant(seq);
+    return afterJobSequence === 'states' && !!variant && variant.key === 'none';
+  }
+
   function updateSuccessSub() {
+    const noMatches = isNoMatches();
     const city = (document.getElementById('location-input').value || 'Prague').trim();
-    document.getElementById('success-sub').textContent = t('success.heroSub').replace('{city}', city);
+    document.getElementById('success-sub').textContent = noMatches
+      ? t('success.body') : t('success.heroSub').replace('{city}', city);
+    document.getElementById('s-success').classList.toggle('is-no-matches', noMatches);
+    const btnLabel = document.getElementById('success-btn-label');
+    btnLabel.dataset.i18n = noMatches ? 'success.btnMembership' : 'success.btnContinue';
+    btnLabel.textContent = t(btnLabel.dataset.i18n);
+    document.getElementById('success-btn-chevron').hidden = !noMatches;
 
     // A leading emoji gets its own span so the intro can pop it.
     const titleEl = document.querySelector('#s-success .success-title');
-    const title = t('success.heroTitle');
+    const title = t(noMatches ? 'success.postedTitle' : 'success.heroTitle');
     const lead = title.match(/^\p{Extended_Pictographic}️?/u);
     titleEl.textContent = '';
     if (lead) {

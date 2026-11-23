@@ -609,6 +609,8 @@ window.STRINGS = {
     "heroSub": "Hlídačky v okolí {city} ho už vidí. Jejich odpovědi najdete ve zprávách.",
     "body": "Váš inzerát rozešleme hlídačkám ve vašem okolí. Jejich odpovědi se vám zobrazí ve zprávách a o každé nové reakci vás budeme informovat.",
     "btnContinue": "Vyberte si hlídačky",
+    "btnMembership": "Pokračovat k členství",
+    "postedTitle": "🎉Váš inzerát je zveřejněný!",
     "editLink": "Upravit inzerát",
     "appTitle": "Nepropásněte první odpověď",
     "appBody": "Stáhněte si aplikaci a dáme vám vědět hned, jak hlídačka odpoví — nemusíte kontrolovat e-mail.",
@@ -777,23 +779,12 @@ window.STRINGS = {
     "cta": "Staňte se členem a napište jim",
     "later": "Rozhodnu se později"
   },
-  "nomatches": {
-    "title": "Zatím žádné blízké shody",
-    "sub": "Váš inzerát je zveřejněný, takže ho nové hlídačky stále mohou najít a odpovědět. Malá změna vám jich může přivést víc.",
-    "widenTitle": "Rozšířit oblast",
-    "widenSub": "O 56 hlídaček víc do 10 km od {city}",
-    "hoursTitle": "Upravit hodiny",
-    "hoursSub": "24 dalších hlídaček má čas po 16:00",
-    "budgetTitle": "Zkontrolovat rozpočet",
-    "budgetSub": "Hlídačky pro {service} tu obvykle chtějí 220 Kč/h",
-    "editJob": "Upravit inzerát",
-    "keep": "Nechat, jak je"
-  },
   "pricing": {
     "navTitle": "Členství",
     "title": "Napište {names}",
     "and": "a",
     "titleCount": "Napište {n} hlídačkám",
+    "regionTitle": "Získejte přístup k {n} hlídačkám ve vašem okolí",
     "urgentTitle": "Zajistěte si pomoc na zítřek",
     "urgentSub": "Zaplaťte jednou a hned pište {n} hlídačkám, které mají volno.",
     "sub": "Staňte se členem, pozdravte, zeptejte se na vše potřebné a domluvte si první návštěvu.",
@@ -819,7 +810,8 @@ window.STRINGS = {
       "twelve": "Obnovuje se každých 12 měsíců."
     },
     "cancel": "Zrušit můžete kdykoli.",
-    "bankTransfer": "Zaplatit bankovním převodem."
+    "bankTransfer": "Zaplatit bankovním převodem.",
+    "skip": "Teď to přeskočím"
   },
   "onboarding": {
     "navTitle": "Úvodní nastavení",

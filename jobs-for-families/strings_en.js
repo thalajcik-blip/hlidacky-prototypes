@@ -610,6 +610,8 @@
     "heroSub": "Sitters near {city} can see it now. Their replies will land in your messages.",
     "body": "We’ll share your job with sitters in your area. Their responses will appear in your messages, with notifications for each new reply.",
     "btnContinue": "Pick your sitters",
+    "btnMembership": "Continue to membership",
+    "postedTitle": "🎉Your job was posted!",
     "editLink": "Edit job",
     "appTitle": "Don’t miss the first reply",
     "appBody": "Get the app and we’ll let you know the moment a sitter replies — no need to check your email.",
@@ -778,23 +780,12 @@
     "cta": "Become a member to message them",
     "later": "I’ll decide later"
   },
-  "nomatches": {
-    "title": "No close matches yet",
-    "sub": "Your job is live, so new sitters can still find it and reply. A small change can bring more of them your way.",
-    "widenTitle": "Widen the area",
-    "widenSub": "56 more sitters within 10 km of {city}",
-    "hoursTitle": "Adjust the hours",
-    "hoursSub": "24 more sitters are free after 4 pm",
-    "budgetTitle": "Review your budget",
-    "budgetSub": "Sitters for {service} here usually ask 220 Kč/h",
-    "editJob": "Edit job",
-    "keep": "Keep it as it is"
-  },
   "pricing": {
     "navTitle": "Membership",
     "title": "Message {names}",
     "and": "and",
     "titleCount": "Message {n} sitters",
+    "regionTitle": "Get access to {n} sitters in your region",
     "urgentTitle": "Get help in place for tomorrow",
     "urgentSub": "Pay once and start messaging the {n} sitters who are free right away.",
     "sub": "Become a member to say hello, ask your questions and agree on a first visit.",
@@ -820,7 +811,8 @@
       "twelve": "Renews every 12 months."
     },
     "cancel": "Cancel anytime.",
-    "bankTransfer": "Pay by bank transfer."
+    "bankTransfer": "Pay by bank transfer.",
+    "skip": "I’ll skip it for now"
   },
   "onboarding": {
     "navTitle": "Onboarding",
