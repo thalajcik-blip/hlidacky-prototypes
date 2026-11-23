@@ -729,7 +729,6 @@ window.STRINGS = {
     "title": "🎉Váš inzerát je zveřejněný",
     "sub": "Hlídačky v okolí {city} ho už vidí.",
     "subPick": "<b>Vyberte až 5</b> hlídaček, kterým napíšete.",
-    "matched": "Odpovídají vašemu inzerátu:",
     "fewMatched": "{n} hlídačky přesně odpovídají vašemu inzerátu",
     "alsoWorth": "Také stojí za pohled",
     "schedule": "Odpoledne ve všední dny",

@@ -1344,7 +1344,7 @@
        a divider splits the close matches from the rest. */
     .picks-section { display: flex; align-items: center; gap: 10px; padding-top: 4px; font-family: 'soleil', sans-serif; font-size: 12px; font-weight: 450; line-height: 15.4px; color: #6c757d; text-transform: uppercase; white-space: nowrap; }
     .picks-section::before, .picks-section::after { content: ''; flex: 1; height: 1px; background: #e5e5ea; }
-    #s-picks.is-counted .picks-matched__label { font-size: 14px; font-weight: 700; line-height: 1.4; color: #2a3539; }
+    #s-picks .picks-matched__label { font-size: 14px; font-weight: 700; line-height: 1.4; color: #2a3539; }
     /* Urgent sequences (Jobs Figma 4308:12395): a two-line note under the
        count instead of the tags, and a call note under the button. */
     .picks-matched__sub { font-size: 12px; font-weight: 350; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; text-align: center; }
@@ -4273,11 +4273,12 @@
       picksSelected = urgent ? [0, 1, 2] : [];
       picksShown = PICKS_PAGE;
     }
-    document.getElementById('s-picks').classList.toggle('is-counted', mode !== 'full');
+
     document.getElementById('picks-sub').innerHTML = escapePicks(t('picks.sub').replace('{city}', city)) + (mode === 'full' ? '<br>' + t('picks.subPick') : '');
-    document.getElementById('picks-matched-label').textContent = mode === 'few'
-      ? t('picks.fewMatched').replace('{n}', PICKS_CLOSE_IN_FEW)
-      : urgent ? t('picks.' + mode + '.title').replace('{n}', picksCount(mode)) : t('picks.matched');
+    // Every mode leads with a bold count, like Shortlist states.
+    document.getElementById('picks-matched-label').textContent = urgent
+      ? t('picks.' + mode + '.title').replace('{n}', picksCount(mode))
+      : t('picks.fewMatched').replace('{n}', mode === 'few' ? PICKS_CLOSE_IN_FEW : picksCount(mode));
     const matchedSub = document.getElementById('picks-matched-sub');
     matchedSub.hidden = !urgent;
     matchedSub.innerHTML = urgent ? t('picks.' + mode + '.sub') : '';

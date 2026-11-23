@@ -730,7 +730,6 @@
     "title": "🎉Your job is live",
     "sub": "Sitters near {city} can see it now.",
     "subPick": "<b>Select up to 5</b> sitters to message.",
-    "matched": "Matched to your job:",
     "fewMatched": "{n} sitters match your job closely",
     "alsoWorth": "Also worth a look",
     "schedule": "Weekday afternoons",
