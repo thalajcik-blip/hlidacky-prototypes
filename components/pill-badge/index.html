@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pill badge · Components · Hlídačky.cz</title>
+  <link rel="icon" type="image/svg+xml" href="/hlidacky-logo_small.svg">
+  <link rel="stylesheet" href="https://use.typekit.net/ciu2vdq.css">
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --card: rgba(255, 255, 255, 0.9);
+      --ink: #2a3539;
+      --muted: #6c757d;
+      --border: rgba(42, 53, 57, 0.1);
+      --accent: #f96073;
+      --accent-dark: #d94b5e;
+      --shadow: 0 18px 40px rgba(42, 53, 57, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: soleil, Inter, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(249, 96, 115, 0.14), transparent 30%),
+        linear-gradient(180deg, #fcfbf8 0%, var(--bg) 100%);
+      padding: 40px 20px 80px;
+    }
+
+    .wrap { max-width: 1080px; margin: 0 auto; }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--accent-dark);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    h1 { margin: 0 0 8px; font-size: clamp(32px, 5vw, 52px); line-height: 1; }
+
+    h2 { margin: 0 0 6px; font-size: 22px; line-height: 1.25; }
+
+    p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(42, 53, 57, 0.06);
+      font-size: 0.9em;
+    }
+
+    .intro { max-width: 720px; }
+
+    .panel {
+      margin-top: 32px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .panel > p { margin-bottom: 20px; }
+
+    /* ===== Pill badge component =====
+       Values from Figma, Design System Hlídačky, "Pill Badge" (706:499).
+       Pill radius 64px, gap 4px, Soleil Regular, line-height 1.4. */
+    .pill-badge {
+      --pb-pad-y: 4px;
+      --pb-pad-x: 10px;
+      --pb-font: 14px;
+      --pb-icon: 14px;
+      --pb-height: 28px;
+      position: relative;
+      min-height: var(--pb-height);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: var(--pb-pad-y) var(--pb-pad-x);
+      border: 0;
+      border-radius: 64px;
+      background: var(--pb-bg);
+      color: var(--pb-fg);
+      font-family: soleil, Inter, Arial, sans-serif;
+      font-size: var(--pb-font);
+      font-weight: 400;
+      line-height: 1.4;
+      white-space: nowrap;
+      cursor: default;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill-badge svg {
+      display: block;
+      flex: 0 0 var(--pb-icon);
+      width: var(--pb-icon);
+      height: var(--pb-icon);
+      fill: currentColor;
+    }
+
+    /* Figma rounds the text box to whole pixels, so the heights are pinned. */
+    .pill-badge--small { --pb-pad-y: 2px; --pb-pad-x: 8px; --pb-font: 12px; --pb-icon: 12px; --pb-height: 21px; }
+    .pill-badge--medium { --pb-pad-y: 4px; --pb-pad-x: 10px; --pb-font: 14px; --pb-icon: 14px; --pb-height: 28px; }
+    .pill-badge--large { --pb-pad-y: 6px; --pb-pad-x: 12px; --pb-font: 14px; --pb-icon: 16px; --pb-height: 32px; }
+
+    /* Colour variants: rest, hover and pulsing-ring accent for each. */
+    .pill-badge--light-green { --pb-bg: #EFF9EF; --pb-fg: #0BA825; --pb-ring: #0BA825; --pb-bg-hover: #D3F2D2; --pb-fg-hover: #0A8C20; --pb-ring-hover: #0A8C20; }
+    .pill-badge--green { --pb-bg: #0BA825; --pb-fg: #FFFFFF; --pb-ring: #0BA825; --pb-bg-hover: #22BF1E; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #22BF1E; }
+    .pill-badge--light-pink { --pb-bg: #FEECEE; --pb-fg: #E6213A; --pb-ring: #E6213A; --pb-bg-hover: #FFD5DA; --pb-fg-hover: #E6213A; --pb-ring-hover: #E6213A; }
+    .pill-badge--pink { --pb-bg: #F96073; --pb-fg: #FFFFFF; --pb-ring: #F96073; --pb-bg-hover: #E6213A; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #E6213A; }
+    .pill-badge--light-gray { --pb-bg: #F7F7F7; --pb-fg: #6C757D; --pb-ring: #6C757D; --pb-bg-hover: #E5E5EA; --pb-fg-hover: #6C757D; --pb-ring-hover: #6C757D; }
+    .pill-badge--gray { --pb-bg: #8B91A3; --pb-fg: #FFFFFF; --pb-ring: #8B91A3; --pb-bg-hover: #4A5A61; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #4A5A61; }
+    .pill-badge--light-orange { --pb-bg: #FFF1E5; --pb-fg: #ED7000; --pb-ring: #ED7000; --pb-bg-hover: #FEE7D1; --pb-fg-hover: #D15F00; --pb-ring-hover: #D15F00; }
+    .pill-badge--orange { --pb-bg: #ED7000; --pb-fg: #FFFFFF; --pb-ring: #ED7000; --pb-bg-hover: #FD8B25; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #FD8B25; }
+    .pill-badge--light-blue { --pb-bg: #E6F1FE; --pb-fg: #0069E4; --pb-ring: #0069E4; --pb-bg-hover: #B7D8FF; --pb-fg-hover: #004DBD; --pb-ring-hover: #004DBD; }
+    .pill-badge--blue { --pb-bg: #0069E4; --pb-fg: #FFFFFF; --pb-ring: #0069E4; --pb-bg-hover: #348CF3; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #348CF3; }
+    .pill-badge--light-indigo { --pb-bg: #EDEBFF; --pb-fg: #4C24EC; --pb-ring: #4C24EC; --pb-bg-hover: #CFC2FF; --pb-fg-hover: #4C24EC; --pb-ring-hover: #4C24EC; }
+    .pill-badge--indigo { --pb-bg: #7E5EFF; --pb-fg: #FFFFFF; --pb-ring: #7E5EFF; --pb-bg-hover: #A48DFF; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #A48DFF; }
+    .pill-badge--light-cyan { --pb-bg: #E7F9FC; --pb-fg: #009CB8; --pb-ring: #009CB8; --pb-bg-hover: #C3F6FF; --pb-fg-hover: #009CB8; --pb-ring-hover: #009CB8; }
+    .pill-badge--cyan { --pb-bg: #00B8D8; --pb-fg: #FFFFFF; --pb-ring: #00B8D8; --pb-bg-hover: #35CFEA; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #35CFEA; }
+    .pill-badge--light-teal { --pb-bg: #E0FAF1; --pb-fg: #00BD79; --pb-ring: #00BD79; --pb-bg-hover: #88FFD4; --pb-fg-hover: #00A066; --pb-ring-hover: #00A066; }
+    .pill-badge--teal { --pb-bg: #00BD79; --pb-fg: #FFFFFF; --pb-ring: #00BD79; --pb-bg-hover: #00D98B; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #00D98B; }
+    .pill-badge--light-violet { --pb-bg: #F6EBFF; --pb-fg: #A533FF; --pb-ring: #A533FF; --pb-bg-hover: #E4C1FF; --pb-fg-hover: #7900D8; --pb-ring-hover: #7900D8; }
+    .pill-badge--violet { --pb-bg: #A533FF; --pb-fg: #FFFFFF; --pb-ring: #A533FF; --pb-bg-hover: #B85EFF; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #B85EFF; }
+    .pill-badge--light-red { --pb-bg: #FFE8E8; --pb-fg: #C80000; --pb-ring: #C80000; --pb-bg-hover: #FBD3D3; --pb-fg-hover: #A70000; --pb-ring-hover: #A70000; }
+    .pill-badge--red { --pb-bg: #C80000; --pb-fg: #FFFFFF; --pb-ring: #C80000; --pb-bg-hover: #EA2323; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #EA2323; }
+    .pill-badge--white { --pb-bg: #FFFFFF; --pb-fg: #4A5A61; --pb-ring: #6C757D; --pb-bg-hover: #F7F7F7; --pb-fg-hover: #2A3539; --pb-ring-hover: #6C757D; }
+
+    /* White is the only variant with a border; it sits inside the pill (Figma
+       stroke: inside), so it is drawn as an inset shadow and keeps the height. */
+    .pill-badge--white { box-shadow: inset 0 0 0 1px #E5E5EA; }
+
+    .pill-badge.is-interactive { cursor: pointer; }
+
+    .pill-badge.is-interactive:hover,
+    .pill-badge.is-hover {
+      background: var(--pb-bg-hover);
+      color: var(--pb-fg-hover);
+      --pb-ring: var(--pb-ring-hover);
+    }
+
+    .pill-badge--white.is-interactive:hover,
+    .pill-badge--white.is-hover { box-shadow: inset 0 0 0 1px #BEC2CE; }
+
+    /* Is Pulsing = True. From the component description in Figma:
+       box-shadow ring, spread 0 -> 7px, accent opacity 55% -> 0, 1.6s,
+       cubic-bezier(.2,.6,.4,1), infinite; size does not change. The ring
+       lives on ::after so it never fights the White variant's inset border. */
+    .pill-badge.is-pulsing::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      animation: pill-badge-pulse 1.6s cubic-bezier(.2, .6, .4, 1) infinite;
+    }
+
+    @keyframes pill-badge-pulse {
+      from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pb-ring) 55%, transparent); }
+      to { box-shadow: 0 0 0 7px color-mix(in srgb, var(--pb-ring) 0%, transparent); }
+    }
+
+    /* Reduced motion: no animation, keep the static ring Figma draws
+       (spread 3px, accent at 40%). */
+    @media (prefers-reduced-motion: reduce) {
+      .pill-badge.is-pulsing::after {
+        animation: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--pb-ring) 40%, transparent);
+      }
+    }
+
+    /* ===== Playground ===== */
+    .playground {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .stage {
+      display: grid;
+      place-items: center;
+      min-height: 220px;
+      border: 1px dashed rgba(42, 53, 57, 0.16);
+      border-radius: 16px;
+      background:
+        linear-gradient(45deg, rgba(42, 53, 57, 0.025) 25%, transparent 25%) 0 0 / 16px 16px,
+        #fff;
+    }
+
+    .spec {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 16px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .spec dt { color: var(--muted); }
+
+    .spec dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+    .swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      border-radius: 3px;
+      box-shadow: inset 0 0 0 1px rgba(42, 53, 57, 0.15);
+      vertical-align: -1px;
+    }
+
+    .controls { display: grid; gap: 18px; }
+
+    .control-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .segmented {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .segmented button,
+    .toggle {
+      padding: 6px 12px;
+      border: 1px solid rgba(42, 53, 57, 0.14);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"],
+    .toggle[aria-pressed="true"] {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .color-picker {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .color-picker button {
+      height: 30px;
+      border: 1px solid rgba(42, 53, 57, 0.14);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .color-picker button[aria-pressed="true"] {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(42, 53, 57, 0.14);
+      border-radius: 10px;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .toggles { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ===== Matrices ===== */
+    .matrix-scroll { overflow-x: auto; }
+
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .matrix th,
+    .matrix td {
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(42, 53, 57, 0.08);
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .matrix thead th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .matrix tbody th { font-weight: 600; }
+
+    .matrix .tokens {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .legend { margin-top: 16px; font-size: 14px; }
+
+    @media (max-width: 820px) {
+      .playground { grid-template-columns: 1fr; }
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="/components/">← Components</a>
+    <h1>Pill badge</h1>
+    <p class="intro">Parent component to all the badges in the Hlídačky design system: 3 sizes, icons on either side, 21 colours, a hover state and a pulsing state. Every value on this page comes from the Figma component (Design System Hlídačky → Generic Badges → Pill Badge).</p>
+
+    <section class="panel" aria-labelledby="playground-title">
+      <h2 id="playground-title">Playground</h2>
+      <p>Pick any combination of the five Figma properties. The badge is live: hover it to see the hover state.</p>
+      <div class="playground">
+        <div>
+          <div class="stage" data-stage></div>
+          <dl class="spec" data-spec></dl>
+        </div>
+        <div class="controls">
+          <div>
+            <span class="control-label">Size</span>
+            <div class="segmented" data-control="size"></div>
+          </div>
+          <div>
+            <span class="control-label">Contains icon</span>
+            <div class="segmented" data-control="icon"></div>
+          </div>
+          <div>
+            <span class="control-label">Color <span data-color-name></span></span>
+            <div class="color-picker" data-control="color"></div>
+          </div>
+          <div>
+            <span class="control-label">State</span>
+            <div class="toggles">
+              <button class="toggle" type="button" aria-pressed="false" data-toggle="hover">Is hovered</button>
+              <button class="toggle" type="button" aria-pressed="false" data-toggle="pulsing">Is pulsing</button>
+            </div>
+          </div>
+          <div>
+            <label class="control-label" for="badge-copy">Badge copy</label>
+            <input class="text-input" id="badge-copy" type="text" value="Badge copy" maxlength="40" data-copy>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="sizes-title">
+      <h2 id="sizes-title">Sizes and icons</h2>
+      <p>Heights 21 / 28 / 32 px. Small uses 12px text and 12px icons with 2×8 padding; Medium 14px text, 14px icons, 4×10; Large 14px text, 16px icons, 6×12. Gap is 4px everywhere. Shown in Light Green.</p>
+      <div class="matrix-scroll">
+        <table class="matrix" data-size-matrix></table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="colors-title">
+      <h2 id="colors-title">Colours and states</h2>
+      <p>All 21 colours in every state, Medium with icons on both sides. The Rest and Pulsing columns also react to a real hover.</p>
+      <div class="matrix-scroll">
+        <table class="matrix" data-color-matrix></table>
+      </div>
+      <p class="legend">Pulsing (from the component description): a <code>box-shadow</code> ring grows from 0 to 7px while the accent colour fades from 55% to 0, every 1.6s on <code>cubic-bezier(.2,.6,.4,1)</code>; the badge itself does not change size. With reduced motion it stays as the static ring Figma shows (3px, accent at 40%). The accent follows the Figma variants: on light colours it is the text colour, on solid colours the fill, and White uses Gray-600.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var COLORS = [
+  {
+    "name": "Light Green",
+    "slug": "light-green",
+    "bg": "#EFF9EF",
+    "fg": "#0BA825",
+    "hbg": "#D3F2D2",
+    "hfg": "#0A8C20",
+    "ring": "#0BA825",
+    "hring": "#0A8C20",
+    "tokens": "Green-100 / Green-500"
+  },
+  {
+    "name": "Green",
+    "slug": "green",
+    "bg": "#0BA825",
+    "fg": "#FFFFFF",
+    "hbg": "#22BF1E",
+    "hfg": "#FFFFFF",
+    "ring": "#0BA825",
+    "hring": "#22BF1E",
+    "tokens": "Green-500 / White"
+  },
+  {
+    "name": "Light Pink",
+    "slug": "light-pink",
+    "bg": "#FEECEE",
+    "fg": "#E6213A",
+    "hbg": "#FFD5DA",
+    "hfg": "#E6213A",
+    "ring": "#E6213A",
+    "hring": "#E6213A",
+    "tokens": "Pink-100 / Pink-500"
+  },
+  {
+    "name": "Pink",
+    "slug": "pink",
+    "bg": "#F96073",
+    "fg": "#FFFFFF",
+    "hbg": "#E6213A",
+    "hfg": "#FFFFFF",
+    "ring": "#F96073",
+    "hring": "#E6213A",
+    "tokens": "Pink-400 / White"
+  },
+  {
+    "name": "Light Gray",
+    "slug": "light-gray",
+    "bg": "#F7F7F7",
+    "fg": "#6C757D",
+    "hbg": "#E5E5EA",
+    "hfg": "#6C757D",
+    "ring": "#6C757D",
+    "hring": "#6C757D",
+    "tokens": "Gray-200 / Gray-600"
+  },
+  {
+    "name": "Gray",
+    "slug": "gray",
+    "bg": "#8B91A3",
+    "fg": "#FFFFFF",
+    "hbg": "#4A5A61",
+    "hfg": "#FFFFFF",
+    "ring": "#8B91A3",
+    "hring": "#4A5A61",
+    "tokens": "Gray-500 / White"
+  },
+  {
+    "name": "Light Orange",
+    "slug": "light-orange",
+    "bg": "#FFF1E5",
+    "fg": "#ED7000",
+    "hbg": "#FEE7D1",
+    "hfg": "#D15F00",
+    "ring": "#ED7000",
+    "hring": "#D15F00",
+    "tokens": "Orange-100 / Orange-500"
+  },
+  {
+    "name": "Orange",
+    "slug": "orange",
+    "bg": "#ED7000",
+    "fg": "#FFFFFF",
+    "hbg": "#FD8B25",
+    "hfg": "#FFFFFF",
+    "ring": "#ED7000",
+    "hring": "#FD8B25",
+    "tokens": "Orange-500 / White"
+  },
+  {
+    "name": "Light Blue",
+    "slug": "light-blue",
+    "bg": "#E6F1FE",
+    "fg": "#0069E4",
+    "hbg": "#B7D8FF",
+    "hfg": "#004DBD",
+    "ring": "#0069E4",
+    "hring": "#004DBD",
+    "tokens": "Blue-100 / Blue-500"
+  },
+  {
+    "name": "Blue",
+    "slug": "blue",
+    "bg": "#0069E4",
+    "fg": "#FFFFFF",
+    "hbg": "#348CF3",
+    "hfg": "#FFFFFF",
+    "ring": "#0069E4",
+    "hring": "#348CF3",
+    "tokens": "Blue-500 / White"
+  },
+  {
+    "name": "Light Indigo",
+    "slug": "light-indigo",
+    "bg": "#EDEBFF",
+    "fg": "#4C24EC",
+    "hbg": "#CFC2FF",
+    "hfg": "#4C24EC",
+    "ring": "#4C24EC",
+    "hring": "#4C24EC",
+    "tokens": "Indigo-100 / Indigo-500"
+  },
+  {
+    "name": "Indigo",
+    "slug": "indigo",
+    "bg": "#7E5EFF",
+    "fg": "#FFFFFF",
+    "hbg": "#A48DFF",
+    "hfg": "#FFFFFF",
+    "ring": "#7E5EFF",
+    "hring": "#A48DFF",
+    "tokens": "Indigo-400 / White"
+  },
+  {
+    "name": "Light Cyan",
+    "slug": "light-cyan",
+    "bg": "#E7F9FC",
+    "fg": "#009CB8",
+    "hbg": "#C3F6FF",
+    "hfg": "#009CB8",
+    "ring": "#009CB8",
+    "hring": "#009CB8",
+    "tokens": "Cyan-100 / Cyan-600"
+  },
+  {
+    "name": "Cyan",
+    "slug": "cyan",
+    "bg": "#00B8D8",
+    "fg": "#FFFFFF",
+    "hbg": "#35CFEA",
+    "hfg": "#FFFFFF",
+    "ring": "#00B8D8",
+    "hring": "#35CFEA",
+    "tokens": "Cyan-500 / White"
+  },
+  {
+    "name": "Light Teal",
+    "slug": "light-teal",
+    "bg": "#E0FAF1",
+    "fg": "#00BD79",
+    "hbg": "#88FFD4",
+    "hfg": "#00A066",
+    "ring": "#00BD79",
+    "hring": "#00A066",
+    "tokens": "Teal-100 / Teal-500"
+  },
+  {
+    "name": "Teal",
+    "slug": "teal",
+    "bg": "#00BD79",
+    "fg": "#FFFFFF",
+    "hbg": "#00D98B",
+    "hfg": "#FFFFFF",
+    "ring": "#00BD79",
+    "hring": "#00D98B",
+    "tokens": "Teal-500 / White"
+  },
+  {
+    "name": "Light Violet",
+    "slug": "light-violet",
+    "bg": "#F6EBFF",
+    "fg": "#A533FF",
+    "hbg": "#E4C1FF",
+    "hfg": "#7900D8",
+    "ring": "#A533FF",
+    "hring": "#7900D8",
+    "tokens": "Violet-100 / Violet-500"
+  },
+  {
+    "name": "Violet",
+    "slug": "violet",
+    "bg": "#A533FF",
+    "fg": "#FFFFFF",
+    "hbg": "#B85EFF",
+    "hfg": "#FFFFFF",
+    "ring": "#A533FF",
+    "hring": "#B85EFF",
+    "tokens": "Violet-500 / White"
+  },
+  {
+    "name": "Light Red",
+    "slug": "light-red",
+    "bg": "#FFE8E8",
+    "fg": "#C80000",
+    "hbg": "#FBD3D3",
+    "hfg": "#A70000",
+    "ring": "#C80000",
+    "hring": "#A70000",
+    "tokens": "Red-100 / Red-500"
+  },
+  {
+    "name": "Red",
+    "slug": "red",
+    "bg": "#C80000",
+    "fg": "#FFFFFF",
+    "hbg": "#EA2323",
+    "hfg": "#FFFFFF",
+    "ring": "#C80000",
+    "hring": "#EA2323",
+    "tokens": "Red-500 / White"
+  },
+  {
+    "name": "White",
+    "slug": "white",
+    "bg": "#FFFFFF",
+    "fg": "#4A5A61",
+    "hbg": "#F7F7F7",
+    "hfg": "#2A3539",
+    "ring": "#6C757D",
+    "hring": "#6C757D",
+    "tokens": "White / Gray-700, border Gray-300"
+  }
+];
+
+      var SIZES = [
+        { key: 'small', label: 'Small', height: 21, pad: '2 × 8 px', font: '12 px', icon: '12 px' },
+        { key: 'medium', label: 'Medium', height: 28, pad: '4 × 10 px', font: '14 px', icon: '14 px' },
+        { key: 'large', label: 'Large', height: 32, pad: '6 × 12 px', font: '14 px', icon: '16 px' }
+      ];
+      var ICONS = [
+        { key: 'none', label: 'None' },
+        { key: 'left', label: 'Left' },
+        { key: 'right', label: 'Right' },
+        { key: 'both', label: 'Both' }
+      ];
+
+      // Icons from the Figma "Custom icon" component: heart on the left, plus on the right.
+      var HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 9C1 5.41017 3.91015 2.5 7.5 2.5C9.24701 2.5 10.8329 3.18982 12 4.30968C13.1671 3.18982 14.753 2.5 16.5 2.5C20.0898 2.5 23 5.41017 23 9C23 12.1341 21.164 14.9994 19.0231 17.1615C16.8724 19.3335 14.2421 20.9718 12.3154 21.6121C12.1106 21.6801 11.8894 21.6801 11.6846 21.6121C9.75788 20.9718 7.12761 19.3335 4.97692 17.1615C2.83596 14.9994 1 12.1341 1 9ZM7.5 4.5C5.01472 4.5 3 6.51473 3 9C3 11.3659 4.41404 13.7506 6.39808 15.7543C8.24453 17.619 10.4368 19.0021 12 19.6011C13.5632 19.0021 15.7555 17.619 17.6019 15.7543C19.586 13.7506 21 11.3659 21 9C21 6.51473 18.9853 4.5 16.5 4.5C14.9789 4.5 13.6337 5.25379 12.8176 6.41266C12.6303 6.67865 12.3253 6.8369 12 6.8369C11.6747 6.8369 11.3697 6.67865 11.1824 6.41266C10.3663 5.25379 9.02112 4.5 7.5 4.5Z"/></svg>';
+      var PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0316 4C12.5839 4.00072 13.031 4.44902 13.0303 5.00131L13.012 19.0013C13.0112 19.5536 12.5629 20.0007 12.0107 20C11.4584 19.9993 11.0112 19.551 11.012 18.9987L11.0303 4.99869C11.031 4.44641 11.4793 3.99928 12.0316 4Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4 12C4 11.4477 4.44772 11 5 11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H5C4.44772 13 4 12.5523 4 12Z"/></svg>';
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+      }
+
+      function badge(opts) {
+        var cls = ['pill-badge', 'pill-badge--' + opts.size, 'pill-badge--' + opts.color];
+        if (opts.interactive !== false) cls.push('is-interactive');
+        if (opts.hover) cls.push('is-hover');
+        if (opts.pulsing) cls.push('is-pulsing');
+        var left = opts.icon === 'left' || opts.icon === 'both' ? HEART : '';
+        var right = opts.icon === 'right' || opts.icon === 'both' ? PLUS : '';
+        return '<span class="' + cls.join(' ') + '">' + left + '<span>' + escapeHtml(opts.text || 'Badge copy') + '</span>' + right + '</span>';
+      }
+
+      /* ---------- playground ---------- */
+      var state = { size: 'medium', icon: 'both', color: 'light-green', hover: false, pulsing: false, text: 'Badge copy' };
+      var stage = document.querySelector('[data-stage]');
+      var spec = document.querySelector('[data-spec]');
+
+      function segmented(name, items) {
+        var host = document.querySelector('[data-control="' + name + '"]');
+        host.innerHTML = items.map(function (item) {
+          return '<button type="button" data-value="' + item.key + '">' + item.label + '</button>';
+        }).join('');
+        host.addEventListener('click', function (event) {
+          var btn = event.target.closest('button');
+          if (!btn) return;
+          state[name] = btn.getAttribute('data-value');
+          render();
+        });
+        return host;
+      }
+
+      var sizeHost = segmented('size', SIZES);
+      var iconHost = segmented('icon', ICONS);
+
+      var colorHost = document.querySelector('[data-control="color"]');
+      colorHost.innerHTML = COLORS.map(function (c) {
+        return '<button type="button" data-value="' + c.slug + '" title="' + c.name + '" aria-label="' + c.name + '" style="background:' + c.bg + '"></button>';
+      }).join('');
+      colorHost.addEventListener('click', function (event) {
+        var btn = event.target.closest('button');
+        if (!btn) return;
+        state.color = btn.getAttribute('data-value');
+        render();
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('[data-toggle]'), function (btn) {
+        btn.addEventListener('click', function () {
+          var key = btn.getAttribute('data-toggle');
+          state[key] = !state[key];
+          render();
+        });
+      });
+
+      document.querySelector('[data-copy]').addEventListener('input', function (event) {
+        state.text = event.target.value;
+        render();
+      });
+
+      function row(label, value) {
+        return '<dt>' + label + '</dt><dd>' + value + '</dd>';
+      }
+
+      function sw(hex) {
+        return '<span class="swatch" style="background:' + hex + '"></span>' + hex;
+      }
+
+      function render() {
+        var color = COLORS.filter(function (c) { return c.slug === state.color; })[0];
+        var size = SIZES.filter(function (s) { return s.key === state.size; })[0];
+        stage.innerHTML = badge(state);
+
+        [[sizeHost, state.size], [iconHost, state.icon], [colorHost, state.color]].forEach(function (pair) {
+          Array.prototype.forEach.call(pair[0].querySelectorAll('button'), function (btn) {
+            btn.setAttribute('aria-pressed', btn.getAttribute('data-value') === pair[1] ? 'true' : 'false');
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('[data-toggle]'), function (btn) {
+          btn.setAttribute('aria-pressed', state[btn.getAttribute('data-toggle')] ? 'true' : 'false');
+        });
+        document.querySelector('[data-color-name]').textContent = '· ' + color.name;
+
+        var figmaName = 'Size=' + size.label + ', Contains Icon=' + ICONS.filter(function (i) { return i.key === state.icon; })[0].label
+          + ', Color=' + color.name + ', Is Hovered=' + (state.hover ? 'True' : 'False') + ', Is Pulsing=' + (state.pulsing ? 'True' : 'False');
+        spec.innerHTML =
+          row('Figma variant', '<code>' + figmaName + '</code>') +
+          row('Background', sw(state.hover ? color.hbg : color.bg)) +
+          row('Text and icons', sw(state.hover ? color.hfg : color.fg)) +
+          (state.color === 'white' ? row('Border', sw(state.hover ? '#BEC2CE' : '#E5E5EA') + ' · 1 px inside') : '') +
+          (state.pulsing ? row('Pulse accent', sw(state.hover ? color.hring : color.ring)) : '') +
+          row('Tokens', color.tokens) +
+          row('Size', size.height + ' px high · padding ' + size.pad + ' · text ' + size.font + ' · icons ' + size.icon);
+      }
+
+      /* ---------- sizes x icons ---------- */
+      var sizeTable = document.querySelector('[data-size-matrix]');
+      sizeTable.innerHTML = '<thead><tr><th scope="col">Size</th>' + ICONS.map(function (i) {
+        return '<th scope="col">Icon: ' + i.label + '</th>';
+      }).join('') + '</tr></thead><tbody>' + SIZES.map(function (s) {
+        return '<tr><th scope="row">' + s.label + '<span class="tokens">' + s.height + ' px</span></th>' + ICONS.map(function (i) {
+          return '<td>' + badge({ size: s.key, icon: i.key, color: 'light-green' }) + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</tbody>';
+
+      /* ---------- colours x states ---------- */
+      var STATES = [
+        { label: 'Rest', hover: false, pulsing: false },
+        { label: 'Hover', hover: true, pulsing: false },
+        { label: 'Pulsing', hover: false, pulsing: true },
+        { label: 'Pulsing + hover', hover: true, pulsing: true }
+      ];
+      var colorTable = document.querySelector('[data-color-matrix]');
+      colorTable.innerHTML = '<thead><tr><th scope="col">Color</th>' + STATES.map(function (s) {
+        return '<th scope="col">' + s.label + '</th>';
+      }).join('') + '</tr></thead><tbody>' + COLORS.map(function (c) {
+        return '<tr><th scope="row">' + c.name + '<span class="tokens">' + c.tokens + '</span></th>' + STATES.map(function (s) {
+          return '<td>' + badge({ size: 'medium', icon: 'both', color: c.slug, hover: s.hover, pulsing: s.pulsing }) + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</tbody>';
+
+      render();
+    })();
+  </script>
+</body>
+</html>
