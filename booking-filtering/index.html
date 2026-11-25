@@ -6604,6 +6604,25 @@
             </div>
           </div>
           <div class="settings-group">
+            <h3 class="settings-group-title">Pending booking requests</h3>
+            <div class="settings-option-list">
+              <label class="settings-option">
+                <input type="radio" name="prototype-pending" value="some" checked data-pending-input>
+                <span>
+                  <strong>One request waiting</strong>
+                  <span>The sitter hasn’t confirmed Friday’s booking yet. The Bookings icon shows the pink count.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-pending" value="none" data-pending-input>
+                <span>
+                  <strong>No pending requests</strong>
+                  <span>Every upcoming booking is confirmed. With unpaid bookings left, the Bookings icon shows the orange “!”.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-group">
             <h3 class="settings-group-title">Other screens</h3>
             <div class="settings-option-list">
               <a class="settings-option settings-option--link" href="./messages/">
@@ -6864,6 +6883,7 @@
       var MOBILE_BP = 900;
       var STORAGE_PAID = 'booking-filtering:paid';
       var STORAGE_MODE = 'booking-filtering:unpaid-mode';
+      var STORAGE_PENDING = 'booking-filtering:pending-mode';
 
       /* `old` marks a completed booking more than 30 days back. It still
          counts as unpaid in Past, but the Unpaid filter leaves it out and
@@ -6893,7 +6913,7 @@
       };
 
       var PREVIEW = 3;
-      var state = { filter: 'all', pastExpanded: false, mode: 'some', paid: [] };
+      var state = { filter: 'all', pastExpanded: false, mode: 'some', pending: 'some', paid: [] };
 
       var sections = document.querySelector('[data-booking-sections]');
       var filterButtons = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
@@ -6921,6 +6941,7 @@
 
       function shownState(b) {
         if (b.unpaid && !isUnpaid(b)) return 'paid';
+        if (b.state === 'waiting' && state.pending === 'none') return 'confirmed';
         return b.state;
       }
 
@@ -7006,7 +7027,7 @@
 
         var counts = {
           unpaid: unpaid.length,
-          upcoming: upcoming.filter(function(b) { return b.state === 'waiting'; }).length
+          upcoming: upcoming.filter(function(b) { return shownState(b) === 'waiting'; }).length
         };
         filterButtons.forEach(function(button) {
           var key = button.getAttribute('data-filter');
@@ -7023,12 +7044,12 @@
         renderNavBadge(counts);
       }
 
-      /* Bookings nav badge (Figma 5421:18356 / 5421:18357). Unpaid bookings
-         win over pending requests: an orange "!" until everything is paid,
-         then the pink count of bookings waiting for the sitter to confirm. */
+      /* Bookings nav badge (Figma 5421:18357 / 5421:18356). Pending requests
+         win: the pink count of bookings waiting for the sitter to confirm.
+         Only with none pending does an unpaid booking show the orange "!". */
       function renderNavBadge(counts) {
         var badge = document.querySelector('[data-nav-bookings-badge]');
-        var unpaid = counts.unpaid > 0;
+        var unpaid = !counts.upcoming && counts.unpaid > 0;
         badge.hidden = !unpaid && !counts.upcoming;
         badge.classList.toggle('main-nav-notification--alert', unpaid);
         badge.textContent = unpaid ? '!' : counts.upcoming;
@@ -7291,13 +7312,23 @@
         });
       });
 
+      Array.prototype.forEach.call(document.querySelectorAll('[data-pending-input]'), function(input) {
+        input.addEventListener('change', function() {
+          state.pending = input.value;
+          write(STORAGE_PENDING, state.pending);
+          render();
+        });
+      });
+
       document.querySelector('[data-prototype-reset]').addEventListener('click', function() {
         state.paid = [];
         state.mode = 'some';
+        state.pending = 'some';
         state.filter = 'all';
         state.pastExpanded = false;
         write(STORAGE_PAID, []);
         write(STORAGE_MODE, 'some');
+        write(STORAGE_PENDING, 'some');
         syncModeInputs();
         render();
         setSettings(false);
@@ -7306,6 +7337,9 @@
       function syncModeInputs() {
         Array.prototype.forEach.call(document.querySelectorAll('[data-unpaid-input]'), function(input) {
           input.checked = input.value === state.mode;
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('[data-pending-input]'), function(input) {
+          input.checked = input.value === state.pending;
         });
       }
 
@@ -7328,6 +7362,7 @@
       /* ---------- start ---------- */
       state.paid = read(STORAGE_PAID, []);
       state.mode = read(STORAGE_MODE, 'some') === 'none' ? 'none' : 'some';
+      state.pending = read(STORAGE_PENDING, 'some') === 'none' ? 'none' : 'some';
       syncModeInputs();
 
       // The Messages screen links here with ?filter=unpaid, and with &pay=<id>
