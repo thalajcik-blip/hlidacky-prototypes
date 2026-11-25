@@ -6129,18 +6129,20 @@
 
     /* The page opens on All, so while Unpaid isn't selected a soft pink ring
        keeps pulsing out of it to point at the bookings still waiting for
-       payment. Each pulse also flashes the border pink and lets it fade back
-       to grey, so the pill itself lights up, not just the ring around it.
-       It stops once the pill is selected. */
+       payment. Each pulse also flashes the border pink and tints the fill a
+       faint pink, then lets both fade back, so the pill itself lights up,
+       not just the ring around it. The tint is --red-100, a shade lighter
+       than the selected pill's --pink-100, so a pulse never reads as
+       "selected". It stops once the pill is selected. */
     .booking-filter--unpaid:not(.is-active) {
       animation: unpaid-pill-pulse 2s ease-out infinite;
     }
 
     @keyframes unpaid-pill-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(249, 96, 115, 0.5); border-color: var(--pink-400); }
-      20% { border-color: var(--pink-400); }
-      70% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); }
-      100% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); }
+      0% { box-shadow: 0 0 0 0 rgba(249, 96, 115, 0.5); border-color: var(--pink-400); background-color: var(--red-100); }
+      20% { border-color: var(--pink-400); background-color: var(--red-100); }
+      70% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); background-color: var(--white); }
+      100% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); background-color: var(--white); }
     }
 
     @media (prefers-reduced-motion: reduce) {
