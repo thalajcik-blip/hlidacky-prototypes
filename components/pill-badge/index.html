@@ -132,7 +132,8 @@
     .pill-badge--violet { --pb-bg: #A533FF; --pb-fg: #FFFFFF; --pb-ring: #A533FF; --pb-bg-hover: #B85EFF; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #B85EFF; }
     .pill-badge--light-red { --pb-bg: #FFE8E8; --pb-fg: #C80000; --pb-ring: #C80000; --pb-bg-hover: #FBD3D3; --pb-fg-hover: #A70000; --pb-ring-hover: #A70000; }
     .pill-badge--red { --pb-bg: #C80000; --pb-fg: #FFFFFF; --pb-ring: #C80000; --pb-bg-hover: #EA2323; --pb-fg-hover: #FFFFFF; --pb-ring-hover: #EA2323; }
-    .pill-badge--white { --pb-bg: #FFFFFF; --pb-fg: #4A5A61; --pb-ring: #6C757D; --pb-bg-hover: #F7F7F7; --pb-fg-hover: #2A3539; --pb-ring-hover: #6C757D; }
+    /* White pulses in Light Pink's accent (Pink-500), not Figma's Gray-600. */
+    .pill-badge--white { --pb-bg: #FFFFFF; --pb-fg: #4A5A61; --pb-ring: #E6213A; --pb-bg-hover: #F7F7F7; --pb-fg-hover: #2A3539; --pb-ring-hover: #E6213A; }
 
     /* White is the only variant with a border; it sits inside the pill (Figma
        stroke: inside), so it is drawn as an inset shadow and keeps the height. */
@@ -385,7 +386,7 @@
       <div class="matrix-scroll">
         <table class="matrix" data-color-matrix></table>
       </div>
-      <p class="legend">Pulsing (from the component description): a <code>box-shadow</code> ring grows from 0 to 8px while the accent colour fades from 55% to 0, every 1.6s on <code>cubic-bezier(.2,.6,.4,1)</code>; the badge itself does not change size. With reduced motion it stays as the static ring Figma shows (4px, accent at 40%). The accent follows the Figma variants: on light colours it is the text colour, on solid colours the fill, and White uses Gray-600.</p>
+      <p class="legend">Pulsing (from the component description): a <code>box-shadow</code> ring grows from 0 to 8px while the accent colour fades from 55% to 0, every 1.6s on <code>cubic-bezier(.2,.6,.4,1)</code>; the badge itself does not change size. With reduced motion it stays as the static ring Figma shows (4px, accent at 40%). The accent follows the Figma variants: on light colours it is the text colour, on solid colours the fill, and White uses the same Pink-500 as Light Pink.</p>
     </section>
   </main>
 
@@ -621,8 +622,8 @@
     "fg": "#4A5A61",
     "hbg": "#F7F7F7",
     "hfg": "#2A3539",
-    "ring": "#6C757D",
-    "hring": "#6C757D",
+    "ring": "#E6213A",
+    "hring": "#E6213A",
     "tokens": "White / Gray-700, border Gray-300"
   }
 ];
