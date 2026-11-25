@@ -6835,6 +6835,25 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
             </div>
           </div>
           <div class="settings-group">
+            <h3 class="settings-group-title">Above the bookings</h3>
+            <div class="settings-option-list">
+              <label class="settings-option">
+                <input type="radio" name="prototype-top-block" value="sitters" checked data-top-block-input>
+                <span>
+                  <strong>Sitters list</strong>
+                  <span>Favourite sitters with a Book now shortcut.</span>
+                </span>
+              </label>
+              <label class="settings-option">
+                <input type="radio" name="prototype-top-block" value="feedback" data-top-block-input>
+                <span>
+                  <strong>Feedback block (playful)</strong>
+                  <span>Asks how the last booking with Anastázie went, in place of the sitters list. The emoji bounces when clicked and the rating stars fill in one by one. Once sent or dismissed, the sitters list comes back.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-group">
             <h3 class="settings-group-title">Other screens</h3>
             <div class="settings-option-list">
               <a class="settings-option settings-option--link" href="./messages/">
@@ -6870,6 +6889,23 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
             </svg>
             <span>Credits 200 Kč</span>
           </a>
+        </section>
+
+        <section class="feedback-card" data-top-block="feedback" hidden aria-labelledby="feedback-card-title">
+          <div class="feedback-card-header">
+            <div class="feedback-card-avatar" aria-hidden="true">
+              <img class="feedback-card-avatar-image" src="/booking-feedback/assets/feedback-card-avatar.png" alt="">
+              <span class="feedback-card-verified"><img src="/booking-feedback/assets/feedback-card-asset-8.svg" alt=""></span>
+            </div>
+            <h2 class="feedback-card-title" id="feedback-card-title">How did your last booking with Anastázie go?</h2>
+          </div>
+          <div class="feedback-card-emojis" role="group" aria-label="Rate your latest booking">
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="positive" aria-label="Perfectly — give positive feedback" aria-describedby="feedback-rating-perfectly"><span class="feedback-card-emoji-face">😍</span><span class="feedback-card-popover" id="feedback-rating-perfectly" role="tooltip">Perfectly</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="positive" aria-label="Good — give positive feedback" aria-describedby="feedback-rating-good"><span class="feedback-card-emoji-face">😊</span><span class="feedback-card-popover" id="feedback-rating-good" role="tooltip">Good</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="negative" aria-label="Not Great — give negative feedback" aria-describedby="feedback-rating-not-great"><span class="feedback-card-emoji-face">😐</span><span class="feedback-card-popover" id="feedback-rating-not-great" role="tooltip">Not Great</span></button>
+            <button class="feedback-card-emoji" type="button" data-feedback-modal="negative" aria-label="Badly — give negative feedback" aria-describedby="feedback-rating-badly"><span class="feedback-card-emoji-face">😡</span><span class="feedback-card-popover" id="feedback-rating-badly" role="tooltip">Badly</span></button>
+          </div>
+          <button class="feedback-card-close" type="button" data-feedback-card-close aria-label="Dismiss feedback invitation" title="Dismiss feedback invitation">×</button>
         </section>
 
         <section class="sitters-section" data-sitters-section aria-label="Sitters">
@@ -7051,6 +7087,105 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
     </div>
   </footer>
 
+  <div class="negative-feedback-backdrop" data-negative-feedback-backdrop hidden></div>
+  <section class="negative-feedback-modal" aria-labelledby="negative-feedback-title" aria-modal="true" role="dialog" data-negative-feedback-modal hidden>
+    <button class="negative-feedback-close" type="button" aria-label="Close negative feedback" data-negative-feedback-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="negative-feedback-header">
+      <img class="negative-feedback-avatar" src="/booking-feedback/assets/feedback-card-avatar.png" alt="Anastázie">
+      <h2 class="negative-feedback-title" id="negative-feedback-title">What could have been better?</h2>
+    </header>
+    <div class="negative-feedback-content">
+      <p class="negative-feedback-description">Your feedback helps the sitter improve their service. Your response stays private unless you choose to publish a review.</p>
+      <div class="negative-feedback-reasons" role="group" aria-label="Select feedback reasons">
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Late arrival"><span>Late arrival</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Problems in communication"><span>Problems in communication</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Approach to kids"><span>Approach to kids</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Cleanliness"><span>Cleanliness</span></label>
+        <label class="negative-feedback-reason"><input class="negative-feedback-reason-input" type="checkbox" name="negative-feedback-reason" value="Other reason" data-negative-feedback-other-toggle><span>Other reason</span></label>
+        <div class="negative-feedback-other" data-negative-feedback-other hidden>
+          <label class="sr-only" for="negative-feedback-other-input">Please specify your reason</label>
+          <textarea class="negative-feedback-other-input" id="negative-feedback-other-input" data-negative-feedback-other-input placeholder="Please specify your reason..."></textarea>
+        </div>
+      </div>
+    </div>
+    <footer class="negative-feedback-footer">
+      <button class="negative-feedback-submit" type="button" data-negative-feedback-submit><span class="negative-feedback-submit-check" aria-hidden="true">✓</span><span data-negative-feedback-submit-label>Submit to support</span></button>
+    </footer>
+  </section>
+
+  <aside class="negative-feedback-success-toast" data-negative-feedback-success-toast hidden aria-live="polite" aria-atomic="true">
+    <div class="negative-feedback-success-toast-header">
+      <div class="negative-feedback-success-toast-content">
+        <div class="negative-feedback-success-toast-doodle" aria-hidden="true">
+          <img src="/booking-feedback/assets/negative-review-toast-layer-2.svg" alt="">
+          <img src="/booking-feedback/assets/negative-review-toast-layer-3.svg" alt="">
+          <img src="/booking-feedback/assets/negative-review-toast-layer-1.svg" alt="">
+        </div>
+        <div class="negative-feedback-success-toast-copy">
+          <p class="negative-feedback-success-toast-heading">Your feedback was submitted</p>
+          <button class="feedback-toast-undo" type="button" data-feedback-toast-undo>Undo submission</button>
+        </div>
+      </div>
+      <button class="negative-feedback-success-toast-close" type="button" aria-label="Close notification" data-negative-feedback-success-toast-close>×</button>
+    </div>
+  </aside>
+
+  <div class="positive-feedback-backdrop" data-positive-feedback-backdrop hidden></div>
+  <section class="positive-feedback-modal" aria-labelledby="positive-feedback-title" aria-modal="true" role="dialog" data-positive-feedback-modal hidden>
+    <button class="positive-feedback-close" type="button" aria-label="Close positive feedback" data-positive-feedback-close>
+      <img src="/notification-center/assets/xicon.svg" alt="">
+    </button>
+    <header class="positive-feedback-header">
+      <img class="positive-feedback-avatar" src="/booking-feedback/assets/feedback-card-avatar.png" alt="Anastázie">
+      <h2 class="positive-feedback-title" id="positive-feedback-title">Rate Anastázie</h2>
+    </header>
+    <div class="positive-feedback-rating" aria-label="Your overall rating">
+      <span class="positive-feedback-rating-label">Your overall rating</span>
+      <div class="positive-feedback-stars" role="group" aria-label="Select an overall rating">
+        <button class="positive-feedback-star" type="button" aria-label="1 star" aria-pressed="false" data-positive-feedback-star="1"><img class="positive-feedback-star-full" src="/booking-feedback/assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="/booking-feedback/assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="2 stars" aria-pressed="false" data-positive-feedback-star="2"><img class="positive-feedback-star-full" src="/booking-feedback/assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="/booking-feedback/assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="3 stars" aria-pressed="false" data-positive-feedback-star="3"><img class="positive-feedback-star-full" src="/booking-feedback/assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="/booking-feedback/assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="4 stars" aria-pressed="false" data-positive-feedback-star="4"><img class="positive-feedback-star-full" src="/booking-feedback/assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="/booking-feedback/assets/review-star-empty.svg" alt=""></button>
+        <button class="positive-feedback-star" type="button" aria-label="5 stars, selected" aria-pressed="true" data-positive-feedback-star="5"><img class="positive-feedback-star-full" src="/booking-feedback/assets/review-star-full.svg" alt=""><img class="positive-feedback-star-empty" src="/booking-feedback/assets/review-star-empty.svg" alt=""></button>
+      </div>
+    </div>
+    <div class="positive-feedback-review">
+      <div class="positive-feedback-review-heading">
+        <label for="positive-feedback-review-input">Your review</label>
+        <button class="positive-feedback-clear" type="button" data-positive-feedback-clear><img src="/booking-feedback/assets/icon-erase.svg" alt="" aria-hidden="true"><span>Clear</span></button>
+      </div>
+      <div class="positive-feedback-textarea-wrap">
+        <textarea class="positive-feedback-textarea" id="positive-feedback-review-input" data-positive-feedback-input placeholder="How did the sitter do? Share your experience and let us know what you liked the most."></textarea>
+      </div>
+      <div class="positive-feedback-template">
+        <button class="positive-feedback-generate" type="button" data-positive-feedback-generate><img src="/booking-feedback/assets/icon-ai.svg" alt="" aria-hidden="true"><span>Generate from my communication</span></button>
+      </div>
+    </div>
+    <footer class="positive-feedback-footer">
+      <button class="positive-feedback-submit" type="button" data-positive-feedback-submit><span class="positive-feedback-submit-check" aria-hidden="true">✓</span><span>Submit your review</span></button>
+    </footer>
+  </section>
+
+  <aside class="review-success-toast" data-review-success-toast hidden aria-live="polite" aria-atomic="true">
+    <div class="review-success-toast-header">
+      <div class="review-success-toast-content">
+        <div class="review-success-toast-doodle" aria-hidden="true">
+          <img src="/booking-feedback/assets/review-toast-layer-2.svg" alt="">
+          <img src="/booking-feedback/assets/review-toast-layer-3.svg" alt="">
+          <img src="/booking-feedback/assets/review-toast-layer-1.svg" alt="">
+        </div>
+        <div class="review-success-toast-copy">
+          <p class="review-success-toast-heading">Your review was submitted</p>
+          <p class="review-success-toast-description">We will post it to Anastázie’s profile shortly</p>
+          <button class="feedback-toast-undo" type="button" data-feedback-toast-undo>Undo submission</button>
+        </div>
+      </div>
+      <button class="review-success-toast-close" type="button" aria-label="Close notification" data-review-success-toast-close>×</button>
+    </div>
+  </aside>
+
   <div class="booking-bottom-sheet-backdrop" data-sheet-backdrop hidden></div>
   <div class="booking-bottom-sheet booking-actions-sheet" data-actions-sheet role="dialog" aria-modal="true" aria-label="Booking actions" hidden>
     <div class="booking-bottom-sheet-handle"></div>
@@ -7118,6 +7253,7 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
       var STORAGE_PAID = 'booking-filtering:paid';
       var STORAGE_MODE = 'booking-filtering:unpaid-mode';
       var STORAGE_PENDING = 'booking-filtering:pending-mode';
+      var STORAGE_TOP_BLOCK = 'booking-filtering:top-block';
 
       /* `old` marks a completed booking more than 30 days back. It still
          counts as unpaid in Past, but the Unpaid filter leaves it out and
@@ -7563,6 +7699,9 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
         write(STORAGE_PAID, []);
         write(STORAGE_MODE, 'some');
         write(STORAGE_PENDING, 'some');
+        write(STORAGE_TOP_BLOCK, 'sitters');
+        state.topBlock = 'sitters';
+        applyTopBlock();
         syncModeInputs();
         render();
         setSettings(false);
@@ -7575,6 +7714,9 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
         Array.prototype.forEach.call(document.querySelectorAll('[data-pending-input]'), function(input) {
           input.checked = input.value === state.pending;
         });
+        Array.prototype.forEach.call(document.querySelectorAll('[data-top-block-input]'), function(input) {
+          input.checked = input.value === state.topBlock;
+        });
       }
 
       var sittersSection = document.querySelector('[data-sitters-section]');
@@ -7585,6 +7727,42 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
       }
 
       window.addEventListener('resize', updateSittersOverflow);
+
+      /* ---------- top block: sitters list or the playful feedback block ----------
+         The feedback card (ported from booking-feedback, driven by its own
+         script further down) takes the sitters list's slot. When it collapses
+         after a rating or a dismiss, the sitters list fades back in; Undo on
+         the toast brings the card back and hides the list again. */
+      var feedbackCard = document.querySelector('[data-top-block="feedback"]');
+
+      function syncSittersToCard(animate) {
+        var showSitters = state.topBlock !== 'feedback' || feedbackCard.hidden;
+        if (showSitters === !sittersSection.hidden) return;
+        sittersSection.hidden = !showSitters;
+        if (!showSitters) return;
+        updateSittersOverflow();
+        if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          sittersSection.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
+        }
+      }
+
+      function applyTopBlock() {
+        feedbackCard.getAnimations().forEach(function(animation) { animation.cancel(); });
+        feedbackCard.style.overflow = '';
+        feedbackCard.hidden = state.topBlock !== 'feedback';
+        syncSittersToCard(false);
+      }
+
+      new MutationObserver(function() { syncSittersToCard(true); })
+        .observe(feedbackCard, { attributes: true, attributeFilter: ['hidden'] });
+
+      Array.prototype.forEach.call(document.querySelectorAll('[data-top-block-input]'), function(input) {
+        input.addEventListener('change', function() {
+          state.topBlock = input.value;
+          write(STORAGE_TOP_BLOCK, state.topBlock);
+          applyTopBlock();
+        });
+      });
 
       document.addEventListener('keydown', function(event) {
         if (event.key !== 'Escape') return;
@@ -7597,6 +7775,8 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
       state.paid = read(STORAGE_PAID, []);
       state.mode = read(STORAGE_MODE, 'some') === 'none' ? 'none' : 'some';
       state.pending = read(STORAGE_PENDING, 'some') === 'none' ? 'none' : 'some';
+      state.topBlock = read(STORAGE_TOP_BLOCK, 'sitters') === 'feedback' ? 'feedback' : 'sitters';
+      applyTopBlock();
       syncModeInputs();
 
       // The Messages screen links here with ?filter=unpaid, and with &pay=<id>
@@ -7814,6 +7994,745 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
         if (isV2()) closeV2();
       });
     }());
+  </script>
+  <script>
+    (function() {
+      // Motion tuning (ms). Desktop = centered dialog, mobile (≤900px) = full-screen sheet sliding up.
+      var DIALOG_ENTER = 260;
+      var DIALOG_EXIT = 160;
+      var DIALOG_SHIFT = '16px';
+      var DIALOG_SCALE = 0.98;
+      var BACKDROP_ENTER = 200;
+      var SHEET_ENTER = 360;
+      var SHEET_EXIT = 260;
+      var SHEET_BACKDROP = 'rgba(0, 0, 0, 0.4)';
+      var REDUCED_FADE = 150;
+      var CARD_FADE = 160;
+      var CARD_COLLAPSE = 320;
+      var TOAST_DURATION = 8000;
+      // Playful mode only.
+      var EMOJI_POP = 260;
+      var EMOJI_POP_LEAD = 140;
+      var STAR_INTRO_DELAY = 120;
+      var STAR_STAGGER = 70;
+      var STAR_POP = 280;
+      var EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
+      var EASE_IN = 'cubic-bezier(0.4, 0, 1, 1)';
+      var SHEET_EASE_OUT = 'cubic-bezier(0.32, 0.72, 0, 1)';
+      var SHEET_EASE_IN = 'cubic-bezier(0.32, 0, 0.67, 0)';
+      var COLLAPSE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+      var MODAL_MOTION_STORAGE_KEY = 'booking-feedback-modal-motion-choice';
+      var mobileQuery = window.matchMedia('(max-width: 900px)');
+      var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      var feedbackCardCloses = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-card-close]'));
+      var feedbackCardCollapses = new WeakMap();
+      var lastSubmittedCard = null;
+      var pendingOpenTimer = null;
+      var modalMotionInputs = Array.prototype.slice.call(document.querySelectorAll('[data-modal-motion-input]'));
+      var modalMotion = 'playful';
+      var negativeFeedbackBackdrop = document.querySelector('[data-negative-feedback-backdrop]');
+      var negativeFeedbackModal = document.querySelector('[data-negative-feedback-modal]');
+      var negativeFeedbackClose = document.querySelector('[data-negative-feedback-close]');
+      var negativeFeedbackOtherToggle = document.querySelector('[data-negative-feedback-other-toggle]');
+      var negativeFeedbackOther = document.querySelector('[data-negative-feedback-other]');
+      var negativeFeedbackOtherInput = document.querySelector('[data-negative-feedback-other-input]');
+      var negativeFeedbackSubmit = document.querySelector('[data-negative-feedback-submit]');
+      var negativeFeedbackSubmitLabel = document.querySelector('[data-negative-feedback-submit-label]');
+      var negativeFeedbackTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="negative"]'));
+      var negativeFeedbackReasonInputs = Array.prototype.slice.call(document.querySelectorAll('.negative-feedback-reason-input'));
+      var negativeFeedbackLastTrigger = null;
+      var negativeFeedbackSuccessToast = document.querySelector('[data-negative-feedback-success-toast]');
+      var negativeFeedbackSuccessToastClose = document.querySelector('[data-negative-feedback-success-toast-close]');
+      var negativeFeedbackSuccessToastTimer = null;
+      var negativeFeedbackSuccessToastHideTimer = null;
+      var positiveFeedbackBackdrop = document.querySelector('[data-positive-feedback-backdrop]');
+      var positiveFeedbackModal = document.querySelector('[data-positive-feedback-modal]');
+      var positiveFeedbackClose = document.querySelector('[data-positive-feedback-close]');
+      var positiveFeedbackInput = document.querySelector('[data-positive-feedback-input]');
+      var positiveFeedbackClear = document.querySelector('[data-positive-feedback-clear]');
+      var positiveFeedbackGenerate = document.querySelector('[data-positive-feedback-generate]');
+      var positiveFeedbackSubmit = document.querySelector('[data-positive-feedback-submit]');
+      var positiveFeedbackStars = Array.prototype.slice.call(document.querySelectorAll('[data-positive-feedback-star]'));
+      var positiveFeedbackTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="positive"]'));
+      var positiveFeedbackLastTrigger = null;
+      var positiveFeedbackRating = 5;
+      var positiveFeedbackHoveredStar = null;
+      var positiveFeedbackIntroRating = null;
+      var positiveFeedbackIntroTimers = [];
+      var reviewSuccessToast = document.querySelector('[data-review-success-toast]');
+      var reviewSuccessToastClose = document.querySelector('[data-review-success-toast-close]');
+      var reviewSuccessToastTimer = null;
+      var reviewSuccessToastHideTimer = null;
+      var sittersSection = document.querySelector('[data-sitters-section]');
+      var sittersScroll = document.querySelector('[data-sitters-scroll]');
+
+      function updateSittersOverflow() {
+        if (!sittersSection || !sittersScroll) return;
+        sittersSection.classList.toggle('is-overflowing', sittersScroll.scrollWidth > sittersScroll.clientWidth + 1);
+      }
+
+      function isPlayfulMotion() {
+        return modalMotion === 'playful' && !reducedMotionQuery.matches;
+      }
+
+      function setModalMotion(nextMotion, remember) {
+        modalMotion = nextMotion === 'basic' ? 'basic' : 'playful';
+        modalMotionInputs.forEach(function(input) {
+          input.checked = input.value === modalMotion;
+        });
+        if (!remember) return;
+        try {
+          window.localStorage.setItem(MODAL_MOTION_STORAGE_KEY, modalMotion);
+        } catch (error) {}
+      }
+
+      function readStoredModalMotion() {
+        try {
+          return window.localStorage.getItem(MODAL_MOTION_STORAGE_KEY);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function dialogMotion() {
+        if (reducedMotionQuery.matches) {
+          return {
+            modal: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+            backdrop: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+            enter: REDUCED_FADE, exit: REDUCED_FADE, backdropEnter: REDUCED_FADE,
+            easeOut: 'ease', easeIn: 'ease'
+          };
+        }
+
+        if (mobileQuery.matches) {
+          // The mobile backdrop is transparent at rest; it only dims the page while the sheet travels.
+          return {
+            modal: { hidden: { transform: 'translateY(100%)' }, rest: { transform: 'translateY(0)' } },
+            backdrop: { hidden: { backgroundColor: 'rgba(0, 0, 0, 0)' }, rest: { backgroundColor: SHEET_BACKDROP } },
+            enter: SHEET_ENTER, exit: SHEET_EXIT, backdropEnter: SHEET_ENTER,
+            easeOut: SHEET_EASE_OUT, easeIn: SHEET_EASE_IN
+          };
+        }
+
+        return {
+          modal: {
+            hidden: { opacity: 0, transform: 'translate(-50%, calc(-50% + ' + DIALOG_SHIFT + ')) scale(' + DIALOG_SCALE + ')' },
+            rest: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' }
+          },
+          backdrop: { hidden: { opacity: 0 }, rest: { opacity: 1 } },
+          enter: DIALOG_ENTER, exit: DIALOG_EXIT, backdropEnter: BACKDROP_ENTER,
+          easeOut: EASE_OUT, easeIn: EASE_IN
+        };
+      }
+
+      function createFeedbackDialog(modal, backdrop, bodyClass) {
+        var isOpen = false;
+        var running = [];
+
+        function readFrame(element, template) {
+          var style = window.getComputedStyle(element);
+          var frame = {};
+          Object.keys(template).forEach(function(property) {
+            frame[property] = style[property];
+          });
+          return frame;
+        }
+
+        function play(opening, onFinish) {
+          var motion = dialogMotion();
+          var target = opening ? 'rest' : 'hidden';
+          // Reversing mid-animation starts from wherever the dialog currently is instead of jumping.
+          var interrupted = running.length > 0;
+          var modalFrom = interrupted ? readFrame(modal, motion.modal.rest) : motion.modal[opening ? 'hidden' : 'rest'];
+          var backdropFrom = interrupted ? readFrame(backdrop, motion.backdrop.rest) : motion.backdrop[opening ? 'hidden' : 'rest'];
+          var current;
+
+          running.forEach(function(animation) { animation.cancel(); });
+          current = running = [
+            modal.animate([modalFrom, motion.modal[target]], {
+              duration: opening ? motion.enter : motion.exit,
+              easing: opening ? motion.easeOut : motion.easeIn,
+              fill: 'forwards'
+            }),
+            backdrop.animate([backdropFrom, motion.backdrop[target]], {
+              duration: opening ? motion.backdropEnter : motion.exit,
+              // On exit the backdrop shares the dialog curve so the dialog never floats over an undimmed page.
+              easing: opening ? 'ease-out' : motion.easeIn,
+              fill: 'forwards'
+            })
+          ];
+
+          return Promise.all(current.map(function(animation) { return animation.finished; })).then(function() {
+            if (running !== current) return false;
+            running = [];
+            if (onFinish) onFinish();
+            // Fill kept the end frame on screen until onFinish ran; drop it so CSS owns the element again.
+            current.forEach(function(animation) { animation.cancel(); });
+            return true;
+          }, function() {
+            return false;
+          });
+        }
+
+        return {
+          isOpen: function() {
+            return isOpen;
+          },
+          open: function() {
+            if (isOpen) return Promise.resolve(false);
+            isOpen = true;
+            modal.hidden = false;
+            backdrop.hidden = false;
+            document.body.classList.add(bodyClass);
+            return play(true);
+          },
+          close: function() {
+            if (!isOpen) return Promise.resolve(false);
+            isOpen = false;
+            return play(false, function() {
+              modal.hidden = true;
+              backdrop.hidden = true;
+              document.body.classList.remove(bodyClass);
+            });
+          }
+        };
+      }
+
+      var negativeDialog = negativeFeedbackModal && negativeFeedbackBackdrop
+        ? createFeedbackDialog(negativeFeedbackModal, negativeFeedbackBackdrop, 'negative-feedback-open')
+        : null;
+      var positiveDialog = positiveFeedbackModal && positiveFeedbackBackdrop
+        ? createFeedbackDialog(positiveFeedbackModal, positiveFeedbackBackdrop, 'positive-feedback-open')
+        : null;
+
+      function collapseFeedbackCard(feedbackCard) {
+        if (!feedbackCard || feedbackCard.hidden) return Promise.resolve();
+        if (feedbackCardCollapses.has(feedbackCard)) return feedbackCardCollapses.get(feedbackCard);
+
+        if (reducedMotionQuery.matches) {
+          feedbackCard.hidden = true;
+          return Promise.resolve();
+        }
+
+        var style = window.getComputedStyle(feedbackCard);
+        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px' };
+        var expanded = {
+          height: feedbackCard.offsetHeight + 'px',
+          minHeight: '0px',
+          paddingTop: style.paddingTop,
+          paddingBottom: style.paddingBottom,
+          marginTop: style.marginTop,
+          marginBottom: style.marginBottom
+        };
+
+        // Fade the card out first, then close the gap so the content below slides up instead of jumping.
+        feedbackCard.style.overflow = 'hidden';
+        feedbackCard.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(0.96)' }
+        ], { duration: CARD_FADE, easing: EASE_IN, fill: 'forwards' });
+
+        var collapse = feedbackCard.animate([expanded, collapsed], {
+          duration: CARD_COLLAPSE,
+          delay: CARD_FADE / 2,
+          easing: COLLAPSE_EASE,
+          fill: 'forwards'
+        }).finished.then(function() {
+          feedbackCard.hidden = true;
+          feedbackCard.style.overflow = '';
+          feedbackCard.getAnimations().forEach(function(animation) { animation.cancel(); });
+          feedbackCardCollapses.delete(feedbackCard);
+        });
+
+        feedbackCardCollapses.set(feedbackCard, collapse);
+        return collapse;
+      }
+
+      function cardOf(trigger) {
+        return trigger ? trigger.closest('.feedback-card') : null;
+      }
+
+      function finishFeedback(feedbackCard, showToast) {
+        return collapseFeedbackCard(feedbackCard).then(function() {
+          lastSubmittedCard = feedbackCard;
+          showToast();
+        });
+      }
+
+      // Reverse of collapseFeedbackCard: open the gap first, then fade the card in.
+      function expandFeedbackCard(feedbackCard) {
+        if (!feedbackCard || !feedbackCard.hidden) return Promise.resolve();
+        feedbackCard.hidden = false;
+        if (reducedMotionQuery.matches) return Promise.resolve();
+
+        var style = window.getComputedStyle(feedbackCard);
+        var collapsed = { height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: '0px' };
+        var expanded = {
+          height: feedbackCard.offsetHeight + 'px',
+          minHeight: '0px',
+          paddingTop: style.paddingTop,
+          paddingBottom: style.paddingBottom,
+          marginTop: style.marginTop,
+          marginBottom: style.marginBottom
+        };
+
+        feedbackCard.style.overflow = 'hidden';
+        feedbackCard.animate([
+          { opacity: 0, transform: 'scale(0.96)' },
+          { opacity: 1, transform: 'scale(1)' }
+        ], { duration: CARD_FADE, delay: CARD_COLLAPSE / 2, easing: EASE_OUT, fill: 'backwards' });
+
+        return feedbackCard.animate([collapsed, expanded], {
+          duration: CARD_COLLAPSE,
+          easing: COLLAPSE_EASE
+        }).finished.then(function() {
+          feedbackCard.style.overflow = '';
+        });
+      }
+
+      function undoFeedback(hideToast) {
+        var feedbackCard = lastSubmittedCard;
+        lastSubmittedCard = null;
+        hideToast();
+        if (!feedbackCard) return;
+
+        var restored = expandFeedbackCard(feedbackCard);
+        var top = feedbackCard.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight - 80) {
+          feedbackCard.scrollIntoView({ block: 'center', behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+        }
+        restored.then(function() {
+          var firstEmoji = feedbackCard.querySelector('.feedback-card-emoji');
+          if (firstEmoji) firstEmoji.focus({ preventScroll: true });
+        });
+      }
+
+      function openWithMotion(trigger, open) {
+        if (pendingOpenTimer) return;
+        if (!isPlayfulMotion()) {
+          open(trigger);
+          return;
+        }
+
+        var face = trigger.querySelector('.feedback-card-emoji-face');
+        if (face) {
+          face.animate([
+            { translate: '0 0', scale: '1' },
+            { translate: '0 -6px', scale: '1.3', offset: 0.45 },
+            { translate: '0 0', scale: '1' }
+          ], { duration: EMOJI_POP, easing: 'ease-out' });
+        }
+
+        // Let the pop peak before the backdrop covers the emoji.
+        pendingOpenTimer = window.setTimeout(function() {
+          pendingOpenTimer = null;
+          open(trigger);
+        }, EMOJI_POP_LEAD);
+      }
+
+      feedbackCardCloses.forEach(function(closeButton) {
+        closeButton.addEventListener('click', function() {
+          collapseFeedbackCard(cardOf(closeButton));
+        });
+      });
+
+      function updateNegativeFeedbackOther(shouldFocus) {
+        var hasOtherReason = Boolean(negativeFeedbackOtherToggle && negativeFeedbackOtherToggle.checked);
+        if (negativeFeedbackOther) negativeFeedbackOther.hidden = !hasOtherReason;
+        if (negativeFeedbackSubmitLabel) negativeFeedbackSubmitLabel.textContent = 'Submit to support';
+        if (hasOtherReason && shouldFocus && negativeFeedbackOtherInput) {
+          window.requestAnimationFrame(function() {
+            negativeFeedbackOtherInput.focus();
+          });
+        }
+      }
+
+      function closeNegativeFeedback(restoreFocus) {
+        if (!negativeDialog) return Promise.resolve(false);
+        return negativeDialog.close().then(function(closed) {
+          if (closed && restoreFocus !== false && negativeFeedbackLastTrigger) {
+            negativeFeedbackLastTrigger.focus({ preventScroll: true });
+          }
+          return closed;
+        });
+      }
+
+      function openNegativeFeedback(trigger) {
+        if (!negativeDialog || negativeDialog.isOpen()) return;
+        negativeFeedbackLastTrigger = trigger || null;
+        negativeFeedbackReasonInputs.forEach(function(input) { input.checked = false; });
+        if (negativeFeedbackOtherInput) negativeFeedbackOtherInput.value = '';
+        updateNegativeFeedbackOther(false);
+
+        negativeDialog.open().then(function(opened) {
+          if (opened && negativeFeedbackClose) negativeFeedbackClose.focus({ preventScroll: true });
+        });
+      }
+
+      negativeFeedbackTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          openWithMotion(trigger, openNegativeFeedback);
+        });
+      });
+
+      if (negativeFeedbackClose) {
+        negativeFeedbackClose.addEventListener('click', function() {
+          closeNegativeFeedback();
+        });
+      }
+
+      if (negativeFeedbackBackdrop) {
+        negativeFeedbackBackdrop.addEventListener('click', function() {
+          closeNegativeFeedback();
+        });
+      }
+
+      if (negativeFeedbackOtherToggle) {
+        negativeFeedbackOtherToggle.addEventListener('change', function() {
+          updateNegativeFeedbackOther(negativeFeedbackOtherToggle.checked);
+        });
+      }
+
+      if (negativeFeedbackSubmit) {
+        negativeFeedbackSubmit.addEventListener('click', function() {
+          if (!negativeDialog || !negativeDialog.isOpen()) return;
+          closeNegativeFeedback(false).then(function(closed) {
+            if (!closed) return;
+            return finishFeedback(cardOf(negativeFeedbackLastTrigger), showNegativeFeedbackSuccessToast);
+          });
+        });
+      }
+
+      if (negativeFeedbackSuccessToastClose) {
+        negativeFeedbackSuccessToastClose.addEventListener('click', hideNegativeFeedbackSuccessToast);
+      }
+
+      [
+        [negativeFeedbackSuccessToast, hideNegativeFeedbackSuccessToast],
+        [reviewSuccessToast, hideReviewSuccessToast]
+      ].forEach(function(pair) {
+        var undoButton = pair[0] && pair[0].querySelector('[data-feedback-toast-undo]');
+        if (!undoButton) return;
+        undoButton.addEventListener('click', function() {
+          undoFeedback(pair[1]);
+        });
+      });
+
+      function clearPositiveFeedbackIntro() {
+        positiveFeedbackIntroTimers.forEach(function(timer) { window.clearTimeout(timer); });
+        positiveFeedbackIntroTimers = [];
+      }
+
+      function stopPositiveFeedbackIntro() {
+        clearPositiveFeedbackIntro();
+        if (positiveFeedbackIntroRating !== null) {
+          positiveFeedbackIntroRating = null;
+          renderPositiveFeedbackStars();
+        }
+      }
+
+      function playPositiveFeedbackIntro() {
+        stopPositiveFeedbackIntro();
+        positiveFeedbackIntroRating = 0;
+        renderPositiveFeedbackStars();
+
+        positiveFeedbackStars.slice(0, positiveFeedbackRating).forEach(function(star, index) {
+          positiveFeedbackIntroTimers.push(window.setTimeout(function() {
+            var filled = index + 1;
+            var image = star.querySelector('.positive-feedback-star-full');
+
+            positiveFeedbackIntroRating = filled < positiveFeedbackRating ? filled : null;
+            renderPositiveFeedbackStars();
+            if (image) {
+              image.animate([
+                { transform: 'scale(0.4)' },
+                { transform: 'scale(1.18)', offset: 0.6 },
+                { transform: 'scale(1)' }
+              ], { duration: STAR_POP, easing: 'ease-out' });
+            }
+          }, STAR_INTRO_DELAY + index * STAR_STAGGER));
+        });
+      }
+
+      function closePositiveFeedback(restoreFocus) {
+        if (!positiveDialog) return Promise.resolve(false);
+        // Only cancel pending stars; re-rendering here would flash the full rating on the way out.
+        clearPositiveFeedbackIntro();
+        return positiveDialog.close().then(function(closed) {
+          if (closed && restoreFocus !== false && positiveFeedbackLastTrigger) {
+            positiveFeedbackLastTrigger.focus({ preventScroll: true });
+          }
+          return closed;
+        });
+      }
+
+      function hideNegativeFeedbackSuccessToast() {
+        if (!negativeFeedbackSuccessToast || negativeFeedbackSuccessToast.hidden) return;
+        if (negativeFeedbackSuccessToastTimer) {
+          window.clearTimeout(negativeFeedbackSuccessToastTimer);
+          negativeFeedbackSuccessToastTimer = null;
+        }
+        if (negativeFeedbackSuccessToastHideTimer) {
+          window.clearTimeout(negativeFeedbackSuccessToastHideTimer);
+        }
+        negativeFeedbackSuccessToast.classList.remove('is-entering', 'is-visible');
+        negativeFeedbackSuccessToast.classList.add('is-exiting');
+        negativeFeedbackSuccessToastHideTimer = window.setTimeout(function() {
+          negativeFeedbackSuccessToast.hidden = true;
+          negativeFeedbackSuccessToast.classList.remove('is-exiting');
+          negativeFeedbackSuccessToastHideTimer = null;
+        }, 300);
+      }
+
+      function showNegativeFeedbackSuccessToast() {
+        if (!negativeFeedbackSuccessToast) return;
+        if (negativeFeedbackSuccessToastTimer) window.clearTimeout(negativeFeedbackSuccessToastTimer);
+        if (negativeFeedbackSuccessToastHideTimer) window.clearTimeout(negativeFeedbackSuccessToastHideTimer);
+        negativeFeedbackSuccessToastTimer = null;
+        negativeFeedbackSuccessToastHideTimer = null;
+        negativeFeedbackSuccessToast.hidden = false;
+        negativeFeedbackSuccessToast.classList.remove('is-exiting', 'is-visible');
+        negativeFeedbackSuccessToast.classList.add('is-entering');
+        window.requestAnimationFrame(function() {
+          negativeFeedbackSuccessToast.classList.add('is-visible');
+        });
+        negativeFeedbackSuccessToastTimer = window.setTimeout(hideNegativeFeedbackSuccessToast, TOAST_DURATION);
+      }
+
+      function hideReviewSuccessToast() {
+        if (!reviewSuccessToast || reviewSuccessToast.hidden) return;
+        if (reviewSuccessToastTimer) {
+          window.clearTimeout(reviewSuccessToastTimer);
+          reviewSuccessToastTimer = null;
+        }
+        if (reviewSuccessToastHideTimer) {
+          window.clearTimeout(reviewSuccessToastHideTimer);
+        }
+        reviewSuccessToast.classList.remove('is-entering', 'is-visible');
+        reviewSuccessToast.classList.add('is-exiting');
+        reviewSuccessToastHideTimer = window.setTimeout(function() {
+          reviewSuccessToast.hidden = true;
+          reviewSuccessToast.classList.remove('is-exiting');
+          reviewSuccessToastHideTimer = null;
+        }, 300);
+      }
+
+      function showReviewSuccessToast() {
+        if (!reviewSuccessToast) return;
+        if (reviewSuccessToastTimer) window.clearTimeout(reviewSuccessToastTimer);
+        if (reviewSuccessToastHideTimer) window.clearTimeout(reviewSuccessToastHideTimer);
+        reviewSuccessToastTimer = null;
+        reviewSuccessToastHideTimer = null;
+        reviewSuccessToast.hidden = false;
+        reviewSuccessToast.classList.remove('is-exiting', 'is-visible');
+        reviewSuccessToast.classList.add('is-entering');
+        window.requestAnimationFrame(function() {
+          reviewSuccessToast.classList.add('is-visible');
+        });
+        reviewSuccessToastTimer = window.setTimeout(hideReviewSuccessToast, TOAST_DURATION);
+      }
+
+      function renderPositiveFeedbackStars() {
+        var shownRating = positiveFeedbackIntroRating !== null ? positiveFeedbackIntroRating : positiveFeedbackRating;
+        var previewRating = positiveFeedbackHoveredStar || shownRating;
+
+        positiveFeedbackStars.forEach(function(star) {
+          var starRating = Number(star.getAttribute('data-positive-feedback-star'));
+          var isFull = starRating <= previewRating;
+          var isHovered = starRating === positiveFeedbackHoveredStar;
+
+          // Both variants are already in the DOM; toggling a class avoids re-fetching the SVG on every src swap.
+          star.classList.toggle('is-empty', !isFull);
+          star.classList.toggle('is-hovered', isHovered);
+          star.setAttribute('aria-pressed', String(starRating === positiveFeedbackRating));
+          star.setAttribute('aria-label', starRating + (starRating === 1 ? ' star' : ' stars') + (starRating === positiveFeedbackRating ? ', selected' : ''));
+        });
+        if (positiveFeedbackModal) positiveFeedbackModal.setAttribute('data-rating', String(positiveFeedbackRating));
+      }
+
+      function openPositiveFeedback(trigger) {
+        if (!positiveDialog || positiveDialog.isOpen()) return;
+        positiveFeedbackLastTrigger = trigger || null;
+        positiveFeedbackRating = 5;
+        positiveFeedbackHoveredStar = null;
+        stopPositiveFeedbackIntro();
+        renderPositiveFeedbackStars();
+        if (isPlayfulMotion()) playPositiveFeedbackIntro();
+
+        positiveDialog.open().then(function(opened) {
+          if (!opened) return;
+          // Focusing the textarea on mobile would pop the keyboard over the stars.
+          var focusTarget = mobileQuery.matches ? positiveFeedbackClose : positiveFeedbackInput;
+          if (focusTarget) focusTarget.focus({ preventScroll: true });
+        });
+      }
+
+      positiveFeedbackTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          openWithMotion(trigger, openPositiveFeedback);
+        });
+      });
+
+      if (positiveFeedbackClose) {
+        positiveFeedbackClose.addEventListener('click', function() {
+          closePositiveFeedback();
+        });
+      }
+
+      if (positiveFeedbackBackdrop) {
+        positiveFeedbackBackdrop.addEventListener('click', function() {
+          closePositiveFeedback();
+        });
+      }
+
+      if (positiveFeedbackClear && positiveFeedbackInput) {
+        positiveFeedbackClear.addEventListener('click', function() {
+          positiveFeedbackInput.value = '';
+          positiveFeedbackInput.focus();
+        });
+      }
+
+      if (positiveFeedbackGenerate && positiveFeedbackInput) {
+        positiveFeedbackGenerate.addEventListener('click', function() {
+          positiveFeedbackInput.value = 'We were very pleased with Anastázie. She handled our 4-year-old daughter wonderfully, and the entire booking process was smooth and easy. I would definitely recommend her.';
+          positiveFeedbackInput.focus();
+        });
+      }
+
+      positiveFeedbackStars.forEach(function(star) {
+        star.addEventListener('mouseenter', function() {
+          positiveFeedbackHoveredStar = Number(star.getAttribute('data-positive-feedback-star'));
+          renderPositiveFeedbackStars();
+        });
+        star.addEventListener('mouseleave', function() {
+          positiveFeedbackHoveredStar = null;
+          renderPositiveFeedbackStars();
+        });
+        star.addEventListener('click', function() {
+          clearPositiveFeedbackIntro();
+          positiveFeedbackIntroRating = null;
+          positiveFeedbackRating = Number(star.getAttribute('data-positive-feedback-star'));
+          renderPositiveFeedbackStars();
+        });
+      });
+
+      if (positiveFeedbackSubmit) {
+        positiveFeedbackSubmit.addEventListener('click', function() {
+          if (!positiveDialog || !positiveDialog.isOpen()) return;
+          closePositiveFeedback(false).then(function(closed) {
+            if (!closed) return;
+            return finishFeedback(cardOf(positiveFeedbackLastTrigger), showReviewSuccessToast);
+          });
+        });
+      }
+
+      if (reviewSuccessToastClose) {
+        reviewSuccessToastClose.addEventListener('click', hideReviewSuccessToast);
+      }
+
+      // Checklist modals (sitter feedback): tiles + optional "Something else" note, submitted to support.
+      var checklistDialogs = Array.prototype.slice.call(document.querySelectorAll('[data-checklist-feedback]')).map(function(modal) {
+        var name = modal.getAttribute('data-checklist-feedback');
+        var backdrop = document.querySelector('[data-checklist-feedback-backdrop="' + name + '"]');
+        if (!backdrop) return null;
+
+        var dialog = createFeedbackDialog(modal, backdrop, 'checklist-feedback-open');
+        var closeButton = modal.querySelector('[data-checklist-close]');
+        var inputs = Array.prototype.slice.call(modal.querySelectorAll('input[type="checkbox"]'));
+        var otherToggle = modal.querySelector('[data-checklist-other-toggle]');
+        var other = modal.querySelector('[data-checklist-other]');
+        var otherInput = modal.querySelector('[data-checklist-other-input]');
+        var submit = modal.querySelector('[data-checklist-submit]');
+        var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-feedback-modal="' + name + '"]'));
+        var lastTrigger = null;
+
+        function updateOther(shouldFocus) {
+          var hasOther = Boolean(otherToggle && otherToggle.checked);
+          if (other) other.hidden = !hasOther;
+          if (hasOther && shouldFocus && otherInput) {
+            window.requestAnimationFrame(function() {
+              otherInput.focus();
+            });
+          }
+        }
+
+        function close(restoreFocus) {
+          return dialog.close().then(function(closed) {
+            if (closed && restoreFocus !== false && lastTrigger) {
+              lastTrigger.focus({ preventScroll: true });
+            }
+            return closed;
+          });
+        }
+
+        function open(trigger) {
+          if (dialog.isOpen()) return;
+          lastTrigger = trigger || null;
+          inputs.forEach(function(input) { input.checked = false; });
+          if (otherInput) otherInput.value = '';
+          updateOther(false);
+
+          dialog.open().then(function(opened) {
+            if (opened && closeButton) closeButton.focus({ preventScroll: true });
+          });
+        }
+
+        triggers.forEach(function(trigger) {
+          trigger.addEventListener('click', function() {
+            openWithMotion(trigger, open);
+          });
+        });
+
+        if (closeButton) {
+          closeButton.addEventListener('click', function() {
+            close();
+          });
+        }
+
+        backdrop.addEventListener('click', function() {
+          close();
+        });
+
+        if (otherToggle) {
+          otherToggle.addEventListener('change', function() {
+            updateOther(otherToggle.checked);
+          });
+        }
+
+        if (submit) {
+          submit.addEventListener('click', function() {
+            if (!dialog.isOpen()) return;
+            close(false).then(function(closed) {
+              if (!closed) return;
+              return finishFeedback(cardOf(lastTrigger), showNegativeFeedbackSuccessToast);
+            });
+          });
+        }
+
+        return { isOpen: dialog.isOpen, close: close };
+      }).filter(Boolean);
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') return;
+        if (positiveDialog && positiveDialog.isOpen()) closePositiveFeedback();
+        if (negativeDialog && negativeDialog.isOpen()) closeNegativeFeedback();
+        checklistDialogs.forEach(function(checklistDialog) {
+          if (checklistDialog.isOpen()) checklistDialog.close();
+        });
+      });
+
+      modalMotionInputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+          if (input.checked) setModalMotion(input.value, true);
+        });
+      });
+
+      // booking-filtering only offers the playful variant of the feedback block.
+      setModalMotion('playful');
+      updateSittersOverflow();
+      window.addEventListener('resize', updateSittersOverflow);
+    })();
   </script>
 </body>
 </html>
