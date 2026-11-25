@@ -6240,6 +6240,23 @@
       padding-bottom: 0;
     }
 
+    /* Shared slot for the feedback card and the sitters list. flow-root keeps
+       the children's own bottom margin inside the slot, so the layout is the
+       same as without it, and the slot's height can be animated when the two
+       swap. The block on its way out is lifted out of flow (absolute) and
+       fades on top while the incoming one takes its place. */
+    .top-block-slot {
+      position: relative;
+      display: flow-root;
+    }
+
+    .top-block-slot > .is-leaving {
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .booking-page-links .archive-link {
       margin: 0;
       font-size: 14px;
@@ -6913,6 +6930,7 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
           </a>
         </section>
 
+        <div class="top-block-slot" data-top-block-slot>
         <section class="feedback-card" data-top-block="feedback" hidden aria-labelledby="feedback-card-title">
           <div class="feedback-card-header">
             <div class="feedback-card-avatar" aria-hidden="true">
@@ -6987,6 +7005,7 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
           </div>
           <div class="sitters-gradient-overlay" aria-hidden="true"></div>
         </section>
+        </div>
 
         <nav class="booking-filters" aria-label="Filter bookings" data-booking-filters>
           <button class="booking-filter" type="button" data-filter="all" aria-pressed="true">All</button>
@@ -7750,31 +7769,117 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
 
       /* ---------- top block: sitters list or the playful feedback block ----------
          The feedback card (ported from booking-feedback, driven by its own
-         script further down) takes the sitters list's slot. When it collapses
-         after a rating or a dismiss, the sitters list fades back in; Undo on
-         the toast brings the card back and hides the list again. */
+         script further down) takes the sitters list's slot. When the card
+         goes away after a rating or a dismiss, the two crossfade in place
+         instead of the card collapsing to nothing and the list then pushing
+         everything back down:
+           - the card is lifted out of flow and fades/shrinks out on top,
+           - the slot eases from the card's height to the list's (146 -> 133px),
+           - the sitter cards rise in one after another.
+         Undo on the toast plays the same swap in reverse. The feedback script
+         reaches these through window.bookingTopBlock. */
       var feedbackCard = document.querySelector('[data-top-block="feedback"]');
+      var topBlockSlot = document.querySelector('[data-top-block-slot]');
+      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var SWAP_OUT = 200;
+      var SWAP_HEIGHT = 380;
+      var SWAP_IN = 320;
+      var SWAP_IN_DELAY = 110;
+      var SWAP_STAGGER = 45;
+      var SWAP_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+      var SWAP_EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
+      var swapRunning = null;
 
-      function syncSittersToCard(animate) {
-        var showSitters = state.topBlock !== 'feedback' || feedbackCard.hidden;
-        if (showSitters === !sittersSection.hidden) return;
-        sittersSection.hidden = !showSitters;
-        if (!showSitters) return;
-        updateSittersOverflow();
-        if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          sittersSection.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
-        }
+      function clearSwapStyles(el) {
+        el.classList.remove('is-leaving');
+        el.style.left = '';
+        el.style.width = '';
+        el.style.margin = '';
+        el.getAnimations().forEach(function(animation) { animation.cancel(); });
       }
+
+      function swapTopBlock(outgoing, incoming) {
+        if (reducedMotion.matches) {
+          outgoing.hidden = true;
+          incoming.hidden = false;
+          if (incoming === sittersSection) updateSittersOverflow();
+          return Promise.resolve();
+        }
+
+        var fromHeight = topBlockSlot.offsetHeight;
+        var left = outgoing.offsetLeft;
+        var width = outgoing.offsetWidth;
+
+        // Lift the outgoing block out of flow, pinned where it already is.
+        outgoing.classList.add('is-leaving');
+        outgoing.style.left = left + 'px';
+        outgoing.style.width = width + 'px';
+        outgoing.style.margin = '0';
+        incoming.hidden = false;
+        if (incoming === sittersSection) updateSittersOverflow();
+        var toHeight = topBlockSlot.offsetHeight;
+
+        var animations = [];
+        animations.push(topBlockSlot.animate(
+          [{ height: fromHeight + 'px' }, { height: toHeight + 'px' }],
+          { duration: SWAP_HEIGHT, easing: SWAP_EASE }
+        ));
+        animations.push(outgoing.animate(
+          [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.97)' }],
+          { duration: SWAP_OUT, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }
+        ));
+
+        if (incoming === sittersSection) {
+          Array.prototype.forEach.call(sittersSection.querySelectorAll('.sitter-card'), function(card, index) {
+            animations.push(card.animate(
+              [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }],
+              { duration: SWAP_IN, delay: SWAP_IN_DELAY + index * SWAP_STAGGER, easing: SWAP_EASE_OUT, fill: 'backwards' }
+            ));
+          });
+        } else {
+          animations.push(incoming.animate(
+            [{ opacity: 0, transform: 'scale(0.97)' }, { opacity: 1, transform: 'scale(1)' }],
+            { duration: SWAP_IN, delay: SWAP_IN_DELAY, easing: SWAP_EASE_OUT, fill: 'backwards' }
+          ));
+        }
+
+        return Promise.all(animations.map(function(animation) { return animation.finished; })).then(function() {
+          outgoing.hidden = true;
+          clearSwapStyles(outgoing);
+          incoming.getAnimations().forEach(function(animation) { animation.cancel(); });
+        });
+      }
+
+      // Swaps queue up: an Undo pressed mid-swap waits for it, then reverses.
+      function queueSwap(showCard) {
+        var previous = swapRunning || Promise.resolve();
+        var next = previous.then(function() {
+          if (showCard === !feedbackCard.hidden) return;
+          return showCard ? swapTopBlock(sittersSection, feedbackCard) : swapTopBlock(feedbackCard, sittersSection);
+        });
+        swapRunning = next.then(function() {
+          if (swapRunning === settled) swapRunning = null;
+        });
+        var settled = swapRunning;
+        return swapRunning;
+      }
+
+      window.bookingTopBlock = {
+        owns: function(card) {
+          return card === feedbackCard && state.topBlock === 'feedback';
+        },
+        hideCard: function() { return queueSwap(false); },
+        showCard: function() { return queueSwap(true); }
+      };
 
       function applyTopBlock() {
-        feedbackCard.getAnimations().forEach(function(animation) { animation.cancel(); });
+        [feedbackCard, sittersSection].forEach(clearSwapStyles);
+        topBlockSlot.getAnimations().forEach(function(animation) { animation.cancel(); });
         feedbackCard.style.overflow = '';
         feedbackCard.hidden = state.topBlock !== 'feedback';
-        syncSittersToCard(false);
+        sittersSection.hidden = !feedbackCard.hidden;
+        if (!sittersSection.hidden) updateSittersOverflow();
       }
-
-      new MutationObserver(function() { syncSittersToCard(true); })
-        .observe(feedbackCard, { attributes: true, attributeFilter: ['hidden'] });
 
       Array.prototype.forEach.call(document.querySelectorAll('[data-top-block-input]'), function(input) {
         input.addEventListener('change', function() {
@@ -8228,6 +8333,9 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
 
       function collapseFeedbackCard(feedbackCard) {
         if (!feedbackCard || feedbackCard.hidden) return Promise.resolve();
+        // booking-filtering: the card shares a slot with the sitters list, so
+        // the page swaps the two instead of collapsing the card to nothing.
+        if (window.bookingTopBlock && window.bookingTopBlock.owns(feedbackCard)) return window.bookingTopBlock.hideCard();
         if (feedbackCardCollapses.has(feedbackCard)) return feedbackCardCollapses.get(feedbackCard);
 
         if (reducedMotionQuery.matches) {
@@ -8283,6 +8391,7 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
       // Reverse of collapseFeedbackCard: open the gap first, then fade the card in.
       function expandFeedbackCard(feedbackCard) {
         if (!feedbackCard || !feedbackCard.hidden) return Promise.resolve();
+        if (window.bookingTopBlock && window.bookingTopBlock.owns(feedbackCard)) return window.bookingTopBlock.showCard();
         feedbackCard.hidden = false;
         if (reducedMotionQuery.matches) return Promise.resolve();
 
