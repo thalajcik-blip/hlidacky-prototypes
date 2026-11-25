@@ -6129,15 +6129,20 @@
        faint pink, then lets both fade back, so the pill itself lights up,
        not just the ring around it. The tint is --red-100, a shade lighter
        than the selected pill's --pink-100, so a pulse never reads as
-       "selected". It stops once the pill is selected. */
+       "selected". It stops once the pill is selected.
+       Each 2.4s cycle: the border and tint ease in from grey (0-25%), hold
+       (25-35%), then the ring releases while both fade back (35-80%), and
+       the pill rests (80-100%). Starting from grey avoids a hard snap to
+       pink at the top of every cycle. */
     .booking-filter--unpaid:not(.is-active) {
-      animation: unpaid-pill-pulse 2s ease-out infinite;
+      animation: unpaid-pill-pulse 2.4s ease-out infinite;
     }
 
     @keyframes unpaid-pill-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(249, 96, 115, 0.5); border-color: var(--pink-400); background-color: var(--red-100); }
-      20% { border-color: var(--pink-400); background-color: var(--red-100); }
-      70% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); background-color: var(--white); }
+      0% { box-shadow: 0 0 0 0 rgba(249, 96, 115, 0.5); border-color: var(--gray-300); background-color: var(--white); animation-timing-function: ease-in-out; }
+      25% { box-shadow: 0 0 0 0 rgba(249, 96, 115, 0.5); border-color: var(--pink-400); background-color: var(--red-100); }
+      35% { border-color: var(--pink-400); background-color: var(--red-100); }
+      80% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); background-color: var(--white); }
       100% { box-shadow: 0 0 0 8px rgba(249, 96, 115, 0); border-color: var(--gray-300); background-color: var(--white); }
     }
 
