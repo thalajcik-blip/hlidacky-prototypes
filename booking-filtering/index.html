@@ -6262,6 +6262,14 @@
       line-height: 1;
     }
 
+    .main-nav-notification[hidden] {
+      display: none;
+    }
+
+    .main-nav-notification--alert {
+      background: #FD8B25;
+    }
+
     .booking-filter-count {
       min-width: 16px;
       padding: 2px 4px;
@@ -6537,7 +6545,7 @@
           <span class="main-nav-label"><span class="main-nav-text">Messages</span></span>
         </button>
         <button class="main-nav-item active" type="button" aria-current="page">
-          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""></span>
+          <span class="main-nav-icon"><img src="/sitter-approval-workflow/assets/icon-bookings.svg" alt=""><span class="main-nav-notification" data-nav-bookings-badge hidden></span></span>
           <span class="main-nav-label"><span class="main-nav-text">Bookings</span></span>
         </button>
         <button class="main-nav-item" type="button">
@@ -7012,6 +7020,21 @@
           }
         });
         document.querySelector('[data-filter="unpaid"]').hidden = !counts.unpaid;
+        renderNavBadge(counts);
+      }
+
+      /* Bookings nav badge (Figma 5421:18356 / 5421:18357). Unpaid bookings
+         win over pending requests: an orange "!" until everything is paid,
+         then the pink count of bookings waiting for the sitter to confirm. */
+      function renderNavBadge(counts) {
+        var badge = document.querySelector('[data-nav-bookings-badge]');
+        var unpaid = counts.unpaid > 0;
+        badge.hidden = !unpaid && !counts.upcoming;
+        badge.classList.toggle('main-nav-notification--alert', unpaid);
+        badge.textContent = unpaid ? '!' : counts.upcoming;
+        badge.setAttribute('aria-label', unpaid
+          ? 'Unpaid bookings'
+          : counts.upcoming + ' pending booking request' + (counts.upcoming === 1 ? '' : 's'));
       }
 
       function setFilter(filter) {
