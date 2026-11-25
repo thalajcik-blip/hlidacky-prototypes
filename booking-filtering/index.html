@@ -6829,7 +6829,7 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
                 <input type="radio" name="prototype-pending" value="none" data-pending-input>
                 <span>
                   <strong>No pending requests</strong>
-                  <span>Every upcoming booking is confirmed. With unpaid bookings left, the Bookings icon shows the orange “!”.</span>
+                  <span>Every upcoming booking is confirmed. With unpaid bookings left, the Bookings icon shows their count in orange.</span>
                 </span>
               </label>
             </div>
@@ -7416,16 +7416,15 @@ body[data-footer-version="v2"] .footer.is-v2-transitioning .footer-legal { trans
 
       /* Bookings nav badge (Figma 5421:18357 / 5421:18356). Pending requests
          win: the pink count of bookings waiting for the sitter to confirm.
-         Only with none pending does an unpaid booking show the orange "!". */
+         Only with none pending does the orange count of unpaid bookings show. */
       function renderNavBadge(counts) {
         var badge = document.querySelector('[data-nav-bookings-badge]');
         var unpaid = !counts.upcoming && counts.unpaid > 0;
-        badge.hidden = !unpaid && !counts.upcoming;
+        var count = unpaid ? counts.unpaid : counts.upcoming;
+        badge.hidden = !count;
         badge.classList.toggle('main-nav-notification--alert', unpaid);
-        badge.textContent = unpaid ? '!' : counts.upcoming;
-        badge.setAttribute('aria-label', unpaid
-          ? 'Unpaid bookings'
-          : counts.upcoming + ' pending booking request' + (counts.upcoming === 1 ? '' : 's'));
+        badge.textContent = count;
+        badge.setAttribute('aria-label', count + (unpaid ? ' unpaid booking' : ' pending booking request') + (count === 1 ? '' : 's'));
       }
 
       function setFilter(filter) {
