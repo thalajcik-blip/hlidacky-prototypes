@@ -272,7 +272,7 @@ svg{display:block;flex:none}
 .v-inline.m-reply .desc{max-height:calc(6 * 21px);overflow-y:auto}
 .v-inline.m-reply .desc.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15));
   mask-image:linear-gradient(#000 calc(100% - 21px),rgba(0,0,0,.15))}
-.v-inline .composer{padding-bottom:123px}
+.v-inline .composer{padding-bottom:113px}   /* the reply box ends 20px above Send: 94px up, less the 1px card border */
 .v-inline .c-rule{margin-top:14px}
 .v-inline .show-desc{display:none}
 
@@ -294,11 +294,18 @@ svg{display:block;flex:none}
 .v-simple.v-inline.m-reply .desc{max-height:calc(4 * 21px)}
 .v-simple.v-inline .c-rule{margin-top:10px}
 .v-simple.v-inline .c-head{margin-top:12px}
-.v-simple.v-inline .composer{padding-bottom:89px}
+.v-simple.v-inline .composer{padding-bottom:93px}   /* 20px above Send: 74px up here, less the 1px border */
 /* Between the bars the reply without the job description showed only 1.5 lines of the reply.
    To get 5 on the 375x787 frame: the photo is 40px shorter, Send sits half as far above Show job
    description (see G.sendTop), the reply box ends 16px above Send instead of 29px, and the rule
    and Your reply move up 12px. */
+/* Replying with the job description above (stakeholder request): the title keeps one line, the reply
+   box keeps 196px and every whole line left over goes to the description (fitReplyDesc). The box only
+   grows when the description is shorter than the room it was given. Not while the keyboard is up:
+   the sheet then scrolls Your reply to the top and the description is out of view anyway. */
+.v-inline.m-reply .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-inline.m-reply:not(.kb-open) .desc{max-height:calc(var(--reply-lines, 6) * 21px)}
+.v-inline.m-reply:not(.kb-open) .c-box{max-height:none}
 .v-simple:not(.v-inline).m-reply .hero{height:120px}
 .v-simple:not(.v-inline) .composer{padding-bottom:125px}
 .v-simple:not(.v-inline) .c-rule{margin-top:16px}
@@ -1641,7 +1648,21 @@ function setModeClass(m){
   phone.classList.toggle("expanded", m === "detail" || m === "reply");
   phone.classList.toggle("send-face", m === "reply");
   btnYes.setAttribute("aria-label", T(m === "reply" ? "act.send" : "act.reply"));
+  fitReplyDesc(m);
   syncDesc();
+}
+// Replying with the job description above: how many whole lines of it fit between the one-line title
+// and the reply box, which keeps REPLY_BOX px (the textarea and its template pager) and ends 20px above
+// Send (the composer's bottom padding). Measured from the reply layout, before the sheet gets there.
+const REPLY_BOX = 196;
+function fitReplyDesc(m){
+  if (m !== "reply" || !inline() || phone.classList.contains("kb-open") || G.B == null) return;
+  const box = composer.querySelector(".c-box");
+  const descTop = bodyEl.offsetTop + descWrap.offsetTop + descEl.offsetTop;   // from the card's top edge
+  const above = box.offsetTop - composer.offsetTop;                         // rule, Your reply, box margin
+  const padB = parseFloat(getComputedStyle(composer).paddingBottom);
+  const room = (G.B - G.S) - card.clientTop * 2 - descTop - above - REPLY_BOX - padB;
+  card.style.setProperty("--reply-lines", Math.max(2, Math.floor(room / LINE)));
 }
 // the reply variant is on (see the prototype versions modal)
 const inline = () => phone.classList.contains("v-inline");
@@ -1659,6 +1680,7 @@ function animateHero(h0, duration){
 
 function placeStatic(){
   layout();
+  fitReplyDesc(mode);                     // before the geometry: the keyboard layout measures from it
   const cg = cardGeom(mode); setBox(card, cg);
   const b = btnGeom(mode); setBox(btnNo, b.no); setBox(btnYes, b.yes);
   showDesc.style.top = G.linkTop + "px";
