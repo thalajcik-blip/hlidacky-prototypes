@@ -6211,11 +6211,13 @@
        and the older-booking confirmation from the Figma "Filters + Unpaid
        bookings v1" section. */
 
+    /* Same centred column as .feed-section, so the pills line up with the cards. */
     .booking-filters {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 0 0 20px;
+      width: min(100%, 640px);
+      margin: 0 auto 20px;
     }
 
     .booking-filter {
