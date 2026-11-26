@@ -1157,6 +1157,12 @@
     .price-doodle__l3 { inset: 20.52% 15.49% 20.22% 16.17%; width: 68.34%; height: 59.26%; }
     .price-doodle__l1 { position: absolute; inset: 8.43% 10.68% 11.6% 4.82%; }
     .price-doodle__l1 svg { inset: -1.21% -1.15%; width: 102.3%; height: 102.42%; }
+    /* Scrolling the step down drops the doodle and tightens the hero to
+       88px like Referral (Jobs Figma 4474:71120). */
+    #s-price .hero { transition: padding 0.3s ease; }
+    #s-price .price-doodle { transition: height 0.3s ease, opacity 0.2s ease, margin-bottom 0.3s ease; }
+    #s-price.price-compact .hero { padding-top: 19px; padding-bottom: 19px; }
+    #s-price.price-compact .price-doodle { height: 0; opacity: 0; margin-bottom: 0; }
     .price-body { display: flex; flex-direction: column; gap: 12px; font-family: 'soleil', sans-serif; }
     .price-label { display: block; flex: none; padding: 8px 2px 0; margin: 0; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; font-variant-numeric: lining-nums tabular-nums; }
     .price-body > .price-label { padding-top: 0; }
@@ -4557,7 +4563,30 @@
     }).join('');
   }
 
+  // Compact hero once the step scrolls; back to full only at the very top.
+  // Shrinking the hero can take away the overflow and pull the list back
+  // to the top by itself, so that jump is ignored while the hero animates
+  // (0.3s); otherwise the hero would bounce open again.
+  let priceCompactAt = 0;
+  function updatePriceCompact() {
+    const screen = document.getElementById('s-price');
+    const body = screen.querySelector('.screen-body');
+    const compact = screen.classList.contains('price-compact');
+    if (!compact && body.scrollTop > 8) {
+      screen.classList.add('price-compact');
+      priceCompactAt = performance.now();
+    } else if (compact && body.scrollTop <= 0 && performance.now() - priceCompactAt > 450) {
+      screen.classList.remove('price-compact');
+    }
+  }
+  document.querySelector('#s-price .screen-body').addEventListener('scroll', updatePriceCompact, { passive: true });
+
   function renderPrice() {
+    const priceScreen = document.getElementById('s-price');
+    if (!priceScreen.classList.contains('active')) {
+      priceScreen.classList.remove('price-compact');
+      priceScreen.querySelector('.screen-body').scrollTop = 0;
+    }
     document.querySelectorAll('#s-price .price-unit').forEach(function(btn) {
       const on = btn.dataset.unit === price.unit;
       btn.classList.toggle('is-selected', on);
