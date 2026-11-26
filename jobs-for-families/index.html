@@ -4551,10 +4551,20 @@
   };
   const PRICE_DEFAULTS = { hour: [240, 200, 240], day: [800, 800, 1000], job: [1000, 800, 1000] };
   const WHY_REASONS = ['deepCleaning', 'moreChildren', 'specialCare', 'irregularHours', 'worseConditions'];
-  const price = { unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] };
+  const price = { unitChosen: false, unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] };
 
   function resetPrice() {
-    Object.assign(price, { unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] });
+    Object.assign(price, { unitChosen: false, unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] });
+  }
+
+  function defaultPriceUnit() {
+    // Mixed-service jobs follow the primary service, as the review does.
+    const service = [...selectedServices][0] || 'babysitting';
+    if (service === 'pet') return 'day';
+    // Cleaning skips the frequency step; treat unspecified visits as a
+    // one-off job, unless regular cleaning was specified in Days & times.
+    if (service === 'cleaning' && _daysTimesState.mode !== 'regularly') return 'job';
+    return 'hour';
   }
 
   function fillPriceSelect(select, value) {
@@ -4582,6 +4592,13 @@
   document.querySelector('#s-price .screen-body').addEventListener('scroll', updatePriceCompact, { passive: true });
 
   function renderPrice() {
+    if (!price.unitChosen) {
+      const unit = defaultPriceUnit();
+      if (unit !== price.unit) {
+        const d = PRICE_DEFAULTS[unit];
+        Object.assign(price, { unit: unit, value: d[0], from: d[1], to: d[2] });
+      }
+    }
     const priceScreen = document.getElementById('s-price');
     if (!priceScreen.classList.contains('active')) {
       priceScreen.classList.remove('price-compact');
@@ -4611,6 +4628,7 @@
   }
 
   function setPriceUnit(unit) {
+    price.unitChosen = true;
     if (unit === price.unit) return;
     const d = PRICE_DEFAULTS[unit];
     Object.assign(price, { unit: unit, value: d[0], from: d[1], to: d[2] });
