@@ -1152,11 +1152,11 @@
     }
     /* Price step (Jobs Figma 4474:70802) */
     .price-doodle { position: relative; overflow: hidden; }
-    .price-doodle img { position: absolute; display: block; max-width: none; }
+    .price-doodle svg { position: absolute; display: block; max-width: none; }
     .price-doodle__l2 { inset: 17.98% 9.75% 21.17% 13.88%; width: 76.37%; height: 60.85%; }
     .price-doodle__l3 { inset: 20.52% 15.49% 20.22% 16.17%; width: 68.34%; height: 59.26%; }
     .price-doodle__l1 { position: absolute; inset: 8.43% 10.68% 11.6% 4.82%; }
-    .price-doodle__l1 img { inset: -1.21% -1.15%; width: 102.3%; height: 102.42%; }
+    .price-doodle__l1 svg { inset: -1.21% -1.15%; width: 102.3%; height: 102.42%; }
     .price-body { display: flex; flex-direction: column; gap: 12px; font-family: 'soleil', sans-serif; }
     .price-label { display: block; flex: none; padding: 8px 2px 0; margin: 0; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; font-variant-numeric: lining-nums tabular-nums; }
     .price-body > .price-label { padding-top: 0; }
@@ -2548,9 +2548,54 @@
 
     <div class="hero">
       <div class="hero-illus price-doodle" aria-hidden="true">
-        <img class="price-doodle__l2" src="/jobs-for-families/assets/doodle-money/layer-2.svg" alt="">
-        <img class="price-doodle__l3" src="/jobs-for-families/assets/doodle-money/layer-3.svg" alt="">
-        <span class="price-doodle__l1"><img src="/jobs-for-families/assets/doodle-money/layer-1.svg" alt=""></span>
+        <svg class="price-doodle__l2" preserveAspectRatio="none" overflow="visible" style="display: block;" width="54.991" height="43.8126" viewBox="0 0 54.991 43.8126" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M48.6772 22.5323C47.5944 22.3425 51.3953 21.2765 51.3953 21.2765L47.7172 20.5342L50.8372 20.0653L53.773 19.6244L53.9795 18.9825C51.2334 18.6979 47.0976 18.2681 47.0586 18.2681C47.0195 18.2681 50.9655 17.5649 54.5767 17.096L54.6939 16.7332C55.799 13.2616 53.7172 9.58904 50.173 8.75742L13.5925 0.167648C10.1767 -0.636073 6.77204 1.52951 6.05204 4.96207L4.17111 13.9202C7.36925 13.8142 10.3386 14.83 11.0976 14.7909C11.1646 14.7853 11.2204 14.7797 11.2483 14.7797C11.3097 14.7797 11.2483 14.7797 11.0976 14.7909C10.2269 14.8746 6.43716 15.4774 3.74693 15.9128L3.61856 16.5267C4.95809 16.6104 5.76739 16.6997 6.00739 16.6942C13.6427 16.5211 4.45018 18.2235 3.13297 18.8207L0.135765 33.0756C-0.634468 36.7314 1.96088 40.2421 5.68367 40.5825L40.9302 43.7863C43.8493 44.0542 46.5562 42.2514 47.4493 39.4607L52.746 22.8504C51.1888 22.7556 49.2911 22.6272 48.6827 22.5211L48.6772 22.5323Z" fill="#FFD5DA"/>
+</g>
+</svg>
+        <svg class="price-doodle__l3" preserveAspectRatio="none" overflow="visible" style="display: block;" width="49.211" height="42.6654" viewBox="0 0 49.211 42.6654" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M30.3794 28.0354V37.334C30.3794 37.334 31.3115 40.7108 35.8324 41.9889C40.3533 43.2671 44.5282 42.4522 45.3933 41.8382C46.2584 41.2243 48.8035 39.3099 48.9319 37.9536C49.0603 36.5973 48.9319 27.5778 48.9319 27.5778L30.3849 28.0354H30.3794Z" fill="#FFF3CD"/>
+<path d="M39.7952 32.2607C44.9954 32.2607 49.211 29.7843 49.211 26.7296C49.211 23.6748 44.9954 21.1984 39.7952 21.1984C34.595 21.1984 30.3794 23.6748 30.3794 26.7296C30.3794 29.7843 34.595 32.2607 39.7952 32.2607Z" fill="#FFF3CD"/>
+<path d="M0.307936 18.0724L0.0065407 31.6241L14.6633 41.8436L25.1228 35.2185V36.3292L30.3805 33.0808L30.4698 25.9757C30.4698 25.9757 32.9926 20.7348 36.9889 20.7906C40.9851 20.8464 41.56 20.7906 41.56 20.7906L43.2568 19.0938V9.51615L27.9749 0.00545058L17.3089 6.64173L16.3991 5.91615L9.86887 10.0408L10.6168 10.8055L0.307936 18.0668V18.0724Z" fill="white"/>
+<path d="M14.6623 27.3377L25.1219 20.5284L22.2084 18.8986L16.867 21.8959C16.867 21.8959 14.054 21.427 13.8195 21.9461C13.5851 22.4652 8.09302 18.6363 8.09302 18.6363C8.09302 18.6363 8.72372 16.7442 8.40558 16.588C8.08744 16.4317 13.5349 13.0382 13.5349 13.0382L10.4149 10.9284L0 17.4084L14.6567 27.3377H14.6623Z" fill="#FF9BA7"/>
+<path d="M17.3023 6.64186L20.6735 8.65116L25.8474 5.25767C25.8474 5.25767 27.3991 5.70977 28.3814 5.25767C29.3637 4.80558 34.4874 8.65116 34.4874 8.65116C34.4874 8.65116 34.6214 10.7051 34.8279 10.9228C35.0344 11.1405 29.587 14.2381 29.587 14.2381L32.6623 16.1693L42.7981 9.5107L27.9684 0L17.3023 6.63628V6.64186Z" fill="#FF9BA7"/>
+<path d="M0.0065407 18.5974V31.6244L14.6633 41.8383L25.1228 35.2188V20.523L14.6633 27.3378L0.0065407 18.5974Z" fill="#FF9BA7"/>
+<path d="M32.6621 16.1693L43.183 10.0465L43.2555 19.0884L41.5532 20.7907L32.6621 22.5991V16.1693Z" fill="#FF9BA7"/>
+<path d="M9.86337 10.0407L16.3936 5.91606L32.6634 16.1691V22.5989C32.6634 22.5989 30.3303 24.1895 30.375 26.7291C30.4196 29.2686 30.375 33.0807 30.375 33.0807L25.1173 36.3291V20.5282L9.86337 10.0463V10.0407Z" fill="white"/>
+</g>
+</svg>
+        <span class="price-doodle__l1"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="62.2382" height="58.9735" viewBox="0 0 62.2382 58.9735" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M58.75 56.3837C58.75 57.4287 57.9029 58.2758 56.8579 58.2758C55.813 58.2758 54.9658 57.4287 54.9658 56.3837C54.9658 55.3388 55.813 54.4916 56.8579 54.4916C57.9029 54.4916 58.75 55.3388 58.75 56.3837Z" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#FFDA6A"/>
+<path d="M4.48186 33.3986C4.48186 34.4436 3.63474 35.2907 2.58977 35.2907C1.54479 35.2907 0.697674 34.4436 0.697674 33.3986C0.697674 32.3537 1.54479 31.5065 2.58977 31.5065C3.63474 31.5065 4.48186 32.3537 4.48186 33.3986Z" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#FFDA6A"/>
+<path d="M36.6359 2.58977C36.6359 3.63474 35.7888 4.48186 34.7438 4.48186C33.6989 4.48186 32.8517 3.63474 32.8517 2.58977C32.8517 1.54479 33.6989 0.697674 34.7438 0.697674C35.7888 0.697674 36.6359 1.54479 36.6359 2.58977Z" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#FFDA6A"/>
+<path d="M11.146 5.54215L7.95349 8.73471" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<path d="M7.95349 5.54215L11.146 8.73471" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<path d="M26.9636 54.7871L23.7711 57.9796" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<path d="M23.7711 54.7871L26.9636 57.9796" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<path d="M61.5406 11.1791H57.0196" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<path d="M59.2805 8.91933V13.4403" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#F96073"/>
+<g>
+<path d="M33.9882 39.8668L23.5287 46.492L8.31377 36.345" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M36.8399 17.9656V19.8689" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M23.5296 26.5219V28.4252" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M37.7775 43.2832L33.9878 45.7279V30.2674L18.3319 19.6851L25.3757 15.4376L29.5171 18.033L41.5896 25.6125V29.1511" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M38.453 23.6473L43.8948 20.2091C43.0688 19.6845 42.8957 18.9477 43.8948 18.317L37.9116 14.5328C36.9125 15.1635 35.746 15.0575 34.9199 14.5328L29.4446 17.9933" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M22.4067 22.4416L16.4569 26.2035C17.456 26.8342 17.2942 27.5654 16.4681 28.09L22.4514 31.8742C23.2774 31.3551 24.4383 31.2491 25.4318 31.8798L31.069 28.3133" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M33.9882 30.3565L23.5287 36.9816L8.31377 27.1583L19.5603 20.5165" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M26.4359 16.0958L36.8396 9.40929L52.0489 18.9144L41.5391 25.573" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M33.9882 35.1281L23.5287 41.7365L8.31377 31.7458" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M52.0488 23.6702C52.0488 23.6702 48.6218 25.8525 46.579 27.1586" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M52.0503 28.4253C52.0503 28.4253 51.7656 28.6095 51.308 28.8941" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M33.9882 44.6227L23.5287 51.2422L8.31377 40.7883" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+</g>
+<path d="M57.9174 42.9931C57.9174 46.275 53.7369 48.9373 48.5797 48.9373C43.4225 48.9373 39.242 46.275 39.242 42.9931" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M57.9174 39.5331V46.387C57.9174 49.6689 53.7369 52.3312 48.5797 52.3312C43.4225 52.3312 39.242 49.6689 39.242 46.387V42.9935V39.9349" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M48.5862 42.0781C43.429 42.0781 39.2485 39.4157 39.2485 36.1339C39.2485 32.852 43.429 30.1897 48.5862 30.1897C53.7434 30.1897 57.9239 32.852 57.9239 36.1339C57.9239 39.4157 53.7434 42.0781 48.5862 42.0781Z" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+<path d="M39.2485 36.1341V39.5276C39.2485 42.8094 43.429 45.4718 48.5862 45.4718C53.7434 45.4718 57.9239 42.8094 57.9239 39.5276V36.1341" stroke-width="1.39535" stroke-linecap="round" stroke-linejoin="round" stroke="#2A3539"/>
+</g>
+</svg></span>
       </div>
       <h2 class="hero-title" data-i18n="price.heroTitle"></h2>
       <p class="hero-sub" data-i18n="price.averageHint"></p>
@@ -6075,7 +6120,7 @@
   // Hero SVG animation: draw strokes → fade fills
   // ============================================================
   function getSVGEls(screenEl) {
-    const svg = screenEl.querySelector('.hero-illus .hero-svg');
+    const svg = screenEl.querySelector('.hero-illus .hero-svg, .hero-illus.price-doodle');
     if (!svg) return null;
     const all = [...svg.querySelectorAll('path, circle, ellipse, rect, line, polyline, polygon')];
     const strokeEls = all.filter(el => { const s = el.getAttribute('stroke'); return s && s !== 'none'; });

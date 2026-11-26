@@ -53,7 +53,7 @@
     "removeRange": "Remove range",
     "unknown": "I don’t know yet (by agreement)",
     "discussTitle": "Open to discuss",
-    "discussSub": "Sitters see the price as a starting point and can suggest their own when they reply.",
+    "discussSub": "Sitters see the price as a starting point and can suggest their own.",
     "summary": { "hour": "{amount} Kč per hour", "day": "{amount} Kč per day", "job": "{amount} Kč for the whole job", "unknown": "a price by agreement" },
     "why": {
       "title": "Why?",
