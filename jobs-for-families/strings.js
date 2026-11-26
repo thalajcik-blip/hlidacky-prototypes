@@ -43,7 +43,7 @@ window.STRINGS = {
     }
   },
   "price": {
-    "heroTitle": "Je cena za hodinu, nebo flexibilní?",
+    "heroTitle": "Kolik chcete zaplatit?",
     "averageHint": "Průměrná cena ve vaší oblasti je 240 Kč/hod.",
     "unitLabel": "Jak je cena stanovená?",
     "units": { "hour": "Za hodinu", "day": "Za návštěvu/den", "job": "Za celou práci" },
@@ -52,7 +52,7 @@ window.STRINGS = {
     "removeRange": "Zrušit rozsah",
     "unknown": "Zatím nevím (dohodou)",
     "discussTitle": "Otevřeno diskusi",
-    "discussSub": "Hlídačky berou cenu jako výchozí bod a mohou navrhnout vlastní.",
+    "discussSub": "Hlídačky mohou navrhnout vlastní cenu.",
     "summary": { "hour": "{amount} Kč za hodinu", "day": "{amount} Kč za den", "job": "{amount} Kč za celou práci", "unknown": "cenu dohodou" },
     "why": {
       "title": "Proč?",
