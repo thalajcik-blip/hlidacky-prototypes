@@ -48,11 +48,13 @@
     "averageHint": "The average price in your area is CZK 240/hour.",
     "unitLabel": "How is it priced?",
     "units": { "agreement": "By agreement", "hour": "Per hour", "day": "Per visit/day", "job": "For the whole job" },
+    "toggleUnits": { "hour": "Per hour", "day": "Per visit/day", "job": "Whole job" },
     "amountLabel": { "hour": "Your price per hour", "day": "Your price per day", "job": "Your price for the job" },
     "setRange": "Set up range",
     "removeRange": "Remove range",
     "discussTitle": "Open to discuss",
     "discussSub": "Sitters can suggest their own price.",
+    "discussSubV2": "Sitters can suggest their own price. Not sure what to pay? Keep the average and turn this on",
     "summary": { "hour": "{amount} Kč per hour", "day": "{amount} Kč per day", "job": "{amount} Kč for the whole job", "agreement": "a price by agreement" },
     "why": {
       "title": "Why?",

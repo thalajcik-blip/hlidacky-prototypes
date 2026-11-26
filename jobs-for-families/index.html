@@ -1183,6 +1183,13 @@
     #freq-radios .radio-opt.selected .radio-circle { background: #fff; border: 6px solid #0ba825; }
     .price-unit.is-selected .price-unit__radio { border: 6px solid #0ba825; }
     .price-amount[hidden] { display: none; }
+    /* Price step v2 (Jobs Figma 4495:41554): a segmented toggle instead of
+       the boxed radios, no "by agreement". Picked in Prototype settings. */
+    .price-toggle { display: none; gap: 4px; padding: 4px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; margin-top: 4px; }
+    .price-toggle__item { flex: 1 0 0; min-width: 0; padding: 11px 4px; border: 1px solid transparent; border-radius: 2px; background: #fff; font: inherit; font-size: 16px; font-weight: 450; line-height: 20px; color: #4a5a61; white-space: nowrap; cursor: pointer; font-variant-numeric: lining-nums tabular-nums; transition: background .15s, border-color .15s, color .15s; }
+    .price-toggle__item.is-selected { background: #eff9ef; border-color: #d3f2d2; color: #22bf1e; }
+    #s-price.price-v2 .price-units { display: none; }
+    #s-price.price-v2 .price-toggle { display: flex; }
     .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
     .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
     .price-amount__head .price-label { flex: 1; min-width: 0; }
@@ -2617,6 +2624,12 @@
         <button type="button" class="price-unit" role="radio" data-unit="job" onclick="setPriceUnit('job')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.job"></span></button>
       </div>
 
+      <div class="price-toggle" role="radiogroup" aria-label="Pricing">
+        <button type="button" class="price-toggle__item" role="radio" data-unit="hour" onclick="setPriceUnit('hour')" data-i18n="price.toggleUnits.hour"></button>
+        <button type="button" class="price-toggle__item" role="radio" data-unit="day" onclick="setPriceUnit('day')" data-i18n="price.toggleUnits.day"></button>
+        <button type="button" class="price-toggle__item" role="radio" data-unit="job" onclick="setPriceUnit('job')" data-i18n="price.toggleUnits.job"></button>
+      </div>
+
       <div class="price-amount" id="price-amount">
         <div class="price-amount__head">
           <label class="price-label" id="price-amount-label" for="price-from"></label>
@@ -2633,7 +2646,7 @@
         <span class="price-switch" aria-hidden="true"></span>
         <span class="price-discuss__copy">
           <b data-i18n="price.discussTitle"></b>
-          <small data-i18n="price.discussSub"></small>
+          <small id="price-discuss-sub" data-i18n="price.discussSub"></small>
         </span>
       </button>
     </div>
@@ -3260,6 +3273,10 @@
       <legend>After the job is created</legend>
       <div class="prototype-settings-option-list" id="prototype-settings-sequences"></div>
     </fieldset>
+    <fieldset class="prototype-settings-group" style="margin-top: 24px">
+      <legend>Price step</legend>
+      <div class="prototype-settings-option-list" id="prototype-settings-price"></div>
+    </fieldset>
   </form>
 </section>
 
@@ -3617,8 +3634,34 @@
     }).join('');
   }
 
+  // Prototype settings: which version of the price step to show. Kept per
+  // browser and can be preset with ?price=<key>.
+  const PRICE_VARIANTS = [
+    { key: 'agreement', name: 'By agreement first', note: 'Boxed radios with “By agreement” first and preselected; the price input shows only for the other options.' },
+    { key: 'toggle', name: 'Segmented toggle', note: 'Per hour / per visit / whole job as a toggle, per hour preselected and no “by agreement”.' }
+  ];
+  const PRICE_VARIANT_KEY = 'jobs-for-families:price-variant';
+  let priceVariant = readPick('price', PRICE_VARIANT_KEY, function(key) {
+    return PRICE_VARIANTS.some(function(v) { return v.key === key; });
+  }, 'agreement');
+  function setPriceVariant(key) {
+    priceVariant = key;
+    try { localStorage.setItem(PRICE_VARIANT_KEY, key); } catch (e) {}
+    resetPrice();
+    renderPrice();
+  }
+  function renderPriceSettings() {
+    document.getElementById('prototype-settings-price').innerHTML = PRICE_VARIANTS.map(function(v) {
+      return '<label class="prototype-settings-option">'
+        + '<input type="radio" name="price-variant" value="' + v.key + '"'
+        + (v.key === priceVariant ? ' checked' : '') + ' onchange="setPriceVariant(this.value)">'
+        + '<span><strong>' + v.name + '</strong><small>' + v.note + '</small></span></label>';
+    }).join('');
+  }
+
   function openPrototypeSettings() {
     renderPrototypeSettings();
+    renderPriceSettings();
     document.getElementById('prototype-settings-backdrop').hidden = false;
     const modal = document.getElementById('prototype-settings');
     modal.hidden = false;
@@ -4546,9 +4589,13 @@
   const WHY_REASONS = ['deepCleaning', 'moreChildren', 'specialCare', 'irregularHours', 'worseConditions'];
   const price = { unit: 'agreement', range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] };
 
+  // v1 opens on "by agreement"; the toggle (v2) has no such option and
+  // opens on per hour.
   function resetPrice() {
-    Object.assign(price, { unit: 'agreement', range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] });
+    const unit = priceVariant === 'toggle' ? 'hour' : 'agreement';
+    Object.assign(price, { unit: unit, range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] });
   }
+  resetPrice();
 
   function fillPriceSelect(select, value) {
     select.innerHTML = PRICE_OPTIONS[price.unit].map(function(n) {
@@ -4580,7 +4627,10 @@
       priceScreen.classList.remove('price-compact');
       priceScreen.querySelector('.screen-body').scrollTop = 0;
     }
-    document.querySelectorAll('#s-price .price-unit').forEach(function(btn) {
+    const v2 = priceVariant === 'toggle';
+    priceScreen.classList.toggle('price-v2', v2);
+    document.getElementById('price-discuss-sub').textContent = t(v2 ? 'price.discussSubV2' : 'price.discussSub');
+    document.querySelectorAll('#s-price .price-unit, #s-price .price-toggle__item').forEach(function(btn) {
       const on = btn.dataset.unit === price.unit;
       btn.classList.toggle('is-selected', on);
       btn.setAttribute('aria-checked', on ? 'true' : 'false');
