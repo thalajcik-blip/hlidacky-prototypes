@@ -44,7 +44,7 @@
     }
   },
   "price": {
-    "heroTitle": "Is the price set per hour or flexible?",
+    "heroTitle": "How much do you want to pay?",
     "averageHint": "The average price in your area is CZK 240/hour.",
     "unitLabel": "How is it priced?",
     "units": { "hour": "Per hour", "day": "Per visit/day", "job": "For the whole job" },
