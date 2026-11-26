@@ -1182,11 +1182,11 @@
     .price-unit__radio { width: 20px; height: 20px; flex: none; border: 1px solid #bec2ce; border-radius: 50%; background: #fff; transition: border .12s; }
     #freq-radios .radio-opt.selected .radio-circle { background: #fff; border: 6px solid #0ba825; }
     .price-unit.is-selected .price-unit__radio { border: 6px solid #0ba825; }
+    .price-amount[hidden] { display: none; }
     .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
     .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
     .price-amount__head .price-label { flex: 1; min-width: 0; }
     .price-range-link { color: #f96073; opacity: .8; font-size: 16px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; }
-    .price-amount.is-unknown .price-range-link { visibility: hidden; }
     .price-selects { display: flex; align-items: center; gap: 8px; }
     .price-dash { flex: none; color: #2a3539; font-size: 16px; }
     .price-amount:not(.is-range) .price-dash,
@@ -1202,11 +1202,6 @@
     .price-select select:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
     .price-select i { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); font-size: 16px; color: #f96073; pointer-events: none; }
     .price-amount.is-range .price-select i { right: 12px; }
-    .price-amount.is-unknown .price-select select { background: #f7f7f7; color: #8b91a3; cursor: default; }
-    .price-unknown { padding: 2px 0; }
-    .price-unknown .check-box { border: 1px solid #bec2ce; background: #fff; }
-    .price-unknown.checked .check-box { background: #0ba825; border-color: #0ba825; }
-    .price-unknown .check-lbl { font-size: 16px; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
     .price-discuss {
       display: flex; align-items: flex-start; gap: 6px; flex-shrink: 0; width: 100%; min-height: 64px; padding: 8px 12px; text-align: left; cursor: pointer;
       background: #fff; border: 1px solid #e5e5ea; border-radius: 6px; font: inherit; transition: background .15s, border-color .15s;
@@ -2616,12 +2611,13 @@
     <div class="screen-body price-body">
       <p class="sec-label price-label" data-i18n="price.unitLabel"></p>
       <div class="price-units" role="radiogroup" aria-labelledby="price-unit-label">
+        <button type="button" class="price-unit" role="radio" data-unit="agreement" onclick="setPriceUnit('agreement')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.agreement"></span></button>
         <button type="button" class="price-unit" role="radio" data-unit="hour" onclick="setPriceUnit('hour')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.hour"></span></button>
         <button type="button" class="price-unit" role="radio" data-unit="day" onclick="setPriceUnit('day')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.day"></span></button>
         <button type="button" class="price-unit" role="radio" data-unit="job" onclick="setPriceUnit('job')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.job"></span></button>
       </div>
 
-      <div class="price-amount">
+      <div class="price-amount" id="price-amount">
         <div class="price-amount__head">
           <label class="price-label" id="price-amount-label" for="price-from"></label>
           <a class="price-range-link" role="button" tabindex="0" id="price-range-link" onclick="togglePriceRange()"></a>
@@ -2630,10 +2626,6 @@
           <span class="price-select"><select id="price-from" aria-labelledby="price-amount-label" onchange="onPriceSelect()"></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span>
           <span class="price-dash" aria-hidden="true">–</span>
           <span class="price-select"><select id="price-to" aria-labelledby="price-amount-label" onchange="onPriceSelect()"></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span>
-        </div>
-        <div class="check-opt price-unknown" id="price-unknown" role="checkbox" tabindex="0" onclick="togglePriceUnknown()">
-          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <span class="check-lbl" data-i18n="price.unknown"></span>
         </div>
       </div>
 
@@ -4542,8 +4534,9 @@
 
   // 1500 → "1 500", with a no-break space as Czech prices are written.
   // Price step (Jobs Figma 4474:70802): per hour, per visit/day or for the
-  // whole job; one price or a range; or "I don't know yet", which drops the
-  // price and Open to discuss. Switching Open to discuss on asks "Why?".
+  // whole job; one price or a range. "By agreement" comes first and is the
+  // default, so the step opens without a price to set; it hides the price
+  // and Open to discuss. Switching Open to discuss on asks "Why?".
   const PRICE_OPTIONS = {
     hour: [150, 180, 200, 220, 240, 260, 280, 300, 350, 400],
     day: [400, 500, 600, 700, 800, 900, 1000, 1200, 1500],
@@ -4551,20 +4544,10 @@
   };
   const PRICE_DEFAULTS = { hour: [240, 200, 240], day: [800, 800, 1000], job: [1000, 800, 1000] };
   const WHY_REASONS = ['deepCleaning', 'moreChildren', 'specialCare', 'irregularHours', 'worseConditions'];
-  const price = { unitChosen: false, unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] };
+  const price = { unit: 'agreement', range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] };
 
   function resetPrice() {
-    Object.assign(price, { unitChosen: false, unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] });
-  }
-
-  function defaultPriceUnit() {
-    // Mixed-service jobs follow the primary service, as the review does.
-    const service = [...selectedServices][0] || 'babysitting';
-    if (service === 'pet') return 'day';
-    // Cleaning skips the frequency step; treat unspecified visits as a
-    // one-off job, unless regular cleaning was specified in Days & times.
-    if (service === 'cleaning' && _daysTimesState.mode !== 'regularly') return 'job';
-    return 'hour';
+    Object.assign(price, { unit: 'agreement', range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] });
   }
 
   function fillPriceSelect(select, value) {
@@ -4592,13 +4575,6 @@
   document.querySelector('#s-price .screen-body').addEventListener('scroll', updatePriceCompact, { passive: true });
 
   function renderPrice() {
-    if (!price.unitChosen) {
-      const unit = defaultPriceUnit();
-      if (unit !== price.unit) {
-        const d = PRICE_DEFAULTS[unit];
-        Object.assign(price, { unit: unit, value: d[0], from: d[1], to: d[2] });
-      }
-    }
     const priceScreen = document.getElementById('s-price');
     if (!priceScreen.classList.contains('active')) {
       priceScreen.classList.remove('price-compact');
@@ -4609,33 +4585,29 @@
       btn.classList.toggle('is-selected', on);
       btn.setAttribute('aria-checked', on ? 'true' : 'false');
     });
-    const amount = document.querySelector('#s-price .price-amount');
+    const agreement = price.unit === 'agreement';
+    const amount = document.getElementById('price-amount');
+    amount.hidden = agreement;
+    document.getElementById('price-discuss').hidden = agreement;
+    if (agreement) return;
     amount.classList.toggle('is-range', price.range);
-    amount.classList.toggle('is-unknown', price.unknown);
     document.getElementById('price-amount-label').textContent = t('price.amountLabel.' + price.unit);
     document.getElementById('price-range-link').textContent = t(price.range ? 'price.removeRange' : 'price.setRange');
     const from = document.getElementById('price-from');
     const to = document.getElementById('price-to');
     fillPriceSelect(from, price.range ? price.from : price.value);
     fillPriceSelect(to, price.to);
-    from.disabled = to.disabled = price.unknown;
-    const unknown = document.getElementById('price-unknown');
-    unknown.classList.toggle('checked', price.unknown);
-    unknown.setAttribute('aria-checked', price.unknown ? 'true' : 'false');
-    const discuss = document.getElementById('price-discuss');
-    discuss.hidden = price.unknown;
-    discuss.setAttribute('aria-checked', price.discuss ? 'true' : 'false');
+    document.getElementById('price-discuss').setAttribute('aria-checked', price.discuss ? 'true' : 'false');
   }
 
   function setPriceUnit(unit) {
-    price.unitChosen = true;
     if (unit === price.unit) return;
-    const d = PRICE_DEFAULTS[unit];
-    Object.assign(price, { unit: unit, value: d[0], from: d[1], to: d[2] });
+    price.unit = unit;
+    if (unit === 'agreement') price.discuss = false;
+    else { const d = PRICE_DEFAULTS[unit]; Object.assign(price, { value: d[0], from: d[1], to: d[2] }); }
     renderPrice();
   }
   function togglePriceRange() {
-    if (price.unknown) return;
     price.range = !price.range;
     renderPrice();
   }
@@ -4649,11 +4621,6 @@
     price.to = to > from ? to : (above || from);
     renderPrice();
   }
-  function togglePriceUnknown() {
-    price.unknown = !price.unknown;
-    if (price.unknown) price.discuss = false;
-    renderPrice();
-  }
   function togglePriceDiscuss() {
     price.discuss = !price.discuss;
     renderPrice();
@@ -4663,7 +4630,7 @@
   // "240 Kč per hour", "200–240 Kč per hour" or "price by agreement" for
   // the job description.
   function priceSummary() {
-    if (price.unknown) return t('price.summary.unknown');
+    if (price.unit === 'agreement') return t('price.summary.agreement');
     const amount = price.range ? formatKc(price.from) + '–' + formatKc(price.to) : formatKc(price.value);
     return t('price.summary.' + price.unit).replace('{amount}', amount);
   }
