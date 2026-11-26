@@ -52,7 +52,7 @@ window.STRINGS = {
     "removeRange": "Zrušit rozsah",
     "unknown": "Zatím nevím (dohodou)",
     "discussTitle": "Otevřeno diskusi",
-    "discussSub": "Hlídačky berou cenu jako výchozí bod a v odpovědi mohou navrhnout vlastní.",
+    "discussSub": "Hlídačky berou cenu jako výchozí bod a mohou navrhnout vlastní.",
     "summary": { "hour": "{amount} Kč za hodinu", "day": "{amount} Kč za den", "job": "{amount} Kč za celou práci", "unknown": "cenu dohodou" },
     "why": {
       "title": "Proč?",
