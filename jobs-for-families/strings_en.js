@@ -44,11 +44,25 @@
     }
   },
   "price": {
-    "heroTitle": "Fixed per hour or upon agreement?",
-    "inputLabel": "Set up your price",
-    "inputPlaceholder": "e.g. 240 Kč p/hour, 800 Kč p/day...",
-    "averageHint": "Average price in your area is 240 Kč per hour",
-    "placeholderFallback": "240 Kč per hour"
+    "heroTitle": "Is the price set per hour or flexible?",
+    "averageHint": "The average price in your area is CZK 240/hour.",
+    "unitLabel": "How is it priced?",
+    "units": { "hour": "Per hour", "day": "Per visit/day", "job": "For the whole job" },
+    "amountLabel": { "hour": "Your price per hour", "day": "Your price per day", "job": "Your price for the job" },
+    "setRange": "Set up range",
+    "removeRange": "Remove range",
+    "unknown": "I don’t know yet (by agreement)",
+    "discussTitle": "Open to discuss",
+    "discussSub": "Sitters see the price as a starting point and can suggest their own when they reply.",
+    "summary": { "hour": "{amount} Kč per hour", "day": "{amount} Kč per day", "job": "{amount} Kč for the whole job", "unknown": "a price by agreement" },
+    "why": {
+      "title": "Why?",
+      "label": "Set any reason (optional)",
+      "reasons": { "deepCleaning": "deep cleaning", "moreChildren": "more children", "specialCare": "special care", "irregularHours": "irregular hours", "worseConditions": "worse working conditions" },
+      "sentence": "The price is open to discuss because of {reasons}.",
+      "add": "Add to job description",
+      "cancel": "Cancel"
+    }
   },
   "cleaning": {
     "heroTitle": "What needs cleaning?",

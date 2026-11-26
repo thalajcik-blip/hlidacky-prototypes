@@ -901,16 +901,16 @@
     /* Pill bottom sheet (Jobs Figma 3981:60967). The layer covers the
        phone; the sheet slides up from its bottom edge and sizes to its
        content, scrolling the body once it reaches the top. */
-    #pill-modal, #skip-sheet {
+    #pill-modal, #skip-sheet, #why-sheet {
       position: absolute; inset: 0; z-index: 200; overflow: hidden;
       visibility: hidden; transition: visibility 0s linear .38s;
     }
-    #pill-modal.open, #skip-sheet.open { visibility: visible; transition: none; }
+    #pill-modal.open, #skip-sheet.open, #why-sheet.open { visibility: visible; transition: none; }
     .pm-overlay {
       position: absolute; inset: 0; background: rgba(42, 53, 57, .8);
       opacity: 0; transition: opacity .3s ease;
     }
-    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay { opacity: 1; }
+    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay, #why-sheet.open .pm-overlay { opacity: 1; }
     .pm-sheet {
       position: absolute; left: 0; right: 0; bottom: 0;
       display: flex; flex-direction: column; gap: 16px;
@@ -921,7 +921,7 @@
       transform: translateY(100%);
       transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     }
-    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet { transform: translateY(0); }
+    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet, #why-sheet.open .pm-sheet { transform: translateY(0); }
     .pm-sheet.is-dragging { transition: none; }
     .pm-handle {
       display: flex; flex-shrink: 0; justify-content: center; padding: 8px 0;
@@ -1150,6 +1150,70 @@
       font-family: 'soleil', sans-serif;
       text-decoration: underline; padding-bottom: 5px;
     }
+    /* Price step (Jobs Figma 4474:70802) */
+    .price-doodle { position: relative; overflow: hidden; }
+    .price-doodle img { position: absolute; display: block; max-width: none; }
+    .price-doodle__l2 { inset: 17.98% 9.75% 21.17% 13.88%; width: 76.37%; height: 60.85%; }
+    .price-doodle__l3 { inset: 20.52% 15.49% 20.22% 16.17%; width: 68.34%; height: 59.26%; }
+    .price-doodle__l1 { position: absolute; inset: 8.43% 10.68% 11.6% 4.82%; }
+    .price-doodle__l1 img { inset: -1.21% -1.15%; width: 102.3%; height: 102.42%; }
+    .price-body { display: flex; flex-direction: column; gap: 12px; font-family: 'soleil', sans-serif; }
+    .price-label { display: block; flex: none; padding: 8px 2px 0; margin: 0; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; font-variant-numeric: lining-nums tabular-nums; }
+    .price-units { display: flex; flex-direction: column; gap: 4px; margin-top: -4px; padding-bottom: 4px; }
+    .price-unit {
+      display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 12px; text-align: left; cursor: pointer;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 6px; font: inherit;
+      font-size: 16px; font-weight: 450; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539;
+      transition: background .15s, border-color .15s;
+    }
+    .price-unit.is-selected { background: #eff9ef; border-color: #22bf1e; }
+    .price-unit__radio { width: 20px; height: 20px; flex: none; border: 1px solid #bec2ce; border-radius: 50%; background: #fff; transition: border .12s; }
+    .price-unit.is-selected .price-unit__radio { border: 6px solid #0ba825; }
+    .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
+    .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
+    .price-amount__head .price-label { flex: 1; min-width: 0; }
+    .price-range-link { color: #f96073; opacity: .8; font-size: 16px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; }
+    .price-amount.is-unknown .price-range-link { visibility: hidden; }
+    .price-selects { display: flex; align-items: center; gap: 8px; }
+    .price-dash { flex: none; color: #2a3539; font-size: 16px; }
+    .price-amount:not(.is-range) .price-dash,
+    .price-amount:not(.is-range) .price-select + .price-dash + .price-select { display: none; }
+    .price-select { position: relative; flex: 1; min-width: 0; }
+    .price-select select {
+      width: 100%; height: 52px; padding: 0 40px 0 20px; appearance: none; -webkit-appearance: none;
+      border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; outline: none; cursor: pointer;
+      font-family: 'soleil', 'Inter', sans-serif; font-size: 16px; letter-spacing: .2px; color: #2a3539;
+      font-variant-numeric: lining-nums tabular-nums; transition: border-color .15s, box-shadow .15s;
+    }
+    .price-amount.is-range .price-select select { padding-left: 12px; padding-right: 32px; }
+    .price-select select:focus { border-color: #6aafff; box-shadow: 0 0 0 2px #cbdafc; }
+    .price-select i { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); font-size: 16px; color: #f96073; pointer-events: none; }
+    .price-amount.is-range .price-select i { right: 12px; }
+    .price-amount.is-unknown .price-select select { background: #f7f7f7; color: #8b91a3; cursor: default; }
+    .price-unknown { padding: 2px 0; }
+    .price-unknown .check-box { border: 1px solid #bec2ce; background: #fff; }
+    .price-unknown.checked .check-box { background: #0ba825; border-color: #0ba825; }
+    .price-unknown .check-lbl { font-size: 16px; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; }
+    .price-discuss {
+      display: flex; align-items: flex-start; gap: 6px; width: 100%; min-height: 64px; padding: 8px 12px; text-align: left; cursor: pointer;
+      background: #fff; border: 1px solid #e5e5ea; border-radius: 6px; font: inherit; transition: background .15s, border-color .15s;
+    }
+    .price-discuss[aria-checked="true"] { background: #eff9ef; border-color: #22bf1e; }
+    .price-discuss[hidden] { display: none; }
+    .price-switch { position: relative; width: 40px; height: 20px; flex: none; margin-top: 2px; border-radius: 10px; background: #e5e5ea; transition: background .15s; }
+    .price-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(42,53,57,.25); transition: transform .15s; }
+    .price-discuss[aria-checked="true"] .price-switch { background: #0ba825; }
+    .price-discuss[aria-checked="true"] .price-switch::after { transform: translateX(20px); }
+    .price-discuss__copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-left: 2px; }
+    .price-discuss__copy b { font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; }
+    .price-discuss__copy small { font-size: 14px; font-weight: 350; line-height: 1.4; letter-spacing: -0.16px; color: #6c757d; }
+    .why-sheet__title { font-size: 24px; line-height: 1.32; padding-top: 8px; }
+    .why-sheet__body { font-family: 'soleil', sans-serif; }
+    .why-sheet__label { padding: 0 2px; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; }
+    .why-sheet__reasons { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 16px; }
+    .why-reason { padding: 4px 10px; border: 0; border-radius: 64px; background: #edebff; color: #4c24ec; font: inherit; font-size: 14px; line-height: 1.4; cursor: pointer; transition: background .15s, color .15s; }
+    .why-reason:hover { background: #cfc2ff; }
+    .why-reason.is-selected { background: #4c24ec; color: #fff; }
     .pm-footer { display: flex; flex-direction: column; align-items: center; gap: 12px; flex-shrink: 0; padding-top: 8px; }
     .pm-footer .btn-primary { flex: none; width: 100%; gap: 10px; padding: 14px 24px 16px 20px; font-weight: 450; }
     .pm-footer .btn-primary i { width: 16px; font-size: 16px; text-align: center; }
@@ -2476,25 +2540,52 @@
     </div>
   </div>
 
-  <!-- ===== SCREEN 4.5: Price — multi-vertical only ===== -->
+  <!-- ===== SCREEN 4.5: Price (Jobs Figma 4474:70802) =====
+       Before the description in every flow: how the job is priced, the
+       price or a range, or "by agreement". -->
   <div class="screen" id="s-price">
 
     <div class="hero">
-      <div class="hero-illus">
-        <img src="/doodles/price.svg" alt="" style="width:72px;height:72px;display:block;">
+      <div class="hero-illus price-doodle" aria-hidden="true">
+        <img class="price-doodle__l2" src="/jobs-for-families/assets/doodle-money/layer-2.svg" alt="">
+        <img class="price-doodle__l3" src="/jobs-for-families/assets/doodle-money/layer-3.svg" alt="">
+        <span class="price-doodle__l1"><img src="/jobs-for-families/assets/doodle-money/layer-1.svg" alt=""></span>
       </div>
       <h2 class="hero-title" data-i18n="price.heroTitle"></h2>
+      <p class="hero-sub" data-i18n="price.averageHint"></p>
     </div>
 
-    <div class="screen-body">
-      <div class="form-group">
-        <label class="form-label" data-i18n="price.inputLabel"></label>
-        <input type="text" class="form-input" id="price-input" data-i18n-placeholder="price.inputPlaceholder" autocomplete="off">
-        <div class="form-hint">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#7E5EFF" stroke-width="1.2"/><path d="M7 6.5V10M7 4.5V5" stroke="#7E5EFF" stroke-width="1.2" stroke-linecap="round"/></svg>
-          <span data-i18n="price.averageHint"></span>
+    <div class="screen-body price-body">
+      <p class="sec-label price-label" data-i18n="price.unitLabel"></p>
+      <div class="price-units" role="radiogroup" aria-labelledby="price-unit-label">
+        <button type="button" class="price-unit" role="radio" data-unit="hour" onclick="setPriceUnit('hour')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.hour"></span></button>
+        <button type="button" class="price-unit" role="radio" data-unit="day" onclick="setPriceUnit('day')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.day"></span></button>
+        <button type="button" class="price-unit" role="radio" data-unit="job" onclick="setPriceUnit('job')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.job"></span></button>
+      </div>
+
+      <div class="price-amount">
+        <div class="price-amount__head">
+          <label class="price-label" id="price-amount-label" for="price-from"></label>
+          <a class="price-range-link" role="button" tabindex="0" id="price-range-link" onclick="togglePriceRange()"></a>
+        </div>
+        <div class="price-selects">
+          <span class="price-select"><select id="price-from" aria-labelledby="price-amount-label" onchange="onPriceSelect()"></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span>
+          <span class="price-dash" aria-hidden="true">–</span>
+          <span class="price-select"><select id="price-to" aria-labelledby="price-amount-label" onchange="onPriceSelect()"></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span>
+        </div>
+        <div class="check-opt price-unknown" id="price-unknown" role="checkbox" tabindex="0" onclick="togglePriceUnknown()">
+          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="check-lbl" data-i18n="price.unknown"></span>
         </div>
       </div>
+
+      <button type="button" class="price-discuss" id="price-discuss" role="switch" aria-checked="false" onclick="togglePriceDiscuss()">
+        <span class="price-switch" aria-hidden="true"></span>
+        <span class="price-discuss__copy">
+          <b data-i18n="price.discussTitle"></b>
+          <small data-i18n="price.discussSub"></small>
+        </span>
+      </button>
     </div>
 
     <div class="screen-footer">
@@ -3041,6 +3132,25 @@
     </div>
   </div>
 
+  <!-- ===== OPEN TO DISCUSS → WHY? (Jobs Figma 4472:67004) =====
+       Switching "Open to discuss" on asks what makes the price vary; the
+       picked reasons go into the job description. -->
+  <div id="why-sheet" aria-hidden="true">
+    <div class="pm-overlay" onclick="closeWhySheet()"></div>
+    <div class="pm-sheet why-sheet" role="dialog" aria-modal="true" aria-labelledby="why-sheet-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="why-sheet-title" data-i18n="price.why.title"></h2></div>
+      <div class="why-sheet__body">
+        <p class="why-sheet__label" data-i18n="price.why.label"></p>
+        <div class="why-sheet__reasons" id="why-reasons"></div>
+      </div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" onclick="addWhyToDescription()"><i class="fa-solid fa-sparkles" aria-hidden="true"></i><span data-i18n="price.why.add"></span></button>
+        <button class="pm-cancel" type="button" onclick="closeWhySheet()" data-i18n="price.why.cancel"></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SKIPPING WITHOUT PICKING (Jobs Figma 4253:132721) =====
        Leaving a sitter screen after the job is created. -->
   <div id="skip-sheet" aria-hidden="true">
@@ -3179,7 +3289,7 @@
     const cleaningOnly = selectedServices.has('cleaning') && selectedServices.size === 1;
 
     if (tutoringOnly) {
-      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'review', 'phone', 'referral', ].concat(jobCreatedSteps()));
+      return openingSteps.concat(['service', 'location-tutoring', 'subjects', 'frequency', 'price', 'review', 'phone', 'referral', ].concat(jobCreatedSteps()));
     }
 
     const flow = openingSteps.concat(['service', 'location']);
@@ -3192,7 +3302,7 @@
     } else {
       flow.push(petOnly ? 'frequency-pet' : 'frequency');
     }
-    flow.push('review', 'phone', 'referral');
+    flow.push('price', 'review', 'phone', 'referral');
     flow.push.apply(flow, jobCreatedSteps());
     return flow;
   }
@@ -3295,6 +3405,7 @@
     if (id === 'success') { updateSuccessSub(); playSuccessIntro(); }
     if (id === 'picks') renderPicks();
     if (id === 'pricing') renderPricing();
+    if (id === 'price') renderPrice();
 
     if (!oldEl || oldEl === newEl) {
       prepareHeroSVG(newEl);
@@ -3502,8 +3613,7 @@
     document.querySelectorAll('#s-service .selector').forEach(c => c.classList.remove('selected'));
     var reviewText = document.getElementById('review-text');
     if (reviewText) reviewText.value = '';
-    var priceInput = document.getElementById('price-input');
-    if (priceInput) priceInput.value = '';
+    resetPrice();
     document.querySelectorAll('#s-referral .check-opt').forEach(c => c.classList.remove('checked'));
     document.getElementById('referral-other-text').value = '';
     document.getElementById('referral-other-wrap').hidden = true;
@@ -3800,7 +3910,7 @@
     var nextLabel = document.getElementById('review-next-label');
     var ta = document.getElementById('review-text');
     var city = (document.getElementById('location-input').value || 'Prague').trim();
-    var price = (document.getElementById('price-input') && document.getElementById('price-input').value.trim()) || t('price.placeholderFallback');
+    var price = priceSummary();
     document.getElementById('s-review').classList.toggle('review-multi', multi);
 
     if (multi) {
@@ -4379,6 +4489,125 @@
   let pricingPlan = 'three';
 
   // 1500 → "1 500", with a no-break space as Czech prices are written.
+  // Price step (Jobs Figma 4474:70802): per hour, per visit/day or for the
+  // whole job; one price or a range; or "I don't know yet", which drops the
+  // price and Open to discuss. Switching Open to discuss on asks "Why?".
+  const PRICE_OPTIONS = {
+    hour: [150, 180, 200, 220, 240, 260, 280, 300, 350, 400],
+    day: [400, 500, 600, 700, 800, 900, 1000, 1200, 1500],
+    job: [500, 800, 1000, 1200, 1500, 2000, 2500, 3000]
+  };
+  const PRICE_DEFAULTS = { hour: [240, 200, 240], day: [800, 800, 1000], job: [1000, 800, 1000] };
+  const WHY_REASONS = ['deepCleaning', 'moreChildren', 'specialCare', 'irregularHours', 'worseConditions'];
+  const price = { unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] };
+
+  function resetPrice() {
+    Object.assign(price, { unit: 'hour', range: false, value: 240, from: 200, to: 240, unknown: false, discuss: false, reasons: [] });
+  }
+
+  function fillPriceSelect(select, value) {
+    select.innerHTML = PRICE_OPTIONS[price.unit].map(function(n) {
+      return '<option value="' + n + '"' + (n === value ? ' selected' : '') + '>' + formatKc(n) + ' Kč</option>';
+    }).join('');
+  }
+
+  function renderPrice() {
+    document.querySelectorAll('#s-price .price-unit').forEach(function(btn) {
+      const on = btn.dataset.unit === price.unit;
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    const amount = document.querySelector('#s-price .price-amount');
+    amount.classList.toggle('is-range', price.range);
+    amount.classList.toggle('is-unknown', price.unknown);
+    document.getElementById('price-amount-label').textContent = t('price.amountLabel.' + price.unit);
+    document.getElementById('price-range-link').textContent = t(price.range ? 'price.removeRange' : 'price.setRange');
+    const from = document.getElementById('price-from');
+    const to = document.getElementById('price-to');
+    fillPriceSelect(from, price.range ? price.from : price.value);
+    fillPriceSelect(to, price.to);
+    from.disabled = to.disabled = price.unknown;
+    const unknown = document.getElementById('price-unknown');
+    unknown.classList.toggle('checked', price.unknown);
+    unknown.setAttribute('aria-checked', price.unknown ? 'true' : 'false');
+    const discuss = document.getElementById('price-discuss');
+    discuss.hidden = price.unknown;
+    discuss.setAttribute('aria-checked', price.discuss ? 'true' : 'false');
+  }
+
+  function setPriceUnit(unit) {
+    if (unit === price.unit) return;
+    const d = PRICE_DEFAULTS[unit];
+    Object.assign(price, { unit: unit, value: d[0], from: d[1], to: d[2] });
+    renderPrice();
+  }
+  function togglePriceRange() {
+    if (price.unknown) return;
+    price.range = !price.range;
+    renderPrice();
+  }
+  function onPriceSelect() {
+    const from = Number(document.getElementById('price-from').value);
+    if (!price.range) { price.value = from; return; }
+    price.from = from;
+    // A range needs a top above its bottom: lift "to" to the next step.
+    const to = Number(document.getElementById('price-to').value);
+    const above = PRICE_OPTIONS[price.unit].find(function(n) { return n > from; });
+    price.to = to > from ? to : (above || from);
+    renderPrice();
+  }
+  function togglePriceUnknown() {
+    price.unknown = !price.unknown;
+    if (price.unknown) price.discuss = false;
+    renderPrice();
+  }
+  function togglePriceDiscuss() {
+    price.discuss = !price.discuss;
+    renderPrice();
+    if (price.discuss) openWhySheet();
+  }
+
+  // "240 Kč per hour", "200–240 Kč per hour" or "price by agreement" for
+  // the job description.
+  function priceSummary() {
+    if (price.unknown) return t('price.summary.unknown');
+    const amount = price.range ? formatKc(price.from) + '–' + formatKc(price.to) : formatKc(price.value);
+    return t('price.summary.' + price.unit).replace('{amount}', amount);
+  }
+
+  function openWhySheet() {
+    document.getElementById('why-reasons').innerHTML = WHY_REASONS.map(function(key) {
+      const on = price.reasons.indexOf(key) !== -1;
+      return '<button type="button" class="why-reason' + (on ? ' is-selected' : '') + '" aria-pressed="' + on + '" onclick="toggleWhyReason(\'' + key + '\', this)">' + t('price.why.reasons.' + key) + '</button>';
+    }).join('');
+    const layer = document.getElementById('why-sheet');
+    layer.querySelector('.pm-sheet').style.transform = '';
+    layer.classList.add('open');
+    layer.setAttribute('aria-hidden', 'false');
+  }
+  function closeWhySheet() {
+    const layer = document.getElementById('why-sheet');
+    layer.classList.remove('open');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelector('.pm-sheet').style.transform = '';
+  }
+  function toggleWhyReason(key, btn) {
+    const i = price.reasons.indexOf(key);
+    if (i === -1) price.reasons.push(key); else price.reasons.splice(i, 1);
+    btn.classList.toggle('is-selected', i === -1);
+    btn.setAttribute('aria-pressed', i === -1 ? 'true' : 'false');
+  }
+  // The reasons land at the end of the description the review step shows;
+  // its AI draft keeps text that is already there.
+  function addWhyToDescription() {
+    closeWhySheet();
+    if (!price.reasons.length) return;
+    const reasons = price.reasons.map(function(key) { return t('price.why.reasons.' + key); });
+    const sentence = t('price.why.sentence').replace('{reasons}', joinLocalizedList(reasons, t('pricing.and')));
+    const ta = document.getElementById('review-text');
+    ta.value = ta.value.trim() ? ta.value.trim() + ' ' + sentence : sentence;
+  }
+
   function formatKc(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
   const PRICING_REGION_SITTERS = 48;
@@ -5437,6 +5666,7 @@
   }
   setupSheetDrag('pill-modal', closePillModal);
   setupSheetDrag('skip-sheet', closeSkipSheet);
+  setupSheetDrag('why-sheet', closeWhySheet);
 
   // Skipping without picking: leaving a sitter screen once the job exists
   // (close, "I'll decide later", "Not that urgent?") asks first. Keep picking

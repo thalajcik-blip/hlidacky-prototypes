@@ -43,11 +43,25 @@ window.STRINGS = {
     }
   },
   "price": {
-    "heroTitle": "Fixní cena za hodinu, nebo dohodou?",
-    "inputLabel": "Nastavte si cenu",
-    "inputPlaceholder": "např. 240 Kč/hod, 800 Kč/den...",
-    "averageHint": "Průměrná cena ve vaší oblasti je 240 Kč za hodinu",
-    "placeholderFallback": "240 Kč za hodinu"
+    "heroTitle": "Je cena za hodinu, nebo flexibilní?",
+    "averageHint": "Průměrná cena ve vaší oblasti je 240 Kč/hod.",
+    "unitLabel": "Jak je cena stanovená?",
+    "units": { "hour": "Za hodinu", "day": "Za návštěvu/den", "job": "Za celou práci" },
+    "amountLabel": { "hour": "Vaše cena za hodinu", "day": "Vaše cena za den", "job": "Vaše cena za práci" },
+    "setRange": "Nastavit rozsah",
+    "removeRange": "Zrušit rozsah",
+    "unknown": "Zatím nevím (dohodou)",
+    "discussTitle": "Otevřeno diskusi",
+    "discussSub": "Hlídačky berou cenu jako výchozí bod a v odpovědi mohou navrhnout vlastní.",
+    "summary": { "hour": "{amount} Kč za hodinu", "day": "{amount} Kč za den", "job": "{amount} Kč za celou práci", "unknown": "cenu dohodou" },
+    "why": {
+      "title": "Proč?",
+      "label": "Uveďte důvod (nepovinné)",
+      "reasons": { "deepCleaning": "důkladný úklid", "moreChildren": "více dětí", "specialCare": "zvláštní péče", "irregularHours": "nepravidelné hodiny", "worseConditions": "horší pracovní podmínky" },
+      "sentence": "O ceně se dá jednat kvůli těmto důvodům: {reasons}.",
+      "add": "Přidat do popisu inzerátu",
+      "cancel": "Zrušit"
+    }
   },
   "cleaning": {
     "heroTitle": "Co je potřeba uklidit?",
