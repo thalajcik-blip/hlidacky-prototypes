@@ -1198,6 +1198,19 @@
     #s-price.price-v3 .price-body > .price-label,
     #s-price.price-v3.price-anchored .price-toggle { display: none; }
     #s-price.price-v3.price-anchored .price-other-units { display: block; }
+    /* Price step v4 (Jobs Figma 4523:47189): no unit picker above; the
+       unit is an inline dropdown in the label ("Your price per hour ▾"),
+       a native select laid over the link so phones get their picker. */
+    .price-unit-inline { display: none; flex: 1; min-width: 0; align-items: center; gap: 4px; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; padding: 8px 2px 0; }
+    .price-unit-inline__pick { position: relative; display: inline-flex; align-items: center; gap: 2px; color: #f96073; opacity: .8; font-weight: 400; }
+    .price-unit-inline__pick span { text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; }
+    .price-unit-inline__pick i { font-size: 14px; padding: 0 2px; }
+    .price-unit-inline__pick select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+    #s-price.price-v4 .price-body > .price-label,
+    #s-price.price-v4 .price-units,
+    #s-price.price-v4 #price-amount-label { display: none; }
+    #s-price.price-v4 .price-unit-inline { display: flex; }
+    #s-price.price-v4 .price-range-link { color: #6c757d; text-decoration-color: #bec2ce; }
     .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
     .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
     .price-amount__head .price-label { flex: 1; min-width: 0; }
@@ -2642,6 +2655,7 @@
 
       <div class="price-amount" id="price-amount">
         <div class="price-amount__head">
+          <span class="price-unit-inline"><span data-i18n="price.inlineLabel"></span><label class="price-unit-inline__pick"><span id="price-unit-inline-text"></span><i class="fa-regular fa-chevron-down" aria-hidden="true"></i><select id="price-unit-inline" aria-label="Pricing" onchange="setPriceUnit(this.value)"><option value="hour"></option><option value="day"></option><option value="job"></option></select></label></span>
           <label class="price-label" id="price-amount-label" for="price-from"></label>
           <a class="price-range-link" role="button" tabindex="0" id="price-range-link" onclick="togglePriceRange()"></a>
         </div>
@@ -3649,7 +3663,8 @@
   const PRICE_VARIANTS = [
     { key: 'unselected', name: 'Without pre-selection', note: 'Boxed radios with “By agreement” first and nothing preselected; the price input shows once hour, day or job is picked.' },
     { key: 'toggle', name: 'Segmented toggle', note: 'Per hour / per visit / whole job as a toggle, per hour preselected and no “by agreement”.' },
-    { key: 'anchored', name: 'Anchored on per hour', note: 'Opens straight on the hourly price; the per visit / whole job toggle shows only after “Paying per day or for the whole job?”.' }
+    { key: 'anchored', name: 'Anchored on per hour', note: 'Opens straight on the hourly price; the per visit / whole job toggle shows only after “Paying per day or for the whole job?”.' },
+    { key: 'inline', name: 'Unit in the label', note: 'Opens on the hourly price; the unit is a dropdown inside the label (“Your price per hour ▾”), with no separate unit picker.' }
   ];
   const PRICE_VARIANT_KEY = 'jobs-for-families:price-variant';
   let priceVariant = readPick('price', PRICE_VARIANT_KEY, function(key) {
@@ -4638,13 +4653,15 @@
       priceScreen.classList.remove('price-compact');
       priceScreen.querySelector('.screen-body').scrollTop = 0;
     }
+    const v4 = priceVariant === 'inline';
+    priceScreen.classList.toggle('price-v4', v4);
     // v3 is the v2 toggle plus an anchored start that hides it.
     const v3 = priceVariant === 'anchored';
     const v2 = priceVariant === 'toggle' || v3;
     priceScreen.classList.toggle('price-v2', v2);
     priceScreen.classList.toggle('price-v3', v3);
     priceScreen.classList.toggle('price-anchored', v3 && !price.unitsShown);
-    document.getElementById('price-discuss-sub').textContent = t(v2 ? 'price.discussSubV2' : 'price.discussSub');
+    document.getElementById('price-discuss-sub').textContent = t(v2 || v4 ? 'price.discussSubV2' : 'price.discussSub');
     document.querySelectorAll('#s-price .price-unit, #s-price .price-toggle__item').forEach(function(btn) {
       const on = btn.dataset.unit === price.unit;
       btn.classList.toggle('is-selected', on);
@@ -4658,7 +4675,13 @@
     if (noAmount) return;
     amount.classList.toggle('is-range', price.range);
     document.getElementById('price-amount-label').textContent = t('price.amountLabel.' + price.unit);
-    document.getElementById('price-range-link').textContent = t(price.range ? 'price.removeRange' : 'price.setRange');
+    document.getElementById('price-range-link').textContent = t(price.range ? 'price.removeRange' : (v4 ? 'price.addRange' : 'price.setRange'));
+    if (v4) {
+      const inline = document.getElementById('price-unit-inline');
+      Array.prototype.forEach.call(inline.options, function(o) { o.textContent = t('price.inlineUnits.' + o.value); });
+      inline.value = price.unit;
+      document.getElementById('price-unit-inline-text').textContent = t('price.inlineUnits.' + price.unit);
+    }
     const from = document.getElementById('price-from');
     const to = document.getElementById('price-to');
     fillPriceSelect(from, price.range ? price.from : price.value);
