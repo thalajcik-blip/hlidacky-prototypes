@@ -901,16 +901,16 @@
     /* Pill bottom sheet (Jobs Figma 3981:60967). The layer covers the
        phone; the sheet slides up from its bottom edge and sizes to its
        content, scrolling the body once it reaches the top. */
-    #pill-modal, #skip-sheet, #why-sheet {
+    #pill-modal, #skip-sheet, #why-sheet, #unit-sheet {
       position: absolute; inset: 0; z-index: 200; overflow: hidden;
       visibility: hidden; transition: visibility 0s linear .38s;
     }
-    #pill-modal.open, #skip-sheet.open, #why-sheet.open { visibility: visible; transition: none; }
+    #pill-modal.open, #skip-sheet.open, #why-sheet.open, #unit-sheet.open { visibility: visible; transition: none; }
     .pm-overlay {
       position: absolute; inset: 0; background: rgba(42, 53, 57, .8);
       opacity: 0; transition: opacity .3s ease;
     }
-    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay, #why-sheet.open .pm-overlay { opacity: 1; }
+    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay, #why-sheet.open .pm-overlay, #unit-sheet.open .pm-overlay { opacity: 1; }
     .pm-sheet {
       position: absolute; left: 0; right: 0; bottom: 0;
       display: flex; flex-direction: column; gap: 16px;
@@ -921,7 +921,7 @@
       transform: translateY(100%);
       transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     }
-    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet, #why-sheet.open .pm-sheet { transform: translateY(0); }
+    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet, #why-sheet.open .pm-sheet, #unit-sheet.open .pm-sheet { transform: translateY(0); }
     .pm-sheet.is-dragging { transition: none; }
     .pm-handle {
       display: flex; flex-shrink: 0; justify-content: center; padding: 8px 0;
@@ -1192,6 +1192,7 @@
     #s-price.price-v2 .price-toggle { display: flex; }
     /* Price step v3 (Jobs Figma 4504:46109): the v2 toggle, but it opens
        anchored on per hour with the toggle tucked behind a quiet link. */
+    .price-unit-link,
     .price-other-units { display: none; align-self: center; color: #6c757d; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
     #s-price.price-v3 .price-range-link { font-size: 14px; }
     #s-price.price-v3.price-anchored .screen-body { padding-top: 16px; }
@@ -1211,6 +1212,17 @@
     #s-price.price-v4 #price-amount-label { display: none; }
     #s-price.price-v4 .price-unit-inline { display: flex; }
     #s-price.price-v4 .price-range-link { color: #6c757d; text-decoration-color: #bec2ce; }
+    /* Price step v5 (Jobs Figma 4528:53358): opens on the hourly price;
+       a quiet link under it opens a sheet to switch the unit. */
+    #s-price.price-v5 .price-body > .price-label,
+    #s-price.price-v5 .price-units { display: none; }
+    #s-price.price-v5 .price-unit-link { display: block; }
+    #s-price.price-v5 .price-range-link { font-size: 14px; }
+    .unit-sheet__list { display: flex; flex-direction: column; gap: 4px; font-family: 'soleil', sans-serif; }
+    .unit-sheet__opt { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; font: inherit; font-size: 18px; font-weight: 450; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; }
+    .unit-sheet__opt.is-selected { background: #eff9ef; border-color: #22bf1e; }
+    .unit-sheet__radio { width: 24px; height: 24px; flex: none; border: 1px solid #bec2ce; border-radius: 50%; background: #fff; transition: border .12s; }
+    .unit-sheet__opt.is-selected .unit-sheet__radio { border: 7px solid #0ba825; }
     .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
     .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
     .price-amount__head .price-label { flex: 1; min-width: 0; }
@@ -2664,6 +2676,7 @@
           <span class="price-dash" aria-hidden="true">–</span>
           <span class="price-select"><select id="price-to" aria-labelledby="price-amount-label" onchange="onPriceSelect()"></select><i class="fa-regular fa-chevron-down" aria-hidden="true"></i></span>
         </div>
+        <a class="price-unit-link" id="price-unit-link" role="button" tabindex="0" onclick="openUnitSheet()"></a>
       </div>
 
       <button type="button" class="price-discuss" id="price-discuss" role="switch" aria-checked="false" onclick="togglePriceDiscuss()">
@@ -3238,6 +3251,26 @@
     </div>
   </div>
 
+  <!-- ===== PRICE UNIT SHEET (Jobs Figma 4528:53358) =====
+       Price step v5: switch between per hour, per visit/day and the whole
+       job; the pick applies only on the green button. -->
+  <div id="unit-sheet" aria-hidden="true">
+    <div class="pm-overlay" onclick="closeUnitSheet()"></div>
+    <div class="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="unit-sheet-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="unit-sheet-title" data-i18n="price.unitSheet.title"></h2></div>
+      <div class="unit-sheet__list" role="radiogroup" aria-labelledby="unit-sheet-title">
+        <button type="button" class="unit-sheet__opt" role="radio" data-unit="hour" onclick="pickSheetUnit('hour')"><span class="unit-sheet__radio" aria-hidden="true"></span><span data-i18n="price.units.hour"></span></button>
+        <button type="button" class="unit-sheet__opt" role="radio" data-unit="day" onclick="pickSheetUnit('day')"><span class="unit-sheet__radio" aria-hidden="true"></span><span data-i18n="price.units.day"></span></button>
+        <button type="button" class="unit-sheet__opt" role="radio" data-unit="job" onclick="pickSheetUnit('job')"><span class="unit-sheet__radio" aria-hidden="true"></span><span data-i18n="price.units.job"></span></button>
+      </div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" onclick="applySheetUnit()"><span id="unit-sheet-apply"></span></button>
+        <button class="pm-cancel" type="button" onclick="closeUnitSheet()" data-i18n="price.unitSheet.cancel"></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SKIPPING WITHOUT PICKING (Jobs Figma 4253:132721) =====
        Leaving a sitter screen after the job is created. -->
   <div id="skip-sheet" aria-hidden="true">
@@ -3664,7 +3697,8 @@
     { key: 'unselected', name: 'Without pre-selection', note: 'Boxed radios with “By agreement” first and nothing preselected; the price input shows once hour, day or job is picked.' },
     { key: 'toggle', name: 'Segmented toggle', note: 'Per hour / per visit / whole job as a toggle, per hour preselected and no “by agreement”.' },
     { key: 'anchored', name: 'Anchored on per hour', note: 'Opens straight on the hourly price; the per visit / whole job toggle shows only after “Paying per day or for the whole job?”.' },
-    { key: 'inline', name: 'Unit in the label', note: 'Opens on the hourly price; the unit is a dropdown inside the label (“Your price per hour ▾”), with no separate unit picker.' }
+    { key: 'inline', name: 'Unit in the label', note: 'Opens on the hourly price; the unit is a dropdown inside the label (“Your price per hour ▾”), with no separate unit picker.' },
+    { key: 'sheet', name: 'Unit in a bottom sheet', note: 'Opens on the hourly price; a link under it (“Paying per day or for the whole job?”) opens a sheet to switch the unit.' }
   ];
   const PRICE_VARIANT_KEY = 'jobs-for-families:price-variant';
   let priceVariant = readPick('price', PRICE_VARIANT_KEY, function(key) {
@@ -4655,13 +4689,15 @@
     }
     const v4 = priceVariant === 'inline';
     priceScreen.classList.toggle('price-v4', v4);
+    const v5 = priceVariant === 'sheet';
+    priceScreen.classList.toggle('price-v5', v5);
     // v3 is the v2 toggle plus an anchored start that hides it.
     const v3 = priceVariant === 'anchored';
     const v2 = priceVariant === 'toggle' || v3;
     priceScreen.classList.toggle('price-v2', v2);
     priceScreen.classList.toggle('price-v3', v3);
     priceScreen.classList.toggle('price-anchored', v3 && !price.unitsShown);
-    document.getElementById('price-discuss-sub').textContent = t(v2 || v4 ? 'price.discussSubV2' : 'price.discussSub');
+    document.getElementById('price-discuss-sub').textContent = t(v2 || v4 || v5 ? 'price.discussSubV2' : 'price.discussSub');
     document.querySelectorAll('#s-price .price-unit, #s-price .price-toggle__item').forEach(function(btn) {
       const on = btn.dataset.unit === price.unit;
       btn.classList.toggle('is-selected', on);
@@ -4676,6 +4712,7 @@
     amount.classList.toggle('is-range', price.range);
     document.getElementById('price-amount-label').textContent = t('price.amountLabel.' + price.unit);
     document.getElementById('price-range-link').textContent = t(price.range ? 'price.removeRange' : (v4 ? 'price.addRange' : 'price.setRange'));
+    if (v5) document.getElementById('price-unit-link').textContent = t('price.unitLink.' + price.unit);
     if (v4) {
       const inline = document.getElementById('price-unit-inline');
       Array.prototype.forEach.call(inline.options, function(o) { o.textContent = t('price.inlineUnits.' + o.value); });
@@ -4728,6 +4765,33 @@
     const amount = price.range ? formatKc(price.from) + '–' + formatKc(price.to) : formatKc(price.value);
     return t('price.summary.' + price.unit).replace('{amount}', amount);
   }
+
+  // v5: the unit sheet keeps its own pick until "Use price …" applies it.
+  let sheetUnit = 'hour';
+  function renderUnitSheet() {
+    document.querySelectorAll('#unit-sheet .unit-sheet__opt').forEach(function(btn) {
+      const on = btn.dataset.unit === sheetUnit;
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    document.getElementById('unit-sheet-apply').textContent = t('price.unitSheet.use.' + sheetUnit);
+  }
+  function openUnitSheet() {
+    sheetUnit = price.unit || 'hour';
+    renderUnitSheet();
+    const layer = document.getElementById('unit-sheet');
+    layer.querySelector('.pm-sheet').style.transform = '';
+    layer.classList.add('open');
+    layer.setAttribute('aria-hidden', 'false');
+  }
+  function closeUnitSheet() {
+    const layer = document.getElementById('unit-sheet');
+    layer.classList.remove('open');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelector('.pm-sheet').style.transform = '';
+  }
+  function pickSheetUnit(unit) { sheetUnit = unit; renderUnitSheet(); }
+  function applySheetUnit() { closeUnitSheet(); setPriceUnit(sheetUnit); }
 
   function openWhySheet() {
     document.getElementById('why-reasons').innerHTML = WHY_REASONS.map(function(key) {
@@ -5821,6 +5885,7 @@
   setupSheetDrag('pill-modal', closePillModal);
   setupSheetDrag('skip-sheet', closeSkipSheet);
   setupSheetDrag('why-sheet', closeWhySheet);
+  setupSheetDrag('unit-sheet', closeUnitSheet);
 
   // Skipping without picking: leaving a sitter screen once the job exists
   // (close, "I'll decide later", "Not that urgent?") asks first. Keep picking
