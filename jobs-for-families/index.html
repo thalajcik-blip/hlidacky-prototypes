@@ -1190,6 +1190,14 @@
     .price-toggle__item.is-selected { background: #eff9ef; border-color: #d3f2d2; color: #22bf1e; }
     #s-price.price-v2 .price-units { display: none; }
     #s-price.price-v2 .price-toggle { display: flex; }
+    /* Price step v3 (Jobs Figma 4504:46109): the v2 toggle, but it opens
+       anchored on per hour with the toggle tucked behind a quiet link. */
+    .price-other-units { display: none; align-self: center; color: #6c757d; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+    #s-price.price-v3 .price-range-link { font-size: 14px; }
+    #s-price.price-v3.price-anchored .screen-body { padding-top: 16px; }
+    #s-price.price-v3 .price-body > .price-label,
+    #s-price.price-v3.price-anchored .price-toggle { display: none; }
+    #s-price.price-v3.price-anchored .price-other-units { display: block; }
     .price-amount { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
     .price-amount__head { display: flex; align-items: flex-end; gap: 4px; }
     .price-amount__head .price-label { flex: 1; min-width: 0; }
@@ -2624,6 +2632,8 @@
         <button type="button" class="price-unit" role="radio" data-unit="job" onclick="setPriceUnit('job')"><span class="price-unit__radio" aria-hidden="true"></span><span data-i18n="price.units.job"></span></button>
       </div>
 
+      <a class="price-other-units" role="button" tabindex="0" onclick="showPriceUnits()" data-i18n="price.otherUnits"></a>
+
       <div class="price-toggle" role="radiogroup" aria-label="Pricing">
         <button type="button" class="price-toggle__item" role="radio" data-unit="hour" onclick="setPriceUnit('hour')" data-i18n="price.toggleUnits.hour"></button>
         <button type="button" class="price-toggle__item" role="radio" data-unit="day" onclick="setPriceUnit('day')" data-i18n="price.toggleUnits.day"></button>
@@ -3638,7 +3648,8 @@
   // browser and can be preset with ?price=<key>.
   const PRICE_VARIANTS = [
     { key: 'unselected', name: 'Without pre-selection', note: 'Boxed radios with “By agreement” first and nothing preselected; the price input shows once hour, day or job is picked.' },
-    { key: 'toggle', name: 'Segmented toggle', note: 'Per hour / per visit / whole job as a toggle, per hour preselected and no “by agreement”.' }
+    { key: 'toggle', name: 'Segmented toggle', note: 'Per hour / per visit / whole job as a toggle, per hour preselected and no “by agreement”.' },
+    { key: 'anchored', name: 'Anchored on per hour', note: 'Opens straight on the hourly price; the per visit / whole job toggle shows only after “Paying per day or for the whole job?”.' }
   ];
   const PRICE_VARIANT_KEY = 'jobs-for-families:price-variant';
   let priceVariant = readPick('price', PRICE_VARIANT_KEY, function(key) {
@@ -4592,8 +4603,8 @@
   // The boxed radios open with nothing picked (unit null); the toggle has
   // no "by agreement" and opens on per hour.
   function resetPrice() {
-    const unit = priceVariant === 'toggle' ? 'hour' : null;
-    Object.assign(price, { unit: unit, range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [] });
+    const unit = priceVariant === 'unselected' ? null : 'hour';
+    Object.assign(price, { unit: unit, range: false, value: 240, from: 200, to: 240, discuss: false, reasons: [], unitsShown: false });
   }
   resetPrice();
 
@@ -4627,8 +4638,12 @@
       priceScreen.classList.remove('price-compact');
       priceScreen.querySelector('.screen-body').scrollTop = 0;
     }
-    const v2 = priceVariant === 'toggle';
+    // v3 is the v2 toggle plus an anchored start that hides it.
+    const v3 = priceVariant === 'anchored';
+    const v2 = priceVariant === 'toggle' || v3;
     priceScreen.classList.toggle('price-v2', v2);
+    priceScreen.classList.toggle('price-v3', v3);
+    priceScreen.classList.toggle('price-anchored', v3 && !price.unitsShown);
     document.getElementById('price-discuss-sub').textContent = t(v2 ? 'price.discussSubV2' : 'price.discussSub');
     document.querySelectorAll('#s-price .price-unit, #s-price .price-toggle__item').forEach(function(btn) {
       const on = btn.dataset.unit === price.unit;
@@ -4656,6 +4671,10 @@
     price.unit = unit;
     if (unit === 'agreement') price.discuss = false;
     else { const d = PRICE_DEFAULTS[unit]; Object.assign(price, { value: d[0], from: d[1], to: d[2] }); }
+    renderPrice();
+  }
+  function showPriceUnits() {
+    price.unitsShown = true;
     renderPrice();
   }
   function togglePriceRange() {

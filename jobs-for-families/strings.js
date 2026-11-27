@@ -46,6 +46,7 @@ window.STRINGS = {
     "heroTitle": "Kolik chcete zaplatit?",
     "averageHint": "Průměrná cena ve vaší oblasti je 240 Kč/hod.",
     "unitLabel": "Jak je cena stanovená?",
+    "otherUnits": "Platíte za den nebo za celou práci?",
     "units": { "agreement": "Cena dohodou", "hour": "Za hodinu", "day": "Za návštěvu/den", "job": "Za celou práci" },
     "toggleUnits": { "hour": "Za hodinu", "day": "Za den", "job": "Za práci" },
     "amountLabel": { "hour": "Vaše cena za hodinu", "day": "Vaše cena za den", "job": "Vaše cena za práci" },
