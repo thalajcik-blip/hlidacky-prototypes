@@ -224,6 +224,8 @@ window.STRINGS = {
       "today": "Dnes",
       "showMonth": "Zobrazit měsíc",
       "showWeek": "Zobrazit týden",
+      "cancel": "Zrušit",
+      "clear": "Smazat datum",
       "prev": "Předchozí",
       "next": "Další"
     },
@@ -233,6 +235,8 @@ window.STRINGS = {
       "to": "Do",
       "addEnd": "Přidat konec",
       "removeEnd": "Odebrat konec",
+      "cancel": "Zrušit",
+      "clear": "Smazat čas",
       "hours": "Hodiny",
       "minutes": "Minuty"
     }

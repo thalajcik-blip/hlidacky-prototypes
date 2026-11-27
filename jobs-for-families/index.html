@@ -1212,7 +1212,7 @@
     .wd-mday:disabled, .wd-day:disabled { color: #bec2ce; cursor: default; }
     .wd-mday__today { position: absolute; top: -5px; left: 50%; padding: 0 2px; border-radius: 2px; background: #fff; color: #6c757d; font-size: 10px; font-weight: 400; line-height: 1.4; transform: translateX(-50%); }
     .wd-mday.is-weekend .wd-mday__today { background: #ffd5da; color: #f96073; }
-    .wd-view-toggle { display: block; margin: 12px auto 0; border: 0; padding: 0; background: none; color: #f96073; opacity: .8; font: inherit; font-size: 16px; line-height: 1.4; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; cursor: pointer; }
+    .wd-view-toggle { display: block; margin: 12px auto 0; border: 0; padding: 0; background: none; color: #6c757d; opacity: .8; font: inherit; font-size: 16px; line-height: 1.4; text-decoration: underline; text-decoration-color: #bec2ce; text-decoration-thickness: 8%; text-underline-offset: 3px; cursor: pointer; }
     @media (prefers-reduced-motion: reduce) { .wd-day::after, .wd-mday::after { transition: none; } }
     .wt-host { position: relative; display: flex; flex-direction: column; gap: 6px; padding-bottom: 8px; }
     .wt-fields { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid #e5e5ea; border-radius: 4px; }
@@ -1226,7 +1226,18 @@
     .wt-field__text { display: flex; min-width: 0; flex-direction: column; }
     .wt-field__text small { color: #6c757d; font-size: 12px; line-height: 1.4; }
     .wt-field__text > span { font-weight: 450; line-height: 1.2; letter-spacing: .2px; }
-    .wt-end-link { padding: 4px 0; }
+    .wt-end-link { padding: 4px 0; color: #6c757d; }
+    .wt-end-link span { text-decoration-color: #bec2ce; }
+    /* Leaving a sheet: Cancel (grey) keeps what was there; Clear (pink,
+       in the header) removes the date or time already picked (Jobs Figma
+       4540:73655, 4540:75144). */
+    .when-sheet .pm-footer { gap: 16px; }
+    .when-sheet__header { align-items: center; }
+    .when-sheet__header .pm-title { padding-top: 4px; }
+    .when-sheet-cancel, .when-sheet-clear { opacity: .8; font-size: 16px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-thickness: 8%; text-underline-offset: 3px; white-space: nowrap; }
+    .when-sheet-cancel { color: #6c757d; text-decoration-color: #bec2ce; }
+    .when-sheet-clear { flex: none; color: #f96073; text-decoration-color: #ff9ba7; }
+    .when-sheet-cancel[hidden], .when-sheet-clear[hidden] { display: none; }
     .wt-picker { position: absolute; z-index: 8; display: flex; height: 220px; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; box-shadow: 0 24px 40px rgba(42, 53, 57, .2); }
     .wt-picker[hidden] { display: none; }
     .wt-picker__col { display: flex; min-height: 0; flex-direction: column; }
@@ -3299,7 +3310,7 @@
     <div class="pm-overlay" onclick="closeWhenDateSheet()"></div>
     <div class="pm-sheet when-sheet" role="dialog" aria-modal="true" aria-labelledby="when-date-title">
       <div class="pm-handle" aria-hidden="true"><span></span></div>
-      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="when-date-title" data-i18n="when.dateSheet.title"></h2></div>
+      <div class="pm-header when-sheet__header"><h2 class="pm-title why-sheet__title" id="when-date-title" data-i18n="when.dateSheet.title"></h2><a class="when-sheet-clear" role="button" tabindex="0" id="wd-clear" onclick="clearWhenDate()" data-i18n="when.dateSheet.clear"></a></div>
       <div class="wd-cal">
         <div class="wd-nav">
           <button class="wd-nav__btn wd-nav__btn--prev" type="button" onclick="wdStep(-1)"><i class="fa-regular fa-arrow-left" aria-hidden="true"></i></button>
@@ -3312,6 +3323,7 @@
       </div>
       <div class="pm-footer">
         <button class="btn-primary" type="button" id="wd-use" onclick="applyWhenDate()"></button>
+        <a class="when-sheet-cancel" role="button" tabindex="0" onclick="closeWhenDateSheet()" data-i18n="when.dateSheet.cancel"></a>
       </div>
     </div>
   </div>
@@ -3323,7 +3335,7 @@
     <div class="pm-overlay" onclick="closeWhenTimeSheet()"></div>
     <div class="pm-sheet when-sheet" role="dialog" aria-modal="true" aria-labelledby="when-time-title">
       <div class="pm-handle" aria-hidden="true"><span></span></div>
-      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="when-time-title" data-i18n="when.timeSheet.title"></h2></div>
+      <div class="pm-header when-sheet__header"><h2 class="pm-title why-sheet__title" id="when-time-title" data-i18n="when.timeSheet.title"></h2><a class="when-sheet-clear" role="button" tabindex="0" id="wt-clear" onclick="clearWhenTime()" data-i18n="when.timeSheet.clear"></a></div>
       <div class="wt-host" id="wt-host">
         <div class="wt-fields" id="wt-fields">
           <button class="wt-field" type="button" data-wt-field="from" aria-haspopup="listbox" aria-expanded="false">
@@ -3349,6 +3361,7 @@
       </div>
       <div class="pm-footer">
         <button class="btn-primary" type="button" id="wt-use" onclick="applyWhenTime()"></button>
+        <a class="when-sheet-cancel" role="button" tabindex="0" onclick="closeWhenTimeSheet()" data-i18n="when.timeSheet.cancel"></a>
       </div>
     </div>
   </div>
@@ -5194,10 +5207,18 @@
     wdDraft = when.date && !wdBlocked(when.date) ? when.date : wAddDays(wdTodayDate, 2);
     wdAnchor = wdView === 'week' ? wMondayOf(wdDraft) : wMonthOf(wdDraft);
     wdRender();
+    // Clear date only once a date is set.
+    document.getElementById('wd-clear').hidden = !(when.day === 'date' && when.date);
     openWhenLayer('when-date-sheet');
     if (wdView === 'week') wdOpenStripAtToday(wdDraft);
   }
   function closeWhenDateSheet() { closeWhenLayer('when-date-sheet'); }
+  function clearWhenDate() {
+    when.date = null;
+    if (when.day === 'date') when.day = null;
+    closeWhenDateSheet();
+    renderWhen();
+  }
   function applyWhenDate() {
     when.date = wdDraft;
     when.day = 'date';
@@ -5229,11 +5250,8 @@
     const link = document.getElementById('wt-end-link');
     link.querySelector('i').className = 'fa-regular ' + (range ? 'fa-minus' : 'fa-plus');
     link.querySelector('span').textContent = t(range ? 'when.timeSheet.removeEnd' : 'when.timeSheet.addEnd');
-    // "Use Thu 9.9. from 16:00": the date only when one-time has a picked date.
-    const bits = [t('when.use')];
-    if (when.freq === 'onetime' && when.day === 'date' && when.date) bits.push(whenDateLabel(when.date));
-    bits.push(whenTimeLabel(wtDraft));
-    document.getElementById('wt-use').textContent = bits.join(' ');
+    // "Use from 16:00" / "Use 16:00–19:00"
+    document.getElementById('wt-use').textContent = t('when.use') + ' ' + whenTimeLabel(wtDraft);
   }
   function toggleWhenEnd() {
     wtClosePicker();
@@ -5243,11 +5261,18 @@
   function openWhenTimeSheet() {
     wtDraft = Object.assign({}, when.time || WT_DEFAULT);
     renderWhenTime();
+    // Clear time only once a time is set.
+    document.getElementById('wt-clear').hidden = !when.time;
     openWhenLayer('when-time-sheet');
   }
   function closeWhenTimeSheet() {
     wtClosePicker();
     closeWhenLayer('when-time-sheet');
+  }
+  function clearWhenTime() {
+    when.time = null;
+    closeWhenTimeSheet();
+    renderWhen();
   }
   function applyWhenTime() {
     wtCommitPending();

@@ -225,6 +225,8 @@
       "today": "Today",
       "showMonth": "Show monthly view",
       "showWeek": "Show weekly view",
+      "cancel": "Cancel",
+      "clear": "Clear date",
       "prev": "Previous",
       "next": "Next"
     },
@@ -234,6 +236,8 @@
       "to": "To",
       "addEnd": "Add end time",
       "removeEnd": "Remove end time",
+      "cancel": "Cancel",
+      "clear": "Clear time",
       "hours": "Hours",
       "minutes": "Minutes"
     }
