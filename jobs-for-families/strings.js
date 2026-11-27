@@ -131,7 +131,7 @@ window.STRINGS = {
   },
   "frequency": {
     "heroTitle": "Kdy a jak často?",
-    "heroSub": "Hledáte jednorázovou, nebo pravidelnou pomoc?",
+    "heroSub": "Hlídačky tak uvidí, jestli mají čas, když je potřebujete.",
     "sectionLabel": "Jak často potřebujete pomoc?",
     "regularly": "pravidelně",
     "onetime": "jednorázově",
@@ -159,6 +159,83 @@ window.STRINGS = {
     "notsure": "zatím nevím",
     "dateLabelRegular": "Upřesněte datum a čas",
     "longterm": "Hledám dlouhodobou pomoc"
+  },
+  "when": {
+    "howOften": "Jak často potřebujete pomoc?",
+    "freq": {
+      "onetime": "Jednorázově",
+      "regular": "Pravidelně",
+      "notsure": "Zatím nevím"
+    },
+    "notSureInfo": "Nevadí. Napište hlídačkám zhruba, kdy budete pomoc potřebovat, podrobnosti domluvíte později.",
+    "whenLabel": "Kdy?",
+    "pickDate": "Vybrat datum",
+    "tomorrow": "Zítra",
+    "asap": "Co nejdřív",
+    "daysLabel": "Které dny?",
+    "partsLabel": "Které části dne?",
+    "pickTime": "Vybrat čas",
+    "parts": {
+      "morning": "Ráno",
+      "afternoon": "Odpoledne",
+      "evening": "Večer",
+      "night": "V noci"
+    },
+    "addNote": "Přidat poznámku",
+    "noteLabel": "Poznámka",
+    "noteRemove": "Odebrat",
+    "notePlaceholder": "Cokoli dalšího k času, např. vyzvednutí ze školy v 16:00",
+    "use": "Použít",
+    "fromTime": "od {from}",
+    "dowShort": [
+      "ne",
+      "po",
+      "út",
+      "st",
+      "čt",
+      "pá",
+      "so"
+    ],
+    "dowGrid": [
+      "Po",
+      "Út",
+      "St",
+      "Čt",
+      "Pá",
+      "So",
+      "Ne"
+    ],
+    "months": [
+      "Leden",
+      "Únor",
+      "Březen",
+      "Duben",
+      "Květen",
+      "Červen",
+      "Červenec",
+      "Srpen",
+      "Září",
+      "Říjen",
+      "Listopad",
+      "Prosinec"
+    ],
+    "dateSheet": {
+      "title": "Vyberte datum",
+      "today": "Dnes",
+      "showMonth": "Zobrazit měsíc",
+      "showWeek": "Zobrazit týden",
+      "prev": "Předchozí",
+      "next": "Další"
+    },
+    "timeSheet": {
+      "title": "Vyberte čas",
+      "from": "Od",
+      "to": "Do",
+      "addEnd": "Přidat konec",
+      "removeEnd": "Odebrat konec",
+      "hours": "Hodiny",
+      "minutes": "Minuty"
+    }
   },
   "review": {
     "heroTitle": "Nový inzerát",

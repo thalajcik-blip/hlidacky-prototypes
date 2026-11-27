@@ -901,16 +901,16 @@
     /* Pill bottom sheet (Jobs Figma 3981:60967). The layer covers the
        phone; the sheet slides up from its bottom edge and sizes to its
        content, scrolling the body once it reaches the top. */
-    #pill-modal, #skip-sheet, #why-sheet, #unit-sheet {
+    #pill-modal, #skip-sheet, #why-sheet, #unit-sheet, #when-date-sheet, #when-time-sheet {
       position: absolute; inset: 0; z-index: 200; overflow: hidden;
       visibility: hidden; transition: visibility 0s linear .38s;
     }
-    #pill-modal.open, #skip-sheet.open, #why-sheet.open, #unit-sheet.open { visibility: visible; transition: none; }
+    #pill-modal.open, #skip-sheet.open, #why-sheet.open, #unit-sheet.open, #when-date-sheet.open, #when-time-sheet.open { visibility: visible; transition: none; }
     .pm-overlay {
       position: absolute; inset: 0; background: rgba(42, 53, 57, .8);
       opacity: 0; transition: opacity .3s ease;
     }
-    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay, #why-sheet.open .pm-overlay, #unit-sheet.open .pm-overlay { opacity: 1; }
+    #pill-modal.open .pm-overlay, #skip-sheet.open .pm-overlay, #why-sheet.open .pm-overlay, #unit-sheet.open .pm-overlay, #when-date-sheet.open .pm-overlay, #when-time-sheet.open .pm-overlay { opacity: 1; }
     .pm-sheet {
       position: absolute; left: 0; right: 0; bottom: 0;
       display: flex; flex-direction: column; gap: 16px;
@@ -921,7 +921,7 @@
       transform: translateY(100%);
       transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     }
-    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet, #why-sheet.open .pm-sheet, #unit-sheet.open .pm-sheet { transform: translateY(0); }
+    #pill-modal.open .pm-sheet, #skip-sheet.open .pm-sheet, #why-sheet.open .pm-sheet, #unit-sheet.open .pm-sheet, #when-date-sheet.open .pm-sheet, #when-time-sheet.open .pm-sheet { transform: translateY(0); }
     .pm-sheet.is-dragging { transition: none; }
     .pm-handle {
       display: flex; flex-shrink: 0; justify-content: center; padding: 8px 0;
@@ -1150,6 +1150,93 @@
       font-family: 'soleil', sans-serif;
       text-decoration: underline; padding-bottom: 5px;
     }
+    /* When and how often (Jobs Figma 4529:57773) */
+    .when-body { display: flex; flex-direction: column; gap: 12px; font-family: 'soleil', sans-serif; }
+    .when-body [hidden] { display: none !important; }
+    .when-group { display: flex; flex-direction: column; gap: 8px; }
+    .when-label { margin: 0; padding: 8px 2px 0; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; font-variant-numeric: lining-nums tabular-nums; }
+    .when-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .when-chip { display: inline-flex; align-items: center; justify-content: center; padding: 4px 10px; border: 1px solid #e5e5ea; border-radius: 64px; background: #fff; font: inherit; font-size: 14px; font-weight: 400; line-height: 1.4; color: #4a5a61; white-space: nowrap; cursor: pointer; font-variant-numeric: lining-nums tabular-nums; transition: background .15s, border-color .15s, color .15s; }
+    .when-chip:hover { border-color: #bec2ce; }
+    .when-chip.is-selected { background: #eff9ef; border-color: #22bf1e; color: #0ba825; }
+    .when-days .when-chip { width: 40px; height: 40px; padding: 0; }
+    .when-info { display: flex; gap: 8px; align-items: flex-start; padding: 12px 12px 12px 8px; border: 1px solid #e5e5ea; border-radius: 4px; background: #fff; }
+    .when-info i { flex: none; width: 16px; padding-top: 1px; color: #7e5eff; font-size: 13px; text-align: center; }
+    .when-info p { margin: 0; font-size: 12px; font-weight: 300; line-height: 1.32; letter-spacing: -0.16px; color: #4a5a61; }
+    .when-link { display: inline-flex; align-items: center; gap: 2px; align-self: flex-start; color: #f96073; opacity: .8; font-size: 16px; line-height: 1.4; cursor: pointer; }
+    .when-link i { width: 20px; font-size: 14px; text-align: center; }
+    .when-link span { text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+    .when-note { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+    .when-note__head { display: flex; align-items: center; gap: 4px; padding: 0 2px; }
+    .when-note__head label { flex: 1; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; }
+    .when-note__remove { color: #f96073; opacity: .8; font-size: 14px; line-height: 1.4; cursor: pointer; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; }
+    .when-note__text { min-height: 64px; padding: 10px 16px; font-size: 16px; line-height: 1.32; letter-spacing: .2px; resize: vertical; }
+    /* Date and time sheets, ported from /recurrent-bookings/ (wd- date,
+       wt- time). */
+    .when-sheet { border-radius: 12px 12px 0 0; font-family: 'soleil', sans-serif; }
+    .wd-cal { display: flex; flex-direction: column; min-height: 0; overflow-x: hidden; overflow-y: auto; }
+    .wd-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .wd-nav__label { font-size: 16px; font-weight: 450; color: #212529; font-variant-numeric: tabular-nums; }
+    .wd-nav__btn { display: grid; width: 40px; height: 40px; place-items: center; border: 0; padding: 0; background: none; color: #f96073; font-size: 20px; opacity: .8; cursor: pointer; }
+    .wd-nav__btn--prev { margin-left: -10px; }
+    .wd-nav__btn--next { margin-right: -10px; }
+    .wd-nav__btn:hover { opacity: 1; }
+    .wd-week { display: flex; gap: 6px; margin: 0 -20px; padding: 2px 20px 4px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; overflow-anchor: none; }
+    .wd-week::-webkit-scrollbar { display: none; }
+    .wd-week[hidden], .wd-month[hidden] { display: none; }
+    .wd-day { position: relative; display: flex; flex: 0 0 58px; flex-direction: column; align-items: center; height: 82px; padding: 0 0 6px; overflow: hidden; border: 1px solid #bec2ce; border-radius: 4px; background: #fff; color: #2a3539; font: inherit; cursor: pointer; scroll-snap-align: center; transition: background-color .15s ease, border-color .15s ease; }
+    .wd-day__band { align-self: stretch; height: 16px; background: #f7f7f7; color: #e5e5ea; font-size: 10px; line-height: 16px; text-align: center; text-transform: uppercase; }
+    .wd-day__month { margin-top: 3px; font-size: 11px; font-weight: 600; line-height: 1.2; text-transform: uppercase; }
+    .wd-day__num { font-size: 22px; font-weight: 600; line-height: 1.1; font-variant-numeric: lining-nums; }
+    .wd-day__dow { font-size: 11px; line-height: 1.2; }
+    .wd-day.is-today .wd-day__band { background: #fde8eb; color: #f2475c; }
+    .wd-day.is-selected { background: #fdf0f1; }
+    .wd-day.is-selected .wd-day__band { background: #ffd5da; color: transparent; }
+    .wd-day.is-selected.is-today .wd-day__band { background: #f96073; color: #fff; }
+    .wd-day.is-selected.is-today { border-color: #f96073; }
+    .wd-day::after { content: ""; position: absolute; top: 29px; left: 50%; width: 50px; height: 46px; background: url("/jobs-for-families/assets/when/selected-circle-week.svg") center / 50px 46px no-repeat; opacity: 0; pointer-events: none; transform: translateX(-50%) scale(.85); transition: opacity .15s ease, transform .2s cubic-bezier(.2, .8, .2, 1); }
+    .wd-day.is-selected::after { opacity: 1; transform: translateX(-50%) scale(1); }
+    .wd-day:hover:not(.is-selected):not(:disabled) { background: #f5f5f7; }
+    .wd-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px 4px; }
+    .wd-month__dow { padding: 2px 0 2px; color: #6c757d; font-size: 14px; line-height: 2.2; text-align: center; }
+    .wd-mday { position: relative; height: 40px; padding: 0 0 3px; border: 0; border-radius: 8px; background: #fff; color: #212529; font: inherit; font-size: 15px; font-weight: 400; line-height: 1.4; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+    .wd-mday.is-weekend { background: #feecee; }
+    .wd-mday.is-outside { color: #6c757d; font-weight: 300; }
+    .wd-mday.is-today { box-shadow: inset 0 0 0 1px #ffd5da; }
+    .wd-mday.is-today:not(.is-weekend):not(.is-outside) { font-weight: 700; }
+    .wd-mday.is-selected { color: #212529; font-weight: 700; }
+    .wd-mday::after { content: ""; position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; background: url("/jobs-for-families/assets/when/selected-circle.svg") center / 34px 34px no-repeat; opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(.85); transition: opacity .15s ease, transform .2s cubic-bezier(.2, .8, .2, 1); }
+    .wd-mday.is-selected::after { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .wd-mday:hover:not(.is-selected):not(:disabled) { background: #f5f5f7; }
+    .wd-mday.is-weekend:hover:not(.is-selected):not(:disabled) { background: #fde0e4; }
+    .wd-mday:disabled, .wd-day:disabled { color: #bec2ce; cursor: default; }
+    .wd-mday__today { position: absolute; top: -5px; left: 50%; padding: 0 2px; border-radius: 2px; background: #fff; color: #6c757d; font-size: 10px; font-weight: 400; line-height: 1.4; transform: translateX(-50%); }
+    .wd-mday.is-weekend .wd-mday__today { background: #ffd5da; color: #f96073; }
+    .wd-view-toggle { display: block; margin: 12px auto 0; border: 0; padding: 0; background: none; color: #f96073; opacity: .8; font: inherit; font-size: 16px; line-height: 1.4; text-decoration: underline; text-decoration-color: #ff9ba7; text-decoration-thickness: 8%; text-underline-offset: 3px; cursor: pointer; }
+    @media (prefers-reduced-motion: reduce) { .wd-day::after, .wd-mday::after { transition: none; } }
+    .wt-host { position: relative; display: flex; flex-direction: column; gap: 6px; padding-bottom: 8px; }
+    .wt-fields { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid #e5e5ea; border-radius: 4px; }
+    .wt-fields.is-range { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .wt-field { display: flex; align-items: center; gap: 8px; min-width: 0; height: 52px; padding: 0 16px 0 12px; border: 0; border-radius: 4px; background: #fff; color: #2a3539; font: inherit; font-size: 16px; text-align: left; font-variant-numeric: lining-nums tabular-nums; cursor: pointer; }
+    .wt-fields.is-range .wt-field:first-child { border-right: 1px solid #e5e5ea; border-radius: 4px 0 0 4px; }
+    .wt-fields.is-range .wt-field:last-child { border-radius: 0 4px 4px 0; }
+    .wt-field[hidden] { display: none; }
+    .wt-field > i { flex: none; width: 18px; color: #8b91a3; font-size: 18px; text-align: center; }
+    .wt-field.is-open { background: #f5f5f7; }
+    .wt-field__text { display: flex; min-width: 0; flex-direction: column; }
+    .wt-field__text small { color: #6c757d; font-size: 12px; line-height: 1.4; }
+    .wt-field__text > span { font-weight: 450; line-height: 1.2; letter-spacing: .2px; }
+    .wt-end-link { padding: 4px 0; }
+    .wt-picker { position: absolute; z-index: 8; display: flex; height: 220px; overflow: hidden; border: 1px solid #e5e5ea; border-radius: 8px; background: #fff; box-shadow: 0 24px 40px rgba(42, 53, 57, .2); }
+    .wt-picker[hidden] { display: none; }
+    .wt-picker__col { display: flex; min-height: 0; flex-direction: column; }
+    .wt-picker__col--hours { width: 84px; border-right: 1px solid #e5e5ea; }
+    .wt-picker__col--minutes { width: 68px; }
+    .wt-picker__head { flex: none; padding: 6px 8px 4px; background: #e3e9f0; color: #4a5a61; font-size: 12px; line-height: 1.5; text-align: center; text-transform: uppercase; }
+    .wt-picker__list { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; gap: 2px; padding: 4px; overflow-y: auto; overscroll-behavior: contain; }
+    .wt-option { flex: 0 0 32px; border: 0; border-radius: 8px; background: #fff; color: #212529; font: inherit; font-size: 15px; font-variant-numeric: tabular-nums; cursor: pointer; }
+    .wt-option:hover { background: #f5f5f7; }
+    .wt-option[aria-selected="true"] { background: #fde8eb; font-weight: 600; }
     /* Price step (Jobs Figma 4474:70802) */
     .price-doodle { position: relative; overflow: hidden; }
     .price-doodle svg { position: absolute; display: block; max-width: none; }
@@ -1167,20 +1254,14 @@
     .price-label { display: block; flex: none; padding: 8px 2px 0; margin: 0; font-size: 16px; font-weight: 450; line-height: 1.4; color: #2a3539; font-variant-numeric: lining-nums tabular-nums; }
     .price-body > .price-label { padding-top: 0; }
     .price-units { display: flex; flex-direction: column; gap: 4px; margin-top: -4px; padding-bottom: 4px; }
-    #freq-radios { gap: 4px; padding-left: 0; }
-    #freq-radios .radio-lbl { font: inherit; color: inherit; }
-    #freq-radios .radio-opt,
     .price-unit {
       display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 12px; text-align: left; cursor: pointer;
       background: #fff; border: 1px solid #e5e5ea; border-radius: 6px; font: inherit;
       font-size: 16px; font-weight: 450; line-height: 1.5; letter-spacing: -0.16px; color: #2a3539;
       transition: background .15s, border-color .15s;
     }
-    #freq-radios .radio-opt.selected,
     .price-unit.is-selected { background: #eff9ef; border-color: #22bf1e; }
-    #freq-radios .radio-circle,
     .price-unit__radio { width: 20px; height: 20px; flex: none; border: 1px solid #bec2ce; border-radius: 50%; background: #fff; transition: border .12s; }
-    #freq-radios .radio-opt.selected .radio-circle { background: #fff; border: 6px solid #0ba825; }
     .price-unit.is-selected .price-unit__radio { border: 6px solid #0ba825; }
     .price-amount[hidden] { display: none; }
     /* Price step v2 (Jobs Figma 4495:41554): a segmented toggle instead of
@@ -2486,97 +2567,57 @@
       <p class="hero-sub" data-i18n="frequency.heroSub"></p>
     </div>
 
-    <div class="screen-body">
-      <p class="sec-label" id="frequency-section-label" data-i18n="frequency.sectionLabel"></p>
-      <div class="radio-group" id="freq-radios" role="radiogroup" aria-labelledby="frequency-section-label">
-        <button type="button" role="radio" aria-checked="true" class="radio-opt selected" onclick="selectFreq('notsure',this)">
-          <span class="radio-circle" aria-hidden="true"></span>
-          <span class="radio-lbl" data-i18n="frequency.notsure"></span>
-        </button>
-        <button type="button" role="radio" aria-checked="false" class="radio-opt" onclick="selectFreq('regularly',this)">
-          <span class="radio-circle" aria-hidden="true"></span>
-          <span class="radio-lbl" data-i18n="frequency.regularly"></span>
-        </button>
-        <button type="button" role="radio" aria-checked="false" class="radio-opt" onclick="selectFreq('onetime',this)">
-          <span class="radio-circle" aria-hidden="true"></span>
-          <span class="radio-lbl" data-i18n="frequency.onetime"></span>
-        </button>
-      </div>
-
-      <div id="freq-regular" style="display:none; padding-top:8px;">
-        <p class="sec-label" style="display:flex;align-items:center;gap:6px;">
-          <span data-i18n="frequency.dateLabelRegular"></span>
-          <span class="label-optional" data-i18n="frequency.optional"></span>
-        </p>
-        <textarea class="form-textarea" id="freq-textarea" style="margin-top:0;" data-i18n-placeholder="frequency.datePlaceholder"></textarea>
-      </div>
-
-      <div id="freq-onetime" style="display:none; padding-top:8px;">
-        <p class="sec-label" style="display:flex;align-items:center;gap:6px;">
-          <span data-i18n="frequency.dateLabel"></span>
-          <span class="label-optional" data-i18n="frequency.optional"></span>
-          <button id="overnight-toggle" onclick="toggleOvernight()" style="margin-left:auto;background:none;border:none;padding:0;cursor:pointer;line-height:0;flex-shrink:0;" title="Overnight booking">
-            <!-- night icon (shown in day mode) -->
-            <span id="icon-night-wrap"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C11.8281 18.125 13.5508 17.4922 14.8867 16.4375C10.8438 16.332 7.46875 12.957 7.46875 8.84375C7.46875 6.13672 8.875 3.78125 10.9844 2.44531C10.668 2.41016 10.3516 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C10.668 1.25 11.3359 1.32031 12.0039 1.46094C12.3555 1.56641 12.6016 1.84766 12.6367 2.19922C12.6719 2.55078 12.4961 2.90234 12.1797 3.04297C10.0703 4.09766 8.59375 6.3125 8.59375 8.84375C8.59375 12.5703 11.8633 15.5938 15.5898 15.2773C15.9414 15.2773 16.2578 15.4531 16.4336 15.8047C16.5742 16.1211 16.5039 16.5078 16.2227 16.7539C14.6055 18.3008 12.4258 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM15.625 5.75V8H17.875C18.1914 8 18.4375 8.24609 18.4375 8.5625C18.4375 8.87891 18.1914 9.125 17.875 9.125H15.625V11.375C15.625 11.6914 15.3789 11.9375 15.0625 11.9375C14.7461 11.9375 14.5 11.6914 14.5 11.375V9.125H12.25C11.9336 9.125 11.6875 8.87891 11.6875 8.5625C11.6875 8.24609 11.9336 8 12.25 8H14.5V5.75C14.5 5.43359 14.7461 5.1875 15.0625 5.1875C15.3789 5.1875 15.625 5.43359 15.625 5.75Z" fill="#8B91A3"/></svg></span>
-            <!-- day icon (shown in overnight mode) -->
-            <span id="icon-day-wrap" style="display:none;"><svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.375 2.13057L10.6328 3.9587C10.2461 4.20479 9.7539 4.20479 9.36718 3.9587L6.66015 2.13057L5.99218 5.36495C5.88671 5.82198 5.5703 6.13838 5.11327 6.24385L1.8789 6.87667L3.70702 9.61885C3.95312 10.0056 3.95312 10.4978 3.70702 10.8845L1.8789 13.6267L5.11327 14.2595C5.5703 14.3649 5.88671 14.7165 5.99218 15.1384L6.62499 18.3728L8.34765 17.2126C8.31249 17.4235 8.31249 17.6345 8.31249 17.8454C8.31249 18.0915 8.34765 18.3376 8.3828 18.5485L6.90624 19.5329C6.66015 19.7087 6.34374 19.7087 6.1328 19.6032C5.92187 19.4978 5.67577 19.322 5.60546 19.0056L4.90233 15.3845L1.24608 14.6462C0.964835 14.5759 0.753897 14.3649 0.648428 14.1189C0.578116 13.9079 0.54296 13.5915 0.718741 13.3454L2.7578 10.2517L0.718741 7.15792C0.54296 6.91182 0.578116 6.59542 0.648428 6.38448C0.753897 6.17354 0.964835 5.92745 1.24608 5.85713L4.90233 5.15401L5.60546 1.49776C5.67577 1.18135 5.88671 1.00557 6.1328 0.900103C6.34374 0.794634 6.66015 0.794634 6.90624 0.970416L9.99999 3.00948L13.0937 0.970416C13.3398 0.794634 13.6562 0.794634 13.8672 0.900103C14.1133 1.00557 14.3242 1.18135 14.3945 1.49776L15.0976 5.15401L18.7539 5.89229C19.0351 5.92745 19.2461 6.17354 19.3516 6.38448C19.4219 6.59542 19.457 6.91182 19.2812 7.15792L17.2422 10.2517L19 12.9235C18.4375 12.5017 17.7695 12.1853 17.0664 12.0095L16.293 10.8845C16.0469 10.4978 16.0469 10.0056 16.293 9.61885L18.1211 6.87667L14.8867 6.24385C14.4297 6.13838 14.1133 5.82198 14.0078 5.36495L13.375 2.13057ZM9.99999 7.43917C8.45312 7.43917 7.18749 8.70479 7.18749 10.2517C7.18749 11.7985 8.45312 13.0642 9.99999 13.0642C11.5469 13.0642 12.8125 11.7985 12.8125 10.2517C12.8125 8.70479 11.5469 7.43917 9.99999 7.43917ZM9.99999 14.1892C7.8203 14.1892 6.06249 12.4314 6.06249 10.2517C6.06249 8.07198 7.8203 6.31417 9.99999 6.31417C12.1797 6.31417 13.9375 8.07198 13.9375 10.2517C13.9375 12.4314 12.1797 14.1892 9.99999 14.1892ZM16.1875 13.6267C17.5586 13.6267 18.6836 14.611 18.9297 15.8767C18.9648 15.8767 19 15.8767 19 15.8767C20.2305 15.8767 21.25 16.8962 21.25 18.1267C21.25 19.3571 20.2305 20.3767 19 20.3767H12.5312C11.125 20.3767 9.99999 19.2517 9.99999 17.8454C9.99999 16.4392 11.125 15.3142 12.5312 15.3142C12.8828 15.3142 13.2344 15.3845 13.5156 15.5251C13.9023 14.4353 14.957 13.6267 16.1875 13.6267ZM14.5 16.4743C14.5 16.6853 14.3594 16.8962 14.1484 17.0017C13.9375 17.072 13.6914 17.0368 13.5508 16.861C13.2695 16.6149 12.918 16.4392 12.5312 16.4392C11.7578 16.4392 11.125 17.072 11.125 17.8454C11.125 18.6189 11.7578 19.2517 12.5312 19.2517H19C19.6328 19.2517 20.125 18.7595 20.125 18.1267C20.125 17.4939 19.6328 17.0017 19 17.0017C18.8594 17.0017 18.7539 17.0368 18.6133 17.072C18.4375 17.1423 18.2617 17.1071 18.1211 17.0017C17.9453 16.861 17.875 16.6853 17.875 16.5095C17.875 16.4743 17.875 16.4743 17.875 16.4392C17.875 15.4899 17.1367 14.7517 16.1875 14.7517C15.2734 14.7517 14.5 15.4899 14.5 16.4392V16.4743Z" fill="#8B91A3"/></svg></span>
-          </button>
-        </p>
-
-        <!-- Day mode (default) -->
-        <div id="freq-day-mode">
-          <div class="datetime-row">
-            <div class="dt-cell" style="flex:1.2;">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="freq-date"></select>
-            </div>
-            <div class="dt-cell">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="freq-time-from"></select>
-            </div>
-            <div class="dt-cell">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM10.5625 5.1875V10.25C10.5625 10.5664 10.3164 10.8125 10 10.8125H6.0625C5.74609 10.8125 5.5 10.5664 5.5 10.25C5.5 9.93359 5.74609 9.6875 6.0625 9.6875H9.4375V5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="freq-time-to"></select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Overnight mode -->
-        <div id="freq-overnight-mode" style="display:none;">
-          <div class="datetime-row" style="margin-bottom:6px;">
-            <div class="dt-cell" style="flex:0 0 52px; justify-content:center; background:#f7f8fa;">
-              <span style="font-size:13px;color:#8b91a3;font-family:'soleil','Inter',sans-serif;">od</span>
-            </div>
-            <div class="dt-cell" style="flex:1.2;">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="overnight-date-from"></select>
-            </div>
-            <div class="dt-cell">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM9.4375 5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875V9.93359L13.6914 12.043C13.9375 12.2188 14.0078 12.5703 13.832 12.8164C13.6562 13.0625 13.3398 13.1328 13.0586 12.957L9.68359 10.707C9.54297 10.6016 9.4375 10.4258 9.4375 10.25V5.1875Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="overnight-time-from"></select>
-            </div>
-          </div>
-          <div class="datetime-row">
-            <div class="dt-cell" style="flex:0 0 52px; justify-content:center; background:#f7f8fa;">
-              <span style="font-size:13px;color:#8b91a3;font-family:'soleil','Inter',sans-serif;">do</span>
-            </div>
-            <div class="dt-cell" style="flex:1.2;">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.0625 1.25C6.37891 1.25 6.625 1.49609 6.625 1.8125V3.5H13.375V1.8125C13.375 1.49609 13.6211 1.25 13.9375 1.25C14.2539 1.25 14.5 1.49609 14.5 1.8125V3.5H15.625C16.8555 3.5 17.875 4.51953 17.875 5.75V15.875C17.875 17.1055 16.8555 18.125 15.625 18.125H4.375C3.14453 18.125 2.125 17.1055 2.125 15.875V5.75C2.125 4.51953 3.14453 3.5 4.375 3.5H5.5V1.8125C5.5 1.49609 5.74609 1.25 6.0625 1.25ZM15.625 4.625H4.375C3.74219 4.625 3.25 5.11719 3.25 5.75V6.875H16.75V5.75C16.75 5.11719 16.2578 4.625 15.625 4.625ZM16.75 8H13.375V10.25H16.75V8ZM16.75 11.375H13.375V13.625H16.75V11.375ZM16.75 14.75H13.375V17H15.625C16.2578 17 16.75 16.5078 16.75 15.875V14.75ZM12.25 13.625V11.375H7.75V13.625H12.25ZM7.75 14.75V17H12.25V14.75H7.75ZM6.625 13.625V11.375H3.25V13.625H6.625ZM3.25 14.75V15.875C3.25 16.5078 3.74219 17 4.375 17H6.625V14.75H3.25ZM3.25 10.25H6.625V8H3.25V10.25ZM7.75 10.25H12.25V8H7.75V10.25Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="overnight-date-to"></select>
-            </div>
-            <div class="dt-cell">
-              <svg class="dt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.875 10.25C17.875 5.89062 14.3594 2.375 10 2.375C5.64062 2.375 2.125 5.89062 2.125 10.25C2.125 14.6094 5.64062 18.125 10 18.125C14.3594 18.125 17.875 14.6094 17.875 10.25ZM1 10.25C1 5.29297 5.04297 1.25 10 1.25C14.957 1.25 19 5.29297 19 10.25C19 15.207 14.957 19.25 10 19.25C5.04297 19.25 1 15.207 1 10.25ZM10.5625 5.1875V10.25C10.5625 10.5664 10.3164 10.8125 10 10.8125H6.0625C5.74609 10.8125 5.5 10.5664 5.5 10.25C5.5 9.93359 5.74609 9.6875 6.0625 9.6875H9.4375V5.1875C9.4375 4.87109 9.68359 4.625 10 4.625C10.3164 4.625 10.5625 4.87109 10.5625 5.1875Z" fill="#8B91A3"/></svg>
-              <select class="dt-field dt-select" id="overnight-time-to"></select>
-            </div>
-          </div>
+    <!-- When and how often (Jobs Figma 4529:57773): chips for how often,
+         the day and the parts of the day. "Pick a date" and "Pick a time"
+         open the date and time sheets ported from /recurrent-bookings/. -->
+    <div class="screen-body when-body">
+      <div class="when-group">
+        <p class="when-label" id="when-freq-label" data-i18n="when.howOften"></p>
+        <div class="when-chips" role="radiogroup" aria-labelledby="when-freq-label">
+          <button type="button" class="when-chip" role="radio" data-freq="onetime" onclick="setWhenFreq('onetime')" data-i18n="when.freq.onetime"></button>
+          <button type="button" class="when-chip" role="radio" data-freq="regular" onclick="setWhenFreq('regular')" data-i18n="when.freq.regular"></button>
+          <button type="button" class="when-chip" role="radio" data-freq="notsure" onclick="setWhenFreq('notsure')" data-i18n="when.freq.notsure"></button>
         </div>
       </div>
 
-      <div class="mt8">
-        <div class="check-opt" id="longterm" onclick="toggleCheck('longterm')" style="display:none;">
-          <div class="check-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <span class="check-lbl" data-i18n="frequency.longterm"></span>
+      <div class="when-info" id="when-info" hidden>
+        <i class="fa-regular fa-circle-info" aria-hidden="true"></i>
+        <p data-i18n="when.notSureInfo"></p>
+      </div>
+
+      <div class="when-group" id="when-day-group" hidden>
+        <p class="when-label" id="when-day-label" data-i18n="when.whenLabel"></p>
+        <div class="when-chips" role="radiogroup" aria-labelledby="when-day-label">
+          <button type="button" class="when-chip" role="radio" data-day="date" id="when-date-chip" onclick="openWhenDateSheet()"></button>
+          <button type="button" class="when-chip" role="radio" data-day="tomorrow" onclick="setWhenDay('tomorrow')" data-i18n="when.tomorrow"></button>
+          <button type="button" class="when-chip" role="radio" data-day="asap" onclick="setWhenDay('asap')" data-i18n="when.asap"></button>
         </div>
+      </div>
+
+      <div class="when-group" id="when-days-group" hidden>
+        <p class="when-label" id="when-days-label" data-i18n="when.daysLabel"></p>
+        <div class="when-chips when-days" id="when-days" role="group" aria-labelledby="when-days-label"></div>
+      </div>
+
+      <div class="when-group" id="when-parts-group" hidden>
+        <p class="when-label" id="when-parts-label" data-i18n="when.partsLabel"></p>
+        <div class="when-chips" role="group" aria-labelledby="when-parts-label">
+          <button type="button" class="when-chip" id="when-time-chip" onclick="openWhenTimeSheet()"></button>
+          <button type="button" class="when-chip" data-part="morning" aria-pressed="false" onclick="toggleWhenPart('morning')" data-i18n="when.parts.morning"></button>
+          <button type="button" class="when-chip" data-part="afternoon" aria-pressed="false" onclick="toggleWhenPart('afternoon')" data-i18n="when.parts.afternoon"></button>
+          <button type="button" class="when-chip" data-part="evening" aria-pressed="false" onclick="toggleWhenPart('evening')" data-i18n="when.parts.evening"></button>
+          <button type="button" class="when-chip" data-part="night" aria-pressed="false" onclick="toggleWhenPart('night')" data-i18n="when.parts.night"></button>
+        </div>
+      </div>
+
+      <a class="when-link when-add-note" id="when-add-note" role="button" tabindex="0" onclick="showWhenNote()"><i class="fa-regular fa-plus" aria-hidden="true"></i><span data-i18n="when.addNote"></span></a>
+
+      <div class="when-note" id="when-note" hidden>
+        <div class="when-note__head">
+          <label for="when-note-text" data-i18n="when.noteLabel"></label>
+          <a class="when-note__remove" role="button" tabindex="0" onclick="removeWhenNote()" data-i18n="when.noteRemove"></a>
+        </div>
+        <textarea class="form-textarea when-note__text" id="when-note-text" data-i18n-placeholder="when.notePlaceholder"></textarea>
       </div>
     </div>
 
@@ -3251,6 +3292,67 @@
     </div>
   </div>
 
+  <!-- ===== WHEN: DATE SHEET (Jobs Figma 4538:66723) =====
+       The date picker from /recurrent-bookings/: a month, or a weekly
+       strip that scrolls without end. Past days can't be picked. -->
+  <div id="when-date-sheet" aria-hidden="true">
+    <div class="pm-overlay" onclick="closeWhenDateSheet()"></div>
+    <div class="pm-sheet when-sheet" role="dialog" aria-modal="true" aria-labelledby="when-date-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="when-date-title" data-i18n="when.dateSheet.title"></h2></div>
+      <div class="wd-cal">
+        <div class="wd-nav">
+          <button class="wd-nav__btn wd-nav__btn--prev" type="button" onclick="wdStep(-1)"><i class="fa-regular fa-arrow-left" aria-hidden="true"></i></button>
+          <span class="wd-nav__label" id="wd-period" aria-live="polite"></span>
+          <button class="wd-nav__btn wd-nav__btn--next" type="button" onclick="wdStep(1)"><i class="fa-regular fa-arrow-right" aria-hidden="true"></i></button>
+        </div>
+        <div class="wd-week" id="wd-week" role="listbox"></div>
+        <div class="wd-month" id="wd-month" role="grid"></div>
+        <button class="wd-view-toggle" type="button" id="wd-view-toggle" onclick="wdToggleView()"></button>
+      </div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" id="wd-use" onclick="applyWhenDate()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WHEN: TIME SHEET (Jobs Figma 4540:67451) =====
+       A start time, and an optional end; each field opens the hours and
+       minutes picker from /recurrent-bookings/. -->
+  <div id="when-time-sheet" aria-hidden="true">
+    <div class="pm-overlay" onclick="closeWhenTimeSheet()"></div>
+    <div class="pm-sheet when-sheet" role="dialog" aria-modal="true" aria-labelledby="when-time-title">
+      <div class="pm-handle" aria-hidden="true"><span></span></div>
+      <div class="pm-header"><h2 class="pm-title why-sheet__title" id="when-time-title" data-i18n="when.timeSheet.title"></h2></div>
+      <div class="wt-host" id="wt-host">
+        <div class="wt-fields" id="wt-fields">
+          <button class="wt-field" type="button" data-wt-field="from" aria-haspopup="listbox" aria-expanded="false">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            <span class="wt-field__text"><small data-i18n="when.timeSheet.from"></small><span id="wt-from"></span></span>
+          </button>
+          <button class="wt-field" type="button" data-wt-field="to" id="wt-to-field" aria-haspopup="listbox" aria-expanded="false">
+            <i class="fa-regular fa-clock-nine" aria-hidden="true"></i>
+            <span class="wt-field__text"><small data-i18n="when.timeSheet.to"></small><span id="wt-to"></span></span>
+          </button>
+        </div>
+        <a class="when-link wt-end-link" id="wt-end-link" role="button" tabindex="0" onclick="toggleWhenEnd()"><i class="fa-regular fa-plus" aria-hidden="true"></i><span></span></a>
+        <div class="wt-picker" id="wt-picker" role="dialog" hidden>
+          <div class="wt-picker__col wt-picker__col--hours">
+            <div class="wt-picker__head" data-i18n="when.timeSheet.hours"></div>
+            <div class="wt-picker__list" role="listbox" id="wt-hours"></div>
+          </div>
+          <div class="wt-picker__col wt-picker__col--minutes">
+            <div class="wt-picker__head" data-i18n="when.timeSheet.minutes"></div>
+            <div class="wt-picker__list" role="listbox" id="wt-minutes"></div>
+          </div>
+        </div>
+      </div>
+      <div class="pm-footer">
+        <button class="btn-primary" type="button" id="wt-use" onclick="applyWhenTime()"></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== PRICE UNIT SHEET (Jobs Figma 4528:53358) =====
        Price step v5: switch between per hour, per visit/day and the whole
        job; the pick applies only on the green button. -->
@@ -3530,6 +3632,7 @@
     if (id === 'picks') renderPicks();
     if (id === 'pricing') renderPricing();
     if (id === 'price') renderPrice();
+    if (id === 'frequency') renderWhen();
 
     if (!oldEl || oldEl === newEl) {
       prepareHeroSVG(newEl);
@@ -3767,6 +3870,7 @@
     var reviewText = document.getElementById('review-text');
     if (reviewText) reviewText.value = '';
     resetPrice();
+    resetWhen();
     document.querySelectorAll('#s-referral .check-opt').forEach(c => c.classList.remove('checked'));
     document.getElementById('referral-other-text').value = '';
     document.getElementById('referral-other-wrap').hidden = true;
@@ -3980,18 +4084,6 @@
     card.classList.add('selected');
     const radio = card.querySelector('.sel-radio');
     if (radio) radio.innerHTML = '<div class="sel-dot"></div>';
-  }
-
-  function selectFreq(val, el) {
-    document.querySelectorAll('#freq-radios .radio-opt').forEach(r => {
-      r.classList.remove('selected');
-      r.setAttribute('aria-checked', 'false');
-    });
-    el.classList.add('selected');
-    el.setAttribute('aria-checked', 'true');
-    document.getElementById('freq-regular').style.display = val === 'regularly' ? '' : 'none';
-    document.getElementById('freq-onetime').style.display = val === 'onetime' ? '' : 'none';
-    document.getElementById('longterm').style.display = (val === 'notsure' || val === 'onetime') ? 'none' : '';
   }
 
   function toggleDay(btn) { btn.classList.toggle('selected'); }
@@ -4765,6 +4857,498 @@
     const amount = price.range ? formatKc(price.from) + '–' + formatKc(price.to) : formatKc(price.value);
     return t('price.summary.' + price.unit).replace('{amount}', amount);
   }
+
+  // ============================================================
+  // When and how often (Jobs Figma 4529:57773)
+  // One-time asks for the day, regularly for the weekdays, and both for
+  // the parts of the day; not sure only for the parts. An exact time
+  // ("Pick a time") and the parts of the day exclude each other: picking
+  // one clears the other, so "16:00–19:00 + Morning" can't happen.
+  // ============================================================
+  const when = { freq: null, day: null, date: null, days: [], parts: [], time: null, note: false };
+  function resetWhen() {
+    Object.assign(when, { freq: null, day: null, date: null, days: [], parts: [], time: null, note: false });
+    const note = document.getElementById('when-note-text');
+    if (note) note.value = '';
+  }
+
+  const wDay = function(y, m, d) { return new Date(y, m, d); };
+  const wAddDays = function(d, n) { return wDay(d.getFullYear(), d.getMonth(), d.getDate() + n); };
+  const wSameDay = function(a, b) { return !!a && !!b && a.getTime() === b.getTime(); };
+  const wMondayOf = function(d) { return wAddDays(d, -((d.getDay() + 6) % 7)); };
+  const wMonthOf = function(d) { return wDay(d.getFullYear(), d.getMonth(), 1); };
+  const wPad = function(n) { return String(n).padStart(2, '0'); };
+  const wToMinutes = function(time) { const p = time.split(':').map(Number); return p[0] * 60 + p[1]; };
+  const wFromMinutes = function(n) { const v = ((n % 1440) + 1440) % 1440; return wPad(Math.floor(v / 60)) + ':' + wPad(v % 60); };
+  function wToday() { const n = new Date(); return wDay(n.getFullYear(), n.getMonth(), n.getDate()); }
+  // "Thu 9.9." / "čt 9.9."
+  function whenDateLabel(d) { return t('when.dowShort')[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.'; }
+  // "16:00–19:00" or "from 16:00"
+  function whenTimeLabel(time) {
+    return time.to ? time.from + '–' + time.to : t('when.fromTime').replace('{from}', time.from);
+  }
+
+  function renderWhen() {
+    const screen = document.getElementById('s-frequency');
+    screen.querySelectorAll('[data-freq]').forEach(function(btn) {
+      const on = btn.dataset.freq === when.freq;
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    document.getElementById('when-info').hidden = when.freq !== 'notsure';
+    document.getElementById('when-day-group').hidden = when.freq !== 'onetime';
+    document.getElementById('when-days-group').hidden = when.freq !== 'regular';
+    document.getElementById('when-parts-group').hidden = !when.freq;
+
+    screen.querySelectorAll('[data-day]').forEach(function(btn) {
+      const on = btn.dataset.day === when.day;
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    document.getElementById('when-date-chip').textContent = when.day === 'date' && when.date ? whenDateLabel(when.date) : t('when.pickDate');
+
+    // Weekdays, Monday first; stored as Date.getDay() numbers.
+    document.getElementById('when-days').innerHTML = t('when.dowGrid').map(function(name, i) {
+      const dow = (i + 1) % 7;
+      const on = when.days.indexOf(dow) !== -1;
+      return '<button type="button" class="when-chip' + (on ? ' is-selected' : '') + '" aria-pressed="' + on + '" onclick="toggleWhenWeekday(' + dow + ')">' + name + '</button>';
+    }).join('');
+
+    const timeChip = document.getElementById('when-time-chip');
+    timeChip.hidden = when.freq === 'notsure';
+    timeChip.textContent = when.time ? whenTimeLabel(when.time) : t('when.pickTime');
+    timeChip.classList.toggle('is-selected', !!when.time);
+    screen.querySelectorAll('[data-part]').forEach(function(btn) {
+      const on = when.parts.indexOf(btn.dataset.part) !== -1;
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    document.getElementById('when-add-note').hidden = when.note;
+    document.getElementById('when-note').hidden = !when.note;
+  }
+
+  function setWhenFreq(freq) {
+    when.freq = freq;
+    // Not sure has no exact time.
+    if (freq === 'notsure') when.time = null;
+    renderWhen();
+  }
+  function setWhenDay(day) {
+    when.day = when.day === day ? null : day;
+    renderWhen();
+  }
+  function toggleWhenWeekday(dow) {
+    const i = when.days.indexOf(dow);
+    if (i === -1) when.days.push(dow); else when.days.splice(i, 1);
+    renderWhen();
+  }
+  function toggleWhenPart(part) {
+    const i = when.parts.indexOf(part);
+    if (i === -1) when.parts.push(part); else when.parts.splice(i, 1);
+    when.time = null;
+    renderWhen();
+  }
+  function showWhenNote() {
+    when.note = true;
+    renderWhen();
+    document.getElementById('when-note-text').focus();
+  }
+  function removeWhenNote() {
+    when.note = false;
+    document.getElementById('when-note-text').value = '';
+    renderWhen();
+  }
+
+  function openWhenLayer(id) {
+    const layer = document.getElementById(id);
+    layer.querySelector('.pm-sheet').style.transform = '';
+    layer.classList.add('open');
+    layer.setAttribute('aria-hidden', 'false');
+  }
+  function closeWhenLayer(id) {
+    const layer = document.getElementById(id);
+    layer.classList.remove('open');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.querySelector('.pm-sheet').style.transform = '';
+  }
+
+  // ---------- date sheet ----------
+  // The date picker from /recurrent-bookings/: a month, or a weekly strip
+  // rendered WD_STRIP_WEEKS either side of a week and grown whenever the
+  // scroll gets within WD_EDGE_WEEKS of an end. The view used last is
+  // remembered; Figma opens on the month.
+  const WD_VIEW_KEY = 'jobs-for-families:when-date-view';
+  const WD_STRIP_WEEKS = 8;
+  const WD_EDGE_WEEKS = 2;
+  const WD_STRIP_PEEK = 30;
+  let wdView = 'month';
+  try { if (localStorage.getItem(WD_VIEW_KEY) === 'week') wdView = 'week'; } catch (e) {}
+  let wdTodayDate = wToday();
+  let wdDraft = null;
+  let wdAnchor = null; // Monday of the shown week, or 1st of the shown month
+  let wdStripStart = null;
+  let wdStripEnd = null;
+  let wdNavLock = null;
+  const wdWeekEl = document.getElementById('wd-week');
+  const wdMonthEl = document.getElementById('wd-month');
+  const wdPeriodEl = document.getElementById('wd-period');
+
+  const wdBlocked = function(d) { return d < wdTodayDate; };
+
+  function wdPeriodLabel() {
+    const months = t('when.months');
+    if (wdView === 'month') return months[wdAnchor.getMonth()] + ' ' + wdAnchor.getFullYear();
+    const end = wAddDays(wdAnchor, 6);
+    if (wdAnchor.getMonth() === end.getMonth()) return months[wdAnchor.getMonth()] + ' ' + wdAnchor.getDate() + '–' + end.getDate();
+    return months[wdAnchor.getMonth()].slice(0, 3) + ' ' + wdAnchor.getDate() + ' – ' + months[end.getMonth()].slice(0, 3) + ' ' + end.getDate();
+  }
+
+  function wdDayButton(d, cls) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = cls;
+    btn.classList.toggle('is-today', wSameDay(d, wdTodayDate));
+    btn.classList.toggle('is-selected', wSameDay(d, wdDraft));
+    btn.disabled = wdBlocked(d);
+    btn.setAttribute('aria-label', whenDateLabel(d));
+    btn.setAttribute('aria-pressed', String(wSameDay(d, wdDraft)));
+    btn.dataset.time = String(d.getTime());
+    btn.addEventListener('click', function() { wdPick(d); });
+    return btn;
+  }
+
+  function wdDayCard(d) {
+    const btn = wdDayButton(d, 'wd-day');
+    const today = wSameDay(d, wdTodayDate);
+    btn.innerHTML = '<span class="wd-day__band">' + (today ? t('when.dateSheet.today') : '–––') + '</span>'
+      + '<span class="wd-day__month">' + t('when.months')[d.getMonth()].slice(0, 3) + '</span>'
+      + '<span class="wd-day__num">' + d.getDate() + '</span>'
+      + '<span class="wd-day__dow">' + t('when.dowShort')[d.getDay()] + '</span>';
+    return btn;
+  }
+  function wdDayCards(from, to) {
+    const cards = [];
+    for (let d = from; d <= to; d = wAddDays(d, 1)) cards.push(wdDayCard(d));
+    return cards;
+  }
+  function wdRenderWeek() {
+    wdStripStart = wAddDays(wdAnchor, -7 * WD_STRIP_WEEKS);
+    wdStripEnd = wAddDays(wdAnchor, 7 * WD_STRIP_WEEKS + 6);
+    wdWeekEl.replaceChildren.apply(wdWeekEl, wdDayCards(wdStripStart, wdStripEnd));
+  }
+  const wdInStrip = function(d) { return !!wdStripStart && d >= wdStripStart && d <= wdStripEnd; };
+  function wdCardStep() {
+    const first = wdWeekEl.firstElementChild;
+    return first ? first.offsetWidth + parseFloat(getComputedStyle(wdWeekEl).columnGap || 0) : 64;
+  }
+  // Prepending shifts every card right, so the scroll position is set
+  // absolutely to keep the old first card in place.
+  function wdExtendStrip() {
+    const edge = wdCardStep() * 7 * WD_EDGE_WEEKS;
+    if (wdWeekEl.scrollLeft < edge) {
+      const from = wAddDays(wdStripStart, -7 * WD_STRIP_WEEKS);
+      const ref = wdWeekEl.firstElementChild;
+      const onScreen = ref.offsetLeft - wdWeekEl.scrollLeft;
+      wdWeekEl.prepend.apply(wdWeekEl, wdDayCards(from, wAddDays(wdStripStart, -1)));
+      wdStripStart = from;
+      wdWeekEl.scrollLeft = ref.offsetLeft - onScreen;
+    }
+    if (wdWeekEl.scrollLeft + wdWeekEl.clientWidth > wdWeekEl.scrollWidth - edge) {
+      const to = wAddDays(wdStripEnd, 7 * WD_STRIP_WEEKS);
+      wdWeekEl.append.apply(wdWeekEl, wdDayCards(wAddDays(wdStripEnd, 1), to));
+      wdStripEnd = to;
+    }
+  }
+  function wdCentreDay() {
+    const mid = wdWeekEl.scrollLeft + wdWeekEl.clientWidth / 2;
+    const step = wdCardStep();
+    const first = wdWeekEl.firstElementChild;
+    if (!first) return wdAnchor;
+    const firstLeft = first.offsetLeft - wdWeekEl.offsetLeft;
+    const index = Math.max(0, Math.floor((mid - firstLeft + (step - first.offsetWidth) / 2) / step));
+    return wAddDays(wdStripStart, index);
+  }
+  function wdSyncWeekLabel() {
+    const monday = wMondayOf(wdCentreDay());
+    if (wSameDay(monday, wdAnchor)) return;
+    wdAnchor = monday;
+    wdPeriodEl.textContent = wdPeriodLabel();
+  }
+  function wdScrollStripTo(d, opts) {
+    const centreOn = (opts && opts.centreOn) || d;
+    let smooth = !opts || opts.smooth !== false;
+    if (!wdInStrip(wAddDays(d, -7 * WD_EDGE_WEEKS)) || !wdInStrip(wAddDays(d, 7 * WD_EDGE_WEEKS))) {
+      wdAnchor = wMondayOf(d);
+      wdRenderWeek();
+      smooth = false;
+    }
+    wdAnchor = wMondayOf(d);
+    wdPeriodEl.textContent = wdPeriodLabel();
+    const target = wdWeekEl.querySelector('[data-time="' + centreOn.getTime() + '"]');
+    if (!target) return;
+    const left = target.offsetLeft - wdWeekEl.offsetLeft - (wdWeekEl.clientWidth - target.offsetWidth) / 2;
+    if (Math.abs(wdWeekEl.scrollLeft - left) < 1) return;
+    clearTimeout(wdNavLock);
+    wdNavLock = setTimeout(function() { wdNavLock = null; }, 700);
+    wdWeekEl.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' });
+  }
+  // Opening position: today is the first whole card, with a sliver of
+  // yesterday peeking in; falls back to centring the picked day when that
+  // would leave it off screen.
+  function wdOpenStripAtToday(d) {
+    wdScrollStripTo(d, { smooth: false });
+    const first = wdWeekEl.querySelector('[data-time="' + wdTodayDate.getTime() + '"]');
+    const picked = wdWeekEl.querySelector('[data-time="' + d.getTime() + '"]');
+    if (!first || !picked || d < wdTodayDate) return;
+    const left = first.offsetLeft - wdWeekEl.offsetLeft - WD_STRIP_PEEK;
+    const pickedRight = picked.offsetLeft - wdWeekEl.offsetLeft + picked.offsetWidth - left;
+    if (pickedRight > wdWeekEl.clientWidth) return;
+    wdWeekEl.scrollLeft = left;
+    wdAnchor = wMondayOf(wdCentreDay());
+    wdPeriodEl.textContent = wdPeriodLabel();
+  }
+  wdWeekEl.addEventListener('scroll', function() {
+    if (wdView !== 'week' || wdWeekEl.hidden) return;
+    wdExtendStrip();
+    if (wdNavLock) {
+      clearTimeout(wdNavLock);
+      wdNavLock = setTimeout(function() { wdNavLock = null; wdSyncWeekLabel(); }, 150);
+      return;
+    }
+    wdSyncWeekLabel();
+  }, { passive: true });
+
+  function wdRenderMonth() {
+    const cells = t('when.dowGrid').map(function(name) {
+      const el = document.createElement('span');
+      el.className = 'wd-month__dow';
+      el.textContent = name;
+      el.setAttribute('aria-hidden', 'true');
+      return el;
+    });
+    const first = wMondayOf(wdAnchor);
+    const last = wAddDays(wMondayOf(wDay(wdAnchor.getFullYear(), wdAnchor.getMonth() + 1, 0)), 6);
+    for (let d = first; d <= last; d = wAddDays(d, 1)) {
+      const btn = wdDayButton(d, 'wd-mday');
+      if (wSameDay(d, wdTodayDate)) btn.innerHTML = '<span class="wd-mday__today">' + t('when.dateSheet.today') + '</span>' + d.getDate();
+      else btn.textContent = d.getDate();
+      btn.classList.toggle('is-weekend', d.getDay() === 0 || d.getDay() === 6);
+      btn.classList.toggle('is-outside', d.getMonth() !== wdAnchor.getMonth());
+      cells.push(btn);
+    }
+    wdMonthEl.replaceChildren.apply(wdMonthEl, cells);
+  }
+
+  function wdUseLabel() { return t('when.use') + ' ' + whenDateLabel(wdDraft); }
+  function wdRender() {
+    wdPeriodEl.textContent = wdPeriodLabel();
+    wdWeekEl.hidden = wdView !== 'week';
+    wdMonthEl.hidden = wdView !== 'month';
+    if (wdView === 'week') wdRenderWeek(); else wdRenderMonth();
+    document.querySelector('.wd-nav__btn--prev').setAttribute('aria-label', t('when.dateSheet.prev'));
+    document.querySelector('.wd-nav__btn--next').setAttribute('aria-label', t('when.dateSheet.next'));
+    document.getElementById('wd-view-toggle').textContent = t(wdView === 'week' ? 'when.dateSheet.showMonth' : 'when.dateSheet.showWeek');
+    document.getElementById('wd-use').textContent = wdUseLabel();
+  }
+  function wdUpdateSelection() {
+    document.querySelectorAll('#when-date-sheet [data-time]').forEach(function(btn) {
+      const on = btn.dataset.time === String(wdDraft.getTime());
+      btn.classList.toggle('is-selected', on);
+      btn.setAttribute('aria-pressed', String(on));
+    });
+    document.getElementById('wd-use').textContent = wdUseLabel();
+  }
+  function wdPick(d) {
+    if (wdBlocked(d)) return;
+    wdDraft = d;
+    if (wdView === 'week') {
+      wdUpdateSelection();
+      wdScrollStripTo(d);
+    } else if (d.getMonth() !== wdAnchor.getMonth() || d.getFullYear() !== wdAnchor.getFullYear()) {
+      wdAnchor = wMonthOf(d);
+      wdRender();
+    } else {
+      wdUpdateSelection();
+    }
+  }
+  function wdStep(dir) {
+    if (wdView === 'week') {
+      const monday = wAddDays(wdAnchor, 7 * dir);
+      wdScrollStripTo(monday, { centreOn: wAddDays(monday, 3) });
+      return;
+    }
+    wdAnchor = wDay(wdAnchor.getFullYear(), wdAnchor.getMonth() + dir, 1);
+    wdRender();
+  }
+  function wdToggleView() {
+    wdView = wdView === 'week' ? 'month' : 'week';
+    try { localStorage.setItem(WD_VIEW_KEY, wdView); } catch (e) {}
+    wdAnchor = wdView === 'week' ? wMondayOf(wdDraft) : wMonthOf(wdDraft);
+    wdRender();
+    if (wdView === 'week') wdOpenStripAtToday(wdDraft);
+  }
+
+  function openWhenDateSheet() {
+    wdTodayDate = wToday();
+    wdDraft = when.date && !wdBlocked(when.date) ? when.date : wAddDays(wdTodayDate, 2);
+    wdAnchor = wdView === 'week' ? wMondayOf(wdDraft) : wMonthOf(wdDraft);
+    wdRender();
+    openWhenLayer('when-date-sheet');
+    if (wdView === 'week') wdOpenStripAtToday(wdDraft);
+  }
+  function closeWhenDateSheet() { closeWhenLayer('when-date-sheet'); }
+  function applyWhenDate() {
+    when.date = wdDraft;
+    when.day = 'date';
+    closeWhenDateSheet();
+    renderWhen();
+  }
+
+  // ---------- time sheet ----------
+  // A start time and an optional end. Each field opens the hours and
+  // quarter-hour minutes picker from /recurrent-bookings/: tap an hour,
+  // then a minute; tapping outside applies an hour picked on its own.
+  const WT_MINUTES = [0, 15, 30, 45];
+  const WT_DEFAULT = { from: '16:00', to: null };
+  const WT_END_GAP = 180; // a new end time starts three hours after the start
+  let wtDraft = Object.assign({}, WT_DEFAULT);
+  let wtTarget = null;
+  let wtField = null;
+  let wtPending = null;
+  const wtPicker = document.getElementById('wt-picker');
+  const wtHoursEl = document.getElementById('wt-hours');
+  const wtMinutesEl = document.getElementById('wt-minutes');
+
+  function renderWhenTime() {
+    const range = !!wtDraft.to;
+    document.getElementById('wt-fields').classList.toggle('is-range', range);
+    document.getElementById('wt-to-field').hidden = !range;
+    document.getElementById('wt-from').textContent = wtDraft.from;
+    document.getElementById('wt-to').textContent = wtDraft.to || '';
+    const link = document.getElementById('wt-end-link');
+    link.querySelector('i').className = 'fa-regular ' + (range ? 'fa-minus' : 'fa-plus');
+    link.querySelector('span').textContent = t(range ? 'when.timeSheet.removeEnd' : 'when.timeSheet.addEnd');
+    // "Use Thu 9.9. from 16:00": the date only when one-time has a picked date.
+    const bits = [t('when.use')];
+    if (when.freq === 'onetime' && when.day === 'date' && when.date) bits.push(whenDateLabel(when.date));
+    bits.push(whenTimeLabel(wtDraft));
+    document.getElementById('wt-use').textContent = bits.join(' ');
+  }
+  function toggleWhenEnd() {
+    wtClosePicker();
+    wtDraft.to = wtDraft.to ? null : wFromMinutes(wToMinutes(wtDraft.from) + WT_END_GAP);
+    renderWhenTime();
+  }
+  function openWhenTimeSheet() {
+    wtDraft = Object.assign({}, when.time || WT_DEFAULT);
+    renderWhenTime();
+    openWhenLayer('when-time-sheet');
+  }
+  function closeWhenTimeSheet() {
+    wtClosePicker();
+    closeWhenLayer('when-time-sheet');
+  }
+  function applyWhenTime() {
+    wtCommitPending();
+    when.time = Object.assign({}, wtDraft);
+    when.parts = [];
+    closeWhenTimeSheet();
+    renderWhen();
+  }
+
+  function wtOption(label, value, selected) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'wt-option';
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-selected', String(selected));
+    btn.dataset.value = String(value);
+    btn.textContent = label;
+    return btn;
+  }
+  function wtRenderPicker() {
+    const parts = wtDraft[wtTarget].split(':').map(Number);
+    const hour = wtPending === null ? parts[0] : wtPending;
+    // The minutes always show a selection: the current one, rounded down
+    // to the quarter hour.
+    const minute = WT_MINUTES.filter(function(m) { return m <= parts[1]; }).pop() || 0;
+    wtHoursEl.replaceChildren.apply(wtHoursEl, Array.from({ length: 24 }, function(_, i) { return wtOption(wPad(i), i, i === hour); }));
+    wtMinutesEl.replaceChildren.apply(wtMinutesEl, WT_MINUTES.map(function(m) { return wtOption(wPad(m), m, m === minute); }));
+  }
+  // Below the field, or above it when the phone has no room below.
+  function wtPlacePicker() {
+    const box = wtPicker.parentElement.getBoundingClientRect();
+    const field = wtField.getBoundingClientRect();
+    const frame = document.getElementById('when-time-sheet').getBoundingClientRect();
+    let left = field.left - box.left;
+    if (left + wtPicker.offsetWidth > box.width) left = field.right - box.left - wtPicker.offsetWidth;
+    wtPicker.style.left = Math.max(0, left) + 'px';
+    const below = frame.bottom - field.bottom;
+    wtPicker.style.top = below >= wtPicker.offsetHeight + 8
+      ? (field.bottom - box.top + 4) + 'px'
+      : (field.top - box.top - wtPicker.offsetHeight - 4) + 'px';
+  }
+  function wtOpenPicker(target, field) {
+    if (!wtDraft[target]) return; // no end time set
+    if (wtTarget === target && !wtPicker.hidden) {
+      if (!wtCommitPending()) wtClosePicker();
+      return;
+    }
+    wtClosePicker();
+    wtTarget = target;
+    wtField = field;
+    wtPending = null;
+    wtRenderPicker();
+    wtPicker.hidden = false;
+    wtPlacePicker();
+    field.classList.add('is-open');
+    field.setAttribute('aria-expanded', 'true');
+    // The current hour second from the top, as in the design.
+    const sel = wtHoursEl.querySelector('[aria-selected="true"]');
+    wtHoursEl.scrollTop = Math.max(0, sel.offsetTop - wtHoursEl.offsetTop - sel.offsetHeight - 6);
+  }
+  function wtClosePicker() {
+    if (wtPicker.hidden) return;
+    wtPicker.hidden = true;
+    if (wtField) { wtField.classList.remove('is-open'); wtField.setAttribute('aria-expanded', 'false'); }
+    wtTarget = null;
+    wtPending = null;
+  }
+  function wtApply(time) {
+    wtDraft[wtTarget] = time;
+    wtClosePicker();
+    renderWhenTime();
+  }
+  // An hour picked without minutes: apply it with the minutes shown.
+  function wtCommitPending() {
+    if (wtPicker.hidden || wtPending === null) return false;
+    const sel = wtMinutesEl.querySelector('[aria-selected="true"]');
+    wtApply(wPad(wtPending) + ':' + wPad(Number(sel ? sel.dataset.value : 0)));
+    return true;
+  }
+  wtHoursEl.addEventListener('click', function(e) {
+    const opt = e.target.closest('.wt-option');
+    if (!opt) return;
+    wtPending = Number(opt.dataset.value);
+    const scroll = wtHoursEl.scrollTop;
+    wtRenderPicker();
+    wtHoursEl.scrollTop = scroll;
+  });
+  wtMinutesEl.addEventListener('click', function(e) {
+    const opt = e.target.closest('.wt-option');
+    if (!opt) return;
+    const hour = wtPending === null ? Number(wtDraft[wtTarget].split(':')[0]) : wtPending;
+    wtApply(wPad(hour) + ':' + wPad(Number(opt.dataset.value)));
+  });
+  document.querySelectorAll('[data-wt-field]').forEach(function(field) {
+    field.addEventListener('click', function() { wtOpenPicker(field.dataset.wtField, field); });
+  });
+  document.addEventListener('pointerdown', function(e) {
+    if (wtPicker.hidden) return;
+    if (wtPicker.contains(e.target) || (wtField && wtField.contains(e.target))) return;
+    if (!wtCommitPending()) wtClosePicker();
+  });
 
   // v5: the unit sheet keeps its own pick until "Use price …" applies it.
   let sheetUnit = 'hour';
@@ -5886,6 +6470,8 @@
   setupSheetDrag('skip-sheet', closeSkipSheet);
   setupSheetDrag('why-sheet', closeWhySheet);
   setupSheetDrag('unit-sheet', closeUnitSheet);
+  setupSheetDrag('when-date-sheet', closeWhenDateSheet);
+  setupSheetDrag('when-time-sheet', closeWhenTimeSheet);
 
   // Skipping without picking: leaving a sitter screen once the job exists
   // (close, "I'll decide later", "Not that urgent?") asks first. Keep picking
@@ -6389,9 +6975,6 @@
     }
     return opts.join('');
   }
-  document.getElementById('freq-date').innerHTML = buildDateOptions(0);
-  document.getElementById('overnight-date-from').innerHTML = buildDateOptions(0);
-  document.getElementById('overnight-date-to').innerHTML = buildDateOptions(1);
 
   function buildTimeOptions(defaultTime) {
     const opts = [];
@@ -6404,10 +6987,6 @@
     }
     return opts.join('');
   }
-  document.getElementById('freq-time-from').innerHTML = buildTimeOptions('16:00');
-  document.getElementById('freq-time-to').innerHTML = buildTimeOptions('19:00');
-  document.getElementById('overnight-time-from').innerHTML = buildTimeOptions('20:00');
-  document.getElementById('overnight-time-to').innerHTML = buildTimeOptions('07:00');
 
   document.querySelectorAll('.dt-select').forEach(sel => {
     sel.addEventListener('change', () => sel.classList.add('dt-selected'));
@@ -6424,13 +7003,6 @@
   }
   showScreen(getInitialFlowStep());
 
-  function toggleOvernight() {
-    const isOvernight = document.getElementById('freq-overnight-mode').style.display !== 'none';
-    document.getElementById('freq-day-mode').style.display = isOvernight ? '' : 'none';
-    document.getElementById('freq-overnight-mode').style.display = isOvernight ? 'none' : '';
-    document.getElementById('icon-night-wrap').style.display = isOvernight ? '' : 'none';
-    document.getElementById('icon-day-wrap').style.display = isOvernight ? 'none' : '';
-  }
 </script>
 
 

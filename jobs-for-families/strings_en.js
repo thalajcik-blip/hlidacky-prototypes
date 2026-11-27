@@ -132,7 +132,7 @@
   },
   "frequency": {
     "heroTitle": "When and how often?",
-    "heroSub": "Are you looking for one-time or regular help?",
+    "heroSub": "This helps sitters see if they’re free when you need them.",
     "sectionLabel": "How often do you need help?",
     "regularly": "regularly",
     "onetime": "one-time",
@@ -160,6 +160,83 @@
     "notsure": "not sure",
     "dateLabelRegular": "Specify date and time",
     "longterm": "I am looking for long-term help"
+  },
+  "when": {
+    "howOften": "How often do you need help?",
+    "freq": {
+      "onetime": "One-time",
+      "regular": "Regularly",
+      "notsure": "Not sure yet"
+    },
+    "notSureInfo": "No problem. Tell sitters roughly when you’ll need help, you can agree on the details later.",
+    "whenLabel": "When?",
+    "pickDate": "Pick a date",
+    "tomorrow": "Tomorrow",
+    "asap": "As soon as possible",
+    "daysLabel": "Which days?",
+    "partsLabel": "Which parts of the day?",
+    "pickTime": "Pick a time",
+    "parts": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "addNote": "Add a note",
+    "noteLabel": "Note",
+    "noteRemove": "Remove",
+    "notePlaceholder": "Anything else about timing, e.g. school pick-up at 16:00",
+    "use": "Use",
+    "fromTime": "from {from}",
+    "dowShort": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "dowGrid": [
+      "Mo",
+      "Tu",
+      "We",
+      "Th",
+      "Fr",
+      "Sa",
+      "Su"
+    ],
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "dateSheet": {
+      "title": "Pick a date",
+      "today": "Today",
+      "showMonth": "Show monthly view",
+      "showWeek": "Show weekly view",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "timeSheet": {
+      "title": "Pick a time",
+      "from": "From",
+      "to": "To",
+      "addEnd": "Add end time",
+      "removeEnd": "Remove end time",
+      "hours": "Hours",
+      "minutes": "Minutes"
+    }
   },
   "review": {
     "heroTitle": "New job",
